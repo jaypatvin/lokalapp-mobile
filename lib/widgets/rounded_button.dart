@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+
 import 'package:lokalapp/utils/themes.dart';
 
 class RoundedButton extends StatelessWidget {
