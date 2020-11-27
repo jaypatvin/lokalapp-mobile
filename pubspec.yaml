@@ -52,7 +52,9 @@ flutter:
       fonts:
         - asset: fonts/Goldplay.otf
         - asset: fonts/GoldplayAltBlack.otf
-        - asset: fonts/GoldplayBold.oth
+        - asset: fonts/GoldplayBold.otf
+        - asset: fonts/GoldplayBoldIt.otf
+        - asset: fonts/GoldplayAltBoldIt.otf
   # To add assets to your application, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg
