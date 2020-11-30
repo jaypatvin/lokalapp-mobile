@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lokalapp/screens/community.dart';
+import 'package:lokalapp/screens/profile_registration.dart';
 import 'package:lokalapp/screens/spalsh.dart';
 import 'package:lokalapp/screens/welcome_screen.dart';
 
@@ -25,7 +26,7 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: Community(),
+      home: ProfileRegistration(),
     );
   }
 }
