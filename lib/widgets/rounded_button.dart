@@ -4,8 +4,17 @@ import 'package:lokalapp/utils/themes.dart';
 class RoundedButton extends StatelessWidget {
   final String label;
   final Function onPressed;
-
-  RoundedButton({this.label, this.onPressed});
+  final double minWidth;
+  final double fontSize;
+  final String fontFamily;
+  final fontWeight;
+  RoundedButton(
+      {this.label,
+      this.onPressed,
+      this.minWidth = 113.0,
+      this.fontFamily,
+      this.fontSize,
+      this.fontWeight});
 
   @override
   Widget build(BuildContext context) {
@@ -15,14 +24,17 @@ class RoundedButton extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(30.0),
       ),
-      minWidth: MediaQuery.of(context).size.width / 3,
-      child: Text(
-        this.label,
-        style: TextStyle(
-          color: kNavyColor,
-          fontFamily: "Goldplay",
-          fontWeight: FontWeight.w800,
-          fontSize: 14.0,
+      child: MaterialButton(
+        onPressed: this.onPressed,
+        minWidth: this.minWidth,
+        child: Text(
+          this.label,
+          style: TextStyle(
+            color: kNavyColor,
+            fontSize: fontSize,
+            fontFamily: fontFamily,
+            fontWeight: fontWeight,
+          ),
         ),
       ),
     );

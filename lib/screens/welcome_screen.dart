@@ -210,7 +210,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
 
   Widget signIn() {
     return RoundedButton(
-        color: Color(0XFF09A49A), buttonTitle: 'SIGN IN', onPressed: () {});
+         label: 'SIGN IN', onPressed: () {});
   }
 
   Widget register() {
