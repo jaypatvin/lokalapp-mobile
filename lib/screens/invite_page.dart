@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lokalapp/utils/themes.dart';
-import 'package:lokalapp/widgets/modal_text_field.dart';
 import 'package:lokalapp/widgets/rounded_button.dart';
-import 'package:lokalapp/widgets/rounded_text_field.dart';
 
 class InvitePage extends StatefulWidget {
   @override
@@ -10,13 +8,33 @@ class InvitePage extends StatefulWidget {
 }
 
 class _InvitePageState extends State<InvitePage> {
-  bool _isTextFieldVisible = true;
-
-  void toggleTextFieldVisibility() {
-    setState(() {
-      _isTextFieldVisible = !_isTextFieldVisible;
-    });
-  }
+  InputDecoration _kInputDecoration = const InputDecoration(
+    filled: true,
+    isDense: true,
+    enabledBorder: const OutlineInputBorder(
+      borderRadius: const BorderRadius.all(
+        Radius.circular(30.0),
+      ),
+      borderSide: const BorderSide(color: Colors.transparent),
+    ),
+    contentPadding: const EdgeInsets.symmetric(
+      horizontal: 25,
+      vertical: 10,
+    ),
+    hintStyle: TextStyle(
+      color: Color(0xFFBDBDBD),
+      fontFamily: "Goldplay",
+      fontWeight: FontWeight.normal,
+    ),
+    alignLabelWithHint: true,
+    border: const OutlineInputBorder(
+      borderRadius: const BorderRadius.all(
+        Radius.circular(
+          30.0,
+        ),
+      ),
+    ),
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -52,33 +70,23 @@ class _InvitePageState extends State<InvitePage> {
               SizedBox(
                 height: 35.0,
               ),
-              Visibility(
-                visible: _isTextFieldVisible,
-                child: RoundedTextField(
+              TextField(
+                onTap: () {},
+                style: TextStyle(
+                  fontFamily: "Goldplay",
+                  fontWeight: FontWeight.bold,
+                ),
+                decoration: _kInputDecoration.copyWith(
                   hintText: "Community Key",
-                  onTap: () {
-                    toggleTextFieldVisibility();
-                    showModalBottomSheet(
-                      barrierColor: Colors.black.withAlpha(1),
-                      backgroundColor: Colors.transparent,
-                      context: context,
-                      builder: (context) => ModalTextField(
-                        hintText: "Community Key",
-                        onPressed: toggleTextFieldVisibility,
-                      ),
-                    ).whenComplete(toggleTextFieldVisibility);
-                  },
+                  fillColor: Colors.white,
                 ),
               ),
               SizedBox(
                 height: 35.0,
               ),
-              Visibility(
-                visible: _isTextFieldVisible,
-                child: RoundedButton(
-                  label: "Join",
-                  onPressed: () {},
-                ),
+              RoundedButton(
+                label: "Join",
+                onPressed: () {},
               ),
             ],
           ),

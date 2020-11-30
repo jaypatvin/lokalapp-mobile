@@ -1,25 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:lokalapp/utils/themes.dart';
 
-class RoundedButton extends StatelessWidget {
+class SocialButton extends StatelessWidget {
   final String label;
   final Function onPressed;
+  final double minWidth;
 
-  RoundedButton({this.label, this.onPressed});
+  SocialButton({this.label, this.onPressed, this.minWidth = 113.0});
 
   @override
   Widget build(BuildContext context) {
     return FlatButton(
       onPressed: onPressed,
-      color: kTealColor,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(30.0),
+        side: BorderSide(color: kTealColor),
       ),
-      minWidth: MediaQuery.of(context).size.width / 3,
+      minWidth: this.minWidth,
       child: Text(
         this.label,
         style: TextStyle(
-          color: kNavyColor,
+          color: kTealColor,
           fontFamily: "Goldplay",
           fontWeight: FontWeight.w800,
           fontSize: 14.0,
