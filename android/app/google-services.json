@@ -10,11 +10,16 @@
       "client_info": {
         "mobilesdk_app_id": "1:196086167751:android:c910bce32dae7adfe4e6e2",
         "android_client_info": {
+<<<<<<< HEAD
           "package_name": "ph.lokalapp.lokal"
+=======
+          "package_name": "com.example.lokalapp"
+>>>>>>> 84a5e012d07366747640a55c3b051947df60afa5
         }
       },
       "oauth_client": [
         {
+<<<<<<< HEAD
           "client_id": "196086167751-17qojitfq6athg3tm60n7grcljamnbom.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
@@ -23,6 +28,8 @@
           }
         },
         {
+=======
+>>>>>>> 84a5e012d07366747640a55c3b051947df60afa5
           "client_id": "196086167751-oabatdl63fn9vgglf37ijg5tbp16458t.apps.googleusercontent.com",
           "client_type": 3
         }

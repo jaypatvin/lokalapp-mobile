@@ -31,11 +31,16 @@ dependencies:
   carousel_slider: ^2.3.1
   flutter_onboard: ^0.1.0
   google_fonts: ^1.1.1
+<<<<<<< HEAD
   provider: ^4.3.2+2
   firebase_storage:
   cloud_firestore:
   firebase_core:
   firebase_auth:
+=======
+  firebase_core: ^0.5.1
+  firebase_auth: ^0.18.2
+>>>>>>> 84a5e012d07366747640a55c3b051947df60afa5
   google_sign_in: ^4.5.6
 
 dev_dependencies:
