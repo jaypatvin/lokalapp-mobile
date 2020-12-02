@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "196086167751",
+    "firebase_url": "https://lokal-1baac.firebaseio.com",
+    "project_id": "lokal-1baac",
+    "storage_bucket": "lokal-1baac.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:196086167751:android:c910bce32dae7adfe4e6e2",
+        "android_client_info": {
+          "package_name": "ph.lokalapp.lokal"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "196086167751-17qojitfq6athg3tm60n7grcljamnbom.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "ph.lokalapp.lokal",
+            "certificate_hash": "61759c4f0352dbd651b7364e1a533be3bd89cfa1"
+          }
+        },
+        {
+          "client_id": "196086167751-oabatdl63fn9vgglf37ijg5tbp16458t.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBmBQfuztAYcqwVfXZamyzrjDpyRL8HldE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "196086167751-oabatdl63fn9vgglf37ijg5tbp16458t.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
