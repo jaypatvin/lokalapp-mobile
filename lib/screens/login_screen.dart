@@ -1,4 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
+
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:lokalapp/utils/themes.dart';
 import 'package:lokalapp/widgets/rounded_button.dart';
 import 'package:lokalapp/widgets/social_button.dart';
@@ -12,6 +15,10 @@ class _LoginScreenState extends State<LoginScreen> {
   Color _kMainColor = const Color(0xFFFFC700);
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
+
+  FirebaseAuth _auth = FirebaseAuth.instance;
+  String _email;
+  String _password;
 
   InputDecoration _kInputDecoration = const InputDecoration(
     filled: true,
@@ -78,12 +85,21 @@ class _LoginScreenState extends State<LoginScreen> {
       children: [
         SocialButton(
           label: "Sign in with Facebook",
-          onPressed: () {},
+          onPressed: () { },
           minWidth: MediaQuery.of(context).size.width,
         ),
         SocialButton(
           label: "Sign in with Google",
-          onPressed: () {},
+          onPressed: () async {
+            try {
+              final UserCredential user = await signInWithGoogle();
+              if (user != null) {
+                debugPrint('${user.user.displayName} is logged in.');
+              }
+            } catch (e) {
+              debugPrint(e.toString());
+            }
+          },
           minWidth: MediaQuery.of(context).size.width,
         ),
         SocialButton(
@@ -93,6 +109,29 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ],
     );
+  }
+
+  Future<UserCredential> signInWithGoogle() async {
+    final GoogleSignInAccount googleUser = await GoogleSignIn().signIn();
+    final GoogleSignInAuthentication googleAuth =
+        await googleUser.authentication;
+
+    final GoogleAuthCredential credential = GoogleAuthProvider.credential(
+      accessToken: googleAuth.accessToken,
+      idToken: googleAuth.idToken,
+    );
+    return await FirebaseAuth.instance.signInWithCredential(credential);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _emailController.addListener(() {
+      this._email = _emailController.text;
+    });
+    _passwordController.addListener(() {
+      this._password = _passwordController.text;
+    });
   }
 
   @override
@@ -152,7 +191,22 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         RoundedButton(
                           label: "LOG IN",
-                          onPressed: () {},
+                          onPressed: () async {
+                            try {
+                              debugPrint('Signing in $_email with pw $_password');
+                              final UserCredential user =
+                                  await _auth.signInWithEmailAndPassword(
+                                      email: this._email,
+                                      password: this._password);
+
+                              if (user != null) {
+                                debugPrint(
+                                    '${user.user.email} is logged in.');
+                              }
+                            } catch (e) {
+                              debugPrint(e.toString());
+                            }
+                          },
                         ),
                       ],
                     ),
