@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:lokalapp/screens/profile_registration.dart';
 import 'package:lokalapp/utils/themes.dart';
 import 'package:lokalapp/widgets/rounded_button.dart';
 import 'package:lokalapp/widgets/social_button.dart';
@@ -85,7 +86,7 @@ class _LoginScreenState extends State<LoginScreen> {
       children: [
         SocialButton(
           label: "Sign in with Facebook",
-          onPressed: () { },
+          onPressed: () {},
           minWidth: MediaQuery.of(context).size.width,
         ),
         SocialButton(
@@ -152,11 +153,11 @@ class _LoginScreenState extends State<LoginScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Hero(
-                      tag: "",
+                      tag: "home",
                       child: Icon(Icons.home),
                     ),
                     Hero(
-                      tag: "",
+                      tag: "plaza",
                       child: Text(
                         "Your neighborhood plaza",
                         style: TextStyle(
@@ -193,15 +194,15 @@ class _LoginScreenState extends State<LoginScreen> {
                           label: "LOG IN",
                           onPressed: () async {
                             try {
-                              debugPrint('Signing in $_email with pw $_password');
+                              debugPrint(
+                                  'Signing in $_email with pw $_password');
                               final UserCredential user =
                                   await _auth.signInWithEmailAndPassword(
                                       email: this._email,
                                       password: this._password);
 
                               if (user != null) {
-                                debugPrint(
-                                    '${user.user.email} is logged in.');
+                                debugPrint('${user.user.email} is logged in.');
                               }
                             } catch (e) {
                               debugPrint(e.toString());

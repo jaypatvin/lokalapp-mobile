@@ -1,7 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:lokalapp/screens/community.dart';
+import 'package:lokalapp/screens/login_screen.dart';
 import 'package:lokalapp/widgets/rounded_button.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:lokalapp/models/user.dart';
 
 class WelcomeScreen extends StatefulWidget {
   @override
@@ -210,7 +213,13 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
 
   Widget signIn() {
     return RoundedButton(
-         label: 'SIGN IN', onPressed: () {});
+        label: 'SIGN IN',
+        onPressed: () {
+          Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => LoginScreen()),
+              (route) => false);
+        });
   }
 
   Widget register() {
@@ -229,7 +238,12 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20.0),
             side: BorderSide(color: Color(0XFF09A49A))),
-        onPressed: () {},
+        onPressed: () {
+          Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => Community()),
+              (route) => false);
+        },
       ),
     );
   }

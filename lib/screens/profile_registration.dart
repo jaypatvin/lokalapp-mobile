@@ -1,18 +1,142 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:lokalapp/utils/themes.dart';
 import 'package:lokalapp/widgets/rounded_button.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
+import 'package:lokalapp/models/user.dart';
+import 'package:uuid/uuid.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:image/image.dart' as Im;
+import 'package:lokalapp/services/database.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:geolocation/geolocation.dart';
 
 class ProfileRegistration extends StatefulWidget {
+  final Users currentUser;
+  ProfileRegistration({this.currentUser});
   @override
   _ProfileRegistrationState createState() => _ProfileRegistrationState();
 }
 
 class _ProfileRegistrationState extends State<ProfileRegistration> {
+  File file;
+  bool isUploading = false;
+  String profilePhotoId = Uuid().v4();
+  final picker = ImagePicker();
+  Position _currentPosition;
+  String _currentAddress;
   TextEditingController _firstNameController = TextEditingController();
   TextEditingController _lastNameController = TextEditingController();
   TextEditingController _streetAddressController = TextEditingController();
-
+  TextEditingController _locationController = TextEditingController();
   RoundedButton roundedButton = RoundedButton();
+
+  createPostinFirestore(
+      {String profilePhoto,
+      String firstName,
+      String lastName,
+      String location,
+      String address}) {
+    usersRef.doc(widget.currentUser.uid).set({
+      "profile_photo": profilePhotoId,
+      "ownerId": widget.currentUser.uid,
+      "first_name": widget.currentUser.firstName,
+      "last_name": widget.currentUser.lastName,
+      "address": widget.currentUser.address
+    });
+  }
+
+  handleCamera() async {
+    Navigator.pop(context);
+    final pickedImage = await picker.getImage(
+        source: ImageSource.camera, maxHeight: 675, maxWidth: 960);
+    if (pickedImage != null) {
+      setState(() {
+        file = File(pickedImage.path);
+      });
+    }
+  }
+
+  handleGallery() async {
+    Navigator.pop(context);
+    final pickedImage = await picker.getImage(source: ImageSource.gallery);
+    if (pickedImage != null) {
+      setState(() {
+        file = File(pickedImage.path);
+      });
+    }
+    ;
+  }
+
+  selectImage(parentContext) {
+    return showDialog(
+        context: parentContext,
+        builder: (context) {
+          return SimpleDialog(
+            title: Text("Upload Picture"),
+            children: [
+              SimpleDialogOption(
+                child: Text("Camera"),
+                onPressed: () {
+                  handleCamera();
+                },
+              ),
+              SimpleDialogOption(
+                child: Text("Gallery"),
+                onPressed: () {
+                  handleGallery();
+                },
+              ),
+              SimpleDialogOption(
+                child: Text("Cancel"),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              )
+            ],
+          );
+        });
+  }
+
+  compressImage() async {
+    final tempDir = await getTemporaryDirectory();
+    final path = tempDir.path;
+    Im.Image imageFile = Im.decodeImage(file.readAsBytesSync());
+    final compressedImageFile = File('$path/img_$profilePhotoId.jpg')
+      ..writeAsBytesSync(Im.encodeJpg(imageFile, quality: 90));
+    setState(() {
+      file = compressedImageFile;
+    });
+  }
+
+  Future<String> uploadImage(imageFile) async {
+    UploadTask uploadTask = storageRef
+        .child("profilePhotoId_$profilePhotoId.jpg")
+        .putFile(imageFile);
+    TaskSnapshot storageSnap = await uploadTask;
+    String downloadUrl = await storageSnap.ref.getDownloadURL();
+    return downloadUrl;
+  }
+
+  handleSubmit() async {
+    await compressImage();
+    String mediaUrl = await uploadImage(file);
+    createPostinFirestore(
+        profilePhoto: mediaUrl,
+        firstName: _firstNameController.text,
+        lastName: _lastNameController.text,
+        address: _streetAddressController.text,
+        location: _locationController.text);
+    _firstNameController.clear();
+    _lastNameController.clear();
+    _streetAddressController.clear();
+    setState(() {
+      file = null;
+      isUploading = false;
+    });
+  }
+
   Widget buildStreetAddress() {
     return Column(
       children: [
@@ -119,7 +243,9 @@ class _ProfileRegistrationState extends State<ProfileRegistration> {
 
   Widget createProfile() {
     return RoundedButton(
-      onPressed: () {},
+      onPressed: () {
+        handleSubmit();
+      },
       label: "CREATE PROFILE",
       fontSize: 20.0,
       minWidth: 250,
@@ -130,16 +256,57 @@ class _ProfileRegistrationState extends State<ProfileRegistration> {
 
   Widget photoBox() {
     return GestureDetector(
-      onTap: () {},
+      onTap: () {
+        selectImage(context);
+      },
       child: Container(
         width: 180.0,
         height: 170.0,
         decoration: BoxDecoration(
+          // image: DecorationImage(fit: BoxFit.cover),
           shape: BoxShape.circle,
           border: Border.all(width: 1, color: kTealColor),
         ),
         child: IconButton(
-          onPressed: () {},
+          onPressed: () {
+            selectImage(context);
+          },
+          icon: Icon(
+            Icons.add,
+            color: kTealColor,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Scaffold buildUploadForm() {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Profile Photo"),
+        backgroundColor: Colors.teal,
+        actions: [
+          FlatButton(
+            onPressed: handleSubmit,
+            child: Text(
+              "Post",
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
+            ),
+          )
+        ],
+      ),
+      body: Container(
+        width: 180.0,
+        height: 170.0,
+        decoration: BoxDecoration(
+          image: DecorationImage(fit: BoxFit.cover, image: FileImage(file)),
+          shape: BoxShape.circle,
+          border: Border.all(width: 1, color: kTealColor),
+        ),
+        child: IconButton(
+          onPressed: () {
+            // selectImage(context);
+          },
           icon: Icon(
             Icons.add,
             color: kTealColor,
@@ -169,7 +336,9 @@ class _ProfileRegistrationState extends State<ProfileRegistration> {
               Row(
                 children: [
                   IconButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
                     icon: Icon(Icons.arrow_back),
                     color: kTealColor,
                   ),
