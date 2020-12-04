@@ -1,4 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -18,6 +20,7 @@ class _LoginScreenState extends State<LoginScreen> {
   TextEditingController _passwordController = TextEditingController();
 
   FirebaseAuth _auth = FirebaseAuth.instance;
+
   String _email;
   String _password;
 
@@ -86,7 +89,18 @@ class _LoginScreenState extends State<LoginScreen> {
       children: [
         SocialButton(
           label: "Sign in with Facebook",
-          onPressed: () {},
+
+          onPressed: () async {
+            try {
+              final UserCredential user = await signInWithFacebook();
+              if (user != null) {
+                debugPrint('${user.user.displayName} is logged in.');
+              }
+            } catch (e) {
+              debugPrint(e.toString());
+            }
+          },
+
           minWidth: MediaQuery.of(context).size.width,
         ),
         SocialButton(
@@ -121,7 +135,29 @@ class _LoginScreenState extends State<LoginScreen> {
       accessToken: googleAuth.accessToken,
       idToken: googleAuth.idToken,
     );
-    return await FirebaseAuth.instance.signInWithCredential(credential);
+    return await _auth.signInWithCredential(credential);
+  }
+
+  Future<UserCredential> signInWithFacebook() async {
+    try {
+      final AccessToken accessToken = await FacebookAuth.instance.login();
+      final OAuthCredential credential =
+          FacebookAuthProvider.credential(accessToken.token);
+      return await _auth.signInWithCredential(credential);
+    } on FacebookAuthException catch (e) {
+      debugPrint(e.message);
+      switch (e.errorCode) {
+        case FacebookAuthErrorCode.OPERATION_IN_PROGRESS:
+          print("You have a previous login operation in progress");
+          break;
+        case FacebookAuthErrorCode.CANCELLED:
+          print("login cancelled");
+          break;
+        case FacebookAuthErrorCode.FAILED:
+          print("login failed");
+          break;
+      }
+    }
   }
 
   @override
