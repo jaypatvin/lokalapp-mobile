@@ -1,6 +1,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.lokalapp">
+
+    package="ph.lokalapp.lokal">
+   
     <uses-permission android:name="android.permission.INTERNET"/>
+
    <application
         android:label="lokalapp"
         android:icon="@mipmap/ic_launcher">

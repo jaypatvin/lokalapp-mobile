@@ -4,6 +4,7 @@ import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:lokalapp/screens/profile_registration.dart';
 import 'package:lokalapp/utils/themes.dart';
 import 'package:lokalapp/widgets/rounded_button.dart';
 import 'package:lokalapp/widgets/social_button.dart';
@@ -88,6 +89,7 @@ class _LoginScreenState extends State<LoginScreen> {
       children: [
         SocialButton(
           label: "Sign in with Facebook",
+
           onPressed: () async {
             try {
               final UserCredential user = await signInWithFacebook();
@@ -98,6 +100,7 @@ class _LoginScreenState extends State<LoginScreen> {
               debugPrint(e.toString());
             }
           },
+
           minWidth: MediaQuery.of(context).size.width,
         ),
         SocialButton(
@@ -186,11 +189,11 @@ class _LoginScreenState extends State<LoginScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Hero(
-                      tag: "",
+                      tag: "home",
                       child: Icon(Icons.home),
                     ),
                     Hero(
-                      tag: "",
+                      tag: "plaza",
                       child: Text(
                         "Your neighborhood plaza",
                         style: TextStyle(
