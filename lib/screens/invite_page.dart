@@ -3,6 +3,7 @@ import 'package:lokalapp/utils/themes.dart';
 import 'package:lokalapp/widgets/rounded_button.dart';
 
 class InvitePage extends StatefulWidget {
+  static const String id = 'invite_page';
   @override
   _InvitePageState createState() => _InvitePageState();
 }
@@ -87,6 +88,22 @@ class _InvitePageState extends State<InvitePage> {
               RoundedButton(
                 label: "Join",
                 onPressed: () {},
+              ),
+              SizedBox(
+                height: 20.0,
+              ),
+              InkWell(
+                child: Text(
+                  "WHAT'S A COMMUNITY KEY?",
+                  style: TextStyle(
+                    fontSize: 16.0,
+                    fontFamily: "Goldplay",
+                    fontWeight: FontWeight.bold,
+                    decoration: TextDecoration.underline,
+                    color: kTealColor,
+                  ),
+                ),
+                onTap: () {},
               ),
             ],
           ),
