@@ -1,7 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:lokalapp/models/user.dart';
 import 'package:lokalapp/screens/profile_registration.dart';
+import 'package:lokalapp/services/database.dart';
+import 'package:lokalapp/states/currentUser.dart';
 import 'package:provider/provider.dart';
+import 'dart:io';
 
 class Community extends StatefulWidget {
   @override
@@ -9,6 +13,7 @@ class Community extends StatefulWidget {
 }
 
 class _CommunityState extends State<Community> {
+  Users currentUser;
   Color _kPrimaryColor = Color(0XFFFFC700);
   Color _kButtonColor = Color(0XFF09A49A);
   Color _kButtonFontColor = Color(0XFF103045);
@@ -16,13 +21,16 @@ class _CommunityState extends State<Community> {
   TextEditingController _passwordController = TextEditingController();
 
   void _signUpUser(String email, String password, BuildContext context) async {
-    Users _users = Provider.of<Users>(context, listen: false);
+    CurrentUser _users = Provider.of<CurrentUser>(context, listen: false);
     try {
       String _returnString = await _users.signUpUser(email, password);
       if (_returnString == "success") {
         print("success");
-        Navigator.of(context).push(
-            MaterialPageRoute(builder: (context) => ProfileRegistration()));
+
+        Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => ProfileRegistration(
+                  currentUser: currentUser,
+                )));
       }
     } catch (e) {
       print(e);

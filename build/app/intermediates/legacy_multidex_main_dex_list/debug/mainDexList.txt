@@ -84,6 +84,8 @@ androidx/core/view/ViewCompat$NestedScrollType.class
 androidx/core/view/ViewCompat$ScrollAxis.class
 androidx/core/view/ViewCompat$ScrollIndicators.class
 androidx/core/widget/TextViewCompat$AutoSizeTextType.class
+androidx/exifinterface/media/ExifInterface$ExifStreamType.class
+androidx/exifinterface/media/ExifInterface$IfdType.class
 androidx/lifecycle/Lifecycle$Event.class
 androidx/lifecycle/OnLifecycleEvent.class
 androidx/multidex/MultiDex$V14$ElementConstructor.class
@@ -135,6 +137,7 @@ com/google/android/gms/common/util/VisibleForTesting.class
 com/google/android/gms/common/zzc.class
 com/google/android/gms/common/zzl.class
 com/google/android/gms/internal/auth/zzax.class
+com/google/android/gms/location/ActivityTransition$SupportedActivityTransition.class
 com/google/android/gms/stats/CodePackage.class
 com/google/common/annotations/Beta.class
 com/google/common/annotations/GwtCompatible.class

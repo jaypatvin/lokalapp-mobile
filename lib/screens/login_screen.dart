@@ -1,11 +1,21 @@
 import 'package:firebase_auth/firebase_auth.dart';
-
+import 'package:lokalapp/root/root.dart';
+import 'package:lokalapp/states/currentUser.dart';
+import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:lokalapp/screens/profile_registration.dart';
 import 'package:lokalapp/utils/themes.dart';
 import 'package:lokalapp/widgets/rounded_button.dart';
 import 'package:lokalapp/widgets/social_button.dart';
+import 'package:lokalapp/models/user.dart';
+import 'package:lokalapp/screens/home.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:lokalapp/models/user.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+enum LoginType { email, google }
+// Users currentUser;
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -16,10 +26,52 @@ class _LoginScreenState extends State<LoginScreen> {
   Color _kMainColor = const Color(0xFFFFC700);
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
+  bool isAuth = false;
 
   FirebaseAuth _auth = FirebaseAuth.instance;
   String _email;
   String _password;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _emailController.addListener(() {
+      this._email = _emailController.text;
+    });
+    _passwordController.addListener(() {
+      this._password = _passwordController.text;
+    });
+  }
+
+  void _logInUserWithEmail(
+      {@required LoginType type,
+      String email,
+      String password,
+      BuildContext context}) async {
+    CurrentUser _users = Provider.of<CurrentUser>(context, listen: false);
+    try {
+      String _returnString;
+      switch (type) {
+        case LoginType.email:
+          _returnString = await _users.loginUserWithEmail(email, password);
+          break;
+        case LoginType.google:
+          _returnString = await _users.loginUserWithGoogle();
+          break;
+        default:
+      }
+
+      if (_returnString == "success") {
+        // Navigator.of(context)
+        //     .push(MaterialPageRoute(builder: (context) => Home()));
+        Navigator.pushAndRemoveUntil(context,
+            MaterialPageRoute(builder: (context) => Home()), (route) => false);
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
 
   InputDecoration _kInputDecoration = const InputDecoration(
     filled: true,
@@ -91,49 +143,26 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
         SocialButton(
           label: "Sign in with Google",
-          onPressed: () async {
-            try {
-              final UserCredential user = await signInWithGoogle();
-              if (user != null) {
-                debugPrint('${user.user.displayName} is logged in.');
-              }
-            } catch (e) {
-              debugPrint(e.toString());
-            }
+          onPressed: () {
+            _logInUserWithEmail(type: LoginType.google, context: context);
           },
-          minWidth: MediaQuery.of(context).size.width,
-        ),
-        SocialButton(
-          label: "Sign in with Apple",
-          onPressed: () {},
           minWidth: MediaQuery.of(context).size.width,
         ),
       ],
     );
   }
 
-  Future<UserCredential> signInWithGoogle() async {
-    final GoogleSignInAccount googleUser = await GoogleSignIn().signIn();
-    final GoogleSignInAuthentication googleAuth =
-        await googleUser.authentication;
-
-    final GoogleAuthCredential credential = GoogleAuthProvider.credential(
-      accessToken: googleAuth.accessToken,
-      idToken: googleAuth.idToken,
-    );
-    return await FirebaseAuth.instance.signInWithCredential(credential);
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _emailController.addListener(() {
-      this._email = _emailController.text;
-    });
-    _passwordController.addListener(() {
-      this._password = _passwordController.text;
-    });
-  }
+  // Future<UserCredential> signInWithGoogle() async {
+  //   final GoogleSignInAccount googleUser = await GoogleSignIn().signIn();
+  //   final GoogleSignInAuthentication googleAuth =
+  //       await googleUser.authentication;
+  //
+  //   final GoogleAuthCredential credential = GoogleAuthProvider.credential(
+  //     accessToken: googleAuth.accessToken,
+  //     idToken: googleAuth.idToken,
+  //   );
+  //   return await FirebaseAuth.instance.signInWithCredential(credential);
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -154,7 +183,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   children: [
                     Hero(
                       tag: "home",
-                      child: Icon(Icons.home),
+                      child: Image.asset("assets/Lokalv2.png"),
                     ),
                     Hero(
                       tag: "plaza",
@@ -171,14 +200,12 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
             ),
-            Flexible(
-              flex: 3,
+            SingleChildScrollView(
               child: Container(
                 padding: EdgeInsets.all(40.0),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    //LoginBlock(),
                     Column(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -192,21 +219,12 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         RoundedButton(
                           label: "LOG IN",
-                          onPressed: () async {
-                            try {
-                              debugPrint(
-                                  'Signing in $_email with pw $_password');
-                              final UserCredential user =
-                                  await _auth.signInWithEmailAndPassword(
-                                      email: this._email,
-                                      password: this._password);
-
-                              if (user != null) {
-                                debugPrint('${user.user.email} is logged in.');
-                              }
-                            } catch (e) {
-                              debugPrint(e.toString());
-                            }
+                          onPressed: () {
+                            _logInUserWithEmail(
+                                type: LoginType.email,
+                                email: _emailController.text,
+                                password: _passwordController.text,
+                                context: context);
                           },
                         ),
                       ],

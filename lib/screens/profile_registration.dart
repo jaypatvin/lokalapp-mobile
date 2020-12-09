@@ -1,5 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:lokalapp/states/currentUser.dart';
 import 'package:lokalapp/utils/themes.dart';
 import 'package:lokalapp/widgets/rounded_button.dart';
 import 'package:image_picker/image_picker.dart';
@@ -11,6 +14,8 @@ import 'package:image/image.dart' as Im;
 import 'package:lokalapp/services/database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:geolocator/geolocator.dart';
+import 'dart:io';
+import 'package:provider/provider.dart';
 
 class ProfileRegistration extends StatefulWidget {
   final Users currentUser;
@@ -31,21 +36,6 @@ class _ProfileRegistrationState extends State<ProfileRegistration> {
   TextEditingController _streetAddressController = TextEditingController();
   TextEditingController _locationController = TextEditingController();
   RoundedButton roundedButton = RoundedButton();
-
-  createPostinFirestore(
-      {String profilePhoto,
-      String firstName,
-      String lastName,
-      String location,
-      String address}) {
-    usersRef.doc(widget.currentUser.uid).set({
-      "profile_photo": profilePhotoId,
-      "ownerId": widget.currentUser.uid,
-      "first_name": widget.currentUser.firstName,
-      "last_name": widget.currentUser.lastName,
-      "address": widget.currentUser.address
-    });
-  }
 
   handleCamera() async {
     Navigator.pop(context);
@@ -119,15 +109,49 @@ class _ProfileRegistrationState extends State<ProfileRegistration> {
     return downloadUrl;
   }
 
+  Future<String> createPostinFirestore(
+      {String profilePhoto,
+        String firstName,
+        String lastName,
+        String uid,
+        // String location,
+        String address}) async {
+    String retVal = "error";
+    try {
+      await usersRef.doc().update({
+        // "profile_photo": profilePhoto,
+        "uid": ,
+        "first_name": firstName,
+        "last_name": lastName,
+        "address": address,
+        // "photo_id": profilePhotoId,
+        // "location": location,
+      });
+      retVal = "success";
+      print();
+    } on PlatformException catch (e) {
+      print(e.message);
+    } catch (e) {
+      print(e);
+    }
+    return retVal;
+  }
+
   handleSubmit() async {
-    await compressImage();
-    String mediaUrl = await uploadImage(file);
+    setState(() {
+      isUploading = true;
+    });
+    // await compressImage();
+    //
+    // String mediaUrl = await uploadImage(file);
     createPostinFirestore(
-        profilePhoto: mediaUrl,
-        firstName: _firstNameController.text,
-        lastName: _lastNameController.text,
-        address: _streetAddressController.text,
-        location: _locationController.text);
+      // profilePhoto: mediaUrl,
+      firstName: _firstNameController.text,
+      lastName: _lastNameController.text,
+      address: _streetAddressController.text,
+      // location: _locationController.text,
+    );
+    // print(_firstNameController.text);
     _firstNameController.clear();
     _lastNameController.clear();
     _streetAddressController.clear();
@@ -263,49 +287,14 @@ class _ProfileRegistrationState extends State<ProfileRegistration> {
         width: 180.0,
         height: 170.0,
         decoration: BoxDecoration(
-          // image: DecorationImage(fit: BoxFit.cover),
+          // image:
+          //     DecorationImage(fit: BoxFit.cover, image: FileImage(file)) ,
           shape: BoxShape.circle,
           border: Border.all(width: 1, color: kTealColor),
         ),
         child: IconButton(
           onPressed: () {
             selectImage(context);
-          },
-          icon: Icon(
-            Icons.add,
-            color: kTealColor,
-          ),
-        ),
-      ),
-    );
-  }
-
-  Scaffold buildUploadForm() {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Profile Photo"),
-        backgroundColor: Colors.teal,
-        actions: [
-          FlatButton(
-            onPressed: handleSubmit,
-            child: Text(
-              "Post",
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
-            ),
-          )
-        ],
-      ),
-      body: Container(
-        width: 180.0,
-        height: 170.0,
-        decoration: BoxDecoration(
-          image: DecorationImage(fit: BoxFit.cover, image: FileImage(file)),
-          shape: BoxShape.circle,
-          border: Border.all(width: 1, color: kTealColor),
-        ),
-        child: IconButton(
-          onPressed: () {
-            // selectImage(context);
           },
           icon: Icon(
             Icons.add,
