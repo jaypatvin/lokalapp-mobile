@@ -41,7 +41,7 @@ dependencies:
   uuid: ^2.2.2
   path_provider: ^1.6.24
   image: ^2.1.19
-  geolocation: ^1.1.2
+  geolocator: ^3.0.1
 dev_dependencies:
   flutter_test:
     sdk: flutter
