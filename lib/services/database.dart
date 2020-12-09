@@ -25,7 +25,6 @@ class Database {
         // "birthdate": users.birthDate,
         // "registration": users.registration
         "profile_photo": users.profilePhoto,
-        "photo_id": users.photoId
       });
       // currentUser = Users.fromDocument(doc);
       retVal = "success";
@@ -44,7 +43,6 @@ class Database {
       retVal.email = _docSnapshot.data()["email"];
       retVal.firstName = _docSnapshot.data()["first_name"];
       retVal.lastName = _docSnapshot.data()["last_name"];
-      retVal.photoId = _docSnapshot.data()["photo_id"];
       // retVal.registration = _docSnapshot.data()["registration"];
       // retVal.communityId = _docSnapshot.data()["community_id"];
       // retVal.gender = _docSnapshot.data()["gender"];

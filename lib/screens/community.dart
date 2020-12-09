@@ -13,7 +13,6 @@ class Community extends StatefulWidget {
 }
 
 class _CommunityState extends State<Community> {
-  Users currentUser;
   Color _kPrimaryColor = Color(0XFFFFC700);
   Color _kButtonColor = Color(0XFF09A49A);
   Color _kButtonFontColor = Color(0XFF103045);
@@ -27,10 +26,8 @@ class _CommunityState extends State<Community> {
       if (_returnString == "success") {
         print("success");
 
-        Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) => ProfileRegistration(
-                  currentUser: currentUser,
-                )));
+        Navigator.of(context).push(
+            MaterialPageRoute(builder: (context) => ProfileRegistration()));
       }
     } catch (e) {
       print(e);

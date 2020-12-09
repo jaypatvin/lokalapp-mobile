@@ -1,6 +1,8 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:lokalapp/root/root.dart';
+import 'package:lokalapp/screens/community.dart';
+import 'package:lokalapp/screens/profile_registration.dart';
 import 'package:lokalapp/states/currentUser.dart';
 import 'package:provider/provider.dart';
 

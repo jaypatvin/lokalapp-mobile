@@ -9,7 +9,6 @@ class Users extends ChangeNotifier {
   String profilePhoto;
   String gender;
   String email;
-  String photoId;
   String displayName;
   String communityId;
   String birthDate;
@@ -25,7 +24,6 @@ class Users extends ChangeNotifier {
       this.address,
       this.birthDate,
       this.communityId,
-      this.photoId,
       this.gender,
       this.profilePhoto,
       this.registration});
@@ -33,7 +31,6 @@ class Users extends ChangeNotifier {
   factory Users.fromDocument(DocumentSnapshot doc) {
     return Users(
         uid: doc["uid"],
-        photoId: doc["photo_id"],
         firstName: doc["first_name"],
         lastName: doc["last_name"],
         email: doc["email"],

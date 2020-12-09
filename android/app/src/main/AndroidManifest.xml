@@ -1,15 +1,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 
     package="ph.lokalapp.lokal">
-<<<<<<< HEAD
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <application
-=======
-   
-    <uses-permission android:name="android.permission.INTERNET"/>
-
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
    <application
->>>>>>> e099706d4feadba708616d84dbff3936868174cd
         android:label="lokalapp"
         android:icon="@mipmap/ic_launcher">
 

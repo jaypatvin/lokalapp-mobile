@@ -1,25 +1,18 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:lokalapp/states/currentUser.dart';
 import 'package:lokalapp/utils/themes.dart';
 import 'package:lokalapp/widgets/rounded_button.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
-import 'package:lokalapp/models/user.dart';
 import 'package:uuid/uuid.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:image/image.dart' as Im;
 import 'package:lokalapp/services/database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:geolocator/geolocator.dart';
-import 'dart:io';
-import 'package:provider/provider.dart';
 
 class ProfileRegistration extends StatefulWidget {
-  final Users currentUser;
-  ProfileRegistration({this.currentUser});
   @override
   _ProfileRegistrationState createState() => _ProfileRegistrationState();
 }
@@ -29,8 +22,6 @@ class _ProfileRegistrationState extends State<ProfileRegistration> {
   bool isUploading = false;
   String profilePhotoId = Uuid().v4();
   final picker = ImagePicker();
-  Position _currentPosition;
-  String _currentAddress;
   TextEditingController _firstNameController = TextEditingController();
   TextEditingController _lastNameController = TextEditingController();
   TextEditingController _streetAddressController = TextEditingController();
@@ -110,25 +101,26 @@ class _ProfileRegistrationState extends State<ProfileRegistration> {
   }
 
   Future<String> createPostinFirestore(
-      {String profilePhoto,
+      {String mediaUrl,
       String firstName,
       String lastName,
+      String profilePhoto,
       String uid,
-      // String location,
+      String location,
       String address}) async {
+    User firebaseUser = FirebaseAuth.instance.currentUser;
     String retVal = "error";
     try {
-      await usersRef.doc().update({
-        // "profile_photo": profilePhoto,
-        // "uid": ,
+      await usersRef.doc(firebaseUser.uid).update({
+        "profile_photo": mediaUrl,
+        "uid": firebaseUser.uid,
         "first_name": firstName,
         "last_name": lastName,
-        "address": address,
-        // "photo_id": profilePhotoId,
-        // "location": location,
+        "address": {"street": address},
+        "location": location,
       });
       retVal = "success";
-      // print();
+      print(firebaseUser.uid);
     } on PlatformException catch (e) {
       print(e.message);
     } catch (e) {
@@ -141,17 +133,15 @@ class _ProfileRegistrationState extends State<ProfileRegistration> {
     setState(() {
       isUploading = true;
     });
-    // await compressImage();
-    //
-    // String mediaUrl = await uploadImage(file);
+    await compressImage();
+
+    String mediaUrl = await uploadImage(file);
     createPostinFirestore(
-      // profilePhoto: mediaUrl,
-      firstName: _firstNameController.text,
-      lastName: _lastNameController.text,
-      address: _streetAddressController.text,
-      // location: _locationController.text,
-    );
-    // print(_firstNameController.text);
+        profilePhoto: mediaUrl,
+        firstName: _firstNameController.text,
+        lastName: _lastNameController.text,
+        address: _streetAddressController.text,
+        location: _locationController.text);
     _firstNameController.clear();
     _lastNameController.clear();
     _streetAddressController.clear();
@@ -242,20 +232,34 @@ class _ProfileRegistrationState extends State<ProfileRegistration> {
     );
   }
 
-  Widget location() {
+  void _getLocation() async {
+    Position position = await Geolocator()
+        .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    List<Placemark> placemarks = await Geolocator()
+        .placemarkFromCoordinates(position.latitude, position.longitude);
+    Placemark placemark = placemarks[0];
+    String completeAddress =
+        '${placemark.country}, ${placemark.postalCode}, ${placemark.locality}, ${placemark.name}, ${placemark.position}, ${placemark.subLocality}';
+    print(completeAddress);
+    String formattedAddress =
+        "${placemark.country}, ${placemark.locality}, ${placemark.postalCode}";
+    _locationController.text = formattedAddress;
+  }
+
+  Widget userLoc() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         IconButton(
-          onPressed: () {},
+          onPressed: _getLocation,
           icon: Icon(
-            Icons.add_location_rounded,
+            Icons.my_location,
             color: kNavyColor,
           ),
         ),
         Text(
-          "White Plains, Quezon City",
+          _locationController.text,
           style: TextStyle(
               fontSize: 18.0,
               fontWeight: FontWeight.w800,
@@ -305,6 +309,28 @@ class _ProfileRegistrationState extends State<ProfileRegistration> {
     );
   }
 
+  Widget photoBoxWithPic() {
+    return GestureDetector(
+      onTap: () {},
+      child: Container(
+        width: 180.0,
+        height: 170.0,
+        decoration: BoxDecoration(
+          image: DecorationImage(fit: BoxFit.cover, image: FileImage(file)),
+          shape: BoxShape.circle,
+          border: Border.all(width: 1, color: kTealColor),
+        ),
+        child: IconButton(
+          onPressed: () {},
+          icon: Icon(
+            Icons.add,
+            color: kTealColor,
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget profileSetUpText() {
     return Center(
       child: Text(
@@ -314,8 +340,7 @@ class _ProfileRegistrationState extends State<ProfileRegistration> {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
+  Scaffold buildPage() {
     return Scaffold(
       backgroundColor: kInviteScreenColor,
       body: SafeArea(
@@ -342,7 +367,7 @@ class _ProfileRegistrationState extends State<ProfileRegistration> {
                   SizedBox(
                     height: 25.0,
                   ),
-                  photoBox(),
+                  file == null ? photoBox() : photoBoxWithPic(),
                 ],
               ),
               SizedBox(
@@ -362,7 +387,7 @@ class _ProfileRegistrationState extends State<ProfileRegistration> {
                   SizedBox(
                     height: 15.0,
                   ),
-                  location(),
+                  userLoc(),
                   SizedBox(
                     height: 50.0,
                   ),
@@ -377,5 +402,10 @@ class _ProfileRegistrationState extends State<ProfileRegistration> {
         ),
       ),
     );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return buildPage();
   }
 }
