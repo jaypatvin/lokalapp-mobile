@@ -1,10 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:lokalapp/utils/themes.dart';
 import 'package:lokalapp/widgets/rounded_button.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
-import 'package:lokalapp/models/user.dart';
 import 'package:uuid/uuid.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:image/image.dart' as Im;
@@ -13,8 +13,6 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:geolocator/geolocator.dart';
 
 class ProfileRegistration extends StatefulWidget {
-  final Users currentUser;
-  ProfileRegistration({this.currentUser});
   @override
   _ProfileRegistrationState createState() => _ProfileRegistrationState();
 }
@@ -24,28 +22,11 @@ class _ProfileRegistrationState extends State<ProfileRegistration> {
   bool isUploading = false;
   String profilePhotoId = Uuid().v4();
   final picker = ImagePicker();
-  Position _currentPosition;
-  String _currentAddress;
   TextEditingController _firstNameController = TextEditingController();
   TextEditingController _lastNameController = TextEditingController();
   TextEditingController _streetAddressController = TextEditingController();
   TextEditingController _locationController = TextEditingController();
   RoundedButton roundedButton = RoundedButton();
-
-  createPostinFirestore(
-      {String profilePhoto,
-      String firstName,
-      String lastName,
-      String location,
-      String address}) {
-    usersRef.doc(widget.currentUser.uid).set({
-      "profile_photo": profilePhotoId,
-      "ownerId": widget.currentUser.uid,
-      "first_name": widget.currentUser.firstName,
-      "last_name": widget.currentUser.lastName,
-      "address": widget.currentUser.address
-    });
-  }
 
   handleCamera() async {
     Navigator.pop(context);
@@ -119,8 +100,41 @@ class _ProfileRegistrationState extends State<ProfileRegistration> {
     return downloadUrl;
   }
 
+  Future<String> createPostinFirestore(
+      {String mediaUrl,
+      String firstName,
+      String lastName,
+      String profilePhoto,
+      String uid,
+      String location,
+      String address}) async {
+    User firebaseUser = FirebaseAuth.instance.currentUser;
+    String retVal = "error";
+    try {
+      await usersRef.doc(firebaseUser.uid).update({
+        "profile_photo": mediaUrl,
+        "uid": firebaseUser.uid,
+        "first_name": firstName,
+        "last_name": lastName,
+        "address": {"street": address},
+        "location": location,
+      });
+      retVal = "success";
+      print(firebaseUser.uid);
+    } on PlatformException catch (e) {
+      print(e.message);
+    } catch (e) {
+      print(e);
+    }
+    return retVal;
+  }
+
   handleSubmit() async {
+    setState(() {
+      isUploading = true;
+    });
     await compressImage();
+
     String mediaUrl = await uploadImage(file);
     createPostinFirestore(
         profilePhoto: mediaUrl,
@@ -218,20 +232,34 @@ class _ProfileRegistrationState extends State<ProfileRegistration> {
     );
   }
 
-  Widget location() {
+  void _getLocation() async {
+    Position position = await Geolocator()
+        .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    List<Placemark> placemarks = await Geolocator()
+        .placemarkFromCoordinates(position.latitude, position.longitude);
+    Placemark placemark = placemarks[0];
+    String completeAddress =
+        '${placemark.country}, ${placemark.postalCode}, ${placemark.locality}, ${placemark.name}, ${placemark.position}, ${placemark.subLocality}';
+    print(completeAddress);
+    String formattedAddress =
+        "${placemark.country}, ${placemark.locality}, ${placemark.postalCode}";
+    _locationController.text = formattedAddress;
+  }
+
+  Widget userLoc() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         IconButton(
-          onPressed: () {},
+          onPressed: _getLocation,
           icon: Icon(
-            Icons.add_location_rounded,
+            Icons.my_location,
             color: kNavyColor,
           ),
         ),
         Text(
-          "White Plains, Quezon City",
+          _locationController.text,
           style: TextStyle(
               fontSize: 18.0,
               fontWeight: FontWeight.w800,
@@ -263,7 +291,8 @@ class _ProfileRegistrationState extends State<ProfileRegistration> {
         width: 180.0,
         height: 170.0,
         decoration: BoxDecoration(
-          // image: DecorationImage(fit: BoxFit.cover),
+          // image:
+          //     DecorationImage(fit: BoxFit.cover, image: FileImage(file)) ,
           shape: BoxShape.circle,
           border: Border.all(width: 1, color: kTealColor),
         ),
@@ -280,22 +309,10 @@ class _ProfileRegistrationState extends State<ProfileRegistration> {
     );
   }
 
-  Scaffold buildUploadForm() {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Profile Photo"),
-        backgroundColor: Colors.teal,
-        actions: [
-          FlatButton(
-            onPressed: handleSubmit,
-            child: Text(
-              "Post",
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
-            ),
-          )
-        ],
-      ),
-      body: Container(
+  Widget photoBoxWithPic() {
+    return GestureDetector(
+      onTap: () {},
+      child: Container(
         width: 180.0,
         height: 170.0,
         decoration: BoxDecoration(
@@ -304,9 +321,7 @@ class _ProfileRegistrationState extends State<ProfileRegistration> {
           border: Border.all(width: 1, color: kTealColor),
         ),
         child: IconButton(
-          onPressed: () {
-            // selectImage(context);
-          },
+          onPressed: () {},
           icon: Icon(
             Icons.add,
             color: kTealColor,
@@ -325,8 +340,7 @@ class _ProfileRegistrationState extends State<ProfileRegistration> {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
+  Scaffold buildPage() {
     return Scaffold(
       backgroundColor: kInviteScreenColor,
       body: SafeArea(
@@ -353,7 +367,7 @@ class _ProfileRegistrationState extends State<ProfileRegistration> {
                   SizedBox(
                     height: 25.0,
                   ),
-                  photoBox(),
+                  file == null ? photoBox() : photoBoxWithPic(),
                 ],
               ),
               SizedBox(
@@ -373,7 +387,7 @@ class _ProfileRegistrationState extends State<ProfileRegistration> {
                   SizedBox(
                     height: 15.0,
                   ),
-                  location(),
+                  userLoc(),
                   SizedBox(
                     height: 50.0,
                   ),
@@ -388,5 +402,10 @@ class _ProfileRegistrationState extends State<ProfileRegistration> {
         ),
       ),
     );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return buildPage();
   }
 }

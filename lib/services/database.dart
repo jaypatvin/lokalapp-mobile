@@ -4,9 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:lokalapp/models/user.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
-Users users;
-final usersRef = FirebaseFirestore.instance.collection('users');
-// final photoRef = FirebaseFirestore.instance.collection('users').doc(users.uid)
+Users users = Users();
+final usersRef = FirebaseFirestore.instance.collection("users");
 final Reference storageRef = FirebaseStorage.instance.ref();
 
 class Database {
@@ -25,8 +24,9 @@ class Database {
         "address": users.address,
         // "birthdate": users.birthDate,
         // "registration": users.registration
-        "profile_photo": users.profilePhoto
+        "profile_photo": users.profilePhoto,
       });
+      // currentUser = Users.fromDocument(doc);
       retVal = "success";
     } catch (e) {
       print(e);
@@ -39,15 +39,15 @@ class Database {
     try {
       DocumentSnapshot _docSnapshot = await usersRef.doc(uid).get();
       retVal.uid = uid;
-      retVal.displayName = _docSnapshot.data()["display_name"];
+      // retVal.displayName = _docSnapshot.data()["display_name"];
       retVal.email = _docSnapshot.data()["email"];
       retVal.firstName = _docSnapshot.data()["first_name"];
       retVal.lastName = _docSnapshot.data()["last_name"];
-      retVal.registration = _docSnapshot.data()["registration"];
-      retVal.communityId = _docSnapshot.data()["community_id"];
-      retVal.gender = _docSnapshot.data()["gender"];
+      // retVal.registration = _docSnapshot.data()["registration"];
+      // retVal.communityId = _docSnapshot.data()["community_id"];
+      // retVal.gender = _docSnapshot.data()["gender"];
       retVal.address = _docSnapshot.data()["address"];
-      retVal.birthDate = _docSnapshot.data()["birthdate"];
+      // retVal.birthDate = _docSnapshot.data()["birthdate"];
       retVal.profilePhoto = _docSnapshot.data()["profile_photo"];
     } catch (e) {
       print(e);
