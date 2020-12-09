@@ -41,7 +41,7 @@ class CurrentUser extends ChangeNotifier {
     return retVal;
   }
 
-  Future<String> signUpUser(String email, String password, String firstName, String lastName, String address) async {
+  Future<String> signUpUser(String email, String password) async {
     String retVal = "error";
     Users _user = Users();
     try {
@@ -49,8 +49,8 @@ class CurrentUser extends ChangeNotifier {
           email: email, password: password);
       _user.uid = _authResult.user.uid;
       _user.email = _authResult.user.email;
-      _user.firstName = firstName,
-    _user.lastName = lastName,
+      // _user.firstName = firstName,
+      // _user.lastName = lastName,
       String _returnString = await Database().createUser(_user);
       // print(_user.uid);
       // print(_user.email);
@@ -81,8 +81,6 @@ class CurrentUser extends ChangeNotifier {
     }
     return retVal;
   }
-
-
 
   Future<String> loginUserWithGoogle() async {
     String retVal = "error";

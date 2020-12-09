@@ -1,18 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:lokalapp/root/root.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:lokalapp/states/currentUser.dart';
+import 'package:lokalapp/widgets/rounded_button.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:lokalapp/screens/profile_registration.dart';
 import 'package:lokalapp/utils/themes.dart';
-import 'package:lokalapp/widgets/rounded_button.dart';
 import 'package:lokalapp/widgets/social_button.dart';
-import 'package:lokalapp/models/user.dart';
-import 'package:lokalapp/screens/home.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:lokalapp/models/user.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+
+import 'home.dart';
 
 enum LoginType { email, google }
 // Users currentUser;
@@ -29,6 +24,7 @@ class _LoginScreenState extends State<LoginScreen> {
   bool isAuth = false;
 
   FirebaseAuth _auth = FirebaseAuth.instance;
+
   String _email;
   String _password;
 
@@ -138,7 +134,16 @@ class _LoginScreenState extends State<LoginScreen> {
       children: [
         SocialButton(
           label: "Sign in with Facebook",
-          onPressed: () {},
+          onPressed: () async {
+            // try {
+            //   final UserCredential user = await signInWithFacebook();
+            //   if (user != null) {
+            //     debugPrint('${user.user.displayName} is logged in.');
+            //   }
+            // } catch (e) {
+            //   debugPrint(e.toString());
+            // }
+          },
           minWidth: MediaQuery.of(context).size.width,
         ),
         SocialButton(
@@ -152,16 +157,38 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  // Future<UserCredential> signInWithGoogle() async {
-  //   final GoogleSignInAccount googleUser = await GoogleSignIn().signIn();
-  //   final GoogleSignInAuthentication googleAuth =
-  //       await googleUser.authentication;
-  //
-  //   final GoogleAuthCredential credential = GoogleAuthProvider.credential(
-  //     accessToken: googleAuth.accessToken,
-  //     idToken: googleAuth.idToken,
-  //   );
-  //   return await FirebaseAuth.instance.signInWithCredential(credential);
+  Future<UserCredential> signInWithGoogle() async {
+    final GoogleSignInAccount googleUser = await GoogleSignIn().signIn();
+    final GoogleSignInAuthentication googleAuth =
+        await googleUser.authentication;
+
+    final GoogleAuthCredential credential = GoogleAuthProvider.credential(
+      accessToken: googleAuth.accessToken,
+      idToken: googleAuth.idToken,
+    );
+    return await _auth.signInWithCredential(credential);
+  }
+
+  // Future<UserCredential> signInWithFacebook() async {
+  //   try {
+  //     final AccessToken accessToken = await FacebookAuth.instance.login();
+  //     final OAuthCredential credential =
+  //         FacebookAuthProvider.credential(accessToken.token);
+  //     return await _auth.signInWithCredential(credential);
+  //   } on FacebookAuthException catch (e) {
+  //     debugPrint(e.message);
+  //     switch (e.errorCode) {
+  //       case FacebookAuthErrorCode.OPERATION_IN_PROGRESS:
+  //         print("You have a previous login operation in progress");
+  //         break;
+  //       case FacebookAuthErrorCode.CANCELLED:
+  //         print("login cancelled");
+  //         break;
+  //       case FacebookAuthErrorCode.FAILED:
+  //         print("login failed");
+  //         break;
+  //     }
+  //   }
   // }
 
   @override

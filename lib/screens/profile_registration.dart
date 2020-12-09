@@ -111,16 +111,16 @@ class _ProfileRegistrationState extends State<ProfileRegistration> {
 
   Future<String> createPostinFirestore(
       {String profilePhoto,
-        String firstName,
-        String lastName,
-        String uid,
-        // String location,
-        String address}) async {
+      String firstName,
+      String lastName,
+      String uid,
+      // String location,
+      String address}) async {
     String retVal = "error";
     try {
       await usersRef.doc().update({
         // "profile_photo": profilePhoto,
-        "uid": ,
+        // "uid": ,
         "first_name": firstName,
         "last_name": lastName,
         "address": address,
@@ -128,7 +128,7 @@ class _ProfileRegistrationState extends State<ProfileRegistration> {
         // "location": location,
       });
       retVal = "success";
-      print();
+      // print();
     } on PlatformException catch (e) {
       print(e.message);
     } catch (e) {
