@@ -1,4 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:lokalapp/screens/community.dart';
 import 'package:lokalapp/utils/themes.dart';
 import 'package:lokalapp/widgets/rounded_button.dart';
 
@@ -9,6 +11,18 @@ class InvitePage extends StatefulWidget {
 }
 
 class _InvitePageState extends State<InvitePage> {
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  String _inviteCode;
+  TextEditingController _inviteCodeController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _inviteCodeController.addListener(() {
+      this._inviteCode = _inviteCodeController.text;
+    });
+  }
+
   InputDecoration _kInputDecoration = const InputDecoration(
     filled: true,
     isDense: true,
@@ -72,7 +86,7 @@ class _InvitePageState extends State<InvitePage> {
                 height: 35.0,
               ),
               TextField(
-                onTap: () {},
+                controller: _inviteCodeController,
                 style: TextStyle(
                   fontFamily: "Goldplay",
                   fontWeight: FontWeight.bold,
@@ -87,7 +101,22 @@ class _InvitePageState extends State<InvitePage> {
               ),
               RoundedButton(
                 label: "Join",
-                onPressed: () {},
+                onPressed: () async {
+                  final DocumentSnapshot snapshot = await _firestore
+                      .collection('invites')
+                      .doc(_inviteCode)
+                      .get();
+                  if (snapshot.exists) {
+                    debugPrint('SnapshotID is ${snapshot.id}');
+                    debugPrint('InviteCode is $_inviteCode');
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(builder: (context) => Community()),
+                      (route) => false,
+                    );
+                  }
+                  debugPrint('Community Key not found');
+                },
               ),
               SizedBox(
                 height: 20.0,
