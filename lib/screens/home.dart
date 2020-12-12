@@ -3,7 +3,6 @@ import 'package:lokalapp/models/user.dart';
 import 'package:lokalapp/states/currentUser.dart';
 import 'package:provider/provider.dart';
 import 'package:lokalapp/root/root.dart';
-import 'dart:io';
 
 class Home extends StatelessWidget {
   @override

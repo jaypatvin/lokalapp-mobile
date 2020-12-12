@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:lokalapp/screens/community.dart';
+import 'package:lokalapp/services/database.dart';
+import 'package:lokalapp/states/currentUser.dart';
 import 'package:lokalapp/utils/themes.dart';
 import 'package:lokalapp/widgets/rounded_button.dart';
+import 'package:provider/provider.dart';
 
 class InvitePage extends StatefulWidget {
   @override
@@ -8,6 +12,20 @@ class InvitePage extends StatefulWidget {
 }
 
 class _InvitePageState extends State<InvitePage> {
+  TextEditingController _codeController = TextEditingController();
+
+  void joinCommunity(BuildContext context, String code) async {
+    CurrentUser _user = Provider.of<CurrentUser>(context, listen: false);
+    String _returnString =
+        await Database().joinCommunity(code, _user.getCurrentUser.uid);
+    if (_returnString == "success") {
+      Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => Community()),
+          (route) => false);
+    }
+  }
+
   InputDecoration _kInputDecoration = const InputDecoration(
     filled: true,
     isDense: true,
@@ -72,6 +90,7 @@ class _InvitePageState extends State<InvitePage> {
               ),
               TextField(
                 onTap: () {},
+                controller: _codeController,
                 style: TextStyle(
                   fontFamily: "Goldplay",
                   fontWeight: FontWeight.bold,
@@ -86,7 +105,7 @@ class _InvitePageState extends State<InvitePage> {
               ),
               RoundedButton(
                 label: "Join",
-                onPressed: () {},
+                onPressed: () => joinCommunity(context, _codeController.text),
               ),
             ],
           ),

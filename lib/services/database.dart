@@ -6,6 +6,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 
 Users users = Users();
 final usersRef = FirebaseFirestore.instance.collection("users");
+final inviteRef = FirebaseFirestore.instance.collection("invites");
 final Reference storageRef = FirebaseStorage.instance.ref();
 
 class Database {
@@ -20,13 +21,30 @@ class Database {
         "first_name": users.firstName,
         "last_name": users.lastName,
         // "gender": users.gender,
-        // "community_id": users.communityId,
+        "community_id": users.communityId,
         "address": users.address,
         // "birthdate": users.birthDate,
         // "registration": users.registration
         "profile_photo": users.profilePhoto,
       });
       // currentUser = Users.fromDocument(doc);
+      retVal = "success";
+    } catch (e) {
+      print(e);
+    }
+    return retVal;
+  }
+
+  Future<String> joinCommunity(String code, String userUid) async {
+    String retVal = "error";
+    try {
+      DocumentReference _docRef = await inviteRef.add({
+        "created_at": Timestamp.now(),
+        "code": code,
+        // "invitee":
+      });
+      // await inviteRef.doc(communityId).update({"invitee": userUid});
+      await usersRef.doc(userUid).update({"community_id": _docRef.id});
       retVal = "success";
     } catch (e) {
       print(e);
@@ -44,7 +62,7 @@ class Database {
       retVal.firstName = _docSnapshot.data()["first_name"];
       retVal.lastName = _docSnapshot.data()["last_name"];
       // retVal.registration = _docSnapshot.data()["registration"];
-      // retVal.communityId = _docSnapshot.data()["community_id"];
+      retVal.communityId = _docSnapshot.data()["community_id"];
       // retVal.gender = _docSnapshot.data()["gender"];
       retVal.address = _docSnapshot.data()["address"];
       // retVal.birthDate = _docSnapshot.data()["birthdate"];

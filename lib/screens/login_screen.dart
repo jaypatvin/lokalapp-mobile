@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:lokalapp/screens/invite_page.dart';
 import 'package:lokalapp/states/currentUser.dart';
 import 'package:lokalapp/widgets/rounded_button.dart';
 import 'package:provider/provider.dart';
@@ -61,8 +62,10 @@ class _LoginScreenState extends State<LoginScreen> {
       if (_returnString == "success") {
         // Navigator.of(context)
         //     .push(MaterialPageRoute(builder: (context) => Home()));
-        Navigator.pushAndRemoveUntil(context,
-            MaterialPageRoute(builder: (context) => Home()), (route) => false);
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => InvitePage()),
+            (route) => false);
       }
     } catch (e) {
       print(e);

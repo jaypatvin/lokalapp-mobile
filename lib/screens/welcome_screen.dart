@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:lokalapp/screens/community.dart';
+import 'package:lokalapp/screens/invite_page.dart';
 import 'package:lokalapp/screens/login_screen.dart';
 import 'package:lokalapp/widgets/rounded_button.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -241,7 +242,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
         onPressed: () {
           Navigator.pushAndRemoveUntil(
               context,
-              MaterialPageRoute(builder: (context) => Community()),
+              MaterialPageRoute(builder: (context) => InvitePage()),
               (route) => false);
         },
       ),
