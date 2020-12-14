@@ -1,7 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:lokalapp/screens/community.dart';
+
 import 'package:lokalapp/services/database.dart';
 import 'package:lokalapp/states/currentUser.dart';
+
 import 'package:lokalapp/utils/themes.dart';
 import 'package:lokalapp/widgets/rounded_button.dart';
 import 'package:provider/provider.dart';
@@ -13,6 +16,7 @@ class InvitePage extends StatefulWidget {
 }
 
 class _InvitePageState extends State<InvitePage> {
+
   TextEditingController _codeController = TextEditingController();
 
   void joinCommunity(BuildContext context, String code) async {
@@ -25,6 +29,18 @@ class _InvitePageState extends State<InvitePage> {
           MaterialPageRoute(builder: (context) => Community()),
           (route) => false);
     }
+
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  String _inviteCode;
+  TextEditingController _inviteCodeController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _inviteCodeController.addListener(() {
+      this._inviteCode = _inviteCodeController.text;
+    });
+
   }
 
   InputDecoration _kInputDecoration = const InputDecoration(
@@ -90,8 +106,10 @@ class _InvitePageState extends State<InvitePage> {
                 height: 35.0,
               ),
               TextField(
+
                 onTap: () {},
                 controller: _codeController,
+
                 style: TextStyle(
                   fontFamily: "Goldplay",
                   fontWeight: FontWeight.bold,
@@ -106,7 +124,9 @@ class _InvitePageState extends State<InvitePage> {
               ),
               RoundedButton(
                 label: "Join",
+
                 onPressed: () => joinCommunity(context, _codeController.text),
+
               ),
               SizedBox(
                 height: 20.0,
