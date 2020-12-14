@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:lokalapp/screens/invite_page.dart';
 import 'package:lokalapp/states/currentUser.dart';
 
 import 'package:lokalapp/widgets/rounded_button.dart';
@@ -62,9 +64,10 @@ class _LoginScreenState extends State<LoginScreen> {
       }
 
       if (_returnString == "success") {
-
-        Navigator.pushAndRemoveUntil(context,
-            MaterialPageRoute(builder: (context) => Home()), (route) => false);
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => InvitePage()),
+            (route) => false);
       }
     } catch (e) {
       print(e);
@@ -135,7 +138,6 @@ class _LoginScreenState extends State<LoginScreen> {
         SocialButton(
           label: "Sign in with Facebook",
           onPressed: () async {
-
             // try {
             //   final UserCredential user = await signInWithFacebook();
             //   if (user != null) {
@@ -153,26 +155,13 @@ class _LoginScreenState extends State<LoginScreen> {
             } catch (e) {
               debugPrint(e.toString());
             }
-
           },
           minWidth: MediaQuery.of(context).size.width,
         ),
         SocialButton(
           label: "Sign in with Google",
-
           onPressed: () {
             _logInUserWithEmail(type: LoginType.google, context: context);
-
-          onPressed: () async {
-            try {
-              final UserCredential user = await signInWithGoogle();
-              if (user != null) {
-                goToNextScreen(user);
-              }
-            } catch (e) {
-              debugPrint(e.toString());
-            }
-
           },
           minWidth: MediaQuery.of(context).size.width,
         ),
@@ -210,7 +199,6 @@ class _LoginScreenState extends State<LoginScreen> {
     return _userCredential;
   }
 
-
   // Future<UserCredential> signInWithFacebook() async {
   //   try {
   //     final AccessToken accessToken = await FacebookAuth.instance.login();
@@ -237,7 +225,7 @@ class _LoginScreenState extends State<LoginScreen> {
     UserCredential _userCredential;
     try {
       final AccessToken accessToken = await FacebookAuth.instance.login();
-      
+
       final OAuthCredential credential =
           FacebookAuthProvider.credential(accessToken.token);
       _userCredential = await _auth.signInWithCredential(credential);
@@ -268,18 +256,6 @@ class _LoginScreenState extends State<LoginScreen> {
     }
     return false;
   }
-
-  @override
-  void initState() {
-    super.initState();
-    _emailController.addListener(() {
-      this._email = _emailController.text;
-    });
-    _passwordController.addListener(() {
-      this._password = _passwordController.text;
-    });
-  }
-
 
   @override
   Widget build(BuildContext context) {
@@ -336,15 +312,12 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         RoundedButton(
                           label: "LOG IN",
-
                           onPressed: () {
                             _logInUserWithEmail(
                                 type: LoginType.email,
                                 email: _emailController.text,
                                 password: _passwordController.text,
                                 context: context);
-
-                          }
                           },
                         ),
                       ],

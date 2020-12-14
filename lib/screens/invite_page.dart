@@ -1,8 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:lokalapp/screens/community.dart';
+
+import 'package:lokalapp/services/database.dart';
+import 'package:lokalapp/states/currentUser.dart';
+
 import 'package:lokalapp/utils/themes.dart';
 import 'package:lokalapp/widgets/rounded_button.dart';
+import 'package:provider/provider.dart';
 
 class InvitePage extends StatefulWidget {
   static const String id = 'invite_page';
@@ -11,6 +16,20 @@ class InvitePage extends StatefulWidget {
 }
 
 class _InvitePageState extends State<InvitePage> {
+
+  TextEditingController _codeController = TextEditingController();
+
+  void joinCommunity(BuildContext context, String code) async {
+    CurrentUser _user = Provider.of<CurrentUser>(context, listen: false);
+    String _returnString =
+        await Database().joinCommunity(code, _user.getCurrentUser.uid);
+    if (_returnString == "success") {
+      Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => Community()),
+          (route) => false);
+    }
+
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   String _inviteCode;
   TextEditingController _inviteCodeController = TextEditingController();
@@ -21,6 +40,7 @@ class _InvitePageState extends State<InvitePage> {
     _inviteCodeController.addListener(() {
       this._inviteCode = _inviteCodeController.text;
     });
+
   }
 
   InputDecoration _kInputDecoration = const InputDecoration(
@@ -86,7 +106,10 @@ class _InvitePageState extends State<InvitePage> {
                 height: 35.0,
               ),
               TextField(
-                controller: _inviteCodeController,
+
+                onTap: () {},
+                controller: _codeController,
+
                 style: TextStyle(
                   fontFamily: "Goldplay",
                   fontWeight: FontWeight.bold,
@@ -101,22 +124,9 @@ class _InvitePageState extends State<InvitePage> {
               ),
               RoundedButton(
                 label: "Join",
-                onPressed: () async {
-                  final DocumentSnapshot snapshot = await _firestore
-                      .collection('invites')
-                      .doc(_inviteCode)
-                      .get();
-                  if (snapshot.exists) {
-                    debugPrint('SnapshotID is ${snapshot.id}');
-                    debugPrint('InviteCode is $_inviteCode');
-                    Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(builder: (context) => Community()),
-                      (route) => false,
-                    );
-                  }
-                  debugPrint('Community Key not found');
-                },
+
+                onPressed: () => joinCommunity(context, _codeController.text),
+
               ),
               SizedBox(
                 height: 20.0,

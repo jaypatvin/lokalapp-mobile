@@ -12,6 +12,8 @@ import 'package:lokalapp/services/database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:geolocator/geolocator.dart';
 
+import 'home.dart';
+
 class ProfileRegistration extends StatefulWidget {
   @override
   _ProfileRegistrationState createState() => _ProfileRegistrationState();
@@ -273,6 +275,8 @@ class _ProfileRegistrationState extends State<ProfileRegistration> {
     return RoundedButton(
       onPressed: () {
         handleSubmit();
+        Navigator.pushAndRemoveUntil(context,
+            MaterialPageRoute(builder: (context) => Home()), (route) => false);
       },
       label: "CREATE PROFILE",
       fontSize: 20.0,
