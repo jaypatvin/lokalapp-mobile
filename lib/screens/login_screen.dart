@@ -13,8 +13,7 @@ import 'package:lokalapp/widgets/social_button.dart';
 
 import 'home.dart';
 
-enum LoginType { email, google }
-// Users currentUser;
+enum LoginType { email, google, facebook }
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -25,25 +24,6 @@ class _LoginScreenState extends State<LoginScreen> {
   Color _kMainColor = const Color(0xFFFFC700);
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
-  bool isAuth = false;
-
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-
-  String _email;
-  String _password;
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    _emailController.addListener(() {
-      this._email = _emailController.text;
-    });
-    _passwordController.addListener(() {
-      this._password = _passwordController.text;
-    });
-  }
 
   void _logInUserWithEmail(
       {@required LoginType type,
@@ -60,10 +40,16 @@ class _LoginScreenState extends State<LoginScreen> {
         case LoginType.google:
           _returnString = await _users.loginUserWithGoogle();
           break;
+        case LoginType.facebook:
+          _returnString = await _users.loginUserWithFacebook();
+          break;
         default:
       }
 
       if (_returnString == "success") {
+        Navigator.pushAndRemoveUntil(context,
+            MaterialPageRoute(builder: (context) => Home()), (route) => false);
+      } else if (_returnString == "not_registered") {
         Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(builder: (context) => InvitePage()),
@@ -137,25 +123,8 @@ class _LoginScreenState extends State<LoginScreen> {
       children: [
         SocialButton(
           label: "Sign in with Facebook",
-          onPressed: () async {
-            // try {
-            //   final UserCredential user = await signInWithFacebook();
-            //   if (user != null) {
-            //     debugPrint('${user.user.displayName} is logged in.');
-            //   }
-            // } catch (e) {
-            //   debugPrint(e.toString());
-            // }
-
-            try {
-              final UserCredential user = await signInWithFacebook();
-              if (user != null) {
-                goToNextScreen(user);
-              }
-            } catch (e) {
-              debugPrint(e.toString());
-            }
-          },
+          onPressed: () =>
+              _logInUserWithEmail(type: LoginType.facebook, context: context),
           minWidth: MediaQuery.of(context).size.width,
         ),
         SocialButton(
@@ -167,94 +136,6 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ],
     );
-  }
-
-  void goToNextScreen(UserCredential user) async {
-    final bool isRegistered = await isUserRegistered(user);
-    if (isRegistered) {
-      debugPrint('User is registered, going to home feed.');
-      //TODO: add go to home
-    } else {
-      debugPrint('User is not registered, going to community invite screen.');
-      Navigator.of(context)
-          .push(MaterialPageRoute(builder: (context) => InvitePage()));
-    }
-  }
-
-  Future<UserCredential> signInWithGoogle() async {
-    UserCredential _userCredential;
-    try {
-      final GoogleSignInAccount googleUser = await GoogleSignIn().signIn();
-      final GoogleSignInAuthentication googleAuth =
-          await googleUser.authentication;
-
-      final GoogleAuthCredential credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth.accessToken,
-        idToken: googleAuth.idToken,
-      );
-      _userCredential = await _auth.signInWithCredential(credential);
-    } catch (e) {
-      debugPrint(e);
-    }
-    return _userCredential;
-  }
-
-  // Future<UserCredential> signInWithFacebook() async {
-  //   try {
-  //     final AccessToken accessToken = await FacebookAuth.instance.login();
-  //     final OAuthCredential credential =
-  //         FacebookAuthProvider.credential(accessToken.token);
-  //     return await _auth.signInWithCredential(credential);
-  //   } on FacebookAuthException catch (e) {
-  //     debugPrint(e.message);
-  //     switch (e.errorCode) {
-  //       case FacebookAuthErrorCode.OPERATION_IN_PROGRESS:
-  //         print("You have a previous login operation in progress");
-  //         break;
-  //       case FacebookAuthErrorCode.CANCELLED:
-  //         print("login cancelled");
-  //         break;
-  //       case FacebookAuthErrorCode.FAILED:
-  //         print("login failed");
-  //         break;
-  //     }
-  //   }
-  // }
-
-  Future<UserCredential> signInWithFacebook() async {
-    UserCredential _userCredential;
-    try {
-      final AccessToken accessToken = await FacebookAuth.instance.login();
-
-      final OAuthCredential credential =
-          FacebookAuthProvider.credential(accessToken.token);
-      _userCredential = await _auth.signInWithCredential(credential);
-    } on FacebookAuthException catch (e) {
-      debugPrint(e.message);
-      switch (e.errorCode) {
-        case FacebookAuthErrorCode.OPERATION_IN_PROGRESS:
-          debugPrint("You have a previous login operation in progress");
-          break;
-        case FacebookAuthErrorCode.CANCELLED:
-          debugPrint("login cancelled");
-          break;
-        case FacebookAuthErrorCode.FAILED:
-          debugPrint("login failed");
-          break;
-      }
-    }
-    return _userCredential;
-  }
-
-  Future<bool> isUserRegistered(UserCredential user) async {
-    final DocumentSnapshot snapshot =
-        await _firestore.collection('users').doc(user.user.uid).get();
-    if (snapshot.exists) {
-      debugPrint('SnapshotID is ${snapshot.id}');
-      debugPrint('UserID is ${user.user.uid}');
-      return true;
-    }
-    return false;
   }
 
   @override

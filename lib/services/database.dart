@@ -72,4 +72,14 @@ class Database {
     }
     return retVal;
   }
+
+  Future<bool> userExists(String uid) async {
+    final DocumentSnapshot snapshot = await usersRef.doc(uid).get();
+    return snapshot.exists;
+  }
+
+  Future<bool> inviteCodeExists(String uid) async {
+    final DocumentSnapshot snapshot = await inviteRef.doc(uid).get();
+    return snapshot.exists;
+  }
 }
