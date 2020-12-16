@@ -4,6 +4,7 @@ import 'package:lokalapp/models/user.dart';
 import 'package:flutter/services.dart';
 import 'package:lokalapp/services/database.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 
 final GoogleSignIn googleSignIn = GoogleSignIn();
 
@@ -90,29 +91,59 @@ class CurrentUser extends ChangeNotifier {
         'https://www.googleapis.com/auth/contacts.readonly',
       ],
     );
-    Users _users = Users();
+    //Users _users = Users();
     try {
       GoogleSignInAccount _googleUser = await _googleSignIn.signIn();
       GoogleSignInAuthentication _googleAuth = await _googleUser.authentication;
       final AuthCredential credential = GoogleAuthProvider.credential(
           idToken: _googleAuth.idToken, accessToken: _googleAuth.accessToken);
       UserCredential _authResult = await _auth.signInWithCredential(credential);
-      if (_authResult.additionalUserInfo.isNewUser) {
-        _users.uid = _authResult.user.uid;
-        _users.email = _authResult.user.email;
-        Database().createUser(_users);
-      }
-      _currentUser = await Database().getUserInfo(_authResult.user.uid);
+      // if (_authResult.additionalUserInfo.isNewUser) {
+      //   _users.uid = _authResult.user.uid;
+      //   _users.email = _authResult.user.email;
+      //   Database().createUser(_users);
+      // }
+      //_currentUser = await Database().getUserInfo(_authResult.user.uid);
+      bool userExists = await Database().userExists(_authResult.user.uid);
 
-      if (_currentUser != null) {
+      if (userExists) {
         retVal = "success";
+      } else {
+        retVal = "not_registered";
       }
+      // if (_currentUser != null) {
+      //   retVal = "success";
+      // }
     } on PlatformException catch (e) {
       retVal = e.message;
       print(e.message);
     } catch (e) {
-      // retVal = e.message;
       print(e);
+    }
+    return retVal;
+  }
+
+  Future<String> loginUserWithFacebook() async {
+    String retVal = "error";
+    UserCredential _authResult;
+    try {
+      final AccessToken accessToken = await FacebookAuth.instance.login();
+
+      final OAuthCredential credential =
+          FacebookAuthProvider.credential(accessToken.token);
+      _authResult = await _auth.signInWithCredential(credential);
+
+      bool userExists = await Database().userExists(_authResult.user.uid);
+
+      if (userExists) {
+        retVal = "success";
+      } else {
+        retVal = "not_registered";
+      }
+    } on FacebookAuthException catch (e) {
+      retVal = e.message;
+    } catch (e) {
+      debugPrint(e);
     }
     return retVal;
   }

@@ -16,31 +16,18 @@ class InvitePage extends StatefulWidget {
 }
 
 class _InvitePageState extends State<InvitePage> {
-
   TextEditingController _codeController = TextEditingController();
 
-  void joinCommunity(BuildContext context, String code) async {
-    CurrentUser _user = Provider.of<CurrentUser>(context, listen: false);
-    String _returnString =
-        await Database().joinCommunity(code, _user.getCurrentUser.uid);
-    if (_returnString == "success") {
+  void validateInviteCode(BuildContext context, String code) async {
+    bool inviteCodeExists = await Database().inviteCodeExists(code);
+    if (inviteCodeExists) {
       Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(builder: (context) => Community()),
           (route) => false);
+    } else {
+      //TODO: add toast "community invite code is invalid"
     }
-
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  String _inviteCode;
-  TextEditingController _inviteCodeController = TextEditingController();
-
-  @override
-  void initState() {
-    super.initState();
-    _inviteCodeController.addListener(() {
-      this._inviteCode = _inviteCodeController.text;
-    });
-
   }
 
   InputDecoration _kInputDecoration = const InputDecoration(
@@ -106,10 +93,8 @@ class _InvitePageState extends State<InvitePage> {
                 height: 35.0,
               ),
               TextField(
-
                 onTap: () {},
                 controller: _codeController,
-
                 style: TextStyle(
                   fontFamily: "Goldplay",
                   fontWeight: FontWeight.bold,
@@ -124,9 +109,8 @@ class _InvitePageState extends State<InvitePage> {
               ),
               RoundedButton(
                 label: "Join",
-
-                onPressed: () => joinCommunity(context, _codeController.text),
-
+                onPressed: () =>
+                    validateInviteCode(context, _codeController.text),
               ),
               SizedBox(
                 height: 20.0,
