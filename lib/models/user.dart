@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 
 class Users extends ChangeNotifier {
-  String uid;
+  List<String> userUids;
   String firstName;
   String lastName;
   String profilePhoto;
@@ -16,7 +16,7 @@ class Users extends ChangeNotifier {
   Map<String, dynamic> registration;
 
   Users(
-      {this.uid,
+      {this.userUids,
       this.firstName,
       this.lastName,
       this.email,
@@ -30,7 +30,7 @@ class Users extends ChangeNotifier {
 
   factory Users.fromDocument(DocumentSnapshot doc) {
     return Users(
-        uid: doc["uid"],
+        userUids: List<String>.from(doc.data()["user_uids"]),
         firstName: doc["first_name"],
         lastName: doc["last_name"],
         email: doc["email"],

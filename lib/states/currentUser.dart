@@ -17,7 +17,7 @@ class CurrentUser extends ChangeNotifier {
   Future<String> onStartUp() async {
     String retVal = "error";
     try {
-      User _firebaseUser = await _auth.currentUser;
+      User _firebaseUser = _auth.currentUser;
       _currentUser = await Database().getUserInfo(_firebaseUser.uid);
       if (_currentUser != null) {
         print(_currentUser);
@@ -44,13 +44,13 @@ class CurrentUser extends ChangeNotifier {
 
   Future<String> signUpUser(String email, String password) async {
     String retVal = "error";
-    Users _user = Users();
+    Users _user = Users(userUids: <String>[]);
     try {
       UserCredential _authResult = await _auth.createUserWithEmailAndPassword(
           email: email, password: password);
-      _user.uid = _authResult.user.uid;
+      _user.userUids.add(_authResult.user.uid);
       _user.email = _authResult.user.email;
-      // _user.firstName = firstName,
+      //_user.firstName = firstName,
       // _user.lastName = lastName,
       String _returnString = await Database().createUser(_user);
       // print(_user.uid);
@@ -60,6 +60,8 @@ class CurrentUser extends ChangeNotifier {
       }
     } on PlatformException catch (e) {
       retVal = e.message;
+    } on NoSuchMethodError catch (e) {
+      debugPrint(e.stackTrace.toString());
     } catch (e) {
       retVal = e.message;
     }
@@ -75,7 +77,6 @@ class CurrentUser extends ChangeNotifier {
       _currentUser = await Database().getUserInfo(_authResult.user.uid);
       if (_currentUser != null) {
         retVal = "success";
-        print(_currentUser.email);
       }
     } catch (e) {
       retVal = e.message;
@@ -98,22 +99,14 @@ class CurrentUser extends ChangeNotifier {
       final AuthCredential credential = GoogleAuthProvider.credential(
           idToken: _googleAuth.idToken, accessToken: _googleAuth.accessToken);
       UserCredential _authResult = await _auth.signInWithCredential(credential);
-      // if (_authResult.additionalUserInfo.isNewUser) {
-      //   _users.uid = _authResult.user.uid;
-      //   _users.email = _authResult.user.email;
-      //   Database().createUser(_users);
-      // }
-      //_currentUser = await Database().getUserInfo(_authResult.user.uid);
-      bool userExists = await Database().userExists(_authResult.user.uid);
 
-      if (userExists) {
+      _currentUser = await Database().getUserInfo(_authResult.user.uid);
+
+      if (_currentUser != null) {
         retVal = "success";
       } else {
         retVal = "not_registered";
       }
-      // if (_currentUser != null) {
-      //   retVal = "success";
-      // }
     } on PlatformException catch (e) {
       retVal = e.message;
       print(e.message);
@@ -133,9 +126,9 @@ class CurrentUser extends ChangeNotifier {
           FacebookAuthProvider.credential(accessToken.token);
       _authResult = await _auth.signInWithCredential(credential);
 
-      bool userExists = await Database().userExists(_authResult.user.uid);
+      _currentUser = await Database().getUserInfo(_authResult.user.uid);
 
-      if (userExists) {
+      if (_currentUser != null) {
         retVal = "success";
       } else {
         retVal = "not_registered";
@@ -144,6 +137,30 @@ class CurrentUser extends ChangeNotifier {
       retVal = e.message;
     } catch (e) {
       debugPrint(e);
+    }
+    return retVal;
+  }
+
+  Future<String> linkWithFacebook() async {
+    String retVal = "error";
+    UserCredential _authResult;
+    try {
+      final AccessToken accessToken = await FacebookAuth.instance.login();
+
+      final OAuthCredential credential =
+          FacebookAuthProvider.credential(accessToken.token);
+      _authResult = await _auth.signInWithCredential(credential);
+      String firstUid = _currentUser.userUids.first;
+      String docIdForFb =
+          await Database().getCurrentUserDocId(_authResult.user.uid);
+
+      if (docIdForFb.isEmpty) {
+        _currentUser.userUids.add(_authResult.user.uid);
+        String docId = await Database().getCurrentUserDocId(firstUid);
+        retVal = await Database().updateUser(docId, _currentUser);
+      }
+    } catch (e) {
+      retVal = e.toString();
     }
     return retVal;
   }
