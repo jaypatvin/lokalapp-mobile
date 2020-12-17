@@ -1,51 +1,34 @@
-import 'dart:convert';
-import 'package:flutter/services.dart';
-import 'package:lokalapp/utils/constants.dart';
-import 'package:start_jwt/json_web_token.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:lokalapp/models/user.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:http/http.dart' as http;
 
 Users users = Users();
 final usersRef = FirebaseFirestore.instance.collection("users");
 final inviteRef = FirebaseFirestore.instance.collection("invites");
 final Reference storageRef = FirebaseStorage.instance.ref();
 
-String _baseUrl = "https://us-east-api.stream-io-api.com/api/v1.0/";
-
 class Database {
-  Future<Map> login(String user) async {
-    // const client = stream.connect(APIKEY, SECRETKEY, 105879);
-    var authResponse = await http.post('$_baseUrl', body: {'sender': user});
-    var authToken = json.decode(authResponse.body)['authToken'];
-    var feedResponse = await http.post('$_baseUrl/v1/stream-feed-credentials',
-        headers: {'Authorization': 'Bearer $authToken'});
-    var feedToken = json.decode(feedResponse.body)['token'];
-
-    return {'authToken': authToken, 'feedToken': feedToken};
-  }
-
   Future<String> createUser(Users users) async {
     String retVal = "error";
-
+    debugPrint("Creating user");
     try {
-      await usersRef.doc(users.userUids).set({
-        "user_uids": {users.userUids},
+      await usersRef.doc().set({
+        "user_uids": users.userUids,
         // "display_name": users.displayName,
         "email": users.email,
         "first_name": users.firstName,
         "last_name": users.lastName,
         // "gender": users.gender,
-        // "community_id": users.communityId,
         "community_id": users.communityId,
         "address": users.address,
         // "birthdate": users.birthDate,
         // "registration": users.registration
         "profile_photo": users.profilePhoto,
       });
+
       // currentUser = Users.fromDocument(doc);
       retVal = "success";
     } catch (e) {
@@ -72,34 +55,80 @@ class Database {
   }
 
   Future<Users> getUserInfo(String uid) async {
-    Users retVal = Users();
+    // to return null when user does not exist
+    Users retVal;
     try {
-      DocumentSnapshot _docSnapshot = await usersRef.doc(uid).get();
-      retVal.userUids = uid;
-      // retVal.displayName = _docSnapshot.data()["display_name"];
-      retVal.email = _docSnapshot.data()["email"];
-      retVal.firstName = _docSnapshot.data()["first_name"];
-      retVal.lastName = _docSnapshot.data()["last_name"];
-      // retVal.registration = _docSnapshot.data()["registration"];
-      // retVal.communityId = _docSnapshot.data()["community_id"];
-      retVal.communityId = _docSnapshot.data()["community_id"];
-      // retVal.gender = _docSnapshot.data()["gender"];
-      retVal.address = _docSnapshot.data()["address"];
-      // retVal.birthDate = _docSnapshot.data()["birthdate"];
-      retVal.profilePhoto = _docSnapshot.data()["profile_photo"];
+      final String documentId = await getCurrentUserDocId(uid);
+      DocumentSnapshot _docSnapshot = await usersRef.doc(documentId).get();
+
+      // if snapshot exists, the docID is in the collection
+      if (_docSnapshot.exists) {
+        // initialize retVal if snapshot exists
+        retVal = Users();
+
+        retVal.userUids = List<String>.from(_docSnapshot.data()["user_uids"]);
+        // retVal.displayName = _docSnapshot.data()["display_name"];
+        retVal.email = _docSnapshot.data()["email"];
+        retVal.firstName = _docSnapshot.data()["first_name"];
+        retVal.lastName = _docSnapshot.data()["last_name"];
+        // retVal.registration = _docSnapshot.data()["registration"];
+        retVal.communityId = _docSnapshot.data()["community_id"];
+        // retVal.gender = _docSnapshot.data()["gender"];
+        retVal.address = _docSnapshot.data()["address"];
+        // retVal.birthDate = _docSnapshot.data()["birthdate"];
+        retVal.profilePhoto = _docSnapshot.data()["profile_photo"];
+      }
     } catch (e) {
       print(e);
     }
     return retVal;
   }
 
-  Future<bool> userExists(String uid) async {
-    final DocumentSnapshot snapshot = await usersRef.doc(uid).get();
-    return snapshot.exists;
+  Future<bool> inviteCodeExists(String code) async {
+    final QuerySnapshot snapshot =
+        await inviteRef.where("code", isEqualTo: code).get();
+    return snapshot.docs.isNotEmpty;
   }
 
-  Future<bool> inviteCodeExists(String uid) async {
-    final DocumentSnapshot snapshot = await inviteRef.doc(uid).get();
-    return snapshot.exists;
+  Future<String> getCurrentUserDocId(String userUid) async {
+    String retVal = "";
+    final QuerySnapshot snapshot =
+        await usersRef.where("user_uids", arrayContains: userUid).get();
+
+    var uids = <String>[];
+
+    snapshot.docs.forEach((doc) {
+      uids.add(doc.id);
+    });
+
+    if (uids.length > 1) {
+      // this should not happen
+      throw Exception("Multiple users with the same UID have been found.");
+    } else if (uids.length < 0) {
+      retVal = "";
+    } else {
+      retVal = uids.first;
+    }
+
+    return retVal;
+  }
+
+  Future<String> updateUser(String docId, Users user) async {
+    String retVal = "error";
+    try {
+      await usersRef.doc(docId).update({
+        "user_uids": user.userUids,
+        "first_name": user.firstName,
+        "last_name": user.lastName,
+        "address": user.address,
+        "community_id": user.communityId,
+        "email": user.email,
+        //"profile_photo" : "",
+      });
+      retVal = "Success";
+    } catch (e) {
+      retVal = e.toString();
+    }
+    return retVal;
   }
 }

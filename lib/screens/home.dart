@@ -1,90 +1,57 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:lokalapp/models/user.dart';
 import 'package:lokalapp/states/currentUser.dart';
-import 'package:lokalapp/utils/themes.dart';
 import 'package:provider/provider.dart';
-// import 'package:stream_chat_flutter/stream_chat_flutter.dart';
+import 'package:lokalapp/root/root.dart';
 
-class Home extends StatefulWidget {
-  @override
-  _HomeState createState() => _HomeState();
-}
-
-class _HomeState extends State<Home> {
-  TextEditingController _controller = TextEditingController();
-
-  Padding buildTextField() {
-    return Padding(
-      padding: const EdgeInsets.only(left: 20, top: 20, right: 20, bottom: 0),
-      child: Container(
-        child: Theme(
-          data: ThemeData(primaryColor: Color(0xFFE0E0E0)),
-          child: TextField(
-            controller: _controller,
-            decoration: InputDecoration(
-              isDense: true, // Added this
-              filled: true,
-              enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Color(0xFFE0E0E0)),
-                borderRadius: const BorderRadius.all(
-                  const Radius.circular(12.0),
-                ),
-              ),
-              fillColor: Colors.white,
-              suffixIcon: Icon(
-                Icons.assignment_turned_in,
-                color: Color(0xffE0E0E0),
-              ),
-              hintText: 'What\'s on your mind?',
-              hintStyle: TextStyle(color: Color(0xFFE0E0E0)),
-            ),
-          ),
-        ),
+class Home extends StatelessWidget {
+  void _showToast(BuildContext context, String text) {
+    final scaffold = Scaffold.of(context);
+    scaffold.showSnackBar(
+      SnackBar(
+        content: Text(text),
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    CurrentUser _user = Provider.of<CurrentUser>(context);
-
     return Scaffold(
-        backgroundColor: Color(0xffF1FAFF),
-        appBar: PreferredSize(
-          preferredSize: Size(double.infinity, 100),
-          child: Container(
-            decoration: BoxDecoration(
-              boxShadow: [
-                BoxShadow(color: Colors.black12, spreadRadius: 5, blurRadius: 2)
-              ],
+      backgroundColor: Colors.teal,
+      body: Align(
+        alignment: Alignment.center,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            RaisedButton(
+              onPressed: () async {
+                CurrentUser _user =
+                    Provider.of<CurrentUser>(context, listen: false);
+                String _returnString = await _user.onSignOut();
+                if (_returnString == "success") {
+                  Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(builder: (context) => Root()),
+                      (route) => false);
+                }
+              },
+              child: Text("Log out"),
             ),
-            width: MediaQuery.of(context).size.width,
-            height: 100,
-            child: Container(
-              decoration: BoxDecoration(color: kTealColor),
-              child: Container(
-                margin: const EdgeInsets.fromLTRB(0, 20, 0, 0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(top: 30),
-                      child: Text(
-                        "White Plains",
-                        style: TextStyle(
-                            fontFamily: "Goldplay",
-                            fontSize: 22,
-                            fontWeight: FontWeight.w600,
-                            color: Color(0XFFFFC700)),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+            RaisedButton(
+              onPressed: () async {
+                CurrentUser _user =
+                    Provider.of<CurrentUser>(context, listen: false);
+                String _returnString = await _user.linkWithFacebook();
+                if (_returnString == "success") {
+                  _showToast(context, "Linked with Facebook");
+                }
+              },
+              child: Text("Link with Facebook"),
             ),
-          ),
+          ],
         ),
-        body: buildTextField());
+      ),
+    );
   }
 }
