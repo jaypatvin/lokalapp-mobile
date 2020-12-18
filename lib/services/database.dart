@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:lokalapp/models/user.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
@@ -12,10 +13,10 @@ final Reference storageRef = FirebaseStorage.instance.ref();
 class Database {
   Future<String> createUser(Users users) async {
     String retVal = "error";
-
+    debugPrint("Creating user");
     try {
-      await usersRef.doc(users.uid).set({
-        "uid": users.uid,
+      await usersRef.doc().set({
+        "user_uids": users.userUids,
         // "display_name": users.displayName,
         "email": users.email,
         "first_name": users.firstName,
@@ -27,6 +28,7 @@ class Database {
         // "registration": users.registration
         "profile_photo": users.profilePhoto,
       });
+
       // currentUser = Users.fromDocument(doc);
       retVal = "success";
     } catch (e) {
@@ -53,33 +55,80 @@ class Database {
   }
 
   Future<Users> getUserInfo(String uid) async {
-    Users retVal = Users();
+    // to return null when user does not exist
+    Users retVal;
     try {
-      DocumentSnapshot _docSnapshot = await usersRef.doc(uid).get();
-      retVal.uid = uid;
-      // retVal.displayName = _docSnapshot.data()["display_name"];
-      retVal.email = _docSnapshot.data()["email"];
-      retVal.firstName = _docSnapshot.data()["first_name"];
-      retVal.lastName = _docSnapshot.data()["last_name"];
-      // retVal.registration = _docSnapshot.data()["registration"];
-      retVal.communityId = _docSnapshot.data()["community_id"];
-      // retVal.gender = _docSnapshot.data()["gender"];
-      retVal.address = _docSnapshot.data()["address"];
-      // retVal.birthDate = _docSnapshot.data()["birthdate"];
-      retVal.profilePhoto = _docSnapshot.data()["profile_photo"];
+      final String documentId = await getCurrentUserDocId(uid);
+      DocumentSnapshot _docSnapshot = await usersRef.doc(documentId).get();
+
+      // if snapshot exists, the docID is in the collection
+      if (_docSnapshot.exists) {
+        // initialize retVal if snapshot exists
+        retVal = Users();
+
+        retVal.userUids = List<String>.from(_docSnapshot.data()["user_uids"]);
+        // retVal.displayName = _docSnapshot.data()["display_name"];
+        retVal.email = _docSnapshot.data()["email"];
+        retVal.firstName = _docSnapshot.data()["first_name"];
+        retVal.lastName = _docSnapshot.data()["last_name"];
+        // retVal.registration = _docSnapshot.data()["registration"];
+        retVal.communityId = _docSnapshot.data()["community_id"];
+        // retVal.gender = _docSnapshot.data()["gender"];
+        retVal.address = _docSnapshot.data()["address"];
+        // retVal.birthDate = _docSnapshot.data()["birthdate"];
+        retVal.profilePhoto = _docSnapshot.data()["profile_photo"];
+      }
     } catch (e) {
       print(e);
     }
     return retVal;
   }
 
-  Future<bool> userExists(String uid) async {
-    final DocumentSnapshot snapshot = await usersRef.doc(uid).get();
-    return snapshot.exists;
+  Future<bool> inviteCodeExists(String code) async {
+    final QuerySnapshot snapshot =
+        await inviteRef.where("code", isEqualTo: code).get();
+    return snapshot.docs.isNotEmpty;
   }
 
-  Future<bool> inviteCodeExists(String uid) async {
-    final DocumentSnapshot snapshot = await inviteRef.doc(uid).get();
-    return snapshot.exists;
+  Future<String> getCurrentUserDocId(String userUid) async {
+    String retVal = "";
+    final QuerySnapshot snapshot =
+        await usersRef.where("user_uids", arrayContains: userUid).get();
+
+    var uids = <String>[];
+
+    snapshot.docs.forEach((doc) {
+      uids.add(doc.id);
+    });
+
+    if (uids.length > 1) {
+      // this should not happen
+      throw Exception("Multiple users with the same UID have been found.");
+    } else if (uids.length < 0) {
+      retVal = "";
+    } else {
+      retVal = uids.first;
+    }
+
+    return retVal;
+  }
+
+  Future<String> updateUser(String docId, Users user) async {
+    String retVal = "error";
+    try {
+      await usersRef.doc(docId).update({
+        "user_uids": user.userUids,
+        "first_name": user.firstName,
+        "last_name": user.lastName,
+        "address": user.address,
+        "community_id": user.communityId,
+        "email": user.email,
+        //"profile_photo" : "",
+      });
+      retVal = "Success";
+    } catch (e) {
+      retVal = e.toString();
+    }
+    return retVal;
   }
 }
