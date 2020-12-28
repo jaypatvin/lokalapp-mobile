@@ -17,6 +17,7 @@ class InvitePage extends StatefulWidget {
 
 class _InvitePageState extends State<InvitePage> {
   TextEditingController _codeController = TextEditingController();
+  bool _inputFieldValid = true;
 
   void validateInviteCode(BuildContext context, String code) async {
     bool inviteCodeExists = await Database().inviteCodeExists(code);
@@ -26,7 +27,9 @@ class _InvitePageState extends State<InvitePage> {
           MaterialPageRoute(builder: (context) => Community()),
           (route) => false);
     } else {
-      //TODO: add toast "community invite code is invalid"
+      setState(() {
+        _inputFieldValid = false;
+      });
     }
   }
 
@@ -93,13 +96,19 @@ class _InvitePageState extends State<InvitePage> {
                 height: 35.0,
               ),
               TextField(
-                onTap: () {},
                 controller: _codeController,
                 style: TextStyle(
                   fontFamily: "Goldplay",
                   fontWeight: FontWeight.bold,
                 ),
                 decoration: _kInputDecoration.copyWith(
+                  errorText: _inputFieldValid
+                      ? null
+                      : "The key code you entered does not exist.",
+                  errorStyle: TextStyle(
+                    fontFamily: "Goldplay",
+                    fontWeight: FontWeight.bold,
+                  ),
                   hintText: "Community Key",
                   fillColor: Colors.white,
                 ),

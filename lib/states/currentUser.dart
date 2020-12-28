@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:lokalapp/models/user.dart';
@@ -5,6 +7,9 @@ import 'package:flutter/services.dart';
 import 'package:lokalapp/services/database.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+
+// used for auth validation in screens
+enum authStatus { Success, UserNotFound, PasswordNotValid, Error }
 
 final GoogleSignIn googleSignIn = GoogleSignIn();
 
@@ -68,73 +73,59 @@ class CurrentUser extends ChangeNotifier {
     return retVal;
   }
 
-  Future<String> loginUserWithEmail(String email, String password) async {
-    String retVal = "error";
+  Future<authStatus> loginUserWithEmail(String email, String password) async {
+    authStatus retVal = authStatus.Error;
 
     try {
       UserCredential _authResult = await _auth.signInWithEmailAndPassword(
           email: email, password: password);
       _currentUser = await Database().getUserInfo(_authResult.user.uid);
       if (_currentUser != null) {
-        retVal = "success";
+        retVal = authStatus.Success;
       }
     } catch (e) {
-      retVal = e.message;
+      switch (e.code) {
+        case "invalid-email":
+          retVal = authStatus.UserNotFound;
+          break;
+        case "wrong-password":
+          retVal = authStatus.PasswordNotValid;
+          break;
+        default:
+          retVal = authStatus.Error;
+      }
     }
     return retVal;
   }
 
-  Future<String> loginUserWithGoogle() async {
-    String retVal = "error";
+  Future<authStatus> loginUserWithGoogle() async {
+    authStatus retVal = authStatus.Error;
     GoogleSignIn _googleSignIn = GoogleSignIn(
       scopes: [
         'email',
         'https://www.googleapis.com/auth/contacts.readonly',
       ],
     );
-    //Users _users = Users();
     try {
       GoogleSignInAccount _googleUser = await _googleSignIn.signIn();
       GoogleSignInAuthentication _googleAuth = await _googleUser.authentication;
       final AuthCredential credential = GoogleAuthProvider.credential(
           idToken: _googleAuth.idToken, accessToken: _googleAuth.accessToken);
-      UserCredential _authResult = await _auth.signInWithCredential(credential);
 
-      _currentUser = await Database().getUserInfo(_authResult.user.uid);
-
-      if (_currentUser != null) {
-        retVal = "success";
-      } else {
-        retVal = "not_registered";
-      }
-    } on PlatformException catch (e) {
-      retVal = e.message;
-      print(e.message);
+      retVal = await _signInWithCredential(credential);
     } catch (e) {
-      print(e);
+      debugPrint(e);
     }
     return retVal;
   }
 
-  Future<String> loginUserWithFacebook() async {
-    String retVal = "error";
-    UserCredential _authResult;
+  Future<authStatus> loginUserWithFacebook() async {
+    authStatus retVal = authStatus.Error;
     try {
       final AccessToken accessToken = await FacebookAuth.instance.login();
-
       final OAuthCredential credential =
           FacebookAuthProvider.credential(accessToken.token);
-      _authResult = await _auth.signInWithCredential(credential);
-
-      _currentUser = await Database().getUserInfo(_authResult.user.uid);
-
-      if (_currentUser != null) {
-        retVal = "success";
-      } else {
-        retVal = "not_registered";
-      }
-    } on FacebookAuthException catch (e) {
-      retVal = e.message;
+      retVal = await _signInWithCredential(credential);
     } catch (e) {
       debugPrint(e);
     }
@@ -161,6 +152,23 @@ class CurrentUser extends ChangeNotifier {
       }
     } catch (e) {
       retVal = e.toString();
+    }
+    return retVal;
+  }
+
+  Future<authStatus> _signInWithCredential(AuthCredential credential) async {
+    authStatus retVal = authStatus.Error;
+    try {
+      UserCredential _authResult = await _auth.signInWithCredential(credential);
+      _currentUser = await Database().getUserInfo(_authResult.user.uid);
+
+      if (_currentUser != null) {
+        retVal = authStatus.Success;
+      } else {
+        retVal = authStatus.UserNotFound;
+      }
+    } catch (e) {
+      debugPrint(e);
     }
     return retVal;
   }
