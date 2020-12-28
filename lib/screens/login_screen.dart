@@ -1,19 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:lokalapp/models/user.dart';
 import 'package:lokalapp/screens/invite_page.dart';
-import 'package:lokalapp/services/database.dart';
+import 'package:lokalapp/states/currentUser.dart';
+
 import 'package:lokalapp/widgets/rounded_button.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:lokalapp/utils/themes.dart';
 import 'package:lokalapp/widgets/social_button.dart';
-import 'package:lokalapp/states/currentUser.dart';
-import 'package:stream_chat/stream_chat.dart';
-import 'package:stream_chat_flutter/stream_chat_flutter.dart' as prefix;
+
 import 'home.dart';
 
 enum LoginType { email, google, facebook }
@@ -27,58 +24,38 @@ class _LoginScreenState extends State<LoginScreen> {
   Color _kMainColor = const Color(0xFFFFC700);
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
-  bool isAuth = false;
-  final _formKey = GlobalKey<FormState>();
-  FirebaseAuth _auth = FirebaseAuth.instance;
-  String _email;
-  String _password;
+  bool _inputFieldValid = true; // shows or hides the error code
+
   void _logInUserWithEmail(
       {@required LoginType type,
       String email,
       String password,
       BuildContext context}) async {
-    Map<dynamic, dynamic> _account;
     CurrentUser _users = Provider.of<CurrentUser>(context, listen: false);
     try {
-      String _returnString;
-      final userId = _users.getCurrentUser.userUids;
-      final userEmail = email;
-      final client = _users.getCurrentUser.client;
-
+      authStatus _authStatus;
       switch (type) {
         case LoginType.email:
-          _returnString = await _users.loginUserWithEmail(email, password);
+          _authStatus = await _users.loginUserWithEmail(email, password);
           break;
         case LoginType.google:
-          _returnString = await _users.loginUserWithGoogle();
+          _authStatus = await _users.loginUserWithGoogle();
           break;
         case LoginType.facebook:
-          _returnString = await _users.loginUserWithFacebook();
+          _authStatus = await _users.loginUserWithFacebook();
           break;
         default:
       }
-      // await client.setUserWithProvider(
-      //   prefix.User(
-      //     id: "userUid_$userEmail",
-      //     extraData: {"email": "$userEmail"},
-      //   ),
-      // );
-      if (_returnString == "success") {
-        var creds = await Database().login(_emailController.text);
-        setState(() {
-          _account = {
-            'user': _emailController.text,
-            'authToken': creds['authToken'],
-            'feedToken': creds['feedTokn'],
-          };
 
-          //   Navigator.of(context).push(MaterialPageRoute(
-          //       builder: (_) =>
-          //           prefix.StreamChat(client: client, child: Home())));
-        });
+      if (_authStatus == authStatus.Success) {
         Navigator.pushAndRemoveUntil(context,
             MaterialPageRoute(builder: (context) => Home()), (route) => false);
-      } else if (_returnString == "not_registered") {
+      } else if (_authStatus == authStatus.PasswordNotValid) {
+        setState(() {
+          // shows the error code from the TextField
+          _inputFieldValid = false;
+        });
+      } else if (_authStatus == authStatus.UserNotFound) {
         Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(builder: (context) => InvitePage()),
@@ -87,18 +64,6 @@ class _LoginScreenState extends State<LoginScreen> {
     } catch (e) {
       print(e);
     }
-  }
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    _emailController.addListener(() {
-      this._email = _emailController.text;
-    });
-    _passwordController.addListener(() {
-      this._password = _passwordController.text;
-    });
   }
 
   InputDecoration _kInputDecoration = const InputDecoration(
@@ -130,19 +95,16 @@ class _LoginScreenState extends State<LoginScreen> {
   );
 
   Widget buildEmail() {
-    return Form(
-      key: _formKey,
-      child: TextField(
-        controller: _emailController,
-        keyboardType: TextInputType.emailAddress,
-        style: TextStyle(
-          fontFamily: "Goldplay",
-          fontWeight: FontWeight.bold,
-        ),
-        decoration: _kInputDecoration.copyWith(
-          hintText: "Email",
-          fillColor: Color(0xFFF2F2F2),
-        ),
+    return TextField(
+      controller: _emailController,
+      keyboardType: TextInputType.emailAddress,
+      style: TextStyle(
+        fontFamily: "Goldplay",
+        fontWeight: FontWeight.bold,
+      ),
+      decoration: _kInputDecoration.copyWith(
+        hintText: "Email",
+        fillColor: Color(0xFFF2F2F2),
       ),
     );
   }
@@ -158,6 +120,13 @@ class _LoginScreenState extends State<LoginScreen> {
       decoration: _kInputDecoration.copyWith(
         hintText: "Password",
         fillColor: Color(0xFFF2F2F2),
+        errorText: _inputFieldValid
+            ? null
+            : "The email and password combination is incorrect.",
+        errorStyle: TextStyle(
+          fontFamily: "Goldplay",
+          fontWeight: FontWeight.bold,
+        ),
       ),
     );
   }
@@ -167,29 +136,10 @@ class _LoginScreenState extends State<LoginScreen> {
       children: [
         SocialButton(
           label: "Sign in with Facebook",
-          onPressed: () async {
-            // try {
-            //   final UserCredential user = await signInWithFacebook();
-            //   if (user != null) {
-            //     debugPrint('${user.user.displayName} is logged in.');
-            //   }
-            // } catch (e) {
-            //   debugPrint(e.toString());
-            // }
-          },
+          onPressed: () =>
+              _logInUserWithEmail(type: LoginType.facebook, context: context),
           minWidth: MediaQuery.of(context).size.width,
         ),
-        SocialButton(
-          label: "Sign in with Google",
-          onPressed: () {
-            _logInUserWithEmail(type: LoginType.google, context: context);
-          },
-          minWidth: MediaQuery.of(context).size.width,
-        ),
-        // onPressed: () =>
-        //     _logInUserWithEmail(type: LoginType.facebook, context: context),
-        // minWidth: MediaQuery.of(context).size.width,
-        // ),
         SocialButton(
           label: "Sign in with Google",
           onPressed: () {
@@ -201,44 +151,8 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Future<UserCredential> signInWithGoogle() async {
-    final GoogleSignInAccount googleUser = await GoogleSignIn().signIn();
-    final GoogleSignInAuthentication googleAuth =
-        await googleUser.authentication;
-
-    final GoogleAuthCredential credential = GoogleAuthProvider.credential(
-      accessToken: googleAuth.accessToken,
-      idToken: googleAuth.idToken,
-    );
-    return await _auth.signInWithCredential(credential);
-  }
-
-  // Future<UserCredential> signInWithFacebook() async {
-  //   try {
-  //     final AccessToken accessToken = await FacebookAuth.instance.login();
-  //     final OAuthCredential credential =
-  //         FacebookAuthProvider.credential(accessToken.token);
-  //     return await _auth.signInWithCredential(credential);
-  //   } on FacebookAuthException catch (e) {
-  //     debugPrint(e.message);
-  //     switch (e.errorCode) {
-  //       case FacebookAuthErrorCode.OPERATION_IN_PROGRESS:
-  //         print("You have a previous login operation in progress");
-  //         break;
-  //       case FacebookAuthErrorCode.CANCELLED:
-  //         print("login cancelled");
-  //         break;
-  //       case FacebookAuthErrorCode.FAILED:
-  //         print("login failed");
-  //         break;
-  //     }
-  //   }
-  // }
-
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<CurrentUser>(context);
-
     return Scaffold(
       resizeToAvoidBottomPadding: false,
       body: SafeArea(
@@ -292,7 +206,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         RoundedButton(
                           label: "LOG IN",
-                          onPressed: () async {
+                          onPressed: () {
                             _logInUserWithEmail(
                                 type: LoginType.email,
                                 email: _emailController.text,
