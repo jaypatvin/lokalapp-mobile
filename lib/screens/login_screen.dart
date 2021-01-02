@@ -24,6 +24,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Color _kMainColor = const Color(0xFFFFC700);
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
+  bool _inputFieldValid = true; // shows or hides the error code
 
   void _logInUserWithEmail(
       {@required LoginType type,
@@ -32,24 +33,29 @@ class _LoginScreenState extends State<LoginScreen> {
       BuildContext context}) async {
     CurrentUser _users = Provider.of<CurrentUser>(context, listen: false);
     try {
-      String _returnString;
+      authStatus _authStatus;
       switch (type) {
         case LoginType.email:
-          _returnString = await _users.loginUserWithEmail(email, password);
+          _authStatus = await _users.loginUserWithEmail(email, password);
           break;
         case LoginType.google:
-          _returnString = await _users.loginUserWithGoogle();
+          _authStatus = await _users.loginUserWithGoogle();
           break;
         case LoginType.facebook:
-          _returnString = await _users.loginUserWithFacebook();
+          _authStatus = await _users.loginUserWithFacebook();
           break;
         default:
       }
 
-      if (_returnString == "success") {
+      if (_authStatus == authStatus.Success) {
         Navigator.pushAndRemoveUntil(context,
             MaterialPageRoute(builder: (context) => Home()), (route) => false);
-      } else if (_returnString == "not_registered") {
+      } else if (_authStatus == authStatus.PasswordNotValid) {
+        setState(() {
+          // shows the error code from the TextField
+          _inputFieldValid = false;
+        });
+      } else if (_authStatus == authStatus.UserNotFound) {
         Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(builder: (context) => InvitePage()),
@@ -114,6 +120,13 @@ class _LoginScreenState extends State<LoginScreen> {
       decoration: _kInputDecoration.copyWith(
         hintText: "Password",
         fillColor: Color(0xFFF2F2F2),
+        errorText: _inputFieldValid
+            ? null
+            : "The email and password combination is incorrect.",
+        errorStyle: TextStyle(
+          fontFamily: "Goldplay",
+          fontWeight: FontWeight.bold,
+        ),
       ),
     );
   }
