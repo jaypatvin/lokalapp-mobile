@@ -55,7 +55,13 @@ android {
         }
     }
 }
-
+android {
+    buildTypes {
+        customDebugType {
+            debuggable true
+        }
+    }
+}
 flutter {
     source '../..'
 }

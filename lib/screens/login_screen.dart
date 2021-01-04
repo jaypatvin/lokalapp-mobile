@@ -1,16 +1,22 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:lokalapp/screens/invite_page.dart';
+import 'package:lokalapp/states/currentUser.dart';
+
 import 'package:lokalapp/widgets/rounded_button.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:lokalapp/utils/themes.dart';
 import 'package:lokalapp/widgets/social_button.dart';
-import 'package:lokalapp/state/currentUser.dart';
-
+import 'package:lokalapp/states/currentUser.dart';
 import 'home.dart';
 
-enum LoginType { email, google }
-// Users currentUser;
+
+
+enum LoginType { email, google, facebook }
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -27,19 +33,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
   String _email;
   String _password;
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    _emailController.addListener(() {
-      this._email = _emailController.text;
-    });
-    _passwordController.addListener(() {
-      this._password = _passwordController.text;
-    });
-  }
-
   void _logInUserWithEmail(
       {@required LoginType type,
       String email,
@@ -55,19 +48,38 @@ class _LoginScreenState extends State<LoginScreen> {
         case LoginType.google:
           _returnString = await _users.loginUserWithGoogle();
           break;
+        case LoginType.facebook:
+          _returnString = await _users.loginUserWithFacebook();
+          break;
         default:
       }
 
       if (_returnString == "success") {
-        // Navigator.of(context)
-        //     .push(MaterialPageRoute(builder: (context) => Home()));
         Navigator.pushAndRemoveUntil(context,
             MaterialPageRoute(builder: (context) => Home()), (route) => false);
+      } else if (_returnString == "not_registered") {
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => InvitePage()),
+            (route) => false);
       }
     } catch (e) {
       print(e);
     }
   }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _emailController.addListener(() {
+      this._email = _emailController.text;
+    });
+    _passwordController.addListener(() {
+      this._password = _passwordController.text;
+    });
+  }
+
 
   InputDecoration _kInputDecoration = const InputDecoration(
     filled: true,
@@ -100,7 +112,6 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget buildEmail() {
     return TextField(
       controller: _emailController,
-      onTap: () {},
       keyboardType: TextInputType.emailAddress,
       style: TextStyle(
         fontFamily: "Goldplay",
@@ -116,7 +127,6 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget buildPasswordTextField() {
     return TextField(
       controller: _passwordController,
-      onTap: () {},
       obscureText: true,
       style: TextStyle(
         fontFamily: "Goldplay",
@@ -146,6 +156,17 @@ class _LoginScreenState extends State<LoginScreen> {
           },
           minWidth: MediaQuery.of(context).size.width,
         ),
+        SocialButton(
+          label: "Sign in with Google",
+          onPressed: () {
+            _logInUserWithEmail(type: LoginType.google, context: context);
+          },
+          minWidth: MediaQuery.of(context).size.width,
+        ),
+          // onPressed: () =>
+          //     _logInUserWithEmail(type: LoginType.facebook, context: context),
+          // minWidth: MediaQuery.of(context).size.width,
+        // ),
         SocialButton(
           label: "Sign in with Google",
           onPressed: () {

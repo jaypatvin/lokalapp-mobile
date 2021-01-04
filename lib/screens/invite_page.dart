@@ -1,13 +1,35 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:lokalapp/screens/community.dart';
+
+import 'package:lokalapp/services/database.dart';
+import 'package:lokalapp/states/currentUser.dart';
+
 import 'package:lokalapp/utils/themes.dart';
 import 'package:lokalapp/widgets/rounded_button.dart';
+import 'package:provider/provider.dart';
 
 class InvitePage extends StatefulWidget {
+  static const String id = 'invite_page';
   @override
   _InvitePageState createState() => _InvitePageState();
 }
 
 class _InvitePageState extends State<InvitePage> {
+  TextEditingController _codeController = TextEditingController();
+
+  void validateInviteCode(BuildContext context, String code) async {
+    bool inviteCodeExists = await Database().inviteCodeExists(code);
+    if (inviteCodeExists) {
+      Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => Community()),
+          (route) => false);
+    } else {
+      //TODO: add toast "community invite code is invalid"
+    }
+  }
+
   InputDecoration _kInputDecoration = const InputDecoration(
     filled: true,
     isDense: true,
@@ -72,6 +94,7 @@ class _InvitePageState extends State<InvitePage> {
               ),
               TextField(
                 onTap: () {},
+                controller: _codeController,
                 style: TextStyle(
                   fontFamily: "Goldplay",
                   fontWeight: FontWeight.bold,
@@ -86,7 +109,24 @@ class _InvitePageState extends State<InvitePage> {
               ),
               RoundedButton(
                 label: "Join",
-                onPressed: () {},
+                onPressed: () =>
+                    validateInviteCode(context, _codeController.text),
+              ),
+              SizedBox(
+                height: 20.0,
+              ),
+              InkWell(
+                child: Text(
+                  "WHAT'S A COMMUNITY KEY?",
+                  style: TextStyle(
+                    fontSize: 16.0,
+                    fontFamily: "Goldplay",
+                    fontWeight: FontWeight.bold,
+                    decoration: TextDecoration.underline,
+                    color: kTealColor,
+                  ),
+                ),
+                onTap: () {},
               ),
             ],
           ),
