@@ -1,3 +1,5 @@
+import 'dart:convert';
+import 'package:start_jwt/json_web_token.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +12,17 @@ final inviteRef = FirebaseFirestore.instance.collection("invites");
 final Reference storageRef = FirebaseStorage.instance.ref();
 
 class Database {
+  Future<Map> login(String user) async {
+    var authResponse =
+        await http.post('$_baseUrl/v1/users', body: {'sender': user});
+    var authToken = json.decode(authResponse.body)['authToken'];
+    var feedResponse = await http.post('$_baseUrl/v1/stream-feed-credentials',
+        headers: {'Authorization': 'Bearer $authToken'});
+    var feedToken = json.decode(feedResponse.body)['token'];
+
+    return {'authToken': authToken, 'feedToken': feedToken};
+  }
+
   Future<String> createUser(Users users) async {
     String retVal = "error";
 

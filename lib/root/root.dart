@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lokalapp/screens/bottomNavigation.dart';
 import 'package:lokalapp/screens/home.dart';
 import 'package:lokalapp/screens/profile_registration.dart';
 import 'package:lokalapp/screens/welcome_screen.dart';
@@ -64,7 +65,7 @@ class _RootState extends State<Root> {
         retVal = WelcomeScreen();
         break;
       case AuthStatus.loggedIn:
-        retVal = Home();
+        retVal = BottomNavigation();
         break;
       case AuthStatus.notInCommunity:
         retVal = WelcomeScreen();
