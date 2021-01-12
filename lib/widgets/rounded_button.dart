@@ -19,24 +19,23 @@ class RoundedButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FlatButton(
-      onPressed: onPressed,
-      color: kTealColor,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(30.0),
-      ),
-      child: MaterialButton(
-        onPressed: this.onPressed,
-        minWidth: this.minWidth,
-        child: Text(
-          this.label,
-          style: TextStyle(
-            color: kNavyColor,
-            fontSize: fontSize,
-            fontFamily: fontFamily,
-            fontWeight: fontWeight,
-          ),
+        onPressed: onPressed,
+        color: kTealColor,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(30.0),
         ),
-      ),
-    );
+        child: MaterialButton(
+          onPressed: this.onPressed,
+          minWidth: this.minWidth,
+          child: Text(
+            this.label,
+            style: TextStyle(
+              color: kNavyColor,
+              fontSize: fontSize,
+              fontFamily: fontFamily,
+              fontWeight: fontWeight,
+            ),
+          ),
+        ));
   }
 }
