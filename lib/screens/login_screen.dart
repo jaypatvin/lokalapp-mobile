@@ -6,15 +6,14 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:lokalapp/models/user.dart';
 import 'package:lokalapp/screens/invite_page.dart';
 import 'package:lokalapp/services/database.dart';
-import 'package:lokalapp/states/currentUser.dart';
 import 'package:lokalapp/widgets/rounded_button.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:lokalapp/utils/themes.dart';
 import 'package:lokalapp/widgets/social_button.dart';
 import 'package:lokalapp/states/currentUser.dart';
-// import 'package:stream_chat/stream_chat.dart';
-// import 'package:stream_chat_flutter/stream_chat_flutter.dart' as prefix;
+import 'package:stream_chat/stream_chat.dart';
+import 'package:stream_chat_flutter/stream_chat_flutter.dart' as prefix;
 import 'home.dart';
 
 enum LoginType { email, google, facebook }
@@ -33,18 +32,18 @@ class _LoginScreenState extends State<LoginScreen> {
   FirebaseAuth _auth = FirebaseAuth.instance;
   String _email;
   String _password;
-
   void _logInUserWithEmail(
       {@required LoginType type,
       String email,
       String password,
       BuildContext context}) async {
+    Map<dynamic, dynamic> _account;
     CurrentUser _users = Provider.of<CurrentUser>(context, listen: false);
     try {
       String _returnString;
-      // final userId = _users.getCurrentUser.userUids;
-      var userEmail = email;
-      // final client = _users.getCurrentUser.client;
+      final userId = _users.getCurrentUser.userUids;
+      final userEmail = email;
+      final client = _users.getCurrentUser.client;
 
       switch (type) {
         case LoginType.email:
@@ -58,17 +57,28 @@ class _LoginScreenState extends State<LoginScreen> {
           break;
         default:
       }
-      // await client.setUserWithProvider(
-      //   prefix.User(
-      //     id: "userUid_$userEmail",
-      //     extraData: {"email": "$userEmail"},
-      //   ),
-      // );
+      await client.setUserWithProvider(
+        prefix.User(
+          id: "userUid_$userEmail",
+          extraData: {"email": "$userEmail"},
+        ),
+      );
       if (_returnString == "success") {
+        var creds = await Database().login(_emailController.text);
+        setState(() {
+          _account = {
+            'user': _emailController.text,
+            'authToken': creds['authToken'],
+            'feedToken': creds['feedToken'],
+          };
+
+          Navigator.of(context).push(MaterialPageRoute(
+              builder: (_) =>
+                  prefix.StreamChat(client: client, child: Home())));
+        });
         // Navigator.pushAndRemoveUntil(context,
         //     MaterialPageRoute(builder: (context) => Home()), (route) => false);
-        // Navigator.of(context).push(MaterialPageRoute(
-        // builder: (_) => prefix.StreamChat(client: client, child: Home())));
+
       } else if (_returnString == "not_registered") {
         Navigator.pushAndRemoveUntil(
             context,

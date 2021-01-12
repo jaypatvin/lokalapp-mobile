@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:lokalapp/utils/constants.dart';
 import 'package:start_jwt/json_web_token.dart';
-// import 'package:stream_chat/stream_chat.dart';
+import 'package:stream_chat/stream_chat.dart';
 
 class Users extends ChangeNotifier {
   String userUids;
@@ -45,12 +45,12 @@ class Users extends ChangeNotifier {
         profilePhoto: doc["profile_photo"],
         registration: doc["registration"]);
   }
-  // streamUsers() {
-  //   _client = Client(APIKEY, logLevel: Level.SEVERE, tokenProvider: provider);
-  // }
-  //
-  // Client _client;
-  // Client get client => _client;
+  streamUsers() {
+    _client = Client(APIKEY, logLevel: Level.SEVERE, tokenProvider: provider);
+  }
+
+  Client _client;
+  Client get client => _client;
 }
 
 Future<String> provider(String id) async {
