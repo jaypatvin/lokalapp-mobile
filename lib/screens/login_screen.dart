@@ -57,28 +57,27 @@ class _LoginScreenState extends State<LoginScreen> {
           break;
         default:
       }
-      await client.setUserWithProvider(
-        prefix.User(
-          id: "userUid_$userEmail",
-          extraData: {"email": "$userEmail"},
-        ),
-      );
+      // await client.setUserWithProvider(
+      //   prefix.User(
+      //     id: "userUid_$userEmail",
+      //     extraData: {"email": "$userEmail"},
+      //   ),
+      // );
       if (_returnString == "success") {
         var creds = await Database().login(_emailController.text);
         setState(() {
           _account = {
             'user': _emailController.text,
             'authToken': creds['authToken'],
-            'feedToken': creds['feedToken'],
+            'feedToken': creds['feedTokn'],
           };
 
-          Navigator.of(context).push(MaterialPageRoute(
-              builder: (_) =>
-                  prefix.StreamChat(client: client, child: Home())));
+          // Navigator.of(context).push(MaterialPageRoute(
+          //     builder: (_) =>
+          //         prefix.StreamChat(client: client, child: Home())));
         });
-        // Navigator.pushAndRemoveUntil(context,
-        //     MaterialPageRoute(builder: (context) => Home()), (route) => false);
-
+        Navigator.pushAndRemoveUntil(context,
+            MaterialPageRoute(builder: (context) => Home()), (route) => false);
       } else if (_returnString == "not_registered") {
         Navigator.pushAndRemoveUntil(
             context,

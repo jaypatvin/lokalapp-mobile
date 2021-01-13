@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:lokalapp/root/root.dart';
+import 'package:lokalapp/screens/bottomNavigation.dart';
 import 'package:lokalapp/screens/community.dart';
 import 'package:lokalapp/screens/home.dart';
 import 'package:lokalapp/screens/post.dart';
@@ -30,7 +31,7 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        home: Root(),
+        home: BottomNavigation(),
       ),
     );
   }

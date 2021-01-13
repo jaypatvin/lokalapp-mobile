@@ -38,22 +38,25 @@ class _BottomNavigationState extends State<BottomNavigation> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: pageIndex,
-        selectedItemColor: Colors.redAccent,
-        unselectedItemColor: Colors.black87,
-        onTap: _onTap,
-        items: [
-          BottomNavigationBarItem(
-              icon: Icon(Icons.home_rounded), label: "Home"),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.account_tree_rounded), label: "Discover"),
-          BottomNavigationBarItem(icon: Icon(Icons.chat), label: "Chat"),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.accessibility_rounded), label: "Activity"),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.account_circle), label: "Profile"),
-        ],
+      bottomNavigationBar: SizedBox(
+        height: 70,
+        child: BottomNavigationBar(
+          currentIndex: pageIndex,
+          selectedItemColor: Colors.redAccent,
+          unselectedItemColor: Colors.black87,
+          onTap: _onTap,
+          items: const <BottomNavigationBarItem>[
+            BottomNavigationBarItem(
+                icon: Icon(Icons.home_rounded), label: "Home"),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.account_tree_rounded), label: "Discover"),
+            BottomNavigationBarItem(icon: Icon(Icons.chat), label: "Chat"),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.accessibility_rounded), label: "Activity"),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.account_circle), label: "Profile"),
+          ],
+        ),
       ),
       body: PageView(
         children: [Home(), Discover(), Chat(), Activity(), Profile()],

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lokalapp/widgets/container.dart';
+import 'package:stream_chat_flutter/stream_chat_flutter.dart';
 
 class Post extends StatefulWidget {
   @override
@@ -14,17 +15,9 @@ class _PostState extends State<Post> {
         body: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            ReusableContainer(
-              child: Row(
-                children: [
-                  Padding(
-                    padding:
-                        EdgeInsets.symmetric(vertical: 20.0, horizontal: 8.0),
-                    child: Text("hello"),
-                  )
-                ],
-              ),
-            ),
+            SingleChildScrollView(
+              child: ListView(),
+            )
           ],
         ));
   }

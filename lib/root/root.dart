@@ -71,7 +71,7 @@ class _RootState extends State<Root> {
         retVal = WelcomeScreen();
         break;
       case AuthStatus.inCommunity:
-        retVal = Home();
+        retVal = BottomNavigation();
     }
     return retVal;
   }

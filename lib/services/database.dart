@@ -11,12 +11,14 @@ Users users = Users();
 final usersRef = FirebaseFirestore.instance.collection("users");
 final inviteRef = FirebaseFirestore.instance.collection("invites");
 final Reference storageRef = FirebaseStorage.instance.ref();
+
 Map<dynamic, dynamic> _baseUrl;
 
 class Database {
   Future<Map> login(String user) async {
-    var authResponse =
-        await http.post('$_baseUrl/v1/users', body: {'sender': user});
+    var authResponse = await http.post(
+        'https://dashboard.getstream.io/dashboard/v2/organization/61328',
+        body: {'sender': user});
     var authToken = json.decode(authResponse.body)['authToken'];
     var feedResponse = await http.post('$_baseUrl/v1/stream-feed-credentials',
         headers: {'Authorization': 'Bearer $authToken'});

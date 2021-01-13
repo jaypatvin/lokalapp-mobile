@@ -18,29 +18,25 @@ class _HomeState extends State<Home> {
       padding: const EdgeInsets.only(left: 20, top: 20, right: 20, bottom: 0),
       child: Container(
         child: Theme(
-          data: ThemeData(primaryColor: Color(0xffE0E0E0)),
+          data: ThemeData(primaryColor: Color(0xFFE0E0E0)),
           child: TextField(
             controller: _controller,
             decoration: InputDecoration(
               isDense: true, // Added this
-              // contentPadding: EdgeInsets.all(10),
               filled: true,
+              enabledBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Color(0xFFE0E0E0)),
+                borderRadius: const BorderRadius.all(
+                  const Radius.circular(12.0),
+                ),
+              ),
               fillColor: Colors.white,
               suffixIcon: Icon(
                 Icons.assignment_turned_in,
                 color: Color(0xffE0E0E0),
               ),
               hintText: 'What\'s on your mind?',
-              hintStyle: TextStyle(color: Color(0xffE0E0E0)),
-              border: OutlineInputBorder(
-                borderRadius: const BorderRadius.all(
-                  const Radius.circular(12.0),
-                ),
-                borderSide: BorderSide(color: Color(0xffE0E0E0), width: 2.0),
-              ),
-              // enabledBorder: OutlineInputBorder(
-              //   borderSide: BorderSide(color: Colors.grey, width: 2.0),
-              // ),
+              hintStyle: TextStyle(color: Color(0xFFE0E0E0)),
             ),
           ),
         ),
