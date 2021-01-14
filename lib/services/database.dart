@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'package:flutter/services.dart';
+import 'package:lokalapp/utils/constants.dart';
 import 'package:start_jwt/json_web_token.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -12,13 +14,12 @@ final usersRef = FirebaseFirestore.instance.collection("users");
 final inviteRef = FirebaseFirestore.instance.collection("invites");
 final Reference storageRef = FirebaseStorage.instance.ref();
 
-Map<dynamic, dynamic> _baseUrl;
+String _baseUrl = "https://us-east-api.stream-io-api.com/api/v1.0/";
 
 class Database {
   Future<Map> login(String user) async {
-    var authResponse = await http.post(
-        'https://dashboard.getstream.io/dashboard/v2/organization/61328',
-        body: {'sender': user});
+    // const client = stream.connect(APIKEY, SECRETKEY, 105879);
+    var authResponse = await http.post('$_baseUrl', body: {'sender': user});
     var authToken = json.decode(authResponse.body)['authToken'];
     var feedResponse = await http.post('$_baseUrl/v1/stream-feed-credentials',
         headers: {'Authorization': 'Bearer $authToken'});

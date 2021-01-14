@@ -72,9 +72,9 @@ class _LoginScreenState extends State<LoginScreen> {
             'feedToken': creds['feedTokn'],
           };
 
-          // Navigator.of(context).push(MaterialPageRoute(
-          //     builder: (_) =>
-          //         prefix.StreamChat(client: client, child: Home())));
+          //   Navigator.of(context).push(MaterialPageRoute(
+          //       builder: (_) =>
+          //           prefix.StreamChat(client: client, child: Home())));
         });
         Navigator.pushAndRemoveUntil(context,
             MaterialPageRoute(builder: (context) => Home()), (route) => false);

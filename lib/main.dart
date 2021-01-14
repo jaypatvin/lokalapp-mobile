@@ -9,19 +9,21 @@ import 'package:lokalapp/screens/profile_registration.dart';
 import 'package:lokalapp/utils/constants.dart';
 import 'package:provider/provider.dart';
 import 'package:lokalapp/states/currentUser.dart';
+import 'package:stream_chat_flutter/stream_chat_flutter.dart';
 // import 'package:stream_chat_flutter/stream_chat_flutter.dart';
 import 'models/user.dart';
 
 void main() async {
+  final client = Client(APIKEY,
+      baseURL: "https://api.stream-io-api.com/api/v1.0/", logLevel: Level.INFO);
+  // await client.setUser(Users(userUids: ), token)
+
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
-  // final Client client;
-  // const MyApp({Key key, this.client}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
@@ -31,7 +33,7 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        home: BottomNavigation(),
+        home: Root(),
       ),
     );
   }
