@@ -31,19 +31,24 @@ dependencies:
   carousel_slider: ^2.3.1
   flutter_onboard: ^0.1.0
   google_fonts: ^1.1.1
-  image_picker: ^0.6.7+14
-  provider: ^4.3.2+2
-  google_sign_in: ^4.5.6
-  location: ^3.1.0
-  firebase_storage:
-  cloud_firestore:
   firebase_core:
   firebase_auth:
+  google_sign_in:
+  firebase_storage:
+  cloud_firestore:
+  provider: ^4.3.2+2
+  image_picker: ^0.6.7+14
   uuid: ^2.2.2
+  path_provider: ^1.6.24
   image: ^2.1.19
   geolocator: ^3.0.1
+  location: ^3.1.0
   flutter_facebook_auth: ^1.0.0
-
+  velocity_x: ^1.0.1
+  pk_skeleton: ^0.0.2
+  http: ^0.12.2
+  stream_chat_flutter: ^0.2.20+2
+  start_jwt: ^0.2.0
 dev_dependencies:
   flutter_test:
     sdk: flutter
