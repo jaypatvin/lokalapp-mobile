@@ -1,5 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:lokalapp/screens/bottomNavigation.dart';
 import 'package:lokalapp/screens/home.dart';
+import 'package:lokalapp/screens/profile_registration.dart';
+import 'package:lokalapp/screens/welcome_screen.dart';
+import 'package:lokalapp/models/user.dart';
+import 'package:provider/provider.dart';
+
 import 'package:lokalapp/screens/invite_page.dart';
 import 'package:lokalapp/screens/profile_registration.dart';
 import 'package:lokalapp/screens/spalsh.dart';
@@ -16,7 +22,8 @@ class Root extends StatefulWidget {
 }
 
 class _RootState extends State<Root> {
-  AuthStatus _authStatus = AuthStatus.unknown;
+  // AuthStatus _authStatus = AuthStatus.notLoggedIn;
+  AuthStatus _authStatus = AuthStatus.notLoggedIn;
   @override
   void didChangeDependencies() async {
     // TODO: implement didChangeDependencies
@@ -24,17 +31,24 @@ class _RootState extends State<Root> {
     CurrentUser _users = Provider.of<CurrentUser>(context, listen: false);
     String _returnString = await _users.onStartUp();
     if (_returnString == "success") {
-      if (_users.getCurrentUser.communityId != null) {
-        setState(() {
-          _authStatus = AuthStatus.inCommunity;
-        });
-      } else
-        setState(() {
-          _authStatus = AuthStatus.notInCommunity;
-        });
-    } else {
       setState(() {
-        _authStatus = AuthStatus.notLoggedIn;
+        _authStatus = AuthStatus.loggedIn;
+        // CurrentUser _users = Provider.of<CurrentUser>(context, listen: false);
+        // String _returnString = await _users.onStartUp();
+        if (_returnString == "success") {
+          if (_users.getCurrentUser.communityId != null) {
+            setState(() {
+              _authStatus = AuthStatus.inCommunity;
+            });
+          } else
+            setState(() {
+              _authStatus = AuthStatus.notInCommunity;
+            });
+        } else {
+          setState(() {
+            _authStatus = AuthStatus.notLoggedIn;
+          });
+        }
       });
     }
   }
@@ -51,13 +65,13 @@ class _RootState extends State<Root> {
         retVal = WelcomeScreen();
         break;
       case AuthStatus.loggedIn:
-        retVal = Home();
+        retVal = BottomNavigation();
         break;
       case AuthStatus.notInCommunity:
         retVal = WelcomeScreen();
         break;
       case AuthStatus.inCommunity:
-        retVal = Home();
+        retVal = BottomNavigation();
     }
     return retVal;
   }
