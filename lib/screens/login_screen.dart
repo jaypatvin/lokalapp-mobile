@@ -4,6 +4,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:lokalapp/models/user.dart';
+import 'package:lokalapp/screens/bottomNavigation.dart';
 import 'package:lokalapp/screens/invite_page.dart';
 import 'package:lokalapp/services/database.dart';
 import 'package:lokalapp/widgets/rounded_button.dart';
@@ -57,17 +58,11 @@ class _LoginScreenState extends State<LoginScreen> {
           break;
         default:
       }
-      // await client.setUserWithProvider(
-      //   prefix.User(
-      //     id: "userUid_$userEmail",
-      //     extraData: {"email": "$userEmail"},
-      //   ),
-      // );
       if (_returnString == "success") {
-        var creds = await Database().login(_emailController.text);
+        var creds = await Database().login(userId);
         setState(() {
           _account = {
-            'user': _emailController.text,
+            'user': userId,
             'authToken': creds['authToken'],
             'feedToken': creds['feedTokn'],
           };
@@ -76,8 +71,10 @@ class _LoginScreenState extends State<LoginScreen> {
           //       builder: (_) =>
           //           prefix.StreamChat(client: client, child: Home())));
         });
-        Navigator.pushAndRemoveUntil(context,
-            MaterialPageRoute(builder: (context) => Home()), (route) => false);
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => BottomNavigation()),
+            (route) => false);
       } else if (_returnString == "not_registered") {
         Navigator.pushAndRemoveUntil(
             context,
