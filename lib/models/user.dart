@@ -1,6 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:lokalapp/utils/constants.dart';
+import 'package:start_jwt/json_web_token.dart';
+import 'package:stream_chat/stream_chat.dart';
 
 class Users extends ChangeNotifier {
   List<String> userUids;
@@ -42,4 +45,19 @@ class Users extends ChangeNotifier {
         profilePhoto: doc["profile_photo"],
         registration: doc["registration"]);
   }
+
+  streamUsers() {
+    _client = Client(APIKEY, logLevel: Level.SEVERE, tokenProvider: provider);
+  }
+
+  Client _client;
+  Client get client => _client;
+}
+
+Future<String> provider(String id) async {
+  final JsonWebTokenCodec jwt = JsonWebTokenCodec(secret: SECRETKEY);
+  final payload = {
+    "user_uid": id,
+  };
+  return jwt.encode(payload);
 }
