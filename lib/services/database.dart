@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:lokalapp/models/user.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:http/http.dart' as http;
+import 'package:stream_chat_flutter/stream_chat_flutter.dart';
 
 Users users = Users();
 final usersRef = FirebaseFirestore.instance.collection("users");
@@ -11,6 +13,36 @@ final inviteRef = FirebaseFirestore.instance.collection("invites");
 final Reference storageRef = FirebaseStorage.instance.ref();
 
 class Database {
+  static const _baseUrl =
+      'https://us-central1-lokal-1baac.cloudfunctions.net/api';
+  static const platform = const MethodChannel('ph.lokalapp.lokal');
+
+  Future<Map> login(String user) async {
+    var authResponse =
+        await http.post('$_baseUrl/v1/stream/users', body: {'sender': user});
+    var authToken = json.decode(authResponse.body)['authToken'];
+    var feedResponse = await http.post(
+        '$_baseUrl/v1/stream/stream-feed-credentials',
+        headers: {'Authorization': 'Bearer $authToken'});
+    var feedToken = json.decode(feedResponse.body)['token'];
+    return {'authToken': authToken, 'feedToken': feedToken};
+  }
+
+  Future<List> users(Map account) async {
+    var response = await http.get('$_baseUrl/v1/stream/users',
+        headers: {'Authorization': 'Bearer ${account['authToken']}'});
+    return json.decode(response.body)['users'];
+  }
+
+  Future<bool> postMessage(Map account, String message) async {
+    final bool result = await platform.invokeMethod<bool>('postMessage', {
+      'user': account['user'],
+      'token': account['feedToken'],
+      'message': message
+    });
+    return result;
+  }
+
   Future<String> createUser(Users users) async {
     String retVal = "error";
     debugPrint("Creating user");
