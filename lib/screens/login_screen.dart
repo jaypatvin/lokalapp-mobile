@@ -2,8 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:lokalapp/models/user.dart';
-import 'package:lokalapp/screens/bottomNavigation.dart';
 import 'package:lokalapp/screens/invite_page.dart';
 import 'package:lokalapp/states/currentUser.dart';
 
@@ -48,24 +46,16 @@ class _LoginScreenState extends State<LoginScreen> {
           break;
         default:
       }
-      if (_returnString == "success") {
-        var creds = await Database().login(userId);
-        setState(() {
-          _account = {
-            'user': userId,
-            'authToken': creds['authToken'],
-            'feedToken': creds['feedTokn'],
-          };
 
-          //   Navigator.of(context).push(MaterialPageRoute(
-          //       builder: (_) =>
-          //           prefix.StreamChat(client: client, child: Home())));
+      if (_authStatus == authStatus.Success) {
+        Navigator.pushAndRemoveUntil(context,
+            MaterialPageRoute(builder: (context) => Home()), (route) => false);
+      } else if (_authStatus == authStatus.PasswordNotValid) {
+        setState(() {
+          // shows the error code from the TextField
+          _inputFieldValid = false;
         });
-        Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(builder: (context) => BottomNavigation()),
-            (route) => false);
-      } else if (_returnString == "not_registered") {
+      } else if (_authStatus == authStatus.UserNotFound) {
         Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(builder: (context) => InvitePage()),
