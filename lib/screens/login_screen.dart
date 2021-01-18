@@ -33,6 +33,7 @@ class _LoginScreenState extends State<LoginScreen> {
   FirebaseAuth _auth = FirebaseAuth.instance;
   String _email;
   String _password;
+
   void _logInUserWithEmail(
       {@required LoginType type,
       String email,
@@ -41,25 +42,26 @@ class _LoginScreenState extends State<LoginScreen> {
     Map<dynamic, dynamic> _account;
     CurrentUser _users = Provider.of<CurrentUser>(context, listen: false);
     try {
-      String _returnString;
+      authStatus _authStatus;
+
       final userId = _users.getCurrentUser.userUids;
       final userEmail = email;
       final client = _users.getCurrentUser.client;
 
       switch (type) {
         case LoginType.email:
-          _returnString = await _users.loginUserWithEmail(email, password);
+          _authStatus = await _users.loginUserWithEmail(email, password);
           break;
         case LoginType.google:
-          _returnString = await _users.loginUserWithGoogle();
+          _authStatus = await _users.loginUserWithGoogle();
           break;
         case LoginType.facebook:
-          _returnString = await _users.loginUserWithFacebook();
+          _authStatus = await _users.loginUserWithFacebook();
           break;
         default:
       }
-      if (_returnString == "success") {
-        var creds = await Database().login(userId);
+      if (_authStatus == authStatus.Success) {
+        var creds = await Database().login(userId.elementAt(0));
         setState(() {
           _account = {
             'user': userId,
@@ -75,7 +77,7 @@ class _LoginScreenState extends State<LoginScreen> {
             context,
             MaterialPageRoute(builder: (context) => BottomNavigation()),
             (route) => false);
-      } else if (_returnString == "not_registered") {
+      } else if (_authStatus == authStatus.UserNotFound) {
         Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(builder: (context) => InvitePage()),
