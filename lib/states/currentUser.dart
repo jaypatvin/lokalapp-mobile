@@ -16,7 +16,9 @@ final GoogleSignIn googleSignIn = GoogleSignIn();
 class CurrentUser extends ChangeNotifier {
   FirebaseAuth _auth = FirebaseAuth.instance;
   Users _currentUser = Users();
+
   Users get getCurrentUser => _currentUser;
+  
   String get uid => uid;
   String get email => email;
   Future<String> onStartUp() async {
@@ -24,8 +26,10 @@ class CurrentUser extends ChangeNotifier {
     try {
       User _firebaseUser = _auth.currentUser;
       _currentUser = await Database().getUserInfo(_firebaseUser.uid);
+      
       if (_currentUser != null) {
         print(_currentUser);
+        
         retVal = "success";
       }
     } catch (e) {
@@ -80,6 +84,7 @@ class CurrentUser extends ChangeNotifier {
       UserCredential _authResult = await _auth.signInWithEmailAndPassword(
           email: email, password: password);
       _currentUser = await Database().getUserInfo(_authResult.user.uid);
+      
       if (_currentUser != null) {
         retVal = authStatus.Success;
       }

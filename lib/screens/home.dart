@@ -7,59 +7,71 @@ import 'package:lokalapp/states/currentUser.dart';
 import 'package:lokalapp/utils/themes.dart';
 import 'package:provider/provider.dart';
 // import 'package:stream_chat_flutter/stream_chat_flutter.dart';
+import 'people.dart';
+import 'post.dart';
 
 class Home extends StatefulWidget {
   final dynamic message;
-  Home({this.message});
+
+  final Map <String, String>account;
+  Home({this.message, this.account});
   @override
   _HomeState createState() => _HomeState();
 }
 
 class _HomeState extends State<Home> {
   TextEditingController _userController = TextEditingController();
-  String message;
+  dynamic message;
 
-  Padding buildTextField() {
+  Padding buildTextField(context) {
     return Padding(
       padding: const EdgeInsets.only(left: 20, top: 20, right: 20, bottom: 0),
-      child: Container(
-        child: Theme(
-          data: ThemeData(primaryColor: Color(0xFFE0E0E0)),
-          child: TextField(
-            controller: _userController,
-            onSubmitted: (value) {
-              _postMessage(context);
-            },
-            decoration: InputDecoration(
-              isDense: true, // Added this
-              filled: true,
-              enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Color(0xFFE0E0E0)),
-                borderRadius: const BorderRadius.all(
-                  const Radius.circular(14.0),
+      child: Column(
+        children: [
+          Container(
+            child: Theme(
+              data: ThemeData(primaryColor: Color(0xFFE0E0E0)),
+              child: TextField(
+                controller: _userController,
+
+                // onSubmitted: (value){
+
+                //     _postMessage(context);
+
+                // }
+
+                decoration: InputDecoration(
+                  isDense: true, // Added this
+                  filled: true,
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Color(0xFFE0E0E0)),
+                    borderRadius: const BorderRadius.all(
+                      const Radius.circular(14.0),
+                    ),
+                  ),
+                  fillColor: Colors.white,
+                  suffixIcon: Icon(
+                    Icons.assignment_turned_in,
+                    color: Color(0xffE0E0E0),
+                  ),
+                  hintText: 'What\'s on your mind?',
+                  hintStyle: TextStyle(color: Color(0xFFE0E0E0)),
                 ),
               ),
-              fillColor: Colors.white,
-              suffixIcon: Icon(
-                Icons.assignment_turned_in,
-                color: Color(0xffE0E0E0),
-              ),
-              hintText: 'What\'s on your mind?',
-              hintStyle: TextStyle(color: Color(0xFFE0E0E0)),
             ),
           ),
-        ),
+          RaisedButton(
+            onPressed: () => _postMessage(context),
+            child: Text("post"),
+          )
+        ],
       ),
     );
   }
 
   Future _postMessage(BuildContext context) async {
-    CurrentUser _user = Provider.of<CurrentUser>(context, listen: false);
-    final userId = _user.getCurrentUser.userUids;
-    Map<dynamic, dynamic> _account;
     if (_userController.text.length > 0) {
-      _account = {'user': userId, 'message': _userController.text};
-      await Database().postMessage(_account, _userController.text);
+      await Database().postMessage(widget.account, _userController.text);
       Navigator.pop(context, true);
     } else {
       Scaffold.of(context).showSnackBar(
@@ -72,7 +84,6 @@ class _HomeState extends State<Home> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _userController.addListener(() {
       setState(() {
@@ -83,6 +94,8 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
+    CurrentUser _user = Provider.of<CurrentUser>(context, listen: false);
+    final userId = _user.getCurrentUser.userUids;
     return Scaffold(
         backgroundColor: Color(0xffF1FAFF),
         appBar: PreferredSize(
@@ -120,7 +133,33 @@ class _HomeState extends State<Home> {
             ),
           ),
         ),
-        body: buildTextField());
+        body: Column(
+          children: [
+            buildTextField(context),
+            Row(
+              children: [
+                Center(
+                  child: RaisedButton(
+                      child: Text("timeline"),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => Timeline(
+                                    account: widget.account,
+                                  )),
+                        );
+                      }),
+                ),
+
+                RaisedButton(onPressed: (){
+                    CurrentUser _user = Provider.of<CurrentUser>(context, listen: false);
+                _user.onSignOut();
+                }),
+              ],
+            )
+          ],
+        ));
   }
 
   @override

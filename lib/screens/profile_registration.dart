@@ -148,10 +148,17 @@ class _ProfileRegistrationState extends State<ProfileRegistration> {
     _firstNameController.clear();
     _lastNameController.clear();
     _streetAddressController.clear();
+    if(this.mounted){
     setState(() {
       file = null;
       isUploading = false;
+      _firstNameController.dispose();
+      _lastNameController.dispose();
+      _streetAddressController.dispose();
+
     });
+    }
+
   }
 
   Widget buildStreetAddress() {
@@ -408,9 +415,12 @@ class _ProfileRegistrationState extends State<ProfileRegistration> {
       ),
     );
   }
+  
 
   @override
   Widget build(BuildContext context) {
     return buildPage();
   }
+
+
 }

@@ -20,6 +20,7 @@ import 'home.dart';
 enum LoginType { email, google, facebook }
 
 class LoginScreen extends StatefulWidget {
+
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
@@ -33,20 +34,18 @@ class _LoginScreenState extends State<LoginScreen> {
   FirebaseAuth _auth = FirebaseAuth.instance;
   String _email;
   String _password;
+  Map<String, String> _account;
 
   void _logInUserWithEmail(
       {@required LoginType type,
       String email,
       String password,
       BuildContext context}) async {
-    Map<dynamic, dynamic> _account;
+    
     CurrentUser _users = Provider.of<CurrentUser>(context, listen: false);
     try {
       authStatus _authStatus;
 
-      final userId = _users.getCurrentUser.userUids;
-      final userEmail = email;
-      final client = _users.getCurrentUser.client;
 
       switch (type) {
         case LoginType.email:
@@ -61,22 +60,21 @@ class _LoginScreenState extends State<LoginScreen> {
         default:
       }
       if (_authStatus == authStatus.Success) {
+      final userId = _users.getCurrentUser.userUids;
         var creds = await Database().login(userId.elementAt(0));
         setState(() {
           _account = {
-            'user': userId,
+            'user': userId.toString(),
             'authToken': creds['authToken'],
             'feedToken': creds['feedTokn'],
           };
-
-          //   Navigator.of(context).push(MaterialPageRoute(
-          //       builder: (_) =>
-          //           prefix.StreamChat(client: client, child: Home())));
         });
-        Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(builder: (context) => BottomNavigation()),
-            (route) => false);
+        if (_account != null) {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => BottomNavigation(account: _account)));
+          }
       } else if (_authStatus == authStatus.UserNotFound) {
         Navigator.pushAndRemoveUntil(
             context,

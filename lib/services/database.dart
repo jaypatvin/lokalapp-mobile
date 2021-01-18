@@ -14,11 +14,11 @@ Users users = Users();
 final usersRef = FirebaseFirestore.instance.collection("users");
 final inviteRef = FirebaseFirestore.instance.collection("invites");
 final Reference storageRef = FirebaseStorage.instance.ref();
-
+//  final Map account;
 class Database {
   static const _baseUrl =
       'https://us-central1-lokal-1baac.cloudfunctions.net/api';
-  static const platform = const MethodChannel('ph.lokalapp.lokal');
+  static const platform = const MethodChannel('io.getstream/backend');
 
   Future<Map> login(String user) async {
     var authResponse =
@@ -37,15 +37,26 @@ class Database {
     return json.decode(response.body)['users'];
   }
 
-  Future<bool> postMessage(Map account, String message) async {
-    final bool result = await platform.invokeMethod<bool>('postMessage', {
-      'user': account['user'],
-      'token': account['feedToken'],
-      'message': message
-    });
-    return result;
+ Future<bool> postMessage(Map account, String message) async {
+    return await platform.invokeMethod<bool>(
+        'postMessage', {'user': account['user'], 'token': account['feedToken'], 'message': message});
+  }
+  
+ Future<dynamic> getActivities(Map account) async {
+    var result =
+        await platform.invokeMethod<String>('getActivities', {'user': account['user'], 'token': account['feedToken']});
+    return json.decode(result);
   }
 
+ Future<dynamic> getTimeline(Map account) async {
+    var result =
+        await platform.invokeMethod<String>('getTimeline', {'user': account['user'], 'token': account['feedToken']});
+    return json.decode(result);
+  }
+ Future<bool> follow(Map account, String userToFollow) async {
+    return await platform.invokeMethod<bool>(
+        'follow', {'user': account['user'], 'token': account['feedToken'], 'userToFollow': userToFollow});
+  }
   Future<String> createUser(Users users) async {
     String retVal = "error";
     debugPrint("Creating user");
@@ -54,14 +65,14 @@ class Database {
         "user_uids": users.userUids,
         // "display_name": users.displayName,
         "email": users.email,
-        "first_name": users.firstName,
-        "last_name": users.lastName,
+        "first_name": "",
+        "last_name": "",
         // "gender": users.gender,
-        "community_id": users.communityId,
-        "address": users.address,
+        "community_id": "",
+        "address": "",
         // "birthdate": users.birthDate,
         // "registration": users.registration
-        "profile_photo": users.profilePhoto,
+        "profile_photo": "",
       });
 
       // currentUser = Users.fromDocument(doc);

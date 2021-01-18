@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lokalapp/screens/post.dart';
 import 'package:lokalapp/screens/profile.dart';
 
 import 'activity.dart';
@@ -7,6 +8,8 @@ import 'discover.dart';
 import 'home.dart';
 
 class BottomNavigation extends StatefulWidget {
+   final Map <String, String>account;
+   BottomNavigation({this.account});
   @override
   _BottomNavigationState createState() => _BottomNavigationState();
 }
@@ -35,8 +38,12 @@ class _BottomNavigationState extends State<BottomNavigation> {
     _pageController = PageController();
   }
 
+
+
+
   @override
   Widget build(BuildContext context) {
+    
     return Scaffold(
       bottomNavigationBar: SizedBox(
         height: 70,
@@ -58,12 +65,13 @@ class _BottomNavigationState extends State<BottomNavigation> {
           ],
         ),
       ),
-      body: PageView(
-        children: [Home(), Discover(), Chat(), Activity(), Profile()],
+      body:   PageView(
+        children: [Home(account:widget.account), Timeline(account: widget.account,), Chat(), Activity(), Profile(account: widget.account)],
         controller: _pageController,
         onPageChanged: onPageChanged,
         physics: NeverScrollableScrollPhysics(),
       ),
+    
     );
   }
 
