@@ -13,8 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:lokalapp/utils/themes.dart';
 import 'package:lokalapp/widgets/social_button.dart';
 import 'package:lokalapp/states/currentUser.dart';
-import 'package:stream_chat/stream_chat.dart';
-import 'package:stream_chat_flutter/stream_chat_flutter.dart' as prefix;
+
 import 'home.dart';
 
 enum LoginType { email, google, facebook }
@@ -59,22 +58,21 @@ class _LoginScreenState extends State<LoginScreen> {
           break;
         default:
       }
-      if (_authStatus == authStatus.Success) {
+      if (_authStatus == authStatus.Success && _account != null) {
       final userId = _users.getCurrentUser.userUids;
         var creds = await Database().login(userId.elementAt(0));
         setState(() {
           _account = {
-            'user': userId.toString(),
+            'user': userId.elementAt(0),
             'authToken': creds['authToken'],
-            'feedToken': creds['feedTokn'],
+            'feedToken': creds['feedToken'],
           };
         });
-        if (_account != null) {
-            Navigator.push(
+        Navigator.push(
                 context,
                 MaterialPageRoute(
                     builder: (context) => BottomNavigation(account: _account)));
-          }
+      
       } else if (_authStatus == authStatus.UserNotFound) {
         Navigator.pushAndRemoveUntil(
             context,

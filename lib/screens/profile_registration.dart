@@ -2,19 +2,20 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:lokalapp/screens/welcome_screen.dart';
 import 'package:lokalapp/utils/themes.dart';
 import 'package:lokalapp/widgets/rounded_button.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 import 'package:uuid/uuid.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:image/image.dart' as Im;
 import 'package:lokalapp/services/database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:geolocator/geolocator.dart';
 
-import 'home.dart';
 
+import 'package:lokalapp/states/currentUser.dart';
 class ProfileRegistration extends StatefulWidget {
   @override
   _ProfileRegistrationState createState() => _ProfileRegistrationState();
@@ -30,6 +31,8 @@ class _ProfileRegistrationState extends State<ProfileRegistration> {
   TextEditingController _streetAddressController = TextEditingController();
   TextEditingController _locationController = TextEditingController();
   RoundedButton roundedButton = RoundedButton();
+
+  //  CurrentUser _users = Provider.of<CurrentUser>(context, listen: false);
 
   handleCamera() async {
     Navigator.pop(context);
@@ -83,7 +86,7 @@ class _ProfileRegistrationState extends State<ProfileRegistration> {
         });
   }
 
-  compressImage() async {
+ compressImage() async {
     final tempDir = await getTemporaryDirectory();
     final path = tempDir.path;
     Im.Image imageFile = Im.decodeImage(file.readAsBytesSync());
@@ -113,10 +116,12 @@ class _ProfileRegistrationState extends State<ProfileRegistration> {
       String address}) async {
     User firebaseUser = FirebaseAuth.instance.currentUser;
     String retVal = "error";
+
+    var docId = await Database().getCurrentUserDocId(firebaseUser.uid);
     try {
-      await usersRef.doc(firebaseUser.uid).update({
+      await usersRef.doc(docId).update({
         "profile_photo": mediaUrl,
-        "uid": firebaseUser.uid,
+        // "uid": firebaseUser.uid,
         "first_name": firstName,
         "last_name": lastName,
         "address": {"street": address},
@@ -124,6 +129,7 @@ class _ProfileRegistrationState extends State<ProfileRegistration> {
       });
       retVal = "success";
       print(firebaseUser.uid);
+      // print(docId);
     } on PlatformException catch (e) {
       print(e.message);
     } catch (e) {
@@ -284,7 +290,7 @@ class _ProfileRegistrationState extends State<ProfileRegistration> {
       onPressed: () {
         handleSubmit();
         Navigator.pushAndRemoveUntil(context,
-            MaterialPageRoute(builder: (context) => Home()), (route) => false);
+            MaterialPageRoute(builder: (context) => WelcomeScreen()), (route) => false);
       },
       label: "CREATE PROFILE",
       fontSize: 20.0,

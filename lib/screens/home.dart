@@ -6,9 +6,8 @@ import 'package:lokalapp/services/database.dart';
 import 'package:lokalapp/states/currentUser.dart';
 import 'package:lokalapp/utils/themes.dart';
 import 'package:provider/provider.dart';
-// import 'package:stream_chat_flutter/stream_chat_flutter.dart';
-import 'people.dart';
-import 'post.dart';
+
+import 'timeline.dart';
 
 class Home extends StatefulWidget {
   final dynamic message;
@@ -34,11 +33,9 @@ class _HomeState extends State<Home> {
               child: TextField(
                 controller: _userController,
 
-                // onSubmitted: (value){
-
-                //     _postMessage(context);
-
-                // }
+                onSubmitted: (value){
+                    _postMessage(context);
+                },
 
                 decoration: InputDecoration(
                   isDense: true, // Added this
@@ -60,10 +57,7 @@ class _HomeState extends State<Home> {
               ),
             ),
           ),
-          RaisedButton(
-            onPressed: () => _postMessage(context),
-            child: Text("post"),
-          )
+        
         ],
       ),
     );
@@ -95,7 +89,7 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     CurrentUser _user = Provider.of<CurrentUser>(context, listen: false);
-    final userId = _user.getCurrentUser.userUids;
+    
     return Scaffold(
         backgroundColor: Color(0xffF1FAFF),
         appBar: PreferredSize(
@@ -133,32 +127,17 @@ class _HomeState extends State<Home> {
             ),
           ),
         ),
-        body: Column(
-          children: [
+        body: SingleChildScrollView(
+                  child: Column(
+            children: [
             buildTextField(context),
-            Row(
-              children: [
-                Center(
-                  child: RaisedButton(
-                      child: Text("timeline"),
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => Timeline(
-                                    account: widget.account,
-                                  )),
-                        );
-                      }),
-                ),
-
-                RaisedButton(onPressed: (){
-                    CurrentUser _user = Provider.of<CurrentUser>(context, listen: false);
-                _user.onSignOut();
-                }),
-              ],
-            )
-          ],
+            RaisedButton(onPressed: (){
+              _user.onSignOut();
+            },child: Text("logout"),),
+            SizedBox(height: 8,),
+              Timeline(account: widget.account)
+            ],
+          ),
         ));
   }
 

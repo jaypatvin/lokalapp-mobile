@@ -20,10 +20,8 @@ class _InvitePageState extends State<InvitePage> {
   void validateInviteCode(BuildContext context, String code) async {
     bool inviteCodeExists = await Database().inviteCodeExists(code);
     if (inviteCodeExists) {
-      Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(builder: (context) => Community()),
-          (route) => false);
+      
+    Navigator.push(context, MaterialPageRoute(builder: (context) => Community()));
     } else {
       //TODO: add toast "community invite code is invalid"
     }

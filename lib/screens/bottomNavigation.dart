@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lokalapp/screens/post.dart';
+import 'package:lokalapp/screens/timeline.dart';
 import 'package:lokalapp/screens/profile.dart';
 
 import 'activity.dart';

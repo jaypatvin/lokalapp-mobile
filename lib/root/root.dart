@@ -17,7 +17,7 @@ import 'package:provider/provider.dart';
 enum AuthStatus { notLoggedIn, loggedIn, unknown, notInCommunity, inCommunity }
 
 class Root extends StatefulWidget {
-   final Map<String, dynamic> account;
+   final Map<String, String> account;
    Root({this.account});
   @override
   _RootState createState() => _RootState();
@@ -66,13 +66,13 @@ class _RootState extends State<Root> {
         retVal = WelcomeScreen();
         break;
       case AuthStatus.loggedIn:
-        retVal = BottomNavigation() ;
+        retVal = BottomNavigation( account: widget.account,) ;
         break;
       case AuthStatus.notInCommunity:
         retVal = WelcomeScreen();
         break;
       case AuthStatus.inCommunity:
-        retVal = BottomNavigation();
+        retVal = BottomNavigation(account: widget.account,);
     }
     return retVal;
   }

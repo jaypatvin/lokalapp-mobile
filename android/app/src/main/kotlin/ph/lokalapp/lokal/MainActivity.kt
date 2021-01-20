@@ -17,8 +17,8 @@ import org.json.JSONObject
 
 class MainActivity : FlutterActivity() {
   private val CHANNEL = "io.getstream/backend"
-  private val API_KEY = "<API_KEY>"
-
+  private val API_KEY = "9x4ysafkqkmz"
+private val token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJyZXNvdXJjZSI6ImFuYWx5dGljcyIsImFjdGlvbiI6IioiLCJ1c2VyX2lkIjoiKiJ9.84xdCngA3KdA8VxTsHb5x2D4_f3sm3q7hbPrxa2M2MQ"
   override fun configureFlutterEngine(@NonNull flutterEngine: FlutterEngine) {
     GeneratedPluginRegistrant.registerWith(flutterEngine)
     MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL).setMethodCallHandler { call, result ->
@@ -55,7 +55,7 @@ class MainActivity : FlutterActivity() {
   }
   private fun postMessage(user: String, token: String, message: String) {
     val client = CloudClient.builder(API_KEY, token, user).build()
-    val feed = client.flatFeed("user")
+    val feed = client.flatFeed("community_QHdK73bGFQRmgmPr3enN")
     feed.addActivity(
       Activity
         .builder()
@@ -67,16 +67,18 @@ class MainActivity : FlutterActivity() {
     ).join()
   }
   private fun getActivities(user: String, token: String): List<Activity> {
+
     val client = CloudClient.builder(API_KEY, token, user).build()
-    return client.flatFeed("user").getActivities(Limit(25)).join()
+    return client.flatFeed("community_QHdK73bGFQRmgmPr3enN").getActivities(Limit(25)).join()
   }
   private fun getTimeline(user: String, token: String): List<Activity> {
+
     val client = CloudClient.builder(API_KEY, token, user).build()
-    return client.flatFeed("timeline").getActivities(Limit(25)).join()
+    return client.flatFeed("community_QHdK73bGFQRmgmPr3enN").getActivities(Limit(25)).join()
   }
   private fun follow(user: String, token: String, userToFollow: String): Boolean {
     val client = CloudClient.builder(API_KEY, token, user).build()
-    client.flatFeed("timeline").follow(client.flatFeed("user", userToFollow)).join()
+    client.flatFeed("community_QHdK73bGFQRmgmPr3enN").follow(client.flatFeed("user", userToFollow)).join()
     return true
   }
 }

@@ -1,6 +1,9 @@
 import 'dart:convert';
+
 import 'package:flutter/services.dart';
+import 'package:lokalapp/states/currentUser.dart';
 import 'package:lokalapp/utils/constants.dart';
+import 'package:provider/provider.dart';
 import 'package:start_jwt/json_web_token.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -8,7 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:lokalapp/models/user.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:http/http.dart' as http;
-import 'package:stream_chat_flutter/stream_chat_flutter.dart';
+
 
 Users users = Users();
 final usersRef = FirebaseFirestore.instance.collection("users");
@@ -70,9 +73,10 @@ class Database {
         // "gender": users.gender,
         "community_id": "",
         "address": "",
+        
         // "birthdate": users.birthDate,
         // "registration": users.registration
-        "profile_photo": "",
+        "profile_photo":"",
       });
 
       // currentUser = Users.fromDocument(doc);
