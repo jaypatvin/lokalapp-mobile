@@ -135,7 +135,7 @@ class _HomeState extends State<Home> {
               _user.onSignOut();
             },child: Text("logout"),),
             SizedBox(height: 8,),
-              Timeline(account: widget.account)
+              // Timeline(account: widget.account)
             ],
           ),
         ));
