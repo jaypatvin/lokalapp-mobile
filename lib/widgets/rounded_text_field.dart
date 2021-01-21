@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 class RoundedTextField extends StatefulWidget {
   final String hintText;
   final Function onTap;
+
   RoundedTextField({this.hintText, this.onTap});
+
   @override
   _RoundedTextFieldState createState() => _RoundedTextFieldState();
 }

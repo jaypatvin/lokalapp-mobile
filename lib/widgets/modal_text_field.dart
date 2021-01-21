@@ -4,7 +4,9 @@ import 'package:lokalapp/utils/themes.dart';
 class ModalTextField extends StatefulWidget {
   final String hintText;
   final Function onPressed;
+
   ModalTextField({this.hintText, this.onPressed});
+
   @override
   _ModalTextFieldState createState() => _ModalTextFieldState();
 }

@@ -1,7 +1,15 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.lokalapp">
+<<<<<<< HEAD
+package="ph.lokalapp.lokal">
+<!-- Flutter needs it to communicate with the running application
+     to allow setting breakpoints, to provide hot reload, etc.
+-->
+<uses-permission android:name="android.permission.INTERNET"/>
+=======
+    package="ph.lokalapp.lokal">
     <!-- Flutter needs it to communicate with the running application
          to allow setting breakpoints, to provide hot reload, etc.
     -->
     <uses-permission android:name="android.permission.INTERNET"/>
+>>>>>>> bb658c56abcc4ccfdbbade9f5e3ffe90e683a5e1
 </manifest>

@@ -1,5 +1,16 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:lokalapp/widgets/rounded_button.dart';
+import 'package:lokalapp/models/user.dart';
+import 'package:lokalapp/screens/profile_registration.dart';
+import 'package:lokalapp/services/database.dart';
+import 'package:provider/provider.dart';
+import 'package:lokalapp/screens/invite_page.dart';
+import 'package:lokalapp/screens/profile_registration.dart';
+import 'package:lokalapp/services/database.dart';
+import 'package:lokalapp/states/currentUser.dart';
+import 'package:provider/provider.dart';
+import 'dart:io';
+import 'package:lokalapp/states/currentUser.dart';
 
 class Community extends StatefulWidget {
   @override
@@ -12,6 +23,21 @@ class _CommunityState extends State<Community> {
   Color _kButtonFontColor = Color(0XFF103045);
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
+
+  void _signUpUser(String email, String password, BuildContext context) async {
+    CurrentUser _users = Provider.of<CurrentUser>(context, listen: false);
+    try {
+      String _returnString = await _users.signUpUser(email, password);
+      if (_returnString == "success") {
+        print("success");
+
+        Navigator.of(context).push(
+            MaterialPageRoute(builder: (context) => ProfileRegistration()));
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
 
   Widget buildEmail() {
     return Material(
@@ -86,7 +112,10 @@ class _CommunityState extends State<Community> {
                 fontFamily: "GoldplayBoldIt",
                 fontWeight: FontWeight.bold),
           ),
-          onPressed: () {},
+          onPressed: () {
+            _signUpUser(
+                _emailController.text, _passwordController.text, context);
+          },
           shape: new RoundedRectangleBorder(
             borderRadius: new BorderRadius.circular(40.0),
           ),
@@ -115,7 +144,7 @@ class _CommunityState extends State<Community> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Hero(
-                        tag: "",
+                        tag: "Welcome",
                         child: Center(
                           child: Text(
                             "Welcome to",
@@ -125,7 +154,7 @@ class _CommunityState extends State<Community> {
                         ),
                       ),
                       Hero(
-                        tag: "",
+                        tag: "Community",
                         child: Center(
                           child: Text(
                             "Community Name",
