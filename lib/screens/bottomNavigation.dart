@@ -66,7 +66,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
         ),
       ),
       body:   PageView(
-        children: [Home(account:widget.account), Timeline(account: widget.account,), Chat(), Activity(), Profile(account: widget.account)],
+        children: [Home(account: widget.account), Timeline(account: widget.account,), Chat(), Activity(), Profile(account: widget.account)],
         controller: _pageController,
         onPageChanged: onPageChanged,
         physics: NeverScrollableScrollPhysics(),

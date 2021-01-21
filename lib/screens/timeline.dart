@@ -9,7 +9,7 @@ import 'package:lokalapp/services/database.dart';
 
 class Timeline extends StatefulWidget {
   final Map<String, String> account;
-  Timeline({Key key, @required this.account}) : super(key: key);
+  Timeline({Key key,  this.account});
 
   @override
   _TimelineState createState() => _TimelineState();
@@ -25,7 +25,7 @@ class _TimelineState extends State<Timeline> {
   }
 
   Future<List<dynamic>> _getTimeline() async {
-    return await Database().getTimeline(widget.account);
+    // return await Database().getTimeline(widget.account);
   }
 
   Future _refreshActivities() async {
