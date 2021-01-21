@@ -33,7 +33,7 @@ class _LoginScreenState extends State<LoginScreen> {
   FirebaseAuth _auth = FirebaseAuth.instance;
   String _email;
   String _password;
-  Map<String, String> _account;
+  Map<String, String> account;
 
   void _logInUserWithEmail(
       {@required LoginType type,
@@ -58,20 +58,26 @@ class _LoginScreenState extends State<LoginScreen> {
           break;
         default:
       }
-      if (_authStatus == authStatus.Success && _account != null) {
+      if (_authStatus == authStatus.Success ) {
       final userId = _users.getCurrentUser.userUids;
         var creds = await Database().login(userId.elementAt(0));
-        setState(() {
-          _account = {
+        
+          account = {
             'user': userId.elementAt(0),
             'authToken': creds['authToken'],
             'feedToken': creds['feedToken'],
           };
-        });
-        Navigator.push(
+        
+
+        if(account != null){
+    // _account =ModalRoute.of(context).settings.arguments;
+    // Navigator.pushNamedAndRemoveUntil(context, MaterialPageRoute(builder: (context) => BottomNavigation(account: _account)), (route) => false);
+   Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => BottomNavigation(account: _account)));
+                    builder: (context) => BottomNavigation(account: account)));
+        }
+     
       
       } else if (_authStatus == authStatus.UserNotFound) {
         Navigator.pushAndRemoveUntil(
