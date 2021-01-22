@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "C:\\Users\\angka\\AndroidStudioProjects\\lokalapp\\lokal\\build\\app\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-id\\values-id.xml",
+            "outputFile": "C:\\Users\\angka\\vscode\\lokalapp\\lokalapp-mobile\\build\\app\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-id\\values-id.xml",
             "map": [
                 {
                     "source": "C:\\Users\\angka\\.gradle\\caches\\transforms-2\\files-2.1\\3cbb7b2bbc1ed6979dc04df0bf6a06e3\\jetified-facebook-common-8.1.0\\res\\values-id\\values-id.xml",

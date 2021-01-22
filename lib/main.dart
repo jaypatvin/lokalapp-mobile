@@ -9,7 +9,7 @@ import 'package:lokalapp/states/currentUser.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  runApp(Material(child: MyApp()));
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {

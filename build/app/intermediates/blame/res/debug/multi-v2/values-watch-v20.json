@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "C:\\Users\\angka\\AndroidStudioProjects\\lokalapp\\lokal\\build\\app\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-watch-v20\\values-watch-v20.xml",
+            "outputFile": "C:\\Users\\angka\\vscode\\lokalapp\\lokalapp-mobile\\build\\app\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-watch-v20\\values-watch-v20.xml",
             "map": [
                 {
                     "source": "C:\\Users\\angka\\.gradle\\caches\\transforms-2\\files-2.1\\f528572ef9475f4be3e95a403c874056\\jetified-play-services-auth-16.0.1\\res\\values-watch-v20\\values.xml",

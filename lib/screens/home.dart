@@ -13,7 +13,7 @@ class Home extends StatefulWidget {
   final dynamic message;
 
   final Map <String, String>account;
-  Home({this.message, this.account});
+Home({Key key, this.message, this.account}) : super(key: key);
   @override
   _HomeState createState() => _HomeState();
 }
@@ -28,11 +28,11 @@ class _HomeState extends State<Home> {
       child: Column(
         children: [
           Container(
+          
             child: Theme(
               data: ThemeData(primaryColor: Color(0xFFE0E0E0)),
               child: TextField(
                 controller: _userController,
-
                 onSubmitted: (value){
                     _postMessage(context);
                 },
@@ -64,8 +64,11 @@ class _HomeState extends State<Home> {
   }
 
   Future _postMessage(BuildContext context) async {
+
     if (_userController.text.length > 0) {
-      await Database().postMessage(widget.account, _userController.text);
+       CurrentUser _user = Provider.of<CurrentUser>(context, listen: false);
+       var stream = await  _user.getStreamSignin();
+      await Database().postMessage( stream, _userController.text);
       Navigator.pop(context, true);
     } else {
       Scaffold.of(context).showSnackBar(
@@ -90,55 +93,60 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     CurrentUser _user = Provider.of<CurrentUser>(context, listen: false);
     
-    return Scaffold(
-        backgroundColor: Color(0xffF1FAFF),
-        appBar: PreferredSize(
-          preferredSize: Size(double.infinity, 100),
-          child: Container(
-            decoration: BoxDecoration(
-              boxShadow: [
-                BoxShadow(color: Colors.black12, spreadRadius: 5, blurRadius: 2)
-              ],
-            ),
-            width: MediaQuery.of(context).size.width,
-            height: 100,
+    return Material(
+          child: Scaffold(
+          backgroundColor: Color(0xffF1FAFF),
+          appBar: PreferredSize(
+            preferredSize: Size(double.infinity, 100),
             child: Container(
-              decoration: BoxDecoration(color: kTealColor),
+              decoration: BoxDecoration(
+                boxShadow: [
+                  BoxShadow(color: Colors.black12, spreadRadius: 5, blurRadius: 2)
+                ],
+              ),
+              width: MediaQuery.of(context).size.width,
+              height: 100,
               child: Container(
-                margin: const EdgeInsets.fromLTRB(0, 20, 0, 0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(top: 30),
-                      child: Text(
-                        "White Plains",
-                        style: TextStyle(
-                            fontFamily: "Goldplay",
-                            fontSize: 22,
-                            fontWeight: FontWeight.w600,
-                            color: Color(0XFFFFC700)),
+                decoration: BoxDecoration(color: kTealColor),
+                child: Container(
+                  margin: const EdgeInsets.fromLTRB(0, 20, 0, 0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(top: 30),
+                        child: Text(
+                          "White Plains",
+                          style: TextStyle(
+                              fontFamily: "Goldplay",
+                              fontSize: 22,
+                              fontWeight: FontWeight.w600,
+                              color: Color(0XFFFFC700)),
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
           ),
-        ),
-        body: SingleChildScrollView(
-                  child: Column(
-            children: [
-            buildTextField(context),
-            RaisedButton(onPressed: (){
-              _user.onSignOut();
-            },child: Text("logout"),),
-            SizedBox(height: 8,),
-              Timeline(account: widget.account)
-            ],
-          ),
-        ));
+          body: SingleChildScrollView(
+                      child: Container(
+              child: Column(
+                      children: [
+                      buildTextField(context),
+                     
+                      // RaisedButton(onPressed: (){
+                      //   _user.onSignOut();
+                      // },child: Text("logout"),),
+                      SizedBox(height: 8,),
+                        Timeline(account: widget.account)
+                      ],
+                    ),
+            ),
+          )),
+    );
   }
 
   @override

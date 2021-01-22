@@ -59,24 +59,12 @@ class _LoginScreenState extends State<LoginScreen> {
         default:
       }
       if (_authStatus == authStatus.Success ) {
-      final userId = _users.getCurrentUser.userUids;
-        var creds = await Database().login(userId.elementAt(0));
-        
-          account = {
-            'user': userId.elementAt(0),
-            'authToken': creds['authToken'],
-            'feedToken': creds['feedToken'],
-          };
-        
 
-        if(account != null){
-    // _account =ModalRoute.of(context).settings.arguments;
-    // Navigator.pushNamedAndRemoveUntil(context, MaterialPageRoute(builder: (context) => BottomNavigation(account: _account)), (route) => false);
    Navigator.push(
                 context,
                 MaterialPageRoute(
                     builder: (context) => BottomNavigation(account: account)));
-        }
+        
      
       
       } else if (_authStatus == authStatus.UserNotFound) {

@@ -38,6 +38,20 @@ class CurrentUser extends ChangeNotifier {
     return retVal;
   }
 
+Future getStreamSignin()async{
+ Map<String, String> account;
+      final userId = _currentUser.userUids;
+        var creds = await Database().login(userId.elementAt(0));
+        
+          account = {
+            'user': userId.elementAt(0),
+            'authToken': creds['authToken'],
+            'feedToken': creds['feedToken'],
+          };
+        return account;
+}
+
+
   Future<String> onSignOut() async {
     String retVal = "error";
     try {

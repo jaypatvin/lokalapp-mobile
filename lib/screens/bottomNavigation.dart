@@ -9,7 +9,7 @@ import 'home.dart';
 
 class BottomNavigation extends StatefulWidget {
    final Map <String, String>account;
-   BottomNavigation({this.account});
+ BottomNavigation({Key key, this.account}) : super(key: key);
   @override
   _BottomNavigationState createState() => _BottomNavigationState();
 }

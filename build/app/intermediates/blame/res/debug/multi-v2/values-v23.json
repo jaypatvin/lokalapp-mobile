@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "C:\\Users\\angka\\AndroidStudioProjects\\lokalapp\\lokal\\build\\app\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-v23\\values-v23.xml",
+            "outputFile": "C:\\Users\\angka\\vscode\\lokalapp\\lokalapp-mobile\\build\\app\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-v23\\values-v23.xml",
             "map": [
                 {
                     "source": "C:\\Users\\angka\\.gradle\\caches\\transforms-2\\files-2.1\\44529f9b3326bb0c3cb5875e63c2bbda\\cardview-1.0.0\\res\\values-v23\\values-v23.xml",
