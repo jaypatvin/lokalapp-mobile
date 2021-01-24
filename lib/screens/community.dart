@@ -1,16 +1,7 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:lokalapp/models/user.dart';
 import 'package:lokalapp/screens/profile_registration.dart';
-import 'package:lokalapp/services/database.dart';
 import 'package:lokalapp/widgets/sso_block.dart';
 import 'package:provider/provider.dart';
-import 'package:lokalapp/screens/invite_page.dart';
-import 'package:lokalapp/screens/profile_registration.dart';
-import 'package:lokalapp/services/database.dart';
-import 'package:lokalapp/states/current_user.dart';
-import 'package:provider/provider.dart';
-import 'dart:io';
 import 'package:lokalapp/states/current_user.dart';
 
 import 'bottom_navigation.dart';

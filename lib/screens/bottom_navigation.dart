@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:lokalapp/screens/timeline.dart';
 import 'package:lokalapp/screens/profile.dart';
+import 'package:lokalapp/states/current_user.dart';
+import 'package:provider/provider.dart';
 
 import 'activity.dart';
 import 'chat.dart';
@@ -8,8 +10,6 @@ import 'discover.dart';
 import 'home.dart';
 
 class BottomNavigation extends StatefulWidget {
-   final Map <String, String>account;
- BottomNavigation({Key key, this.account}) : super(key: key);
   @override
   _BottomNavigationState createState() => _BottomNavigationState();
 }
@@ -38,12 +38,10 @@ class _BottomNavigationState extends State<BottomNavigation> {
     _pageController = PageController();
   }
 
-
-
-
   @override
   Widget build(BuildContext context) {
-    
+    final Map account = Provider.of<CurrentUser>(context).getStreamAccount;
+
     return Scaffold(
       bottomNavigationBar: SizedBox(
         height: 70,
@@ -65,13 +63,18 @@ class _BottomNavigationState extends State<BottomNavigation> {
           ],
         ),
       ),
-      body:   PageView(
-        children: [Home(account: widget.account), Timeline(account: widget.account,), Chat(), Activity(), Profile(account: widget.account)],
+      body: PageView(
+        children: [
+          Home(account: account),
+          Timeline(account: account),
+          Chat(),
+          Activity(),
+          Profile(account: account)
+        ],
         controller: _pageController,
         onPageChanged: onPageChanged,
         physics: NeverScrollableScrollPhysics(),
       ),
-    
     );
   }
 

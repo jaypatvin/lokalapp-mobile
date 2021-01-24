@@ -1,16 +1,7 @@
-import 'dart:convert';
-
-import 'package:flutter/services.dart';
-import 'package:lokalapp/states/current_user.dart';
-import 'package:lokalapp/utils/constants.dart';
-import 'package:provider/provider.dart';
-import 'package:start_jwt/json_web_token.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:lokalapp/models/user.dart';
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:http/http.dart' as http;
 
 Users users = Users();
 final usersRef = FirebaseFirestore.instance.collection("users");
@@ -19,72 +10,18 @@ final Reference storageRef = FirebaseStorage.instance.ref();
 
 //  final Map account;
 class Database {
-  static const _baseUrl =
-      'https://us-central1-lokal-1baac.cloudfunctions.net/api';
-  static const platform = const MethodChannel('io.getstream/backend');
-
-  Future<Map> login(String user) async {
-    var authResponse =
-        await http.post('$_baseUrl/v1/stream/users', body: {'sender': user});
-    var authToken = json.decode(authResponse.body)['authToken'];
-    var feedResponse = await http.post(
-        '$_baseUrl/v1/stream/stream-feed-credentials',
-        headers: {'Authorization': 'Bearer $authToken'});
-    var feedToken = json.decode(feedResponse.body)['token'];
-    return {'authToken': authToken, 'feedToken': feedToken};
-  }
-
-  Future<List> users(Map account) async {
-    var response = await http.get('$_baseUrl/v1/stream/users',
-        headers: {'Authorization': 'Bearer ${account['authToken']}'});
-    return json.decode(response.body)['users'];
-  }
-
-  Future<bool> postMessage(Map account, String message) async {
-    return await platform.invokeMethod<bool>('postMessage', {
-      'user': account['user'],
-      'token': account['feedToken'],
-      'message': message
-    });
-  }
-
-  Future<dynamic> getActivities(Map account) async {
-    var result = await platform.invokeMethod<String>('getActivities',
-        {'user': account['user'], 'token': account['feedToken']});
-    return json.decode(result);
-  }
-
-  Future<dynamic> getTimeline(Map account) async {
-    var result = await platform.invokeMethod<String>('getTimeline',
-        {'user': account['user'], 'token': account['feedToken']});
-    return json.decode(result);
-  }
-
-  Future<bool> follow(Map account, String userToFollow) async {
-    return await platform.invokeMethod<bool>('follow', {
-      'user': account['user'],
-      'token': account['feedToken'],
-      'userToFollow': userToFollow
-    });
-  }
-
-  Future<String> createUser(Users users) async {
+  Future<String> createUser(Users user) async {
     String retVal = "error";
     debugPrint("Creating user");
     try {
       await usersRef.doc().set({
-        "user_uids": users.userUids,
-        // "display_name": users.displayName,
-        "email": users.email,
-        "first_name": "",
-        "last_name": "",
-        // "gender": users.gender,
-        "community_id": "",
-        "address": "",
-
-        // "birthdate": users.birthDate,
-        // "registration": users.registration
-        "profile_photo": "",
+        "user_uids": user?.userUids,
+        "email": user?.email,
+        "first_name": user?.firstName,
+        "last_name": user?.lastName,
+        "community_id": user?.communityId,
+        "address": user?.address,
+        "profile_photo": user?.profilePhoto,
       });
 
       // currentUser = Users.fromDocument(doc);

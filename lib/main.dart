@@ -14,12 +14,8 @@ void main() async {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(
-          create: (context) => CurrentUser(),
-        ),
-      ],
+    return ChangeNotifierProvider(
+      create: (_) => CurrentUser(),
       child: MaterialApp(
         title: 'Flutter Demo',
         theme: ThemeData(
@@ -28,31 +24,5 @@ class MyApp extends StatelessWidget {
         home: Root(),
       ),
     );
-    // return ChangeNotifierProvider(
-    //   create: (context) => CurrentUser(),
-    //   child: MaterialApp(
-    //     title: 'Flutter Demo',
-    //     theme: ThemeData(
-    //       primarySwatch: Colors.blue,
-    //     ),
-    //     home: Root(),
-    //   ),
-    // );
   }
 }
-
-// class MyApp extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return ChangeNotifierProvider(
-//       create: (context) => CurrentUser(),
-//       child: MaterialApp(
-//         title: 'Flutter Demo',
-//         theme: ThemeData(
-//           primarySwatch: Colors.blue,
-//         ),
-//         home: Root(),
-//       ),
-//     );
-//   }
-// }

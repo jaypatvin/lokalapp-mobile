@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:lokalapp/services/database.dart';
-
-
+import 'package:lokalapp/services/get_stream_api_service.dart';
 
 class Profile extends StatefulWidget {
+  final Map<String, String> account;
   Profile({Key key, @required this.account}) : super(key: key);
-
-  final Map account;
 
   @override
   _ProfileState createState() => _ProfileState();
@@ -22,7 +19,7 @@ class _ProfileState extends State<Profile> {
   }
 
   Future<List<dynamic>> _getActivities() async {
-    return await Database().getActivities(widget.account);
+    return await GetStreamApiService().getActivities(widget.account);
   }
 
   Future _refreshActivities() async {

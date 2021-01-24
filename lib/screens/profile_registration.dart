@@ -1,8 +1,6 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:lokalapp/screens/welcome_screen.dart';
 import 'package:lokalapp/utils/themes.dart';
 import 'package:lokalapp/widgets/rounded_button.dart';
 import 'package:image_picker/image_picker.dart';
@@ -15,6 +13,8 @@ import 'package:lokalapp/services/database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
 import 'package:lokalapp/states/current_user.dart';
+
+import 'bottom_navigation.dart';
 
 class ProfileRegistration extends StatefulWidget {
   @override
@@ -53,7 +53,6 @@ class _ProfileRegistrationState extends State<ProfileRegistration> {
         file = File(pickedImage.path);
       });
     }
-    ;
   }
 
   selectImage(parentContext) {
@@ -106,64 +105,92 @@ class _ProfileRegistrationState extends State<ProfileRegistration> {
     return downloadUrl;
   }
 
-  Future<String> createPostinFirestore(
-      {String mediaUrl,
-      String firstName,
-      String lastName,
-      String profilePhoto,
-      String uid,
-      String location,
-      String address}) async {
-    User firebaseUser = FirebaseAuth.instance.currentUser;
-    String retVal = "error";
+  // Future<String> createPostinFirestore(
+  //     {String mediaUrl,
+  //     String firstName,
+  //     String lastName,
+  //     String profilePhoto,
+  //     String uid,
+  //     String location,
+  //     String address}) async {
+  //   User firebaseUser = FirebaseAuth.instance.currentUser;
+  //   String retVal = "error";
 
-    var docId = await Database().getCurrentUserDocId(firebaseUser.uid);
-    try {
-      await usersRef.doc(docId).update({
-        "profile_photo": mediaUrl,
-        // "uid": firebaseUser.uid,
-        "first_name": firstName,
-        "last_name": lastName,
-        "address": {"street": address},
-        "location": location,
-      });
-      retVal = "success";
-      print(firebaseUser.uid);
-      // print(docId);
-    } on PlatformException catch (e) {
-      print(e.message);
-    } catch (e) {
-      print(e);
-    }
-    return retVal;
-  }
+  //   var docId = await Database().getCurrentUserDocId(firebaseUser.uid);
+  //   try {
+  //     await usersRef.doc(docId).update({
+  //       "profile_photo": mediaUrl,
+  //       // "uid": firebaseUser.uid,
+  //       "first_name": firstName,
+  //       "last_name": lastName,
+  //       "address": {"street": address},
+  //       "location": location,
+  //     });
+  //     retVal = "success";
+  //     print(firebaseUser.uid);
+  //     // print(docId);
+  //   } on PlatformException catch (e) {
+  //     print(e.message);
+  //   } catch (e) {
+  //     print(e);
+  //   }
+  //   return retVal;
+  // }
 
-  handleSubmit() async {
+  Future registerUser() async {
     setState(() {
       isUploading = true;
     });
-    await compressImage();
+    String mediaUrl = "";
+    if (file != null) {
+      await compressImage();
+      mediaUrl = await uploadImage(file);
+    }
 
-    String mediaUrl = await uploadImage(file);
-    createPostinFirestore(
-        profilePhoto: mediaUrl,
-        firstName: _firstNameController.text,
-        lastName: _lastNameController.text,
-        address: _streetAddressController.text,
-        location: _locationController.text);
-    _firstNameController.clear();
-    _lastNameController.clear();
-    _streetAddressController.clear();
-    if (this.mounted) {
-      setState(() {
-        file = null;
-        isUploading = false;
-        _firstNameController.dispose();
-        _lastNameController.dispose();
-        _streetAddressController.dispose();
-      });
+    var _user = Provider.of<CurrentUser>(context, listen: false).getCurrentUser;
+
+    _user.profilePhoto = mediaUrl;
+    _user.firstName = _firstNameController.text;
+    _user.lastName = _lastNameController.text;
+    _user.address = {"street": _streetAddressController.text};
+
+    String status = await Database().createUser(_user);
+    await Provider.of<CurrentUser>(context, listen: false).updateUser();
+
+    if (status == "success") {
+      Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => BottomNavigation()),
+          (route) => false);
     }
   }
+
+  // handleSubmit() async {
+  //   setState(() {
+  //     isUploading = true;
+  //   });
+  //   await compressImage();
+
+  //   String mediaUrl = await uploadImage(file);
+  //   createPostinFirestore(
+  //       profilePhoto: mediaUrl,
+  //       firstName: _firstNameController.text,
+  //       lastName: _lastNameController.text,
+  //       address: _streetAddressController.text,
+  //       location: _locationController.text);
+  //   _firstNameController.clear();
+  //   _lastNameController.clear();
+  //   _streetAddressController.clear();
+  //   if (this.mounted) {
+  //     setState(() {
+  //       file = null;
+  //       isUploading = false;
+  //       _firstNameController.dispose();
+  //       _lastNameController.dispose();
+  //       _streetAddressController.dispose();
+  //     });
+  //   }
+  // }
 
   Widget buildStreetAddress() {
     return Column(
@@ -285,13 +312,15 @@ class _ProfileRegistrationState extends State<ProfileRegistration> {
 
   Widget createProfile() {
     return RoundedButton(
-      onPressed: () {
-        handleSubmit();
-        Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(builder: (context) => WelcomeScreen()),
-            (route) => false);
+      onPressed: () async {
+        //handleSubmit();
+        await registerUser();
+        // Navigator.pushAndRemoveUntil(
+        //     context,
+        //     MaterialPageRoute(builder: (context) => WelcomeScreen()),
+        //     (route) => false);
       },
+      //onPressed: () => registerUser(),
       label: "CREATE PROFILE",
       fontSize: 20.0,
       minWidth: 250,
@@ -358,7 +387,7 @@ class _ProfileRegistrationState extends State<ProfileRegistration> {
     );
   }
 
-  Scaffold buildPage() {
+  Scaffold buildPage(BuildContext context) {
     return Scaffold(
       backgroundColor: kInviteScreenColor,
       body: SafeArea(
@@ -424,6 +453,6 @@ class _ProfileRegistrationState extends State<ProfileRegistration> {
 
   @override
   Widget build(BuildContext context) {
-    return buildPage();
+    return buildPage(context);
   }
 }

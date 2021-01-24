@@ -1,17 +1,13 @@
 import 'package:flutter/material.dart';
-// import 'package:lokalapp/models/user.dart';
-// import 'package:lokalapp/screens/activity.dart';
 import 'package:lokalapp/models/user.dart';
 import 'package:lokalapp/services/database.dart';
-// import 'package:lokalapp/states/currentUser.dart';
-// import 'package:provider/provider.dart';
-// import 'package:velocity_x/velocity_x.dart';
+import 'package:lokalapp/services/get_stream_api_service.dart';
 import 'package:lokalapp/states/current_user.dart';
 import 'package:provider/provider.dart';
 
 class Timeline extends StatefulWidget {
   final Map<String, String> account;
-  Timeline({Key key, this.account}) : super(key: key);
+  Timeline({Key key, @required this.account}) : super(key: key);
 
   @override
   _TimelineState createState() => _TimelineState();
@@ -27,9 +23,7 @@ class _TimelineState extends State<Timeline> {
   }
 
   Future<List<dynamic>> _getTimeline() async {
-    CurrentUser _user = Provider.of<CurrentUser>(context, listen: false);
-    var stream = await _user.getStreamSignin();
-    return await Database().getTimeline(stream);
+    return await GetStreamApiService().getTimeline(widget.account);
   }
 
   Future _refreshActivities() async {
@@ -82,60 +76,58 @@ class _TimelineState extends State<Timeline> {
                           children: snapshot.data
                               .map(
                                 (activity) => Container(
-                                    width: MediaQuery.of(context).size.width,
-                                    child: Column(
-                                      children: [
-                                        ListTile(
-                                          //  title: Text(activity["message"]),
-                                          subtitle: Column(
-                                            children: [
-                                              Card(
-                                                shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          16.0),
-                                                ),
-                                                child: Column(
-                                                  children: [
-                                                    Row(
-                                                      children: [
-                                                        Expanded(
-                                                          child: ListTile(
-                                                            leading:
-                                                                CircleAvatar(),
-                                                            // title: buildPostName(),
-                                                            title: Text(_user
-                                                                    .getCurrentUser
-                                                                    .firstName +
-                                                                "" +
-                                                                _user
-                                                                    .getCurrentUser
-                                                                    .lastName),
-                                                            trailing: Icon(Icons
-                                                                .more_horiz),
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                    Row(
-                                                      mainAxisSize:
-                                                          MainAxisSize.max,
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        Text(
-                                                            activity["message"])
-                                                      ],
-                                                    )
-                                                  ],
-                                                ),
+                                  width: MediaQuery.of(context).size.width,
+                                  child: Column(
+                                    children: [
+                                      ListTile(
+                                        //  title: Text(activity["message"]),
+                                        subtitle: Column(
+                                          children: [
+                                            Card(
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(16.0),
                                               ),
-                                            ],
-                                          ),
+                                              child: Column(
+                                                children: [
+                                                  Row(
+                                                    children: [
+                                                      Expanded(
+                                                        child: ListTile(
+                                                          leading:
+                                                              CircleAvatar(),
+                                                          // title: buildPostName(),
+                                                          title: Text(_user
+                                                                  .getCurrentUser
+                                                                  .firstName +
+                                                              "" +
+                                                              _user
+                                                                  .getCurrentUser
+                                                                  .lastName),
+                                                          trailing: Icon(
+                                                              Icons.more_horiz),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  Row(
+                                                    mainAxisSize:
+                                                        MainAxisSize.max,
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment.start,
+                                                    children: [
+                                                      Text(activity["message"])
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
                                         ),
-                                      ],
-                                    )),
+                                      ),
+                                    ],
+                                  ),
+                                ),
                                 // ),
                                 // ),
                               )
