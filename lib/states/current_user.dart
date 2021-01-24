@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:lokalapp/models/user.dart';
@@ -7,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:lokalapp/services/database.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+import 'package:lokalapp/services/get_stream_api_service.dart';
 
 // used for auth validation in screens
 enum authStatus { Success, UserNotFound, PasswordNotValid, Error }
@@ -17,19 +16,22 @@ class CurrentUser extends ChangeNotifier {
   FirebaseAuth _auth = FirebaseAuth.instance;
   Users _currentUser = Users();
 
+  Map<String, String> _getStreamAccount;
+
   Users get getCurrentUser => _currentUser;
-  
-  String get uid => uid;
-  String get email => email;
+  Map<String, String> get getStreamAccount => _getStreamAccount;
+
   Future<String> onStartUp() async {
     String retVal = "error";
     try {
       User _firebaseUser = _auth.currentUser;
-      _currentUser = await Database().getUserInfo(_firebaseUser.uid);
-      
-      if (_currentUser != null) {
+      _currentUser.userUids = [];
+      var _user = await Database().getUserInfo(_firebaseUser.uid);
+
+      if (_user != null) {
+        _currentUser = _user;
+        await _getStreamLogin();
         print(_currentUser);
-        
         retVal = "success";
       }
     } catch (e) {
@@ -38,55 +40,81 @@ class CurrentUser extends ChangeNotifier {
     return retVal;
   }
 
-Future getStreamSignin()async{
- Map<String, String> account;
-      final userId = _currentUser.userUids;
-        var creds = await Database().login(userId.elementAt(0));
-        
-          account = {
-            'user': userId.elementAt(0),
-            'authToken': creds['authToken'],
-            'feedToken': creds['feedToken'],
-          };
-        return account;
-}
-
+  Future _getStreamLogin() async {
+    var creds = await GetStreamApiService().login(_currentUser.userUids.first);
+    this._getStreamAccount = {
+      'user': _currentUser.userUids.first,
+      'authToken': creds['authToken'],
+      'feedToken': creds['feedToken'],
+    };
+  }
 
   Future<String> onSignOut() async {
     String retVal = "error";
     try {
       await _auth.signOut();
-
       _currentUser = Users();
       retVal = "success";
     } catch (e) {
       print(e);
     }
+
+    notifyListeners();
     return retVal;
   }
 
-  Future<String> signUpUser(String email, String password) async {
-    String retVal = "error";
-    Users _user = Users(userUids: <String>[]);
+  // Future<String> signUpUser(String email, String password) async {
+  //   String retVal = "error";
+  //   Users _user = Users(userUids: <String>[]);
+  //   try {
+  //     UserCredential _authResult = await _auth.createUserWithEmailAndPassword(
+  //         email: email, password: password);
+  //     _user.userUids.add(_authResult.user.uid);
+  //     _user.email = _authResult.user.email;
+  //     //_user.firstName = firstName,
+  //     // _user.lastName = lastName,
+  //     String _returnString = await Database().createUser(_user);
+  //     // print(_user.uid);
+  //     // print(_user.email);
+  //     if (_returnString == "success") {
+  //       retVal = "success";
+  //     }
+  //   } on PlatformException catch (e) {
+  //     retVal = e.message;
+  //   } on NoSuchMethodError catch (e) {
+  //     debugPrint(e.stackTrace.toString());
+  //   } catch (e) {
+  //     retVal = e.message;
+  //   }
+  //   return retVal;
+  // }
+
+  Future updateUser() async {
+    try {
+      User _firebaseUser = _auth.currentUser;
+      _currentUser = await Database().getUserInfo(_firebaseUser.uid);
+      await _getStreamLogin();
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future<authStatus> signUpUser(String email, String password) async {
+    authStatus retVal = authStatus.Error;
     try {
       UserCredential _authResult = await _auth.createUserWithEmailAndPassword(
-          email: email, password: password);
-      _user.userUids.add(_authResult.user.uid);
-      _user.email = _authResult.user.email;
-      //_user.firstName = firstName,
-      // _user.lastName = lastName,
-      String _returnString = await Database().createUser(_user);
-      // print(_user.uid);
-      // print(_user.email);
-      if (_returnString == "success") {
-        retVal = "success";
+        email: email,
+        password: password,
+      );
+
+      if (_authResult != null) {
+        retVal = authStatus.UserNotFound;
       }
-    } on PlatformException catch (e) {
-      retVal = e.message;
-    } on NoSuchMethodError catch (e) {
-      debugPrint(e.stackTrace.toString());
     } catch (e) {
-      retVal = e.message;
+      debugPrint(e.code);
+      if (e.code == "email-already-in-use") {
+        retVal = await loginUserWithEmail(email, password);
+      }
     }
     return retVal;
   }
@@ -97,10 +125,14 @@ Future getStreamSignin()async{
     try {
       UserCredential _authResult = await _auth.signInWithEmailAndPassword(
           email: email, password: password);
-      _currentUser = await Database().getUserInfo(_authResult.user.uid);
-      
-      if (_currentUser != null) {
+
+      var _user = await Database().getUserInfo(_authResult.user.uid);
+      //_currentUser = await Database().getUserInfo(_authResult.user.uid);
+
+      if (_user != null) {
+        _currentUser = _user;
         retVal = authStatus.Success;
+        await _getStreamLogin();
       }
     } catch (e) {
       switch (e.code) {
@@ -179,11 +211,15 @@ Future getStreamSignin()async{
     authStatus retVal = authStatus.Error;
     try {
       UserCredential _authResult = await _auth.signInWithCredential(credential);
-      _currentUser = await Database().getUserInfo(_authResult.user.uid);
+      var _user = await Database().getUserInfo(_authResult.user.uid);
 
-      if (_currentUser != null) {
+      if (_user != null) {
+        _currentUser = _user;
         retVal = authStatus.Success;
+        await _getStreamLogin();
       } else {
+        _currentUser.email = _authResult.user.email;
+        _currentUser.userUids.add(_authResult.user.uid);
         retVal = authStatus.UserNotFound;
       }
     } catch (e) {
