@@ -4,9 +4,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:lokalapp/utils/constants.dart';
 import 'package:start_jwt/json_web_token.dart';
 
-
 class Users extends ChangeNotifier {
-  List<String> userUids;
+  List<String> userUids = [];
   String firstName;
   String lastName;
   String profilePhoto;
@@ -45,7 +44,4 @@ class Users extends ChangeNotifier {
         profilePhoto: doc["profile_photo"],
         registration: doc["registration"]);
   }
-
-
-
 }

@@ -5,7 +5,6 @@ import 'package:lokalapp/screens/invite_page.dart';
 import 'package:lokalapp/screens/login_screen.dart';
 import 'package:lokalapp/widgets/rounded_button.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:lokalapp/models/user.dart';
 
 class WelcomeScreen extends StatefulWidget {
   @override
@@ -35,9 +34,11 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
           autoPlay: false,
           scrollDirection: Axis.horizontal,
           onPageChanged: (index, reason) {
-            setState(() {
-              _current = index;
-            });
+            if (this.mounted) {
+              setState(() {
+                _current = index;
+              });
+            }
           },
         ),
         items: [

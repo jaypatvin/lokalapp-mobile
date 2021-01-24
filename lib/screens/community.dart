@@ -1,16 +1,12 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:lokalapp/models/user.dart';
 import 'package:lokalapp/screens/profile_registration.dart';
-import 'package:lokalapp/services/database.dart';
+import 'package:lokalapp/widgets/sso_block.dart';
 import 'package:provider/provider.dart';
-import 'package:lokalapp/screens/invite_page.dart';
-import 'package:lokalapp/screens/profile_registration.dart';
-import 'package:lokalapp/services/database.dart';
-import 'package:lokalapp/states/currentUser.dart';
-import 'package:provider/provider.dart';
-import 'dart:io';
-import 'package:lokalapp/states/currentUser.dart';
+import 'package:lokalapp/states/current_user.dart';
+
+import 'bottom_navigation.dart';
+
+enum LoginType { email, google, facebook }
 
 class Community extends StatefulWidget {
   @override
@@ -24,17 +20,35 @@ class _CommunityState extends State<Community> {
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
 
-  void _signUpUser(String email, String password, BuildContext context) async {
-    CurrentUser _users = Provider.of<CurrentUser>(context, listen: false);
+  void _signUpUser(
+      {@required LoginType type, String email, String password}) async {
+    CurrentUser _user = Provider.of<CurrentUser>(context, listen: false);
     try {
-      String _returnString = await _users.signUpUser(email, password);
-      if (_returnString == "success") {
-        print("success");
+      authStatus _authStatus;
 
-        Navigator.of(context).push(
+      switch (type) {
+        case LoginType.email:
+          _authStatus = await _user.signUpUser(email, password);
+          break;
+        case LoginType.google:
+          _authStatus = await _user.loginUserWithGoogle();
+          break;
+        case LoginType.facebook:
+          _authStatus = await _user.loginUserWithFacebook();
+          break;
+        default:
+      }
+      if (_authStatus == authStatus.UserNotFound) {
+        Navigator.push(context,
             MaterialPageRoute(builder: (context) => ProfileRegistration()));
+      } else if (_authStatus == authStatus.Success) {
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => BottomNavigation()),
+            (route) => false);
       }
     } catch (e) {
+      // TODO: do something with error
       print(e);
     }
   }
@@ -114,7 +128,9 @@ class _CommunityState extends State<Community> {
           ),
           onPressed: () {
             _signUpUser(
-                _emailController.text, _passwordController.text, context);
+                type: LoginType.email,
+                email: _emailController.text,
+                password: _passwordController.text);
           },
           shape: new RoundedRectangleBorder(
             borderRadius: new BorderRadius.circular(40.0),
@@ -190,7 +206,13 @@ class _CommunityState extends State<Community> {
                 ),
                 buildEmail(),
                 buildPassword(),
-                register()
+                register(),
+                SizedBox(height: MediaQuery.of(context).size.height * 0.05),
+                SocialBlock(
+                  fbLogin: () => _signUpUser(type: LoginType.facebook),
+                  googleLogin: () => _signUpUser(type: LoginType.google),
+                  buttonWidth: MediaQuery.of(context).size.width * 0.15,
+                ),
               ],
             ),
           ),

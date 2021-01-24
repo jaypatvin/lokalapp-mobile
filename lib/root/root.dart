@@ -1,24 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:lokalapp/screens/bottomNavigation.dart';
-import 'package:lokalapp/screens/home.dart';
-import 'package:lokalapp/screens/profile_registration.dart';
+import 'package:lokalapp/screens/bottom_navigation.dart';
 import 'package:lokalapp/screens/welcome_screen.dart';
-import 'package:lokalapp/models/user.dart';
 import 'package:provider/provider.dart';
 
-import 'package:lokalapp/screens/invite_page.dart';
-import 'package:lokalapp/screens/profile_registration.dart';
 import 'package:lokalapp/screens/spalsh.dart';
 import 'package:lokalapp/screens/welcome_screen.dart';
-import 'package:lokalapp/models/user.dart';
-import 'package:lokalapp/states/currentUser.dart';
+import 'package:lokalapp/states/current_user.dart';
 import 'package:provider/provider.dart';
 
 enum AuthStatus { notLoggedIn, loggedIn, unknown, notInCommunity, inCommunity }
 
 class Root extends StatefulWidget {
-   final Map<String, String> account;
-   Root({this.account});
+  final Map<String, String> account;
+  Root({this.account});
   @override
   _RootState createState() => _RootState();
 }
@@ -35,7 +29,7 @@ class _RootState extends State<Root> {
     if (_returnString == "success") {
       setState(() {
         _authStatus = AuthStatus.loggedIn;
-  
+
         if (_returnString == "success") {
           if (_users.getCurrentUser.communityId != null) {
             setState(() {
@@ -62,17 +56,15 @@ class _RootState extends State<Root> {
       case AuthStatus.unknown:
         retVal = Splash();
         break;
+
       case AuthStatus.notLoggedIn:
-        retVal = WelcomeScreen();
-        break;
-      case AuthStatus.loggedIn:
-        retVal = BottomNavigation( account: widget.account,) ;
-        break;
       case AuthStatus.notInCommunity:
         retVal = WelcomeScreen();
         break;
+
+      case AuthStatus.loggedIn:
       case AuthStatus.inCommunity:
-        retVal = BottomNavigation(account: widget.account,);
+        retVal = BottomNavigation();
     }
     return retVal;
   }
