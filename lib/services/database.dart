@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/services.dart';
-import 'package:lokalapp/states/currentUser.dart';
+import 'package:lokalapp/states/current_user.dart';
 import 'package:lokalapp/utils/constants.dart';
 import 'package:provider/provider.dart';
 import 'package:start_jwt/json_web_token.dart';
@@ -12,11 +12,11 @@ import 'package:lokalapp/models/user.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:http/http.dart' as http;
 
-
 Users users = Users();
 final usersRef = FirebaseFirestore.instance.collection("users");
 final inviteRef = FirebaseFirestore.instance.collection("invites");
 final Reference storageRef = FirebaseStorage.instance.ref();
+
 //  final Map account;
 class Database {
   static const _baseUrl =
@@ -40,26 +40,34 @@ class Database {
     return json.decode(response.body)['users'];
   }
 
- Future<bool> postMessage(Map account, String message) async {
-    return await platform.invokeMethod<bool>(
-        'postMessage', {'user': account['user'], 'token': account['feedToken'], 'message': message});
+  Future<bool> postMessage(Map account, String message) async {
+    return await platform.invokeMethod<bool>('postMessage', {
+      'user': account['user'],
+      'token': account['feedToken'],
+      'message': message
+    });
   }
-  
- Future<dynamic> getActivities(Map account) async {
-    var result =
-        await platform.invokeMethod<String>('getActivities', {'user': account['user'], 'token': account['feedToken']});
+
+  Future<dynamic> getActivities(Map account) async {
+    var result = await platform.invokeMethod<String>('getActivities',
+        {'user': account['user'], 'token': account['feedToken']});
     return json.decode(result);
   }
 
- Future<dynamic> getTimeline(Map account) async {
-    var result =
-        await platform.invokeMethod<String>('getTimeline', {'user': account['user'], 'token': account['feedToken']});
+  Future<dynamic> getTimeline(Map account) async {
+    var result = await platform.invokeMethod<String>('getTimeline',
+        {'user': account['user'], 'token': account['feedToken']});
     return json.decode(result);
   }
- Future<bool> follow(Map account, String userToFollow) async {
-    return await platform.invokeMethod<bool>(
-        'follow', {'user': account['user'], 'token': account['feedToken'], 'userToFollow': userToFollow});
+
+  Future<bool> follow(Map account, String userToFollow) async {
+    return await platform.invokeMethod<bool>('follow', {
+      'user': account['user'],
+      'token': account['feedToken'],
+      'userToFollow': userToFollow
+    });
   }
+
   Future<String> createUser(Users users) async {
     String retVal = "error";
     debugPrint("Creating user");
@@ -73,10 +81,10 @@ class Database {
         // "gender": users.gender,
         "community_id": "",
         "address": "",
-        
+
         // "birthdate": users.birthDate,
         // "registration": users.registration
-        "profile_photo":"",
+        "profile_photo": "",
       });
 
       // currentUser = Users.fromDocument(doc);

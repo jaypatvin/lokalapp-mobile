@@ -6,7 +6,7 @@ import 'package:lokalapp/services/database.dart';
 // import 'package:lokalapp/states/currentUser.dart';
 // import 'package:provider/provider.dart';
 // import 'package:velocity_x/velocity_x.dart';
-import 'package:lokalapp/states/currentUser.dart';
+import 'package:lokalapp/states/current_user.dart';
 import 'package:provider/provider.dart';
 
 class Timeline extends StatefulWidget {
@@ -118,8 +118,11 @@ class _TimelineState extends State<Timeline> {
                                                       ],
                                                     ),
                                                     Row(
-                                                        mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.start,
+                                                      mainAxisSize:
+                                                          MainAxisSize.max,
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .start,
                                                       children: [
                                                         Text(
                                                             activity["message"])

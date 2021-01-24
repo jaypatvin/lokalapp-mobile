@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:lokalapp/screens/community.dart';
 import 'package:lokalapp/widgets/rounded_text_field.dart';
 import 'package:lokalapp/services/database.dart';
-import 'package:lokalapp/states/currentUser.dart';
+import 'package:lokalapp/states/current_user.dart';
 import 'package:lokalapp/widgets/modal_text_field.dart';
 import 'package:lokalapp/utils/themes.dart';
 import 'package:lokalapp/widgets/rounded_button.dart';
@@ -20,8 +20,8 @@ class _InvitePageState extends State<InvitePage> {
   void validateInviteCode(BuildContext context, String code) async {
     bool inviteCodeExists = await Database().inviteCodeExists(code);
     if (inviteCodeExists) {
-      
-    Navigator.push(context, MaterialPageRoute(builder: (context) => Community()));
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => Community()));
     } else {
       //TODO: add toast "community invite code is invalid"
     }

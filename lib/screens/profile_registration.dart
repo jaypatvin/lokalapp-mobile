@@ -14,8 +14,8 @@ import 'package:image/image.dart' as Im;
 import 'package:lokalapp/services/database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
+import 'package:lokalapp/states/current_user.dart';
 
-import 'package:lokalapp/states/currentUser.dart';
 class ProfileRegistration extends StatefulWidget {
   @override
   _ProfileRegistrationState createState() => _ProfileRegistrationState();
@@ -86,7 +86,7 @@ class _ProfileRegistrationState extends State<ProfileRegistration> {
         });
   }
 
- compressImage() async {
+  compressImage() async {
     final tempDir = await getTemporaryDirectory();
     final path = tempDir.path;
     Im.Image imageFile = Im.decodeImage(file.readAsBytesSync());
@@ -154,17 +154,15 @@ class _ProfileRegistrationState extends State<ProfileRegistration> {
     _firstNameController.clear();
     _lastNameController.clear();
     _streetAddressController.clear();
-    if(this.mounted){
-    setState(() {
-      file = null;
-      isUploading = false;
-      _firstNameController.dispose();
-      _lastNameController.dispose();
-      _streetAddressController.dispose();
-
-    });
+    if (this.mounted) {
+      setState(() {
+        file = null;
+        isUploading = false;
+        _firstNameController.dispose();
+        _lastNameController.dispose();
+        _streetAddressController.dispose();
+      });
     }
-
   }
 
   Widget buildStreetAddress() {
@@ -289,8 +287,10 @@ class _ProfileRegistrationState extends State<ProfileRegistration> {
     return RoundedButton(
       onPressed: () {
         handleSubmit();
-        Navigator.pushAndRemoveUntil(context,
-            MaterialPageRoute(builder: (context) => WelcomeScreen()), (route) => false);
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => WelcomeScreen()),
+            (route) => false);
       },
       label: "CREATE PROFILE",
       fontSize: 20.0,
@@ -421,12 +421,9 @@ class _ProfileRegistrationState extends State<ProfileRegistration> {
       ),
     );
   }
-  
 
   @override
   Widget build(BuildContext context) {
     return buildPage();
   }
-
-
 }

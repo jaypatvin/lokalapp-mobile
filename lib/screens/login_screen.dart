@@ -4,7 +4,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:lokalapp/models/user.dart';
-import 'package:lokalapp/screens/bottomNavigation.dart';
+import 'package:lokalapp/screens/bottom_navigation.dart';
 import 'package:lokalapp/screens/invite_page.dart';
 import 'package:lokalapp/services/database.dart';
 import 'package:lokalapp/widgets/rounded_button.dart';
@@ -12,14 +12,13 @@ import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:lokalapp/utils/themes.dart';
 import 'package:lokalapp/widgets/social_button.dart';
-import 'package:lokalapp/states/currentUser.dart';
+import 'package:lokalapp/states/current_user.dart';
 
 import 'home.dart';
 
 enum LoginType { email, google, facebook }
 
 class LoginScreen extends StatefulWidget {
-
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
@@ -40,11 +39,9 @@ class _LoginScreenState extends State<LoginScreen> {
       String email,
       String password,
       BuildContext context}) async {
-    
     CurrentUser _users = Provider.of<CurrentUser>(context, listen: false);
     try {
       authStatus _authStatus;
-
 
       switch (type) {
         case LoginType.email:
@@ -58,15 +55,11 @@ class _LoginScreenState extends State<LoginScreen> {
           break;
         default:
       }
-      if (_authStatus == authStatus.Success ) {
-
-   Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => BottomNavigation(account: account)));
-        
-     
-      
+      if (_authStatus == authStatus.Success) {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => BottomNavigation(account: account)));
       } else if (_authStatus == authStatus.UserNotFound) {
         Navigator.pushAndRemoveUntil(
             context,
