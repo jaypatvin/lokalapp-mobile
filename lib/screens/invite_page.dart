@@ -16,10 +16,12 @@ class _InvitePageState extends State<InvitePage> {
   TextEditingController _codeController = TextEditingController();
 
   void validateInviteCode(BuildContext context, String code) async {
-    bool inviteCodeExists = await Database().inviteCodeExists(code);
-    if (inviteCodeExists) {
+    //bool inviteCodeExists = await Database().inviteCodeExists(code);
+    String communityId = await Database().getCommunityIdFromInvite(code);
+    if (communityId != null && communityId.isNotEmpty) {
       CurrentUser user = Provider.of<CurrentUser>(context, listen: false);
-      user.getCurrentUser.communityId = code;
+      user.getCurrentUser.communityId = communityId;
+      user.setInviteCode = code;
 
       if (user.getCurrentUser.userUids.isEmpty) {
         Navigator.push(
@@ -29,7 +31,11 @@ class _InvitePageState extends State<InvitePage> {
             MaterialPageRoute(builder: (context) => ProfileRegistration()));
       }
     } else {
-      //TODO: add toast "community invite code is invalid"
+      Scaffold.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Community invite code is claimed or invalid.'),
+        ),
+      );
     }
   }
 
@@ -65,72 +71,74 @@ class _InvitePageState extends State<InvitePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: kInviteScreenColor,
-      body: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.symmetric(
-            horizontal: 40.0,
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const Text(
-                "Enter invite code",
-                style: TextStyle(
-                  fontSize: 30.0,
-                  color: kNavyColor,
-                ),
-              ),
-              const SizedBox(
-                height: 10.0,
-              ),
-              const Text(
-                "A community key is required to create an account",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 16.0,
-                  color: kNavyColor,
-                ),
-              ),
-              SizedBox(
-                height: 35.0,
-              ),
-              TextField(
-                onTap: () {},
-                controller: _codeController,
-                style: TextStyle(
-                  fontFamily: "Goldplay",
-                  fontWeight: FontWeight.bold,
-                ),
-                decoration: _kInputDecoration.copyWith(
-                  hintText: "Community Key",
-                  fillColor: Colors.white,
-                ),
-              ),
-              SizedBox(
-                height: 35.0,
-              ),
-              RoundedButton(
-                label: "Join",
-                onPressed: () =>
-                    validateInviteCode(context, _codeController.text),
-              ),
-              SizedBox(
-                height: 20.0,
-              ),
-              InkWell(
-                  child: Text(
-                    "WHAT'S A COMMUNITY KEY?",
-                    style: TextStyle(
-                      fontSize: 16.0,
-                      fontFamily: "Goldplay",
-                      fontWeight: FontWeight.bold,
-                      decoration: TextDecoration.underline,
-                      color: kTealColor,
-                    ),
+      body: Builder(
+        builder: (context) => SafeArea(
+          child: Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: 40.0,
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const Text(
+                  "Enter invite code",
+                  style: TextStyle(
+                    fontSize: 30.0,
+                    color: kNavyColor,
                   ),
-                  onTap: () {}),
-            ],
+                ),
+                const SizedBox(
+                  height: 10.0,
+                ),
+                const Text(
+                  "A community key is required to create an account",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 16.0,
+                    color: kNavyColor,
+                  ),
+                ),
+                SizedBox(
+                  height: 35.0,
+                ),
+                TextField(
+                  onTap: () {},
+                  controller: _codeController,
+                  style: TextStyle(
+                    fontFamily: "Goldplay",
+                    fontWeight: FontWeight.bold,
+                  ),
+                  decoration: _kInputDecoration.copyWith(
+                    hintText: "Community Key",
+                    fillColor: Colors.white,
+                  ),
+                ),
+                SizedBox(
+                  height: 35.0,
+                ),
+                RoundedButton(
+                  label: "Join",
+                  onPressed: () =>
+                      validateInviteCode(context, _codeController.text),
+                ),
+                SizedBox(
+                  height: 20.0,
+                ),
+                InkWell(
+                    child: Text(
+                      "WHAT'S A COMMUNITY KEY?",
+                      style: TextStyle(
+                        fontSize: 16.0,
+                        fontFamily: "Goldplay",
+                        fontWeight: FontWeight.bold,
+                        decoration: TextDecoration.underline,
+                        color: kTealColor,
+                      ),
+                    ),
+                    onTap: () {}),
+              ],
+            ),
           ),
         ),
       ),

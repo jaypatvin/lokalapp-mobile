@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:lokalapp/models/user.dart';
-import 'package:flutter/services.dart';
 import 'package:lokalapp/services/database.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
@@ -15,11 +14,18 @@ final GoogleSignIn googleSignIn = GoogleSignIn();
 class CurrentUser extends ChangeNotifier {
   FirebaseAuth _auth = FirebaseAuth.instance;
   Users _currentUser = Users();
-
   Map<String, String> _getStreamAccount;
+  String _inviteCode;
 
+  String get uid => _auth.currentUser.uid;
   Users get getCurrentUser => _currentUser;
   Map<String, String> get getStreamAccount => _getStreamAccount;
+  String get getUserInviteCode => _inviteCode;
+
+  set setInviteCode(String inviteCode) {
+    _inviteCode = inviteCode;
+    notifyListeners();
+  }
 
   Future<String> onStartUp() async {
     String retVal = "error";
@@ -63,32 +69,6 @@ class CurrentUser extends ChangeNotifier {
     return retVal;
   }
 
-  // Future<String> signUpUser(String email, String password) async {
-  //   String retVal = "error";
-  //   Users _user = Users(userUids: <String>[]);
-  //   try {
-  //     UserCredential _authResult = await _auth.createUserWithEmailAndPassword(
-  //         email: email, password: password);
-  //     _user.userUids.add(_authResult.user.uid);
-  //     _user.email = _authResult.user.email;
-  //     //_user.firstName = firstName,
-  //     // _user.lastName = lastName,
-  //     String _returnString = await Database().createUser(_user);
-  //     // print(_user.uid);
-  //     // print(_user.email);
-  //     if (_returnString == "success") {
-  //       retVal = "success";
-  //     }
-  //   } on PlatformException catch (e) {
-  //     retVal = e.message;
-  //   } on NoSuchMethodError catch (e) {
-  //     debugPrint(e.stackTrace.toString());
-  //   } catch (e) {
-  //     retVal = e.message;
-  //   }
-  //   return retVal;
-  // }
-
   Future updateUser() async {
     try {
       User _firebaseUser = _auth.currentUser;
@@ -109,6 +89,8 @@ class CurrentUser extends ChangeNotifier {
 
       if (_authResult != null) {
         retVal = authStatus.UserNotFound;
+        _currentUser.email = _authResult.user.email;
+        _currentUser.userUids.add(_authResult.user.uid);
       }
     } catch (e) {
       debugPrint(e.code);
@@ -133,6 +115,10 @@ class CurrentUser extends ChangeNotifier {
         _currentUser = _user;
         retVal = authStatus.Success;
         await _getStreamLogin();
+      } else {
+        retVal = authStatus.UserNotFound;
+        _currentUser.email = _authResult.user.email;
+        _currentUser.userUids.add(_authResult.user.uid);
       }
     } catch (e) {
       switch (e.code) {
@@ -197,7 +183,7 @@ class CurrentUser extends ChangeNotifier {
           await Database().getCurrentUserDocId(_authResult.user.uid);
 
       if (docIdForFb.isEmpty) {
-        _currentUser.userUids.add(_authResult.user.uid);
+        //_currentUser.userUids.add(_authResult.user.uid);
         String docId = await Database().getCurrentUserDocId(firstUid);
         retVal = await Database().updateUser(docId, _currentUser);
       }
