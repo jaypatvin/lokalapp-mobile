@@ -41,13 +41,13 @@ class _LoginScreenState extends State<LoginScreen> {
         default:
       }
       if (_authStatus == authStatus.Success) {
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => BottomNavigation()));
-      } else if (_authStatus == authStatus.UserNotFound) {
         Navigator.pushAndRemoveUntil(
             context,
-            MaterialPageRoute(builder: (context) => InvitePage()),
+            MaterialPageRoute(builder: (context) => BottomNavigation()),
             (route) => false);
+      } else if (_authStatus == authStatus.UserNotFound) {
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => InvitePage()));
       }
     } catch (e) {
       // TODO: do something with error

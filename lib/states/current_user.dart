@@ -128,6 +128,9 @@ class CurrentUser extends ChangeNotifier {
         case "wrong-password":
           retVal = authStatus.PasswordNotValid;
           break;
+        case "user-not-found":
+          retVal = authStatus.UserNotFound;
+          break;
         default:
           retVal = authStatus.Error;
       }
