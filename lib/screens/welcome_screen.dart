@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'package:lokalapp/screens/invite_page.dart';
-import 'package:lokalapp/screens/login_screen.dart';
+import 'package:lokalapp/auth/invite_page.dart';
+import 'package:lokalapp/auth/login_screen.dart';
 import 'package:lokalapp/widgets/rounded_button.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 

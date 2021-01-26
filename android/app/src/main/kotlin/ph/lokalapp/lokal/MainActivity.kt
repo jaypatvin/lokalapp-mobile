@@ -29,6 +29,13 @@ private val token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJyZXNvdXJjZSI6ImFuYW
           call.argument<String>("message")!!
         )
         result.success(true)
+      }else if(call.method == "postLikes"){
+        postLikes(
+          call.argument<String>("user")!!,
+          call.argument<String>("token")!!,
+          call.argument<String>("likes")!!
+        )
+        result.success(true)
       } else if (call.method == "getActivities") {
         val activities = getActivities(
           call.argument<String>("user")!!,
@@ -63,6 +70,18 @@ private val token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJyZXNvdXJjZSI6ImFuYW
         .verb("post")
         .`object`(UUID.randomUUID().toString())
         .extraField("message", message)
+        .build()
+    ).join()
+  }
+    private fun postLikes(user: String, token: String, likes: String) {
+    val client = CloudClient.builder(API_KEY, token, user).build()
+    val feed = client.flatFeed("community_QHdK73bGFQRmgmPr3enN")
+    feed.addActivity(
+      Activity
+        .builder()
+        .actor("SU:${user}")
+        .verb("post")
+        .extraField("likes", likes)
         .build()
     ).join()
   }

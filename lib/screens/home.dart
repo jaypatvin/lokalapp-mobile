@@ -5,11 +5,10 @@ import 'package:lokalapp/services/get_stream_api_service.dart';
 import 'package:lokalapp/states/current_user.dart';
 import 'package:lokalapp/utils/themes.dart';
 import 'package:provider/provider.dart';
-
+import 'draftPost.dart';
 import 'timeline.dart';
 
 class Home extends StatefulWidget {
-
   final Map<String, String> account;
   Home({Key key, @required this.account}) : super(key: key);
   @override
@@ -18,7 +17,7 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   TextEditingController _userController = TextEditingController();
-  dynamic message;
+  
 
   Padding buildTextField() {
     return Padding(
@@ -29,9 +28,9 @@ class _HomeState extends State<Home> {
             child: Theme(
               data: ThemeData(primaryColor: Color(0xFFE0E0E0)),
               child: TextField(
-                controller: _userController,
-                onSubmitted: (value) {
-                  _postMessage();
+              
+                onTap: (){
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => DraftPost(account: widget.account)));
                 },
                 decoration: InputDecoration(
                   isDense: true, // Added this
@@ -58,28 +57,7 @@ class _HomeState extends State<Home> {
     );
   }
 
-  Future _postMessage() async {
-    if (_userController.text.length > 0) {
-      await GetStreamApiService()
-          .postMessage(widget.account, _userController.text);
-    } else {
-      Scaffold.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Please type a message'),
-        ),
-      );
-    }
-  }
 
-  @override
-  void initState() {
-    super.initState();
-    _userController.addListener(() {
-      setState(() {
-        this.message = _userController.text;
-      });
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -127,13 +105,13 @@ class _HomeState extends State<Home> {
               child: Column(
                 children: [
                   buildTextField(),
-                  RaisedButton(
-                    onPressed: () {
-                      Provider.of<CurrentUser>(context, listen: false)
-                          .onSignOut();
-                    },
-                    child: Text("logout"),
-                  ),
+                  // RaisedButton(
+                  //   onPressed: () {
+                  //     Provider.of<CurrentUser>(context, listen: false)
+                  //         .onSignOut();
+                  //   },
+                  //   child: Text("logout"),
+                  // ),
                   SizedBox(
                     height: 8,
                   ),
@@ -148,8 +126,8 @@ class _HomeState extends State<Home> {
   @override
   void dispose() {
     // TODO: implement dispose
-    _userController.dispose();
-
+    // _userController.dispose();
+    _userController.clear();
     super.dispose();
   }
 }

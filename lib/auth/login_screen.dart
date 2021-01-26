@@ -1,5 +1,5 @@
 import 'package:lokalapp/screens/bottom_navigation.dart';
-import 'package:lokalapp/screens/invite_page.dart';
+import 'package:lokalapp/auth/invite_page.dart';
 import 'package:lokalapp/widgets/rounded_button.dart';
 import 'package:lokalapp/widgets/sso_block.dart';
 import 'package:provider/provider.dart';

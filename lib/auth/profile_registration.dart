@@ -15,7 +15,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 
 import 'package:lokalapp/states/current_user.dart';
 
-import 'bottom_navigation.dart';
+import '../screens/bottom_navigation.dart';
 
 class ProfileRegistration extends StatefulWidget {
   @override

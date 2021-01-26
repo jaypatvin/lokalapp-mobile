@@ -33,9 +33,19 @@ class GetStreamApiService {
     });
   }
 
+
+  Future<dynamic> postLikes(Map account, String likes)async{
+    return await platform.invokeListMethod<bool>('handleLikePost',{
+      'user':account['user'],
+      'token': account['feedToken'],
+      'likes': likes
+    });
+  }
+
   Future<dynamic> getActivities(Map account) async {
     var result = await platform.invokeMethod<String>('getActivities',
         {'user': account['user'], 'token': account['feedToken']});
+       
     return json.decode(result);
   }
 

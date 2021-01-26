@@ -17,8 +17,8 @@ class Database {
     debugPrint("Creating user");
     try {
       await usersRef.doc().set({
-        "user_uids": user?.userUids,
-        "email": user?.email,
+        "user_uids": user.userUids,
+        "email": user.email,
         "first_name": user?.firstName,
         "last_name": user?.lastName,
         "community_id": user?.communityId,
