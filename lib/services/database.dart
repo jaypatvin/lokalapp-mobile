@@ -1,9 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:lokalapp/models/invites.dart';
 import 'package:lokalapp/models/user.dart';
 
 Users users = Users();
+
 final usersRef = FirebaseFirestore.instance.collection("users");
 final inviteRef = FirebaseFirestore.instance.collection("invites");
 final Reference storageRef = FirebaseStorage.instance.ref();
@@ -82,7 +84,40 @@ class Database {
   Future<bool> inviteCodeExists(String code) async {
     final QuerySnapshot snapshot =
         await inviteRef.where("code", isEqualTo: code).get();
+
     return snapshot.docs.isNotEmpty;
+  }
+
+  Future<String> getCommunityIdFromInvite(String code) async {
+    String communityId;
+
+    final QuerySnapshot snapshot =
+        await inviteRef.where("code", isEqualTo: code).get();
+
+    if (snapshot.docs.length == 1) {
+      final Map documentData = snapshot.docs.first.data();
+      if (documentData["claimed"] == false) {
+        communityId = snapshot.docs.first.data()["community_id"];
+      }
+    }
+    return communityId;
+  }
+
+  Future<bool> claimInviteCode({String code, String invitee}) async {
+    bool claimed = false;
+    try {
+      final QuerySnapshot snapshot =
+          await inviteRef.where("code", isEqualTo: code).get();
+
+      if (snapshot.docs.length == 1) {
+        await inviteRef.doc(snapshot.docs.first.id).update({
+          "claimed": true,
+          "invitee": invitee,
+        });
+        claimed = true;
+      }
+    } catch (e) {}
+    return claimed;
   }
 
   Future<String> getCurrentUserDocId(String userUid) async {

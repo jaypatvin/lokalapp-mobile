@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:lokalapp/models/user.dart';
 import 'package:lokalapp/utils/themes.dart';
 import 'package:lokalapp/widgets/rounded_button.dart';
 import 'package:image_picker/image_picker.dart';
@@ -105,38 +106,6 @@ class _ProfileRegistrationState extends State<ProfileRegistration> {
     return downloadUrl;
   }
 
-  // Future<String> createPostinFirestore(
-  //     {String mediaUrl,
-  //     String firstName,
-  //     String lastName,
-  //     String profilePhoto,
-  //     String uid,
-  //     String location,
-  //     String address}) async {
-  //   User firebaseUser = FirebaseAuth.instance.currentUser;
-  //   String retVal = "error";
-
-  //   var docId = await Database().getCurrentUserDocId(firebaseUser.uid);
-  //   try {
-  //     await usersRef.doc(docId).update({
-  //       "profile_photo": mediaUrl,
-  //       // "uid": firebaseUser.uid,
-  //       "first_name": firstName,
-  //       "last_name": lastName,
-  //       "address": {"street": address},
-  //       "location": location,
-  //     });
-  //     retVal = "success";
-  //     print(firebaseUser.uid);
-  //     // print(docId);
-  //   } on PlatformException catch (e) {
-  //     print(e.message);
-  //   } catch (e) {
-  //     print(e);
-  //   }
-  //   return retVal;
-  // }
-
   Future registerUser() async {
     setState(() {
       isUploading = true;
@@ -147,7 +116,8 @@ class _ProfileRegistrationState extends State<ProfileRegistration> {
       mediaUrl = await uploadImage(file);
     }
 
-    var _user = Provider.of<CurrentUser>(context, listen: false).getCurrentUser;
+    CurrentUser _cUser = Provider.of<CurrentUser>(context, listen: false);
+    Users _user = _cUser.getCurrentUser;
 
     _user.profilePhoto = mediaUrl;
     _user.firstName = _firstNameController.text;
@@ -156,6 +126,10 @@ class _ProfileRegistrationState extends State<ProfileRegistration> {
 
     String status = await Database().createUser(_user);
     await Provider.of<CurrentUser>(context, listen: false).updateUser();
+    await Database().claimInviteCode(
+      code: _cUser.getUserInviteCode,
+      invitee: _cUser.uid,
+    );
 
     if (status == "success") {
       Navigator.pushAndRemoveUntil(

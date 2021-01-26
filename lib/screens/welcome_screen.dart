@@ -217,10 +217,8 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     return RoundedButton(
         label: 'SIGN IN',
         onPressed: () {
-          Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (context) => LoginScreen()),
-              (route) => false);
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => LoginScreen()));
         });
   }
 
@@ -241,10 +239,8 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
             borderRadius: BorderRadius.circular(20.0),
             side: BorderSide(color: Color(0XFF09A49A))),
         onPressed: () {
-          Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (context) => InvitePage()),
-              (route) => false);
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => InvitePage()));
         },
       ),
     );
