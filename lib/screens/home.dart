@@ -5,7 +5,7 @@ import 'package:lokalapp/services/get_stream_api_service.dart';
 import 'package:lokalapp/states/current_user.dart';
 import 'package:lokalapp/utils/themes.dart';
 import 'package:provider/provider.dart';
-import 'draftPost.dart';
+import 'draft_post.dart';
 import 'timeline.dart';
 
 class Home extends StatefulWidget {
@@ -17,7 +17,6 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   TextEditingController _userController = TextEditingController();
-  
 
   Padding buildTextField() {
     return Padding(
@@ -28,9 +27,12 @@ class _HomeState extends State<Home> {
             child: Theme(
               data: ThemeData(primaryColor: Color(0xFFE0E0E0)),
               child: TextField(
-              
-                onTap: (){
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => DraftPost(account: widget.account)));
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              DraftPost(account: widget.account)));
                 },
                 decoration: InputDecoration(
                   isDense: true, // Added this
@@ -56,8 +58,6 @@ class _HomeState extends State<Home> {
       ),
     );
   }
-
-
 
   @override
   Widget build(BuildContext context) {

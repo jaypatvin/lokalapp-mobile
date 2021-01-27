@@ -10,10 +10,26 @@
       "client_info": {
         "mobilesdk_app_id": "1:196086167751:android:c910bce32dae7adfe4e6e2",
         "android_client_info": {
-          "package_name": "ph.lokalapp.lokal"
+          "package_name": "com.example.lokalapp"
         }
       },
       "oauth_client": [
+        {
+          "client_id": "196086167751-0gapm5gl1cck4n0qmr2r5qd4p2d1kmim.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.lokalapp",
+            "certificate_hash": "45b5f7650e4c31a236f695b4b704865da47c5ba1"
+          }
+        },
+        {
+          "client_id": "196086167751-17qojitfq6athg3tm60n7grcljamnbom.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.lokalapp",
+            "certificate_hash": "61759c4f0352dbd651b7364e1a533be3bd89cfa1"
+          }
+        },
         {
           "client_id": "196086167751-oabatdl63fn9vgglf37ijg5tbp16458t.apps.googleusercontent.com",
           "client_type": 3
@@ -28,7 +44,52 @@
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "196086167751-oabatdl63fn9vgglf37ijg5tbp16458t.apps.googleusercontent.com",
+              "client_id": "196086167751-1nvrmvjgau9jlbof9isqu4tp236o0u8a.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:196086167751:android:b56bdd161228f681e4e6e2",
+        "android_client_info": {
+          "package_name": "ph.lokalapp.lokal"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "196086167751-3agsr1j1qsfdca1f65297fkj09b4tfnc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "ph.lokalapp.lokal",
+            "certificate_hash": "e10458d2507eee1cb869b216d4a95cc58eeb76a6"
+          }
+        },
+        {
+          "client_id": "196086167751-goc8orc4h12o786502bq961o1bjjrjvm.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "ph.lokalapp.lokal",
+            "certificate_hash": "61759c4f0352dbd651b7364e1a533be3bd89cfa1"
+          }
+        },
+        {
+          "client_id": "196086167751-oabatdl63fn9vgglf37ijg5tbp16458t.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBmBQfuztAYcqwVfXZamyzrjDpyRL8HldE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "196086167751-1nvrmvjgau9jlbof9isqu4tp236o0u8a.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
