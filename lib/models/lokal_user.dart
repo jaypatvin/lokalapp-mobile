@@ -125,36 +125,6 @@ class UserRoles {
       UserRoles.fromMap(json.decode(source));
 }
 
-class UserCreatedAt {
-  Timestamp seconds;
-  Timestamp nanoseconds;
-  UserCreatedAt({
-    this.seconds,
-    this.nanoseconds,
-  });
-
-  Map<String, dynamic> toMap() {
-    return {
-      '_seconds': seconds,
-      '_nanoseconds': nanoseconds,
-    };
-  }
-
-  factory UserCreatedAt.fromMap(Map<String, dynamic> map) {
-    if (map == null) return null;
-
-    return UserCreatedAt(
-      seconds: map['_seconds'],
-      nanoseconds: map['_nanoseconds'],
-    );
-  }
-
-  String toJson() => json.encode(toMap());
-
-  factory UserCreatedAt.fromJson(String source) =>
-      UserCreatedAt.fromMap(json.decode(source));
-}
-
 class LokalUser extends ChangeNotifier {
   List<String> userUids;
   String id;
@@ -169,7 +139,7 @@ class LokalUser extends ChangeNotifier {
   UserAddress address;
   UserRegistrationStatus registration;
   UserRoles roles;
-  UserCreatedAt createdAt;
+  DateTime createdAt;
 
   LokalUser({
     this.userUids,
@@ -203,12 +173,20 @@ class LokalUser extends ChangeNotifier {
       'address': address,
       'registration': registration,
       'roles': roles,
-      'created_at': createdAt,
+      'created_at': Timestamp.fromDate(createdAt),
     };
   }
 
   factory LokalUser.fromMap(Map<String, dynamic> map) {
     if (map == null) return null;
+    DateTime _createdAt;
+    if (map['created_at'] is Timestamp) {
+      _createdAt = map['created_at'].toDate();
+    } else if (map['created_at'] is Map) {
+      _createdAt = Timestamp(
+              map['created_at']['_seconds'], map['created_at']['_nanoseconds'])
+          .toDate();
+    }
 
     return LokalUser(
       userUids: List<String>.from(map['user_uids']),
@@ -221,10 +199,10 @@ class LokalUser extends ChangeNotifier {
       communityId: map['community_id'],
       birthDate: map['birth_date'],
       status: map['status'],
-      address: UserAddress.fromJson(map['address']),
-      registration: UserRegistrationStatus.fromJson(map['registration']),
-      roles: UserRoles.fromJson(map['roles']),
-      createdAt: UserCreatedAt.fromMap(map['created_at']),
+      address: UserAddress.fromMap(map['address']),
+      registration: UserRegistrationStatus.fromMap(map['registration']),
+      roles: UserRoles.fromMap(map['roles']),
+      createdAt: _createdAt,
     );
   }
 

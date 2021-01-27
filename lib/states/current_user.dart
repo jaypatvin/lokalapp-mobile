@@ -4,10 +4,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:lokalapp/models/lokal_user.dart';
-import 'package:lokalapp/models/user_post_body.dart';
-import 'package:lokalapp/services/database.dart';
-import 'package:lokalapp/services/get_stream_api_service.dart';
+import '../models/lokal_user.dart';
+import '../models/user_post_body.dart';
+import '../services/database.dart';
+import '../services/get_stream_api_service.dart';
 
 enum authStatus { Success, UserNotFound, PasswordNotValid, Error }
 final GoogleSignIn googleSignIn = GoogleSignIn();
@@ -31,8 +31,8 @@ class CurrentUser extends ChangeNotifier {
     Map data = json.decode(jsonData);
 
     if (data["status"] == "ok") {
-      //Map userData = json.decode(data["data"]);
-      _user = LokalUser.fromJson(data["data"]);
+      _user = LokalUser.fromMap(data["data"]);
+      await _getStreamLogin();
       return true;
     }
 
@@ -46,7 +46,7 @@ class CurrentUser extends ChangeNotifier {
 
       Map map = await Database().getUserInfo(_firebaseUser.uid);
 
-      if (_user != null) {
+      if (map != null) {
         this._user = LokalUser.fromMap(map);
         await _getStreamLogin();
         print(_user);
@@ -109,10 +109,10 @@ class CurrentUser extends ChangeNotifier {
       UserCredential _authResult = await _auth.signInWithEmailAndPassword(
           email: email, password: password);
 
-      var data = await Database().getUserInfo(_authResult.user.uid);
+      var map = await Database().getUserInfo(_authResult.user.uid);
 
-      if (_user != null) {
-        this._user = LokalUser.fromMap(data);
+      if (map != null) {
+        this._user = LokalUser.fromMap(map);
         retVal = authStatus.Success;
         await _getStreamLogin();
       } else {
@@ -177,7 +177,7 @@ class CurrentUser extends ChangeNotifier {
       UserCredential _authResult = await _auth.signInWithCredential(credential);
       var map = await Database().getUserInfo(_authResult.user.uid);
 
-      if (_user != null) {
+      if (map != null) {
         _user = LokalUser.fromMap(map);
         retVal = authStatus.Success;
         await _getStreamLogin();

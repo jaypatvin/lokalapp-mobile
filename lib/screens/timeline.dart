@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import 'package:lokalapp/services/get_stream_api_service.dart';
+import '../services/get_stream_api_service.dart';
 
-import 'package:lokalapp/states/current_user.dart';
+import '../states/current_user.dart';
 import 'package:provider/provider.dart';
 import 'expanded_card.dart';
 

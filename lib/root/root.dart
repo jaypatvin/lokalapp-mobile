@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:lokalapp/screens/bottom_navigation.dart';
-import 'package:lokalapp/screens/welcome_screen.dart';
+import '../screens/bottom_navigation.dart';
+import '../screens/welcome_screen.dart';
 import 'package:provider/provider.dart';
 
-import 'package:lokalapp/screens/splash.dart';
-import 'package:lokalapp/states/current_user.dart';
+import '../screens/splash.dart';
+import '../states/current_user.dart';
 
 enum AuthStatus { notLoggedIn, loggedIn, unknown, notInCommunity, inCommunity }
 

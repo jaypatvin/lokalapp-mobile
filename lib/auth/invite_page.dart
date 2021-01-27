@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-import 'package:lokalapp/auth/profile_registration.dart';
-import 'package:lokalapp/services/database.dart';
-import 'package:lokalapp/states/current_user.dart';
-import 'package:lokalapp/utils/themes.dart';
-import 'package:lokalapp/widgets/rounded_button.dart';
+import 'profile_registration.dart';
+import '../services/database.dart';
+import '../states/current_user.dart';
+import '../utils/themes.dart';
+import '../widgets/rounded_button.dart';
 import 'package:provider/provider.dart';
 import 'community.dart';
 

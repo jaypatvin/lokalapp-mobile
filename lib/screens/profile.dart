@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:lokalapp/services/get_stream_api_service.dart';
+import 'welcome_screen.dart';
+import '../services/get_stream_api_service.dart';
+import '../states/current_user.dart';
+import 'package:provider/provider.dart';
 
 class Profile extends StatefulWidget {
   final Map<String, String> account;
@@ -38,17 +41,37 @@ class _ProfileState extends State<Profile> {
           return Center(child: CircularProgressIndicator());
         }
 
-        return Container(
-          child: Center(
-            child: RefreshIndicator(
-              onRefresh: _refreshActivities,
-              child: ListView(
-                children: snapshot.data
-                    .map((activity) => ListTile(
-                          title: Text(activity['message']),
-                        ))
-                    .toList(),
-              ),
+        return SafeArea(
+          child: Container(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                RaisedButton(
+                  onPressed: () {
+                    Provider.of<CurrentUser>(context, listen: false)
+                        .onSignOut();
+                    Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => WelcomeScreen()),
+                        (route) => false);
+                  },
+                  child: Text("logout"),
+                ),
+                Expanded(
+                  child: RefreshIndicator(
+                    onRefresh: _refreshActivities,
+                    child: ListView(
+                      children: snapshot.data
+                          .map((activity) => ListTile(
+                                title: Text(activity['message']),
+                              ))
+                          .toList(),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         );

@@ -1,11 +1,11 @@
-import 'package:lokalapp/screens/bottom_navigation.dart';
-import 'package:lokalapp/auth/invite_page.dart';
-import 'package:lokalapp/widgets/rounded_button.dart';
-import 'package:lokalapp/widgets/sso_block.dart';
+import '../screens/bottom_navigation.dart';
+import 'invite_page.dart';
+import '../widgets/rounded_button.dart';
+import '../widgets/sso_block.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
-import 'package:lokalapp/utils/themes.dart';
-import 'package:lokalapp/states/current_user.dart';
+import '../utils/themes.dart';
+import '../states/current_user.dart';
 
 enum LoginType { email, google, facebook }
 

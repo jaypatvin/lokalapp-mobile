@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:lokalapp/utils/themes.dart';
-import 'package:lokalapp/widgets/rounded_button.dart';
+import '../utils/themes.dart';
+import '../widgets/rounded_button.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 import 'package:uuid/uuid.dart';
 import 'package:provider/provider.dart';
 import 'package:image/image.dart' as Im;
-import 'package:lokalapp/services/database.dart';
+import '../services/database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
-import 'package:lokalapp/states/current_user.dart';
+import '../states/current_user.dart';
 
 import '../screens/bottom_navigation.dart';
 

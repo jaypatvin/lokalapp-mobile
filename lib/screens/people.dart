@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lokalapp/services/get_stream_api_service.dart';
+import '../services/get_stream_api_service.dart';
 
 class People extends StatefulWidget {
   final Map<String, String> account;

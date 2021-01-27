@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:lokalapp/screens/timeline.dart';
-import 'package:lokalapp/screens/profile.dart';
-import 'package:lokalapp/states/current_user.dart';
+import 'timeline.dart';
+import 'profile.dart';
+import '../states/current_user.dart';
 import 'package:provider/provider.dart';
 
 import 'activity.dart';
