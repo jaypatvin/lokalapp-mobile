@@ -7,10 +7,12 @@ class RoundedButton extends StatelessWidget {
   final double minWidth;
   final double fontSize;
   final String fontFamily;
+  final double height;
   final fontWeight;
   RoundedButton(
       {this.label,
       this.onPressed,
+      this.height,
       this.minWidth = 113.0,
       this.fontFamily,
       this.fontSize,
@@ -27,6 +29,7 @@ class RoundedButton extends StatelessWidget {
         child: MaterialButton(
           onPressed: this.onPressed,
           minWidth: this.minWidth,
+          height: this.height,
           child: Text(
             this.label,
             style: TextStyle(

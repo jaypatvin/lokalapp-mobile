@@ -1,10 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:lokalapp/services/get_stream_api_service.dart';
-import 'package:lokalapp/states/current_user.dart';
 import 'package:lokalapp/utils/themes.dart';
-import 'package:provider/provider.dart';
 import 'draftPost.dart';
 import 'timeline.dart';
 

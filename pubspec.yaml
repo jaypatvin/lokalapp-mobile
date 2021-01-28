@@ -47,7 +47,8 @@ dependencies:
   velocity_x: ^1.0.1
   pk_skeleton: ^0.0.2
   http: ^0.12.2
-  # stream_chat_flutter: ^0.2.20+2
+  flutter_simple_rating_bar: ^0.0.3
+  dropdown_date_picker: ^0.1.1+2
   start_jwt: ^0.2.0
 dev_dependencies:
   flutter_test:
