@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 
-import 'package:lokalapp/auth/profile_registration.dart';
-import 'package:lokalapp/services/database.dart';
-import 'package:lokalapp/states/current_user.dart';
-import 'package:lokalapp/utils/themes.dart';
-import 'package:lokalapp/widgets/rounded_button.dart';
+import 'profile_registration.dart';
+import '../services/database.dart';
+import '../states/current_user.dart';
+import '../utils/themes.dart';
+import '../widgets/rounded_button.dart';
 import 'package:provider/provider.dart';
 import 'community.dart';
+
 class InvitePage extends StatefulWidget {
   @override
   _InvitePageState createState() => _InvitePageState();
@@ -20,12 +21,11 @@ class _InvitePageState extends State<InvitePage> {
     String communityId = await Database().getCommunityIdFromInvite(code);
     if (communityId != null && communityId.isNotEmpty) {
       CurrentUser user = Provider.of<CurrentUser>(context, listen: false);
-      user.getCurrentUser.communityId = communityId;
       user.setInviteCode = code;
 
-      if (user.getCurrentUser.userUids.isEmpty) {
+      if (user.postBody.userUid == null || user.postBody.userUid.isEmpty) {
         Navigator.push(
-            context, MaterialPageRoute(builder: (context) =>Community()) );
+            context, MaterialPageRoute(builder: (context) => Community()));
       } else {
         Navigator.push(context,
             MaterialPageRoute(builder: (context) => ProfileRegistration()));

@@ -1,10 +1,10 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:lokalapp/models/invites.dart';
-import 'package:lokalapp/models/user.dart';
-
-Users users = Users();
+import 'package:http/http.dart' as http;
 
 final usersRef = FirebaseFirestore.instance.collection("users");
 final inviteRef = FirebaseFirestore.instance.collection("invites");
@@ -12,73 +12,45 @@ final Reference storageRef = FirebaseStorage.instance.ref();
 
 //  final Map account;
 class Database {
-  Future<String> createUser(Users user) async {
-    String retVal = "error";
-    debugPrint("Creating user");
-    try {
-      await usersRef.doc().set({
-        "user_uids": user.userUids,
-        "email": user.email,
-        "first_name": user?.firstName,
-        "last_name": user?.lastName,
-        "community_id": user?.communityId,
-        "address": user?.address,
-        "profile_photo": user?.profilePhoto,
-      });
+  static const _baseUrl =
+      'https://us-central1-lokal-1baac.cloudfunctions.net/api/v1/users';
 
-      // currentUser = Users.fromDocument(doc);
-      retVal = "success";
-    } catch (e) {
-      print(e);
-    }
-    return retVal;
+  Future<String> createUserPostRequest(Map data) async {
+    var body = json.encode(data);
+    var response = await http.post(
+      _baseUrl,
+      headers: {"Content-Type": "application/json"},
+      body: body,
+    );
+
+    return response.body;
   }
 
-  Future<String> joinCommunity(String code, String userUid) async {
-    String retVal = "error";
-    try {
-      DocumentReference _docRef = await inviteRef.add({
-        "created_at": Timestamp.now(),
-        "code": code,
-        // "invitee":
-      });
-      // await inviteRef.doc(communityId).update({"invitee": userUid});
-      await usersRef.doc(userUid).update({"community_id": _docRef.id});
-      retVal = "success";
-    } catch (e) {
-      print(e);
-    }
-    return retVal;
-  }
+  // Future<String> createUserPostRequest(Map data) async {
+  //   HttpClient httpClient = HttpClient();
+  //   HttpClientRequest request = await httpClient.postUrl(Uri.parse(_baseUrl));
+  //   request.headers.set('content-type', 'application/json');
+  //   request.add(utf8.encode(json.encode(data)));
+  //   HttpClientResponse response = await request.close();
+  //   String reply = await response.transform(utf8.decoder).join();
+  //   httpClient.close();
+  //   return reply;
+  // }
 
-  Future<Users> getUserInfo(String uid) async {
-    // to return null when user does not exist
-    Users retVal;
+  Future<Map> getUserInfo(String uid) async {
+    Map data;
     try {
       final String documentId = await getCurrentUserDocId(uid);
-      DocumentSnapshot _docSnapshot = await usersRef.doc(documentId).get();
-
-      // if snapshot exists, the docID is in the collection
-      if (_docSnapshot.exists) {
-        // initialize retVal if snapshot exists
-        retVal = Users();
-
-        retVal.userUids = List<String>.from(_docSnapshot.data()["user_uids"]);
-        // retVal.displayName = _docSnapshot.data()["display_name"];
-        retVal.email = _docSnapshot.data()["email"];
-        retVal.firstName = _docSnapshot.data()["first_name"];
-        retVal.lastName = _docSnapshot.data()["last_name"];
-        // retVal.registration = _docSnapshot.data()["registration"];
-        retVal.communityId = _docSnapshot.data()["community_id"];
-        // retVal.gender = _docSnapshot.data()["gender"];
-        retVal.address = _docSnapshot.data()["address"];
-        // retVal.birthDate = _docSnapshot.data()["birthdate"];
-        retVal.profilePhoto = _docSnapshot.data()["profile_photo"];
+      if (documentId != null && documentId.isNotEmpty) {
+        DocumentSnapshot _docSnapshot = await usersRef.doc(documentId).get();
+        if (_docSnapshot.exists) {
+          data = _docSnapshot.data();
+        }
       }
     } catch (e) {
-      print(e);
+      debugPrint(e);
     }
-    return retVal;
+    return data;
   }
 
   Future<bool> inviteCodeExists(String code) async {
@@ -134,31 +106,12 @@ class Database {
     if (uids.length > 1) {
       // this should not happen
       throw Exception("Multiple users with the same UID have been found.");
-    } else if (uids.length < 0) {
+    } else if (uids.length < 1) {
       retVal = "";
     } else {
       retVal = uids.first;
     }
 
-    return retVal;
-  }
-
-  Future<String> updateUser(String docId, Users user) async {
-    String retVal = "error";
-    try {
-      await usersRef.doc(docId).update({
-        "user_uids": user.userUids,
-        "first_name": user.firstName,
-        "last_name": user.lastName,
-        "address": user.address,
-        "community_id": user.communityId,
-        "email": user.email,
-        //"profile_photo" : "",
-      });
-      retVal = "Success";
-    } catch (e) {
-      retVal = e.toString();
-    }
     return retVal;
   }
 }

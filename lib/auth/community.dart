@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:lokalapp/auth/profile_registration.dart';
-import 'package:lokalapp/widgets/sso_block.dart';
+import 'profile_registration.dart';
+import '../widgets/sso_block.dart';
 import 'package:provider/provider.dart';
-import 'package:lokalapp/states/current_user.dart';
+import '../states/current_user.dart';
 
 import '../screens/bottom_navigation.dart';
 

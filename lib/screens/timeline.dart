@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 
-import 'package:lokalapp/services/get_stream_api_service.dart';
+import '../services/get_stream_api_service.dart';
 
-import 'package:lokalapp/states/current_user.dart';
+import '../states/current_user.dart';
 import 'package:provider/provider.dart';
-import 'expandedCard.dart';
+import 'expanded_card.dart';
 
 class Timeline extends StatefulWidget {
   final Map<String, String> account;
-  final Map <dynamic, dynamic> snapshot;
+  final Map<dynamic, dynamic> snapshot;
   Timeline({Key key, this.account, this.snapshot}) : super(key: key);
 
   @override
@@ -19,7 +19,7 @@ class _TimelineState extends State<Timeline> {
   Future<List<dynamic>> _activities;
   Future<List> _users;
   int likeCount;
-  Map <String, String>likes;
+  Map<String, String> likes;
   bool isLiked;
 
   @override
@@ -47,7 +47,7 @@ class _TimelineState extends State<Timeline> {
 
 //       String user =  likes[widget.account["user"]];
 //       if(user != null){
-        
+
 //       }
 //       });
 //       await  GetStreamApiService().postLikes(widget.account, likeCount.toString());
@@ -85,7 +85,7 @@ class _TimelineState extends State<Timeline> {
                     MaterialPageRoute(
                         builder: (context) => ExpandedCard(
                               account: widget.account,
-                              snapshot:snapshot,
+                              snapshot: snapshot,
                             )));
               }),
         ),
@@ -142,12 +142,10 @@ class _TimelineState extends State<Timeline> {
     );
   }
 
-
   @override
   Widget build(BuildContext context) {
     CurrentUser _user = Provider.of<CurrentUser>(context);
     // var stream =  _user.getStreamAccount;
-  
 
     return FutureBuilder<List<dynamic>>(
       future: _activities,
@@ -224,12 +222,54 @@ class _TimelineState extends State<Timeline> {
                                                       endIndent: 25,
                                                     ),
                                                     buildLikes(activity),
-                                                   
+                                                  
                                                   ],
                                                 ),
                                               ),
-                                            ],
-                                          ),
+                                              Column(
+                                                children: [
+                                                  SizedBox(
+                                                    height: 10,
+                                                    // width: 30,
+                                                  ),
+                                                  Row(
+                                                    children: [
+                                                      buildHeader(
+                                                          _user.getCurrentUser
+                                                              .firstName,
+                                                          _user.getCurrentUser
+                                                              .lastName)
+                                                    ],
+                                                  ),
+                                                  SizedBox(
+                                                    height: 20,
+                                                  ),
+                                                  Row(
+                                                    // mainAxisSize:
+                                                    //     MainAxisSize.min,
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment.start,
+                                                    children: [
+                                                      SizedBox(
+                                                        width: 26,
+                                                      ),
+                                                      buildMessageBody(
+                                                          activity["message"]),
+                                                    ],
+                                                  ),
+                                                  SizedBox(
+                                                    height: 20,
+                                                  ),
+                                                  Divider(
+                                                    color: Colors.grey,
+                                                    indent: 25,
+                                                    endIndent: 25,
+                                                  ),
+                                                  buildLikes(activity),
+                                                ],
+                                              ),
+                                            ],),
+                                          
                                         ),
                                       ],
                                     )),

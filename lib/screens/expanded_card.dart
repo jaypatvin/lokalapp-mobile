@@ -1,10 +1,10 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:lokalapp/services/database.dart';
-import 'package:lokalapp/services/get_stream_api_service.dart';
-import 'package:lokalapp/states/current_user.dart';
-import 'package:lokalapp/utils/themes.dart';
+import '../services/database.dart';
+import '../services/get_stream_api_service.dart';
+import '../states/current_user.dart';
+import '../utils/themes.dart';
 import 'package:provider/provider.dart';
 
 class ExpandedCard extends StatefulWidget {

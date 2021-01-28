@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:lokalapp/services/get_stream_api_service.dart';
-import 'package:lokalapp/utils/themes.dart';
-import 'package:lokalapp/widgets/rounded_button.dart';
+import '../services/get_stream_api_service.dart';
+import '../utils/themes.dart';
+import '../widgets/rounded_button.dart';
 
 class DraftPost extends StatefulWidget {
   final Map<String, String> account;
