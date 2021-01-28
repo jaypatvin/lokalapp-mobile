@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:lokalapp/models/user.dart';
-import 'package:lokalapp/utils/themes.dart';
-import 'package:lokalapp/widgets/rounded_button.dart';
+import '../utils/themes.dart';
+import '../widgets/rounded_button.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 import 'package:uuid/uuid.dart';
 import 'package:provider/provider.dart';
 import 'package:image/image.dart' as Im;
-import 'package:lokalapp/services/database.dart';
+import '../services/database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
-import 'package:lokalapp/states/current_user.dart';
+import '../states/current_user.dart';
 
 import '../screens/bottom_navigation.dart';
 
@@ -116,55 +115,27 @@ class _ProfileRegistrationState extends State<ProfileRegistration> {
       mediaUrl = await uploadImage(file);
     }
 
-    CurrentUser _cUser = Provider.of<CurrentUser>(context, listen: false);
-    Users _user = _cUser.getCurrentUser;
+    CurrentUser _user = Provider.of<CurrentUser>(context, listen: false);
+    _user.postBody.profilePhoto = mediaUrl;
+    _user.postBody.firstName = _firstNameController.text;
+    _user.postBody.lastName = _lastNameController.text;
+    _user.postBody.address = _streetAddressController.text;
 
-    _user.profilePhoto = mediaUrl;
-    _user.firstName = _firstNameController.text;
-    _user.lastName = _lastNameController.text;
-    _user.address = {"street": _streetAddressController.text};
+    bool success = await _user.createUser();
 
-    String status = await Database().createUser(_user);
-    await Provider.of<CurrentUser>(context, listen: false).updateUser();
+    // await Provider.of<CurrentUser>(context, listen: false).updateUser();
     await Database().claimInviteCode(
-      code: _cUser.getUserInviteCode,
-      invitee: _cUser.uid,
+      code: _user.getUserInviteCode,
+      invitee: _user.postBody.userUid,
     );
 
-    if (status == "success") {
+    if (success) {
       Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(builder: (context) => BottomNavigation()),
           (route) => false);
     }
   }
-
-  // handleSubmit() async {
-  //   setState(() {
-  //     isUploading = true;
-  //   });
-  //   await compressImage();
-
-  //   String mediaUrl = await uploadImage(file);
-  //   createPostinFirestore(
-  //       profilePhoto: mediaUrl,
-  //       firstName: _firstNameController.text,
-  //       lastName: _lastNameController.text,
-  //       address: _streetAddressController.text,
-  //       location: _locationController.text);
-  //   _firstNameController.clear();
-  //   _lastNameController.clear();
-  //   _streetAddressController.clear();
-  //   if (this.mounted) {
-  //     setState(() {
-  //       file = null;
-  //       isUploading = false;
-  //       _firstNameController.dispose();
-  //       _lastNameController.dispose();
-  //       _streetAddressController.dispose();
-  //     });
-  //   }
-  // }
 
   Widget buildStreetAddress() {
     return Column(

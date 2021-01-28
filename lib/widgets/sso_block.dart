@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:lokalapp/services/database.dart';
-import 'package:lokalapp/utils/themes.dart';
-import 'package:lokalapp/widgets/sso_button.dart';
+import '../services/database.dart';
+import '../utils/themes.dart';
+import 'sso_button.dart';
 
 class SocialBlock extends StatelessWidget {
   final String label;

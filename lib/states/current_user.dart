@@ -1,43 +1,55 @@
-import 'package:flutter/material.dart';
+import 'dart:convert';
+
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:lokalapp/models/user.dart';
-import 'package:lokalapp/services/database.dart';
-import 'package:google_sign_in/google_sign_in.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
-import 'package:lokalapp/services/get_stream_api_service.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import '../models/lokal_user.dart';
+import '../models/user_post_body.dart';
+import '../services/database.dart';
+import '../services/get_stream_api_service.dart';
 
-// used for auth validation in screens
 enum authStatus { Success, UserNotFound, PasswordNotValid, Error }
-
 final GoogleSignIn googleSignIn = GoogleSignIn();
 
 class CurrentUser extends ChangeNotifier {
   FirebaseAuth _auth = FirebaseAuth.instance;
-  Users _currentUser = Users();
-  Map<String, String> _getStreamAccount;
+  LokalUser _user;
+  UserPostBody postBody = UserPostBody();
+  Map<String, String> getStreamAccount;
   String _inviteCode;
 
-  String get uid => _auth.currentUser.uid;
-  Users get getCurrentUser => _currentUser;
-  Map<String, String> get getStreamAccount => _getStreamAccount;
+  LokalUser get getCurrentUser => _user;
+  set setInviteCode(value) => _inviteCode = value;
   String get getUserInviteCode => _inviteCode;
 
-  set setInviteCode(String inviteCode) {
-    _inviteCode = inviteCode;
-    notifyListeners();
+  Future<bool> createUser() async {
+    postBody.communityId =
+        await Database().getCommunityIdFromInvite(_inviteCode);
+    var _postData = postBody.toMap();
+    String jsonData = await Database().createUserPostRequest(_postData);
+    Map data = json.decode(jsonData);
+
+    if (data["status"] == "ok") {
+      _user = LokalUser.fromMap(data["data"]);
+      await _getStreamLogin();
+      return true;
+    }
+
+    return false;
   }
 
   Future<String> onStartUp() async {
     String retVal = "error";
     try {
       User _firebaseUser = _auth.currentUser;
-      _currentUser.userUids = [];
-      var _user = await Database().getUserInfo(_firebaseUser.uid);
 
-      if (_user != null) {
-        _currentUser = _user;
+      Map map = await Database().getUserInfo(_firebaseUser.uid);
+
+      if (map != null) {
+        this._user = LokalUser.fromMap(map);
         await _getStreamLogin();
-        print(_currentUser);
+        print(_user);
         retVal = "success";
       }
     } catch (e) {
@@ -47,9 +59,9 @@ class CurrentUser extends ChangeNotifier {
   }
 
   Future _getStreamLogin() async {
-    var creds = await GetStreamApiService().login(_currentUser.userUids.first);
-    this._getStreamAccount = {
-      'user': _currentUser.userUids.first,
+    var creds = await GetStreamApiService().login(_user.userUids.first);
+    this.getStreamAccount = {
+      'user': _user.userUids.first,
       'authToken': creds['authToken'],
       'feedToken': creds['feedToken'],
     };
@@ -59,7 +71,7 @@ class CurrentUser extends ChangeNotifier {
     String retVal = "error";
     try {
       await _auth.signOut();
-      _currentUser = Users();
+      _user = LokalUser();
       retVal = "success";
     } catch (e) {
       print(e);
@@ -67,16 +79,6 @@ class CurrentUser extends ChangeNotifier {
 
     notifyListeners();
     return retVal;
-  }
-
-  Future updateUser() async {
-    try {
-      User _firebaseUser = _auth.currentUser;
-      _currentUser = await Database().getUserInfo(_firebaseUser.uid);
-      await _getStreamLogin();
-    } catch (e) {
-      print(e);
-    }
   }
 
   Future<authStatus> signUpUser(String email, String password) async {
@@ -89,8 +91,7 @@ class CurrentUser extends ChangeNotifier {
 
       if (_authResult != null) {
         retVal = authStatus.UserNotFound;
-        _currentUser.email = _authResult.user.email;
-        _currentUser.userUids.add(_authResult.user.uid);
+        postBody.userUid = _authResult.user.uid;
       }
     } catch (e) {
       debugPrint(e.code);
@@ -108,17 +109,15 @@ class CurrentUser extends ChangeNotifier {
       UserCredential _authResult = await _auth.signInWithEmailAndPassword(
           email: email, password: password);
 
-      var _user = await Database().getUserInfo(_authResult.user.uid);
-      //_currentUser = await Database().getUserInfo(_authResult.user.uid);
+      var map = await Database().getUserInfo(_authResult.user.uid);
 
-      if (_user != null) {
-        _currentUser = _user;
+      if (map != null) {
+        this._user = LokalUser.fromMap(map);
         retVal = authStatus.Success;
         await _getStreamLogin();
       } else {
         retVal = authStatus.UserNotFound;
-        _currentUser.email = _authResult.user.email;
-        _currentUser.userUids.add(_authResult.user.uid);
+        postBody.userUid = _authResult.user.uid;
       }
     } catch (e) {
       switch (e.code) {
@@ -172,43 +171,18 @@ class CurrentUser extends ChangeNotifier {
     return retVal;
   }
 
-  Future<String> linkWithFacebook() async {
-    String retVal = "error";
-    UserCredential _authResult;
-    try {
-      final AccessToken accessToken = await FacebookAuth.instance.login();
-
-      final OAuthCredential credential =
-          FacebookAuthProvider.credential(accessToken.token);
-      _authResult = await _auth.signInWithCredential(credential);
-      String firstUid = _currentUser.userUids.first;
-      String docIdForFb =
-          await Database().getCurrentUserDocId(_authResult.user.uid);
-
-      if (docIdForFb.isEmpty) {
-        //_currentUser.userUids.add(_authResult.user.uid);
-        String docId = await Database().getCurrentUserDocId(firstUid);
-        retVal = await Database().updateUser(docId, _currentUser);
-      }
-    } catch (e) {
-      retVal = e.toString();
-    }
-    return retVal;
-  }
-
   Future<authStatus> _signInWithCredential(AuthCredential credential) async {
     authStatus retVal = authStatus.Error;
     try {
       UserCredential _authResult = await _auth.signInWithCredential(credential);
-      var _user = await Database().getUserInfo(_authResult.user.uid);
+      var map = await Database().getUserInfo(_authResult.user.uid);
 
-      if (_user != null) {
-        _currentUser = _user;
+      if (map != null) {
+        _user = LokalUser.fromMap(map);
         retVal = authStatus.Success;
         await _getStreamLogin();
       } else {
-        _currentUser.email = _authResult.user.email;
-        _currentUser.userUids.add(_authResult.user.uid);
+        postBody.userUid = _authResult.user.uid;
         retVal = authStatus.UserNotFound;
       }
     } catch (e) {

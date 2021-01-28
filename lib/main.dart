@@ -1,9 +1,9 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:lokalapp/root/root.dart';
+import 'root/root.dart';
 
 import 'package:provider/provider.dart';
-import 'package:lokalapp/states/current_user.dart';
+import 'states/current_user.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
