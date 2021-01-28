@@ -163,25 +163,70 @@ class _TimelineState extends State<Timeline> {
                     mainAxisSize: MainAxisSize.max,
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      ListView(
-                        scrollDirection: Axis.vertical,
-                        shrinkWrap: true,
-                        children: snapshot.data
-                            .map(
-                              (activity) => Container(
-                                  width: MediaQuery.of(context).size.width,
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.max,
-                                    children: [
-                                      ListTile(
-                                        subtitle: Column(
-                                          children: [
-                                            Card(
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(16.0),
+                      Expanded(
+                                              child: ListView(
+                          scrollDirection: Axis.vertical,
+                          shrinkWrap: true,
+                          children: snapshot.data
+                              .map(
+                                (activity) => Container(
+                                    width: MediaQuery.of(context).size.width,
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.max,
+                                      children: [
+                                        ListTile(
+                                          subtitle: Column(
+                                            children: [
+                                              Card(
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(16.0),
+                                                ),
+                                                child: Column(
+                                                  children: [
+                                                    SizedBox(
+                                                      height: 10,
+                                                      // width: 30,
+                                                    ),
+                                                    Row(
+                                                      children: [
+                                                        buildHeader(
+                                                            _user.getCurrentUser
+                                                                .firstName,
+                                                            _user.getCurrentUser
+                                                                .lastName)
+                                                      ],
+                                                    ),
+                                                    SizedBox(
+                                                      height: 20,
+                                                    ),
+                                                    Row(
+                                                      // mainAxisSize:
+                                                      //     MainAxisSize.min,
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment.start,
+                                                      children: [
+                                                        SizedBox(
+                                                          width: 26,
+                                                        ),
+                                                        buildMessageBody(
+                                                            activity["message"]),
+                                                      ],
+                                                    ),
+                                                    SizedBox(
+                                                      height: 20,
+                                                    ),
+                                                    Divider(
+                                                      color: Colors.grey,
+                                                      indent: 25,
+                                                      endIndent: 25,
+                                                    ),
+                                                    buildLikes(activity),
+                                                  
+                                                  ],
+                                                ),
                                               ),
-                                              child: Column(
+                                              Column(
                                                 children: [
                                                   SizedBox(
                                                     height: 10,
@@ -223,16 +268,16 @@ class _TimelineState extends State<Timeline> {
                                                   buildLikes(activity),
                                                 ],
                                               ),
-                                            ),
-                                          ],
+                                            ],),
+                                          
                                         ),
-                                      ),
-                                    ],
-                                  )),
-                              // ),
-                              // ),
-                            )
-                            .toList(),
+                                      ],
+                                    )),
+                                // ),
+                                // ),
+                              )
+                              .toList(),
+                        ),
                       ),
                     ],
                   ))),
