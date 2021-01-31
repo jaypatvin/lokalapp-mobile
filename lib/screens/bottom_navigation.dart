@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'timeline.dart';
-import 'profile.dart';
+import 'profileScreens/profile.dart';
 import '../states/current_user.dart';
 import 'package:provider/provider.dart';
 

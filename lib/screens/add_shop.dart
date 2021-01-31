@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:lokalapp/utils/themes.dart';
-import 'package:lokalapp/widgets/rounded_text_field.dart';
+import '../utils/themes.dart';
+import '../widgets/rounded_text_field.dart';
 import 'package:dropdown_date_picker/dropdown_date_picker.dart';
 class AddShop extends StatefulWidget {
   @override

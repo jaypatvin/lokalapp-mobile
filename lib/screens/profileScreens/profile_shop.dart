@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:lokalapp/screens/profileScreens/profileNoShop.dart';
-import 'package:lokalapp/screens/profileScreens/profileSearchBar.dart';
-import 'package:lokalapp/screens/profileScreens/profileStoreName.dart';
-import 'package:lokalapp/screens/profileScreens/storeCard.dart';
-import 'package:lokalapp/screens/profileScreens/storeMessage.dart';
-import 'package:lokalapp/screens/profileScreens/storeRating.dart';
+import 'profile_no_shop.dart';
+import 'profile_search_bar.dart';
+import 'profile_store_name.dart';
+import 'store_card.dart';
+import 'store_message.dart';
+import 'store_rating.dart';
 
 
 class ProfileShop extends StatelessWidget {

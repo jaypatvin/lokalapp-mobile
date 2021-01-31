@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:lokalapp/screens/addShop.dart';
-import 'package:lokalapp/widgets/rounded_button.dart';
+import '../add_shop.dart';
+import '../../widgets/rounded_button.dart';
 
 class ProfileNoShop extends StatefulWidget {
   final bool hasStore;
