@@ -102,7 +102,7 @@ class _ProfileState extends State<Profile> {
                   gradient: LinearGradient(
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
-                      List: [Color(0xffFFC700), Colors.black45]),
+                      colors: [Color(0xffFFC700), Colors.black45]),
                 ),
                 child: Container(
                   margin: const EdgeInsets.fromLTRB(0, 8, 0, 0),

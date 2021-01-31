@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:lokalapp/widgets/condensed_operating_hours.dart';
+import 'package:lokalapp/widgets/operating_hours.dart';
+import 'package:lokalapp/widgets/rounded_button.dart';
 import '../utils/themes.dart';
 import '../widgets/rounded_text_field.dart';
 import 'package:dropdown_date_picker/dropdown_date_picker.dart';
+
 class AddShop extends StatefulWidget {
   @override
   _AddShopState createState() => _AddShopState();
@@ -10,9 +14,7 @@ class AddShop extends StatefulWidget {
 class _AddShopState extends State<AddShop> {
   TextEditingController _shopName = TextEditingController();
   TextEditingController _descriptionController = TextEditingController();
-
-
-
+  bool _setOperatingHours = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -220,15 +222,79 @@ class _AddShopState extends State<AddShop> {
                 )
               ],
             ),
-            Row(children: [
-              Container()
-            ],),
+            Row(
+              children: [Container()],
+            ),
             SizedBox(
               height: 20,
             ),
+            OperatingHours(
+              state: "Opening Time",
+            ),
+            OperatingHours(
+              state: "Closing Time",
+            ),
+            ListTile(
+              title: Text(
+                "Set custom operating hours",
+              ),
+              leading: Checkbox(
+                activeColor: Colors.lightBlueAccent,
+                value: _setOperatingHours,
+                onChanged: (value) {
+                  setState(() {
+                    _setOperatingHours = value;
+                  });
+                },
+              ),
+            ),
+            buildDaysOfWeek(),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.05),
+            RoundedButton(
+              label: "SUBMIT",
+              onPressed: () {},
+            ),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.05),
           ],
         ),
       ),
+    );
+  }
+
+  Widget buildDaysOfWeek() {
+    List<String> daysOfWeek = [
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday",
+      "Sunday",
+    ];
+    List<Widget> condensedOperatingHours = [];
+
+    for (String day in daysOfWeek) {
+      condensedOperatingHours.add(
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            CondensedOperatingHours(
+              day: day,
+            ),
+            SizedBox(
+              width: MediaQuery.of(context).size.width * 0.05,
+            ),
+            Icon(
+              Icons.add,
+              color: kTealColor,
+            ),
+          ],
+        ),
+      );
+    }
+
+    return Column(
+      children: condensedOperatingHours,
     );
   }
 }
