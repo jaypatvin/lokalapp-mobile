@@ -284,10 +284,6 @@ class _AddShopState extends State<AddShop> {
             SizedBox(
               width: MediaQuery.of(context).size.width * 0.05,
             ),
-            Icon(
-              Icons.add,
-              color: kTealColor,
-            ),
           ],
         ),
       );
