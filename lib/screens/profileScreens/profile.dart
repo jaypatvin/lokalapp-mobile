@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:lokalapp/screens/profileScreens/profileShop.dart';
-import 'package:lokalapp/states/current_user.dart';
+import 'profile_shop.dart';
+import '../../states/current_user.dart';
 import 'package:provider/provider.dart';
 
 class Profile extends StatefulWidget {
@@ -12,8 +12,6 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
-
-
   Padding buildIconSettings() {
     return Padding(
         padding: const EdgeInsets.only(left: 5),
@@ -65,9 +63,6 @@ class _ProfileState extends State<Profile> {
     );
   }
 
-
-
-
   Row buildName(String firstName, String lastName) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -90,52 +85,52 @@ class _ProfileState extends State<Profile> {
     CurrentUser _user = Provider.of<CurrentUser>(context);
     return SafeArea(
       child: Scaffold(
-        backgroundColor: Colors.white,
-        appBar: PreferredSize(
-          preferredSize: Size(double.infinity, 220),
-          child: Container(
-            decoration: BoxDecoration(
-              boxShadow: [
-                BoxShadow(color: Colors.black12, spreadRadius: 5, blurRadius: 2)
-              ],
-            ),
-            width: MediaQuery.of(context).size.width,
-            height: 500,
+          backgroundColor: Colors.white,
+          appBar: PreferredSize(
+            preferredSize: Size(double.infinity, 220),
             child: Container(
               decoration: BoxDecoration(
-                gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [Color(0xffFFC700), Colors.black45]),
+                boxShadow: [
+                  BoxShadow(
+                      color: Colors.black12, spreadRadius: 5, blurRadius: 2)
+                ],
               ),
+              width: MediaQuery.of(context).size.width,
+              height: 500,
               child: Container(
-                margin: const EdgeInsets.fromLTRB(0, 8, 0, 0),
-                child: Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        buildIconSettings(),
-                        buildIconMore(),
-                      ],
-                    ),
-                    buildCircleAvatar(),
-                    SizedBox(
-                      height: 15,
-                    ),
-                    buildName(
-                      _user.getCurrentUser.firstName,
-                      _user.getCurrentUser.lastName,
-                    )
-                  ],
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [Color(0xffFFC700), Colors.black45]),
+                ),
+                child: Container(
+                  margin: const EdgeInsets.fromLTRB(0, 8, 0, 0),
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          buildIconSettings(),
+                          buildIconMore(),
+                        ],
+                      ),
+                      buildCircleAvatar(),
+                      SizedBox(
+                        height: 15,
+                      ),
+                      buildName(
+                        _user.getCurrentUser.firstName,
+                        _user.getCurrentUser.lastName,
+                      )
+                    ],
+                  ),
                 ),
               ),
             ),
           ),
-        ),
-        body: ProfileShop(hasStore: false)
-      ),
+          body: ProfileShop(hasStore: false)),
     );
   }
 }
