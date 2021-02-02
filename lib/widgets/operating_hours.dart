@@ -8,17 +8,30 @@ class OperatingHours extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.start,
+      // crossAxisAlignment: CrossAxisAlignment.,
+      mainAxisSize: MainAxisSize.min,
       children: [
+        SizedBox(width: 8,),
         Container(
-          width: MediaQuery.of(context).size.width * .25,
+          width: MediaQuery.of(context).size.width * .33,
           child: Text(
             state,
+            softWrap: true,
+            style: TextStyle(fontSize: 20, color: Colors.grey, fontFamily: "GoldplayBold", fontWeight: FontWeight.w500),
           ),
         ),
-        TimePickerButton(
-          minTime: 0,
-          maxTime: 24,
+        SizedBox(width: 5,),
+        Expanded(
+                  child: Container(
+               width: MediaQuery.of(context).size.width * 0.50,
+              height: MediaQuery.of(context).size.height * 0.1,
+              child: TimePickerButton(
+                minTime: 0,
+                maxTime: 24,
+              
+              ),
+            ),
         ),
       ],
     );

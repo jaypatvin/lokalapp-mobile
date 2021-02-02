@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
-import '../add_shop.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
+import '../addShopScreens/add_shop.dart';
 import '../../widgets/rounded_button.dart';
 
 class ProfileNoShop extends StatefulWidget {
   final bool hasStore;
+
   ProfileNoShop({this.hasStore});
 
   @override
@@ -47,8 +49,15 @@ class _ProfileNoShopState extends State<ProfileNoShop> {
         RoundedButton(
           label: "ADD SHOP",
           onPressed: () {
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) => AddShop()));
+            pushNewScreen(
+              context,
+              screen: AddShop(),
+              withNavBar: true, // OPTIONAL VALUE. True by default.
+              pageTransitionAnimation: PageTransitionAnimation.cupertino,
+            );
+
+            // Navigator.push(
+            //     context, MaterialPageRoute(builder: (context) => AddShop()));
           },
           minWidth: 170,
           fontSize: 18,

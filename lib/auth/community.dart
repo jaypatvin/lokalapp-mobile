@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'profile_registration.dart';
 import '../widgets/sso_block.dart';
 import 'package:provider/provider.dart';
@@ -44,7 +45,7 @@ class _CommunityState extends State<Community> {
       } else if (_authStatus == authStatus.Success) {
         Navigator.pushAndRemoveUntil(
             context,
-            MaterialPageRoute(builder: (context) => BottomNavigation()),
+            MaterialPageRoute(builder: (context) => PersistentBottomNavBar()),
             (route) => false);
       }
     } catch (e) {

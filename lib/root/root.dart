@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import '../screens/bottom_navigation.dart';
 import '../screens/welcome_screen.dart';
 import 'package:provider/provider.dart';
@@ -18,6 +19,7 @@ class Root extends StatefulWidget {
 class _RootState extends State<Root> {
   // AuthStatus _authStatus = AuthStatus.notLoggedIn;
   AuthStatus _authStatus = AuthStatus.notLoggedIn;
+  
   @override
   void didChangeDependencies() async {
     // TODO: implement didChangeDependencies

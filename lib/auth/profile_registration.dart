@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import '../utils/themes.dart';
 import '../widgets/rounded_button.dart';
 import 'package:image_picker/image_picker.dart';

@@ -226,48 +226,7 @@ class _TimelineState extends State<Timeline> {
                                                   ],
                                                 ),
                                               ),
-                                              Column(
-                                                children: [
-                                                  SizedBox(
-                                                    height: 10,
-                                                    // width: 30,
-                                                  ),
-                                                  Row(
-                                                    children: [
-                                                      buildHeader(
-                                                          _user.getCurrentUser
-                                                              .firstName,
-                                                          _user.getCurrentUser
-                                                              .lastName)
-                                                    ],
-                                                  ),
-                                                  SizedBox(
-                                                    height: 20,
-                                                  ),
-                                                  Row(
-                                                    // mainAxisSize:
-                                                    //     MainAxisSize.min,
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment.start,
-                                                    children: [
-                                                      SizedBox(
-                                                        width: 26,
-                                                      ),
-                                                      buildMessageBody(
-                                                          activity["message"]),
-                                                    ],
-                                                  ),
-                                                  SizedBox(
-                                                    height: 20,
-                                                  ),
-                                                  Divider(
-                                                    color: Colors.grey,
-                                                    indent: 25,
-                                                    endIndent: 25,
-                                                  ),
-                                                  buildLikes(activity),
-                                                ],
-                                              ),
+                                            
                                             ],),
                                           
                                         ),
