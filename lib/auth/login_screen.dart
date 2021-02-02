@@ -1,3 +1,5 @@
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
+
 import '../screens/bottom_navigation.dart';
 import 'invite_page.dart';
 import '../widgets/rounded_button.dart';
