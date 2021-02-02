@@ -1,4 +1,8 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'timeline.dart';
 import 'profileScreens/profile.dart';
 import '../states/current_user.dart';
@@ -16,13 +20,14 @@ class BottomNavigation extends StatefulWidget {
 
 class _BottomNavigationState extends State<BottomNavigation> {
   int pageIndex = 0;
-  PageController _pageController = PageController();
+  // PageController _pageController = PageController();
+  PersistentTabController _controller;
 
   void _onTap(int value) {
     setState(() {
       pageIndex = value;
     });
-    _pageController.jumpToPage(value);
+    // _pageController.jumpToPage(value);
   }
 
   void onPageChanged(int pageIndex) {
@@ -35,53 +40,106 @@ class _BottomNavigationState extends State<BottomNavigation> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    _pageController = PageController();
+    // _pageController = PageController();
   }
 
   @override
   Widget build(BuildContext context) {
     final Map account = Provider.of<CurrentUser>(context).getStreamAccount;
 
-    return Scaffold(
-      bottomNavigationBar: SizedBox(
-        height: 70,
-        child: BottomNavigationBar(
-          currentIndex: pageIndex,
-          selectedItemColor: Colors.redAccent,
-          unselectedItemColor: Colors.black87,
-          onTap: _onTap,
-          items: const <BottomNavigationBarItem>[
-            BottomNavigationBarItem(
-                icon: Icon(Icons.home_rounded), label: "Home"),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.account_tree_rounded), label: "Discover"),
-            BottomNavigationBarItem(icon: Icon(Icons.chat), label: "Chat"),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.accessibility_rounded), label: "Activity"),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.account_circle), label: "Profile"),
-          ],
+    List<Widget> _buildScreens() {
+      return [
+         Home(
+          account: account,
         ),
-      ),
-      body: PageView(
-        children: [
-          Home(account: account),
-          Timeline(account: account),
-          Chat(),
-          Activity(),
-          Profile(account: account)
-        ],
-        controller: _pageController,
-        onPageChanged: onPageChanged,
-        physics: NeverScrollableScrollPhysics(),
-      ),
-    );
-  }
+        Discover(),
+        Chat(),
+        Activity(),
+        Profile(
+          account: account,
+        )
+      ];
+    }
 
-  @override
-  void dispose() {
-    // TODO: implement dispose
-    _pageController.dispose();
-    super.dispose();
+    List<PersistentBottomNavBarItem> _navBarsItems() {
+      return [
+        PersistentBottomNavBarItem(
+          icon: Icon(Icons.home_outlined),
+          title: ("Home"),
+          iconSize: 34,
+          activeColor: Color(0xFFCC3752),
+          inactiveColor: Color(0xFF103045),
+          
+        ),
+        PersistentBottomNavBarItem(
+          icon: Icon(Icons.web_asset_outlined),
+          title: ("Discover"),
+             iconSize: 34,
+          activeColor: Color(0xFFCC3752),
+           inactiveColor: Color(0xFF103045),
+        ),
+        PersistentBottomNavBarItem(
+          icon: Icon(Icons.chat_outlined),
+          title: ("Chat"),
+            iconSize: 34,
+          activeColor: Color(0xFFCC3752),
+           inactiveColor: Color(0xFF103045),
+        ),
+          PersistentBottomNavBarItem(
+          icon: Icon(Icons.pie_chart_outlined),
+          title: ("Activity"),
+            iconSize: 34,
+          activeColor: Color(0xFFCC3752),
+            inactiveColor: Color(0xFF103045),
+        ),
+        PersistentBottomNavBarItem(
+          icon: Icon(Icons.person),
+          title: ("Profile"),
+             iconSize: 34,
+          activeColor: Color(0xFFCC3752),
+           inactiveColor: Color(0xFF103045),
+        ),
+      ];
+    }
+
+    return Scaffold(
+        body: PersistentTabView(
+      context,
+    
+      controller: _controller,
+      screens: _buildScreens(),
+      items: _navBarsItems(),
+      confineInSafeArea: true,
+      backgroundColor: Colors.white,
+      padding: NavBarPadding.only(top: 1),
+      margin: EdgeInsets.all(9),
+      handleAndroidBackButtonPress: true,
+      resizeToAvoidBottomInset:
+          true, // This needs to be true if you want to move up the screen when keyboard appears.
+      stateManagement: true,
+      hideNavigationBarWhenKeyboardShows:
+          true, // Recommended to set 'resizeToAvoidBottomInset' as true while using this argument.
+      decoration: NavBarDecoration(
+        borderRadius: BorderRadius.circular(10.0),
+        colorBehindNavBar: Colors.white,
+      ),
+      popAllScreensOnTapOfSelectedTab: true,
+      popActionScreens: PopActionScreensType.all,
+      bottomScreenMargin: 80,
+      // navBarHeight: 40,
+      itemAnimationProperties: ItemAnimationProperties(
+        // Navigation Bar's items animation properties.
+        duration: Duration(milliseconds: 200),
+        curve: Curves.ease,
+      ),
+      screenTransitionAnimation: ScreenTransitionAnimation(
+        // Screen transition animation on change of selected tab.
+        animateTabTransition: true,
+        curve: Curves.ease,
+        duration: Duration(milliseconds: 200),
+      ),
+      navBarStyle:
+          NavBarStyle.style6, // Choose the nav bar style with this property.
+    ));
   }
 }

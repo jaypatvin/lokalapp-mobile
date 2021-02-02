@@ -1,25 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:lokalapp/screens/bottom_navigation.dart';
 import 'package:lokalapp/widgets/condensed_operating_hours.dart';
 import 'package:lokalapp/widgets/operating_hours.dart';
 import 'package:lokalapp/widgets/rounded_button.dart';
-import '../utils/themes.dart';
-import '../widgets/rounded_text_field.dart';
-import 'package:dropdown_date_picker/dropdown_date_picker.dart';
+import '../../utils/themes.dart';
+import 'shopDescription.dart';
 
 class AddShop extends StatefulWidget {
-  @override
+    final Map<String, String> account;
+    static String id = '/addShop';
+    AddShop({Key key, this.account,}) : super(key: key);
   _AddShopState createState() => _AddShopState();
 }
 
-class _AddShopState extends State<AddShop> {
+class _AddShopState extends State<AddShop>{
   TextEditingController _shopName = TextEditingController();
-  TextEditingController _descriptionController = TextEditingController();
+
+  String state;
+
   bool _setOperatingHours = false;
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: PreferredSize(
+
+PreferredSize buildAppBar(){
+  return PreferredSize(
         preferredSize: Size(double.infinity, 130),
         child: Container(
           decoration: BoxDecoration(
@@ -73,7 +75,62 @@ class _AddShopState extends State<AddShop> {
             ),
           ),
         ),
-      ),
+      );
+}
+
+
+Row buildShopName(){
+  return   Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: MediaQuery.of(context).size.width / 1.3  ,
+                  
+                  child: TextField(
+                    
+                    onTap: () {},
+                    controller: _shopName,
+                    decoration: InputDecoration(
+                      fillColor: Color(0xffF2F2F2),
+                      filled: true,
+                      isDense: true,
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 25,
+                        vertical: 18,
+                      ),
+                      hintText: "Shop Name",
+                      hintStyle: TextStyle(
+                          fontFamily: "GoldplayBold",
+                          fontSize: 16,
+                          color: Color(0xFFBDBDBD),
+                          fontWeight: FontWeight.w500),
+                      alignLabelWithHint: true,
+                      border: const OutlineInputBorder(
+                        borderSide: BorderSide.none,
+                        borderRadius: const BorderRadius.all(
+                          Radius.circular(
+                            30.0,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                )
+              ],
+            );
+}
+
+
+  @override
+  Widget build(BuildContext context) {
+
+ 
+    return Scaffold(
+      backgroundColor: Colors.white,
+      // bottomNavigationBar: BottomNavigation(),
+      appBar: buildAppBar(),
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -124,88 +181,13 @@ class _AddShopState extends State<AddShop> {
             SizedBox(
               height: 25,
             ),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  width: MediaQuery.of(context).size.width / 1.3,
-                  child: TextField(
-                    onTap: () {},
-                    controller: _shopName,
-                    decoration: InputDecoration(
-                      fillColor: Color(0xffF2F2F2),
-                      filled: true,
-                      isDense: true,
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 25,
-                        vertical: 18,
-                      ),
-                      hintText: "Shop Name",
-                      hintStyle: TextStyle(
-                          fontFamily: "Goldplay",
-                          fontSize: 16,
-                          color: Color(0xFFBDBDBD),
-                          fontWeight: FontWeight.w600),
-                      alignLabelWithHint: true,
-                      border: const OutlineInputBorder(
-                        borderSide: BorderSide.none,
-                        borderRadius: const BorderRadius.all(
-                          Radius.circular(
-                            30.0,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                )
-              ],
-            ),
+          buildShopName(),
             SizedBox(
               height: 25,
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  height: MediaQuery.of(context).size.height * 0.3,
-                  width: MediaQuery.of(context).size.width * 0.8,
-                  color: Color(0xffE0E0E0),
-                  child: Card(
-                    child: TextField(
-                      controller: _descriptionController,
-                      cursorColor: Colors.black,
-                      keyboardType: TextInputType.multiline,
-                      maxLines: null,
-                      decoration: InputDecoration(
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(20),
-                            borderSide: BorderSide(
-                              width: 0,
-                              style: BorderStyle.none,
-                            ),
-                          ),
-                          focusedBorder: InputBorder.none,
-                          enabledBorder: InputBorder.none,
-                          errorBorder: InputBorder.none,
-                          disabledBorder: InputBorder.none,
-                          contentPadding: EdgeInsets.only(
-                              left: 18, bottom: 11, top: 30, right: 15),
-                          hintText: "Shop Description",
-                          hintStyle: TextStyle(
-                              color: Color(0xFFBDBDBD),
-                              fontFamily: "Goldplay",
-                              fontWeight: FontWeight.w600)),
-                    ),
-                  ),
-                ),
-              ],
-            ),
+        ShopDescription(),
             SizedBox(
-              height: 20,
+              height: 40,
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -222,39 +204,92 @@ class _AddShopState extends State<AddShop> {
                 )
               ],
             ),
+            SizedBox(
+              height: 35,
+            ),
             Row(
-              children: [Container()],
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Container(
+                    height: 60,
+                    width: 350,
+                    child: OperatingHours(
+                      state: "Opening Time",
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(
+              height: 25,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Container(
+                    height: 60,
+                    width: 350,
+                    child: OperatingHours(
+                      state: "Closing time",
+                      
+                    ),
+                  ),
+                ),
+              ],
             ),
             SizedBox(
               height: 20,
             ),
-            OperatingHours(
-              state: "Opening Time",
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                Container(
+                  height: 80,
+                  width: 300,
+                  child: ListTile(
+                    title: Text(
+                      "Set custom operating hours",
+                      softWrap: true,
+                      style: TextStyle(
+                          fontFamily: "GoldplayBold",
+                          color: Colors.black,
+                          fontWeight: FontWeight.w500),
+                    ),
+                    leading: Checkbox(
+                      activeColor: Colors.black,
+                      value: _setOperatingHours,
+                      onChanged: (value) {
+                        setState(() {
+                          _setOperatingHours = value;
+                        });
+                      },
+                    ),
+                  ),
+                ),
+              
+              ],
             ),
-            OperatingHours(
-              state: "Closing Time",
-            ),
-            ListTile(
-              title: Text(
-                "Set custom operating hours",
-              ),
-              leading: Checkbox(
-                activeColor: Colors.lightBlueAccent,
-                value: _setOperatingHours,
-                onChanged: (value) {
-                  setState(() {
-                    _setOperatingHours = value;
-                  });
-                },
-              ),
-            ),
-            buildDaysOfWeek(),
+              Container(child: buildDaysOfWeek()),
             SizedBox(height: MediaQuery.of(context).size.height * 0.05),
             RoundedButton(
               label: "SUBMIT",
+              fontSize: 16,
+              fontWeight: FontWeight.w700,
+              fontFamily: "GoldplayBold",
               onPressed: () {},
             ),
             SizedBox(height: MediaQuery.of(context).size.height * 0.05),
+            // Row(children: [],)
           ],
         ),
       ),
@@ -276,14 +311,16 @@ class _AddShopState extends State<AddShop> {
     for (String day in daysOfWeek) {
       condensedOperatingHours.add(
         Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          mainAxisSize: MainAxisSize.min,
           children: [
-            CondensedOperatingHours(
-              day: day,
+            Padding(
+              padding: const EdgeInsets.all(18.0),
+              child: CondensedOperatingHours(
+                day: day,
+              ),
             ),
-            SizedBox(
-              width: MediaQuery.of(context).size.width * 0.05,
-            ),
+           
           ],
         ),
       );
@@ -293,4 +330,8 @@ class _AddShopState extends State<AddShop> {
       children: condensedOperatingHours,
     );
   }
+  
+  
+
+
 }

@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:lokalapp/screens/add_shop.dart';
+import 'package:lokalapp/screens/addShopScreens/add_shop.dart';
+import 'package:lokalapp/screens/profile.dart';
 import 'root/root.dart';
 
 import 'package:provider/provider.dart';
@@ -23,6 +24,7 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.blue,
         ),
         home: Root(),
+      
       ),
     );
   }
