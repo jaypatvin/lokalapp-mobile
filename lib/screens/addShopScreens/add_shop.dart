@@ -5,21 +5,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
-import 'package:lokalapp/models/user_shop_post.dart';
-import 'package:lokalapp/screens/bottom_navigation.dart';
+import 'package:lokalapp/screens/addShopScreens/shopDescription.dart';
 import 'package:lokalapp/screens/profileScreens/profile_shop.dart';
 import 'package:lokalapp/services/database.dart';
 import 'package:lokalapp/states/current_user.dart';
-import 'package:lokalapp/widgets/condensed_operating_hours.dart';
-import 'package:lokalapp/widgets/operating_hours.dart';
 import 'package:lokalapp/widgets/rounded_button.dart';
-import 'package:lokalapp/widgets/time_picker_button.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 import '../../utils/themes.dart';
-import '../profile.dart';
-import 'shopDescription.dart';
+import 'condensed_operating_hours.dart';
 import 'package:image/image.dart' as Im;
 
 class AddShop extends StatefulWidget {
@@ -27,14 +22,15 @@ class AddShop extends StatefulWidget {
   final dynamic description;
   final DateTime time;
   static String id = '/addShop';
-  AddShop({Key key, this.account, this.description, this.time}) : super(key: key);
+  AddShop({Key key, this.account, this.description, this.time})
+      : super(key: key);
   _AddShopState createState() => _AddShopState();
 }
 
 class _AddShopState extends State<AddShop> {
   final TextEditingController _shopNameController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
-  DateTime _date = DateTime.now();
+  //DateTime _date = DateTime.now();
   // final TextEditingController _statusController = TextEditingController();
   // final TextEditingController _coverPhotoController = TextEditingController();
 
@@ -45,10 +41,12 @@ class _AddShopState extends State<AddShop> {
   bool isUploading = false;
   String profilePhotoId = Uuid().v4();
   final picker = ImagePicker();
-  dynamic openingHour ;
-  dynamic closingHour ;
+  String openingHour;
+  String closingHour;
   dynamic openingCustomHour;
   dynamic closingCustomHour;
+  DateTime _opening = DateTime.now();
+  DateTime _closing = DateTime.now();
 
   compressImage() async {
     final tempDir = await getTemporaryDirectory();
@@ -80,7 +78,7 @@ class _AddShopState extends State<AddShop> {
       mediaUrl = await uploadImage(file);
     }
     CurrentUser _user = Provider.of<CurrentUser>(context, listen: false);
-  
+
     _user.postShop.userUid = _user.getCurrentUser.userUids.first;
     _user.postShop.name = _shopNameController.text;
     _user.postShop.description = _descriptionController.text;
@@ -94,8 +92,8 @@ class _AddShopState extends State<AddShop> {
       'opening': openingCustomHour,
       'closing': closingCustomHour,
     };
-    _user.postShop.status = true.toString();
-    await Database().getCommunityIdFromInvite(_user.getCurrentUser.communityId);
+    _user.postShop.status = "enabled";
+    _user.postShop.communityId = _user.getCurrentUser.userUids.first;
     bool success = await _user.createShop();
     if (success) {
       Navigator.pushAndRemoveUntil(
@@ -348,51 +346,9 @@ class _AddShopState extends State<AddShop> {
             SizedBox(
               height: 25,
             ),
-           Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              // mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  height: MediaQuery.of(context).size.height * 0.3,
-                  width: MediaQuery.of(context).size.width * 0.8,
-                  color: Color(0xffE0E0E0),
-                  child: Card(
-                    
-                    child: TextField(
-                    
-                 controller:_descriptionController,
-                  
-                      cursorColor: Colors.black,
-                      keyboardType: TextInputType.multiline,
-                    
-                      minLines: 1,
-                      maxLines: 10,
-                      textInputAction: TextInputAction.newline,
-                      decoration: InputDecoration(
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(20),
-                            borderSide: BorderSide(
-                              width: 1,
-                              style: BorderStyle.none,
-                            ),
-                          ),
-                          focusedBorder: InputBorder.none,
-                          enabledBorder: InputBorder.none,
-                          errorBorder: InputBorder.none,
-                          disabledBorder: InputBorder.none,
-                          contentPadding: EdgeInsets.only(
-                              left: 18, bottom: 11, top: 30, right: 15),
-                          hintText: "Shop Description",
-                          hintStyle: TextStyle(
-                              color: Color(0xFFBDBDBD),
-                              fontFamily: "Goldplay",
-                              fontWeight: FontWeight.w600)),
-                    ),
-                  ),
-                ),
-              ],
-           ),
+            ShopDescription(
+              descriptionController: this._descriptionController,
+            ),
             SizedBox(
               height: 40,
             ),
@@ -424,78 +380,78 @@ class _AddShopState extends State<AddShop> {
                   child: Container(
                     height: 60,
                     width: 350,
-                    child: 
-                    Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      // crossAxisAlignment: CrossAxisAlignment.,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        SizedBox(width: 8,),
-        Container(
-          width: MediaQuery.of(context).size.width * .33,
-          child: Text(
-            "Opening",
-            softWrap: true,
-            style: TextStyle(fontSize: 20, color: Colors.grey, fontFamily: "GoldplayBold", fontWeight: FontWeight.w500),
-          ),
-        ),
-        SizedBox(width: 5,),
-        Expanded(
-                  child: Container(
-               width: MediaQuery.of(context).size.width * 0.50,
-              height: MediaQuery.of(context).size.height * 0.1,
-              child: 
-           FlatButton(
-      onPressed: () {
-        DatePicker.showTime12hPicker(
-          context,
-          
-          showTitleActions: true,
-        onChanged: (value){  setState(() {
-          openingHour = value.toIso8601String();
-        }); },
-          onConfirm: (date) {
-            setState(() {
-              _date = date;
-                  
-            });
-          },
-
-          currentTime: _date,
-        );
-        
-      },
-      color: Color(0xffF2F2F2),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(30.0),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        mainAxisSize: MainAxisSize.max,
-        children: [
-          Container(
-            width: 60,
-            height: 350,
-            color: Color(0xffF2F2F2),
-            child: Text(DateFormat.Hms().format(_date)),
-          ),
-          Icon(
-            Icons.arrow_drop_down_sharp,
-            color: kTealColor,
-            size: 35,
-          ),
-        ],
-      ),
-    )
-            ),
-        ),
-      ],
-    ),
-                    
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      // crossAxisAlignment: CrossAxisAlignment.,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        SizedBox(
+                          width: 8,
+                        ),
+                        Container(
+                          width: MediaQuery.of(context).size.width * .33,
+                          child: Text(
+                            "Opening",
+                            softWrap: true,
+                            style: TextStyle(
+                                fontSize: 20,
+                                color: Colors.grey,
+                                fontFamily: "GoldplayBold",
+                                fontWeight: FontWeight.w500),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 5,
+                        ),
+                        Expanded(
+                          child: Container(
+                              width: MediaQuery.of(context).size.width * 0.50,
+                              height: MediaQuery.of(context).size.height * 0.1,
+                              child: FlatButton(
+                                onPressed: () {
+                                  DatePicker.showTime12hPicker(
+                                    context,
+                                    showTitleActions: true,
+                                    onConfirm: (date) {
+                                      setState(() {
+                                        _opening = date;
+                                        openingHour = DateFormat.Hms().format(
+                                            date); //date.toIso8601String();
+                                      });
+                                    },
+                                    currentTime: _opening,
+                                  );
+                                },
+                                color: Color(0xffF2F2F2),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(30.0),
+                                ),
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  //mainAxisSize: MainAxisSize.max,
+                                  children: [
+                                    Container(
+                                      width: 60,
+                                      height: 350,
+                                      color: Color(0xffF2F2F2),
+                                      child: Text(
+                                          DateFormat.Hms().format(_opening)),
+                                    ),
+                                    Icon(
+                                      Icons.arrow_drop_down_sharp,
+                                      color: kTealColor,
+                                      size: 35,
+                                    ),
+                                  ],
+                                ),
+                              )),
+                        ),
+                      ],
                     ),
                   ),
-                
+                ),
               ],
             ),
             SizedBox(
@@ -511,74 +467,76 @@ class _AddShopState extends State<AddShop> {
                   child: Container(
                     height: 60,
                     width: 350,
-                    child:  Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      // crossAxisAlignment: CrossAxisAlignment.,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        SizedBox(width: 8,),
-        Container(
-          width: MediaQuery.of(context).size.width * .33,
-          child: Text(
-            "Closing",
-            softWrap: true,
-            style: TextStyle(fontSize: 20, color: Colors.grey, fontFamily: "GoldplayBold", fontWeight: FontWeight.w500),
-          ),
-        ),
-        SizedBox(width: 5,),
-        Expanded(
-                  child: Container(
-               width: MediaQuery.of(context).size.width * 0.50,
-              height: MediaQuery.of(context).size.height * 0.1,
-              child: 
-           FlatButton(
-      onPressed: () {
-        DatePicker.showTime12hPicker(
-          context,
-          
-          showTitleActions: true,
-       onChanged: (value){setState(() {
-         closingHour = value.toIso8601String();
-       });},
-          onConfirm: (date) {
-            setState(() {
-               _date = date;
-                  
-            });
-          },
-          currentTime: _date,
-        );
-        
-      },
-      color: Color(0xffF2F2F2),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(30.0),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        mainAxisSize: MainAxisSize.max,
-        children: [
-          Container(
-            width: 60,
-            height: 350,
-            color: Color(0xffF2F2F2),
-            child: Text(DateFormat.Hms().format(_date)),
-          ),
-          Icon(
-            Icons.arrow_drop_down_sharp,
-            color: kTealColor,
-            size: 35,
-          ),
-        ],
-      ),
-    )
-            ),
-        ),
-      ],
-    ),
-                  
-                    
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      // crossAxisAlignment: CrossAxisAlignment.,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        SizedBox(
+                          width: 8,
+                        ),
+                        Container(
+                          width: MediaQuery.of(context).size.width * .33,
+                          child: Text(
+                            "Closing",
+                            softWrap: true,
+                            style: TextStyle(
+                                fontSize: 20,
+                                color: Colors.grey,
+                                fontFamily: "GoldplayBold",
+                                fontWeight: FontWeight.w500),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 5,
+                        ),
+                        Expanded(
+                          child: Container(
+                              width: MediaQuery.of(context).size.width * 0.50,
+                              height: MediaQuery.of(context).size.height * 0.1,
+                              child: FlatButton(
+                                onPressed: () {
+                                  DatePicker.showTime12hPicker(
+                                    context,
+                                    showTitleActions: true,
+                                    onConfirm: (date) {
+                                      setState(() {
+                                        closingHour =
+                                            DateFormat.Hms().format(date);
+                                        _closing = date;
+                                      });
+                                    },
+                                    currentTime: _closing,
+                                  );
+                                },
+                                color: Color(0xffF2F2F2),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(30.0),
+                                ),
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  mainAxisSize: MainAxisSize.max,
+                                  children: [
+                                    Container(
+                                      width: 60,
+                                      height: 350,
+                                      color: Color(0xffF2F2F2),
+                                      child: Text(
+                                          DateFormat.Hms().format(_closing)),
+                                    ),
+                                    Icon(
+                                      Icons.arrow_drop_down_sharp,
+                                      color: kTealColor,
+                                      size: 35,
+                                    ),
+                                  ],
+                                ),
+                              )),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ],
