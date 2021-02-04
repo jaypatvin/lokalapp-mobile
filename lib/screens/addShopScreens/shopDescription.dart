@@ -1,13 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:lokalapp/services/database.dart';
+import 'package:lokalapp/states/current_user.dart';
+import 'package:provider/provider.dart';
 
 class ShopDescription extends StatefulWidget {
+  final String description;
+  // final TextEditingController desc = TextEditingController();
+  ShopDescription({this.description});
   @override
   _ShopDescriptionState createState() => _ShopDescriptionState();
 }
 
 class _ShopDescriptionState extends State<ShopDescription> {
-    TextEditingController _descriptionController = TextEditingController();
+  String description;
+ final TextEditingController descriptionController = TextEditingController();
 
+
+  
   @override
   Widget build(BuildContext context) {
     return     Row(
@@ -22,10 +31,15 @@ class _ShopDescriptionState extends State<ShopDescription> {
                   child: Card(
                     
                     child: TextField(
-                      controller: _descriptionController,
+                    
+                 controller: descriptionController,
+                    // onChanged: (value){description = value;},
                       cursorColor: Colors.black,
                       keyboardType: TextInputType.multiline,
-                      maxLines: null,
+                    
+                      minLines: 1,
+                      maxLines: 10,
+                      textInputAction: TextInputAction.newline,
                       decoration: InputDecoration(
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(20),
@@ -50,5 +64,11 @@ class _ShopDescriptionState extends State<ShopDescription> {
                 ),
               ],
             );
+  }
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    descriptionController.dispose();
+    super.dispose();
   }
 }

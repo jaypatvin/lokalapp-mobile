@@ -1,13 +1,9 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
-import 'timeline.dart';
 import 'profileScreens/profile.dart';
 import '../states/current_user.dart';
 import 'package:provider/provider.dart';
-
 import 'activity.dart';
 import 'chat.dart';
 import 'discover.dart';
@@ -27,20 +23,6 @@ class _BottomNavigationState extends State<BottomNavigation> {
     setState(() {
       pageIndex = value;
     });
-    // _pageController.jumpToPage(value);
-  }
-
-  void onPageChanged(int pageIndex) {
-    setState(() {
-      this.pageIndex = pageIndex;
-    });
-  }
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    // _pageController = PageController();
   }
 
   @override
@@ -81,23 +63,23 @@ class _BottomNavigationState extends State<BottomNavigation> {
         PersistentBottomNavBarItem(
           icon: Icon(Icons.chat_outlined),
           title: ("Chat"),
-            iconSize: 34,
+          iconSize: 34,
           activeColor: Color(0xFFCC3752),
-           inactiveColor: Color(0xFF103045),
+          inactiveColor: Color(0xFF103045),
         ),
           PersistentBottomNavBarItem(
           icon: Icon(Icons.pie_chart_outlined),
           title: ("Activity"),
-            iconSize: 34,
+          iconSize: 34,
           activeColor: Color(0xFFCC3752),
-            inactiveColor: Color(0xFF103045),
+          inactiveColor: Color(0xFF103045),
         ),
         PersistentBottomNavBarItem(
           icon: Icon(Icons.person),
           title: ("Profile"),
-             iconSize: 34,
+          iconSize: 34,
           activeColor: Color(0xFFCC3752),
-           inactiveColor: Color(0xFF103045),
+          inactiveColor: Color(0xFF103045),
         ),
       ];
     }
@@ -105,14 +87,13 @@ class _BottomNavigationState extends State<BottomNavigation> {
     return Scaffold(
         body: PersistentTabView(
       context,
-    
       controller: _controller,
       screens: _buildScreens(),
       items: _navBarsItems(),
       confineInSafeArea: true,
       backgroundColor: Colors.white,
       padding: NavBarPadding.only(top: 1),
-      margin: EdgeInsets.all(9),
+      margin: EdgeInsets.all(2),
       handleAndroidBackButtonPress: true,
       resizeToAvoidBottomInset:
           true, // This needs to be true if you want to move up the screen when keyboard appears.
@@ -125,7 +106,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
       ),
       popAllScreensOnTapOfSelectedTab: true,
       popActionScreens: PopActionScreensType.all,
-      bottomScreenMargin: 80,
+      bottomScreenMargin: 50,
       // navBarHeight: 40,
       itemAnimationProperties: ItemAnimationProperties(
         // Navigation Bar's items animation properties.

@@ -3,8 +3,8 @@ import 'package:lokalapp/widgets/time_picker_button.dart';
 
 class OperatingHours extends StatelessWidget {
   final String state;
-
-  const OperatingHours({this.state});
+  final DateTime time;
+  const OperatingHours({this.state, this.time});
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -29,7 +29,8 @@ class OperatingHours extends StatelessWidget {
               child: TimePickerButton(
                 minTime: 0,
                 maxTime: 24,
-              
+                // dateValue: dateValue,
+                time: time,
               ),
             ),
         ),

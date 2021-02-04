@@ -2,6 +2,7 @@ import 'package:intl/intl.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:lokalapp/models/user_shop_post.dart';
 import 'package:lokalapp/utils/themes.dart';
 
 class TimePickerButton extends StatefulWidget {
@@ -9,8 +10,9 @@ class TimePickerButton extends StatefulWidget {
   final int maxTime;
   final double width;
   final double height;
-
-  const TimePickerButton({this.minTime, this.maxTime, this.height, this.width});
+  final   DateTime time;
+  const TimePickerButton(
+      {this.minTime, this.maxTime, this.height, this.width, this.time});
   @override
   _TimePickerButtonState createState() => _TimePickerButtonState();
 }
@@ -20,20 +22,29 @@ class _TimePickerButtonState extends State<TimePickerButton> {
   String day;
   double height;
   double width;
+  DateTime time;
+  Function onChanged;
+
   @override
   Widget build(BuildContext context) {
     return FlatButton(
       onPressed: () {
         DatePicker.showTime12hPicker(
           context,
+          
           showTitleActions: true,
+          onChanged: (value){setState(() {
+            time = value;
+          });},
           onConfirm: (date) {
             setState(() {
               _date = date;
+                  
             });
           },
           currentTime: _date,
         );
+        
       },
       color: Color(0xffF2F2F2),
       shape: RoundedRectangleBorder(
@@ -48,23 +59,15 @@ class _TimePickerButtonState extends State<TimePickerButton> {
             width: this.width,
             height: this.height,
             color: Color(0xffF2F2F2),
-            // child: Text(DateFormat.Hms().format(_date)),
-            child: Text(
-              "",
-              style: TextStyle(
-                  color: Color(0xFFBDBDBD),
-                  fontFamily: "Goldplay",
-                  fontSize: 20,
-                  fontWeight: FontWeight.w600),
-            ),
+            child: Text(DateFormat.Hms().format(_date)),
+            
+            
           ),
           Icon(
             Icons.arrow_drop_down_sharp,
             color: kTealColor,
             size: 35,
           ),
-
-        
         ],
       ),
     );

@@ -14,11 +14,22 @@ final Reference storageRef = FirebaseStorage.instance.ref();
 class Database {
   static const _baseUrl =
       'https://us-central1-lokal-1baac.cloudfunctions.net/api/v1/users';
-
+static const _storeUrl = 'https://us-central1-lokal-1baac.cloudfunctions.net/api/v1/shops';
   Future<String> createUserPostRequest(Map data) async {
     var body = json.encode(data);
     var response = await http.post(
       _baseUrl,
+      headers: {"Content-Type": "application/json"},
+      body: body,
+    );
+
+    return response.body;
+  }
+
+  Future<String> createStorePostRequest(Map data) async {
+    var body = json.encode(data);
+    var response = await http.post(
+      _storeUrl,
       headers: {"Content-Type": "application/json"},
       body: body,
     );

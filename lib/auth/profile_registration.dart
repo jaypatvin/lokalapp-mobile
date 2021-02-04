@@ -123,7 +123,7 @@ class _ProfileRegistrationState extends State<ProfileRegistration> {
     _user.postBody.address = _streetAddressController.text;
 
     bool success = await _user.createUser();
-
+   
     // await Provider.of<CurrentUser>(context, listen: false).updateUser();
     await Database().claimInviteCode(
       code: _user.getUserInviteCode,

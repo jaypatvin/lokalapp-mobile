@@ -5,8 +5,9 @@ class CondensedOperatingHours extends StatelessWidget {
   final String day;
   final DateTime minTime;
   final DateTime maxTime;
+final dynamic onChanged;
 
-  const CondensedOperatingHours({this.day, this.minTime, this.maxTime});
+  const CondensedOperatingHours({this.day, this.minTime, this.maxTime, this.onChanged});
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -27,7 +28,7 @@ class CondensedOperatingHours extends StatelessWidget {
           child: TimePickerButton(
             minTime: 0,
             maxTime: 24,
-           
+
           ),
         ),
         SizedBox(width: MediaQuery.of(context).size.width * 0.02),
