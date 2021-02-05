@@ -69,8 +69,9 @@ class CurrentUser extends ChangeNotifier {
   }
 
   Future<bool> claimInviteCode() async {
+    String userDocId = await _db.getUserDocId(_postBody["user_uid"]);
     http.Response response =
-        await _lokalService.claimInviteCode(_postBody["user_uid"], _inviteCode);
+        await _lokalService.claimInviteCode(userDocId, _inviteCode);
 
     if (response.statusCode != 200) {
       return false;

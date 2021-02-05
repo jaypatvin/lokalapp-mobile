@@ -122,13 +122,13 @@ class _ProfileRegistrationState extends State<ProfileRegistration> {
         lastName: _lastNameController.text,
         address: _streetAddressController.text);
 
-    bool isUserCreated = false;
-    bool validInviteCode = await _user.claimInviteCode();
-    if (validInviteCode) {
-      isUserCreated = await _user.createUser();
+    bool isUserCreated = await _user.createUser();
+    bool inviteCodeClaimed = false;
+    if (isUserCreated) {
+      inviteCodeClaimed = await _user.claimInviteCode();
     }
 
-    if (isUserCreated) {
+    if (inviteCodeClaimed) {
       Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(builder: (context) => BottomNavigation()),
