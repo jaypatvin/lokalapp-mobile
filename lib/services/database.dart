@@ -14,7 +14,7 @@ class Database {
   Future<Map> getUserInfo(String uid) async {
     Map data;
     try {
-      final String documentId = await getCurrentUserDocId(uid);
+      final String documentId = await getUserDocId(uid);
       if (documentId != null && documentId.isNotEmpty) {
         DocumentSnapshot _docSnapshot = await usersRef.doc(documentId).get();
         if (_docSnapshot.exists) {
@@ -27,7 +27,7 @@ class Database {
     return data;
   }
 
-  Future<String> getCurrentUserDocId(String userUid) async {
+  Future<String> getUserDocId(String userUid) async {
     String retVal = "";
     final QuerySnapshot snapshot =
         await usersRef.where("user_uids", arrayContains: userUid).get();
