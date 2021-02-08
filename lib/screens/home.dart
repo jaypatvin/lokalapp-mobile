@@ -20,7 +20,7 @@ class _HomeState extends State<Home> {
 
   Padding buildTextField() {
     return Padding(
-      padding: const EdgeInsets.only(left: 20, top: 255, right: 20, bottom: 0),
+      padding: const EdgeInsets.only(left: 20, top: 30, right: 20, bottom: 0),
       child: Column(
         children: [
           Container(

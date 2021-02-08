@@ -32,4 +32,15 @@ class LokalApiService {
       body: body,
     );
   }
+
+  Future<String> createStore(Map data) async {
+    var body = json.encode(data);
+    var response = await http.post(
+      "$_baseUrl/shops",
+      headers: {"Content-Type": "application/json"},
+      body: body,
+    );
+
+    return response.body;
+  }
 }

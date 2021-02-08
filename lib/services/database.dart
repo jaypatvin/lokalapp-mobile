@@ -8,9 +8,6 @@ final Reference storageRef = FirebaseStorage.instance.ref();
 
 //  final Map account;
 class Database {
-  static const _baseUrl =
-      'https://us-central1-lokal-1baac.cloudfunctions.net/api/v1';
-
   Future<Map> getUserInfo(String uid) async {
     Map data;
     try {

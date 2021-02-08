@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:lokalapp/models/user_shop_post.dart';
 import '../models/lokal_user.dart';
 import '../services/database.dart';
 import '../services/get_stream_api_service.dart';
@@ -20,6 +21,7 @@ class CurrentUser extends ChangeNotifier {
 
   LokalUser _user;
   Map<String, String> _postBody = Map();
+  UserShopPost postShop = UserShopPost();
   Map<String, String> _getStreamAccount = Map();
   String _inviteCode;
 
@@ -39,6 +41,20 @@ class CurrentUser extends ChangeNotifier {
     if (data["status"] == "ok") {
       _user = LokalUser.fromMap(data["data"]);
       await _getStreamLogin();
+      return true;
+    }
+
+    return false;
+  }
+
+  Future<bool> createShop() async {
+    postShop.communityId = _user.communityId;
+    var _postData = postShop.toMap();
+    String jsonData = await _lokalService.createStore(_postData);
+    Map data = json.decode(jsonData);
+
+    if (data["status"] == "ok") {
+      _user = LokalUser.fromMap(data["data"]);
       return true;
     }
 
