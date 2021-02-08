@@ -5,9 +5,14 @@ class CondensedOperatingHours extends StatelessWidget {
   final String day;
   final DateTime minTime;
   final DateTime maxTime;
-final dynamic onChanged;
+   Function onChanged;
+   Function onCustom;
+  final DateTime time;
+   CondensedOperatingHours({this.day, this.minTime, this.maxTime, this.time, this.onChanged, this.onCustom});
 
-  const CondensedOperatingHours({this.day, this.minTime, this.maxTime, this.onChanged});
+
+  
+
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -28,7 +33,7 @@ final dynamic onChanged;
           child: TimePickerButton(
             minTime: 0,
             maxTime: 24,
-
+            onChanged: onChanged,
           ),
         ),
         SizedBox(width: MediaQuery.of(context).size.width * 0.02),
@@ -37,8 +42,10 @@ final dynamic onChanged;
           width: 130,
           child: TimePickerButton(
             minTime: 0,
-            maxTime: 60,
 
+            maxTime: 60,
+            onChanged: onCustom,
+            // time: time,
           ),
         ),
       ],

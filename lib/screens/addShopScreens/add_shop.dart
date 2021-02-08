@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:firebase_storage/firebase_storage.dart';
@@ -5,24 +6,30 @@ import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
-import 'package:lokalapp/screens/addShopScreens/shopDescription.dart';
+import 'package:lokalapp/models/user_shop_post.dart';
+import 'package:lokalapp/screens/bottom_navigation.dart';
 import 'package:lokalapp/screens/profileScreens/profile_shop.dart';
 import 'package:lokalapp/services/database.dart';
 import 'package:lokalapp/states/current_user.dart';
+import 'package:lokalapp/widgets/condensed_operating_hours.dart';
+import 'package:lokalapp/widgets/operating_hours.dart';
 import 'package:lokalapp/widgets/rounded_button.dart';
+import 'package:lokalapp/widgets/time_picker_button.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 import '../../utils/themes.dart';
-import 'condensed_operating_hours.dart';
+import '../profile.dart';
+import 'shopDescription.dart';
 import 'package:image/image.dart' as Im;
 
 class AddShop extends StatefulWidget {
   final Map<String, String> account;
   final dynamic description;
   final DateTime time;
+  final String day;
   static String id = '/addShop';
-  AddShop({Key key, this.account, this.description, this.time})
+  AddShop({Key key, this.account, this.description, this.time, this.day})
       : super(key: key);
   _AddShopState createState() => _AddShopState();
 }
@@ -30,12 +37,7 @@ class AddShop extends StatefulWidget {
 class _AddShopState extends State<AddShop> {
   final TextEditingController _shopNameController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
-  //DateTime _date = DateTime.now();
-  // final TextEditingController _statusController = TextEditingController();
-  // final TextEditingController _coverPhotoController = TextEditingController();
-
-  // final TextEditingController _profilePhotoController = TextEditingController();
-  // final TextEditingController _isClosedController = TextEditingController();
+  DateTime _date = DateTime.now();
   bool _setOperatingHours = false;
   File file;
   bool isUploading = false;
@@ -43,8 +45,9 @@ class _AddShopState extends State<AddShop> {
   final picker = ImagePicker();
   String openingHour;
   String closingHour;
-  dynamic openingCustomHour;
-  dynamic closingCustomHour;
+  String openingCustomHour;
+  String closingCustomHour;
+
   DateTime _opening = DateTime.now();
   DateTime _closing = DateTime.now();
 
@@ -88,12 +91,10 @@ class _AddShopState extends State<AddShop> {
     _user.postShop.opening = openingHour;
     _user.postShop.closing = closingHour;
     _user.postShop.useCustomHours = _setOperatingHours;
-    _user.postShop.customHours = {
-      'opening': openingCustomHour,
-      'closing': closingCustomHour,
-    };
-    _user.postShop.status = "enabled";
-    _user.postShop.communityId = _user.getCurrentUser.userUids.first;
+    _user.postShop.customHours =
+        customHours.map((key, value) => MapEntry(key, value.toString()));
+    _user.postShop.status = true.toString();
+    await Database().getCommunityIdFromInvite(_user.getCurrentUser.communityId);
     bool success = await _user.createShop();
     if (success) {
       Navigator.pushAndRemoveUntil(
@@ -346,8 +347,46 @@ class _AddShopState extends State<AddShop> {
             SizedBox(
               height: 25,
             ),
-            ShopDescription(
-              descriptionController: this._descriptionController,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              // mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  height: MediaQuery.of(context).size.height * 0.3,
+                  width: MediaQuery.of(context).size.width * 0.8,
+                  color: Color(0xffE0E0E0),
+                  child: Card(
+                    child: TextField(
+                      controller: _descriptionController,
+                      cursorColor: Colors.black,
+                      keyboardType: TextInputType.multiline,
+                      minLines: 1,
+                      maxLines: 10,
+                      textInputAction: TextInputAction.newline,
+                      decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(20),
+                            borderSide: BorderSide(
+                              width: 1,
+                              style: BorderStyle.none,
+                            ),
+                          ),
+                          focusedBorder: InputBorder.none,
+                          enabledBorder: InputBorder.none,
+                          errorBorder: InputBorder.none,
+                          disabledBorder: InputBorder.none,
+                          contentPadding: EdgeInsets.only(
+                              left: 18, bottom: 11, top: 30, right: 15),
+                          hintText: "Shop Description",
+                          hintStyle: TextStyle(
+                              color: Color(0xFFBDBDBD),
+                              fontFamily: "Goldplay",
+                              fontWeight: FontWeight.w600)),
+                    ),
+                  ),
+                ),
+              ],
             ),
             SizedBox(
               height: 40,
@@ -430,7 +469,7 @@ class _AddShopState extends State<AddShop> {
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
-                                  //mainAxisSize: MainAxisSize.max,
+                                  mainAxisSize: MainAxisSize.max,
                                   children: [
                                     Container(
                                       width: 60,
@@ -502,7 +541,7 @@ class _AddShopState extends State<AddShop> {
                                     onConfirm: (date) {
                                       setState(() {
                                         closingHour =
-                                            DateFormat.Hms().format(date);
+                                            DateFormat.Hms().format(_date);
                                         _closing = date;
                                       });
                                     },
@@ -593,7 +632,13 @@ class _AddShopState extends State<AddShop> {
     );
   }
 
+  
+  Map<String, Days> customHours = Map();
+
   Widget buildDaysOfWeek() {
+    DateTime _openingCustom = DateTime.now();
+    DateTime _closingCustom = DateTime.now();
+
     List<String> daysOfWeek = [
       "Monday",
       "Tuesday",
@@ -603,7 +648,9 @@ class _AddShopState extends State<AddShop> {
       "Saturday",
       "Sunday",
     ];
+
     List<Widget> condensedOperatingHours = [];
+    CurrentUser _user = Provider.of<CurrentUser>(context, listen: false);
 
     for (String day in daysOfWeek) {
       condensedOperatingHours.add(
@@ -617,7 +664,18 @@ class _AddShopState extends State<AddShop> {
                 day: day,
                 onChanged: (value) {
                   setState(() {
-                    openingCustomHour = value;
+                    _openingCustom = value;
+                    openingCustomHour = DateFormat.Hms().format(_openingCustom);
+                    customHours[day] = Days();
+                    customHours[day].opening = openingCustomHour;
+                  });
+                },
+                onCustom: (value) {
+                  setState(() {
+                    _closingCustom = value;
+                    closingCustomHour = DateFormat.Hms().format(_closingCustom);
+                    
+                    customHours[day].closing = closingCustomHour;
                   });
                 },
               ),
@@ -626,9 +684,35 @@ class _AddShopState extends State<AddShop> {
         ),
       );
     }
-
     return Column(
       children: condensedOperatingHours,
     );
   }
+}
+
+class Days {
+  String opening;
+  String closing;
+  Days({this.opening, this.closing});
+
+  // factory Days.fromJson(Map<String, dynamic> parsedJson){
+  //   return Days(opening: parsedJson['opening'], closing: parsedJson['closing']);
+  // }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'opening': opening,
+      'closing': closing,
+    };
+  }
+
+  factory Days.fromMap(Map<String, dynamic> map) {
+    if (map == null) return null;
+
+    return Days(opening: map['opening'], closing: map['closing']);
+  }
+
+  String toJson() => json.encode(toMap());
+
+  factory Days.fromJson(String source) => Days.fromMap(json.decode(source));
 }

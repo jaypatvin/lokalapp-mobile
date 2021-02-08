@@ -14,7 +14,7 @@ class UserShopPost extends ChangeNotifier{
   String opening;
   String closing;
   bool useCustomHours;
-  Map<String, String> customHours;
+  Map <String, String>customHours;
   String status;
 
 
