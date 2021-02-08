@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import '../utils/themes.dart';
 import '../widgets/rounded_button.dart';
 import 'package:image_picker/image_picker.dart';
@@ -117,20 +116,19 @@ class _ProfileRegistrationState extends State<ProfileRegistration> {
     }
 
     CurrentUser _user = Provider.of<CurrentUser>(context, listen: false);
-    _user.postBody.profilePhoto = mediaUrl;
-    _user.postBody.firstName = _firstNameController.text;
-    _user.postBody.lastName = _lastNameController.text;
-    _user.postBody.address = _streetAddressController.text;
+    _user.updatePostBody(
+        profilePhoto: mediaUrl,
+        firstName: _firstNameController.text,
+        lastName: _lastNameController.text,
+        address: _streetAddressController.text);
 
-    bool success = await _user.createUser();
-   
-    // await Provider.of<CurrentUser>(context, listen: false).updateUser();
-    await Database().claimInviteCode(
-      code: _user.getUserInviteCode,
-      invitee: _user.postBody.userUid,
-    );
+    bool isUserCreated = await _user.createUser();
+    bool inviteCodeClaimed = false;
+    if (isUserCreated) {
+      inviteCodeClaimed = await _user.claimInviteCode();
+    }
 
-    if (success) {
+    if (inviteCodeClaimed) {
       Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(builder: (context) => BottomNavigation()),

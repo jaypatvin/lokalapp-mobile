@@ -12,13 +12,16 @@ import 'package:lokalapp/screens/profileScreens/profile_shop.dart';
 import 'package:lokalapp/services/database.dart';
 import 'package:lokalapp/states/current_user.dart';
 import 'package:lokalapp/widgets/condensed_operating_hours.dart';
+
 import 'package:lokalapp/widgets/operating_hours.dart';
+
 import 'package:lokalapp/widgets/rounded_button.dart';
 import 'package:lokalapp/widgets/time_picker_button.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 import '../../utils/themes.dart';
+
 import '../profile.dart';
 import 'shopDescription.dart';
 import 'package:image/image.dart' as Im;
