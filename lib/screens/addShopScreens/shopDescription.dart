@@ -4,9 +4,9 @@ import 'package:lokalapp/states/current_user.dart';
 import 'package:provider/provider.dart';
 
 class ShopDescription extends StatefulWidget {
-  //final Function onChanged;
+   Function onChanged;
   final TextEditingController descriptionController;
-  ShopDescription({@required this.descriptionController});
+  ShopDescription({this.descriptionController, this.onChanged});
   @override
   _ShopDescriptionState createState() => _ShopDescriptionState();
 }
@@ -26,7 +26,7 @@ class _ShopDescriptionState extends State<ShopDescription> {
           child: Card(
             child: TextField(
               controller: widget.descriptionController,
-              // onChanged: (value){description = value;},
+              onChanged: widget.onChanged,
               cursorColor: Colors.black,
               keyboardType: TextInputType.multiline,
 

@@ -2,7 +2,6 @@ import 'package:intl/intl.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
-import 'package:lokalapp/models/user_shop_post.dart';
 import 'package:lokalapp/utils/themes.dart';
 
 class TimePickerButton extends StatefulWidget {
@@ -11,8 +10,9 @@ class TimePickerButton extends StatefulWidget {
   final double width;
   final double height;
   final   DateTime time;
-  const TimePickerButton(
-      {this.minTime, this.maxTime, this.height, this.width, this.time});
+    Function onChanged;
+   TimePickerButton(
+      {this.minTime, this.maxTime, this.height, this.width, this.time, this.onChanged});
   @override
   _TimePickerButtonState createState() => _TimePickerButtonState();
 }
@@ -23,7 +23,7 @@ class _TimePickerButtonState extends State<TimePickerButton> {
   double height;
   double width;
   DateTime time;
-  Function onChanged;
+
 
   @override
   Widget build(BuildContext context) {
@@ -33,13 +33,10 @@ class _TimePickerButtonState extends State<TimePickerButton> {
           context,
           
           showTitleActions: true,
-          onChanged: (value){setState(() {
-            time = value;
-          });},
+          onChanged: widget.onChanged,
           onConfirm: (date) {
             setState(() {
               _date = date;
-                  
             });
           },
           currentTime: _date,
@@ -60,8 +57,6 @@ class _TimePickerButtonState extends State<TimePickerButton> {
             height: this.height,
             color: Color(0xffF2F2F2),
             child: Text(DateFormat.Hms().format(_date)),
-            
-            
           ),
           Icon(
             Icons.arrow_drop_down_sharp,

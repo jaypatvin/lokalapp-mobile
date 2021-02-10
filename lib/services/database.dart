@@ -1,13 +1,51 @@
+import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-
+import 'package:http/http.dart' as http;
 final usersRef = FirebaseFirestore.instance.collection("users");
 final inviteRef = FirebaseFirestore.instance.collection("invites");
 final Reference storageRef = FirebaseStorage.instance.ref();
 
 //  final Map account;
 class Database {
+  static const _baseUrl =
+      'https://us-central1-lokal-1baac.cloudfunctions.net/api/v1/users';
+  static const _storeUrl =
+      'https://us-central1-lokal-1baac.cloudfunctions.net/api/v1/shops';
+  Future<String> createUserPostRequest(Map data) async {
+    var body = json.encode(data);
+    var response = await http.post(
+      _baseUrl,
+      headers: {"Content-Type": "application/json"},
+      body: body,
+    );
+
+    return response.body;
+  }
+
+  Future<String> createStorePostRequest(Map data) async {
+    var body = json.encode(data);
+    var response = await http.post(
+      _storeUrl,
+      headers: {"Content-Type": "application/json"},
+      body: body,
+    );
+
+    return response.body;
+  }
+
+  // Future<String> createUserPostRequest(Map data) async {
+  //   HttpClient httpClient = HttpClient();
+  //   HttpClientRequest request = await httpClient.postUrl(Uri.parse(_baseUrl));
+  //   request.headers.set('content-type', 'application/json');
+  //   request.add(utf8.encode(json.encode(data)));
+  //   HttpClientResponse response = await request.close();
+  //   String reply = await response.transform(utf8.decoder).join();
+  //   httpClient.close();
+  //   return reply;
+  // }
+
   Future<Map> getUserInfo(String uid) async {
     Map data;
     try {
