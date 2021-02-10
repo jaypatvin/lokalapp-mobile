@@ -139,7 +139,7 @@ class LokalUser extends ChangeNotifier {
   UserAddress address;
   UserRegistrationStatus registration;
   UserRoles roles;
-  DateTime createdAt;
+  Timestamp createdAt;
 
   LokalUser({
     this.userUids,
@@ -170,22 +170,21 @@ class LokalUser extends ChangeNotifier {
       'community_id': communityId,
       'birth_date': birthDate,
       'status': status,
-      'address': address,
-      'registration': registration,
-      'roles': roles,
-      'created_at': Timestamp.fromDate(createdAt),
+      'address': address.toMap(),
+      'registration': registration.toMap(),
+      'roles': roles.toMap(),
+      'created_at': createdAt,
     };
   }
 
   factory LokalUser.fromMap(Map<String, dynamic> map) {
     if (map == null) return null;
-    DateTime _createdAt;
+    Timestamp _createdAt;
     if (map['created_at'] is Timestamp) {
-      _createdAt = map['created_at'].toDate();
+      _createdAt = map['created_at'];
     } else if (map['created_at'] is Map) {
       _createdAt = Timestamp(
-              map['created_at']['_seconds'], map['created_at']['_nanoseconds'])
-          .toDate();
+          map['created_at']['_seconds'], map['created_at']['_nanoseconds']);
     }
 
     return LokalUser(
