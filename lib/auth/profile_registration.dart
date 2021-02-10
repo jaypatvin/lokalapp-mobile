@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:lokalapp/screens/verification_screens/verify_screen.dart';
 import '../utils/themes.dart';
 import '../widgets/rounded_button.dart';
 import 'package:image_picker/image_picker.dart';
@@ -129,10 +130,10 @@ class _ProfileRegistrationState extends State<ProfileRegistration> {
     }
 
     if (inviteCodeClaimed) {
-      Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(builder: (context) => BottomNavigation()),
-          (route) => false);
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => VerifyScreen()),
+      );
     }
   }
 
