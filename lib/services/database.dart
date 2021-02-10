@@ -1,6 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +12,8 @@ final Reference storageRef = FirebaseStorage.instance.ref();
 class Database {
   static const _baseUrl =
       'https://us-central1-lokal-1baac.cloudfunctions.net/api/v1/users';
-static const _storeUrl = 'https://us-central1-lokal-1baac.cloudfunctions.net/api/v1/shops';
+  static const _storeUrl =
+      'https://us-central1-lokal-1baac.cloudfunctions.net/api/v1/shops';
   Future<String> createUserPostRequest(Map data) async {
     var body = json.encode(data);
     var response = await http.post(

@@ -1,25 +1,19 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
-import 'package:lokalapp/models/user_shop_post.dart';
-import 'package:lokalapp/screens/bottom_navigation.dart';
 import 'package:lokalapp/screens/profileScreens/profile_shop.dart';
 import 'package:lokalapp/services/database.dart';
 import 'package:lokalapp/states/current_user.dart';
 import 'package:lokalapp/widgets/condensed_operating_hours.dart';
 import 'package:lokalapp/widgets/operating_hours.dart';
 import 'package:lokalapp/widgets/rounded_button.dart';
-import 'package:lokalapp/widgets/time_picker_button.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 import '../../utils/themes.dart';
-import '../profile.dart';
 import 'shopDescription.dart';
 import 'package:image/image.dart' as Im;
 
@@ -36,7 +30,6 @@ class AddShop extends StatefulWidget {
 
 class _AddShopState extends State<AddShop> {
   final TextEditingController _shopNameController = TextEditingController();
-  final TextEditingController _descriptionController = TextEditingController();
   DateTime _date = DateTime.now();
   bool _setOperatingHours = false;
   File file;
@@ -47,7 +40,7 @@ class _AddShopState extends State<AddShop> {
   String closingHour;
   String openingCustomHour;
   String closingCustomHour;
-
+  String description;
   DateTime _opening = DateTime.now();
   DateTime _closing = DateTime.now();
 
@@ -84,7 +77,7 @@ class _AddShopState extends State<AddShop> {
 
     _user.postShop.userUid = _user.getCurrentUser.userUids.first;
     _user.postShop.name = _shopNameController.text;
-    _user.postShop.description = _descriptionController.text;
+    _user.postShop.description = description;
     _user.postShop.profilePhoto = mediaUrl;
     _user.postShop.coverPhoto = "";
     _user.postShop.isClosed = false;
@@ -350,42 +343,12 @@ class _AddShopState extends State<AddShop> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
-              // mainAxisSize: MainAxisSize.min,
               children: [
-                Container(
-                  height: MediaQuery.of(context).size.height * 0.3,
-                  width: MediaQuery.of(context).size.width * 0.8,
-                  color: Color(0xffE0E0E0),
-                  child: Card(
-                    child: TextField(
-                      controller: _descriptionController,
-                      cursorColor: Colors.black,
-                      keyboardType: TextInputType.multiline,
-                      minLines: 1,
-                      maxLines: 10,
-                      textInputAction: TextInputAction.newline,
-                      decoration: InputDecoration(
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(20),
-                            borderSide: BorderSide(
-                              width: 1,
-                              style: BorderStyle.none,
-                            ),
-                          ),
-                          focusedBorder: InputBorder.none,
-                          enabledBorder: InputBorder.none,
-                          errorBorder: InputBorder.none,
-                          disabledBorder: InputBorder.none,
-                          contentPadding: EdgeInsets.only(
-                              left: 18, bottom: 11, top: 30, right: 15),
-                          hintText: "Shop Description",
-                          hintStyle: TextStyle(
-                              color: Color(0xFFBDBDBD),
-                              fontFamily: "Goldplay",
-                              fontWeight: FontWeight.w600)),
-                    ),
-                  ),
-                ),
+                ShopDescription(
+                  onChanged: (value) {
+                    description = value;
+                  },
+                )
               ],
             ),
             SizedBox(
@@ -421,70 +384,25 @@ class _AddShopState extends State<AddShop> {
                     width: 350,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.start,
-                      // crossAxisAlignment: CrossAxisAlignment.,
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         SizedBox(
                           width: 8,
                         ),
-                        Container(
-                          width: MediaQuery.of(context).size.width * .33,
-                          child: Text(
-                            "Opening",
-                            softWrap: true,
-                            style: TextStyle(
-                                fontSize: 20,
-                                color: Colors.grey,
-                                fontFamily: "GoldplayBold",
-                                fontWeight: FontWeight.w500),
-                          ),
-                        ),
-                        SizedBox(
-                          width: 5,
-                        ),
                         Expanded(
                           child: Container(
                               width: MediaQuery.of(context).size.width * 0.50,
                               height: MediaQuery.of(context).size.height * 0.1,
-                              child: FlatButton(
-                                onPressed: () {
-                                  DatePicker.showTime12hPicker(
-                                    context,
-                                    showTitleActions: true,
-                                    onConfirm: (date) {
-                                      setState(() {
-                                        _opening = date;
-                                        openingHour = DateFormat.Hms().format(
-                                            date); //date.toIso8601String();
-                                      });
-                                    },
-                                    currentTime: _opening,
-                                  );
+                              child: OperatingHours(
+                                state: "Opening",
+                                onChanged: (date) {
+                                  setState(() {
+                                    _opening = date;
+                                    openingHour = DateFormat.Hms()
+                                        .format(date); //date.toIso8601String();
+                                  });
                                 },
-                                color: Color(0xffF2F2F2),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(30.0),
-                                ),
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  mainAxisSize: MainAxisSize.max,
-                                  children: [
-                                    Container(
-                                      width: 60,
-                                      height: 350,
-                                      color: Color(0xffF2F2F2),
-                                      child: Text(
-                                          DateFormat.Hms().format(_opening)),
-                                    ),
-                                    Icon(
-                                      Icons.arrow_drop_down_sharp,
-                                      color: kTealColor,
-                                      size: 35,
-                                    ),
-                                  ],
-                                ),
+                                // currentTime: _opening,
                               )),
                         ),
                       ],
@@ -508,24 +426,8 @@ class _AddShopState extends State<AddShop> {
                     width: 350,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.start,
-                      // crossAxisAlignment: CrossAxisAlignment.,
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        SizedBox(
-                          width: 8,
-                        ),
-                        Container(
-                          width: MediaQuery.of(context).size.width * .33,
-                          child: Text(
-                            "Closing",
-                            softWrap: true,
-                            style: TextStyle(
-                                fontSize: 20,
-                                color: Colors.grey,
-                                fontFamily: "GoldplayBold",
-                                fontWeight: FontWeight.w500),
-                          ),
-                        ),
                         SizedBox(
                           width: 5,
                         ),
@@ -533,45 +435,15 @@ class _AddShopState extends State<AddShop> {
                           child: Container(
                               width: MediaQuery.of(context).size.width * 0.50,
                               height: MediaQuery.of(context).size.height * 0.1,
-                              child: FlatButton(
-                                onPressed: () {
-                                  DatePicker.showTime12hPicker(
-                                    context,
-                                    showTitleActions: true,
-                                    onConfirm: (date) {
-                                      setState(() {
-                                        closingHour =
-                                            DateFormat.Hms().format(_date);
-                                        _closing = date;
-                                      });
-                                    },
-                                    currentTime: _closing,
-                                  );
+                              child: OperatingHours(
+                                state: "Closing",
+                                onChanged: (date) {
+                                  setState(() {
+                                    _closing = date;
+                                    closingHour = DateFormat.Hms()
+                                        .format(date); //date.toIso8601String();
+                                  });
                                 },
-                                color: Color(0xffF2F2F2),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(30.0),
-                                ),
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  mainAxisSize: MainAxisSize.max,
-                                  children: [
-                                    Container(
-                                      width: 60,
-                                      height: 350,
-                                      color: Color(0xffF2F2F2),
-                                      child: Text(
-                                          DateFormat.Hms().format(_closing)),
-                                    ),
-                                    Icon(
-                                      Icons.arrow_drop_down_sharp,
-                                      color: kTealColor,
-                                      size: 35,
-                                    ),
-                                  ],
-                                ),
                               )),
                         ),
                       ],
@@ -632,7 +504,6 @@ class _AddShopState extends State<AddShop> {
     );
   }
 
-  
   Map<String, Days> customHours = Map();
 
   Widget buildDaysOfWeek() {
@@ -650,7 +521,6 @@ class _AddShopState extends State<AddShop> {
     ];
 
     List<Widget> condensedOperatingHours = [];
-    CurrentUser _user = Provider.of<CurrentUser>(context, listen: false);
 
     for (String day in daysOfWeek) {
       condensedOperatingHours.add(
@@ -674,7 +544,6 @@ class _AddShopState extends State<AddShop> {
                   setState(() {
                     _closingCustom = value;
                     closingCustomHour = DateFormat.Hms().format(_closingCustom);
-                    
                     customHours[day].closing = closingCustomHour;
                   });
                 },
@@ -694,10 +563,6 @@ class Days {
   String opening;
   String closing;
   Days({this.opening, this.closing});
-
-  // factory Days.fromJson(Map<String, dynamic> parsedJson){
-  //   return Days(opening: parsedJson['opening'], closing: parsedJson['closing']);
-  // }
 
   Map<String, dynamic> toMap() {
     return {

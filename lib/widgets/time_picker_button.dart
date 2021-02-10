@@ -2,7 +2,6 @@ import 'package:intl/intl.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
-import 'package:lokalapp/models/user_shop_post.dart';
 import 'package:lokalapp/utils/themes.dart';
 
 class TimePickerButton extends StatefulWidget {
@@ -35,13 +34,9 @@ class _TimePickerButtonState extends State<TimePickerButton> {
           
           showTitleActions: true,
           onChanged: widget.onChanged,
-          // onChanged: (value){setState(() {
-          //   time = value;
-          // });},
           onConfirm: (date) {
             setState(() {
               _date = date;
-                  
             });
           },
           currentTime: _date,
