@@ -8,7 +8,9 @@ import 'package:lokalapp/screens/profileScreens/profile_shop.dart';
 import 'package:lokalapp/services/database.dart';
 import 'package:lokalapp/states/current_user.dart';
 import 'package:lokalapp/widgets/condensed_operating_hours.dart';
+
 import 'package:lokalapp/widgets/operating_hours.dart';
+
 import 'package:lokalapp/widgets/rounded_button.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
@@ -76,6 +78,7 @@ class _AddShopState extends State<AddShop> {
     CurrentUser _user = Provider.of<CurrentUser>(context, listen: false);
 
     _user.postShop.userUid = _user.getCurrentUser.userUids.first;
+    _user.postShop.communityId = _user.getCurrentUser.communityId;
     _user.postShop.name = _shopNameController.text;
     _user.postShop.description = description;
     _user.postShop.profilePhoto = mediaUrl;
@@ -87,7 +90,6 @@ class _AddShopState extends State<AddShop> {
     _user.postShop.customHours =
         customHours.map((key, value) => MapEntry(key, value.toString()));
     _user.postShop.status = true.toString();
-    await Database().getCommunityIdFromInvite(_user.getCurrentUser.communityId);
     bool success = await _user.createShop();
     if (success) {
       Navigator.pushAndRemoveUntil(

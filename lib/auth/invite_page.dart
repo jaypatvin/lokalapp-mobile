@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import 'profile_registration.dart';
-import '../services/database.dart';
 import '../states/current_user.dart';
 import '../utils/themes.dart';
 import '../widgets/rounded_button.dart';
@@ -17,13 +16,13 @@ class _InvitePageState extends State<InvitePage> {
   TextEditingController _codeController = TextEditingController();
 
   void validateInviteCode(BuildContext context, String code) async {
-    //bool inviteCodeExists = await Database().inviteCodeExists(code);
-    String communityId = await Database().getCommunityIdFromInvite(code);
-    if (communityId != null && communityId.isNotEmpty) {
-      CurrentUser user = Provider.of<CurrentUser>(context, listen: false);
-      user.setInviteCode = code;
+    var _user = Provider.of<CurrentUser>(context, listen: false);
+    bool inviteCodeExists = await _user.checkInviteCode(code);
 
-      if (user.postBody.userUid == null || user.postBody.userUid.isEmpty) {
+    if (inviteCodeExists) {
+      CurrentUser user = Provider.of<CurrentUser>(context, listen: false);
+
+      if (!user.isAuthenticated) {
         Navigator.push(
             context, MaterialPageRoute(builder: (context) => Community()));
       } else {
