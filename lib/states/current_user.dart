@@ -106,9 +106,32 @@ class CurrentUser extends ChangeNotifier {
     _postBody["first_name"] = firstName ?? _postBody["first_name"];
     _postBody["last_name"] = lastName ?? _postBody["last_name"];
     _postBody["user_uid"] = userUid ?? _postBody["user_uid"];
-    _postBody["address"] = address ?? _postBody["address"];
+    _postBody["street"] = address ?? _postBody["address"];
     _postBody["community_id"] = communityId ?? _postBody["community_id"];
     _postBody["profile_photo"] = profilePhoto ?? _postBody["profile_photo"];
+  }
+
+  void updateUserRegistrationInfo({
+    int step,
+    String idPhoto,
+    bool verified,
+    String notes,
+    String idType,
+  }) {
+    var registrationStatus = _user.registration;
+    _user.registration = UserRegistrationStatus(
+      step: step ?? registrationStatus.step,
+      idPhoto: idPhoto ?? registrationStatus.idPhoto,
+      verified: verified ?? registrationStatus.verified,
+      notes: notes ?? registrationStatus.notes,
+      idType: idType ?? registrationStatus.idType,
+    );
+  }
+
+  Future<bool> verifyUser() async {
+    String status =
+        await _db.updateUser(_user, "registration", _user.registration.toMap());
+    return status == "success";
   }
 
   Future<String> onStartUp() async {
@@ -155,6 +178,7 @@ class CurrentUser extends ChangeNotifier {
       if (_authResult != null) {
         retVal = authStatus.UserNotFound;
         _postBody["user_uid"] = _authResult.user.uid;
+        _postBody["email"] = email;
       }
     } catch (e) {
       debugPrint(e.code);
@@ -181,6 +205,7 @@ class CurrentUser extends ChangeNotifier {
       } else {
         retVal = authStatus.UserNotFound;
         _postBody["user_uid"] = _authResult.user.uid;
+        _postBody["email"] = email;
       }
     } catch (e) {
       switch (e.code) {
@@ -246,6 +271,7 @@ class CurrentUser extends ChangeNotifier {
         await _getStreamLogin();
       } else {
         _postBody["user_uid"] = _authResult.user.uid;
+        _postBody["email"] = _authResult.user.email;
         retVal = authStatus.UserNotFound;
       }
     } catch (e) {
