@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+
+import 'components/store_card.dart';
+import 'components/store_message.dart';
+import 'components/store_rating.dart';
 import 'profile_no_shop.dart';
 import 'profile_search_bar.dart';
 import 'profile_store_name.dart';
-import 'store_card.dart';
-import 'store_message.dart';
-import 'store_rating.dart';
 
 class ProfileShop extends StatelessWidget {
   final bool hasStore;

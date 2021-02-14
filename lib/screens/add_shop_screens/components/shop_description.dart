@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:lokalapp/services/database.dart';
-import 'package:lokalapp/states/current_user.dart';
-import 'package:provider/provider.dart';
 
 class ShopDescription extends StatefulWidget {
-   Function onChanged;
+  final Function onChanged;
   final TextEditingController descriptionController;
   ShopDescription({this.descriptionController, this.onChanged});
   @override
@@ -17,7 +14,6 @@ class _ShopDescriptionState extends State<ShopDescription> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
-      // mainAxisSize: MainAxisSize.min,
       children: [
         Container(
           height: MediaQuery.of(context).size.height * 0.3,
@@ -29,7 +25,6 @@ class _ShopDescriptionState extends State<ShopDescription> {
               onChanged: widget.onChanged,
               cursorColor: Colors.black,
               keyboardType: TextInputType.multiline,
-
               minLines: 1,
               maxLines: 10,
               textInputAction: TextInputAction.newline,

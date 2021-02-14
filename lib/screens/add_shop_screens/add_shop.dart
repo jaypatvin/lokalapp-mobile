@@ -1,23 +1,23 @@
 import 'dart:convert';
 import 'dart:io';
+
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:image/image.dart' as Im;
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
-import 'package:lokalapp/screens/profileScreens/profile_shop.dart';
-import 'package:lokalapp/services/database.dart';
-import 'package:lokalapp/states/current_user.dart';
-import 'package:lokalapp/widgets/condensed_operating_hours.dart';
-
-import 'package:lokalapp/widgets/operating_hours.dart';
-
-import 'package:lokalapp/widgets/rounded_button.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
+
+import '../../services/database.dart';
+import '../../states/current_user.dart';
 import '../../utils/themes.dart';
-import 'shopDescription.dart';
-import 'package:image/image.dart' as Im;
+import '../../widgets/rounded_button.dart';
+import '../profile_screens/profile_shop.dart';
+import 'components/condensed_operating_hours.dart';
+import 'components/operating_hours.dart';
+import 'components/shop_description.dart';
 
 class AddShop extends StatefulWidget {
   final Map<String, String> account;
@@ -534,7 +534,7 @@ class _AddShopState extends State<AddShop> {
               padding: const EdgeInsets.all(18.0),
               child: CondensedOperatingHours(
                 day: day,
-                onChanged: (value) {
+                onChangedOpening: (value) {
                   setState(() {
                     _openingCustom = value;
                     openingCustomHour = DateFormat.Hms().format(_openingCustom);
@@ -542,7 +542,7 @@ class _AddShopState extends State<AddShop> {
                     customHours[day].opening = openingCustomHour;
                   });
                 },
-                onCustom: (value) {
+                onChangedClosing: (value) {
                   setState(() {
                     _closingCustom = value;
                     closingCustomHour = DateFormat.Hms().format(_closingCustom);

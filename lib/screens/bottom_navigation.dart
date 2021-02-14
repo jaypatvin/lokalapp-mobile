@@ -1,13 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
-import 'profileScreens/profile.dart';
-import '../states/current_user.dart';
 import 'package:provider/provider.dart';
+
+import '../states/current_user.dart';
 import 'activity.dart';
 import 'chat.dart';
 import 'discover.dart';
 import 'home.dart';
+import 'profile.dart';
 
 class BottomNavigation extends StatefulWidget {
   @override
@@ -31,7 +32,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
 
     List<Widget> _buildScreens() {
       return [
-         Home(
+        Home(
           account: account,
         ),
         Discover(),
@@ -51,14 +52,13 @@ class _BottomNavigationState extends State<BottomNavigation> {
           iconSize: 34,
           activeColor: Color(0xFFCC3752),
           inactiveColor: Color(0xFF103045),
-          
         ),
         PersistentBottomNavBarItem(
           icon: Icon(Icons.web_asset_outlined),
           title: ("Discover"),
-             iconSize: 34,
+          iconSize: 34,
           activeColor: Color(0xFFCC3752),
-           inactiveColor: Color(0xFF103045),
+          inactiveColor: Color(0xFF103045),
         ),
         PersistentBottomNavBarItem(
           icon: Icon(Icons.chat_outlined),
@@ -67,7 +67,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
           activeColor: Color(0xFFCC3752),
           inactiveColor: Color(0xFF103045),
         ),
-          PersistentBottomNavBarItem(
+        PersistentBottomNavBarItem(
           icon: Icon(Icons.pie_chart_outlined),
           title: ("Activity"),
           iconSize: 34,

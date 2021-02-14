@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-
-import 'profile_registration.dart';
-import '../states/current_user.dart';
-import '../utils/themes.dart';
-import '../widgets/rounded_button.dart';
 import 'package:provider/provider.dart';
+
+import '../../states/current_user.dart';
+import '../../utils/themes.dart';
+import '../../widgets/rounded_button.dart';
 import 'community.dart';
+import 'profile_registration.dart';
 
 class InvitePage extends StatefulWidget {
   @override

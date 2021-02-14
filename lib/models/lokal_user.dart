@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/foundation.dart';
 
 class UserAddress {
   String barangay;
@@ -125,7 +124,7 @@ class UserRoles {
       UserRoles.fromMap(json.decode(source));
 }
 
-class LokalUser extends ChangeNotifier {
+class LokalUser {
   List<String> userUids;
   String id;
   String firstName;

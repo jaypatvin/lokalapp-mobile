@@ -4,7 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:lokalapp/models/user_shop_post.dart';
+import '../models/user_shop_post.dart';
 import '../models/lokal_user.dart';
 import '../services/database.dart';
 import '../services/get_stream_api_service.dart';
@@ -106,7 +106,7 @@ class CurrentUser extends ChangeNotifier {
     _postBody["first_name"] = firstName ?? _postBody["first_name"];
     _postBody["last_name"] = lastName ?? _postBody["last_name"];
     _postBody["user_uid"] = userUid ?? _postBody["user_uid"];
-    _postBody["street"] = address ?? _postBody["address"];
+    _postBody["street"] = address ?? _postBody["street"];
     _postBody["community_id"] = communityId ?? _postBody["community_id"];
     _postBody["profile_photo"] = profilePhoto ?? _postBody["profile_photo"];
   }
