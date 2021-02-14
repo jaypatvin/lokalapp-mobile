@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
@@ -26,9 +27,23 @@ class CurrentUser extends ChangeNotifier {
   String _inviteCode;
 
   Map get getStreamAccount => _getStreamAccount;
-  LokalUser get getCurrentUser => _user;
   bool get isAuthenticated =>
       _postBody["user_uid"] != null && _postBody["user_uid"].isNotEmpty;
+
+  List<String> get userUids => _user.userUids;
+  String get id => _user.id;
+  String get firstName => _user.firstName;
+  String get lastName => _user.lastName;
+  String get profilePhoto => _user.profilePhoto;
+  String get email => _user.email;
+  String get displayName => _user.displayName;
+  String get communityId => _user.communityId;
+  String get birthDate => _user.birthDate;
+  String get status => _user.status;
+  UserAddress get address => _user.address;
+  UserRegistrationStatus get registrationStatus => _user.registration;
+  UserRoles get roles => _user.roles;
+  Timestamp get createdAt => _user.createdAt;
 
   Future<bool> createUser() async {
     http.Response response = await _lokalService.createUser(_postBody);
@@ -68,6 +83,14 @@ class CurrentUser extends ChangeNotifier {
       'authToken': creds['authToken'],
       'feedToken': creds['feedToken'],
     };
+  }
+
+  Future<List<dynamic>> getTimeline() async {
+    return await _getStreamApi.getTimeline(_getStreamAccount);
+  }
+
+  Future<bool> postMessage(String message) async {
+    return await _getStreamApi.postMessage(getStreamAccount, message);
   }
 
   Future<bool> checkInviteCode(String inviteCode) async {

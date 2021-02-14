@@ -1,45 +1,28 @@
 import 'package:flutter/material.dart';
-import '../services/get_stream_api_service.dart';
-import '../utils/themes.dart';
+import 'package:lokalapp/states/current_user.dart';
+import 'package:provider/provider.dart';
 import '../widgets/rounded_button.dart';
 
 class DraftPost extends StatefulWidget {
-  final Map<String, String> account;
-  DraftPost({Key key, @required this.account}) : super(key: key);
   @override
   _DraftPostState createState() => _DraftPostState();
 }
 
 class _DraftPostState extends State<DraftPost> {
   TextEditingController _userController = TextEditingController();
-  GlobalKey<ScaffoldState>_key = GlobalKey<ScaffoldState>();
-dynamic message;
-
+  GlobalKey<ScaffoldState> _key = GlobalKey<ScaffoldState>();
+  CurrentUser _user;
+  dynamic message;
 
   @override
   void initState() {
+    _user = Provider.of<CurrentUser>(context, listen: false);
     super.initState();
     _userController.addListener(() {
       setState(() {
         this.message = _userController.text;
       });
     });
-  }
-
-
-  Future _postMessage() async {
-    if (_userController.text.length > 0) {
-      Navigator.pop(context, true);
-      await GetStreamApiService()
-          .postMessage(widget.account, _userController.text);
-    } 
-    // else {
-    //   Scaffold.of(context).showSnackBar(
-    //     SnackBar(
-    //       content: Text('Please type a message'),
-    //     ),
-    //   );
-    // }
   }
 
   FlatButton cancelButton() {
@@ -87,8 +70,11 @@ dynamic message;
         Padding(
           padding: const EdgeInsets.only(top: 10, right: 20),
           child: RoundedButton(
-            onPressed: () {
-              _postMessage();
+            onPressed: () async {
+              bool postSuccess = await _user.postMessage(_userController.text);
+              if (postSuccess) {
+                Navigator.pop(context, true);
+              }
             },
             label: "Post",
             fontFamily: "Goldplay",
@@ -103,8 +89,8 @@ dynamic message;
   @override
   Widget build(BuildContext context) {
     return Material(
-          child: Scaffold(
-            key: _key,
+      child: Scaffold(
+        key: _key,
         backgroundColor: Colors.white,
         appBar: PreferredSize(
           preferredSize: Size(double.infinity, 100),

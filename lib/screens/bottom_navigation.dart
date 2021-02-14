@@ -1,9 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
-import 'package:provider/provider.dart';
 
-import '../states/current_user.dart';
 import 'activity.dart';
 import 'chat.dart';
 import 'discover.dart';
@@ -20,27 +18,15 @@ class _BottomNavigationState extends State<BottomNavigation> {
   // PageController _pageController = PageController();
   PersistentTabController _controller;
 
-  void _onTap(int value) {
-    setState(() {
-      pageIndex = value;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    final Map account = Provider.of<CurrentUser>(context).getStreamAccount;
-
     List<Widget> _buildScreens() {
       return [
-        Home(
-          account: account,
-        ),
+        Home(),
         Discover(),
         Chat(),
         Activity(),
-        Profile(
-          account: account,
-        )
+        Profile(),
       ];
     }
 

@@ -122,8 +122,8 @@ class _ProfileState extends State<Profile> {
                         height: 15,
                       ),
                       buildName(
-                        _user.getCurrentUser.firstName,
-                        _user.getCurrentUser.lastName,
+                        _user.firstName,
+                        _user.lastName,
                       )
                     ],
                   ),

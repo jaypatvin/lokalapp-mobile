@@ -77,8 +77,8 @@ class _AddShopState extends State<AddShop> {
     }
     CurrentUser _user = Provider.of<CurrentUser>(context, listen: false);
 
-    _user.postShop.userUid = _user.getCurrentUser.userUids.first;
-    _user.postShop.communityId = _user.getCurrentUser.communityId;
+    _user.postShop.userUid = _user.userUids.first;
+    _user.postShop.communityId = _user.communityId;
     _user.postShop.name = _shopNameController.text;
     _user.postShop.description = description;
     _user.postShop.profilePhoto = mediaUrl;
