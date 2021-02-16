@@ -50,8 +50,8 @@ class CurrentUser extends ChangeNotifier {
   Future<bool> createShop() async {
     postShop.communityId = _user.communityId;
     var _postData = postShop.toMap();
-    String jsonData = await _lokalService.createStore(_postData);
-    Map data = json.decode(jsonData);
+    String jsonDecode = await _lokalService.createStore(_postData);
+    Map data = json.decode(jsonDecode);
 
     if (data["status"] == "ok") {
       _user = LokalUser.fromMap(data["data"]);

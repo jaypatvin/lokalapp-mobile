@@ -12,6 +12,7 @@ class ShopDescription extends StatefulWidget {
 }
 
 class _ShopDescriptionState extends State<ShopDescription> {
+  final maxLines = 10;
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -20,39 +21,52 @@ class _ShopDescriptionState extends State<ShopDescription> {
       // mainAxisSize: MainAxisSize.min,
       children: [
         Container(
-          height: MediaQuery.of(context).size.height * 0.3,
+           margin: EdgeInsets.all(12),
+          height: maxLines * 15.0,
           width: MediaQuery.of(context).size.width * 0.8,
           color: Color(0xffE0E0E0),
-          child: Card(
-            child: TextField(
-              controller: widget.descriptionController,
-              onChanged: widget.onChanged,
-              cursorColor: Colors.black,
-              keyboardType: TextInputType.multiline,
-
-              minLines: 1,
-              maxLines: 10,
-              textInputAction: TextInputAction.newline,
-              decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(20),
-                    borderSide: BorderSide(
-                      width: 1,
-                      style: BorderStyle.none,
-                    ),
+          child: TextField(
+            controller: widget.descriptionController,
+            onChanged: widget.onChanged,
+            cursorColor: Colors.black,
+            keyboardType: TextInputType.multiline,
+          
+            maxLines: maxLines,
+            textInputAction: TextInputAction.newline,
+            decoration: InputDecoration(
+              fillColor: Colors.white,
+                filled: true,
+                
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  borderSide:  BorderSide(
+                    width: 1,
+                    color: Colors.grey.shade500,
                   ),
-                  focusedBorder: InputBorder.none,
-                  enabledBorder: InputBorder.none,
-                  errorBorder: InputBorder.none,
-                  disabledBorder: InputBorder.none,
-                  contentPadding:
-                      EdgeInsets.only(left: 18, bottom: 11, top: 30, right: 15),
-                  hintText: "Shop Description",
-                  hintStyle: TextStyle(
-                      color: Color(0xFFBDBDBD),
-                      fontFamily: "Goldplay",
-                      fontWeight: FontWeight.w600)),
-            ),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  borderSide: BorderSide(
+                    width: 1,
+                    color: Colors.grey.shade500
+                  ),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  borderSide: BorderSide(
+                    width: 1,
+                    color: Colors.grey.shade500
+                  ),
+                ),
+                // errorBorder: InputBorder.none,
+                // disabledBorder: InputBorder.none,
+                contentPadding:
+                    EdgeInsets.only(left: 18, bottom: 11, top: 30, right: 15),
+                hintText: "Shop Description",
+                hintStyle: TextStyle(
+                    color: Color(0xFFBDBDBD),
+                    fontFamily: "GoldplayBold",
+                    fontWeight: FontWeight.w500)),
           ),
         ),
       ],

@@ -76,7 +76,7 @@ class _TimelineState extends State<Timeline> {
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         Padding(
-          padding: const EdgeInsets.only(left: 240),
+          padding: const EdgeInsets.only(left: 200),
           child: IconButton(
               icon: Icon(Icons.messenger_outline),
               onPressed: () {
@@ -126,7 +126,7 @@ class _TimelineState extends State<Timeline> {
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.only(left: 10),
+          padding: const EdgeInsets.only(left: 2),
           child: IconButton(
             icon: Icon(
               Icons.favorite_border,
@@ -164,7 +164,7 @@ class _TimelineState extends State<Timeline> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Expanded(
-                                              child: ListView(
+                        child: ListView(
                           scrollDirection: Axis.vertical,
                           shrinkWrap: true,
                           children: snapshot.data
@@ -180,7 +180,8 @@ class _TimelineState extends State<Timeline> {
                                               Card(
                                                 shape: RoundedRectangleBorder(
                                                   borderRadius:
-                                                      BorderRadius.circular(16.0),
+                                                      BorderRadius.circular(
+                                                          16.0),
                                                 ),
                                                 child: Column(
                                                   children: [
@@ -204,13 +205,15 @@ class _TimelineState extends State<Timeline> {
                                                       // mainAxisSize:
                                                       //     MainAxisSize.min,
                                                       mainAxisAlignment:
-                                                          MainAxisAlignment.start,
+                                                          MainAxisAlignment
+                                                              .start,
                                                       children: [
                                                         SizedBox(
                                                           width: 26,
                                                         ),
                                                         buildMessageBody(
-                                                            activity["message"]),
+                                                            activity[
+                                                                "message"]),
                                                       ],
                                                     ),
                                                     SizedBox(
@@ -222,13 +225,11 @@ class _TimelineState extends State<Timeline> {
                                                       endIndent: 25,
                                                     ),
                                                     buildLikes(activity),
-                                                  
                                                   ],
                                                 ),
                                               ),
-                                            
-                                            ],),
-                                          
+                                            ],
+                                          ),
                                         ),
                                       ],
                                     )),

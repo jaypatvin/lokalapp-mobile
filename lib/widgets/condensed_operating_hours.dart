@@ -20,16 +20,16 @@ class CondensedOperatingHours extends StatelessWidget {
       // mainAxisSize: MainAxisSize.max,
       children: [
         Container(
-          width: MediaQuery.of(context).size.width * .25,
+          width: MediaQuery.of(context).size.width * .26,
           child: Text(
             day,
             softWrap: true,
-            style: TextStyle(fontFamily: "GoldplayBold", fontSize: 18),
+            style: TextStyle(fontFamily: "GoldplayBold", fontSize: 16),
           ),
         ),
         Container(
           height: 50,
-          width: 130,
+          width: 123,
           child: TimePickerButton(
             minTime: 0,
             maxTime: 24,
@@ -39,11 +39,10 @@ class CondensedOperatingHours extends StatelessWidget {
         SizedBox(width: MediaQuery.of(context).size.width * 0.02),
         Container(
           height:50,
-          width: 130,
+          width: 123,
           child: TimePickerButton(
             minTime: 0,
-
-            maxTime: 60,
+            maxTime: 24,
             onChanged: onCustom,
             // time: time,
           ),
