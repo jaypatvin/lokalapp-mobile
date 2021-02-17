@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:lokalapp/screens/add_shop_screens/add_shop.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
-import '../addShopScreens/add_shop.dart';
 import '../../widgets/rounded_button.dart';
 
 class ProfileNoShop extends StatefulWidget {

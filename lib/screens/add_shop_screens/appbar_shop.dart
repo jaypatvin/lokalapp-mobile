@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 class AppbarShop extends StatefulWidget {
   final bool isEdit;
-  AppbarShop({this.isEdit});
+  final String shopName;
+  AppbarShop({this.isEdit, this.shopName});
   @override
   _AppbarShopState createState() => _AppbarShopState();
 }
@@ -11,7 +12,7 @@ class _AppbarShopState extends State<AppbarShop> {
   @override
   Widget build(BuildContext context) {
     return PreferredSize(
-      preferredSize: Size(double.infinity, 130),
+      preferredSize: Size(double.infinity, 80),
       child: Container(
         decoration: BoxDecoration(
           boxShadow: [
@@ -19,11 +20,11 @@ class _AppbarShopState extends State<AppbarShop> {
           ],
         ),
         width: MediaQuery.of(context).size.width,
-        height: 500,
+        height: 200,
         child: Container(
           decoration: BoxDecoration(color: Color(0xff57183f)),
           child: Container(
-            margin: const EdgeInsets.fromLTRB(10, 95, 0, 0),
+            margin: const EdgeInsets.fromLTRB(10, 70, 0, 0),
             child: Column(
               children: [
                 Row(
@@ -37,7 +38,7 @@ class _AppbarShopState extends State<AppbarShop> {
                       child: Icon(
                         Icons.arrow_back_sharp,
                         color: Colors.white,
-                        size: 35,
+                        size: 25,
                       ),
                     ),
                     SizedBox(
@@ -48,11 +49,12 @@ class _AppbarShopState extends State<AppbarShop> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Text(
-                          widget.isEdit ?  "Edit Shop" : "Add Shop",
+                          widget.shopName,
+                          // widget.isEdit ?  "Edit Shop" : "Add Shop",
                           style: TextStyle(
                               color: Color(0xFFFFC700),
-                              fontFamily: "Goldplay",
-                              fontSize: 24,
+                              fontFamily: "GoldplayAltBold",
+                              fontSize: 20,
                               fontWeight: FontWeight.w600
                               ),
                         )

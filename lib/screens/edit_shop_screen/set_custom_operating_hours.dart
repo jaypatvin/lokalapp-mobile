@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 class SetCustomoperatingHours extends StatefulWidget {
   bool value;
   Function onChanged;
-  SetCustomoperatingHours({this.value, this.onChanged});
+  final String label;
+  SetCustomoperatingHours({this.value, this.onChanged, this.label});
   @override
   _SetCustomoperatingHoursState createState() => _SetCustomoperatingHoursState();
 }
@@ -18,15 +19,15 @@ class _SetCustomoperatingHoursState extends State<SetCustomoperatingHours> {
               mainAxisSize: MainAxisSize.max,
               children: [
                 Container(
-                  height: 70,
-                  width: 300,
+                  height: 40,
+                  width: 290,
                   child: ListTile(
                     title: Text(
-                      "Set custom operating hours",
+                      widget.label,
                       softWrap: true,
                       style: TextStyle(
                           fontFamily: "Goldplay",
-                          fontSize: 14,
+                          fontSize: 13,
                           color: Colors.black,
                           fontWeight: FontWeight.w500),
                     ),
@@ -38,6 +39,7 @@ class _SetCustomoperatingHoursState extends State<SetCustomoperatingHours> {
                     ),
                   ),
                 ),
+                SizedBox(height: 20,),
               ],
             );
   }

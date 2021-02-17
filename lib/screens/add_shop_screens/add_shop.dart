@@ -4,9 +4,9 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
-import 'package:lokalapp/screens/addShopScreens/appbar_shop.dart';
-import 'package:lokalapp/screens/addShopScreens/basic_information.dart';
-import 'package:lokalapp/screens/addShopScreens/shop_name.dart';
+import 'package:lokalapp/screens/add_shop_screens/appbar_shop.dart';
+import 'package:lokalapp/screens/add_shop_screens/basic_information.dart';
+import 'package:lokalapp/screens/add_shop_screens/shop_name.dart';
 import 'package:lokalapp/screens/edit_shop_screen/operating_hours_shop.dart';
 import 'package:lokalapp/screens/edit_shop_screen/set_custom_operating_hours.dart';
 import 'package:lokalapp/screens/profileScreens/profile_shop.dart';
@@ -212,10 +212,11 @@ class _AddShopState extends State<AddShop> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: PreferredSize(
-          preferredSize: Size(double.infinity, 120),
+          preferredSize: Size(double.infinity, 83),
           child: Center(
               child: AppbarShop(
             isEdit: false,
+            shopName: "Add Shop",
           ))),
       body: SingleChildScrollView(
         child: Column(

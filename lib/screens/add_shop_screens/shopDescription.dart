@@ -5,8 +5,9 @@ import 'package:provider/provider.dart';
 
 class ShopDescription extends StatefulWidget {
    Function onChanged;
+   final String hintText;
   final TextEditingController descriptionController;
-  ShopDescription({this.descriptionController, this.onChanged});
+  ShopDescription({this.descriptionController, this.onChanged, this.hintText});
   @override
   _ShopDescriptionState createState() => _ShopDescriptionState();
 }
@@ -23,10 +24,10 @@ class _ShopDescriptionState extends State<ShopDescription> {
         Container(
            margin: EdgeInsets.all(12),
           height: maxLines * 15.0,
-          width: MediaQuery.of(context).size.width * 0.8,
+          width: MediaQuery.of(context).size.width * 0.7,
           color: Color(0xffE0E0E0),
           child: TextField(
-            controller: widget.descriptionController,
+            // controller: widget.descriptionController,
             onChanged: widget.onChanged,
             cursorColor: Colors.black,
             keyboardType: TextInputType.multiline,
@@ -62,11 +63,13 @@ class _ShopDescriptionState extends State<ShopDescription> {
                 // disabledBorder: InputBorder.none,
                 contentPadding:
                     EdgeInsets.only(left: 18, bottom: 11, top: 30, right: 15),
-                hintText: "Shop Description",
+                hintText: widget.hintText,
                 hintStyle: TextStyle(
                     color: Color(0xFFBDBDBD),
+                    fontSize: 14,
                     fontFamily: "GoldplayBold",
-                    fontWeight: FontWeight.w500)),
+                    // fontWeight: FontWeight.w500,
+                    )),
           ),
         ),
       ],

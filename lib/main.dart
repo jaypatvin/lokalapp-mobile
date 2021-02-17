@@ -1,7 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:lokalapp/models/user_shop_post.dart';
-import 'package:lokalapp/screens/addShopScreens/add_shop.dart';
 import 'package:lokalapp/screens/profile.dart';
 import 'root/root.dart';
 

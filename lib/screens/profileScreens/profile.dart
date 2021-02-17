@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lokalapp/screens/add_product_screen/add_product.dart';
 import 'package:lokalapp/screens/edit_shop_screen/edit_shop.dart';
 import 'package:lokalapp/screens/profileScreens/profile_shop.dart';
 import 'package:lokalapp/states/current_user.dart';
@@ -14,14 +15,14 @@ class Profile extends StatefulWidget {
 
 class _ProfileState extends State<Profile> {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
-bool showBottomSheet = true;
+  bool showBottomSheet = true;
   Padding buildIconSettings() {
     return Padding(
         padding: const EdgeInsets.only(left: 3),
         child: IconButton(
           icon: Icon(
             Icons.settings,
-            size: 38,
+            size: 35,
           ),
           color: Colors.white,
           onPressed: () {
@@ -41,44 +42,59 @@ bool showBottomSheet = true;
               icon: Icon(
                 Icons.more_horiz,
                 color: Colors.white,
-                size: 41,
+                size: 38,
               ),
               onPressed: () {
                 showModalBottomSheet(
-                  context: context,
-                  builder:(BuildContext context){
-                    return Container(
-                    height: 140,
-                    color: Colors.white,
-                    padding: EdgeInsets.only(left: 50, top: 10, bottom: 10, right: 40),
-                    child: ListView(children: [
-                      GestureDetector(
-                        onTap: (){Navigator.push(context, MaterialPageRoute(builder: (context) => EditShop())); },
-                        child: ListTile(
-                          leading: Text(
-                            "Edit Shop",
-                            softWrap: true,
-                            style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontFamily: "Goldplay",
-                        fontSize: 14
+                    context: context,
+                    builder: (BuildContext context) {
+                      return Container(
+                          height: 140,
+                          color: Colors.white,
+                          padding: EdgeInsets.only(
+                              left: 50, top: 10, bottom: 10, right: 40),
+                          child: ListView(children: [
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => EditShop()));
+                              },
+                              child: ListTile(
+                                leading: Text(
+                                  "Edit Shop",
+                                  softWrap: true,
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontFamily: "Goldplay",
+                                      fontSize: 14),
+                                ),
+                              ),
                             ),
-                          ),
-                        ),
-                      ),
-                      ListTile(
-                        leading: Text("Add Product",softWrap: true,
-                          style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontFamily: "Goldplay",
-                      fontSize: 14
-                          ),),
-                      ),
-                      SizedBox(height: 8,)
-                  ]));
-                  }
-                );
-                
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => AddProduct()));
+                              },
+                              child: ListTile(
+                                leading: Text(
+                                  "Add Product",
+                                  softWrap: true,
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontFamily: "Goldplay",
+                                      fontSize: 14),
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              height: 8,
+                            )
+                          ]));
+                    });
               }),
         ),
       ],
@@ -92,7 +108,7 @@ bool showBottomSheet = true;
             child: Padding(
           padding: const EdgeInsets.only(top: 0, bottom: 0),
           child: CircleAvatar(
-            radius: 48,
+            radius: 35,
             backgroundColor: Colors.transparent,
             child: ClipOval(
               child: Image.network(
@@ -114,7 +130,7 @@ bool showBottomSheet = true;
           style: TextStyle(
               color: Colors.white,
               fontFamily: "GoldplayBold",
-              fontSize: 28,
+              fontSize: 24,
               fontWeight: FontWeight.bold),
         )
       ],
