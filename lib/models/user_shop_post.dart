@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 
 class UserShopPost extends ChangeNotifier{
   String name;
-  String userUid;
+  String userId;
   String communityId;
   String description;
   String profilePhoto;
@@ -28,7 +28,7 @@ class UserShopPost extends ChangeNotifier{
     this.isClosed,
     this.name,
     this.status,
-    this.userUid,
+    this.userId,
     this.useCustomHours,
     this.communityId,
     this.profilePhoto,
@@ -36,7 +36,7 @@ class UserShopPost extends ChangeNotifier{
 
   Map<String, dynamic> toMap() {
     return {
-      'user_uid': userUid,
+      'user_id': userId,
       'community_id': communityId,
       'name': name,
       'description': description,
@@ -55,7 +55,7 @@ class UserShopPost extends ChangeNotifier{
     if (map == null) return null;
 
     return UserShopPost(
-      userUid: map['user_uid'],
+      userId: map['user_id'],
       communityId: map['community_id'],
       name: map['name'],
       description: map['description'],

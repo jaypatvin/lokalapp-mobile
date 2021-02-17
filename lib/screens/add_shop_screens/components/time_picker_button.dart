@@ -51,20 +51,33 @@ class _TimePickerButtonState extends State<TimePickerButton> {
         borderRadius: BorderRadius.circular(30.0),
       ),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         mainAxisSize: MainAxisSize.max,
         children: [
-          Container(
-            width: this.width,
-            height: this.height,
-            color: Color(0xffF2F2F2),
-            child: Text(DateFormat.Hms().format(_date)),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Container(
+                width: this.width,
+                height: this.height,
+                color: Color(0xffF2F2F2),
+                child: Text(DateFormat.Hms().format(_date)),
+              ),
+            ],
           ),
-          Icon(
-            Icons.arrow_drop_down_sharp,
-            color: kTealColor,
-            size: 35,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            crossAxisAlignment: CrossAxisAlignment.end,
+            mainAxisSize: MainAxisSize.max,
+            children: [
+
+              Icon(
+                Icons.arrow_drop_down_sharp,
+                color: kTealColor,
+                size: 35,
+              ),
+            ],
           ),
         ],
       ),

@@ -35,7 +35,7 @@ class _TimelineState extends State<Timeline> {
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         Padding(
-          padding: const EdgeInsets.only(left: 240),
+          padding: const EdgeInsets.only(left: 200),
           child: IconButton(
               icon: Icon(Icons.messenger_outline),
               onPressed: () {
@@ -84,7 +84,7 @@ class _TimelineState extends State<Timeline> {
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.only(left: 10),
+          padding: const EdgeInsets.only(left: 2),
           child: IconButton(
             icon: Icon(
               Icons.favorite_border,
