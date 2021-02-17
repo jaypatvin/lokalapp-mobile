@@ -172,7 +172,7 @@ class _EditShopState extends State<EditShop> {
     setState(() {
       isLoading = true;
     });
-    var currentUserId = _user.getCurrentUser.userUids.first;
+    var currentUserId = _user.userUids.first;
     // var doc = await _user.
     // user =User.fromDocume
   }

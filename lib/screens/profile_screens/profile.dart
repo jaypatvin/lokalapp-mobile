@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:lokalapp/screens/add_product_screen/add_product.dart';
 import 'package:lokalapp/screens/edit_shop_screen/edit_shop.dart';
-import 'package:lokalapp/screens/profileScreens/profile_shop.dart';
-import 'package:lokalapp/states/current_user.dart';
+import 'profile_shop.dart';
+
+import '../../states/current_user.dart';
 import 'package:provider/provider.dart';
 
 class Profile extends StatefulWidget {
@@ -14,21 +15,14 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
-  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
-  bool showBottomSheet = true;
   Padding buildIconSettings() {
     return Padding(
-        padding: const EdgeInsets.only(left: 3),
-        child: IconButton(
-          icon: Icon(
-            Icons.settings,
-            size: 35,
-          ),
-          color: Colors.white,
-          onPressed: () {
-            // Navigator.push(context, MaterialPageRoute(builder: (context) => EditShop()));
-          },
-        ));
+          
+          // color: Colors.white,
+          // onPressed: () {
+          //   // Navigator.push(context, MaterialPageRoute(builder: (context) => EditShop()));
+          // },
+        );
   }
 
   Row buildIconMore() {
@@ -142,7 +136,6 @@ class _ProfileState extends State<Profile> {
     CurrentUser _user = Provider.of<CurrentUser>(context);
     return SafeArea(
       child: Scaffold(
-          key: scaffoldKey,
           backgroundColor: Colors.white,
           appBar: PreferredSize(
             preferredSize: Size(double.infinity, 220),
@@ -179,8 +172,8 @@ class _ProfileState extends State<Profile> {
                         height: 15,
                       ),
                       buildName(
-                        _user.getCurrentUser.firstName,
-                        _user.getCurrentUser.lastName,
+                        _user.firstName,
+                        _user.lastName,
                       )
                     ],
                   ),

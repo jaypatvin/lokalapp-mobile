@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
-import 'profile_registration.dart';
-import '../widgets/sso_block.dart';
 import 'package:provider/provider.dart';
-import '../states/current_user.dart';
 
-import '../screens/bottom_navigation.dart';
+import '../../states/current_user.dart';
+import '../../widgets/sso_block.dart';
+import 'profile_registration.dart';
 
 enum LoginType { email, google, facebook }
 

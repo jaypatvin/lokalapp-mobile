@@ -1,13 +1,12 @@
-import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
-
-import '../screens/bottom_navigation.dart';
-import 'invite_page.dart';
-import '../widgets/rounded_button.dart';
-import '../widgets/sso_block.dart';
-import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
-import '../utils/themes.dart';
-import '../states/current_user.dart';
+import 'package:provider/provider.dart';
+
+import '../../states/current_user.dart';
+import '../../utils/themes.dart';
+import '../../widgets/rounded_button.dart';
+import '../../widgets/sso_block.dart';
+import '../bottom_navigation.dart';
+import 'invite_page.dart';
 
 enum LoginType { email, google, facebook }
 

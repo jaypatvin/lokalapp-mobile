@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:lokalapp/widgets/time_picker_button.dart';
+import 'time_picker_button.dart';
 
 class CondensedOperatingHours extends StatelessWidget {
   final String day;
   final DateTime minTime;
   final DateTime maxTime;
-   Function onChanged;
-   Function onCustom;
+  final Function onChangedOpening;
+  final Function onChangedClosing;
   final DateTime time;
-   CondensedOperatingHours({this.day, this.minTime, this.maxTime, this.time, this.onChanged, this.onCustom});
-
-
-  
+  CondensedOperatingHours(
+      {this.day,
+      this.minTime,
+      this.maxTime,
+      this.time,
+      this.onChangedOpening,
+      this.onChangedClosing});
 
   @override
   Widget build(BuildContext context) {
@@ -33,17 +36,17 @@ class CondensedOperatingHours extends StatelessWidget {
           child: TimePickerButton(
             minTime: 0,
             maxTime: 24,
-            onChanged: onChanged,
+            onChanged: onChangedOpening,
           ),
         ),
         SizedBox(width: MediaQuery.of(context).size.width * 0.02),
         Container(
-          height:50,
-          width: 123,
+          height: 50,
+          width: 130,
           child: TimePickerButton(
             minTime: 0,
-            maxTime: 24,
-            onChanged: onCustom,
+            maxTime: 60,
+            onChanged: onChangedClosing,
             // time: time,
           ),
         ),

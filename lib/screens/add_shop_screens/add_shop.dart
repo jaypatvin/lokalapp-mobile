@@ -9,16 +9,18 @@ import 'package:lokalapp/screens/add_shop_screens/basic_information.dart';
 import 'package:lokalapp/screens/add_shop_screens/shop_name.dart';
 import 'package:lokalapp/screens/edit_shop_screen/operating_hours_shop.dart';
 import 'package:lokalapp/screens/edit_shop_screen/set_custom_operating_hours.dart';
-import 'package:lokalapp/screens/profileScreens/profile_shop.dart';
+import 'package:lokalapp/screens/profile_screens/profile_shop.dart';
+// import 'package:lokalapp/screens/profileScreens/profile_shop.dart';
 import 'package:lokalapp/services/database.dart';
 import 'package:lokalapp/states/current_user.dart';
-import 'package:lokalapp/widgets/condensed_operating_hours.dart';
+// import 'package:lokalapp/widgets/condensed_operating_hours.dart';
 import 'package:lokalapp/widgets/operating_hours.dart';
 import 'package:lokalapp/widgets/rounded_button.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 import '../../utils/themes.dart';
+import 'components/condensed_operating_hours.dart';
 import 'shopDescription.dart';
 import 'package:image/image.dart' as Im;
 
@@ -79,8 +81,8 @@ class _AddShopState extends State<AddShop> {
     }
     CurrentUser _user = Provider.of<CurrentUser>(context, listen: false);
     try {
-      _user.postShop.userId = _user.getCurrentUser.userUids.first;
-      _user.postShop.communityId = _user.getCurrentUser.communityId;
+      _user.postShop.userId = _user.userUids.first;
+      _user.postShop.communityId = _user.communityId;
       _user.postShop.name = shopName;
       _user.postShop.description = description;
       _user.postShop.profilePhoto = mediaUrl;
@@ -212,7 +214,7 @@ class _AddShopState extends State<AddShop> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: PreferredSize(
-          preferredSize: Size(double.infinity, 83),
+          preferredSize: Size(double.infinity,83 ),
           child: Center(
               child: AppbarShop(
             isEdit: false,
@@ -406,7 +408,7 @@ class _AddShopState extends State<AddShop> {
                 padding: const EdgeInsets.all(8.0),
                 child: CondensedOperatingHours(
                   day: day,
-                  onChanged: (value) {
+                  onChangedOpening: (value) {
                     setState(() {
                       _openingCustom = value;
                       openingCustomHour =
@@ -415,7 +417,7 @@ class _AddShopState extends State<AddShop> {
                       customHours[day].opening = openingCustomHour;
                     });
                   },
-                  onCustom: (value) {
+                  onChangedClosing: (value) {
                     setState(() {
                       _closingCustom = value;
                       closingCustomHour =

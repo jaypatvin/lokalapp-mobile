@@ -2,17 +2,17 @@ import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:lokalapp/screens/bottom_navigation.dart';
+import '../bottom_navigation.dart';
 
-import 'package:lokalapp/utils/themes.dart';
+import '../../utils/themes.dart';
 
-class VerifyNotificationScreen extends StatefulWidget {
+class VerifyConfirmationScreen extends StatefulWidget {
   @override
-  _VerifyNotificationScreenState createState() =>
-      _VerifyNotificationScreenState();
+  _VerifyConfirmationScreenState createState() =>
+      _VerifyConfirmationScreenState();
 }
 
-class _VerifyNotificationScreenState extends State<VerifyNotificationScreen> {
+class _VerifyConfirmationScreenState extends State<VerifyConfirmationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
