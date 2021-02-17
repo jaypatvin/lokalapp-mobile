@@ -1,24 +1,11 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import '../services/get_stream_api_service.dart';
-import '../states/current_user.dart';
 import '../utils/themes.dart';
-import 'package:provider/provider.dart';
 import 'draft_post.dart';
 import 'timeline.dart';
 
-class Home extends StatefulWidget {
-  final Map<String, String> account;
-  Home({Key key, @required this.account}) : super(key: key);
-  @override
-  _HomeState createState() => _HomeState();
-}
-
-class _HomeState extends State<Home> {
-  TextEditingController _userController = TextEditingController();
-
-  Padding buildTextField() {
+class Home extends StatelessWidget {
+  Padding buildTextField(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(left: 20, top: 30, right: 20, bottom: 0),
       child: Column(
@@ -27,22 +14,18 @@ class _HomeState extends State<Home> {
             child: Theme(
               data: ThemeData(primaryColor: Colors.grey.shade400),
               child: GestureDetector(
-                   onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) =>
-                                DraftPost(account: widget.account)));
-                  },
-                              child: TextField(
+                onTap: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => DraftPost()));
+                },
+                child: TextField(
                   enabled: false,
-               textAlign: TextAlign.justify,
-               
+                  textAlign: TextAlign.justify,
                   decoration: InputDecoration(
                     isDense: true, // Added this
                     filled: true,
                     contentPadding: EdgeInsets.only(
-                              left: 18, bottom: 11, top: 14, right: 15),
+                        left: 18, bottom: 11, top: 14, right: 15),
                     enabledBorder: OutlineInputBorder(
                       borderSide: BorderSide(color: Colors.grey.shade400),
                       // borderSide: BorderSide(color: Color(0xFFE0E0E0)),
@@ -56,7 +39,7 @@ class _HomeState extends State<Home> {
                       color: Color(0xffE0E0E0),
                     ),
                     hintText: 'What\'s on your mind?',
-                    
+
                     alignLabelWithHint: true,
                     hintStyle: TextStyle(color: Colors.grey.shade400),
                   ),
@@ -78,8 +61,7 @@ class _HomeState extends State<Home> {
           child: Container(
             decoration: BoxDecoration(
               boxShadow: [
-                BoxShadow(
-                    color: Colors.black12, spreadRadius: 5, blurRadius: 2)
+                BoxShadow(color: Colors.black12, spreadRadius: 5, blurRadius: 2)
               ],
             ),
             width: MediaQuery.of(context).size.width,
@@ -113,23 +95,14 @@ class _HomeState extends State<Home> {
           child: Container(
             child: Column(
               children: [
-                buildTextField(),
-                // RaisedButton(
-                //   onPressed: () {
-                //     Provider.of<CurrentUser>(context, listen: false)
-                //         .onSignOut();
-                //   },
-                //   child: Text("logout"),
-                // ),
+                buildTextField(context),
                 SizedBox(
                   height: 8,
                 ),
-                Timeline(account: widget.account)
+                Timeline(),
               ],
             ),
           ),
         ));
   }
-
-
 }

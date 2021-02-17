@@ -1,35 +1,28 @@
 import 'package:flutter/material.dart';
 import 'welcome_screen.dart';
-import '../services/get_stream_api_service.dart';
 import '../states/current_user.dart';
 import 'package:provider/provider.dart';
 
 class Profile extends StatefulWidget {
-  final Map<String, String> account;
-  Profile({Key key, @required this.account}) : super(key: key);
-
   @override
   _ProfileState createState() => _ProfileState();
 }
 
 class _ProfileState extends State<Profile> {
   Future<List<dynamic>> _activities;
+  CurrentUser _user;
 
   @override
   void initState() {
     super.initState();
-    _activities = _getActivities();
+    this._user = Provider.of<CurrentUser>(context, listen: false);
+    _activities = _user.getTimeline();
   }
 
-  Future<List<dynamic>> _getActivities() async {
-    return await GetStreamApiService().getActivities(widget.account);
-  }
-
-  Future _refreshActivities() async {
+  Future<void> _refreshActivities() async {
     setState(() {
-      _activities = _getActivities();
+      _activities = _user.getTimeline();
     });
-    return null;
   }
 
   @override

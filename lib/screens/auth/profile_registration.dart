@@ -1,21 +1,15 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:lokalapp/screens/verification_screens/verify_screen.dart';
-import '../utils/themes.dart';
-import '../widgets/rounded_button.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:path_provider/path_provider.dart';
-import 'dart:io';
-import 'package:uuid/uuid.dart';
 import 'package:provider/provider.dart';
-import 'package:image/image.dart' as Im;
-import '../services/database.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 
-import '../states/current_user.dart';
-
-import '../screens/bottom_navigation.dart';
+import '../../services/local_image_service.dart';
+import '../../states/current_user.dart';
+import '../../utils/themes.dart';
+import '../../widgets/rounded_button.dart';
+import '../verification_screens/verify_screen.dart';
 
 class ProfileRegistration extends StatefulWidget {
   @override
@@ -23,102 +17,60 @@ class ProfileRegistration extends StatefulWidget {
 }
 
 class _ProfileRegistrationState extends State<ProfileRegistration> {
-  File file;
   bool isUploading = false;
-  String profilePhotoId = Uuid().v4();
-  final picker = ImagePicker();
   TextEditingController _firstNameController = TextEditingController();
   TextEditingController _lastNameController = TextEditingController();
   TextEditingController _streetAddressController = TextEditingController();
   TextEditingController _locationController = TextEditingController();
   RoundedButton roundedButton = RoundedButton();
 
-  //  CurrentUser _users = Provider.of<CurrentUser>(context, listen: false);
-
-  handleCamera() async {
-    Navigator.pop(context);
-    final pickedImage = await picker.getImage(
-        source: ImageSource.camera, maxHeight: 675, maxWidth: 960);
-    if (pickedImage != null) {
-      setState(() {
-        file = File(pickedImage.path);
-      });
-    }
+  Future<void> selectImage(parentContext) async {
+    return await showDialog(
+      context: parentContext,
+      builder: (context) {
+        return SimpleDialog(
+          title: Text("Upload Picture"),
+          children: [
+            SimpleDialogOption(
+              child: Text("Camera"),
+              onPressed: () {
+                Provider.of<LocalImageService>(context, listen: false)
+                    .launchCamera();
+                Navigator.pop(context);
+              },
+            ),
+            SimpleDialogOption(
+              child: Text("Gallery"),
+              onPressed: () {
+                Provider.of<LocalImageService>(context, listen: false)
+                    .launchGallery();
+                Navigator.pop(context);
+              },
+            ),
+            SimpleDialogOption(
+              child: Text("Cancel"),
+              onPressed: () => Navigator.pop(context),
+            )
+          ],
+        );
+      },
+    );
   }
 
-  handleGallery() async {
-    Navigator.pop(context);
-    final pickedImage = await picker.getImage(source: ImageSource.gallery);
-    if (pickedImage != null) {
-      setState(() {
-        file = File(pickedImage.path);
-      });
-    }
-  }
-
-  selectImage(parentContext) {
-    return showDialog(
-        context: parentContext,
-        builder: (context) {
-          return SimpleDialog(
-            title: Text("Upload Picture"),
-            children: [
-              SimpleDialogOption(
-                child: Text("Camera"),
-                onPressed: () {
-                  handleCamera();
-                },
-              ),
-              SimpleDialogOption(
-                child: Text("Gallery"),
-                onPressed: () {
-                  handleGallery();
-                },
-              ),
-              SimpleDialogOption(
-                child: Text("Cancel"),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-              )
-            ],
-          );
-        });
-  }
-
-  compressImage() async {
-    final tempDir = await getTemporaryDirectory();
-    final path = tempDir.path;
-    Im.Image imageFile = Im.decodeImage(file.readAsBytesSync());
-    final compressedImageFile = File('$path/img_$profilePhotoId.jpg')
-      ..writeAsBytesSync(Im.encodeJpg(imageFile, quality: 90));
-    setState(() {
-      file = compressedImageFile;
-    });
-  }
-
-  Future<String> uploadImage(imageFile) async {
-    UploadTask uploadTask = storageRef
-        .child("profilePhotoId_$profilePhotoId.jpg")
-        .putFile(imageFile);
-    TaskSnapshot storageSnap = await uploadTask;
-    String downloadUrl = await storageSnap.ref.getDownloadURL();
-    return downloadUrl;
-  }
-
-  Future registerUser() async {
+  Future<bool> registerUser() async {
     setState(() {
       isUploading = true;
     });
-    String mediaUrl = "";
-    if (file != null) {
-      await compressImage();
-      mediaUrl = await uploadImage(file);
+
+    LocalImageService _imageService =
+        Provider.of<LocalImageService>(context, listen: false);
+    if (_imageService.fileExists) {
+      await _imageService.uploadImage();
     }
 
     CurrentUser _user = Provider.of<CurrentUser>(context, listen: false);
     _user.updatePostBody(
-        profilePhoto: mediaUrl,
+        profilePhoto: _imageService.mediaUrl,
         firstName: _firstNameController.text,
         lastName: _lastNameController.text,
         address: _streetAddressController.text);
@@ -128,13 +80,7 @@ class _ProfileRegistrationState extends State<ProfileRegistration> {
     if (isUserCreated) {
       inviteCodeClaimed = await _user.claimInviteCode();
     }
-
-    if (inviteCodeClaimed) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => VerifyScreen()),
-      );
-    }
+    return inviteCodeClaimed;
   }
 
   Widget buildStreetAddress() {
@@ -258,14 +204,14 @@ class _ProfileRegistrationState extends State<ProfileRegistration> {
   Widget createProfile() {
     return RoundedButton(
       onPressed: () async {
-        //handleSubmit();
-        await registerUser();
-        // Navigator.pushAndRemoveUntil(
-        //     context,
-        //     MaterialPageRoute(builder: (context) => WelcomeScreen()),
-        //     (route) => false);
+        bool success = await registerUser();
+        if (success) {
+          Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => VerifyScreen()),
+              (route) => false);
+        }
       },
-      //onPressed: () => registerUser(),
       label: "CREATE PROFILE",
       fontSize: 20.0,
       minWidth: 250,
@@ -274,51 +220,25 @@ class _ProfileRegistrationState extends State<ProfileRegistration> {
     );
   }
 
-  Widget photoBox() {
+  Widget photoBox({File file}) {
     return GestureDetector(
-      onTap: () {
-        selectImage(context);
-      },
+      onTap: () => selectImage(context),
       child: Container(
         width: 180.0,
         height: 170.0,
         decoration: BoxDecoration(
-          // image:
-          //     DecorationImage(fit: BoxFit.cover, image: FileImage(file)) ,
+          image: file == null
+              ? null
+              : DecorationImage(fit: BoxFit.cover, image: FileImage(file)),
           shape: BoxShape.circle,
           border: Border.all(width: 1, color: kTealColor),
         ),
-        child: IconButton(
-          onPressed: () {
-            selectImage(context);
-          },
-          icon: Icon(
-            Icons.add,
-            color: kTealColor,
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget photoBoxWithPic() {
-    return GestureDetector(
-      onTap: () {},
-      child: Container(
-        width: 180.0,
-        height: 170.0,
-        decoration: BoxDecoration(
-          image: DecorationImage(fit: BoxFit.cover, image: FileImage(file)),
-          shape: BoxShape.circle,
-          border: Border.all(width: 1, color: kTealColor),
-        ),
-        child: IconButton(
-          onPressed: () {},
-          icon: Icon(
-            Icons.add,
-            color: kTealColor,
-          ),
-        ),
+        child: file != null
+            ? null
+            : Icon(
+                Icons.add,
+                color: kTealColor,
+              ),
       ),
     );
   }
@@ -359,7 +279,11 @@ class _ProfileRegistrationState extends State<ProfileRegistration> {
                   SizedBox(
                     height: 25.0,
                   ),
-                  file == null ? photoBox() : photoBoxWithPic(),
+                  Consumer<LocalImageService>(
+                    builder: (context, imageService, child) {
+                      return photoBox(file: imageService.file);
+                    },
+                  ),
                 ],
               ),
               SizedBox(

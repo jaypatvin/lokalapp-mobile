@@ -1,20 +1,16 @@
-import 'dart:io' show File, Platform;
+import 'dart:io' show Platform;
 import 'dart:ui';
 
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:image/image.dart' as Im;
-import 'package:image_picker/image_picker.dart';
-import '../bottom_navigation.dart';
-import 'verify_notif_screen.dart';
-import '../../services/database.dart';
+import 'package:provider/provider.dart';
+
+import '../../services/local_image_service.dart';
 import '../../states/current_user.dart';
 import '../../utils/themes.dart';
 import '../../widgets/rounded_button.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:provider/provider.dart';
-import 'package:uuid/uuid.dart';
+import '../bottom_navigation.dart';
+import 'verify_confirmation_screen.dart';
 
 class VerifyScreen extends StatefulWidget {
   @override
@@ -30,73 +26,38 @@ class _VerifyScreenState extends State<VerifyScreen> {
   ];
 
   String _chosenIdType;
-  File file;
-  final picker = ImagePicker();
-  String verificationId = Uuid().v4();
-  String mediaUrl;
 
-  selectImage(parentContext) {
-    return showDialog(
-        context: parentContext,
-        builder: (parentContext) {
-          return SimpleDialog(
-            title: Text("Upload Picture"),
-            children: [
-              SimpleDialogOption(
-                child: Text("Camera"),
-                onPressed: () {
-                  handleCamera();
-                },
-              ),
-              SimpleDialogOption(
-                child: Text("Gallery"),
-                onPressed: () {
-                  handleGallery();
-                },
-              ),
-              SimpleDialogOption(
-                child: Text("Cancel"),
-                onPressed: () {
-                  Navigator.pop(parentContext);
-                },
-              )
-            ],
-          );
-        });
-  }
-
-  handleCamera() async {
-    Navigator.pop(context);
-    final pickedImage = await picker.getImage(source: ImageSource.camera);
-    if (pickedImage != null) {
-      file = File(pickedImage.path);
-    }
-  }
-
-  handleGallery() async {
-    Navigator.pop(context);
-    final pickedImage = await picker.getImage(source: ImageSource.gallery);
-    if (pickedImage != null) {
-      file = File(pickedImage.path);
-    }
-  }
-
-  compressImage() async {
-    final tempDir = await getTemporaryDirectory();
-    final path = tempDir.path;
-    Im.Image imageFile = Im.decodeImage(file.readAsBytesSync());
-    final compressedImageFile = File('$path/img_$verificationId.jpg')
-      ..writeAsBytesSync(Im.encodeJpg(imageFile, quality: 90));
-      file = compressedImageFile;
-  }
-
-  Future<String> uploadImage(imageFile) async {
-    UploadTask uploadTask = storageRef
-        .child("verificationId_$verificationId.jpg")
-        .putFile(imageFile);
-    TaskSnapshot storageSnap = await uploadTask;
-    String downloadUrl = await storageSnap.ref.getDownloadURL();
-    return downloadUrl;
+  Future<void> selectImage(parentContext) async {
+    return await showDialog(
+      context: parentContext,
+      builder: (context) {
+        return SimpleDialog(
+          title: Text("Upload Picture"),
+          children: [
+            SimpleDialogOption(
+              child: Text("Camera"),
+              onPressed: () {
+                Provider.of<LocalImageService>(context, listen: false)
+                    .launchCamera();
+                Navigator.pop(context);
+              },
+            ),
+            SimpleDialogOption(
+              child: Text("Gallery"),
+              onPressed: () {
+                Provider.of<LocalImageService>(context, listen: false)
+                    .launchGallery();
+                Navigator.pop(context);
+              },
+            ),
+            SimpleDialogOption(
+              child: Text("Cancel"),
+              onPressed: () => Navigator.pop(context),
+            )
+          ],
+        );
+      },
+    );
   }
 
   Widget androidDropDown() {
@@ -279,9 +240,11 @@ class _VerifyScreenState extends State<VerifyScreen> {
               ),
               RoundedButton(
                 onPressed: () async {
-                  if (file != null) {
-                    await compressImage();
-                    mediaUrl = await uploadImage(file);
+                  LocalImageService picker =
+                      Provider.of<LocalImageService>(context, listen: false);
+                  if (picker.fileExists) {
+                    String mediaUrl = await picker.uploadImage();
+
                     if (mediaUrl != null && mediaUrl.isNotEmpty) {
                       Provider.of<CurrentUser>(context, listen: false)
                         ..updateUserRegistrationInfo(
@@ -294,10 +257,10 @@ class _VerifyScreenState extends State<VerifyScreen> {
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) =>
-                                        VerifyNotificationScreen()),
+                                        VerifyConfirmationScreen()),
                                 (route) => false);
                           } else {
-                            // failed
+                            // failed, do nothing
                           }
                         });
                     }

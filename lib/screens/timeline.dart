@@ -1,74 +1,33 @@
 import 'package:flutter/material.dart';
 
-import '../services/get_stream_api_service.dart';
-
 import '../states/current_user.dart';
 import 'package:provider/provider.dart';
 import 'expanded_card.dart';
 
 class Timeline extends StatefulWidget {
-  final Map<String, String> account;
-  final Map<dynamic, dynamic> snapshot;
-  Timeline({Key key, this.account, this.snapshot}) : super(key: key);
-
   @override
   _TimelineState createState() => _TimelineState();
 }
 
 class _TimelineState extends State<Timeline> {
   Future<List<dynamic>> _activities;
-  Future<List> _users;
   int likeCount;
   Map<String, String> likes;
   bool isLiked;
 
+  CurrentUser _user;
+
   @override
   void initState() {
     super.initState();
-    _activities = _getTimeline();
-    // _users = GetStreamApiService().users(widget.account);
+    this._user = Provider.of<CurrentUser>(context, listen: false);
+    _activities = _user.getTimeline();
   }
 
-  Future<List<dynamic>> _getTimeline() async {
-    CurrentUser _user = Provider.of<CurrentUser>(context, listen: false);
-    var stream = _user.getStreamAccount;
-
-    return await GetStreamApiService().getTimeline(stream);
-  }
-
-// Future<int>  handleLikePost()async{
-//     bool _isLiked = false;
-
-//     if (_isLiked) {
-
-//       setState(() {
-//         likeCount -= 1;
-//         isLiked = false;
-
-//       String user =  likes[widget.account["user"]];
-//       if(user != null){
-
-//       }
-//       });
-//       await  GetStreamApiService().postLikes(widget.account, likeCount.toString());
-//     } else if (!_isLiked) {
-
-//       setState(() {
-//         likeCount += 1;
-//         isLiked = true;
-
-//         likes[widget.account["user"]] = true;
-//       });
-//       await  GetStreamApiService().postLikes(widget.account, likeCount.toString() ) ;
-//     }
-
-//   }
-
-  Future _refreshActivities() async {
+  Future<void> _refreshActivities() async {
     setState(() {
-      _activities = _getTimeline();
+      _activities = _user.getTimeline();
     });
-    return null;
   }
 
   Row buildComments(Map snapshot) {
@@ -84,8 +43,7 @@ class _TimelineState extends State<Timeline> {
                     context,
                     MaterialPageRoute(
                         builder: (context) => ExpandedCard(
-                              account: widget.account,
-                              snapshot: snapshot,
+                              activity: snapshot,
                             )));
               }),
         ),
@@ -144,9 +102,6 @@ class _TimelineState extends State<Timeline> {
 
   @override
   Widget build(BuildContext context) {
-    CurrentUser _user = Provider.of<CurrentUser>(context);
-    // var stream =  _user.getStreamAccount;
-
     return FutureBuilder<List<dynamic>>(
       future: _activities,
       builder: (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
@@ -164,7 +119,7 @@ class _TimelineState extends State<Timeline> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Expanded(
-                                              child: ListView(
+                        child: ListView(
                           scrollDirection: Axis.vertical,
                           shrinkWrap: true,
                           children: snapshot.data
@@ -180,7 +135,8 @@ class _TimelineState extends State<Timeline> {
                                               Card(
                                                 shape: RoundedRectangleBorder(
                                                   borderRadius:
-                                                      BorderRadius.circular(16.0),
+                                                      BorderRadius.circular(
+                                                          16.0),
                                                 ),
                                                 child: Column(
                                                   children: [
@@ -191,10 +147,8 @@ class _TimelineState extends State<Timeline> {
                                                     Row(
                                                       children: [
                                                         buildHeader(
-                                                            _user.getCurrentUser
-                                                                .firstName,
-                                                            _user.getCurrentUser
-                                                                .lastName)
+                                                            _user.firstName,
+                                                            _user.lastName)
                                                       ],
                                                     ),
                                                     SizedBox(
@@ -204,13 +158,15 @@ class _TimelineState extends State<Timeline> {
                                                       // mainAxisSize:
                                                       //     MainAxisSize.min,
                                                       mainAxisAlignment:
-                                                          MainAxisAlignment.start,
+                                                          MainAxisAlignment
+                                                              .start,
                                                       children: [
                                                         SizedBox(
                                                           width: 26,
                                                         ),
                                                         buildMessageBody(
-                                                            activity["message"]),
+                                                            activity[
+                                                                "message"]),
                                                       ],
                                                     ),
                                                     SizedBox(
@@ -222,13 +178,11 @@ class _TimelineState extends State<Timeline> {
                                                       endIndent: 25,
                                                     ),
                                                     buildLikes(activity),
-                                                  
                                                   ],
                                                 ),
                                               ),
-                                            
-                                            ],),
-                                          
+                                            ],
+                                          ),
                                         ),
                                       ],
                                     )),
@@ -245,21 +199,3 @@ class _TimelineState extends State<Timeline> {
     );
   }
 }
-//  FutureBuilder<List>(
-//                                           future: _users,
-//                                           builder: (BuildContext context,
-//                                               AsyncSnapshot<List> snapshot) {
-
-//                                             return ListView(
-//                                                 scrollDirection: Axis.vertical,
-//                                                 shrinkWrap: true,
-//                                                 children: snapshot.data
-//                                                     .where((u) =>
-//                                                         u !=
-//                                                         widget.account['user'])
-//                                                     .map((u) => ListTile(
-//                                                           title: (u),
-//                                                           subtitle: getFollowers(),
-//                                                         ))
-//                                                     .toList());
-//                                           })
