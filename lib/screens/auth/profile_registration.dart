@@ -75,7 +75,7 @@ class _ProfileRegistrationState extends State<ProfileRegistration> {
         lastName: _lastNameController.text,
         address: _streetAddressController.text);
 
-    bool isUserCreated = await _user.createUser();
+    bool isUserCreated = await _user.register();
     bool inviteCodeClaimed = false;
     if (isUserCreated) {
       inviteCodeClaimed = await _user.claimInviteCode();
