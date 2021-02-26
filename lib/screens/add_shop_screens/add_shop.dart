@@ -36,11 +36,11 @@ class AddShop extends StatefulWidget {
 }
 
 class _AddShopState extends State<AddShop> {
-  DateTime _date = DateTime.now();
+  TimeOfDay _date = TimeOfDay.now();
   bool _setOperatingHours = false;
   File file;
   bool isUploading = false;
-  String profilePhotoId = Uuid().v4();
+  String shopPhotoId = Uuid().v4();
   final picker = ImagePicker();
   String openingHour;
   String closingHour;
@@ -54,7 +54,7 @@ class _AddShopState extends State<AddShop> {
     final tempDir = await getTemporaryDirectory();
     final path = tempDir.path;
     Im.Image imageFile = Im.decodeImage(file.readAsBytesSync());
-    final compressedImageFile = File('$path/img_$profilePhotoId.jpg')
+    final compressedImageFile = File('$path/img_$shopPhotoId.jpg')
       ..writeAsBytesSync(Im.encodeJpg(imageFile, quality: 90));
     setState(() {
       file = compressedImageFile;
@@ -62,9 +62,8 @@ class _AddShopState extends State<AddShop> {
   }
 
   Future<String> uploadImage(imageFile) async {
-    UploadTask uploadTask = storageRef
-        .child("profilePhotoId_$profilePhotoId.jpg")
-        .putFile(imageFile);
+    UploadTask uploadTask =
+        storageRef.child("profilePhotoId_$shopPhotoId.jpg").putFile(imageFile);
     TaskSnapshot storageSnap = await uploadTask;
     String downloadUrl = await storageSnap.ref.getDownloadURL();
     return downloadUrl;
@@ -80,8 +79,9 @@ class _AddShopState extends State<AddShop> {
       mediaUrl = await uploadImage(file);
     }
     CurrentUser _user = Provider.of<CurrentUser>(context, listen: false);
+    var userId = await Database().getUserDocId(_user.userUids.first);
     try {
-      _user.postShop.userId = _user.userUids.first;
+      _user.postShop.userId = userId;
       _user.postShop.communityId = _user.communityId;
       _user.postShop.name = shopName;
       _user.postShop.description = description;
@@ -93,7 +93,6 @@ class _AddShopState extends State<AddShop> {
       _user.postShop.useCustomHours = _setOperatingHours;
       _user.postShop.customHours =
           customHours.map((key, value) => MapEntry(key, value.toString()));
-      _user.postShop.status = "enabled";
       bool success = await _user.createShop();
       if (success) {
         Navigator.push(
@@ -213,8 +212,9 @@ class _AddShopState extends State<AddShop> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
+      resizeToAvoidBottomPadding: false,
       appBar: PreferredSize(
-          preferredSize: Size(double.infinity,83 ),
+          preferredSize: Size(double.infinity, 83),
           child: Center(
               child: AppbarShop(
             isEdit: false,
@@ -294,8 +294,8 @@ class _AddShopState extends State<AddShop> {
                                 onChanged: (date) {
                                   setState(() {
                                     _opening = date;
-                                    openingHour = DateFormat.Hms()
-                                        .format(date); //date.toIso8601String();
+                                    openingHour =
+                                        DateFormat("h:mm a").format(date);
                                   });
                                 },
                               )),
@@ -335,8 +335,8 @@ class _AddShopState extends State<AddShop> {
                                 onChanged: (date) {
                                   setState(() {
                                     _closing = date;
-                                    closingHour = DateFormat.Hms()
-                                        .format(date); //date.toIso8601String();
+                                    closingHour =
+                                        DateFormat("h:mm a").format(date);
                                   });
                                 },
                               )),
@@ -351,6 +351,7 @@ class _AddShopState extends State<AddShop> {
               height: 20,
             ),
             SetCustomoperatingHours(
+              label: "Set Custoom Operating Hours",
               value: _setOperatingHours,
               onChanged: (value) {
                 setState(() {
@@ -358,7 +359,6 @@ class _AddShopState extends State<AddShop> {
                 });
               },
             ),
-
             Container(
                 child: _setOperatingHours ? buildDaysOfWeek() : Container()),
             SizedBox(height: MediaQuery.of(context).size.height * 0.05),
@@ -412,7 +412,7 @@ class _AddShopState extends State<AddShop> {
                     setState(() {
                       _openingCustom = value;
                       openingCustomHour =
-                          DateFormat.Hms().format(_openingCustom);
+                          DateFormat("h:mm a").format(_openingCustom);
                       customHours[day] = Days();
                       customHours[day].opening = openingCustomHour;
                     });
@@ -421,7 +421,8 @@ class _AddShopState extends State<AddShop> {
                     setState(() {
                       _closingCustom = value;
                       closingCustomHour =
-                          DateFormat.Hms().format(_closingCustom);
+                          DateFormat("h:mm a").format(_closingCustom);
+
                       customHours[day].closing = closingCustomHour;
                     });
                   },

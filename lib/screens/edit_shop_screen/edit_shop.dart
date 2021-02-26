@@ -1,10 +1,12 @@
 import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:lokalapp/models/user_shop_post.dart';
 import 'package:lokalapp/screens/add_shop_screens/appbar_shop.dart';
 import 'package:lokalapp/screens/add_shop_screens/basic_information.dart';
 import 'package:lokalapp/screens/add_shop_screens/shopDescription.dart';
@@ -13,6 +15,8 @@ import 'package:lokalapp/screens/edit_shop_screen/operating_hours_shop.dart';
 import 'package:lokalapp/screens/edit_shop_screen/set_custom_operating_hours.dart';
 import 'package:lokalapp/screens/edit_shop_screen/shop_status.dart';
 import 'package:lokalapp/services/database.dart';
+import 'package:lokalapp/services/local_image_service.dart';
+import 'package:lokalapp/services/lokal_api_service.dart';
 import 'package:lokalapp/states/current_user.dart';
 import 'package:lokalapp/utils/themes.dart';
 import 'package:lokalapp/widgets/operating_hours.dart';
@@ -29,12 +33,12 @@ class EditShop extends StatefulWidget {
 }
 
 class _EditShopState extends State<EditShop> {
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
   File file;
   String profilePhotoId = Uuid().v4();
   final picker = ImagePicker();
   bool _setOperatingHours = false;
   bool isLoading = false;
-  User user;
   String editShopName;
   bool isSwitched = false;
   String shopDescription;
@@ -42,8 +46,11 @@ class _EditShopState extends State<EditShop> {
   DateTime _closing = DateTime.now();
   String openingHour;
   String closingHour;
-
-
+  TextEditingController _shopNameController = TextEditingController();
+  TextEditingController _shopDescriptionController = TextEditingController();
+  // bool isUploading = true;
+  bool isNameValid = true;
+  bool isDescriptionValid = true;
   compressImage() async {
     final tempDir = await getTemporaryDirectory();
     final path = tempDir.path;
@@ -167,23 +174,81 @@ class _EditShopState extends State<EditShop> {
     );
   }
 
+  // Future<Us> userShop;
+  @override
+  initState() {
+    super.initState();
+    // getUser();
+  }
+
   getUser() async {
     CurrentUser _user = Provider.of(context, listen: false);
+    var user_Id = await Database().getUserDocId(_user.userUids.first);
+    // UserShopPost shop = UserShopPost();
+    if (user_Id != null) {
+      try {
+        bool success = await _user.getShop(user_Id);
+        _shopNameController.text = _user.postShop.name;
+        _shopDescriptionController.text = _user.postShop.description;
+
+        if (success) {
+          print('success');
+        }
+      } on Exception catch (_) {
+        print(_);
+      }
+    }
+  }
+
+  Future updateShop() async {
+    LocalImageService _imageService =
+        Provider.of<LocalImageService>(context, listen: false);
+    if (_imageService.fileExists) {
+      await _imageService.uploadImage();
+    }
     setState(() {
-      isLoading = true;
+      _shopNameController.text.trim().length < 3 ||
+              _shopNameController.text.isEmpty
+          ? isNameValid = false
+          : isNameValid = true;
+      _shopDescriptionController.text.trim().length > 100
+          ? isDescriptionValid = false
+          : isDescriptionValid = true;
     });
-    var currentUserId = _user.userUids.first;
-    // var doc = await _user.
-    // user =User.fromDocume
+    CurrentUser _user = Provider.of<CurrentUser>(context, listen: false);
+
+    if (isNameValid && isDescriptionValid) {
+      final String userId = await Database().getUserDocId(_user.userUids.first);
+
+      try {
+        _user.postShop.name = _shopDescriptionController.text;
+        _user.postShop.description = _shopDescriptionController.text;
+
+        bool success = await _user.updateShop(userId);
+        if (success) {
+          SnackBar snackBar = SnackBar(
+            content: Text("Shop Updated!"),
+          );
+          _scaffoldKey.currentState.showSnackBar(snackBar);
+        }
+      } on Exception catch (_) {
+        print(_);
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       backgroundColor: Colors.white,
       appBar: PreferredSize(
-          preferredSize: Size(double.infinity, 83),
-          child: Center(child: AppbarShop(isEdit: true, shopName: "Edit Shop",))),
+          preferredSize: Size(double.infinity, 105),
+          child: Center(
+              child: AppbarShop(
+            isEdit: true,
+            shopName: "Edit Shop",
+          ))),
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -205,12 +270,12 @@ class _EditShopState extends State<EditShop> {
               height: 25,
             ),
             ShopName(
-              
-              onChanged: (value) {
-                setState(() {
-                  editShopName = value;
-                });
-              },
+              shopController: _shopNameController,
+              errorText: isNameValid ? null : 'Shop Name too short',
+              // onChanged: (value) {
+              //   setState(() {
+              //     editShopName = value;
+              //   });
             ),
             SizedBox(
               height: 25,
@@ -220,9 +285,12 @@ class _EditShopState extends State<EditShop> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 ShopDescription(
-                  onChanged: (value) {
-                    shopDescription = value;
-                  },
+                  descriptionController: _shopDescriptionController,
+                  errorText:
+                      isDescriptionValid ? null : 'Shop Description too long.',
+                  // onChanged: (value) {
+                  //   shopDescription = value;
+                  // },
                 )
               ],
             ),
@@ -316,15 +384,19 @@ class _EditShopState extends State<EditShop> {
               height: 20,
             ),
             SetCustomoperatingHours(
+                label: "Set Custom Operating Hours",
                 onChanged: (value) {
                   setState(() {
                     _setOperatingHours = value;
                   });
                 },
                 value: _setOperatingHours),
-            ShopStatus(),
             SizedBox(
               height: 10,
+            ),
+            ShopStatus(),
+            SizedBox(
+              height: 20,
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -377,7 +449,9 @@ class _EditShopState extends State<EditShop> {
                           fontSize: 14,
                           fontWeight: FontWeight.w700),
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      updateShop();
+                    },
                   ),
                 ),
               ],

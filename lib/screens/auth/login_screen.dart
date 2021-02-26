@@ -120,7 +120,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // resizeToAvoidBottomPadding: false,
+      resizeToAvoidBottomPadding: false,
       body: SafeArea(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -156,6 +156,7 @@ class _LoginScreenState extends State<LoginScreen> {
             SingleChildScrollView(
               child: Container(
                 padding: EdgeInsets.all(40.0),
+                width: double.infinity,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [

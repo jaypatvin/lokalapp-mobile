@@ -7,6 +7,7 @@ import '../models/lokal_user.dart';
 
 final usersRef = FirebaseFirestore.instance.collection("users");
 final inviteRef = FirebaseFirestore.instance.collection("invites");
+final shopRef = FirebaseFirestore.instance.collection("shops");
 final Reference storageRef = FirebaseStorage.instance.ref();
 
 class Database {
@@ -24,6 +25,36 @@ class Database {
       debugPrint(e);
     }
     return data;
+  }
+
+  Future getShopInfo(String uid) async {
+    List data;
+    try {
+      final String documentId = await getUserDocId(uid);
+      if (documentId != null && documentId.isNotEmpty) {
+        QuerySnapshot _docSnapshot =
+            await shopRef.where('user_id', isEqualTo: documentId).get();
+        if (_docSnapshot != null) {
+          data = _docSnapshot.docs;
+        }
+      }
+    } catch (e) {
+      debugPrint(e);
+    }
+    return data;
+  }
+
+  Future<String> updateShopById(
+      LokalUser user, String key, dynamic value) async {
+    String retVal = "error";
+    try {
+      final String docId = await getUserDocId(user.userUids.first);
+      await shopRef.doc(docId).update({});
+      retVal = "success";
+    } catch (e) {
+      retVal = e.toString();
+    }
+    return retVal;
   }
 
   Future<String> getUserDocId(String userUid) async {

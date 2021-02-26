@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
-import 'welcome_screen.dart';
-import '../states/current_user.dart';
+import 'package:lokalapp/states/current_user.dart';
 import 'package:provider/provider.dart';
+
+import 'welcome_screen.dart';
+
+// import '../welcome_screen.dart';
 
 class Profile extends StatefulWidget {
   @override

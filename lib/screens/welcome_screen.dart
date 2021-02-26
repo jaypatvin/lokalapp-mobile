@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-
 import '../widgets/rounded_button.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
@@ -132,13 +131,14 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   Widget buildDemoScreen() {
     return Column(children: [
       Container(
+        height: MediaQuery.of(context).size.height / 3,
         child: Center(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               SizedBox(
-                height: 100.0,
+                height: MediaQuery.of(context).size.height / 3,
                 child: Image.network(
                   "https://upload.wikimedia.org/wikipedia/commons/f/f8/01_Icon-Community%402x.png",
                   fit: BoxFit.contain,
@@ -152,7 +152,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                 style: TextStyle(
                     color: Color(0xFF103045),
                     fontWeight: FontWeight.w900,
-                    fontSize: 30.0),
+                    fontSize: 28.0),
               ),
               SizedBox(
                 height: 20.0,
@@ -173,43 +173,41 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   Widget buildScreen() {
     return Column(children: [
       Container(
-        child: Center(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SizedBox(
-                height: 110.0,
-                child: Image.asset(
-                  "assets/Lokalv2.png",
-                  fit: BoxFit.contain,
-                ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SizedBox(
+              height: 110.0,
+              child: Image.asset(
+                "assets/Lokalv2.png",
+                fit: BoxFit.contain,
               ),
-              SizedBox(
-                height: 22.0,
-              ),
-              Text(
-                "Welcome to Lokal",
-                style: TextStyle(
-                    color: Color(0xFF103045),
-                    fontWeight: FontWeight.bold,
-                    fontFamily: "GoldplayBold",
-                    fontSize: 30.0),
-              ),
-              SizedBox(
-                height: 20.0,
-              ),
-              Text(
-                "This is a subhead about the Lokal app.",
-                style: TextStyle(
-                    fontSize: 20.0,
-                    fontFamily: "Goldplay",
-                    fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: 26.0),
-              buildDots()
-            ],
-          ),
+            ),
+            SizedBox(
+              height: 22.0,
+            ),
+            Text(
+              "Welcome to Lokal",
+              style: TextStyle(
+                  color: Color(0xFF103045),
+                  fontWeight: FontWeight.bold,
+                  fontFamily: "GoldplayBold",
+                  fontSize: 30.0),
+            ),
+            SizedBox(
+              height: 20.0,
+            ),
+            Text(
+              "This is a subhead about the Lokal app.",
+              style: TextStyle(
+                  fontSize: 18.0,
+                  fontFamily: "Goldplay",
+                  fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 26.0),
+            buildDots()
+          ],
         ),
       ),
     ]);
@@ -251,20 +249,44 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Scaffold(
-        backgroundColor: Color(0xFFFFC700),
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            slider(),
-            SizedBox(
-              height: 25.0,
-            ),
-            signIn(),
-            register()
-          ],
-        ),
+        child: Scaffold(
+      resizeToAvoidBottomPadding: false,
+      resizeToAvoidBottomInset: true,
+      backgroundColor: Color(0xFFFFC700),
+      body: SafeArea(
+        child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Flexible(
+                flex: 4,
+                child: Container(
+                  width: MediaQuery.of(context).size.width,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      slider(),
+                      SingleChildScrollView(
+                        child: Container(
+                          padding: EdgeInsets.only(bottom: 50),
+                          alignment: Alignment.topCenter,
+                          child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                signIn(),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                register()
+                              ]),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            ]),
       ),
-    );
+    ));
   }
 }
