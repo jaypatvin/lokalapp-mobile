@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 class AppbarShop extends StatefulWidget {
   final bool isEdit;
   final String shopName;
@@ -8,11 +9,10 @@ class AppbarShop extends StatefulWidget {
 }
 
 class _AppbarShopState extends State<AppbarShop> {
-
   @override
   Widget build(BuildContext context) {
     return PreferredSize(
-      preferredSize: Size(double.infinity, 80),
+      preferredSize: Size(double.infinity, 83),
       child: Container(
         decoration: BoxDecoration(
           boxShadow: [
@@ -24,7 +24,7 @@ class _AppbarShopState extends State<AppbarShop> {
         child: Container(
           decoration: BoxDecoration(color: Color(0xff57183f)),
           child: Container(
-            margin: const EdgeInsets.fromLTRB(10, 70, 0, 0),
+            margin: const EdgeInsets.fromLTRB(20, 70, 0, 0),
             child: Column(
               children: [
                 Row(
@@ -50,13 +50,13 @@ class _AppbarShopState extends State<AppbarShop> {
                       children: [
                         Text(
                           widget.shopName,
+                          textAlign: TextAlign.center,
                           // widget.isEdit ?  "Edit Shop" : "Add Shop",
                           style: TextStyle(
                               color: Color(0xFFFFC700),
                               fontFamily: "GoldplayAltBold",
                               fontSize: 20,
-                              fontWeight: FontWeight.w600
-                              ),
+                              fontWeight: FontWeight.w600),
                         )
                       ],
                     )
@@ -70,5 +70,3 @@ class _AppbarShopState extends State<AppbarShop> {
     );
   }
 }
-
-

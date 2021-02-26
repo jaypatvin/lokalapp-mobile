@@ -1,9 +1,10 @@
 import 'dart:convert';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 
-class UserShopPost extends ChangeNotifier{
+class UserShopPost extends ChangeNotifier {
   String name;
   String userId;
   String communityId;
@@ -14,10 +15,8 @@ class UserShopPost extends ChangeNotifier{
   String opening;
   String closing;
   bool useCustomHours;
-  Map <String, String>customHours;
+  Map<String, String> customHours;
   String status;
-
-
 
   UserShopPost({
     this.closing,
@@ -74,4 +73,21 @@ class UserShopPost extends ChangeNotifier{
 
   factory UserShopPost.fromJson(String source) =>
       UserShopPost.fromMap(json.decode(source));
+
+  factory UserShopPost.fromDocument(DocumentSnapshot doc) {
+    return UserShopPost(
+      userId: doc.data()['user_id'],
+      communityId: doc.data()['community_id'],
+      name: doc.data()['name'],
+      description: doc.data()['description'],
+      profilePhoto: doc.data()['profile_photo'],
+      coverPhoto: doc.data()['cover_photo'],
+      isClosed: doc.data()['is_closed'],
+      opening: doc.data()['opening'],
+      closing: doc.data()['closing'],
+      useCustomHours: doc.data()['use_custom_hours'],
+      customHours: doc.data()['custom_hours'],
+      status: doc.data()['status'],
+    );
+  }
 }

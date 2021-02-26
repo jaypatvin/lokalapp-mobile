@@ -1,12 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:lokalapp/screens/profile_screens/profile.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 
 import 'activity.dart';
 import 'chat.dart';
 import 'discover.dart';
 import 'home.dart';
-import 'profile.dart';
+// import 'profile.dart';
 
 class BottomNavigation extends StatefulWidget {
   @override
@@ -26,7 +27,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
         Discover(),
         Chat(),
         Activity(),
-        Profile(),
+        ProfileShopMain(),
       ];
     }
 

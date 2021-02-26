@@ -6,23 +6,26 @@ import 'profile_shop.dart';
 import '../../states/current_user.dart';
 import 'package:provider/provider.dart';
 
-class Profile extends StatefulWidget {
+class ProfileShopMain extends StatefulWidget {
   final Map<String, String> account;
-  Profile({Key key, @required this.account}) : super(key: key);
+  ProfileShopMain({Key key, @required this.account}) : super(key: key);
 
   @override
-  _ProfileState createState() => _ProfileState();
+  _ProfileShopMainState createState() => _ProfileShopMainState();
 }
 
-class _ProfileState extends State<Profile> {
+class _ProfileShopMainState extends State<ProfileShopMain> {
   Padding buildIconSettings() {
     return Padding(
-          
-          // color: Colors.white,
-          // onPressed: () {
-          //   // Navigator.push(context, MaterialPageRoute(builder: (context) => EditShop()));
-          // },
-        );
+        padding: const EdgeInsets.only(left: 5),
+        child: IconButton(
+          icon: Icon(
+            Icons.settings,
+            size: 38,
+          ),
+          color: Colors.white,
+          onPressed: () {},
+        ));
   }
 
   Row buildIconMore() {
