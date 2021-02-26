@@ -64,6 +64,26 @@ class CurrentUser extends ChangeNotifier {
     return false;
   }
 
+  Future<bool> updateUser() async {
+    if (_user.id == null || _user.id.isEmpty) {
+      _user.id = await _db.getUserDocId(_user.userUids.first);
+    }
+    Map<String, dynamic> updateData = _user.toMap();
+    http.Response response = await _lokalService.updateUserData(updateData);
+    if (response.statusCode != 200) {
+      return false;
+    }
+
+    Map receivedData = json.decode(response.body);
+
+    if (receivedData["status"] == "ok") {
+      _user = LokalUser.fromMap(receivedData);
+      return true;
+    }
+
+    return false;
+  }
+
   Future<bool> createShop() async {
     postShop.communityId = _user.communityId;
     var _postData = postShop.toMap();
@@ -208,28 +228,48 @@ class CurrentUser extends ChangeNotifier {
   }
 
   Future<bool> verifyUser() async {
-    String status =
-        await _db.updateUser(_user, "registration", _user.registration.toMap());
-    return status == "success";
+    if (_user.id == null && _user.id.isEmpty) {
+      _user.id = await _db.getUserDocId(_user.userUids.first);
+    }
+
+    http.Response response = await _lokalService.updateUserData(
+        {"id": _user.id, "registration": _user.registration.toMap()});
+    if (response.statusCode != 200) return false;
+
+    Map data = json.decode(response.body);
+    return data["status"] == "ok";
   }
 
   Future<String> onStartUp() async {
     String retVal = "error";
     try {
       User _firebaseUser = _auth.currentUser;
-
-      Map map = await _db.getUserInfo(_firebaseUser.uid);
+      Map map = await _getUserInfo(_firebaseUser.uid);
 
       if (map != null) {
         this._user = LokalUser.fromMap(map);
         await _getStreamLogin();
-        print(_user);
         retVal = "success";
       }
     } catch (e) {
       print(e);
     }
     return retVal;
+  }
+
+  Future<Map> _getUserInfo(String uid) async {
+    String docId = await _db.getUserDocId(uid);
+    if (docId != null && docId.isNotEmpty) {
+      http.Response response = await _lokalService.getUserData(docId);
+      if (response.statusCode != 200) return null;
+
+      Map data = json.decode(response.body);
+      if (data["status"] == "ok") {
+        data["id"] = docId;
+        return data;
+      }
+    }
+    return null;
   }
 
   Future<String> onSignOut() async {
@@ -274,11 +314,10 @@ class CurrentUser extends ChangeNotifier {
     try {
       UserCredential _authResult = await _auth.signInWithEmailAndPassword(
           email: email, password: password);
-
-      var map = await _db.getUserInfo(_authResult.user.uid);
+      var map = await _getUserInfo(_authResult.user.uid);
 
       if (map != null) {
-        this._user = LokalUser.fromMap(map);
+        this._user = LokalUser.fromMap(map["data"]);
         retVal = authStatus.Success;
         await _getStreamLogin();
       } else {
@@ -342,10 +381,10 @@ class CurrentUser extends ChangeNotifier {
     authStatus retVal = authStatus.Error;
     try {
       UserCredential _authResult = await _auth.signInWithCredential(credential);
-      var map = await _db.getUserInfo(_authResult.user.uid);
+      var map = await _getUserInfo(_authResult.user.uid);
 
       if (map != null) {
-        _user = LokalUser.fromMap(map);
+        _user = LokalUser.fromMap(map["data"]);
         retVal = authStatus.Success;
         await _getStreamLogin();
       } else {
