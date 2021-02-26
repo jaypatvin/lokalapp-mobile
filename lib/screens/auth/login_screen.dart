@@ -120,7 +120,8 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomPadding: false,
+      // resizeToAvoidBottomPadding: false,
+      resizeToAvoidBottomInset: false, // added as above is deprecated
       body: SafeArea(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

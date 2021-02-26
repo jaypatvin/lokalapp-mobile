@@ -212,7 +212,8 @@ class _AddShopState extends State<AddShop> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      resizeToAvoidBottomPadding: false,
+      // resizeToAvoidBottomPadding: false,
+      resizeToAvoidBottomInset: false, // added as above is deprecated
       appBar: PreferredSize(
           preferredSize: Size(double.infinity, 83),
           child: Center(

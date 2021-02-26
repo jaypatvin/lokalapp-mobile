@@ -101,6 +101,7 @@ class LokalApiService {
     );
 
     return response.body;
+  }
 
   Future<http.Response> getAllComunities() async {
     return await http.get("$_baseUrl/community");
