@@ -85,9 +85,13 @@ class CurrentUser extends ChangeNotifier {
   Future<bool> createShop() async {
     postShop.communityId = _user.communityId;
     var _postData = postShop.toMap();
-    String jsonDecode = await LokalApiService()
+    var response = await LokalApiService()
         .createStore(data: _postData, idToken: _userIdToken);
-    Map data = json.decode(jsonDecode);
+
+    if (response.statusCode != 200) {
+      return false;
+    }
+    Map data = json.decode(response.body);
 
     if (data["status"] == "ok") {
       _user = LokalUser.fromMap(data["data"]);
@@ -98,8 +102,13 @@ class CurrentUser extends ChangeNotifier {
   }
 
   Future<bool> getShop(String uid) async {
-    dynamic jsonDecode = await LokalApiService().getShopByUserId(uid);
-    Map data = json.decode(jsonDecode);
+    http.Response response = await LokalApiService()
+        .getShopByUserId(userId: uid, idToken: _userIdToken);
+
+    if (response.statusCode != 200) {
+      return false;
+    }
+    Map data = json.decode(response.body);
 
     if (data["status"] == "ok") {
       postShop = UserShopPost.fromMap(data['data']);
@@ -109,11 +118,17 @@ class CurrentUser extends ChangeNotifier {
     return false;
   }
 
-  Future updateShop(String uid) async {
+  Future<bool> updateShop(String uid) async {
     postShop.communityId = _user.communityId;
     var _postData = postShop.toMap();
-    String jsonDecode = await LokalApiService().updateStore(_postData, uid);
-    Map data = json.decode(jsonDecode);
+    var response = await LokalApiService()
+        .updateStore(data: _postData, idToken: _userIdToken);
+
+    if (response.statusCode != 200) {
+      return false;
+    }
+
+    Map data = json.decode(response.body);
 
     if (data["status"] == "ok") {
       _user = LokalUser.fromMap(data["data"]);
@@ -126,7 +141,8 @@ class CurrentUser extends ChangeNotifier {
   }
 
   Future _getStreamLogin() async {
-    var creds = await GetStreamApiService().login(_user.userUids.first);
+    var creds = await GetStreamApiService()
+        .login(userId: _user.userUids.first, idToken: _userIdToken);
     this._getStreamAccount = {
       'user': _user.userUids.first,
       'authToken': creds['authToken'],
@@ -160,7 +176,10 @@ class CurrentUser extends ChangeNotifier {
   Future<bool> claimInviteCode() async {
     String userDocId = await Database().getUserDocId(_postBody["user_uid"]);
     http.Response response = await LokalApiService().claimInviteCode(
-        id: userDocId, code: _inviteCode, authToken: _userIdToken);
+        userId: userDocId,
+        code: _inviteCode,
+        idToken: _userIdToken,
+        email: _postBody['email']);
 
     if (response.statusCode != 200) {
       return false;
@@ -244,8 +263,8 @@ class CurrentUser extends ChangeNotifier {
   Future<Map> _getUserInfo(String uid) async {
     String docId = await Database().getUserDocId(uid);
     if (docId != null && docId.isNotEmpty) {
-      http.Response response =
-          await LokalApiService().getUserData(id: docId, idToken: _userIdToken);
+      http.Response response = await LokalApiService()
+          .getUserData(userId: docId, idToken: _userIdToken);
       if (response.statusCode != 200) return null;
 
       Map data = json.decode(response.body);
@@ -294,6 +313,7 @@ class CurrentUser extends ChangeNotifier {
         retVal = FirebaseAuthStatus.UserNotFound;
         _postBody["user_uid"] = user.uid;
         _postBody["email"] = user.email;
+        _userIdToken = user.idToken;
       }
     } catch (e) {
       if (e.code == "email-already-in-use") {

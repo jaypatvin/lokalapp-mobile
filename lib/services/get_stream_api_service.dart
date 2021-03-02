@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 
@@ -8,9 +9,10 @@ class GetStreamApiService {
       'https://us-central1-lokal-1baac.cloudfunctions.net/api';
   static const platform = const MethodChannel('io.getstream/backend');
 
-  Future<Map> login(String user) async {
-    var authResponse =
-        await http.post('$_baseUrl/v1/stream/users', body: {'sender': user});
+  Future<Map> login({@required String userId, @required String idToken}) async {
+    var authResponse = await http.post('$_baseUrl/v1/stream/users',
+        headers: {"Authorization": "Bearer $idToken"},
+        body: {'sender': userId});
     var authToken = json.decode(authResponse.body)['authToken'];
     var feedResponse = await http.post(
         '$_baseUrl/v1/stream/stream-feed-credentials',
@@ -33,10 +35,9 @@ class GetStreamApiService {
     });
   }
 
-
-  Future<dynamic> postLikes(Map account, String likes)async{
-    return await platform.invokeListMethod<bool>('handleLikePost',{
-      'user':account['user'],
+  Future<dynamic> postLikes(Map account, String likes) async {
+    return await platform.invokeListMethod<bool>('handleLikePost', {
+      'user': account['user'],
       'token': account['feedToken'],
       'likes': likes
     });
@@ -45,7 +46,7 @@ class GetStreamApiService {
   Future<dynamic> getActivities(Map account) async {
     var result = await platform.invokeMethod<String>('getActivities',
         {'user': account['user'], 'token': account['feedToken']});
-       
+
     return json.decode(result);
   }
 
