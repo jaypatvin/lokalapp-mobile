@@ -1,31 +1,27 @@
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import '../models/user_shop_post.dart';
-import '../models/lokal_user.dart';
-import '../services/database.dart';
-import '../services/get_stream_api_service.dart';
-import '../services/lokal_api_service.dart';
 import 'package:http/http.dart' as http;
 
-enum authStatus { Success, UserNotFound, PasswordNotValid, Error }
+import '../models/lokal_user.dart';
+import '../models/user_shop_post.dart';
+import '../services/database.dart';
+import '../services/firebase_auth_service.dart';
+import '../services/get_stream_api_service.dart';
+import '../services/lokal_api_service.dart';
+
+enum FirebaseAuthStatus { Success, UserNotFound, PasswordNotValid, Error }
 
 class CurrentUser extends ChangeNotifier {
-  final Database _db = Database();
-  final LokalApiService _lokalService = LokalApiService();
-  final GetStreamApiService _getStreamApi = GetStreamApiService();
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-
+  //TODO: REFACTOR (Single-Responsibility Principle)
   LokalUser _user;
   Map<String, String> _postBody = Map();
   Map<String, String> _postShop = Map();
   UserShopPost postShop = UserShopPost();
   Map<String, String> _getStreamAccount = Map();
   String _inviteCode;
+  String _userIdToken;
 
   Map get getStreamAccount => _getStreamAccount;
   bool get isAuthenticated =>
@@ -47,8 +43,9 @@ class CurrentUser extends ChangeNotifier {
   UserRoles get roles => _user.roles;
   Timestamp get createdAt => _user.createdAt;
 
-  Future<bool> createUser() async {
-    http.Response response = await _lokalService.createUser(_postBody);
+  Future<bool> register() async {
+    http.Response response = await LokalApiService()
+        .createUser(data: _postBody, idToken: _userIdToken);
     if (response.statusCode != 200) {
       return false;
     }
@@ -64,12 +61,13 @@ class CurrentUser extends ChangeNotifier {
     return false;
   }
 
-  Future<bool> updateUser() async {
+  Future<bool> update() async {
     if (_user.id == null || _user.id.isEmpty) {
-      _user.id = await _db.getUserDocId(_user.userUids.first);
+      _user.id = await Database().getUserDocId(_user.userUids.first);
     }
     Map<String, dynamic> updateData = _user.toMap();
-    http.Response response = await _lokalService.updateUserData(updateData);
+    http.Response response = await LokalApiService()
+        .updateUserData(data: updateData, idToken: _userIdToken);
     if (response.statusCode != 200) {
       return false;
     }
@@ -87,8 +85,13 @@ class CurrentUser extends ChangeNotifier {
   Future<bool> createShop() async {
     postShop.communityId = _user.communityId;
     var _postData = postShop.toMap();
-    String jsonDecode = await _lokalService.createStore(_postData);
-    Map data = json.decode(jsonDecode);
+    var response = await LokalApiService()
+        .createStore(data: _postData, idToken: _userIdToken);
+
+    if (response.statusCode != 200) {
+      return false;
+    }
+    Map data = json.decode(response.body);
 
     if (data["status"] == "ok") {
       _user = LokalUser.fromMap(data["data"]);
@@ -99,8 +102,13 @@ class CurrentUser extends ChangeNotifier {
   }
 
   Future<bool> getShop(String uid) async {
-    dynamic jsonDecode = await _lokalService.getShopByUserId(uid);
-    Map data = json.decode(jsonDecode);
+    http.Response response = await LokalApiService()
+        .getShopByUserId(userId: uid, idToken: _userIdToken);
+
+    if (response.statusCode != 200) {
+      return false;
+    }
+    Map data = json.decode(response.body);
 
     if (data["status"] == "ok") {
       postShop = UserShopPost.fromMap(data['data']);
@@ -110,11 +118,17 @@ class CurrentUser extends ChangeNotifier {
     return false;
   }
 
-  Future updateShop(String uid) async {
+  Future<bool> updateShop(String uid) async {
     postShop.communityId = _user.communityId;
     var _postData = postShop.toMap();
-    String jsonDecode = await _lokalService.updateStore(_postData, uid);
-    Map data = json.decode(jsonDecode);
+    var response = await LokalApiService()
+        .updateStore(data: _postData, idToken: _userIdToken);
+
+    if (response.statusCode != 200) {
+      return false;
+    }
+
+    Map data = json.decode(response.body);
 
     if (data["status"] == "ok") {
       _user = LokalUser.fromMap(data["data"]);
@@ -127,7 +141,8 @@ class CurrentUser extends ChangeNotifier {
   }
 
   Future _getStreamLogin() async {
-    var creds = await _getStreamApi.login(_user.userUids.first);
+    var creds = await GetStreamApiService()
+        .login(userId: _user.userUids.first, idToken: _userIdToken);
     this._getStreamAccount = {
       'user': _user.userUids.first,
       'authToken': creds['authToken'],
@@ -136,15 +151,16 @@ class CurrentUser extends ChangeNotifier {
   }
 
   Future<List<dynamic>> getTimeline() async {
-    return await _getStreamApi.getTimeline(_getStreamAccount);
+    return await GetStreamApiService().getTimeline(_getStreamAccount);
   }
 
   Future<bool> postMessage(String message) async {
-    return await _getStreamApi.postMessage(getStreamAccount, message);
+    return await GetStreamApiService().postMessage(getStreamAccount, message);
   }
 
   Future<bool> checkInviteCode(String inviteCode) async {
-    http.Response response = await _lokalService.checkInviteCode(inviteCode);
+    http.Response response = await LokalApiService()
+        .checkInviteCode(code: inviteCode, idToken: _userIdToken);
     if (response.statusCode != 200) {
       return false;
     }
@@ -158,9 +174,12 @@ class CurrentUser extends ChangeNotifier {
   }
 
   Future<bool> claimInviteCode() async {
-    String userDocId = await _db.getUserDocId(_postBody["user_uid"]);
-    http.Response response =
-        await _lokalService.claimInviteCode(userDocId, _inviteCode);
+    String userDocId = await Database().getUserDocId(_postBody["user_uid"]);
+    http.Response response = await LokalApiService().claimInviteCode(
+        userId: userDocId,
+        code: _inviteCode,
+        idToken: _userIdToken,
+        email: _postBody['email']);
 
     if (response.statusCode != 200) {
       return false;
@@ -229,38 +248,23 @@ class CurrentUser extends ChangeNotifier {
 
   Future<bool> verifyUser() async {
     if (_user.id == null && _user.id.isEmpty) {
-      _user.id = await _db.getUserDocId(_user.userUids.first);
+      _user.id = await Database().getUserDocId(_user.userUids.first);
     }
 
-    http.Response response = await _lokalService.updateUserData(
-        {"id": _user.id, "registration": _user.registration.toMap()});
+    http.Response response = await LokalApiService().updateUserData(
+        data: {"id": _user.id, "registration": _user.registration.toMap()},
+        idToken: _userIdToken);
     if (response.statusCode != 200) return false;
 
     Map data = json.decode(response.body);
     return data["status"] == "ok";
   }
 
-  Future<String> onStartUp() async {
-    String retVal = "error";
-    try {
-      User _firebaseUser = _auth.currentUser;
-      Map map = await _getUserInfo(_firebaseUser.uid);
-
-      if (map != null) {
-        this._user = LokalUser.fromMap(map);
-        await _getStreamLogin();
-        retVal = "success";
-      }
-    } catch (e) {
-      print(e);
-    }
-    return retVal;
-  }
-
   Future<Map> _getUserInfo(String uid) async {
-    String docId = await _db.getUserDocId(uid);
+    String docId = await Database().getUserDocId(uid);
     if (docId != null && docId.isNotEmpty) {
-      http.Response response = await _lokalService.getUserData(docId);
+      http.Response response = await LokalApiService()
+          .getUserData(userId: docId, idToken: _userIdToken);
       if (response.statusCode != 200) return null;
 
       Map data = json.decode(response.body);
@@ -272,10 +276,23 @@ class CurrentUser extends ChangeNotifier {
     return null;
   }
 
+  // Login methods:
+
+  Future<String> onStartUp() async {
+    FirebaseAuthStatus retVal = FirebaseAuthStatus.Error;
+    try {
+      final user = await FirebaseAuthService().startUp();
+      retVal = await _validateLogin(user);
+    } catch (e) {
+      //TODO: do something with error
+    }
+    return retVal == FirebaseAuthStatus.Success ? "success" : "error";
+  }
+
   Future<String> onSignOut() async {
     String retVal = "error";
     try {
-      await _auth.signOut();
+      await FirebaseAuthService().signOut();
       _user = LokalUser();
       retVal = "success";
     } catch (e) {
@@ -286,21 +303,19 @@ class CurrentUser extends ChangeNotifier {
     return retVal;
   }
 
-  Future<authStatus> signUpUser(String email, String password) async {
-    authStatus retVal = authStatus.Error;
+  Future<FirebaseAuthStatus> signUpUser(String email, String password) async {
+    FirebaseAuthStatus retVal = FirebaseAuthStatus.Error;
     try {
-      UserCredential _authResult = await _auth.createUserWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
+      final user =
+          await FirebaseAuthService().signUp(email: email, password: password);
 
-      if (_authResult != null) {
-        retVal = authStatus.UserNotFound;
-        _postBody["user_uid"] = _authResult.user.uid;
-        _postBody["email"] = email;
+      if (user != null) {
+        retVal = FirebaseAuthStatus.UserNotFound;
+        _postBody["user_uid"] = user.uid;
+        _postBody["email"] = user.email;
+        _userIdToken = user.idToken;
       }
     } catch (e) {
-      debugPrint(e.code);
       if (e.code == "email-already-in-use") {
         retVal = await loginUserWithEmail(email, password);
       }
@@ -308,93 +323,69 @@ class CurrentUser extends ChangeNotifier {
     return retVal;
   }
 
-  Future<authStatus> loginUserWithEmail(String email, String password) async {
-    authStatus retVal = authStatus.Error;
+  Future<FirebaseAuthStatus> loginUserWithEmail(
+      String email, String password) async {
+    FirebaseAuthStatus retVal = FirebaseAuthStatus.Error;
 
     try {
-      UserCredential _authResult = await _auth.signInWithEmailAndPassword(
-          email: email, password: password);
-      var map = await _getUserInfo(_authResult.user.uid);
-
-      if (map != null) {
-        this._user = LokalUser.fromMap(map["data"]);
-        retVal = authStatus.Success;
-        await _getStreamLogin();
-      } else {
-        retVal = authStatus.UserNotFound;
-        _postBody["user_uid"] = _authResult.user.uid;
-        _postBody["email"] = email;
-      }
+      final user = await FirebaseAuthService()
+          .signInWithEmail(email: email, password: password);
+      retVal = await _validateLogin(user);
     } catch (e) {
       switch (e.code) {
         case "invalid-email":
-          retVal = authStatus.UserNotFound;
+          retVal = FirebaseAuthStatus.UserNotFound;
           break;
         case "wrong-password":
-          retVal = authStatus.PasswordNotValid;
+          retVal = FirebaseAuthStatus.PasswordNotValid;
           break;
         case "user-not-found":
-          retVal = authStatus.UserNotFound;
+          retVal = FirebaseAuthStatus.UserNotFound;
           break;
         default:
-          retVal = authStatus.Error;
+          retVal = FirebaseAuthStatus.Error;
       }
     }
     return retVal;
   }
 
-  Future<authStatus> loginUserWithGoogle() async {
-    authStatus retVal = authStatus.Error;
-    GoogleSignIn _googleSignIn = GoogleSignIn(
-      scopes: [
-        'email',
-        'https://www.googleapis.com/auth/contacts.readonly',
-      ],
-    );
+  Future<FirebaseAuthStatus> loginUserWithGoogle() async {
+    FirebaseAuthStatus retVal = FirebaseAuthStatus.Error;
     try {
-      GoogleSignInAccount _googleUser = await _googleSignIn.signIn();
-      GoogleSignInAuthentication _googleAuth = await _googleUser.authentication;
-      final AuthCredential credential = GoogleAuthProvider.credential(
-          idToken: _googleAuth.idToken, accessToken: _googleAuth.accessToken);
-
-      retVal = await _signInWithCredential(credential);
+      final user = await FirebaseAuthService().signInWithGoogle();
+      retVal = await _validateLogin(user);
     } catch (e) {
-      debugPrint(e);
+      //TODO: do something with error
     }
     return retVal;
   }
 
-  Future<authStatus> loginUserWithFacebook() async {
-    authStatus retVal = authStatus.Error;
+  Future<FirebaseAuthStatus> loginUserWithFacebook() async {
+    FirebaseAuthStatus retVal = FirebaseAuthStatus.Error;
     try {
-      final AccessToken accessToken = await FacebookAuth.instance.login();
-      final OAuthCredential credential =
-          FacebookAuthProvider.credential(accessToken.token);
-      retVal = await _signInWithCredential(credential);
+      final user = await FirebaseAuthService().signInWithFacebook();
+      retVal = await _validateLogin(user);
     } catch (e) {
-      debugPrint(e);
+      //TODO: do something with error
     }
     return retVal;
   }
 
-  Future<authStatus> _signInWithCredential(AuthCredential credential) async {
-    authStatus retVal = authStatus.Error;
-    try {
-      UserCredential _authResult = await _auth.signInWithCredential(credential);
-      var map = await _getUserInfo(_authResult.user.uid);
+  Future<FirebaseAuthStatus> _validateLogin(FirebaseUser user) async {
+    _userIdToken = user.idToken;
+    FirebaseAuthStatus retVal = FirebaseAuthStatus.Error;
+    Map map = await _getUserInfo(user.uid);
 
-      if (map != null) {
-        _user = LokalUser.fromMap(map["data"]);
-        retVal = authStatus.Success;
-        await _getStreamLogin();
-      } else {
-        _postBody["user_uid"] = _authResult.user.uid;
-        _postBody["email"] = _authResult.user.email;
-        retVal = authStatus.UserNotFound;
-      }
-    } catch (e) {
-      debugPrint(e);
+    if (map != null) {
+      _user = LokalUser.fromMap(map["data"]);
+      retVal = FirebaseAuthStatus.Success;
+      await _getStreamLogin();
+    } else {
+      _postBody["user_uid"] = user.uid;
+      _postBody["email"] = user.email;
+      retVal = FirebaseAuthStatus.UserNotFound;
     }
+
     return retVal;
   }
 }

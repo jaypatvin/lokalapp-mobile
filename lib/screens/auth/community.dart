@@ -24,7 +24,7 @@ class _CommunityState extends State<Community> {
       {@required LoginType type, String email, String password}) async {
     CurrentUser _user = Provider.of<CurrentUser>(context, listen: false);
     try {
-      authStatus _authStatus;
+      FirebaseAuthStatus _authStatus;
 
       switch (type) {
         case LoginType.email:
@@ -38,10 +38,10 @@ class _CommunityState extends State<Community> {
           break;
         default:
       }
-      if (_authStatus == authStatus.UserNotFound) {
+      if (_authStatus == FirebaseAuthStatus.UserNotFound) {
         Navigator.push(context,
             MaterialPageRoute(builder: (context) => ProfileRegistration()));
-      } else if (_authStatus == authStatus.Success) {
+      } else if (_authStatus == FirebaseAuthStatus.Success) {
         Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(builder: (context) => PersistentBottomNavBar()),

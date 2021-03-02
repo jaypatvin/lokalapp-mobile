@@ -27,7 +27,7 @@ class _LoginScreenState extends State<LoginScreen> {
       {@required LoginType type, String email, String password}) async {
     CurrentUser _users = Provider.of<CurrentUser>(context, listen: false);
     try {
-      authStatus _authStatus;
+      FirebaseAuthStatus _authStatus;
 
       switch (type) {
         case LoginType.email:
@@ -41,12 +41,12 @@ class _LoginScreenState extends State<LoginScreen> {
           break;
         default:
       }
-      if (_authStatus == authStatus.Success) {
+      if (_authStatus == FirebaseAuthStatus.Success) {
         Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(builder: (context) => BottomNavigation()),
             (route) => false);
-      } else if (_authStatus == authStatus.UserNotFound) {
+      } else if (_authStatus == FirebaseAuthStatus.UserNotFound) {
         Navigator.push(
             context, MaterialPageRoute(builder: (context) => InvitePage()));
       }
