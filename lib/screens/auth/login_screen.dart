@@ -121,6 +121,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       // resizeToAvoidBottomPadding: false,
+      resizeToAvoidBottomInset: false, // added as above is deprecated
       body: SafeArea(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -156,6 +157,7 @@ class _LoginScreenState extends State<LoginScreen> {
             SingleChildScrollView(
               child: Container(
                 padding: EdgeInsets.all(40.0),
+                width: double.infinity,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [

@@ -17,6 +17,7 @@ class CurrentUser extends ChangeNotifier {
   //TODO: REFACTOR (Single-Responsibility Principle)
   LokalUser _user;
   Map<String, String> _postBody = Map();
+  Map<String, String> _postShop = Map();
   UserShopPost postShop = UserShopPost();
   Map<String, String> _getStreamAccount = Map();
   String _inviteCode;
@@ -38,6 +39,7 @@ class CurrentUser extends ChangeNotifier {
   String get status => _user.status;
   UserAddress get address => _user.address;
   UserRegistrationStatus get registrationStatus => _user.registration;
+
   UserRoles get roles => _user.roles;
   Timestamp get createdAt => _user.createdAt;
 
@@ -90,6 +92,34 @@ class CurrentUser extends ChangeNotifier {
     if (data["status"] == "ok") {
       _user = LokalUser.fromMap(data["data"]);
       return true;
+    }
+
+    return false;
+  }
+
+  Future<bool> getShop(String uid) async {
+    dynamic jsonDecode = await LokalApiService().getShopByUserId(uid);
+    Map data = json.decode(jsonDecode);
+
+    if (data["status"] == "ok") {
+      postShop = UserShopPost.fromMap(data['data']);
+      return true;
+    }
+
+    return false;
+  }
+
+  Future updateShop(String uid) async {
+    postShop.communityId = _user.communityId;
+    var _postData = postShop.toMap();
+    String jsonDecode = await LokalApiService().updateStore(_postData, uid);
+    Map data = json.decode(jsonDecode);
+
+    if (data["status"] == "ok") {
+      _user = LokalUser.fromMap(data["data"]);
+      return true;
+    } else {
+      print(data["status"]);
     }
 
     return false;
@@ -152,6 +182,32 @@ class CurrentUser extends ChangeNotifier {
     _postBody["street"] = address ?? _postBody["street"];
     _postBody["community_id"] = communityId ?? _postBody["community_id"];
     _postBody["profile_photo"] = profilePhoto ?? _postBody["profile_photo"];
+  }
+
+  void updatePostShop(
+      {String name,
+      String description,
+      String profilePhoto,
+      String coverPhoto,
+      String isClosed,
+      String opening,
+      String closing,
+      String useCustomHours,
+      String userId,
+      String customHours,
+      String status}) async {
+    _postShop["name"] = name ?? _postShop["name"];
+    _postShop["description"] = description ?? _postShop["description"];
+    _postShop["user_id"] = userId ?? _postShop["user_id"];
+    _postShop["cover_photo"] = coverPhoto ?? _postShop["cover_photo"];
+    _postShop["community_id"] = communityId ?? _postShop["community_id"];
+    _postBody["profile_photo"] = profilePhoto ?? _postBody["profile_photo"];
+    _postShop["custom_hours"] = customHours ?? _postShop["custom_hours"];
+    _postShop["opening"] = opening ?? _postShop["opening"];
+    _postShop["closing"] = closing ?? _postShop["closing"];
+    _postShop["status"] = status ?? _postShop["status"];
+    _postShop["community_id"] = communityId ?? _postShop["community_id"];
+    _postShop["is_closed"] = isClosed ?? _postShop["is_closed"];
   }
 
   void updateUserRegistrationInfo({
