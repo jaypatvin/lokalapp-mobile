@@ -85,14 +85,12 @@ class LokalApiService {
   Future<http.Response> createStore(
       {@required Map data, @required String idToken}) async {
     var body = json.encode(data);
-    var response = await http.post(
-      "$_baseUrl/shops",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer $idToken"
-      },
-      body: body,
-    );
+    var response = await http.post("$_baseUrl/shops",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer $idToken"
+        },
+        body: body);
 
     return response;
   }
@@ -159,5 +157,20 @@ class LokalApiService {
       {@required String communityId, @required String idToken}) async {
     return await http.get("$_baseUrl/community/$communityId/products",
         headers: {"Authorization": "Bearer $idToken"});
+  }
+
+  Future<http.Response> createProduct(
+      {@required Map data, @required String idToken}) async {
+    var body = json.encode(data);
+    var response = await http.post(
+      "$_baseUrl/community",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer $idToken"
+      },
+      body: body,
+    );
+
+    return response;
   }
 }

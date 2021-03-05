@@ -4,13 +4,13 @@ class StoreCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      mainAxisSize: MainAxisSize.max,
+      mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
           height: MediaQuery.of(context).size.height * 2,
-          width: MediaQuery.of(context).size.width * 1,
+          width: MediaQuery.of(context).size.width,
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
@@ -21,25 +21,25 @@ class StoreCard extends StatelessWidget {
                   physics: NeverScrollableScrollPhysics(),
                   itemCount: 6,
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    childAspectRatio: 16.0 / 26.5,
+                    childAspectRatio: 15.0 / 26.5,
                     crossAxisCount: 2,
                   ),
                   itemBuilder: (BuildContext context, int index) {
                     return Padding(
-                      padding: EdgeInsets.all(5),
+                      padding: EdgeInsets.all(1),
                       child: Card(
                         color: Colors.white,
                         semanticContainer: true,
                         clipBehavior: Clip.antiAlias,
                         child: Column(
-                          mainAxisSize: MainAxisSize.max,
+                          mainAxisSize: MainAxisSize.min,
                           children: <Widget>[
                             Row(
                               children: [
                                 Expanded(
                                   child: Container(
                                     height: 200.5,
-                                    width: 100,
+                                    width: 250,
                                     decoration: BoxDecoration(
                                       image: DecorationImage(
                                           image: NetworkImage(

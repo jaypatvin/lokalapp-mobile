@@ -18,7 +18,7 @@ class _InvitePageState extends State<InvitePage> {
   void validateInviteCode(BuildContext context, String code) async {
     var _user = Provider.of<CurrentUser>(context, listen: false);
     bool inviteCodeExists = await _user.checkInviteCode(code);
-
+// String inviteCodeExists = "QHdK73bGFQRmgmPr3enN";
     if (inviteCodeExists) {
       CurrentUser user = Provider.of<CurrentUser>(context, listen: false);
 

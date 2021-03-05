@@ -56,6 +56,7 @@ class Home extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Color(0xffF1FAFF),
+        resizeToAvoidBottomInset: true,
         appBar: PreferredSize(
           preferredSize: Size(double.infinity, 100),
           child: Container(

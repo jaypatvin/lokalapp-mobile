@@ -215,7 +215,7 @@ class _AddShopState extends State<AddShop> {
       // resizeToAvoidBottomPadding: false,
       resizeToAvoidBottomInset: false, // added as above is deprecated
       appBar: PreferredSize(
-          preferredSize: Size(double.infinity, 83),
+          preferredSize: Size(double.infinity, 80),
           child: Center(
               child: AppbarShop(
             isEdit: false,
@@ -352,7 +352,7 @@ class _AddShopState extends State<AddShop> {
               height: 20,
             ),
             SetCustomoperatingHours(
-              label: "Set Custoom Operating Hours",
+              label: "Set Custom Operating Hours",
               value: _setOperatingHours,
               onChanged: (value) {
                 setState(() {
@@ -360,6 +360,7 @@ class _AddShopState extends State<AddShop> {
                 });
               },
             ),
+            SizedBox(height: 10),
             Container(
                 child: _setOperatingHours ? buildDaysOfWeek() : Container()),
             SizedBox(height: MediaQuery.of(context).size.height * 0.05),
