@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:lokalapp/screens/add_shop_screens/add%20_shop_cart.dart';
+import 'package:lokalapp/screens/profile_screens/profile_not_verified.dart';
+import 'package:lokalapp/screens/profile_screens/profile_shop_sticky_store.dart';
+import 'package:lokalapp/screens/timeline.dart';
+import 'package:lokalapp/utils/themes.dart';
 import '../add_shop_screens/add_shop.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 
-import '../../widgets/rounded_button.dart';
+// import '../../widgets/rounded_button.dart';
 
 class ProfileNoShop extends StatefulWidget {
   final bool hasStore;
@@ -14,58 +19,94 @@ class ProfileNoShop extends StatefulWidget {
 }
 
 class _ProfileNoShopState extends State<ProfileNoShop> {
-  Column buildNoShopText() {
-    return Column(
+  // bool hasStore;
+
+  Row buildSampleCartButton() {
+    return Row(
       children: [
-        Padding(padding: const EdgeInsets.all(20)),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Text("Shop not set up yet",
-                style: TextStyle(
-                  fontFamily: "GoldplayBoldAlt",
-                  fontSize: 18,
-                  fontWeight: FontWeight.w500,
-                  color: Color(0xff828282),
-                )),
-            SizedBox(
-              height: 30,
-            ),
-          ],
-        ),
-        SizedBox(
-          height: 20,
-        ),
-        buildAddShopButton()
+        TextButton(
+            onPressed: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => AddShopCart()));
+            },
+            child: Text("Add Cart"))
       ],
     );
   }
 
-  Row buildAddShopButton() {
+  Widget buildNoShopText() {
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          Padding(padding: const EdgeInsets.all(10)),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              buildAddShopButton(),
+            ],
+          ),
+          SizedBox(
+            height: 20,
+          ),
+          Row(
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              ConstrainedBox(
+                constraints: BoxConstraints(
+                    maxHeight: MediaQuery.of(context).size.height,
+                    maxWidth: MediaQuery.of(context).size.width),
+                child: Container(
+                  color: Color(0XFFF1FAFF),
+                  child: Timeline(),
+                ),
+              )
+            ],
+          )
+        ],
+      ),
+    );
+  }
+
+  Container buildAddShopButton() {
+    return Container(
+      height: 43,
+      width: 180,
+      child: FlatButton(
+        // height: 50,
+        // minWidth: 100,
+        color: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20.0),
+          side: BorderSide(color: kTealColor),
+        ),
+        textColor: kTealColor,
+        child: Text(
+          "+ ADD SHOP",
+          style: TextStyle(
+            fontFamily: "GoldplayBold",
+            fontSize: 16,
+            // fontWeight: FontWeight.w600
+          ),
+        ),
+        onPressed: () {
+          pushNewScreen(
+            context,
+            screen: ProfileNotVerified(),
+            withNavBar: true, // OPTIONAL VALUE. True by default.
+            pageTransitionAnimation: PageTransitionAnimation.cupertino,
+          );
+        },
+      ),
+    );
+  }
+
+  Row buildContainer() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        RoundedButton(
-          label: "ADD SHOP",
-          onPressed: () {
-            pushNewScreen(
-              context,
-              screen: AddShop(),
-              withNavBar: true, // OPTIONAL VALUE. True by default.
-              pageTransitionAnimation: PageTransitionAnimation.cupertino,
-            );
-
-            // Navigator.push(
-            //     context, MaterialPageRoute(builder: (context) => AddShop()));
-          },
-          minWidth: 170,
-          fontSize: 18,
-          height: 50,
-          fontFamily: "GoldplayBold",
-          fontWeight: FontWeight.bold,
-        )
+        widget.hasStore ? ProfileShopStickyStore() : buildAddShopButton()
       ],
     );
   }

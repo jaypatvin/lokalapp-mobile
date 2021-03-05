@@ -10,6 +10,7 @@ import 'states/current_user.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  // Provider.debugCheckInvalidValueType = null;
   runApp(MyApp());
 }
 

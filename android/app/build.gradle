@@ -87,11 +87,11 @@ android {
     }
 }
 
-    def keystoreProperties = new Properties()
-    def keystorePropertiesFile = rootProject.file('key.properties')
-    if (keystorePropertiesFile.exists()) {
-        keystoreProperties.load(new FileInputStream(android/app/key.properties))
-    }
+//def keystoreProperties = new Properties()
+//def keystorePropertiesFile = rootProject.file('key.properties')
+//if (keystorePropertiesFile.exists()) {
+//    keystoreProperties.load(new FileInputStream(android/app/key.properties))
+//}
 
 
 android {
@@ -112,6 +112,6 @@ dependencies {
     implementation 'com.google.firebase:firebase-analytics'
     implementation 'io.getstream.client:stream-java:3.2.4'
     implementation "com.fasterxml.jackson.module:jackson-module-kotlin:2.12.+"
-    implementation 'com.google.android.material:material:1.22'
+    // implementation 'com.google.android.material:material:1.22'
 
 }

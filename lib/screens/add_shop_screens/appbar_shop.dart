@@ -24,7 +24,7 @@ class _AppbarShopState extends State<AppbarShop> {
         child: Container(
           decoration: BoxDecoration(color: Color(0xff57183f)),
           child: Container(
-            margin: const EdgeInsets.fromLTRB(20, 70, 0, 0),
+            margin: const EdgeInsets.fromLTRB(20, 65, 0, 0),
             child: Column(
               children: [
                 Row(
@@ -42,7 +42,7 @@ class _AppbarShopState extends State<AppbarShop> {
                       ),
                     ),
                     SizedBox(
-                      width: 80,
+                      width: 100,
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,

@@ -243,7 +243,7 @@ class _EditShopState extends State<EditShop> {
       key: _scaffoldKey,
       backgroundColor: Colors.white,
       appBar: PreferredSize(
-          preferredSize: Size(double.infinity, 105),
+          preferredSize: Size(double.infinity, 83),
           child: Center(
               child: AppbarShop(
             isEdit: true,
@@ -285,6 +285,7 @@ class _EditShopState extends State<EditShop> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 ShopDescription(
+                  hintText: "Description",
                   descriptionController: _shopDescriptionController,
                   errorText:
                       isDescriptionValid ? null : 'Shop Description too long.',
@@ -392,7 +393,7 @@ class _EditShopState extends State<EditShop> {
                 },
                 value: _setOperatingHours),
             SizedBox(
-              height: 10,
+              height: 20,
             ),
             ShopStatus(),
             SizedBox(

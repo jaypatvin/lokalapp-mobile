@@ -101,6 +101,25 @@ class CurrentUser extends ChangeNotifier {
     return false;
   }
 
+  Future<bool> createProduct() async {
+    postShop.communityId = _user.communityId;
+    var _postData = postShop.toMap();
+    var response = await LokalApiService()
+        .createProduct(data: _postData, idToken: _userIdToken);
+
+    if (response.statusCode != 200) {
+      return false;
+    }
+    Map data = json.decode(response.body);
+
+    if (data["status"] == "ok") {
+      _user = LokalUser.fromMap(data["data"]);
+      return true;
+    }
+
+    return false;
+  }
+
   Future<bool> getShop(String uid) async {
     http.Response response = await LokalApiService()
         .getShopByUserId(userId: uid, idToken: _userIdToken);
