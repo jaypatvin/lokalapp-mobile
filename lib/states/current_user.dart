@@ -1,8 +1,12 @@
+import 'dart:collection';
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:lokalapp/models/user_product.dart';
+import 'package:lokalapp/models/user_product_post.dart';
+import 'package:lokalapp/models/user_shop.dart';
 
 import '../models/lokal_user.dart';
 import '../models/user_shop_post.dart';
@@ -18,14 +22,24 @@ class CurrentUser extends ChangeNotifier {
   LokalUser _user;
   Map<String, String> _postBody = Map();
   Map<String, String> _postShop = Map();
-  UserShopPost postShop = UserShopPost();
   Map<String, String> _getStreamAccount = Map();
   String _inviteCode;
   String _userIdToken;
+  UserShopPost postShop = UserShopPost();
+  UserProductPost postProduct = UserProductPost();
+
+  List<UserProduct> _userProducts;
+  List<UserProduct> _communityProducts;
+  List<ShopModel> _userShops;
 
   Map get getStreamAccount => _getStreamAccount;
   bool get isAuthenticated =>
       _postBody["user_uid"] != null && _postBody["user_uid"].isNotEmpty;
+
+  List<UserProduct> get userProducts => UnmodifiableListView(_userProducts);
+  List<UserProduct> get communityProducts =>
+      UnmodifiableListView(_communityProducts);
+  List<ShopModel> get userShops => UnmodifiableListView(_userShops);
 
   List<String> get userUids => _user.userUids;
   String get id => _user.id;
@@ -82,6 +96,7 @@ class CurrentUser extends ChangeNotifier {
     return false;
   }
 
+  /*-------------------------------shops-------------------------------*/
   Future<bool> createShop() async {
     postShop.communityId = _user.communityId;
     var _postData = postShop.toMap();
@@ -101,28 +116,9 @@ class CurrentUser extends ChangeNotifier {
     return false;
   }
 
-  Future<bool> createProduct() async {
-    postShop.communityId = _user.communityId;
-    var _postData = postShop.toMap();
-    var response = await LokalApiService()
-        .createProduct(data: _postData, idToken: _userIdToken);
-
-    if (response.statusCode != 200) {
-      return false;
-    }
-    Map data = json.decode(response.body);
-
-    if (data["status"] == "ok") {
-      _user = LokalUser.fromMap(data["data"]);
-      return true;
-    }
-
-    return false;
-  }
-
-  Future<bool> getShop(String uid) async {
+  Future<bool> getShops() async {
     http.Response response = await LokalApiService()
-        .getShopByUserId(userId: uid, idToken: _userIdToken);
+        .getShopByUserId(userId: _user.id, idToken: _userIdToken);
 
     if (response.statusCode != 200) {
       return false;
@@ -130,7 +126,12 @@ class CurrentUser extends ChangeNotifier {
     Map data = json.decode(response.body);
 
     if (data["status"] == "ok") {
-      postShop = UserShopPost.fromMap(data['data']);
+      List<ShopModel> shops = [];
+      for (var shopData in data['data']) {
+        var shop = ShopModel.fromMap(shopData);
+        shops.add(shop);
+      }
+      _userShops = shops;
       return true;
     }
 
@@ -158,7 +159,73 @@ class CurrentUser extends ChangeNotifier {
 
     return false;
   }
+  /* ---------------------------------------------------------------------- */
 
+  /*-------------------------------products-------------------------------*/
+
+  //TODO: handle errors
+  Future<bool> createProduct() async {
+    var _postData = postProduct.toMap();
+    var response = await LokalApiService()
+        .createProduct(data: _postData, idToken: _userIdToken);
+
+    if (response.statusCode != 200) {
+      return false;
+    }
+    Map data = json.decode(response.body);
+
+    if (data["status"] == "ok") {
+      await getUserProducts();
+      return true;
+    }
+
+    return false;
+  }
+
+  Future<bool> getUserProducts() async {
+    var response = await LokalApiService()
+        .getUserProducts(idToken: _userIdToken, userId: _user.id);
+
+    if (response.statusCode != 200) {
+      return false;
+    }
+    Map data = json.decode(response.body);
+
+    if (data['status'] == "ok") {
+      List<UserProduct> products = [];
+      for (var product in data['data']) {
+        var _product = UserProduct.fromMap(product);
+        products.add(_product);
+      }
+      _userProducts = products;
+      return true;
+    }
+
+    return false;
+  }
+
+  Future<List<UserProduct>> getCommunityProducts() async {
+    var response = await LokalApiService().getCommunityProducts(
+        idToken: _userIdToken, communityId: _user.communityId);
+
+    if (response.statusCode != 200) {
+      return [];
+    }
+    Map data = json.decode(response.body);
+
+    if (data['status'] == "ok") {
+      List<UserProduct> products = [];
+      for (var product in data['data']) {
+        var _product = UserProduct.fromMap(product);
+        products.add(_product);
+      }
+      _communityProducts = products;
+    }
+
+    return communityProducts;
+  }
+
+  /* ---------------------------------------------------------------------- */
   Future _getStreamLogin() async {
     var creds = await GetStreamApiService()
         .login(userId: _user.userUids.first, idToken: _userIdToken);

@@ -153,17 +153,11 @@ class LokalApiService {
         headers: {"Authorization": "Bearer $idToken"});
   }
 
-  Future<http.Response> getProductsByCommunity(
-      {@required String communityId, @required String idToken}) async {
-    return await http.get("$_baseUrl/community/$communityId/products",
-        headers: {"Authorization": "Bearer $idToken"});
-  }
-
   Future<http.Response> createProduct(
       {@required Map data, @required String idToken}) async {
     var body = json.encode(data);
     var response = await http.post(
-      "$_baseUrl/community",
+      "$_baseUrl/products",
       headers: {
         "Content-Type": "application/json",
         "Authorization": "Bearer $idToken"
@@ -172,5 +166,38 @@ class LokalApiService {
     );
 
     return response;
+  }
+
+  Future<http.Response> getCommunityProducts(
+      {@required String communityId, @required String idToken}) async {
+    return await http.get("$_baseUrl/community/$communityId/products",
+        headers: {"Authorization": "Bearer $idToken"});
+  }
+
+  Future<http.Response> getProduct(
+      {@required String productId, @required String idToken}) async {
+    return await (http.get("$_baseUrl/products/$productId",
+        headers: {"Authorization": "Bearer $idToken"}));
+  }
+
+  Future<http.Response> updateProduct(
+      {@required String productId,
+      @required Map data,
+      @required String idToken}) async {
+    var body = json.encode(data);
+    return await http.post(
+      "$_baseUrl/products/$productId",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer $idToken",
+        body: body,
+      },
+    );
+  }
+
+  Future<http.Response> getUserProducts(
+      {@required String userId, @required idToken}) async {
+    return await (http.get("$_baseUrl/users/$userId/products",
+        headers: {"Authorization": "Bearer $idToken"}));
   }
 }
