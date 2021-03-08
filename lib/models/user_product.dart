@@ -1,43 +1,131 @@
 import 'dart:convert';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:provider/provider.dart';
 
-class UserProduct extends ChangeNotifier {
-  String name;
-  String userId;
-  String communityId;
-  String description;
-  String productPhoto;
-  String productCategory;
-  String productPrice;
-  String inventoryStock;
-  // Map deliveryOptions;
-
-  UserProduct({
-    this.productCategory,
-    this.productPrice,
-    this.description,
-    this.name,
-    this.userId,
-    this.inventoryStock,
-    this.communityId,
-    this.productPhoto,
-    // this.deliveryOptions,
+class ProductGallery {
+  String url;
+  int order;
+  ProductGallery({
+    this.url,
+    this.order,
   });
+
+  ProductGallery copyWith({
+    String url,
+    int order,
+  }) {
+    return ProductGallery(
+      url: url ?? this.url,
+      order: order ?? this.order,
+    );
+  }
 
   Map<String, dynamic> toMap() {
     return {
-      'user_id': userId,
-      'community_id': communityId,
+      'url': url,
+      'order': order,
+    };
+  }
+
+  factory ProductGallery.fromMap(Map<String, dynamic> map) {
+    if (map == null) return null;
+
+    return ProductGallery(
+      url: map['url'],
+      order: map['order'],
+    );
+  }
+
+  String toJson() => json.encode(toMap());
+
+  factory ProductGallery.fromJson(String source) =>
+      ProductGallery.fromMap(json.decode(source));
+
+  @override
+  String toString() => 'ProductGallery(url: $url, order: $order)';
+
+  @override
+  bool operator ==(Object o) {
+    if (identical(this, o)) return true;
+
+    return o is ProductGallery && o.url == url && o.order == order;
+  }
+
+  @override
+  int get hashCode => url.hashCode ^ order.hashCode;
+}
+
+class UserProduct extends ChangeNotifier {
+  String id;
+  String name;
+  String description;
+  String shopId;
+  String userId;
+  String communityId;
+  double basePrice;
+  int quantity;
+  String productCategory;
+  String productPhoto;
+  String status;
+  ProductGallery gallery;
+  UserProduct({
+    this.id,
+    this.name,
+    this.description,
+    this.shopId,
+    this.userId,
+    this.communityId,
+    this.basePrice,
+    this.quantity,
+    this.productCategory,
+    this.productPhoto,
+    this.status,
+    this.gallery,
+  });
+
+  UserProduct copyWith({
+    String id,
+    String name,
+    String description,
+    String shopId,
+    String userId,
+    String communityId,
+    double basePrice,
+    int quantity,
+    String productCategory,
+    String productPhoto,
+    String status,
+    ProductGallery gallery,
+  }) {
+    return UserProduct(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      description: description ?? this.description,
+      shopId: shopId ?? this.shopId,
+      userId: userId ?? this.userId,
+      communityId: communityId ?? this.communityId,
+      basePrice: basePrice ?? this.basePrice,
+      quantity: quantity ?? this.quantity,
+      productCategory: productCategory ?? this.productCategory,
+      productPhoto: productPhoto ?? this.productPhoto,
+      status: status ?? this.status,
+      gallery: gallery ?? this.gallery,
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
       'name': name,
       'description': description,
-      'product_photo': productPhoto,
+      'shop_id': shopId,
+      'user_id': userId,
+      'community_id': communityId,
+      'base_price': basePrice,
+      'quantity': quantity,
       'product_category': productCategory,
-      'product_price': productPrice,
-      // 'delivery_options': deliveryOptions,
-      'inventoryStock': inventoryStock,
+      'product_photo': productPhoto,
+      'status': status,
+      'gallery': gallery?.toMap(),
     };
   }
 
@@ -45,15 +133,18 @@ class UserProduct extends ChangeNotifier {
     if (map == null) return null;
 
     return UserProduct(
-      userId: map['user_id'],
-      communityId: map['community_id'],
+      id: map['id'],
       name: map['name'],
       description: map['description'],
-      productPhoto: map['product_photo'],
+      shopId: map['shop_id'],
+      userId: map['user_id'],
+      communityId: map['community_id'],
+      basePrice: map['base_price'],
+      quantity: map['quantity'],
       productCategory: map['product_category'],
-      productPrice: map['product_price'],
-      // deliveryOptions: map['delivery_options'],
-      inventoryStock: map['inventory_stock'],
+      productPhoto: map['product_photo'],
+      status: map['status'],
+      gallery: ProductGallery.fromMap(map['gallery']),
     );
   }
 
@@ -62,16 +153,43 @@ class UserProduct extends ChangeNotifier {
   factory UserProduct.fromJson(String source) =>
       UserProduct.fromMap(json.decode(source));
 
-  factory UserProduct.fromDocument(DocumentSnapshot doc) {
-    return UserProduct(
-      userId: doc.data()['user_id'],
-      communityId: doc.data()['community_id'],
-      name: doc.data()['name'],
-      description: doc.data()['description'],
-      productPhoto: doc.data()['product_photo'],
-      productPrice: doc.data()['product_price'],
-      // deliveryOptions: doc.data()['delivery_options'],
-      inventoryStock: doc.data()['inventory_stock'],
-    );
+  @override
+  String toString() {
+    return 'UserProduct(id: $id, name: $name, description: $description, shopId: $shopId, userId: $userId, communityId: $communityId, basePrice: $basePrice, quantity: $quantity, productCategory: $productCategory, productPhoto: $productPhoto, status: $status, gallery: $gallery)';
+  }
+
+  @override
+  bool operator ==(Object o) {
+    if (identical(this, o)) return true;
+
+    return o is UserProduct &&
+        o.id == id &&
+        o.name == name &&
+        o.description == description &&
+        o.shopId == shopId &&
+        o.userId == userId &&
+        o.communityId == communityId &&
+        o.basePrice == basePrice &&
+        o.quantity == quantity &&
+        o.productCategory == productCategory &&
+        o.productPhoto == productPhoto &&
+        o.status == status &&
+        o.gallery == gallery;
+  }
+
+  @override
+  int get hashCode {
+    return id.hashCode ^
+        name.hashCode ^
+        description.hashCode ^
+        shopId.hashCode ^
+        userId.hashCode ^
+        communityId.hashCode ^
+        basePrice.hashCode ^
+        quantity.hashCode ^
+        productCategory.hashCode ^
+        productPhoto.hashCode ^
+        status.hashCode ^
+        gallery.hashCode;
   }
 }

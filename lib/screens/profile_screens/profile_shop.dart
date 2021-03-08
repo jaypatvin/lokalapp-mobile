@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:lokalapp/screens/add_product_screen/add_product.dart';
+import 'package:lokalapp/screens/edit_shop_screen/edit_shop.dart';
 import 'package:lokalapp/states/current_user.dart';
+import 'package:lokalapp/utils/themes.dart';
 import 'package:provider/provider.dart';
 
 import 'components/store_card.dart';
@@ -9,10 +12,12 @@ import 'components/store_message.dart';
 import 'profile_search_bar.dart';
 import 'profile_store_name.dart';
 
-class ProfileShop extends StatelessWidget {
-  final bool hasStore;
-  ProfileShop({this.hasStore});
+class ProfileShop extends StatefulWidget {
+  @override
+  _ProfileShopState createState() => _ProfileShopState();
+}
 
+class _ProfileShopState extends State<ProfileShop> {
   Padding buildIconSettings() {
     return Padding(
         padding: const EdgeInsets.only(left: 5),
@@ -26,22 +31,9 @@ class ProfileShop extends StatelessWidget {
         ));
   }
 
-  buildIconMore(context) {
-    return Padding(
-        padding: const EdgeInsets.only(right: 5),
-        child: IconButton(
-          icon: Icon(
-            Icons.more_horiz,
-            size: 38,
-          ),
-          color: Colors.white,
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ));
-  }
-
   Row buildCircleAvatar() {
+    var shopPhoto =
+        Provider.of<CurrentUser>(context, listen: false).profilePhoto;
     return Row(
       children: [
         Expanded(
@@ -51,8 +43,9 @@ class ProfileShop extends StatelessWidget {
             radius: 35,
             backgroundColor: Colors.transparent,
             child: ClipOval(
-              child: Image.network(
-                  "https://hips.hearstapps.com/digitalspyuk.cdnds.net/17/38/1505816350-screen-shot-2017-09-19-at-111641.jpg?crop=0.502xw:1.00xh;0.0952xw,0&resize=480:*"),
+              child: shopPhoto != null && shopPhoto.isNotEmpty
+                  ? Image.network(shopPhoto)
+                  : null,
             ),
           ),
         )),
@@ -67,8 +60,7 @@ class ProfileShop extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Text(
-          "Bakey Bakey",
-          // _user.firstName + " " + _user.lastName,
+          _user.userShops[0].name,
           style: TextStyle(
               color: Colors.white,
               fontFamily: "GoldplayBold",
@@ -79,8 +71,80 @@ class ProfileShop extends StatelessWidget {
     );
   }
 
+  Row buildIcon() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(left: 250),
+          child: IconButton(
+              icon: Icon(
+                Icons.more_horiz,
+                color: Colors.white,
+                size: 38,
+              ),
+              onPressed: () {
+                showModalBottomSheet(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return Container(
+                          height: 140,
+                          color: Colors.white,
+                          padding: EdgeInsets.only(
+                              left: 50, top: 10, bottom: 10, right: 40),
+                          child: ListView(children: [
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => EditShop()));
+                              },
+                              child: ListTile(
+                                leading: Text(
+                                  "Edit Shop",
+                                  softWrap: true,
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontFamily: "Goldplay",
+                                      fontSize: 14),
+                                ),
+                              ),
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.pop(context, false);
+                                // Navigator.push(
+                                //     context,
+                                //     MaterialPageRoute(
+                                //         builder: (context) => AddProduct()));
+                              },
+                              child: ListTile(
+                                leading: Text(
+                                  "Add Product",
+                                  softWrap: true,
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontFamily: "Goldplay",
+                                      fontSize: 14),
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              height: 8,
+                            )
+                          ]));
+                    });
+              }),
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    var user = Provider.of<CurrentUser>(context, listen: false);
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white,
@@ -108,7 +172,7 @@ class ProfileShop extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       // crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [buildIconSettings(), buildIconMore(context)],
+                      children: [buildIconSettings(), buildIcon()],
                     ),
                     buildCircleAvatar(),
                     SizedBox(
@@ -136,8 +200,11 @@ class ProfileShop extends StatelessWidget {
                     padding: EdgeInsets.only(left: 18),
                     child: CircleAvatar(
                       radius: 23,
-                      backgroundImage: NetworkImage(
-                          "https://media.istockphoto.com/vectors/bakery-hand-written-lettering-logo-vector-id1166282839?b=1&k=6&m=1166282839&s=612x612&w=0&h=fOgckd0dFcbS3UWVbKAFmCwrc0ti9A56FB-J0GEp9LA="),
+                      // should refactor/simplify this
+                      backgroundImage: user.userShops[0].profilePhoto != null &&
+                              user.userShops[0].profilePhoto.isNotEmpty
+                          ? NetworkImage(user.userShops[0].profilePhoto)
+                          : null,
                     ),
                   ),
                   Row(
@@ -159,7 +226,9 @@ class ProfileShop extends StatelessWidget {
                   ),
                 ],
               ),
-              StoreMessage(),
+              StoreMessage(
+                description: user.userShops[0].description,
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -167,9 +236,62 @@ class ProfileShop extends StatelessWidget {
                 ],
               ),
               SizedBox(
+                height: 40,
+              ),
+              user.userProducts.isNotEmpty
+                  ? StoreCard()
+                  : Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          "No products added",
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                            fontFamily: "Goldplay",
+                          ),
+                        ),
+                      ],
+                    ),
+              SizedBox(
                 height: 20,
               ),
-              StoreCard()
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    height: 40,
+                    width: 200,
+                    child: FlatButton(
+                      // height: 50,
+                      // minWidth: 100,
+                      color: kTealColor,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(25.0),
+                        side: BorderSide(color: kTealColor),
+                      ),
+                      textColor: Colors.black,
+                      child: Text(
+                        "ADD PRODUCTS",
+                        style: TextStyle(
+                            fontFamily: "Goldplay",
+                            fontSize: 14,
+                            fontWeight: FontWeight.w700),
+                      ),
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => AddProduct()));
+                      },
+                    ),
+                  ),
+                ],
+              ),
             ],
           ),
         ),

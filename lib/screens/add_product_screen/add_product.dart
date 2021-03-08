@@ -6,10 +6,13 @@ import 'package:image_picker/image_picker.dart';
 import 'package:lokalapp/screens/add_shop_screens/appbar_shop.dart';
 import 'package:lokalapp/screens/add_shop_screens/shopDescription.dart';
 import 'package:lokalapp/screens/edit_shop_screen/set_custom_operating_hours.dart';
+import 'package:lokalapp/screens/profile_screens/profile.dart';
 import 'package:lokalapp/services/database.dart';
+import 'package:lokalapp/states/current_user.dart';
 import 'package:lokalapp/utils/themes.dart';
 import 'package:lokalapp/widgets/rounded_button.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:provider/provider.dart';
 import 'item_name.dart';
 import 'package:image/image.dart' as Im;
 import 'package:uuid/uuid.dart';
@@ -19,6 +22,7 @@ class AddProduct extends StatefulWidget {
   _AddProductState createState() => _AddProductState();
 }
 
+//TODO: ADD STATUS
 class _AddProductState extends State<AddProduct> {
   String itemName;
   String itemDescription;
@@ -27,6 +31,9 @@ class _AddProductState extends State<AddProduct> {
   String productPhotoId = Uuid().v4();
   final picker = ImagePicker();
   File file;
+  TextEditingController _priceController = TextEditingController();
+  TextEditingController _stockController = TextEditingController();
+
   compressImage() async {
     final tempDir = await getTemporaryDirectory();
     final path = tempDir.path;
@@ -225,6 +232,7 @@ class _AddProductState extends State<AddProduct> {
                     hintStyle:
                         TextStyle(color: Colors.grey.shade400, fontSize: 14),
                     hintText: "PHP"),
+                controller: _priceController,
               ),
             )
           ],
@@ -271,6 +279,7 @@ class _AddProductState extends State<AddProduct> {
                       fontSize: 14,
                     ),
                     hintText: "Amount"),
+                controller: _stockController,
               ),
             )
           ],
@@ -300,8 +309,41 @@ class _AddProductState extends State<AddProduct> {
       fontSize: 16,
       fontWeight: FontWeight.w700,
       fontFamily: "GoldplayBold",
-      onPressed: () {},
+      onPressed: () async {
+        var productCreated = await createProduct();
+        if (productCreated) {
+          //TODO: add where to go if successful
+          Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => ProfileShopMain()),
+              (route) => false);
+        }
+      },
     );
+  }
+
+  //TODO: put this somewhere
+  Future<bool> createProduct() async {
+    // var user = Provider.of<CurrentUser>(context, listen: false);
+
+    String mediaUrl = "";
+    if (file != null) {
+      await compressImage();
+      mediaUrl = await uploadImage(file);
+    }
+    CurrentUser user = Provider.of<CurrentUser>(context, listen: false);
+    //TODO: check for price and quantity parse problems
+    try {
+      user.postProduct.name = itemName;
+      user.postProduct.description = itemDescription;
+      user.postProduct.gallery.url = mediaUrl;
+      user.postProduct.basePrice = double.tryParse(_priceController.text);
+      user.postProduct.quantity = int.tryParse(_stockController.text);
+      return await user.createProduct();
+    } on Exception catch (_) {
+      print(_);
+      return false;
+    }
   }
 
   Row buildItemName() {

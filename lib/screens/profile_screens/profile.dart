@@ -8,8 +8,8 @@ import '../../states/current_user.dart';
 import 'package:provider/provider.dart';
 
 class ProfileShopMain extends StatefulWidget {
-  final Map<String, String> account;
-  ProfileShopMain({Key key, @required this.account}) : super(key: key);
+  // final Map<String, String> account;
+  // ProfileShopMain({Key key, @required this.account}) : super(key: key);
 
   @override
   _ProfileShopMainState createState() => _ProfileShopMainState();
@@ -32,77 +32,92 @@ class _ProfileShopMainState extends State<ProfileShopMain> {
         ));
   }
 
-  Row buildIconMore() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(left: 250),
-          child: IconButton(
-              icon: Icon(
-                Icons.more_horiz,
-                color: Colors.white,
-                size: 38,
-              ),
-              onPressed: () {
-                showModalBottomSheet(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return Container(
-                          height: 140,
-                          color: Colors.white,
-                          padding: EdgeInsets.only(
-                              left: 50, top: 10, bottom: 10, right: 40),
-                          child: ListView(children: [
-                            GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => EditShop()));
-                              },
-                              child: ListTile(
-                                leading: Text(
-                                  "Edit Shop",
-                                  softWrap: true,
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontFamily: "Goldplay",
-                                      fontSize: 14),
-                                ),
-                              ),
-                            ),
-                            GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => AddProduct()));
-                              },
-                              child: ListTile(
-                                leading: Text(
-                                  "Add Product",
-                                  softWrap: true,
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontFamily: "Goldplay",
-                                      fontSize: 14),
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              height: 8,
-                            )
-                          ]));
-                    });
-              }),
-        ),
-      ],
-    );
+  // Row buildIconMore() {
+  //   return Row(
+  //     mainAxisAlignment: MainAxisAlignment.end,
+  //     crossAxisAlignment: CrossAxisAlignment.end,
+  //     children: [
+  //       Padding(
+  //         padding: const EdgeInsets.only(left: 250),
+  //         child: IconButton(
+  //             icon: Icon(
+  //               Icons.more_horiz,
+  //               color: Colors.white,
+  //               size: 38,
+  //             ),
+  //             onPressed: () {
+  //               showModalBottomSheet(
+  //                   context: context,
+  //                   builder: (BuildContext context) {
+  //                     return Container(
+  //                         height: 140,
+  //                         color: Colors.white,
+  //                         padding: EdgeInsets.only(
+  //                             left: 50, top: 10, bottom: 10, right: 40),
+  //                         child: ListView(children: [
+  //                           GestureDetector(
+  //                             onTap: () {
+  //                               Navigator.push(
+  //                                   context,
+  //                                   MaterialPageRoute(
+  //                                       builder: (context) => EditShop()));
+  //                             },
+  //                             child: ListTile(
+  //                               leading: Text(
+  //                                 "Edit Shop",
+  //                                 softWrap: true,
+  //                                 style: TextStyle(
+  //                                     fontWeight: FontWeight.bold,
+  //                                     fontFamily: "Goldplay",
+  //                                     fontSize: 14),
+  //                               ),
+  //                             ),
+  //                           ),
+  //                           GestureDetector(
+  //                             onTap: () {
+  //                               Navigator.push(
+  //                                   context,
+  //                                   MaterialPageRoute(
+  //                                       builder: (context) => AddProduct()));
+  //                             },
+  //                             child: ListTile(
+  //                               leading: Text(
+  //                                 "Add Product",
+  //                                 softWrap: true,
+  //                                 style: TextStyle(
+  //                                     fontWeight: FontWeight.bold,
+  //                                     fontFamily: "Goldplay",
+  //                                     fontSize: 14),
+  //                               ),
+  //                             ),
+  //                           ),
+  //                           SizedBox(
+  //                             height: 8,
+  //                           )
+  //                         ]));
+  //                   });
+  //             }),
+  //       ),
+  //     ],
+  //   );
+  // }
+
+  buildIconMore(context) {
+    return Padding(
+        padding: const EdgeInsets.only(right: 5),
+        child: IconButton(
+          icon: Icon(
+            Icons.more_horiz,
+            size: 38,
+          ),
+          color: Colors.white,
+          onPressed: () {
+            Navigator.pop(context, true);
+          },
+        ));
   }
 
-  Row buildCircleAvatar() {
+  Row buildCircleAvatar(String imgUrl) {
     return Row(
       children: [
         Expanded(
@@ -112,8 +127,7 @@ class _ProfileShopMainState extends State<ProfileShopMain> {
             radius: 35,
             backgroundColor: Colors.transparent,
             child: ClipOval(
-              child: Image.network(
-                  "https://hips.hearstapps.com/digitalspyuk.cdnds.net/17/38/1505816350-screen-shot-2017-09-19-at-111641.jpg?crop=0.502xw:1.00xh;0.0952xw,0&resize=480:*"),
+              child: imgUrl.isNotEmpty ? Image.network(imgUrl) : null,
             ),
           ),
         )),
@@ -121,14 +135,13 @@ class _ProfileShopMainState extends State<ProfileShopMain> {
     );
   }
 
-  Row buildName() {
-    CurrentUser _user = Provider.of<CurrentUser>(context, listen: false);
+  Row buildName(String firstName, String lastName) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Text(
-          _user.firstName + " " + _user.lastName,
+          firstName + " " + lastName,
           style: TextStyle(
               color: Colors.white,
               fontFamily: "GoldplayBold",
@@ -141,7 +154,7 @@ class _ProfileShopMainState extends State<ProfileShopMain> {
 
   @override
   Widget build(BuildContext context) {
-    CurrentUser _user = Provider.of<CurrentUser>(context, listen: false);
+    CurrentUser user = Provider.of<CurrentUser>(context, listen: false);
     return SafeArea(
         child: Scaffold(
       backgroundColor: Colors.white,
@@ -171,23 +184,21 @@ class _ProfileShopMainState extends State<ProfileShopMain> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       buildIconSettings(),
-                      buildIconMore(),
+                      buildIconMore(context),
                     ],
                   ),
-                  buildCircleAvatar(),
+                  buildCircleAvatar(user.profilePhoto ?? ""),
                   SizedBox(
                     height: 15,
                   ),
-                  buildName()
+                  buildName(user.firstName, user.lastName)
                 ],
               ),
             ),
           ),
         ),
       ),
-      body: ProfileNoShop(
-        hasStore: true,
-      ),
+      body: ProfileNoShop(),
     ));
   }
 }

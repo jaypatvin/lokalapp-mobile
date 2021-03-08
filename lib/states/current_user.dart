@@ -1,8 +1,12 @@
+import 'dart:collection';
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:lokalapp/models/user_product.dart';
+import 'package:lokalapp/models/user_product_post.dart';
+import 'package:lokalapp/models/user_shop.dart';
 
 import '../models/lokal_user.dart';
 import '../models/user_shop_post.dart';
@@ -18,14 +22,24 @@ class CurrentUser extends ChangeNotifier {
   LokalUser _user;
   Map<String, String> _postBody = Map();
   Map<String, String> _postShop = Map();
-  UserShopPost postShop = UserShopPost();
   Map<String, String> _getStreamAccount = Map();
   String _inviteCode;
   String _userIdToken;
+  UserShopPost postShop = UserShopPost();
+  UserProductPost postProduct = UserProductPost();
+
+  List<UserProduct> _userProducts = [];
+  List<UserProduct> _communityProducts = [];
+  List<ShopModel> _userShops = [];
 
   Map get getStreamAccount => _getStreamAccount;
   bool get isAuthenticated =>
       _postBody["user_uid"] != null && _postBody["user_uid"].isNotEmpty;
+
+  List<UserProduct> get userProducts => UnmodifiableListView(_userProducts);
+  List<UserProduct> get communityProducts =>
+      UnmodifiableListView(_communityProducts);
+  List<ShopModel> get userShops => UnmodifiableListView(_userShops);
 
   List<String> get userUids => _user.userUids;
   String get id => _user.id;
@@ -55,6 +69,15 @@ class CurrentUser extends ChangeNotifier {
     if (data["status"] == "ok") {
       _user = LokalUser.fromMap(data["data"]);
       await _getStreamLogin();
+
+      // added to remove states for add shops
+      //can be removed for registration
+      await getShops();
+
+      // since we have one shop, we only need to get all products for the user
+      // can be removed for registration
+      await getUserProducts();
+
       return true;
     }
 
@@ -82,6 +105,7 @@ class CurrentUser extends ChangeNotifier {
     return false;
   }
 
+  /*-------------------------------shops-------------------------------*/
   Future<bool> createShop() async {
     postShop.communityId = _user.communityId;
     var _postData = postShop.toMap();
@@ -94,35 +118,16 @@ class CurrentUser extends ChangeNotifier {
     Map data = json.decode(response.body);
 
     if (data["status"] == "ok") {
-      _user = LokalUser.fromMap(data["data"]);
+      await getShops();
       return true;
     }
 
     return false;
   }
 
-  Future<bool> createProduct() async {
-    postShop.communityId = _user.communityId;
-    var _postData = postShop.toMap();
-    var response = await LokalApiService()
-        .createProduct(data: _postData, idToken: _userIdToken);
-
-    if (response.statusCode != 200) {
-      return false;
-    }
-    Map data = json.decode(response.body);
-
-    if (data["status"] == "ok") {
-      _user = LokalUser.fromMap(data["data"]);
-      return true;
-    }
-
-    return false;
-  }
-
-  Future<bool> getShop(String uid) async {
+  Future<bool> getShops() async {
     http.Response response = await LokalApiService()
-        .getShopByUserId(userId: uid, idToken: _userIdToken);
+        .getShopByUserId(userId: _user.id, idToken: _userIdToken);
 
     if (response.statusCode != 200) {
       return false;
@@ -130,7 +135,12 @@ class CurrentUser extends ChangeNotifier {
     Map data = json.decode(response.body);
 
     if (data["status"] == "ok") {
-      postShop = UserShopPost.fromMap(data['data']);
+      List<ShopModel> shops = [];
+      for (var shopData in data['data']) {
+        var shop = ShopModel.fromMap(shopData);
+        shops.add(shop);
+      }
+      _userShops = shops;
       return true;
     }
 
@@ -158,7 +168,73 @@ class CurrentUser extends ChangeNotifier {
 
     return false;
   }
+  /* ---------------------------------------------------------------------- */
 
+  /*-------------------------------products-------------------------------*/
+
+  //TODO: handle errors
+  Future<bool> createProduct() async {
+    var _postData = postProduct.toMap();
+    var response = await LokalApiService()
+        .createProduct(data: _postData, idToken: _userIdToken);
+
+    if (response.statusCode != 200) {
+      return false;
+    }
+    Map data = json.decode(response.body);
+
+    if (data["status"] == "ok") {
+      await getUserProducts();
+      return true;
+    }
+
+    return false;
+  }
+
+  Future<bool> getUserProducts() async {
+    var response = await LokalApiService()
+        .getUserProducts(idToken: _userIdToken, userId: _user.id);
+
+    if (response.statusCode != 200) {
+      return false;
+    }
+    Map data = json.decode(response.body);
+
+    if (data['status'] == "ok") {
+      List<UserProduct> products = [];
+      for (var product in data['data']) {
+        var _product = UserProduct.fromMap(product);
+        products.add(_product);
+      }
+      _userProducts = products;
+      return true;
+    }
+
+    return false;
+  }
+
+  Future<List<UserProduct>> getCommunityProducts() async {
+    var response = await LokalApiService().getCommunityProducts(
+        idToken: _userIdToken, communityId: _user.communityId);
+
+    if (response.statusCode != 200) {
+      return [];
+    }
+    Map data = json.decode(response.body);
+
+    if (data['status'] == "ok") {
+      List<UserProduct> products = [];
+      for (var product in data['data']) {
+        var _product = UserProduct.fromMap(product);
+        products.add(_product);
+      }
+      _communityProducts = products;
+    }
+
+    return communityProducts;
+  }
+
+  /* ---------------------------------------------------------------------- */
   Future _getStreamLogin() async {
     var creds = await GetStreamApiService()
         .login(userId: _user.userUids.first, idToken: _userIdToken);
@@ -220,32 +296,6 @@ class CurrentUser extends ChangeNotifier {
     _postBody["street"] = address ?? _postBody["street"];
     _postBody["community_id"] = communityId ?? _postBody["community_id"];
     _postBody["profile_photo"] = profilePhoto ?? _postBody["profile_photo"];
-  }
-
-  void updatePostShop(
-      {String name,
-      String description,
-      String profilePhoto,
-      String coverPhoto,
-      String isClosed,
-      String opening,
-      String closing,
-      String useCustomHours,
-      String userId,
-      String customHours,
-      String status}) async {
-    _postShop["name"] = name ?? _postShop["name"];
-    _postShop["description"] = description ?? _postShop["description"];
-    _postShop["user_id"] = userId ?? _postShop["user_id"];
-    _postShop["cover_photo"] = coverPhoto ?? _postShop["cover_photo"];
-    _postShop["community_id"] = communityId ?? _postShop["community_id"];
-    _postBody["profile_photo"] = profilePhoto ?? _postBody["profile_photo"];
-    _postShop["custom_hours"] = customHours ?? _postShop["custom_hours"];
-    _postShop["opening"] = opening ?? _postShop["opening"];
-    _postShop["closing"] = closing ?? _postShop["closing"];
-    _postShop["status"] = status ?? _postShop["status"];
-    _postShop["community_id"] = communityId ?? _postShop["community_id"];
-    _postShop["is_closed"] = isClosed ?? _postShop["is_closed"];
   }
 
   void updateUserRegistrationInfo({
@@ -399,6 +449,10 @@ class CurrentUser extends ChangeNotifier {
       _user = LokalUser.fromMap(map["data"]);
       retVal = FirebaseAuthStatus.Success;
       await _getStreamLogin();
+      // added to remove states for add shops
+      await getShops();
+      // since we have one shop, we only need to get all products for the user
+      await getUserProducts();
     } else {
       _postBody["user_uid"] = user.uid;
       _postBody["email"] = user.email;

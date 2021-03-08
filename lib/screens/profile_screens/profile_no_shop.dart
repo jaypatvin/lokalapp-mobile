@@ -3,17 +3,15 @@ import 'package:lokalapp/screens/add_shop_screens/add%20_shop_cart.dart';
 import 'package:lokalapp/screens/profile_screens/profile_not_verified.dart';
 import 'package:lokalapp/screens/profile_screens/profile_shop_sticky_store.dart';
 import 'package:lokalapp/screens/timeline.dart';
+import 'package:lokalapp/states/current_user.dart';
 import 'package:lokalapp/utils/themes.dart';
+import 'package:provider/provider.dart';
 import '../add_shop_screens/add_shop.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 
 // import '../../widgets/rounded_button.dart';
 
 class ProfileNoShop extends StatefulWidget {
-  final bool hasStore;
-
-  ProfileNoShop({this.hasStore});
-
   @override
   _ProfileNoShopState createState() => _ProfileNoShopState();
 }
@@ -35,6 +33,7 @@ class _ProfileNoShopState extends State<ProfileNoShop> {
   }
 
   Widget buildNoShopText() {
+    var shops = Provider.of<CurrentUser>(context, listen: false).userShops;
     return SingleChildScrollView(
       child: Column(
         children: [
@@ -43,7 +42,11 @@ class _ProfileNoShopState extends State<ProfileNoShop> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              buildAddShopButton(),
+              shops.length > 0
+                  ? ProfileShopStickyStore(
+                      hasStore: true,
+                    )
+                  : buildAddShopButton()
             ],
           ),
           SizedBox(
@@ -92,22 +95,12 @@ class _ProfileNoShopState extends State<ProfileNoShop> {
         onPressed: () {
           pushNewScreen(
             context,
-            screen: ProfileNotVerified(),
+            screen: AddShop(),
             withNavBar: true, // OPTIONAL VALUE. True by default.
             pageTransitionAnimation: PageTransitionAnimation.cupertino,
           );
         },
       ),
-    );
-  }
-
-  Row buildContainer() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        widget.hasStore ? ProfileShopStickyStore() : buildAddShopButton()
-      ],
     );
   }
 

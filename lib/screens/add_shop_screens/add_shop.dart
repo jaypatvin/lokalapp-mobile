@@ -9,7 +9,10 @@ import 'package:lokalapp/screens/add_shop_screens/basic_information.dart';
 import 'package:lokalapp/screens/add_shop_screens/shop_name.dart';
 import 'package:lokalapp/screens/edit_shop_screen/operating_hours_shop.dart';
 import 'package:lokalapp/screens/edit_shop_screen/set_custom_operating_hours.dart';
+import 'package:lokalapp/screens/profile_screens/profile.dart';
+import 'package:lokalapp/screens/profile_screens/profile_no_shop.dart';
 import 'package:lokalapp/screens/profile_screens/profile_shop.dart';
+import 'package:lokalapp/screens/profile_screens/profile_shop_sticky_store.dart';
 // import 'package:lokalapp/screens/profileScreens/profile_shop.dart';
 import 'package:lokalapp/services/database.dart';
 import 'package:lokalapp/states/current_user.dart';
@@ -95,10 +98,8 @@ class _AddShopState extends State<AddShop> {
           customHours.map((key, value) => MapEntry(key, value.toString()));
       bool success = await _user.createShop();
       if (success) {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => ProfileShop(hasStore: true)));
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => ProfileShopMain()));
       }
     } on Exception catch (_) {
       print(_);

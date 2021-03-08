@@ -178,18 +178,17 @@ class _EditShopState extends State<EditShop> {
   @override
   initState() {
     super.initState();
-    // getUser();
+    getUser();
   }
 
   getUser() async {
     CurrentUser _user = Provider.of(context, listen: false);
-    var user_Id = await Database().getUserDocId(_user.userUids.first);
     // UserShopPost shop = UserShopPost();
-    if (user_Id != null) {
+    if (_user.id != null) {
       try {
-        bool success = await _user.getShop(user_Id);
-        _shopNameController.text = _user.postShop.name;
-        _shopDescriptionController.text = _user.postShop.description;
+        var success = await _user.getShops();
+        _shopNameController.text = _user.userShops[0].name;
+        _shopDescriptionController.text = _user.userShops[0].description;
 
         if (success) {
           print('success');
