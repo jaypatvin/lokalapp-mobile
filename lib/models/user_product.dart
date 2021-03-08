@@ -117,13 +117,13 @@ class UserProduct extends ChangeNotifier {
       'id': id,
       'name': name,
       'description': description,
-      'shopId': shopId,
-      'userId': userId,
-      'communityId': communityId,
-      'basePrice': basePrice,
+      'shop_id': shopId,
+      'user_id': userId,
+      'community_id': communityId,
+      'base_price': basePrice,
       'quantity': quantity,
-      'productCategory': productCategory,
-      'productPhoto': productPhoto,
+      'product_category': productCategory,
+      'product_photo': productPhoto,
       'status': status,
       'gallery': gallery?.toMap(),
     };
@@ -131,18 +131,18 @@ class UserProduct extends ChangeNotifier {
 
   factory UserProduct.fromMap(Map<String, dynamic> map) {
     if (map == null) return null;
-  
+
     return UserProduct(
       id: map['id'],
       name: map['name'],
       description: map['description'],
-      shopId: map['shopId'],
-      userId: map['userId'],
-      communityId: map['communityId'],
-      basePrice: map['basePrice'],
+      shopId: map['shop_id'],
+      userId: map['user_id'],
+      communityId: map['community_id'],
+      basePrice: map['base_price'],
       quantity: map['quantity'],
-      productCategory: map['productCategory'],
-      productPhoto: map['productPhoto'],
+      productCategory: map['product_category'],
+      productPhoto: map['product_photo'],
       status: map['status'],
       gallery: ProductGallery.fromMap(map['gallery']),
     );
@@ -150,7 +150,8 @@ class UserProduct extends ChangeNotifier {
 
   String toJson() => json.encode(toMap());
 
-  factory UserProduct.fromJson(String source) => UserProduct.fromMap(json.decode(source));
+  factory UserProduct.fromJson(String source) =>
+      UserProduct.fromMap(json.decode(source));
 
   @override
   String toString() {
@@ -160,35 +161,35 @@ class UserProduct extends ChangeNotifier {
   @override
   bool operator ==(Object o) {
     if (identical(this, o)) return true;
-  
+
     return o is UserProduct &&
-      o.id == id &&
-      o.name == name &&
-      o.description == description &&
-      o.shopId == shopId &&
-      o.userId == userId &&
-      o.communityId == communityId &&
-      o.basePrice == basePrice &&
-      o.quantity == quantity &&
-      o.productCategory == productCategory &&
-      o.productPhoto == productPhoto &&
-      o.status == status &&
-      o.gallery == gallery;
+        o.id == id &&
+        o.name == name &&
+        o.description == description &&
+        o.shopId == shopId &&
+        o.userId == userId &&
+        o.communityId == communityId &&
+        o.basePrice == basePrice &&
+        o.quantity == quantity &&
+        o.productCategory == productCategory &&
+        o.productPhoto == productPhoto &&
+        o.status == status &&
+        o.gallery == gallery;
   }
 
   @override
   int get hashCode {
     return id.hashCode ^
-      name.hashCode ^
-      description.hashCode ^
-      shopId.hashCode ^
-      userId.hashCode ^
-      communityId.hashCode ^
-      basePrice.hashCode ^
-      quantity.hashCode ^
-      productCategory.hashCode ^
-      productPhoto.hashCode ^
-      status.hashCode ^
-      gallery.hashCode;
+        name.hashCode ^
+        description.hashCode ^
+        shopId.hashCode ^
+        userId.hashCode ^
+        communityId.hashCode ^
+        basePrice.hashCode ^
+        quantity.hashCode ^
+        productCategory.hashCode ^
+        productPhoto.hashCode ^
+        status.hashCode ^
+        gallery.hashCode;
   }
 }

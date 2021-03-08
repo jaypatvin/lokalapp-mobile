@@ -60,7 +60,7 @@ class CustomHours {
 
   Map<String, dynamic> toMap() {
     return {
-      'isCustom': isCustom,
+      'is_custom': isCustom,
       'opening': opening,
       'closing': closing,
       'mon': mon,
@@ -77,7 +77,7 @@ class CustomHours {
     if (map == null) return null;
 
     return CustomHours(
-      isCustom: map['isCustom'],
+      isCustom: map['is_custom'],
       opening: map['opening'],
       closing: map['closing'],
       mon: CustomDay.fromMap(map['mon']),
@@ -124,14 +124,14 @@ class ShopModel {
     return {
       'id': id,
       'name': name,
-      'userId': userId,
-      'communityId': communityId,
+      'user_id': userId,
+      'community_id': communityId,
       'description': description,
-      'profilePhoto': profilePhoto,
-      'coverPhoto': coverPhoto,
-      'isClosed': isClosed,
+      'profile_photo': profilePhoto,
+      'cover_photo': coverPhoto,
+      'is_closed': isClosed,
       'status': status,
-      'operatingHours': operatingHours?.toMap(),
+      'operating_hours': operatingHours?.toMap(),
     };
   }
 
@@ -141,21 +141,21 @@ class ShopModel {
     return ShopModel(
       id: map['id'],
       name: map['name'],
-      userId: map['userId'],
-      communityId: map['communityId'],
+      userId: map['user_id'],
+      communityId: map['community_id'],
       description: map['description'],
-      profilePhoto: map['profilePhoto'],
-      coverPhoto: map['coverPhoto'],
-      isClosed: map['isClosed'],
+      profilePhoto: map['profile_photo'],
+      coverPhoto: map['cover_photo'],
+      isClosed: map['is_closed'],
       status: map['status'],
-      operatingHours: CustomHours.fromMap(map['operatingHours']),
+      operatingHours: CustomHours.fromMap(map['operating_hours']),
     );
   }
   factory ShopModel.fromDocument(DocumentSnapshot doc) {
     return ShopModel(
         id: doc.data()['id'],
         name: doc.data()['name'],
-        userId: doc.data()['userId'],
+        userId: doc.data()['user_id'],
         communityId: doc.data()['community_id'],
         description: doc.data()['description'],
         profilePhoto: doc.data()['profile_photo'],

@@ -51,10 +51,12 @@ class _TimelineState extends State<Timeline> {
     );
   }
 
-  Expanded buildHeader(String firstName, String lastName) {
+  Expanded buildHeader(String firstName, String lastName, String imgUrl) {
     return Expanded(
       child: ListTile(
-        leading: CircleAvatar(),
+        leading: CircleAvatar(
+          backgroundImage: imgUrl.isNotEmpty ? NetworkImage(imgUrl) : null,
+        ),
         title: Text(
           firstName + " " + lastName,
           style: TextStyle(
@@ -148,7 +150,9 @@ class _TimelineState extends State<Timeline> {
                                                       children: [
                                                         buildHeader(
                                                             _user.firstName,
-                                                            _user.lastName)
+                                                            _user.lastName,
+                                                            _user.profilePhoto ??
+                                                                "")
                                                       ],
                                                     ),
                                                     SizedBox(

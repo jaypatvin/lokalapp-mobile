@@ -13,18 +13,11 @@ import 'profile_search_bar.dart';
 import 'profile_store_name.dart';
 
 class ProfileShop extends StatefulWidget {
-  final bool hasStore;
-  final bool hasProduct;
-  ProfileShop({this.hasStore, this.hasProduct});
-
   @override
   _ProfileShopState createState() => _ProfileShopState();
 }
 
 class _ProfileShopState extends State<ProfileShop> {
-  String shopName;
-  String description;
-  bool hasProduct = false;
   Padding buildIconSettings() {
     return Padding(
         padding: const EdgeInsets.only(left: 5),
@@ -39,6 +32,8 @@ class _ProfileShopState extends State<ProfileShop> {
   }
 
   Row buildCircleAvatar() {
+    var shopPhoto =
+        Provider.of<CurrentUser>(context, listen: false).profilePhoto;
     return Row(
       children: [
         Expanded(
@@ -48,43 +43,14 @@ class _ProfileShopState extends State<ProfileShop> {
             radius: 35,
             backgroundColor: Colors.transparent,
             child: ClipOval(
-              child: Image.network(
-                  "https://hips.hearstapps.com/digitalspyuk.cdnds.net/17/38/1505816350-screen-shot-2017-09-19-at-111641.jpg?crop=0.502xw:1.00xh;0.0952xw,0&resize=480:*"),
+              child: shopPhoto != null && shopPhoto.isNotEmpty
+                  ? Image.network(shopPhoto)
+                  : null,
             ),
           ),
         )),
       ],
     );
-  }
-
-  @override
-  initState() {
-    super.initState();
-    getUser();
-  }
-
-  getUser() async {
-    CurrentUser _user = Provider.of(context, listen: false);
-
-    if (_user.id != null) {
-      try {
-        var success = await _user.getShops();
-        // final shopPhoto = storageRef.child(_user.userShops[0].profilePhoto);
-
-        // var urlPhoto = await shopPhoto.getDownloadURL();
-
-        if (success) {
-          setState(() {
-            shopName = _user.userShops[0].name;
-            description = _user.userShops[0].description;
-          });
-          print(_user.userShops[0].profilePhoto);
-          print(shopName);
-        }
-      } on Exception catch (_) {
-        print(_);
-      }
-    }
   }
 
   Row buildName(context) {
@@ -94,7 +60,7 @@ class _ProfileShopState extends State<ProfileShop> {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Text(
-          shopName,
+          _user.userShops[0].name,
           style: TextStyle(
               color: Colors.white,
               fontFamily: "GoldplayBold",
@@ -178,6 +144,7 @@ class _ProfileShopState extends State<ProfileShop> {
 
   @override
   Widget build(BuildContext context) {
+    var user = Provider.of<CurrentUser>(context, listen: false);
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white,
@@ -233,8 +200,11 @@ class _ProfileShopState extends State<ProfileShop> {
                     padding: EdgeInsets.only(left: 18),
                     child: CircleAvatar(
                       radius: 23,
-                      backgroundImage: NetworkImage(
-                          "https://media.istockphoto.com/vectors/bakery-hand-written-lettering-logo-vector-id1166282839?b=1&k=6&m=1166282839&s=612x612&w=0&h=fOgckd0dFcbS3UWVbKAFmCwrc0ti9A56FB-J0GEp9LA="),
+                      // should refactor/simplify this
+                      backgroundImage: user.userShops[0].profilePhoto != null &&
+                              user.userShops[0].profilePhoto.isNotEmpty
+                          ? NetworkImage(user.userShops[0].profilePhoto)
+                          : null,
                     ),
                   ),
                   Row(
@@ -257,7 +227,7 @@ class _ProfileShopState extends State<ProfileShop> {
                 ],
               ),
               StoreMessage(
-                description: description,
+                description: user.userShops[0].description,
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -268,7 +238,7 @@ class _ProfileShopState extends State<ProfileShop> {
               SizedBox(
                 height: 40,
               ),
-              hasProduct
+              user.userProducts.isNotEmpty
                   ? StoreCard()
                   : Row(
                       mainAxisAlignment: MainAxisAlignment.center,

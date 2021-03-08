@@ -117,7 +117,7 @@ class _ProfileShopMainState extends State<ProfileShopMain> {
         ));
   }
 
-  Row buildCircleAvatar() {
+  Row buildCircleAvatar(String imgUrl) {
     return Row(
       children: [
         Expanded(
@@ -127,8 +127,7 @@ class _ProfileShopMainState extends State<ProfileShopMain> {
             radius: 35,
             backgroundColor: Colors.transparent,
             child: ClipOval(
-              child: Image.network(
-                  "https://hips.hearstapps.com/digitalspyuk.cdnds.net/17/38/1505816350-screen-shot-2017-09-19-at-111641.jpg?crop=0.502xw:1.00xh;0.0952xw,0&resize=480:*"),
+              child: imgUrl.isNotEmpty ? Image.network(imgUrl) : null,
             ),
           ),
         )),
@@ -136,14 +135,13 @@ class _ProfileShopMainState extends State<ProfileShopMain> {
     );
   }
 
-  Row buildName() {
-    CurrentUser _user = Provider.of<CurrentUser>(context, listen: false);
+  Row buildName(String firstName, String lastName) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Text(
-          _user.firstName + " " + _user.lastName,
+          firstName + " " + lastName,
           style: TextStyle(
               color: Colors.white,
               fontFamily: "GoldplayBold",
@@ -156,7 +154,7 @@ class _ProfileShopMainState extends State<ProfileShopMain> {
 
   @override
   Widget build(BuildContext context) {
-    CurrentUser _user = Provider.of<CurrentUser>(context, listen: false);
+    CurrentUser user = Provider.of<CurrentUser>(context, listen: false);
     return SafeArea(
         child: Scaffold(
       backgroundColor: Colors.white,
@@ -189,20 +187,18 @@ class _ProfileShopMainState extends State<ProfileShopMain> {
                       buildIconMore(context),
                     ],
                   ),
-                  buildCircleAvatar(),
+                  buildCircleAvatar(user.profilePhoto ?? ""),
                   SizedBox(
                     height: 15,
                   ),
-                  buildName()
+                  buildName(user.firstName, user.lastName)
                 ],
               ),
             ),
           ),
         ),
       ),
-      body: ProfileNoShop(
-        hasStore: true,
-      ),
+      body: ProfileNoShop(),
     ));
   }
 }

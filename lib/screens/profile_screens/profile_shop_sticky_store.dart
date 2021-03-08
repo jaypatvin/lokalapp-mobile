@@ -21,92 +21,64 @@ class ProfileShopStickyStore extends StatefulWidget {
 }
 
 class _ProfileShopStickyStoreState extends State<ProfileShopStickyStore> {
-  String shopName;
-  // List<ShopModel> shopPhoto;
-  String url;
-  @override
-  initState() {
-    super.initState();
-    getUser();
-    // _getShopImage();
-  }
-
-  getUser() async {
-    CurrentUser _user = Provider.of(context, listen: false);
-
-    if (_user.id != null) {
-      try {
-        var success = await _user.getShops();
-        // final shopPhoto = storageRef.child(_user.userShops[0].profilePhoto);
-
-        // var urlPhoto = await shopPhoto.getDownloadURL();
-
-        if (success) {
-          setState(() {
-            shopName = _user.userShops[0].name;
-            // url = urlPhoto;
-          });
-          print(_user.userShops[0].profilePhoto);
-        }
-      } on Exception catch (_) {
-        print(_);
-      }
-    }
-  }
-
   Widget buildShopStore(context) {
-    CurrentUser _shop = Provider.of<CurrentUser>(context, listen: false);
-
     return Container(
       height: 53,
       width: MediaQuery.of(context).size.width,
       child: ListView(shrinkWrap: true, children: [
         Container(
-          child: ListTile(
-            leading:
-                CircleAvatar(radius: 23, backgroundImage: NetworkImage("")),
-            title: Text(
-              shopName,
-              style: TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 14),
-            ),
-            trailing: Row(
-              mainAxisSize: MainAxisSize.min,
-              // crossAxisAlignment: CrossAxisAlignment.end,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Icon(Icons.star, color: Colors.amber, size: 20),
-                SizedBox(
-                  width: 3,
-                ),
-                Text(
-                  "4.54",
-                  style: TextStyle(color: Colors.amber, fontSize: 14),
-                ),
-                SizedBox(
-                  width: 15,
-                ),
-                GestureDetector(
-                  onTap: () {
-                    pushNewScreen(
-                      context,
-                      screen: ProfileShop(),
-                      withNavBar: true, // OPTIONAL VALUE. True by default.
-                      pageTransitionAnimation:
-                          PageTransitionAnimation.cupertino,
-                    );
-                  },
-                  child: Icon(
-                    Icons.arrow_forward_ios,
-                    color: kTealColor,
-                    size: 16,
+          child: Consumer<CurrentUser>(builder: (context, user, child) {
+            return ListTile(
+              leading: CircleAvatar(
+                  radius: 23,
+                  // should refactor/simplify this
+                  backgroundImage: user.userShops[0].profilePhoto != null &&
+                          user.userShops[0].profilePhoto.isNotEmpty
+                      ? NetworkImage(user.userShops[0].profilePhoto)
+                      : null),
+              title: Text(
+                user.userShops[0].name,
+                style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14),
+              ),
+              trailing: Row(
+                mainAxisSize: MainAxisSize.min,
+                // crossAxisAlignment: CrossAxisAlignment.end,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Icon(Icons.star, color: Colors.amber, size: 20),
+                  SizedBox(
+                    width: 3,
                   ),
-                ),
-              ],
-            ),
-          ),
+                  Text(
+                    "4.54",
+                    style: TextStyle(color: Colors.amber, fontSize: 14),
+                  ),
+                  SizedBox(
+                    width: 15,
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      pushNewScreen(
+                        context,
+                        screen: ProfileShop(),
+                        withNavBar: true, // OPTIONAL VALUE. True by default.
+                        pageTransitionAnimation:
+                            PageTransitionAnimation.cupertino,
+                      );
+                    },
+                    child: Icon(
+                      Icons.arrow_forward_ios,
+                      color: kTealColor,
+                      size: 16,
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }),
         ),
       ]),
     );

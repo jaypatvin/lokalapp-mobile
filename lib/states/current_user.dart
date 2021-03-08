@@ -28,9 +28,9 @@ class CurrentUser extends ChangeNotifier {
   UserShopPost postShop = UserShopPost();
   UserProductPost postProduct = UserProductPost();
 
-  List<UserProduct> _userProducts;
-  List<UserProduct> _communityProducts;
-  List<ShopModel> _userShops;
+  List<UserProduct> _userProducts = [];
+  List<UserProduct> _communityProducts = [];
+  List<ShopModel> _userShops = [];
 
   Map get getStreamAccount => _getStreamAccount;
   bool get isAuthenticated =>
@@ -69,6 +69,15 @@ class CurrentUser extends ChangeNotifier {
     if (data["status"] == "ok") {
       _user = LokalUser.fromMap(data["data"]);
       await _getStreamLogin();
+
+      // added to remove states for add shops
+      //can be removed for registration
+      await getShops();
+
+      // since we have one shop, we only need to get all products for the user
+      // can be removed for registration
+      await getUserProducts();
+
       return true;
     }
 
@@ -289,32 +298,6 @@ class CurrentUser extends ChangeNotifier {
     _postBody["profile_photo"] = profilePhoto ?? _postBody["profile_photo"];
   }
 
-  void updatePostShop(
-      {String name,
-      String description,
-      String profilePhoto,
-      String coverPhoto,
-      String isClosed,
-      String opening,
-      String closing,
-      String useCustomHours,
-      String userId,
-      String customHours,
-      String status}) async {
-    _postShop["name"] = name ?? _postShop["name"];
-    _postShop["description"] = description ?? _postShop["description"];
-    _postShop["user_id"] = userId ?? _postShop["user_id"];
-    _postShop["cover_photo"] = coverPhoto ?? _postShop["cover_photo"];
-    _postShop["community_id"] = communityId ?? _postShop["community_id"];
-    _postBody["profile_photo"] = profilePhoto ?? _postBody["profile_photo"];
-    _postShop["custom_hours"] = customHours ?? _postShop["custom_hours"];
-    _postShop["opening"] = opening ?? _postShop["opening"];
-    _postShop["closing"] = closing ?? _postShop["closing"];
-    _postShop["status"] = status ?? _postShop["status"];
-    _postShop["community_id"] = communityId ?? _postShop["community_id"];
-    _postShop["is_closed"] = isClosed ?? _postShop["is_closed"];
-  }
-
   void updateUserRegistrationInfo({
     int step,
     String idPhoto,
@@ -466,6 +449,10 @@ class CurrentUser extends ChangeNotifier {
       _user = LokalUser.fromMap(map["data"]);
       retVal = FirebaseAuthStatus.Success;
       await _getStreamLogin();
+      // added to remove states for add shops
+      await getShops();
+      // since we have one shop, we only need to get all products for the user
+      await getUserProducts();
     } else {
       _postBody["user_uid"] = user.uid;
       _postBody["email"] = user.email;

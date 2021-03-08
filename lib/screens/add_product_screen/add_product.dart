@@ -6,6 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:lokalapp/screens/add_shop_screens/appbar_shop.dart';
 import 'package:lokalapp/screens/add_shop_screens/shopDescription.dart';
 import 'package:lokalapp/screens/edit_shop_screen/set_custom_operating_hours.dart';
+import 'package:lokalapp/screens/profile_screens/profile.dart';
 import 'package:lokalapp/services/database.dart';
 import 'package:lokalapp/states/current_user.dart';
 import 'package:lokalapp/utils/themes.dart';
@@ -309,7 +310,14 @@ class _AddProductState extends State<AddProduct> {
       fontWeight: FontWeight.w700,
       fontFamily: "GoldplayBold",
       onPressed: () async {
-        await createProduct();
+        var productCreated = await createProduct();
+        if (productCreated) {
+          //TODO: add where to go if successful
+          Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => ProfileShopMain()),
+              (route) => false);
+        }
       },
     );
   }
