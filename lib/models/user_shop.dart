@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class CustomDay {
   String name;
   String opening;
@@ -149,7 +151,19 @@ class ShopModel {
       operatingHours: CustomHours.fromMap(map['operatingHours']),
     );
   }
-
+  factory ShopModel.fromDocument(DocumentSnapshot doc) {
+    return ShopModel(
+        id: doc.data()['id'],
+        name: doc.data()['name'],
+        userId: doc.data()['userId'],
+        communityId: doc.data()['community_id'],
+        description: doc.data()['description'],
+        profilePhoto: doc.data()['profile_photo'],
+        coverPhoto: doc.data()['cover_photo'],
+        isClosed: doc.data()['is_closed'],
+        status: doc.data()['status'],
+        operatingHours: doc.data()['operating_hours']);
+  }
   String toJson() => json.encode(toMap());
 
   factory ShopModel.fromJson(String source) =>

@@ -30,7 +30,9 @@ class _ProfileNotVerifiedState extends State<ProfileNotVerified> {
             // fontWeight: FontWeight.w600
           ),
         ),
-        onPressed: () {},
+        onPressed: () {
+          Navigator.pop(context, false);
+        },
       ),
     );
   }

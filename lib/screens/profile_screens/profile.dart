@@ -8,8 +8,8 @@ import '../../states/current_user.dart';
 import 'package:provider/provider.dart';
 
 class ProfileShopMain extends StatefulWidget {
-  final Map<String, String> account;
-  ProfileShopMain({Key key, @required this.account}) : super(key: key);
+  // final Map<String, String> account;
+  // ProfileShopMain({Key key, @required this.account}) : super(key: key);
 
   @override
   _ProfileShopMainState createState() => _ProfileShopMainState();
@@ -32,74 +32,89 @@ class _ProfileShopMainState extends State<ProfileShopMain> {
         ));
   }
 
-  Row buildIconMore() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(left: 250),
-          child: IconButton(
-              icon: Icon(
-                Icons.more_horiz,
-                color: Colors.white,
-                size: 38,
-              ),
-              onPressed: () {
-                showModalBottomSheet(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return Container(
-                          height: 140,
-                          color: Colors.white,
-                          padding: EdgeInsets.only(
-                              left: 50, top: 10, bottom: 10, right: 40),
-                          child: ListView(children: [
-                            GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => EditShop()));
-                              },
-                              child: ListTile(
-                                leading: Text(
-                                  "Edit Shop",
-                                  softWrap: true,
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontFamily: "Goldplay",
-                                      fontSize: 14),
-                                ),
-                              ),
-                            ),
-                            GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => AddProduct()));
-                              },
-                              child: ListTile(
-                                leading: Text(
-                                  "Add Product",
-                                  softWrap: true,
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontFamily: "Goldplay",
-                                      fontSize: 14),
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              height: 8,
-                            )
-                          ]));
-                    });
-              }),
-        ),
-      ],
-    );
+  // Row buildIconMore() {
+  //   return Row(
+  //     mainAxisAlignment: MainAxisAlignment.end,
+  //     crossAxisAlignment: CrossAxisAlignment.end,
+  //     children: [
+  //       Padding(
+  //         padding: const EdgeInsets.only(left: 250),
+  //         child: IconButton(
+  //             icon: Icon(
+  //               Icons.more_horiz,
+  //               color: Colors.white,
+  //               size: 38,
+  //             ),
+  //             onPressed: () {
+  //               showModalBottomSheet(
+  //                   context: context,
+  //                   builder: (BuildContext context) {
+  //                     return Container(
+  //                         height: 140,
+  //                         color: Colors.white,
+  //                         padding: EdgeInsets.only(
+  //                             left: 50, top: 10, bottom: 10, right: 40),
+  //                         child: ListView(children: [
+  //                           GestureDetector(
+  //                             onTap: () {
+  //                               Navigator.push(
+  //                                   context,
+  //                                   MaterialPageRoute(
+  //                                       builder: (context) => EditShop()));
+  //                             },
+  //                             child: ListTile(
+  //                               leading: Text(
+  //                                 "Edit Shop",
+  //                                 softWrap: true,
+  //                                 style: TextStyle(
+  //                                     fontWeight: FontWeight.bold,
+  //                                     fontFamily: "Goldplay",
+  //                                     fontSize: 14),
+  //                               ),
+  //                             ),
+  //                           ),
+  //                           GestureDetector(
+  //                             onTap: () {
+  //                               Navigator.push(
+  //                                   context,
+  //                                   MaterialPageRoute(
+  //                                       builder: (context) => AddProduct()));
+  //                             },
+  //                             child: ListTile(
+  //                               leading: Text(
+  //                                 "Add Product",
+  //                                 softWrap: true,
+  //                                 style: TextStyle(
+  //                                     fontWeight: FontWeight.bold,
+  //                                     fontFamily: "Goldplay",
+  //                                     fontSize: 14),
+  //                               ),
+  //                             ),
+  //                           ),
+  //                           SizedBox(
+  //                             height: 8,
+  //                           )
+  //                         ]));
+  //                   });
+  //             }),
+  //       ),
+  //     ],
+  //   );
+  // }
+
+  buildIconMore(context) {
+    return Padding(
+        padding: const EdgeInsets.only(right: 5),
+        child: IconButton(
+          icon: Icon(
+            Icons.more_horiz,
+            size: 38,
+          ),
+          color: Colors.white,
+          onPressed: () {
+            Navigator.pop(context, true);
+          },
+        ));
   }
 
   Row buildCircleAvatar() {
@@ -171,7 +186,7 @@ class _ProfileShopMainState extends State<ProfileShopMain> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       buildIconSettings(),
-                      buildIconMore(),
+                      buildIconMore(context),
                     ],
                   ),
                   buildCircleAvatar(),

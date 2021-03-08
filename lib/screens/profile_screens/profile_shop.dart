@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:lokalapp/screens/add_product_screen/add_product.dart';
+import 'package:lokalapp/screens/edit_shop_screen/edit_shop.dart';
 import 'package:lokalapp/states/current_user.dart';
+import 'package:lokalapp/utils/themes.dart';
 import 'package:provider/provider.dart';
 
 import 'components/store_card.dart';
@@ -9,10 +12,19 @@ import 'components/store_message.dart';
 import 'profile_search_bar.dart';
 import 'profile_store_name.dart';
 
-class ProfileShop extends StatelessWidget {
+class ProfileShop extends StatefulWidget {
   final bool hasStore;
-  ProfileShop({this.hasStore});
+  final bool hasProduct;
+  ProfileShop({this.hasStore, this.hasProduct});
 
+  @override
+  _ProfileShopState createState() => _ProfileShopState();
+}
+
+class _ProfileShopState extends State<ProfileShop> {
+  String shopName;
+  String description;
+  bool hasProduct = false;
   Padding buildIconSettings() {
     return Padding(
         padding: const EdgeInsets.only(left: 5),
@@ -23,21 +35,6 @@ class ProfileShop extends StatelessWidget {
           ),
           color: Colors.white,
           onPressed: () {},
-        ));
-  }
-
-  buildIconMore(context) {
-    return Padding(
-        padding: const EdgeInsets.only(right: 5),
-        child: IconButton(
-          icon: Icon(
-            Icons.more_horiz,
-            size: 38,
-          ),
-          color: Colors.white,
-          onPressed: () {
-            Navigator.pop(context);
-          },
         ));
   }
 
@@ -60,6 +57,36 @@ class ProfileShop extends StatelessWidget {
     );
   }
 
+  @override
+  initState() {
+    super.initState();
+    getUser();
+  }
+
+  getUser() async {
+    CurrentUser _user = Provider.of(context, listen: false);
+
+    if (_user.id != null) {
+      try {
+        var success = await _user.getShops();
+        // final shopPhoto = storageRef.child(_user.userShops[0].profilePhoto);
+
+        // var urlPhoto = await shopPhoto.getDownloadURL();
+
+        if (success) {
+          setState(() {
+            shopName = _user.userShops[0].name;
+            description = _user.userShops[0].description;
+          });
+          print(_user.userShops[0].profilePhoto);
+          print(shopName);
+        }
+      } on Exception catch (_) {
+        print(_);
+      }
+    }
+  }
+
   Row buildName(context) {
     CurrentUser _user = Provider.of<CurrentUser>(context, listen: false);
     return Row(
@@ -67,14 +94,84 @@ class ProfileShop extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Text(
-          "Bakey Bakey",
-          // _user.firstName + " " + _user.lastName,
+          shopName,
           style: TextStyle(
               color: Colors.white,
               fontFamily: "GoldplayBold",
               fontSize: 24,
               fontWeight: FontWeight.bold),
         )
+      ],
+    );
+  }
+
+  Row buildIcon() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(left: 250),
+          child: IconButton(
+              icon: Icon(
+                Icons.more_horiz,
+                color: Colors.white,
+                size: 38,
+              ),
+              onPressed: () {
+                showModalBottomSheet(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return Container(
+                          height: 140,
+                          color: Colors.white,
+                          padding: EdgeInsets.only(
+                              left: 50, top: 10, bottom: 10, right: 40),
+                          child: ListView(children: [
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => EditShop()));
+                              },
+                              child: ListTile(
+                                leading: Text(
+                                  "Edit Shop",
+                                  softWrap: true,
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontFamily: "Goldplay",
+                                      fontSize: 14),
+                                ),
+                              ),
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.pop(context, false);
+                                // Navigator.push(
+                                //     context,
+                                //     MaterialPageRoute(
+                                //         builder: (context) => AddProduct()));
+                              },
+                              child: ListTile(
+                                leading: Text(
+                                  "Add Product",
+                                  softWrap: true,
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontFamily: "Goldplay",
+                                      fontSize: 14),
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              height: 8,
+                            )
+                          ]));
+                    });
+              }),
+        ),
       ],
     );
   }
@@ -108,7 +205,7 @@ class ProfileShop extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       // crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [buildIconSettings(), buildIconMore(context)],
+                      children: [buildIconSettings(), buildIcon()],
                     ),
                     buildCircleAvatar(),
                     SizedBox(
@@ -159,7 +256,9 @@ class ProfileShop extends StatelessWidget {
                   ),
                 ],
               ),
-              StoreMessage(),
+              StoreMessage(
+                description: description,
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -167,9 +266,62 @@ class ProfileShop extends StatelessWidget {
                 ],
               ),
               SizedBox(
+                height: 40,
+              ),
+              hasProduct
+                  ? StoreCard()
+                  : Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          "No products added",
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                            fontFamily: "Goldplay",
+                          ),
+                        ),
+                      ],
+                    ),
+              SizedBox(
                 height: 20,
               ),
-              StoreCard()
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    height: 40,
+                    width: 200,
+                    child: FlatButton(
+                      // height: 50,
+                      // minWidth: 100,
+                      color: kTealColor,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(25.0),
+                        side: BorderSide(color: kTealColor),
+                      ),
+                      textColor: Colors.black,
+                      child: Text(
+                        "ADD PRODUCTS",
+                        style: TextStyle(
+                            fontFamily: "Goldplay",
+                            fontSize: 14,
+                            fontWeight: FontWeight.w700),
+                      ),
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => AddProduct()));
+                      },
+                    ),
+                  ),
+                ],
+              ),
             ],
           ),
         ),

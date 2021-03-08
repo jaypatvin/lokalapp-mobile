@@ -43,7 +43,11 @@ class _ProfileNoShopState extends State<ProfileNoShop> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              buildAddShopButton(),
+              widget.hasStore
+                  ? ProfileShopStickyStore(
+                      hasStore: true,
+                    )
+                  : buildAddShopButton()
             ],
           ),
           SizedBox(
@@ -92,22 +96,12 @@ class _ProfileNoShopState extends State<ProfileNoShop> {
         onPressed: () {
           pushNewScreen(
             context,
-            screen: ProfileNotVerified(),
+            screen: AddShop(),
             withNavBar: true, // OPTIONAL VALUE. True by default.
             pageTransitionAnimation: PageTransitionAnimation.cupertino,
           );
         },
       ),
-    );
-  }
-
-  Row buildContainer() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        widget.hasStore ? ProfileShopStickyStore() : buildAddShopButton()
-      ],
     );
   }
 

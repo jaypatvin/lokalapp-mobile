@@ -109,7 +109,7 @@ class CurrentUser extends ChangeNotifier {
     Map data = json.decode(response.body);
 
     if (data["status"] == "ok") {
-      _user = LokalUser.fromMap(data["data"]);
+      await getShops();
       return true;
     }
 

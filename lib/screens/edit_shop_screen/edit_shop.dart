@@ -178,7 +178,7 @@ class _EditShopState extends State<EditShop> {
   @override
   initState() {
     super.initState();
-    // getUser();
+    getUser();
   }
 
   getUser() async {
