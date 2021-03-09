@@ -2,6 +2,7 @@ import 'dart:collection';
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:lokalapp/models/user_product.dart';
@@ -174,6 +175,7 @@ class CurrentUser extends ChangeNotifier {
 
   //TODO: handle errors
   Future<bool> createProduct() async {
+    postProduct.shopId = _userShops[0].id;
     var _postData = postProduct.toMap();
     var response = await LokalApiService()
         .createProduct(data: _postData, idToken: _userIdToken);
@@ -453,6 +455,14 @@ class CurrentUser extends ChangeNotifier {
       await getShops();
       // since we have one shop, we only need to get all products for the user
       await getUserProducts();
+
+      FirebaseAuth.instance.idTokenChanges().listen((User user) {
+        if (user != null) {
+          user.getIdToken().then((String token) {
+            this._userIdToken = token;
+          });
+        }
+      });
     } else {
       _postBody["user_uid"] = user.uid;
       _postBody["email"] = user.email;

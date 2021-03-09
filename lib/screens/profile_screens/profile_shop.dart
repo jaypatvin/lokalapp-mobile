@@ -32,8 +32,9 @@ class _ProfileShopState extends State<ProfileShop> {
   }
 
   Row buildCircleAvatar() {
-    var shopPhoto =
-        Provider.of<CurrentUser>(context, listen: false).profilePhoto;
+    var shopPhoto = Provider.of<CurrentUser>(context, listen: false)
+        .userShops[0]
+        .profilePhoto;
     return Row(
       children: [
         Expanded(
@@ -185,115 +186,118 @@ class _ProfileShopState extends State<ProfileShop> {
             ),
           ),
         ),
-        body: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              SizedBox(
-                height: 45,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: EdgeInsets.only(left: 18),
-                    child: CircleAvatar(
-                      radius: 23,
-                      // should refactor/simplify this
-                      backgroundImage: user.userShops[0].profilePhoto != null &&
-                              user.userShops[0].profilePhoto.isNotEmpty
-                          ? NetworkImage(user.userShops[0].profilePhoto)
-                          : null,
-                    ),
+        body: CustomScrollView(
+          slivers: [
+            SliverList(
+              delegate: SliverChildListDelegate(
+                [
+                  SizedBox(
+                    height: 45,
                   ),
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.only(left: 18),
+                        child: CircleAvatar(
+                          radius: 23,
+                          // should refactor/simplify this
+                          backgroundImage: user.profilePhoto != null &&
+                                  user.profilePhoto.isNotEmpty
+                              ? NetworkImage(user.profilePhoto)
+                              : null,
+                        ),
+                      ),
+                      Row(
+                        children: [
+                          Container(
+                            // padding: const EdgeInsets.only(left: 15),
+                            child: ProfileStoreName(),
+                          ),
+                          SizedBox(
+                            width: 50,
+                          ),
+                          Text("No reviews yet",
+                              style: TextStyle(
+                                fontFamily: "Goldplay",
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                              )),
+                        ],
+                      ),
+                    ],
+                  ),
+                  StoreMessage(
+                    description: user.userShops[0].description,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Expanded(child: ProfileSearchBar()),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 40,
+                  ),
+                  user.userProducts.isNotEmpty
+                      ? StoreCard()
+                      : Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              "No products added",
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                                fontFamily: "Goldplay",
+                              ),
+                            ),
+                          ],
+                        ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
                     children: [
                       Container(
-                        // padding: const EdgeInsets.only(left: 15),
-                        child: ProfileStoreName(),
+                        height: 40,
+                        width: 200,
+                        child: FlatButton(
+                          // height: 50,
+                          // minWidth: 100,
+                          color: kTealColor,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(25.0),
+                            side: BorderSide(color: kTealColor),
+                          ),
+                          textColor: Colors.black,
+                          child: Text(
+                            "ADD PRODUCTS",
+                            style: TextStyle(
+                                fontFamily: "Goldplay",
+                                fontSize: 14,
+                                fontWeight: FontWeight.w700),
+                          ),
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => AddProduct()));
+                          },
+                        ),
                       ),
-                      SizedBox(
-                        width: 50,
-                      ),
-                      Text("No reviews yet",
-                          style: TextStyle(
-                            fontFamily: "Goldplay",
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                          )),
                     ],
                   ),
                 ],
               ),
-              StoreMessage(
-                description: user.userShops[0].description,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Expanded(child: ProfileSearchBar()),
-                ],
-              ),
-              SizedBox(
-                height: 40,
-              ),
-              user.userProducts.isNotEmpty
-                  ? StoreCard()
-                  : Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          "No products added",
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                            fontFamily: "Goldplay",
-                          ),
-                        ),
-                      ],
-                    ),
-              SizedBox(
-                height: 20,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Container(
-                    height: 40,
-                    width: 200,
-                    child: FlatButton(
-                      // height: 50,
-                      // minWidth: 100,
-                      color: kTealColor,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(25.0),
-                        side: BorderSide(color: kTealColor),
-                      ),
-                      textColor: Colors.black,
-                      child: Text(
-                        "ADD PRODUCTS",
-                        style: TextStyle(
-                            fontFamily: "Goldplay",
-                            fontSize: 14,
-                            fontWeight: FontWeight.w700),
-                      ),
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => AddProduct()));
-                      },
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
+            )
+          ],
         ),
       ),
     );
