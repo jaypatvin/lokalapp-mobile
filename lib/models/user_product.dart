@@ -139,7 +139,7 @@ class UserProduct extends ChangeNotifier {
       shopId: map['shop_id'],
       userId: map['user_id'],
       communityId: map['community_id'],
-      basePrice: map['base_price'],
+      basePrice: map['base_price'] == null ? 0.0 : map['base_price'].toDouble(),
       quantity: map['quantity'],
       productCategory: map['product_category'],
       productPhoto: map['product_photo'],

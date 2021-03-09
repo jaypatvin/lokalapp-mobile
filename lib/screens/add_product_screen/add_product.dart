@@ -3,10 +3,12 @@ import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:lokalapp/models/user_product.dart';
 import 'package:lokalapp/screens/add_shop_screens/appbar_shop.dart';
 import 'package:lokalapp/screens/add_shop_screens/shopDescription.dart';
 import 'package:lokalapp/screens/edit_shop_screen/set_custom_operating_hours.dart';
 import 'package:lokalapp/screens/profile_screens/profile.dart';
+import 'package:lokalapp/screens/profile_screens/profile_shop.dart';
 import 'package:lokalapp/services/database.dart';
 import 'package:lokalapp/states/current_user.dart';
 import 'package:lokalapp/utils/themes.dart';
@@ -166,6 +168,7 @@ class _AddProductState extends State<AddProduct> {
   }
 
   Widget buildDropDown() {
+    var user = Provider.of<CurrentUser>(context, listen: false);
     return Container(
       width: 160.0,
       height: 35.0,
@@ -180,6 +183,7 @@ class _AddProductState extends State<AddProduct> {
           iconEnabledColor: kTealColor,
           iconDisabledColor: kTealColor,
           underline: SizedBox(),
+          value: user.postProduct.productCategory,
           hint: Text(
             "Select",
             style:
@@ -191,7 +195,11 @@ class _AddProductState extends State<AddProduct> {
               child: new Text(value),
             );
           }).toList(),
-          onChanged: (_) {},
+          onChanged: (value) {
+            setState(() {
+              user.postProduct.productCategory = value;
+            });
+          },
         ),
       ),
     );
@@ -315,7 +323,7 @@ class _AddProductState extends State<AddProduct> {
           //TODO: add where to go if successful
           Navigator.pushAndRemoveUntil(
               context,
-              MaterialPageRoute(builder: (context) => ProfileShopMain()),
+              MaterialPageRoute(builder: (context) => ProfileShop()),
               (route) => false);
         }
       },
@@ -336,7 +344,7 @@ class _AddProductState extends State<AddProduct> {
     try {
       user.postProduct.name = itemName;
       user.postProduct.description = itemDescription;
-      user.postProduct.gallery.url = mediaUrl;
+      user.postProduct.gallery = ProductGallery(url: mediaUrl, order: 0);
       user.postProduct.basePrice = double.tryParse(_priceController.text);
       user.postProduct.quantity = int.tryParse(_stockController.text);
       return await user.createProduct();
