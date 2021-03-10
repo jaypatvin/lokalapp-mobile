@@ -180,8 +180,8 @@ class _ProfileShopMainState extends State<ProfileShopMain> {
               child: Column(
                 children: [
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    // crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       buildIconSettings(),
                       buildIconMore(context),

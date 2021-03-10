@@ -222,13 +222,14 @@ class _EditShopState extends State<EditShop> {
       try {
         _user.postShop.name = _shopDescriptionController.text;
         _user.postShop.description = _shopDescriptionController.text;
-
+   
         bool success = await _user.updateShop(userId);
         if (success) {
           SnackBar snackBar = SnackBar(
             content: Text("Shop Updated!"),
           );
           _scaffoldKey.currentState.showSnackBar(snackBar);
+          Navigator.pop(context);
         }
       } on Exception catch (_) {
         print(_);

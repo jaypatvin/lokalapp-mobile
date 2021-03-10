@@ -18,6 +18,7 @@ import 'package:provider/provider.dart';
 import 'item_name.dart';
 import 'package:image/image.dart' as Im;
 import 'package:uuid/uuid.dart';
+import '../../services/local_image_service.dart';
 
 class AddProduct extends StatefulWidget {
   @override
@@ -27,15 +28,20 @@ class AddProduct extends StatefulWidget {
 //TODO: ADD STATUS
 class _AddProductState extends State<AddProduct> {
   String itemName;
+  // double _opacityValue = 0.0;
+  bool _isVisible = false;
   String itemDescription;
   bool _setPickUpHours = false;
   bool _setDeliveryHours = false;
   String productPhotoId = Uuid().v4();
   final picker = ImagePicker();
   File file;
+  File secondFile;
   TextEditingController _priceController = TextEditingController();
   TextEditingController _stockController = TextEditingController();
-
+  TransformationController controller = TransformationController();
+  int quantity = 1;
+  bool isFile = false;
   compressImage() async {
     final tempDir = await getTemporaryDirectory();
     final path = tempDir.path;
@@ -59,11 +65,23 @@ class _AddProductState extends State<AddProduct> {
     final pickedImage = await picker.getImage(source: ImageSource.gallery);
     if (pickedImage != null) {
       setState(() {
-        file = File(pickedImage.path);
+       
+            file = File(pickedImage.path);
+           
       });
       // Navigator.pop(context);
     }
   }
+
+//  handleGallery2() async {
+//     final pickedImage = await picker.getImage(source: ImageSource.gallery);
+//     if (pickedImage != null) {
+//       setState(() {
+//         secondFile = File(pickedImage.path);
+//       });
+//       // Navigator.pop(context);
+//     }
+//   }
 
   handleCamera() async {
     // Navigator.pop(context);
@@ -71,11 +89,25 @@ class _AddProductState extends State<AddProduct> {
         source: ImageSource.camera, maxHeight: 675, maxWidth: 960);
     if (pickedImage != null) {
       setState(() {
-        file = File(pickedImage.path);
+       
+            file = File(pickedImage.path);
+           
       });
       //  Navigator.pop(context);
     }
   }
+
+  //   handleCamera2() async {
+  //   // Navigator.pop(context);
+  //   final pickedImage = await picker.getImage(
+  //       source: ImageSource.camera, maxHeight: 675, maxWidth: 960);
+  //   if (pickedImage != null) {
+  //     setState(() {
+  //       secondFile = File(pickedImage.path);
+  //     });
+  //     //  Navigator.pop(context);
+  //   }
+  // }
 
   selectImage(parentContext) {
     return showDialog(
@@ -145,8 +177,63 @@ class _AddProductState extends State<AddProduct> {
           border: Border.all(width: 1, color: kTealColor),
         ),
         child: IconButton(
-          onPressed: () {},
+          onPressed: () {
+            showPhotoBox();
+          },
           icon: file == null
+              ? Icon(
+                  Icons.add,
+                  color: kTealColor,
+                  size: 15,
+                )
+              : Icon(null),
+        ),
+      ),
+    );
+  }
+
+  Widget secondPhotoBox() {
+    return GestureDetector(
+      onTap: () {
+        selectImage(context);
+      },
+      child: Container(
+        width: 72.0,
+        height: 75.0,
+        decoration: BoxDecoration(
+          shape: BoxShape.rectangle,
+          border: Border.all(width: 1, color: kTealColor),
+        ),
+        child: IconButton(
+          onPressed: () {
+            selectImage(context);
+          },
+          icon: Icon(
+            Icons.add,
+            color: kTealColor,
+            size: 15,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget secondPhotoBoxWithPic() {
+    return GestureDetector(
+      onTap: () {},
+      child: Container(
+        width: 72.0,
+        height: 75.0,
+        decoration: BoxDecoration(
+          image: DecorationImage(fit: BoxFit.cover, image: FileImage(file)),
+          shape: BoxShape.rectangle,
+          border: Border.all(width: 1, color: kTealColor),
+        ),
+        child: IconButton(
+          onPressed: () {
+            showPhotoBox();
+          },
+          icon: secondFile == null
               ? Icon(
                   Icons.add,
                   color: kTealColor,
@@ -304,7 +391,7 @@ class _AddProductState extends State<AddProduct> {
         SizedBox(
           width: 15,
         ),
-        file == null ? photoBox() : photoBoxWithPic(),
+        file == null ? photoBox() : photoBoxWithPic()
       ],
     );
   }
@@ -321,23 +408,40 @@ class _AddProductState extends State<AddProduct> {
         var productCreated = await createProduct();
         if (productCreated) {
           //TODO: add where to go if successful
-          Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (context) => ProfileShop()),
-              (route) => false);
+
+          // Navigator.pushAndRemoveUntil(
+          //     context,
+          //     MaterialPageRoute(builder: (context) => ProfileShop()),
+          //     (route) => false);
+
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => ProfileShop()),
+            //  (route) => false
+          );
+
         }
       },
     );
   }
 
+  void showPhotoBox() {
+    setState(() {
+      _isVisible = !_isVisible;
+    });
+  }
+
   //TODO: put this somewhere
   Future<bool> createProduct() async {
     // var user = Provider.of<CurrentUser>(context, listen: false);
-
+    // List media = [];
     String mediaUrl = "";
+    String mediaUrl2 = "";
     if (file != null) {
       await compressImage();
       mediaUrl = await uploadImage(file);
+      // mediaUrl2 = await uploadImage(file);
+    
     }
     CurrentUser user = Provider.of<CurrentUser>(context, listen: false);
     //TODO: check for price and quantity parse problems
@@ -501,7 +605,15 @@ class _AddProductState extends State<AddProduct> {
           SizedBox(
             height: 15,
           ),
-          buildPhotoBox(),
+          Row(
+            children: [
+              buildPhotoBox(),
+              SizedBox(
+                width: 5,
+              ),
+              // Visibility(visible: _isVisible, child: secondPhotoBox())
+            ],
+          ),
           SizedBox(
             height: 50,
           ),

@@ -247,25 +247,7 @@ class _ProfileShopState extends State<ProfileShop> {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Text(
-                              "No products added",
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500,
-                                fontFamily: "Goldplay",
-                              ),
-                            ),
-                          ],
-                        ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Container(
+                             Container(
                         height: 40,
                         width: 200,
                         child: FlatButton(
@@ -292,8 +274,28 @@ class _ProfileShopState extends State<ProfileShop> {
                           },
                         ),
                       ),
+                       Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                              "No products added",
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                                fontFamily: "Goldplay",
+                              ),
+                            ),
                     ],
                   ),
+                           
+                          ],
+                        ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                 
                 ],
               ),
             )
