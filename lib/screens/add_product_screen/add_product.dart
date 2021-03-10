@@ -15,6 +15,7 @@ import 'package:lokalapp/utils/themes.dart';
 import 'package:lokalapp/widgets/rounded_button.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
+import 'components/add_product_gallery.dart';
 import 'item_name.dart';
 import 'package:image/image.dart' as Im;
 import 'package:uuid/uuid.dart';
@@ -65,9 +66,7 @@ class _AddProductState extends State<AddProduct> {
     final pickedImage = await picker.getImage(source: ImageSource.gallery);
     if (pickedImage != null) {
       setState(() {
-       
-            file = File(pickedImage.path);
-           
+        file = File(pickedImage.path);
       });
       // Navigator.pop(context);
     }
@@ -89,9 +88,7 @@ class _AddProductState extends State<AddProduct> {
         source: ImageSource.camera, maxHeight: 675, maxWidth: 960);
     if (pickedImage != null) {
       setState(() {
-       
-            file = File(pickedImage.path);
-           
+        file = File(pickedImage.path);
       });
       //  Navigator.pop(context);
     }
@@ -419,7 +416,6 @@ class _AddProductState extends State<AddProduct> {
             MaterialPageRoute(builder: (context) => ProfileShop()),
             //  (route) => false
           );
-
         }
       },
     );
@@ -441,14 +437,14 @@ class _AddProductState extends State<AddProduct> {
       await compressImage();
       mediaUrl = await uploadImage(file);
       // mediaUrl2 = await uploadImage(file);
-    
+
     }
     CurrentUser user = Provider.of<CurrentUser>(context, listen: false);
     //TODO: check for price and quantity parse problems
     try {
       user.postProduct.name = itemName;
       user.postProduct.description = itemDescription;
-      user.postProduct.gallery = ProductGallery(url: mediaUrl, order: 0);
+      user.postProduct.gallery = [ProductGallery(url: mediaUrl, order: 0)];
       user.postProduct.basePrice = double.tryParse(_priceController.text);
       user.postProduct.quantity = int.tryParse(_stockController.text);
       return await user.createProduct();
@@ -557,73 +553,71 @@ class _AddProductState extends State<AddProduct> {
   }
 
   Widget buildBody() {
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          SizedBox(
-            height: 32,
-          ),
-          buildItemName(),
-          buildItemDescription(),
-          SizedBox(
-            height: 20,
-          ),
-          Row(
-            children: [
-              SizedBox(
-                width: 15,
-              ),
-              Text(
-                "Product Category",
-                style: TextStyle(
-                    fontWeight: FontWeight.w700, fontFamily: "Goldplay"),
-              ),
-              SizedBox(
-                width: 43,
-              ),
-              buildDropDown()
-            ],
-          ),
-          SizedBox(
-            height: 23,
-          ),
-          buildProductPrice(),
-          SizedBox(
-            height: 23,
-          ),
-          buildInventoryStock(),
-          SizedBox(
-            height: 28,
-          ),
-          buildDeliveryOptionsText(),
-          buildCustomerPickUp(),
-          buildDelivery(),
-          SizedBox(
-            height: 27,
-          ),
-          buildProductPhotoText(),
-          SizedBox(
-            height: 15,
-          ),
-          Row(
-            children: [
-              buildPhotoBox(),
-              SizedBox(
-                width: 5,
-              ),
-              // Visibility(visible: _isVisible, child: secondPhotoBox())
-            ],
-          ),
-          SizedBox(
-            height: 50,
-          ),
-          buildSubmitButton(),
-          SizedBox(
-            height: 40,
-          ),
-        ],
+    return CustomScrollView(slivers: [
+      SliverList(
+        delegate: SliverChildListDelegate(
+          [
+            Column(
+              children: [
+                SizedBox(
+                  height: 32,
+                ),
+                buildItemName(),
+                buildItemDescription(),
+                SizedBox(
+                  height: 20,
+                ),
+                Row(
+                  children: [
+                    SizedBox(
+                      width: 15,
+                    ),
+                    Text(
+                      "Product Category",
+                      style: TextStyle(
+                          fontWeight: FontWeight.w700, fontFamily: "Goldplay"),
+                    ),
+                    SizedBox(
+                      width: 43,
+                    ),
+                    buildDropDown()
+                  ],
+                ),
+                SizedBox(
+                  height: 23,
+                ),
+                buildProductPrice(),
+                SizedBox(
+                  height: 23,
+                ),
+                buildInventoryStock(),
+                SizedBox(
+                  height: 28,
+                ),
+                buildDeliveryOptionsText(),
+                buildCustomerPickUp(),
+                buildDelivery(),
+                SizedBox(
+                  height: 27,
+                ),
+                buildProductPhotoText(),
+                SizedBox(
+                  height: 15,
+                ),
+                AddProductGallery(),
+                SizedBox(
+                  height: 50,
+                ),
+                buildSubmitButton(),
+                SizedBox(
+                  height: 40,
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
-    );
+    ]);
   }
 
   @override
