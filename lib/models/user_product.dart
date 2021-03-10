@@ -1,5 +1,7 @@
 import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 
 class ProductGallery {
   String url;
@@ -66,7 +68,7 @@ class UserProduct extends ChangeNotifier {
   String productCategory;
   String productPhoto;
   String status;
-  ProductGallery gallery;
+  List<ProductGallery> gallery;
   UserProduct({
     this.id,
     this.name,
@@ -94,7 +96,7 @@ class UserProduct extends ChangeNotifier {
     String productCategory,
     String productPhoto,
     String status,
-    ProductGallery gallery,
+    List<ProductGallery> gallery,
   }) {
     return UserProduct(
       id: id ?? this.id,
@@ -125,7 +127,7 @@ class UserProduct extends ChangeNotifier {
       'product_category': productCategory,
       'product_photo': productPhoto,
       'status': status,
-      'gallery': gallery?.toMap(),
+      'gallery': gallery?.map((x) => x?.toMap())?.toList(),
     };
   }
 
@@ -144,7 +146,8 @@ class UserProduct extends ChangeNotifier {
       productCategory: map['product_category'],
       productPhoto: map['product_photo'],
       status: map['status'],
-      gallery: ProductGallery.fromMap(map['gallery']),
+      gallery: List<ProductGallery>.from(
+          map['gallery']?.map((x) => ProductGallery.fromMap(x))),
     );
   }
 
@@ -174,7 +177,7 @@ class UserProduct extends ChangeNotifier {
         o.productCategory == productCategory &&
         o.productPhoto == productPhoto &&
         o.status == status &&
-        o.gallery == gallery;
+        listEquals(o.gallery, gallery);
   }
 
   @override
