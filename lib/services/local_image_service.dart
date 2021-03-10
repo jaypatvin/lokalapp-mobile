@@ -18,22 +18,24 @@ class LocalImageService extends ChangeNotifier {
   File get file => _file;
   bool get fileExists => _file != null;
 
-  Future<void> launchCamera() async {
+  Future<File> launchCamera() async {
     _mediaUrl = null;
     final pickedImage = await picker.getImage(source: ImageSource.camera);
     if (pickedImage != null) {
-      _file = File(pickedImage.path);
+      return _file = File(pickedImage.path);
     }
     notifyListeners();
+    return null;
   }
 
-  Future<void> launchGallery() async {
+  Future<File> launchGallery() async {
     _mediaUrl = null;
     final pickedImage = await picker.getImage(source: ImageSource.gallery);
     if (pickedImage != null) {
-      _file = File(pickedImage.path);
+      return _file = File(pickedImage.path);
     }
     notifyListeners();
+    return null;
   }
 
   Future<String> uploadImage() async {
