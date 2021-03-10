@@ -14,7 +14,7 @@ class StoreCard extends StatelessWidget {
       physics: NeverScrollableScrollPhysics(),
       itemCount: products.length,
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        childAspectRatio: 15.0 / 26.5,
+        childAspectRatio: 15.0 / 25.5,
         crossAxisCount: 2,
       ),
       itemBuilder: (BuildContext context, int index) {
@@ -25,14 +25,15 @@ class StoreCard extends StatelessWidget {
             semanticContainer: true,
             clipBehavior: Clip.antiAlias,
             child: Column(
-              mainAxisSize: MainAxisSize.min,
+              // mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 Row(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
                     Expanded(
                       child: Container(
                         height: 200.5,
-                        width: 250,
+                        width: 260,
                         decoration: BoxDecoration(
                           image: products[index].gallery?.url != null &&
                                   products[index].gallery.url.isNotEmpty
@@ -52,6 +53,7 @@ class StoreCard extends StatelessWidget {
                 Column(
                   children: [
                     Row(
+                      mainAxisSize: MainAxisSize.min,
                       children: [
                         Expanded(
                             child: Text(products[index].name,
@@ -79,48 +81,50 @@ class StoreCard extends StatelessWidget {
                     SizedBox(
                       height: 30,
                     ),
-                    Row(
-                      children: [
-                        CircleAvatar(
-                          radius: 10,
-                          backgroundImage: shop.profilePhoto != null &&
-                                  shop.profilePhoto.isNotEmpty
-                              ? NetworkImage(shop.profilePhoto)
-                              : null,
-                        ),
-                        SizedBox(
-                          width: 5,
-                        ),
-                        Text(
-                          shop.name,
-                          textAlign: TextAlign.start,
-                          style: TextStyle(
-                              color: Colors.black,
-                              // fontWeight: FontWeight.bold,
-                              fontSize: 12),
-                        ),
-                        SizedBox(
-                          width: 45,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Icon(
-                              Icons.star,
-                              color: Colors.amber,
-                              size: 14,
-                            ),
-                            SizedBox(
-                              width: 2,
-                            ),
+                   SingleChildScrollView(
+                     physics: NeverScrollableScrollPhysics(),
+                     scrollDirection: Axis.horizontal,
+                     child: Row(
+                     mainAxisSize: MainAxisSize.min,
+                     children: [
+                       CircleAvatar(
+                         radius: 10,
+                         backgroundImage: shop.profilePhoto != null &&
+                                 shop.profilePhoto.isNotEmpty
+                             ? NetworkImage(shop.profilePhoto)
+                             : null,
+                       ),
+                       SizedBox(
+                         width: 2,
+                       ),
+                       Text(
+                         shop.name,
+                         textAlign: TextAlign.start,
+                         style: TextStyle(
+                             color: Colors.black,
+                             // fontWeight: FontWeight.bold,
+                             fontSize: 12),
+                       ),
+                       SizedBox(
+                         width: 35,
+                       ),
+                       Icon(
+                       Icons.star,
+                       color: Colors.amber,
+                       size: 14,
+                           ),
+                           
+                         
+                      //      SizedBox(
+                      //  width: 2,
+                      //      ),
+                         
                             Text("4.54",
-                                style: TextStyle(
-                                    color: Colors.amber, fontSize: 14)),
-                          ],
-                        )
-                      ],
-                    )
+                        style: TextStyle(
+                            color: Colors.amber, fontSize: 14)),
+                     ],
+                        ),
+                   )
                   ],
                 )
               ],
