@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 
 class ProductGallery {
+ 
   String url;
   int order;
   ProductGallery({
@@ -21,7 +22,7 @@ class ProductGallery {
     );
   }
 
-  Map<String, dynamic> toMap() {
+Map<String, dynamic> toMap() {
     return {
       'url': url,
       'order': order,
@@ -32,7 +33,7 @@ class ProductGallery {
     if (map == null) return null;
 
     return ProductGallery(
-      url: map['url'],
+      url:  map['url'],
       order: map['order'],
     );
   }
@@ -146,8 +147,10 @@ class UserProduct extends ChangeNotifier {
       productCategory: map['product_category'],
       productPhoto: map['product_photo'],
       status: map['status'],
-      gallery: List<ProductGallery>.from(
-          map['gallery']?.map((x) => ProductGallery.fromMap(x))),
+      gallery: 
+      // map['gallery']
+      List<ProductGallery>.from(
+          map['gallery']?.map((x) => ProductGallery.fromMap(x))).toList().cast<ProductGallery>(),
     );
   }
 

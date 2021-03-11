@@ -148,11 +148,16 @@ class CurrentUser extends ChangeNotifier {
     return false;
   }
 
+
   Future<bool> updateShop(String uid) async {
-    postShop.communityId = _user.communityId;
+    if (_user.id == null || _user.id.isEmpty) {
+      _user.id = await Database().getUserDocId(_user.userUids.first);
+    }
+     
+        postShop.communityId = _user.communityId;
     var _postData = postShop.toMap();
-    var response = await LokalApiService()
-        .updateStore(data: _postData, idToken: _userIdToken);
+    http.Response response = await LokalApiService()
+        .updateStore(data: _postData, idToken: _userIdToken,id:   _userShops[0].id  );;
 
     if (response.statusCode != 200) {
       return false;
@@ -160,7 +165,7 @@ class CurrentUser extends ChangeNotifier {
 
     Map data = json.decode(response.body);
 
-    if (data["status"] == "ok") {
+     if (data["status"] == "ok") {
      await getShops();
       return true;
     } else {
@@ -169,6 +174,8 @@ class CurrentUser extends ChangeNotifier {
 
     return false;
   }
+
+
   /* ---------------------------------------------------------------------- */
 
   /*-------------------------------products-------------------------------*/

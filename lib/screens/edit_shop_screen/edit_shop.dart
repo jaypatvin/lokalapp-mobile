@@ -217,10 +217,11 @@ class _EditShopState extends State<EditShop> {
     CurrentUser _user = Provider.of<CurrentUser>(context, listen: false);
 
     if (isNameValid && isDescriptionValid) {
-      final String userId = await Database().getUserDocId(_user.userUids.first);
+       String userId = await Database().getUserDocId(_user.userUids.first);
 
       try {
-        _user.postShop.name = _shopDescriptionController.text;
+        _user.postShop.userId = userId;
+        _user.postShop.name = _shopNameController.text;
         _user.postShop.description = _shopDescriptionController.text;
    
         bool success = await _user.updateShop(userId);

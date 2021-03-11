@@ -188,58 +188,7 @@ class _AddProductState extends State<AddProduct> {
     );
   }
 
-  Widget secondPhotoBox() {
-    return GestureDetector(
-      onTap: () {
-        selectImage(context);
-      },
-      child: Container(
-        width: 72.0,
-        height: 75.0,
-        decoration: BoxDecoration(
-          shape: BoxShape.rectangle,
-          border: Border.all(width: 1, color: kTealColor),
-        ),
-        child: IconButton(
-          onPressed: () {
-            selectImage(context);
-          },
-          icon: Icon(
-            Icons.add,
-            color: kTealColor,
-            size: 15,
-          ),
-        ),
-      ),
-    );
-  }
 
-  Widget secondPhotoBoxWithPic() {
-    return GestureDetector(
-      onTap: () {},
-      child: Container(
-        width: 72.0,
-        height: 75.0,
-        decoration: BoxDecoration(
-          image: DecorationImage(fit: BoxFit.cover, image: FileImage(file)),
-          shape: BoxShape.rectangle,
-          border: Border.all(width: 1, color: kTealColor),
-        ),
-        child: IconButton(
-          onPressed: () {
-            showPhotoBox();
-          },
-          icon: secondFile == null
-              ? Icon(
-                  Icons.add,
-                  color: kTealColor,
-                  size: 15,
-                )
-              : Icon(null),
-        ),
-      ),
-    );
-  }
 
   Widget buildAppBar() {
     return PreferredSize(
