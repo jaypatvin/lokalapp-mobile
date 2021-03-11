@@ -2,24 +2,23 @@ import 'dart:io';
 
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:image/image.dart' as Im;
 import 'package:image_picker/image_picker.dart';
-import 'package:lokalapp/models/user_product.dart';
-import 'package:lokalapp/screens/add_shop_screens/appbar_shop.dart';
-import 'package:lokalapp/screens/add_shop_screens/shopDescription.dart';
-import 'package:lokalapp/screens/edit_shop_screen/set_custom_operating_hours.dart';
-import 'package:lokalapp/screens/profile_screens/profile.dart';
-import 'package:lokalapp/screens/profile_screens/profile_shop.dart';
-import 'package:lokalapp/services/database.dart';
-import 'package:lokalapp/states/current_user.dart';
-import 'package:lokalapp/utils/themes.dart';
-import 'package:lokalapp/widgets/rounded_button.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:uuid/uuid.dart';
+
+import '../../models/user_product.dart';
+import '../../services/database.dart';
+import '../../states/current_user.dart';
+import '../../utils/themes.dart';
+import '../../widgets/rounded_button.dart';
+import '../add_shop_screens/appbar_shop.dart';
+import '../add_shop_screens/shopDescription.dart';
+import '../edit_shop_screen/set_custom_operating_hours.dart';
+import '../profile_screens/profile_shop.dart';
 import 'components/add_product_gallery.dart';
 import 'item_name.dart';
-import 'package:image/image.dart' as Im;
-import 'package:uuid/uuid.dart';
-import '../../services/local_image_service.dart';
 
 class AddProduct extends StatefulWidget {
   @override
@@ -404,18 +403,10 @@ class _AddProductState extends State<AddProduct> {
       onPressed: () async {
         var productCreated = await createProduct();
         if (productCreated) {
-          //TODO: add where to go if successful
-
-          // Navigator.pushAndRemoveUntil(
-          //     context,
-          //     MaterialPageRoute(builder: (context) => ProfileShop()),
-          //     (route) => false);
-
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => ProfileShop()),
-            //  (route) => false
-          );
+          Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => ProfileShop()),
+              (route) => false);
         }
       },
     );

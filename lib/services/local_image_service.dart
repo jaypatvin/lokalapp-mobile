@@ -3,9 +3,10 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:image/image.dart' as Im;
 import 'package:image_picker/image_picker.dart';
-import 'database.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
+
+import 'database.dart';
 
 class LocalImageService extends ChangeNotifier {
   String _mediaUrl;

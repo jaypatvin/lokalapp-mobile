@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:lokalapp/utils/utility.dart';
+
+import '../../../utils/utility.dart';
 import '../../../widgets/photo_box.dart';
 
 class AddProductGallery extends StatefulWidget {
