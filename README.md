@@ -1,5 +1,4 @@
-PROJECT ARCHITECTURE FOR LOKAL APP:
-
+# PROJECT ARCHITECTURE FOR LOKAL APP:
 1. ASSETS - LOGOS/ IMAGES,...
 2. FONTS 
 3. FUNCTIONS - CLOUD FUNCTIONS FOR FIREBASE
@@ -8,3 +7,27 @@ PROJECT ARCHITECTURE FOR LOKAL APP:
 6. MODELS - COLLECTION OF DATA
 7. SERVICES - INTERACTS WITH FIREBASE THAT OTHER CLASS CAN CALL. API.
 8. SCREENS - SCREENS OF THE APP.
+
+
+# Current Build Features
+- [x] User Login
+- [x] User Registration
+- [x] Verification
+- [x] GetStream Timeline
+- [ ] Firebase/Firestore Timeline?
+- [x] Add Shop
+- [x] Edit shop
+- [x] Add Product
+- [ ] Edit Product
+- [ ] Chat
+- [ ] Discovery
+- [ ] Search
+- [ ] Purchasing/Ordering
+- [ ] Product Details
+- [ ] Cart
+- [ ] Checkout
+- [ ] Community Feed
+
+# Requirements
+Flutter SDK for build: `>=2.7.0 <3.0.0` <br>
+Android SDK for build: `>=16.0 <=30.0`
