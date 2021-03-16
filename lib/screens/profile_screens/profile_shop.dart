@@ -115,11 +115,11 @@ class _ProfileShopState extends State<ProfileShop> {
                             ),
                             GestureDetector(
                               onTap: () {
-                                Navigator.pop(context, false);
-                                // Navigator.push(
-                                //     context,
-                                //     MaterialPageRoute(
-                                //         builder: (context) => AddProduct()));
+                                //Navigator.pop(context, false);
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => AddProduct()));
                               },
                               child: ListTile(
                                 leading: Text(
@@ -247,55 +247,53 @@ class _ProfileShopState extends State<ProfileShop> {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                             Container(
-                        height: 40,
-                        width: 200,
-                        child: FlatButton(
-                          // height: 50,
-                          // minWidth: 100,
-                          color: kTealColor,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(25.0),
-                            side: BorderSide(color: kTealColor),
-                          ),
-                          textColor: Colors.black,
-                          child: Text(
-                            "ADD PRODUCTS",
-                            style: TextStyle(
-                                fontFamily: "Goldplay",
-                                fontSize: 14,
-                                fontWeight: FontWeight.w700),
-                          ),
-                          onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => AddProduct()));
-                          },
-                        ),
-                      ),
-                       Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                              "No products added",
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500,
-                                fontFamily: "Goldplay",
+                            Container(
+                              height: 40,
+                              width: 200,
+                              child: FlatButton(
+                                // height: 50,
+                                // minWidth: 100,
+                                color: kTealColor,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(25.0),
+                                  side: BorderSide(color: kTealColor),
+                                ),
+                                textColor: Colors.black,
+                                child: Text(
+                                  "ADD PRODUCTS",
+                                  style: TextStyle(
+                                      fontFamily: "Goldplay",
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w700),
+                                ),
+                                onPressed: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => AddProduct()));
+                                },
                               ),
                             ),
-                    ],
-                  ),
-                           
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  "No products added",
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w500,
+                                    fontFamily: "Goldplay",
+                                  ),
+                                ),
+                              ],
+                            ),
                           ],
                         ),
                   SizedBox(
                     height: 20,
                   ),
-                 
                 ],
               ),
             )

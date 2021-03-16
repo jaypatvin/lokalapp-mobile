@@ -2,23 +2,23 @@ import 'dart:io';
 
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:image/image.dart' as Im;
 import 'package:image_picker/image_picker.dart';
-import 'package:lokalapp/models/user_product.dart';
-import 'package:lokalapp/screens/add_shop_screens/appbar_shop.dart';
-import 'package:lokalapp/screens/add_shop_screens/shopDescription.dart';
-import 'package:lokalapp/screens/edit_shop_screen/set_custom_operating_hours.dart';
-import 'package:lokalapp/screens/profile_screens/profile.dart';
-import 'package:lokalapp/screens/profile_screens/profile_shop.dart';
-import 'package:lokalapp/services/database.dart';
-import 'package:lokalapp/states/current_user.dart';
-import 'package:lokalapp/utils/themes.dart';
-import 'package:lokalapp/widgets/rounded_button.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
-import 'item_name.dart';
-import 'package:image/image.dart' as Im;
 import 'package:uuid/uuid.dart';
-import '../../services/local_image_service.dart';
+
+import '../../models/user_product.dart';
+import '../../services/database.dart';
+import '../../states/current_user.dart';
+import '../../utils/themes.dart';
+import '../../widgets/rounded_button.dart';
+import '../add_shop_screens/appbar_shop.dart';
+import '../add_shop_screens/shopDescription.dart';
+import '../edit_shop_screen/set_custom_operating_hours.dart';
+import '../profile_screens/profile_shop.dart';
+import 'components/add_product_gallery.dart';
+import 'item_name.dart';
 
 class AddProduct extends StatefulWidget {
   @override
@@ -65,9 +65,7 @@ class _AddProductState extends State<AddProduct> {
     final pickedImage = await picker.getImage(source: ImageSource.gallery);
     if (pickedImage != null) {
       setState(() {
-       
-            file = File(pickedImage.path);
-           
+        file = File(pickedImage.path);
       });
       // Navigator.pop(context);
     }
@@ -89,9 +87,7 @@ class _AddProductState extends State<AddProduct> {
         source: ImageSource.camera, maxHeight: 675, maxWidth: 960);
     if (pickedImage != null) {
       setState(() {
-       
-            file = File(pickedImage.path);
-           
+        file = File(pickedImage.path);
       });
       //  Navigator.pop(context);
     }
@@ -407,19 +403,10 @@ class _AddProductState extends State<AddProduct> {
       onPressed: () async {
         var productCreated = await createProduct();
         if (productCreated) {
-          //TODO: add where to go if successful
-
-          // Navigator.pushAndRemoveUntil(
-          //     context,
-          //     MaterialPageRoute(builder: (context) => ProfileShop()),
-          //     (route) => false);
-
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => ProfileShop()),
-            //  (route) => false
-          );
-
+          Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => ProfileShop()),
+              (route) => false);
         }
       },
     );
@@ -441,14 +428,14 @@ class _AddProductState extends State<AddProduct> {
       await compressImage();
       mediaUrl = await uploadImage(file);
       // mediaUrl2 = await uploadImage(file);
-    
+
     }
     CurrentUser user = Provider.of<CurrentUser>(context, listen: false);
     //TODO: check for price and quantity parse problems
     try {
       user.postProduct.name = itemName;
       user.postProduct.description = itemDescription;
-      user.postProduct.gallery = ProductGallery(url: mediaUrl, order: 0);
+      user.postProduct.gallery = [ProductGallery(url: mediaUrl, order: 0)];
       user.postProduct.basePrice = double.tryParse(_priceController.text);
       user.postProduct.quantity = int.tryParse(_stockController.text);
       return await user.createProduct();
@@ -557,73 +544,71 @@ class _AddProductState extends State<AddProduct> {
   }
 
   Widget buildBody() {
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          SizedBox(
-            height: 32,
-          ),
-          buildItemName(),
-          buildItemDescription(),
-          SizedBox(
-            height: 20,
-          ),
-          Row(
-            children: [
-              SizedBox(
-                width: 15,
-              ),
-              Text(
-                "Product Category",
-                style: TextStyle(
-                    fontWeight: FontWeight.w700, fontFamily: "Goldplay"),
-              ),
-              SizedBox(
-                width: 43,
-              ),
-              buildDropDown()
-            ],
-          ),
-          SizedBox(
-            height: 23,
-          ),
-          buildProductPrice(),
-          SizedBox(
-            height: 23,
-          ),
-          buildInventoryStock(),
-          SizedBox(
-            height: 28,
-          ),
-          buildDeliveryOptionsText(),
-          buildCustomerPickUp(),
-          buildDelivery(),
-          SizedBox(
-            height: 27,
-          ),
-          buildProductPhotoText(),
-          SizedBox(
-            height: 15,
-          ),
-          Row(
-            children: [
-              buildPhotoBox(),
-              SizedBox(
-                width: 5,
-              ),
-              // Visibility(visible: _isVisible, child: secondPhotoBox())
-            ],
-          ),
-          SizedBox(
-            height: 50,
-          ),
-          buildSubmitButton(),
-          SizedBox(
-            height: 40,
-          ),
-        ],
+    return CustomScrollView(slivers: [
+      SliverList(
+        delegate: SliverChildListDelegate(
+          [
+            Column(
+              children: [
+                SizedBox(
+                  height: 32,
+                ),
+                buildItemName(),
+                buildItemDescription(),
+                SizedBox(
+                  height: 20,
+                ),
+                Row(
+                  children: [
+                    SizedBox(
+                      width: 15,
+                    ),
+                    Text(
+                      "Product Category",
+                      style: TextStyle(
+                          fontWeight: FontWeight.w700, fontFamily: "Goldplay"),
+                    ),
+                    SizedBox(
+                      width: 43,
+                    ),
+                    buildDropDown()
+                  ],
+                ),
+                SizedBox(
+                  height: 23,
+                ),
+                buildProductPrice(),
+                SizedBox(
+                  height: 23,
+                ),
+                buildInventoryStock(),
+                SizedBox(
+                  height: 28,
+                ),
+                buildDeliveryOptionsText(),
+                buildCustomerPickUp(),
+                buildDelivery(),
+                SizedBox(
+                  height: 27,
+                ),
+                buildProductPhotoText(),
+                SizedBox(
+                  height: 15,
+                ),
+                AddProductGallery(),
+                SizedBox(
+                  height: 50,
+                ),
+                buildSubmitButton(),
+                SizedBox(
+                  height: 40,
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
-    );
+    ]);
   }
 
   @override

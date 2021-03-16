@@ -3,9 +3,10 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:image/image.dart' as Im;
 import 'package:image_picker/image_picker.dart';
-import 'database.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
+
+import 'database.dart';
 
 class LocalImageService extends ChangeNotifier {
   String _mediaUrl;
@@ -18,22 +19,24 @@ class LocalImageService extends ChangeNotifier {
   File get file => _file;
   bool get fileExists => _file != null;
 
-  Future<void> launchCamera() async {
+  Future<File> launchCamera() async {
     _mediaUrl = null;
     final pickedImage = await picker.getImage(source: ImageSource.camera);
     if (pickedImage != null) {
-      _file = File(pickedImage.path);
+      return _file = File(pickedImage.path);
     }
     notifyListeners();
+    return null;
   }
 
-  Future<void> launchGallery() async {
+  Future<File> launchGallery() async {
     _mediaUrl = null;
     final pickedImage = await picker.getImage(source: ImageSource.gallery);
     if (pickedImage != null) {
-      _file = File(pickedImage.path);
+      return _file = File(pickedImage.path);
     }
     notifyListeners();
+    return null;
   }
 
   Future<String> uploadImage() async {

@@ -1,5 +1,8 @@
 import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
+
 import 'package:lokalapp/models/user_product.dart';
 
 class UserProductPost extends ChangeNotifier {
@@ -10,7 +13,7 @@ class UserProductPost extends ChangeNotifier {
   int quantity;
   String productCategory;
   String status;
-  ProductGallery gallery;
+  List<ProductGallery> gallery;
   UserProductPost({
     this.name,
     this.description,
@@ -30,7 +33,7 @@ class UserProductPost extends ChangeNotifier {
     int quantity,
     String productCategory,
     String status,
-    ProductGallery gallery,
+    List<ProductGallery> gallery,
   }) {
     return UserProductPost(
       name: name ?? this.name,
@@ -48,12 +51,12 @@ class UserProductPost extends ChangeNotifier {
     return {
       'name': name,
       'description': description,
-      'shop_id': shopId,
-      'base_price': basePrice,
+      'shopId': shopId,
+      'basePrice': basePrice,
       'quantity': quantity,
-      'product_category': productCategory,
+      'productCategory': productCategory,
       'status': status,
-      'gallery': gallery?.toMap(),
+      'gallery': gallery?.map((x) => x?.toMap())?.toList(),
     };
   }
 
@@ -63,12 +66,13 @@ class UserProductPost extends ChangeNotifier {
     return UserProductPost(
       name: map['name'],
       description: map['description'],
-      shopId: map['shop_id'],
-      basePrice: map['base_price'],
+      shopId: map['shopId'],
+      basePrice: map['basePrice'],
       quantity: map['quantity'],
-      productCategory: map['product_category'],
+      productCategory: map['productCategory'],
       status: map['status'],
-      gallery: ProductGallery.fromMap(map['gallery']),
+      gallery: List<ProductGallery>.from(
+          map['gallery']?.map((x) => ProductGallery.fromMap(x))),
     );
   }
 
@@ -79,7 +83,7 @@ class UserProductPost extends ChangeNotifier {
 
   @override
   String toString() {
-    return 'UserProduct(name: $name, description: $description, shopId: $shopId, basePrice: $basePrice, quantity: $quantity, productCategory: $productCategory, status: $status, gallery: $gallery)';
+    return 'UserProductPost(name: $name, description: $description, shopId: $shopId, basePrice: $basePrice, quantity: $quantity, productCategory: $productCategory, status: $status, gallery: $gallery)';
   }
 
   @override
@@ -94,7 +98,7 @@ class UserProductPost extends ChangeNotifier {
         o.quantity == quantity &&
         o.productCategory == productCategory &&
         o.status == status &&
-        o.gallery == gallery;
+        listEquals(o.gallery, gallery);
   }
 
   @override
