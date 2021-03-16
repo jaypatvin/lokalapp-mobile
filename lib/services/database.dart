@@ -96,7 +96,7 @@ class Database {
 
   Future<String> uploadImage(File imageFile, String fileName) async {
     UploadTask uploadTask =
-        storageRef.child("verificationId_$fileName.jpg").putFile(imageFile);
+        storageRef.child("$fileName.jpg").putFile(imageFile);
     TaskSnapshot storageSnap = await uploadTask;
     String downloadUrl = await storageSnap.ref.getDownloadURL();
     return downloadUrl;

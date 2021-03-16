@@ -6,13 +6,14 @@ import 'package:lokalapp/services/local_image_service.dart';
 class Utility {
   static Utility _utility;
 
-  static Utility getInstance() {
+  static Utility get instance {
     if (_utility == null) {
       _utility = Utility();
     }
     return _utility;
   }
 
+  //TODO: use this in screens using imagePicker
   Future<File> showMediaDialog(BuildContext parentContext) async {
     var imageService = LocalImageService();
     return await showDialog<File>(

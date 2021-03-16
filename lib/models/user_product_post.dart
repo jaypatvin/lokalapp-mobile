@@ -51,10 +51,10 @@ class UserProductPost extends ChangeNotifier {
     return {
       'name': name,
       'description': description,
-      'shopId': shopId,
-      'basePrice': basePrice,
+      'shop_id': shopId,
+      'base_price': basePrice,
       'quantity': quantity,
-      'productCategory': productCategory,
+      'product_category': productCategory,
       'status': status,
       'gallery': gallery?.map((x) => x?.toMap())?.toList(),
     };
@@ -66,10 +66,10 @@ class UserProductPost extends ChangeNotifier {
     return UserProductPost(
       name: map['name'],
       description: map['description'],
-      shopId: map['shopId'],
-      basePrice: map['basePrice'],
+      shopId: map['shop_id'],
+      basePrice: map['base_price'],
       quantity: map['quantity'],
-      productCategory: map['productCategory'],
+      productCategory: map['product_category'],
       status: map['status'],
       gallery: List<ProductGallery>.from(
           map['gallery']?.map((x) => ProductGallery.fromMap(x))),
