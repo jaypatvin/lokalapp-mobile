@@ -23,9 +23,42 @@ class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   Map<String, String> account;
 
+  void _onLoading() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return Center(
+          child: Card(
+            color: _kMainColor,
+            child: Container(
+              height: MediaQuery.of(context).size.height * 0.3,
+              width: MediaQuery.of(context).size.height * 0.3,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    child: CircularProgressIndicator(),
+                  ),
+                  Container(
+                      margin: const EdgeInsets.only(top: 25.0),
+                      child: Text(
+                        "Signing in..",
+                        style: TextStyle(color: Colors.white),
+                      )),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   void _logInUser(
       {@required LoginType type, String email, String password}) async {
     CurrentUser _users = Provider.of<CurrentUser>(context, listen: false);
+    _onLoading();
     try {
       FirebaseAuthStatus _authStatus;
 
@@ -177,8 +210,8 @@ class _LoginScreenState extends State<LoginScreen> {
                           onPressed: () async {
                             _logInUser(
                               type: LoginType.email,
-                              email: _emailController.text.trim(),
-                              password: _passwordController.text.trim(),
+                              email: _emailController.text,
+                              password: _passwordController.text,
                             );
                           },
                         ),

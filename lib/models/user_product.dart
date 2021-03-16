@@ -146,8 +146,9 @@ class UserProduct extends ChangeNotifier {
       productCategory: map['product_category'],
       productPhoto: map['product_photo'],
       status: map['status'],
-      gallery: List<ProductGallery>.from(
-          map['gallery']?.map((x) => ProductGallery.fromMap(x))),
+      gallery:
+          List<ProductGallery>.from(
+              map['gallery']?.map((x) => ProductGallery.fromMap(x))),
     );
   }
 

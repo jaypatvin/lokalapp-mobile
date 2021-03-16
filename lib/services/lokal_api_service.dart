@@ -102,10 +102,10 @@ class LokalApiService {
   }
 
   Future<http.Response> updateStore(
-      {@required Map data, @required String idToken}) async {
+      {@required Map data, @required String idToken, String id}) async {
     var body = json.encode(data);
     http.Response response = await http.put(
-      "$_baseUrl/shops/${data['id']}",
+      "$_baseUrl/shops/$id",
       headers: {
         "Content-Type": "application/json",
         "Authorization": "Bearer $idToken"
