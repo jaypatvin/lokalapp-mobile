@@ -129,8 +129,8 @@ class _CommunityState extends State<Community> {
           onPressed: () {
             _signUpUser(
                 type: LoginType.email,
-                email: _emailController.text,
-                password: _passwordController.text);
+                email: _emailController.text.trim(),
+                password: _passwordController.text.trim());
           },
           shape: new RoundedRectangleBorder(
             borderRadius: new BorderRadius.circular(40.0),

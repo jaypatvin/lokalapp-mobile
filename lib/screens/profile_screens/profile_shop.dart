@@ -87,56 +87,60 @@ class _ProfileShopState extends State<ProfileShop> {
               ),
               onPressed: () {
                 showModalBottomSheet(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return Container(
-                          height: 140,
-                          color: Colors.white,
-                          padding: EdgeInsets.only(
-                              left: 50, top: 10, bottom: 10, right: 40),
-                          child: ListView(children: [
-                            GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => EditShop()));
-                              },
-                              child: ListTile(
-                                leading: Text(
-                                  "Edit Shop",
-                                  softWrap: true,
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontFamily: "Goldplay",
-                                      fontSize: 14),
-                                ),
+                  context: context,
+                  builder: (BuildContext context) {
+                    return Container(
+                      height: 140,
+                      color: Colors.white,
+                      padding: EdgeInsets.only(
+                          left: 50, top: 10, bottom: 10, right: 40),
+                      child: ListView(
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => EditShop()));
+                            },
+                            child: ListTile(
+                              leading: Text(
+                                "Edit Shop",
+                                softWrap: true,
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: "Goldplay",
+                                    fontSize: 14),
                               ),
                             ),
-                            GestureDetector(
-                              onTap: () {
-                                //Navigator.pop(context, false);
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => AddProduct()));
-                              },
-                              child: ListTile(
-                                leading: Text(
-                                  "Add Product",
-                                  softWrap: true,
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontFamily: "Goldplay",
-                                      fontSize: 14),
-                                ),
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              //Navigator.pop(context, false);
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => AddProduct()));
+                            },
+                            child: ListTile(
+                              leading: Text(
+                                "Add Product",
+                                softWrap: true,
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: "Goldplay",
+                                    fontSize: 14),
                               ),
                             ),
-                            SizedBox(
-                              height: 8,
-                            )
-                          ]));
-                    });
+                          ),
+                          SizedBox(
+                            height: 8,
+                          )
+                        ],
+                      ),
+                    );
+                  },
+                );
               }),
         ),
       ],
@@ -301,6 +305,5 @@ class _ProfileShopState extends State<ProfileShop> {
         ),
       ),
     );
-    // : ProfileNoShop(hasStore: false);
   }
 }

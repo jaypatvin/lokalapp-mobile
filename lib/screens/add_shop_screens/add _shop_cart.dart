@@ -4,22 +4,45 @@ import 'package:lokalapp/screens/add_shop_screens/shopDescription.dart';
 import 'package:lokalapp/screens/profile_screens/components/store_rating.dart';
 import 'package:lokalapp/utils/themes.dart';
 import 'package:lokalapp/widgets/rounded_button.dart';
+import 'package:photo_view/photo_view.dart';
 
+import 'package:photo_view/photo_view_gallery.dart';
 class AddShopCart extends StatefulWidget {
   @override
   _AddShopCartState createState() => _AddShopCartState();
 }
 
 class _AddShopCartState extends State<AddShopCart> {
+    PhotoViewController controller;
+  double scaleCopy;
   int selectedRadioTile;
+    int _current = 0;
   TextEditingController _instructionsController = TextEditingController();
   final maxLines = 10;
   int quantity = 1;
+  
+
+
+
+  void listener(PhotoViewControllerValue value){
+    setState((){
+      scaleCopy = value.scale;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
     // selectedRadio = 0;
     selectedRadioTile = 0;
+       controller = PhotoViewController()
+      ..outputStateStream.listen(listener);
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
   }
 
   setSelectedRadioTile(int val) {
@@ -28,7 +51,7 @@ class _AddShopCartState extends State<AddShopCart> {
     });
   }
 
-  void add() {
+   void add() {
     setState(() {
       quantity++;
     });
@@ -40,6 +63,7 @@ class _AddShopCartState extends State<AddShopCart> {
     });
   }
 
+
   buildAppBar() {
     return PreferredSize(
       preferredSize: Size(double.infinity, 83),
@@ -49,7 +73,7 @@ class _AddShopCartState extends State<AddShopCart> {
         child: Container(
           decoration: BoxDecoration(color: Colors.white),
           child: Container(
-            margin: const EdgeInsets.fromLTRB(15, 60, 15, 0),
+            margin: const EdgeInsets.fromLTRB(15, 55, 15, 0),
             child: Column(
               children: [
                 Row(
@@ -80,6 +104,78 @@ class _AddShopCartState extends State<AddShopCart> {
     );
   }
 
+
+  
+
+final List imageList = [
+  'https://images.the-house.com/keen-elsa-wmns-shoes-black-star-white-17-1.jpg',
+  'https://veryvera.wierstewarthosting.com/wp-content/uploads/2017/02/16053118/brownies.jpg',
+  'https://flavorverse.com/wp-content/uploads/2017/12/Canadian-Food.jpg',
+  'https://img2.mashed.com/img/gallery/food-trends-that-are-about-to-take-over-2020/intro-1575330865.jpg',
+];
+
+
+   buildDots() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: imageList.map((url) {
+        int index = imageList.indexOf(url);
+        return Container(
+          width: 9.0,
+          height: 10.0,
+          margin: EdgeInsets.symmetric(vertical: 20.0, horizontal: 5.0),
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            border: Border.all(width: 1, color: Colors.black),
+            color: _current == index
+                ? Color.fromRGBO(0, 0, 0, 0.9)
+                : Colors.grey,
+          ),
+        );
+      }).toList(),
+    );
+  }
+
+  buildGallery(){
+    return PhotoViewGallery.builder(
+  itemCount: imageList.length,
+   onPageChanged: (index) {
+            if (this.mounted) {
+              setState(() {
+                _current = index;
+              });
+            }
+   },
+  builder: (context, index) {
+    return PhotoViewGalleryPageOptions(
+      imageProvider:NetworkImage(imageList[index],),
+      minScale: PhotoViewComputedScale.contained * 0.8,
+      maxScale: PhotoViewComputedScale.covered * 2,
+      controller: controller,
+      
+    );
+  },
+  scrollPhysics: BouncingScrollPhysics(),
+  backgroundDecoration: BoxDecoration(
+    borderRadius:BorderRadius.all(Radius.circular(20)),
+    color: Theme.of(context).canvasColor,
+  ),
+  enableRotation:true,
+  loadingBuilder: (context, event) => Center(
+    child: Container(
+      width: 30.0,
+      height: 30.0,
+      child: CircularProgressIndicator(
+        backgroundColor:Colors.orange,
+        value: event == null
+            ? 0
+            : event.cumulativeBytesLoaded / event.expectedTotalBytes,
+      ),
+    ),
+  ),
+);
+  }
+
   buildImage() {
     return Padding(
       padding: const EdgeInsets.all(16.0),
@@ -88,15 +184,26 @@ class _AddShopCartState extends State<AddShopCart> {
           Expanded(
             child: Container(
               height: MediaQuery.of(context).size.height / 2,
-              // width: MediaQuery.of(context).size.width * 0.3,
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                    image: NetworkImage(
-                        'https://i1.wp.com/www.eva-bakes.com/wp-content/uploads/2020/04/camo-brownie2.jpg?w=550&ssl=1'),
-                    fit: BoxFit.cover),
+              child: 
+              Stack(
+                children: [
+                
+              buildGallery(),
+              Align(
+                alignment: Alignment.bottomCenter,
+                child:     buildDots(),
+              )
+          
+                ],
+              )
+             
+              
               ),
+             
             ),
-          ),
+            //  SizedBox(height: 10,),
+           
+          
         ],
       ),
     );

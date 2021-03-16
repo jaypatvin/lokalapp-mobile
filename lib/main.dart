@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:lokalapp/screens/add_shop_screens/add%20_shop_cart.dart';
 import 'package:provider/provider.dart';
 
 import 'models/user_shop_post.dart';
@@ -10,7 +11,7 @@ import 'states/current_user.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  // Provider.debugCheckInvalidValueType = null;
+
   runApp(MyApp());
 }
 
@@ -24,6 +25,7 @@ class MyApp extends StatelessWidget {
         Provider(create: (context) => UserShopPost())
       ],
       child: MaterialApp(
+        debugShowCheckedModeBanner: false,
         title: 'Flutter Demo',
         theme: ThemeData(
           primarySwatch: Colors.blue,
