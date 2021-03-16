@@ -210,8 +210,8 @@ class _LoginScreenState extends State<LoginScreen> {
                           onPressed: () async {
                             _logInUser(
                               type: LoginType.email,
-                              email: _emailController.text,
-                              password: _passwordController.text,
+                              email: _emailController.text.trim(),
+                              password: _passwordController.text.trim(),
                             );
                           },
                         ),

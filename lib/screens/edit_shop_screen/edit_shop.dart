@@ -223,6 +223,9 @@ class _EditShopState extends State<EditShop> {
         _user.postShop.userId = userId;
         _user.postShop.name = _shopNameController.text;
         _user.postShop.description = _shopDescriptionController.text;
+        _user.postShop.opening = openingHour;
+        _user.postShop.closing = closingHour;
+        _user.postShop.status = isSwitched.toString();
    
         bool success = await _user.updateShop(userId);
         if (success) {

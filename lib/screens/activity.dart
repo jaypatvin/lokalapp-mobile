@@ -1,12 +1,20 @@
 import 'package:flutter/material.dart';
 
-class Activity extends StatelessWidget {
+// import 'bottomSheet.dart';
+
+class Activity extends StatefulWidget {
+  @override
+  _ActivityState createState() => _ActivityState();
+}
+
+class _ActivityState extends State<Activity> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Container(
-      color: Colors.amber,
-      child: Text("activiy"),
-    ));
+        body: Center(
+            child: Container(
+      color: Colors.red,
+      child: Text("Activity Screen"),
+    )));
   }
 }

@@ -37,7 +37,7 @@ class StoreCard extends StatelessWidget {
                   children: [
                     Expanded(
                       child: Container(
-                        height: 200.5,
+                        height: 190,
                         width: 260,
                         decoration: BoxDecoration(
                           image: !isGalleryEmpty
@@ -88,25 +88,33 @@ class StoreCard extends StatelessWidget {
                       physics: NeverScrollableScrollPhysics(),
                       scrollDirection: Axis.horizontal,
                       child: Row(
-                        mainAxisSize: MainAxisSize.min,
+                        // mainAxisSize: MainAxisSize.max,
+                        // crossAxisAlignment: CrossAxisAlignment.start,
+                        // mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          CircleAvatar(
-                            radius: 10,
-                            backgroundImage: shop.profilePhoto != null &&
-                                    shop.profilePhoto.isNotEmpty
-                                ? NetworkImage(shop.profilePhoto)
-                                : null,
+                          Container(
+                            margin: const EdgeInsets.only(right: 10),
+                            child: CircleAvatar(
+                              radius: 10,
+                              backgroundImage: shop.profilePhoto != null &&
+                                      shop.profilePhoto.isNotEmpty
+                                  ? NetworkImage(shop.profilePhoto)
+                                  : null,
+                            ),
                           ),
                           SizedBox(
                             width: 2,
                           ),
-                          Text(
-                            shop.name,
-                            textAlign: TextAlign.start,
-                            style: TextStyle(
-                                color: Colors.black,
-                                // fontWeight: FontWeight.bold,
-                                fontSize: 12),
+                          Container(
+                            margin: const EdgeInsets.only(right: 15),
+                            child: Text(
+                              shop.name,
+                              textAlign: TextAlign.start,
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  // fontWeight: FontWeight.bold,
+                                  fontSize: 12),
+                            ),
                           ),
                           SizedBox(
                             width: 35,
@@ -116,11 +124,6 @@ class StoreCard extends StatelessWidget {
                             color: Colors.amber,
                             size: 14,
                           ),
-
-                          //      SizedBox(
-                          //  width: 2,
-                          //      ),
-
                           Text("4.54",
                               style:
                                   TextStyle(color: Colors.amber, fontSize: 14)),
