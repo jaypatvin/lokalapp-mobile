@@ -245,7 +245,9 @@ class _ProfileShopState extends State<ProfileShop> {
                     height: 40,
                   ),
                   user.userProducts.isNotEmpty
-                      ? StoreCard()
+                      ? StoreCard(
+                          crossAxisCount: 2,
+                        )
                       : Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.center,
