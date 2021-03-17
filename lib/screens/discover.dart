@@ -1,30 +1,105 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:lokalapp/screens/profile_screens/components/store_card.dart';
 import 'package:lokalapp/screens/profile_screens/profile_search_bar.dart';
+import 'package:lokalapp/utils/themes.dart';
+
+import 'add_shop_screens/appbar_shop.dart';
 
 class Discover extends StatelessWidget {
   TextEditingController _searchController = TextEditingController();
   @override
+  Widget getTextWidgets(context) {
+    var iconText = [
+      "Dessert & Pastries",
+      "Meals & Snacks",
+      "Drinks",
+      "Fashion"
+    ];
+    return Row(children: [
+      for (var text in iconText)
+        Expanded(
+            child: Container(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  text,
+                  style: TextStyle(
+                      fontWeight: FontWeight.w800,
+                      color: Colors.black,
+                      fontSize: 12,
+                      fontFamily: "Goldplay"),
+                ))),
+    ]);
+    // iconText
+    //     .map((item) =>
+    //         Container(width: 30, height: 10, child: Text('$item[index]')))
+    //     .toList());
+  }
+
   Widget build(BuildContext context) {
+    List icon = List.generate(
+      4,
+      (i) => Container(
+        padding: const EdgeInsets.only(right: 3),
+        child: CircleAvatar(
+            radius: 41,
+            backgroundColor: Color(0XFFF1FAFF),
+            child: Icon(
+              Icons.food_bank,
+              color: kTealColor,
+              size: 38,
+            )),
+      ),
+    ).toList();
+
+    List card = List.generate(
+      6,
+      (i) => Container(
+          padding: const EdgeInsets.all(0.0),
+          height: MediaQuery.of(context).size.height * 0.4,
+          width: MediaQuery.of(context).size.width / 2,
+          child: StoreCard(
+            crossAxisCount: 1,
+          )),
+    ).toList();
+
     return SafeArea(
         child: Scaffold(
-            appBar: AppBar(
-              centerTitle: true,
-              backgroundColor: Color(0xffFFC700),
-              title: CircleAvatar(
-                  radius: 25,
-                  backgroundColor: Color(0xffFF7100),
-                  child: Text(
-                    "LOKAL",
-                    softWrap: true,
-                    style: TextStyle(
-                        fontFamily: "Goldplay",
-                        fontSize: 14,
-                        fontWeight: FontWeight.w700),
-                  )),
-              actions: [
-                IconButton(icon: Icon(Icons.shopping_cart), onPressed: () {})
-              ],
+            appBar: PreferredSize(
+              preferredSize: Size(double.infinity, 100),
+              child: Container(
+                decoration: BoxDecoration(
+                  boxShadow: [
+                    BoxShadow(
+                        color: Colors.black12, spreadRadius: 5, blurRadius: 2)
+                  ],
+                ),
+                width: MediaQuery.of(context).size.width,
+                height: 100,
+                child: Container(
+                  decoration: BoxDecoration(color: Color(0XFFFF7A00)),
+                  child: Container(
+                    margin: const EdgeInsets.fromLTRB(0, 20, 0, 0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(top: 30),
+                          child: Text(
+                            "Discover",
+                            style: TextStyle(
+                                fontFamily: "Goldplay",
+                                fontSize: 22,
+                                fontWeight: FontWeight.w600,
+                                color: Color(0XFFFFC700)),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
             ),
             body: SingleChildScrollView(
               scrollDirection: Axis.vertical,
@@ -83,55 +158,26 @@ class Discover extends StatelessWidget {
                           "Recommended",
                           style: TextStyle(
                               fontWeight: FontWeight.w700,
-                              fontFamily: "Goldplay",
-                              fontSize: 16),
+                              fontFamily: "GoldplayBold",
+                              fontSize: 20),
                         ),
                       )
                     ],
                   ),
                   SizedBox(
-                    height: 10,
+                    height: 12,
                   ),
                   Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Expanded(
-                        child: Container(
-                          padding: const EdgeInsets.only(left: 15),
-                          height: MediaQuery.of(context).size.height / 3,
+                      Container(
+                          padding: const EdgeInsets.only(left: 12),
+                          height: MediaQuery.of(context).size.height * 0.4,
                           width: MediaQuery.of(context).size.width,
-                          // color: Colors.blue,
-                          child: ListView.builder(
-                            shrinkWrap: true,
-                            scrollDirection: Axis.horizontal,
-                            itemCount: 8,
-                            itemBuilder: (BuildContext context, int index) =>
-                                Container(
-                              width: 200,
-                              child: Card(
-                                child: Center(child: Text('Dummy Card')),
-                              ),
-                            ),
-                            // Row(
-                            //   mainAxisSize: MainAxisSize.min,
-                            //   children: [
-                            //     Flexible(
-                            //       child: Container(
-                            //         height: MediaQuery.of(context)
-                            //                 .size
-                            //                 .height *
-                            //             0.4,
-                            //         color: Colors.black,
-                            //         width:
-                            //             MediaQuery.of(context).size.width,
-                            //         child: StoreCard(),
-                            //       ),
-                            //     ),
-                            //   ],
-                            // ),
-                          ),
-                        ),
-                      ),
+                          child: ListView(
+                              shrinkWrap: true,
+                              scrollDirection: Axis.horizontal,
+                              children: card)),
                     ],
                   ),
                   SizedBox(
@@ -143,20 +189,27 @@ class Discover extends StatelessWidget {
                       Container(
                         padding: const EdgeInsets.only(left: 20),
                         child: Text(
-                          "Explore",
+                          "Explore Categories",
                           style: TextStyle(
                               fontWeight: FontWeight.w700,
-                              fontFamily: "Goldplay",
-                              fontSize: 16),
+                              fontFamily: "GoldplayBold",
+                              fontSize: 20),
                         ),
                       ),
                       Row(
                         children: [
-                          Text("View All"),
+                          Text(
+                            "View All",
+                            style: TextStyle(
+                                fontFamily: "Goldplay",
+                                color: kTealColor,
+                                fontWeight: FontWeight.w700),
+                          ),
                           IconButton(
                               icon: Icon(
-                                Icons.arrow_forward_ios,
-                                size: 12,
+                                Icons.arrow_forward_outlined,
+                                color: kTealColor,
+                                size: 16,
                               ),
                               onPressed: () {})
                         ],
@@ -166,44 +219,43 @@ class Discover extends StatelessWidget {
                   // SizedBox(
                   //   height: 10,
                   // ),
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Expanded(
-                        child: Container(
-                          padding: const EdgeInsets.only(left: 15),
-                          height: MediaQuery.of(context).size.height / 6,
-                          width: MediaQuery.of(context).size.width,
-                          child: ListView.builder(
-                            shrinkWrap: true,
+                  Row(mainAxisSize: MainAxisSize.min, children: [
+                    Expanded(
+                      child: Container(
+                        padding: const EdgeInsets.only(left: 3),
+                        height: MediaQuery.of(context).size.height / 6,
+                        width: MediaQuery.of(context).size.width,
+                        child: ListView(
+                            // shrinkWrap: true,
                             scrollDirection: Axis.horizontal,
-                            itemCount: 6,
-                            itemBuilder: (BuildContext context, int index) =>
-                                Column(
-                              children: [
-                                Row(
-                                  children: [
-                                    Container(
-                                      padding: const EdgeInsets.all(5),
-                                      child: CircleAvatar(
-                                          radius: 40,
-                                          child: Icon(
-                                            Icons.food_bank,
-                                            size: 38,
-                                          )),
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Container(
+                                    height:
+                                        MediaQuery.of(context).size.height / 2,
+                                    width: MediaQuery.of(context).size.width,
+                                    child: ListTile(
+                                      title: Container(
+                                        // padding:
+                                        // const EdgeInsets.only(right: 5.0),
+                                        child: Row(
+                                          children: icon,
+                                        ),
+                                      ),
+                                      subtitle: getTextWidgets(context),
                                     ),
-                                  ],
-                                ),
-                                Text("Meals")
-                              ],
-                            ),
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
+                                  ),
+                                ],
+                              ),
+                            ]),
+                      ),
+                    )
+                  ]),
                   SizedBox(
-                    height: 20,
+                    height: 25,
                   ),
                   Row(
                     children: [
@@ -213,34 +265,25 @@ class Discover extends StatelessWidget {
                           "Recent",
                           style: TextStyle(
                               fontWeight: FontWeight.w700,
-                              fontFamily: "Goldplay",
-                              fontSize: 16),
+                              fontFamily: "GoldplayBold",
+                              fontSize: 20),
                         ),
                       )
                     ],
                   ),
+                  SizedBox(
+                    height: 20,
+                  ),
                   Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Expanded(
-                        child: Container(
-                          padding: const EdgeInsets.only(left: 15),
-                          height: MediaQuery.of(context).size.height / 4,
-                          width: MediaQuery.of(context).size.width,
-                          child: ListView.builder(
-                            shrinkWrap: true,
-                            scrollDirection: Axis.horizontal,
-                            itemCount: 8,
-                            itemBuilder: (BuildContext context, int index) =>
-                                Container(
-                              width: 200,
-                              child: Card(
-                                child: Center(child: Text('Dummy Card')),
-                              ),
-                            ),
-                          ),
-                        ),
+                      SizedBox(
+                        width: 8,
                       ),
+                      Expanded(
+                          child: StoreCard(
+                        crossAxisCount: 2,
+                      )),
                     ],
                   ),
                   SizedBox(
