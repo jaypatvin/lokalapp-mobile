@@ -3,6 +3,8 @@ import 'package:lokalapp/states/current_user.dart';
 import 'package:provider/provider.dart';
 
 class StoreCard extends StatelessWidget {
+  final int crossAxisCount;
+  StoreCard({this.crossAxisCount});
   @override
   Widget build(BuildContext context) {
     var user = Provider.of<CurrentUser>(context, listen: false);
@@ -14,8 +16,8 @@ class StoreCard extends StatelessWidget {
       physics: NeverScrollableScrollPhysics(),
       itemCount: products.length,
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        childAspectRatio: 15.0 / 25.5,
-        crossAxisCount: 2,
+        childAspectRatio: 16.2 / 25.5,
+        crossAxisCount: this.crossAxisCount,
       ),
       itemBuilder: (BuildContext context, int index) {
         var gallery = products[index].gallery;
@@ -37,7 +39,7 @@ class StoreCard extends StatelessWidget {
                   children: [
                     Expanded(
                       child: Container(
-                        height: 190,
+                        height: 180,
                         width: 260,
                         decoration: BoxDecoration(
                           image: !isGalleryEmpty
@@ -82,18 +84,17 @@ class StoreCard extends StatelessWidget {
                               fontSize: 18),
                         )),
                     SizedBox(
-                      height: 30,
+                      height: 25,
                     ),
                     SingleChildScrollView(
                       physics: NeverScrollableScrollPhysics(),
                       scrollDirection: Axis.horizontal,
                       child: Row(
-                        // mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.start,
                         // crossAxisAlignment: CrossAxisAlignment.start,
-                        // mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           Container(
-                            margin: const EdgeInsets.only(right: 10),
+                            // margin: const EdgeInsets.only(right: 30),
                             child: CircleAvatar(
                               radius: 10,
                               backgroundImage: shop.profilePhoto != null &&
@@ -103,10 +104,10 @@ class StoreCard extends StatelessWidget {
                             ),
                           ),
                           SizedBox(
-                            width: 2,
+                            width: 1,
                           ),
                           Container(
-                            margin: const EdgeInsets.only(right: 15),
+                            // margin: const EdgeInsets.only(right: 12),
                             child: Text(
                               shop.name,
                               textAlign: TextAlign.start,
@@ -117,16 +118,22 @@ class StoreCard extends StatelessWidget {
                             ),
                           ),
                           SizedBox(
-                            width: 35,
+                            width: 60,
                           ),
-                          Icon(
-                            Icons.star,
-                            color: Colors.amber,
-                            size: 14,
-                          ),
-                          Text("4.54",
-                              style:
-                                  TextStyle(color: Colors.amber, fontSize: 14)),
+                          Row(
+                            children: [
+                              Container(
+                                child: Icon(
+                                  Icons.star,
+                                  color: Colors.amber,
+                                  size: 14,
+                                ),
+                              ),
+                              Text("4.54",
+                                  style: TextStyle(
+                                      color: Colors.amber, fontSize: 14)),
+                            ],
+                          )
                         ],
                       ),
                     )

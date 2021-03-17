@@ -49,9 +49,145 @@ class _AddProductState extends State<AddProduct> {
     return compressedImageFile;
   }
 
+  Future<String> uploadImage(imageFile) async {
+    UploadTask uploadTask =
+        storageRef.child("productId_$productPhotoId.jpg").putFile(imageFile);
+    TaskSnapshot storageSnap = await uploadTask;
+    String downloadUrl = await storageSnap.ref.getDownloadURL();
+    return downloadUrl;
+  }
+
+  handleGallery() async {
+    final pickedImage = await picker.getImage(source: ImageSource.gallery);
+    if (pickedImage != null) {
+      setState(() {
+        file = File(pickedImage.path);
+      });
+      // Navigator.pop(context);
+    }
+  }
+
+//  handleGallery2() async {
+//     final pickedImage = await picker.getImage(source: ImageSource.gallery);
+//     if (pickedImage != null) {
+//       setState(() {
+//         secondFile = File(pickedImage.path);
+//       });
+//       // Navigator.pop(context);
+//     }
+//   }
+
+  handleCamera() async {
+    // Navigator.pop(context);
+    final pickedImage = await picker.getImage(
+        source: ImageSource.camera, maxHeight: 675, maxWidth: 960);
+    if (pickedImage != null) {
+      setState(() {
+        file = File(pickedImage.path);
+      });
+      //  Navigator.pop(context);
+    }
+  }
+
+  //   handleCamera2() async {
+  //   // Navigator.pop(context);
+  //   final pickedImage = await picker.getImage(
+  //       source: ImageSource.camera, maxHeight: 675, maxWidth: 960);
+  //   if (pickedImage != null) {
+  //     setState(() {
+  //       secondFile = File(pickedImage.path);
+  //     });
+  //     //  Navigator.pop(context);
+  //   }
+  // }
+
+  selectImage(parentContext) {
+    return showDialog(
+        context: parentContext,
+        builder: (context) {
+          return SimpleDialog(
+            title: Text("Upload Picture"),
+            children: [
+              SimpleDialogOption(
+                child: Text("Camera"),
+                onPressed: () {
+                  handleCamera();
+                },
+              ),
+              SimpleDialogOption(
+                child: Text("Gallery"),
+                onPressed: () {
+                  handleGallery();
+                },
+              ),
+              SimpleDialogOption(
+                child: Text("Cancel"),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              )
+            ],
+          );
+        });
+  }
+
+  Widget photoBox() {
+    return GestureDetector(
+      onTap: () {
+        selectImage(context);
+      },
+      child: Container(
+        width: 72.0,
+        height: 75.0,
+        decoration: BoxDecoration(
+          shape: BoxShape.rectangle,
+          border: Border.all(width: 1, color: kTealColor),
+        ),
+        child: IconButton(
+          onPressed: () {
+            selectImage(context);
+          },
+          icon: Icon(
+            Icons.add,
+            color: kTealColor,
+            size: 15,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget photoBoxWithPic() {
+    return GestureDetector(
+      onTap: () {},
+      child: Container(
+        width: 72.0,
+        height: 75.0,
+        decoration: BoxDecoration(
+          image: DecorationImage(fit: BoxFit.cover, image: FileImage(file)),
+          shape: BoxShape.rectangle,
+          border: Border.all(width: 1, color: kTealColor),
+        ),
+        child: IconButton(
+          onPressed: () {
+            showPhotoBox();
+          },
+          icon: file == null
+              ? Icon(
+                  Icons.add,
+                  color: kTealColor,
+                  size: 15,
+                )
+              : Icon(null),
+        ),
+      ),
+    );
+  }
+
+
   Widget buildAppBar() {
     return PreferredSize(
-        preferredSize: Size(double.infinity, 83),
+        preferredSize: Size(double.infinity, 100),
         child: Center(
             child: AppbarShop(
           shopName: "Add A Product",
