@@ -1,9 +1,7 @@
 import 'dart:io';
 
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image/image.dart' as Im;
-import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
@@ -25,32 +23,30 @@ class AddProduct extends StatefulWidget {
   _AddProductState createState() => _AddProductState();
 }
 
-//TODO: ADD STATUS
 class _AddProductState extends State<AddProduct> {
   String itemName;
-  // double _opacityValue = 0.0;
-  bool _isVisible = false;
   String itemDescription;
   bool _setPickUpHours = false;
   bool _setDeliveryHours = false;
-  String productPhotoId = Uuid().v4();
-  final picker = ImagePicker();
-  File file;
-  File secondFile;
   TextEditingController _priceController = TextEditingController();
   TextEditingController _stockController = TextEditingController();
-  TransformationController controller = TransformationController();
-  int quantity = 1;
-  bool isFile = false;
-  compressImage() async {
+  AddProductGallery _gallery = AddProductGallery();
+
+  //TODO: move these 2 functions to LocalImageService
+  Future<String> uploadImage(File file, {String fileName = ''}) async {
+    // create a new file name from Uuid()
+    var fn = Uuid().v4();
+    var compressedFile = await _compressImage(file, fileName);
+    return await Database().uploadImage(compressedFile, '${fileName}_$fn');
+  }
+
+  Future<File> _compressImage(File file, String fileName) async {
     final tempDir = await getTemporaryDirectory();
     final path = tempDir.path;
     Im.Image imageFile = Im.decodeImage(file.readAsBytesSync());
-    final compressedImageFile = File('$path/img_$productPhotoId.jpg')
+    final compressedImageFile = File('$path/img_$fileName.jpg')
       ..writeAsBytesSync(Im.encodeJpg(imageFile, quality: 90));
-    setState(() {
-      file = compressedImageFile;
-    });
+    return compressedImageFile;
   }
 
   Future<String> uploadImage(imageFile) async {
@@ -187,6 +183,7 @@ class _AddProductState extends State<AddProduct> {
       ),
     );
   }
+
 
   Widget buildAppBar() {
     return PreferredSize(
@@ -326,19 +323,6 @@ class _AddProductState extends State<AddProduct> {
     );
   }
 
-  Widget buildPhotoBox() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SizedBox(
-          width: 15,
-        ),
-        file == null ? photoBox() : photoBoxWithPic()
-      ],
-    );
-  }
-
   Widget buildSubmitButton() {
     return RoundedButton(
       label: "SUBMIT",
@@ -359,30 +343,22 @@ class _AddProductState extends State<AddProduct> {
     );
   }
 
-  void showPhotoBox() {
-    setState(() {
-      _isVisible = !_isVisible;
-    });
-  }
-
   //TODO: put this somewhere
   Future<bool> createProduct() async {
-    // var user = Provider.of<CurrentUser>(context, listen: false);
-    // List media = [];
-    String mediaUrl = "";
-    String mediaUrl2 = "";
-    if (file != null) {
-      await compressImage();
-      mediaUrl = await uploadImage(file);
-      // mediaUrl2 = await uploadImage(file);
-
+    List<ProductGallery> gallery = [];
+    for (var photoBox in _gallery.photoBoxes) {
+      if (photoBox.file == null) {
+        continue;
+      }
+      var mediaUrl = await uploadImage(photoBox.file, fileName: 'productPhoto');
+      gallery.add(ProductGallery(url: mediaUrl, order: gallery.length));
     }
     CurrentUser user = Provider.of<CurrentUser>(context, listen: false);
     //TODO: check for price and quantity parse problems
     try {
       user.postProduct.name = itemName;
       user.postProduct.description = itemDescription;
-      user.postProduct.gallery = [ProductGallery(url: mediaUrl, order: 0)];
+      user.postProduct.gallery = gallery;
       user.postProduct.basePrice = double.tryParse(_priceController.text);
       user.postProduct.quantity = int.tryParse(_stockController.text);
       return await user.createProduct();
@@ -542,7 +518,7 @@ class _AddProductState extends State<AddProduct> {
                 SizedBox(
                   height: 15,
                 ),
-                AddProductGallery(),
+                _gallery,
                 SizedBox(
                   height: 50,
                 ),
