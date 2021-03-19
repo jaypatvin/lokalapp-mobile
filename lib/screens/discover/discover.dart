@@ -1,12 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+
+import 'package:lokalapp/screens/checkout.dart';
+import 'package:lokalapp/screens/discover/explore_categories.dart';
+import 'package:lokalapp/screens/profile_screens/components/product_card.dart';
+import 'package:lokalapp/screens/profile_screens/components/store_card.dart';
+import 'package:lokalapp/states/current_user.dart';
+import 'package:lokalapp/utils/themes.dart';
 import 'package:provider/provider.dart';
 
-import '../states/current_user.dart';
-import '../utils/themes.dart';
-import 'profile_screens/components/product_card.dart';
-import 'profile_screens/components/store_card.dart';
-
+// import '../states/current_user.dart';
+// import '../utils/themes.dart';
+// import 'profile_screens/components/product_card.dart';
+// import 'profile_screens/components/store_card.dart';
 class Discover extends StatelessWidget {
   final TextEditingController _searchController = TextEditingController();
 
@@ -217,12 +223,21 @@ class Discover extends StatelessWidget {
                       ),
                       Row(
                         children: [
-                          Text(
-                            "View All",
-                            style: TextStyle(
-                                fontFamily: "Goldplay",
-                                color: kTealColor,
-                                fontWeight: FontWeight.w700),
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          ExploreCategories()));
+                            },
+                            child: Text(
+                              "View All",
+                              style: TextStyle(
+                                  fontFamily: "Goldplay",
+                                  color: kTealColor,
+                                  fontWeight: FontWeight.w700),
+                            ),
                           ),
                           IconButton(
                               icon: Icon(
@@ -303,6 +318,18 @@ class Discover extends StatelessWidget {
                           child: StoreCard(
                         crossAxisCount: 2,
                       )),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      TextButton(
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => Checkout()));
+                          },
+                          child: Text("Checkout"))
                     ],
                   ),
                   SizedBox(
