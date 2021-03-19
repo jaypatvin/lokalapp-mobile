@@ -1,31 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:lokalapp/screens/add_shop_screens/shopDescription.dart';
 import 'package:lokalapp/screens/profile_screens/components/store_rating.dart';
 import 'package:lokalapp/utils/themes.dart';
-import 'package:lokalapp/widgets/rounded_button.dart';
 import 'package:photo_view/photo_view.dart';
 
 import 'package:photo_view/photo_view_gallery.dart';
+
 class AddShopCart extends StatefulWidget {
   @override
   _AddShopCartState createState() => _AddShopCartState();
 }
 
 class _AddShopCartState extends State<AddShopCart> {
-    PhotoViewController controller;
+  PhotoViewController controller;
   double scaleCopy;
-  int selectedRadioTile;
-    int _current = 0;
+
+  int _current = 0;
   TextEditingController _instructionsController = TextEditingController();
   final maxLines = 10;
   int quantity = 1;
-  
 
-
-
-  void listener(PhotoViewControllerValue value){
-    setState((){
+  void listener(PhotoViewControllerValue value) {
+    setState(() {
       scaleCopy = value.scale;
     });
   }
@@ -33,10 +29,8 @@ class _AddShopCartState extends State<AddShopCart> {
   @override
   void initState() {
     super.initState();
-    // selectedRadio = 0;
-    selectedRadioTile = 0;
-       controller = PhotoViewController()
-      ..outputStateStream.listen(listener);
+
+    controller = PhotoViewController()..outputStateStream.listen(listener);
   }
 
   @override
@@ -45,13 +39,7 @@ class _AddShopCartState extends State<AddShopCart> {
     super.dispose();
   }
 
-  setSelectedRadioTile(int val) {
-    setState(() {
-      selectedRadioTile = val;
-    });
-  }
-
-   void add() {
+  void add() {
     setState(() {
       quantity++;
     });
@@ -62,7 +50,6 @@ class _AddShopCartState extends State<AddShopCart> {
       if (quantity != 1) quantity--;
     });
   }
-
 
   buildAppBar() {
     return PreferredSize(
@@ -104,18 +91,14 @@ class _AddShopCartState extends State<AddShopCart> {
     );
   }
 
+  final List imageList = [
+    'https://images.the-house.com/keen-elsa-wmns-shoes-black-star-white-17-1.jpg',
+    'https://veryvera.wierstewarthosting.com/wp-content/uploads/2017/02/16053118/brownies.jpg',
+    'https://flavorverse.com/wp-content/uploads/2017/12/Canadian-Food.jpg',
+    'https://img2.mashed.com/img/gallery/food-trends-that-are-about-to-take-over-2020/intro-1575330865.jpg',
+  ];
 
-  
-
-final List imageList = [
-  'https://images.the-house.com/keen-elsa-wmns-shoes-black-star-white-17-1.jpg',
-  'https://veryvera.wierstewarthosting.com/wp-content/uploads/2017/02/16053118/brownies.jpg',
-  'https://flavorverse.com/wp-content/uploads/2017/12/Canadian-Food.jpg',
-  'https://img2.mashed.com/img/gallery/food-trends-that-are-about-to-take-over-2020/intro-1575330865.jpg',
-];
-
-
-   buildDots() {
+  buildDots() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: imageList.map((url) {
@@ -127,53 +110,53 @@ final List imageList = [
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             border: Border.all(width: 1, color: Colors.black),
-            color: _current == index
-                ? Color.fromRGBO(0, 0, 0, 0.9)
-                : Colors.grey,
+            color:
+                _current == index ? Color.fromRGBO(0, 0, 0, 0.9) : Colors.grey,
           ),
         );
       }).toList(),
     );
   }
 
-  buildGallery(){
+  buildGallery() {
     return PhotoViewGallery.builder(
-  itemCount: imageList.length,
-   onPageChanged: (index) {
-            if (this.mounted) {
-              setState(() {
-                _current = index;
-              });
-            }
-   },
-  builder: (context, index) {
-    return PhotoViewGalleryPageOptions(
-      imageProvider:NetworkImage(imageList[index],),
-      minScale: PhotoViewComputedScale.contained * 0.8,
-      maxScale: PhotoViewComputedScale.covered * 2,
-      controller: controller,
-      
-    );
-  },
-  scrollPhysics: BouncingScrollPhysics(),
-  backgroundDecoration: BoxDecoration(
-    borderRadius:BorderRadius.all(Radius.circular(20)),
-    color: Theme.of(context).canvasColor,
-  ),
-  enableRotation:true,
-  loadingBuilder: (context, event) => Center(
-    child: Container(
-      width: 30.0,
-      height: 30.0,
-      child: CircularProgressIndicator(
-        backgroundColor:Colors.orange,
-        value: event == null
-            ? 0
-            : event.cumulativeBytesLoaded / event.expectedTotalBytes,
+      itemCount: imageList.length,
+      onPageChanged: (index) {
+        if (this.mounted) {
+          setState(() {
+            _current = index;
+          });
+        }
+      },
+      builder: (context, index) {
+        return PhotoViewGalleryPageOptions(
+          imageProvider: NetworkImage(
+            imageList[index],
+          ),
+          minScale: PhotoViewComputedScale.contained * 0.8,
+          maxScale: PhotoViewComputedScale.covered * 2,
+          controller: controller,
+        );
+      },
+      scrollPhysics: BouncingScrollPhysics(),
+      backgroundDecoration: BoxDecoration(
+        borderRadius: BorderRadius.all(Radius.circular(20)),
+        color: Theme.of(context).canvasColor,
       ),
-    ),
-  ),
-);
+      enableRotation: true,
+      loadingBuilder: (context, event) => Center(
+        child: Container(
+          width: 30.0,
+          height: 30.0,
+          child: CircularProgressIndicator(
+            backgroundColor: Colors.orange,
+            value: event == null
+                ? 0
+                : event.cumulativeBytesLoaded / event.expectedTotalBytes,
+          ),
+        ),
+      ),
+    );
   }
 
   buildImage() {
@@ -183,27 +166,18 @@ final List imageList = [
         children: [
           Expanded(
             child: Container(
-              height: MediaQuery.of(context).size.height / 2,
-              child: 
-              Stack(
-                children: [
-                
-              buildGallery(),
-              Align(
-                alignment: Alignment.bottomCenter,
-                child:     buildDots(),
-              )
-          
-                ],
-              )
-             
-              
-              ),
-             
-            ),
-            //  SizedBox(height: 10,),
-           
-          
+                height: MediaQuery.of(context).size.height / 2,
+                child: Stack(
+                  children: [
+                    buildGallery(),
+                    Align(
+                      alignment: Alignment.bottomCenter,
+                      child: buildDots(),
+                    )
+                  ],
+                )),
+          ),
+          //  SizedBox(height: 10,),
         ],
       ),
     );
@@ -268,77 +242,6 @@ final List imageList = [
         )
       ],
     );
-  }
-
-  buildDeliveryOption() {
-    return Row(
-      children: [
-        Container(
-          padding: const EdgeInsets.only(left: 15),
-          child: Text(
-            "Delivery Option",
-            style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.w700,
-                fontFamily: "Goldplay"),
-          ),
-        ),
-        SizedBox(
-          width: 10,
-        ),
-        Text("Pick 1",
-            style: TextStyle(
-              fontFamily: "Goldplay",
-              fontSize: 14,
-              fontWeight: FontWeight.w500,
-            )),
-      ],
-    );
-  }
-
-  buildRadioTileDelivery() {
-    return Row(
-      children: [
-        Container(
-          child: Expanded(
-            child: RadioListTile(
-              value: 2,
-              groupValue: selectedRadioTile,
-              title: Text(
-                "Delivery",
-                style: TextStyle(fontSize: 14),
-              ),
-              onChanged: (val) {
-                setSelectedRadioTile(val);
-              },
-              activeColor: Colors.black,
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  buildRadioTileCustomPickUp() {
-    return Row(children: [
-      Container(
-        child: Expanded(
-          child: RadioListTile(
-            value: 1,
-            groupValue: selectedRadioTile,
-            title: Text(
-              "Custom Pick-up",
-              style: TextStyle(fontSize: 14),
-            ),
-            onChanged: (val) {
-              print("Radio Tile pressed $val");
-              setSelectedRadioTile(val);
-            },
-            activeColor: Colors.black,
-          ),
-        ),
-      ),
-    ]);
   }
 
   buildSpecialInstructions() {

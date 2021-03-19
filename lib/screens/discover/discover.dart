@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:lokalapp/screens/checkout.dart';
+import 'package:lokalapp/screens/discover/explore_categories.dart';
 import 'package:lokalapp/screens/profile_screens/components/store_card.dart';
-import 'package:lokalapp/screens/profile_screens/profile_search_bar.dart';
 import 'package:lokalapp/utils/themes.dart';
 
-import 'add_shop_screens/appbar_shop.dart';
-
 class Discover extends StatelessWidget {
-  TextEditingController _searchController = TextEditingController();
+  final TextEditingController _searchController = TextEditingController();
   @override
   Widget getTextWidgets(context) {
     var iconText = [
@@ -198,12 +197,21 @@ class Discover extends StatelessWidget {
                       ),
                       Row(
                         children: [
-                          Text(
-                            "View All",
-                            style: TextStyle(
-                                fontFamily: "Goldplay",
-                                color: kTealColor,
-                                fontWeight: FontWeight.w700),
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          ExploreCategories()));
+                            },
+                            child: Text(
+                              "View All",
+                              style: TextStyle(
+                                  fontFamily: "Goldplay",
+                                  color: kTealColor,
+                                  fontWeight: FontWeight.w700),
+                            ),
                           ),
                           IconButton(
                               icon: Icon(
@@ -284,6 +292,18 @@ class Discover extends StatelessWidget {
                           child: StoreCard(
                         crossAxisCount: 2,
                       )),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      TextButton(
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => Checkout()));
+                          },
+                          child: Text("Checkout"))
                     ],
                   ),
                   SizedBox(
