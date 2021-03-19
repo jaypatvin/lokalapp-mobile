@@ -13,31 +13,23 @@ class LocalImageService extends ChangeNotifier {
   String _fileName;
   File _file;
   final Uuid _uuid = Uuid();
-  final picker = ImagePicker();
+  final _picker = ImagePicker();
 
   String get mediaUrl => _mediaUrl;
   File get file => _file;
   bool get fileExists => _file != null;
 
-  Future<File> launchCamera() async {
-    _mediaUrl = null;
-    final pickedImage = await picker.getImage(source: ImageSource.camera);
+  Future<File> _pickFile(ImageSource source) async {
+    final pickedImage = await _picker.getImage(source: source);
     if (pickedImage != null) {
       return _file = File(pickedImage.path);
     }
-    notifyListeners();
     return null;
   }
 
-  Future<File> launchGallery() async {
-    _mediaUrl = null;
-    final pickedImage = await picker.getImage(source: ImageSource.gallery);
-    if (pickedImage != null) {
-      return _file = File(pickedImage.path);
-    }
-    notifyListeners();
-    return null;
-  }
+  Future<File> launchCamera() async => await _pickFile(ImageSource.camera);
+
+  Future<File> launchGallery() async => await _pickFile(ImageSource.gallery);
 
   Future<String> uploadImage() async {
     // create a new file name from Uuid()

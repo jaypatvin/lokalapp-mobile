@@ -1,13 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+
 import 'package:lokalapp/screens/checkout.dart';
 import 'package:lokalapp/screens/discover/explore_categories.dart';
+import 'package:lokalapp/screens/profile_screens/components/product_card.dart';
 import 'package:lokalapp/screens/profile_screens/components/store_card.dart';
+import 'package:lokalapp/states/current_user.dart';
 import 'package:lokalapp/utils/themes.dart';
+import 'package:provider/provider.dart';
 
+// import '../states/current_user.dart';
+// import '../utils/themes.dart';
+// import 'profile_screens/components/product_card.dart';
+// import 'profile_screens/components/store_card.dart';
 class Discover extends StatelessWidget {
   final TextEditingController _searchController = TextEditingController();
-  @override
+
   Widget getTextWidgets(context) {
     var iconText = [
       "Dessert & Pastries",
@@ -35,31 +43,48 @@ class Discover extends StatelessWidget {
     //     .toList());
   }
 
+  @override
   Widget build(BuildContext context) {
     List icon = List.generate(
       4,
       (i) => Container(
         padding: const EdgeInsets.only(right: 3),
         child: CircleAvatar(
-            radius: 41,
-            backgroundColor: Color(0XFFF1FAFF),
-            child: Icon(
-              Icons.food_bank,
-              color: kTealColor,
-              size: 38,
-            )),
+          radius: 41,
+          backgroundColor: Color(0XFFF1FAFF),
+          child: Icon(
+            Icons.food_bank,
+            color: kTealColor,
+            size: 38,
+          ),
+        ),
       ),
     ).toList();
 
+    var user = Provider.of<CurrentUser>(context, listen: false);
+    var products = user.userProducts;
+    var shop = user.userShops[0];
+
     List card = List.generate(
-      6,
-      (i) => Container(
+      products.length,
+      (index) {
+        var gallery = products[index].gallery;
+        var isGalleryEmpty = gallery == null || gallery.isEmpty;
+        var productImage =
+            !isGalleryEmpty ? gallery.firstWhere((g) => g.order == 0) : null;
+        return Container(
           padding: const EdgeInsets.all(0.0),
           height: MediaQuery.of(context).size.height * 0.4,
           width: MediaQuery.of(context).size.width / 2,
-          child: StoreCard(
-            crossAxisCount: 1,
-          )),
+          child: ProductCard(
+            name: products[index].name,
+            imageUrl: isGalleryEmpty ? '' : productImage.url,
+            price: products[index].basePrice,
+            shopName: shop.name,
+            shopImageUrl: shop.profilePhoto,
+          ),
+        );
+      },
     ).toList();
 
     return SafeArea(
@@ -170,13 +195,14 @@ class Discover extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Container(
-                          padding: const EdgeInsets.only(left: 12),
-                          height: MediaQuery.of(context).size.height * 0.4,
-                          width: MediaQuery.of(context).size.width,
-                          child: ListView(
-                              shrinkWrap: true,
-                              scrollDirection: Axis.horizontal,
-                              children: card)),
+                        padding: const EdgeInsets.only(left: 12),
+                        height: MediaQuery.of(context).size.height * 0.4,
+                        width: MediaQuery.of(context).size.width,
+                        child: ListView(
+                            shrinkWrap: true,
+                            scrollDirection: Axis.horizontal,
+                            children: card),
+                      ),
                     ],
                   ),
                   SizedBox(
