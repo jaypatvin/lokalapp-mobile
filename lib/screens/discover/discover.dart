@@ -3,6 +3,8 @@ import 'package:flutter/widgets.dart';
 
 import 'package:lokalapp/screens/checkout.dart';
 import 'package:lokalapp/screens/discover/explore_categories.dart';
+import 'package:lokalapp/screens/discover/order_placed.dart';
+import 'package:lokalapp/screens/order_confirmation.dart';
 import 'package:lokalapp/screens/profile_screens/components/product_card.dart';
 import 'package:lokalapp/screens/profile_screens/components/store_card.dart';
 import 'package:lokalapp/states/current_user.dart';
@@ -327,9 +329,33 @@ class Discover extends StatelessWidget {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
+                                    builder: (context) => OrderPlaced()));
+                          },
+                          child: Text("Order placed"))
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      TextButton(
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
                                     builder: (context) => Checkout()));
                           },
                           child: Text("Checkout"))
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      TextButton(
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => OrderConfirmation()));
+                          },
+                          child: Text("Order Confirmation"))
                     ],
                   ),
                   SizedBox(

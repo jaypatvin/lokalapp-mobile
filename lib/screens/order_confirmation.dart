@@ -1,91 +1,14 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:lokalapp/utils/themes.dart';
 
-class Checkout extends StatefulWidget {
-  @override
-  _CheckoutState createState() => _CheckoutState();
-}
-
-class _CheckoutState extends State<Checkout> {
-  int selectedRadioTile;
-
-  buildRadioTileDelivery() {
-    return Row(
-      children: [
-        Container(
-          child: Expanded(
-            child: RadioListTile(
-              value: 2,
-              groupValue: selectedRadioTile,
-              title: Text(
-                "Delivery",
-                style: TextStyle(fontSize: 14),
-              ),
-              onChanged: (val) {
-                setSelectedRadioTile(val);
-              },
-              activeColor: Colors.black,
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  buildDeliveryOption() {
-    return Row(
-      children: [
-        Container(
-          padding: const EdgeInsets.only(left: 15),
-          child: Text(
-            "Delivery Option",
-            style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.w700,
-                fontFamily: "Goldplay"),
-          ),
-        ),
-        SizedBox(
-          width: 10,
-        ),
-        Text("Pick 1",
-            style: TextStyle(
-              fontFamily: "Goldplay",
-              fontSize: 14,
-              fontWeight: FontWeight.w500,
-            )),
-      ],
-    );
-  }
-
-  setSelectedRadioTile(int val) {
-    setState(() {
-      selectedRadioTile = val;
-    });
-  }
-
+class OrderConfirmation extends StatelessWidget {
   buildButtons() {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.end,
       children: [
         Container(
           height: 43,
-          width: 180,
-          child: Text(
-            "Order Total: ",
-            style: TextStyle(
-                fontFamily: "Goldplay",
-                fontSize: 20,
-                fontWeight: FontWeight.w600),
-          ),
-        ),
-        SizedBox(
-          width: 5,
-        ),
-        Container(
-          height: 43,
-          width: 180,
+          width: 190,
           child: FlatButton(
             // height: 50,
             // minWidth: 100,
@@ -96,106 +19,97 @@ class _CheckoutState extends State<Checkout> {
             ),
             textColor: Colors.black,
             child: Text(
-              "CHECKOUT",
+              "CONFIRM ORDER",
               style: TextStyle(
                   fontFamily: "Goldplay",
                   fontSize: 14,
-                  fontWeight: FontWeight.w700),
+                  fontWeight: FontWeight.w600),
             ),
             onPressed: () {},
           ),
+        ),
+        SizedBox(
+          width: 10,
         ),
       ],
     );
   }
 
-  buildRadioTileCustomPickUp() {
-    return Row(children: [
-      Container(
-        child: Expanded(
-          child: RadioListTile(
-            value: 1,
-            groupValue: selectedRadioTile,
-            title: Text(
-              "Customer Pick-up",
-              style: TextStyle(fontSize: 14),
-            ),
-            onChanged: (val) {
-              print("Radio Tile pressed $val");
-              setSelectedRadioTile(val);
-            },
-            activeColor: Colors.black,
-          ),
-        ),
-      ),
-    ]);
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    selectedRadioTile = 0;
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: Size(double.infinity, 100),
-        child: Container(
-          decoration: BoxDecoration(
-            boxShadow: [
-              BoxShadow(color: Colors.black12, spreadRadius: 5, blurRadius: 2)
-            ],
-          ),
-          width: MediaQuery.of(context).size.width,
-          height: 100,
+        appBar: PreferredSize(
+          preferredSize: Size(double.infinity, 100),
           child: Container(
-            decoration: BoxDecoration(color: kTealColor),
+            decoration: BoxDecoration(
+              boxShadow: [
+                BoxShadow(color: Colors.black12, spreadRadius: 5, blurRadius: 2)
+              ],
+            ),
+            width: MediaQuery.of(context).size.width,
+            height: 100,
             child: Container(
-              margin: const EdgeInsets.fromLTRB(0, 20, 0, 0),
-              child: Row(
-                // mainAxisAlignment: MainAxisAlignment.center,
-                // crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.only(top: 30),
-                        child: IconButton(
-                            icon: Icon(Icons.arrow_back_outlined),
-                            color: Colors.white,
-                            onPressed: () {
-                              Navigator.pop(context);
-                            }),
-                      ),
-                    ],
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 30, left: 80),
-                    child: Text(
-                      "Shopping Cart",
-                      style: TextStyle(
-                          fontFamily: "Goldplay",
-                          fontSize: 22,
-                          fontWeight: FontWeight.w600,
-                          color: Color(0XFFFFC700)),
+              decoration: BoxDecoration(color: kTealColor),
+              child: Container(
+                margin: const EdgeInsets.fromLTRB(0, 20, 0, 0),
+                child: Row(
+                  // mainAxisAlignment: MainAxisAlignment.center,
+                  // crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.only(top: 30),
+                          child: IconButton(
+                              icon: Icon(Icons.arrow_back_outlined),
+                              color: Colors.white,
+                              onPressed: () {
+                                Navigator.pop(context);
+                              }),
+                        ),
+                      ],
                     ),
-                  ),
-                ],
+                    Padding(
+                      padding: const EdgeInsets.only(top: 30, left: 60),
+                      child: Text(
+                        "Order Confirmation",
+                        style: TextStyle(
+                            fontFamily: "Goldplay",
+                            fontSize: 22,
+                            fontWeight: FontWeight.w600,
+                            color: Color(0XFFFFC700)),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
         ),
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
+        body: SingleChildScrollView(
+          child: Column(children: [
             SizedBox(
               height: 30,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: 22, bottom: 10),
+                  child: Text("Order Summary",
+                      style: TextStyle(
+                          fontWeight: FontWeight.w700,
+                          fontSize: 20,
+                          fontFamily: "Goldplay")),
+                ),
+              ],
+            ),
+            SizedBox(
+              height: 10,
             ),
             Column(
               children: [
@@ -393,43 +307,52 @@ class _CheckoutState extends State<Checkout> {
                   ],
                 ),
                 SizedBox(
-                  height: 25,
+                  height: 20,
                 ),
-                buildDeliveryOption(),
-                buildRadioTileDelivery(),
-                buildRadioTileCustomPickUp()
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.only(
+                        top: 15,
+                      ),
+                      child: Text(
+                        "Order Total: ",
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 20,
+                            fontWeight: FontWeight.w700),
+                      ),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.only(right: 20),
+                      child: Text(
+                        "525.00",
+                        style: TextStyle(
+                            color: Color(0XFFFF7A00),
+                            fontSize: 20,
+                            fontWeight: FontWeight.w700),
+                      ),
+                    )
+                  ],
+                ),
+                SizedBox(
+                  height: 200,
+                ),
+                Divider(
+                  color: Colors.grey,
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                buildButtons(),
+                SizedBox(
+                  height: 20,
+                ),
               ],
             ),
-            SizedBox(
-              height: 90,
-            ),
-            Divider(
-              color: Colors.grey,
-            ),
-            SizedBox(
-              height: 18,
-            ),
-            buildButtons(),
-            Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.only(left: 15),
-                  child: Text(
-                    "525.00",
-                    style: TextStyle(
-                        color: Color(0XFFFF7A00),
-                        fontSize: 18,
-                        fontWeight: FontWeight.w700),
-                  ),
-                )
-              ],
-            ),
-            SizedBox(
-              height: 30,
-            ),
-          ],
-        ),
-      ),
-    );
+          ]),
+        ));
   }
 }
