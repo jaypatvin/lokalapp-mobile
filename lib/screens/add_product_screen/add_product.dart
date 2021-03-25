@@ -51,7 +51,7 @@ class _AddProductState extends State<AddProduct> {
 
   Widget buildAppBar() {
     return PreferredSize(
-        preferredSize: Size(double.infinity, 100),
+        preferredSize: Size(double.infinity, 80),
         child: Center(
             child: AppbarShop(
           shopName: "Add A Product",
@@ -198,10 +198,8 @@ class _AddProductState extends State<AddProduct> {
       onPressed: () async {
         var productCreated = await createProduct();
         if (productCreated) {
-          Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (context) => ProfileShop()),
-              (route) => false);
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => ProfileShop()));
         }
       },
     );

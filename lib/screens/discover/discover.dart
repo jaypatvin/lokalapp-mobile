@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:lokalapp/screens/checkout.dart';
 import 'package:lokalapp/screens/discover/explore_categories.dart';
 import 'package:lokalapp/screens/discover/order_placed.dart';
+import 'package:lokalapp/screens/discover/order_screen_grid.dart';
 import 'package:lokalapp/screens/order_confirmation.dart';
 import 'package:lokalapp/screens/profile_screens/components/product_card.dart';
 import 'package:lokalapp/screens/profile_screens/components/store_card.dart';
@@ -76,7 +77,7 @@ class Discover extends StatelessWidget {
             !isGalleryEmpty ? gallery.firstWhere((g) => g.order == 0) : null;
         return Container(
           padding: const EdgeInsets.all(0.0),
-          height: MediaQuery.of(context).size.height * 0.4,
+          height: MediaQuery.of(context).size.height * 0.5,
           width: MediaQuery.of(context).size.width / 2,
           child: ProductCard(
             name: products[index].name,
@@ -356,6 +357,18 @@ class Discover extends StatelessWidget {
                                     builder: (context) => OrderConfirmation()));
                           },
                           child: Text("Order Confirmation"))
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      TextButton(
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => OrderScreenGrid()));
+                          },
+                          child: Text("Order Grid"))
                     ],
                   ),
                   SizedBox(

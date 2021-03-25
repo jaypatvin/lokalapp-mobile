@@ -5,7 +5,10 @@ import 'package:provider/provider.dart';
 
 class StoreCard extends StatelessWidget {
   final int crossAxisCount;
-  StoreCard({this.crossAxisCount});
+
+  StoreCard({
+    this.crossAxisCount,
+  });
   @override
   Widget build(BuildContext context) {
     var user = Provider.of<CurrentUser>(context, listen: false);

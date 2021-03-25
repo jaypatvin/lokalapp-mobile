@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:lokalapp/screens/discover/order_screen_grid.dart';
 
-class ProductCard extends StatelessWidget {
+class ProductCard extends StatefulWidget {
   final String imageUrl;
   final String name;
   final double price;
@@ -14,6 +15,13 @@ class ProductCard extends StatelessWidget {
     @required this.shopImageUrl,
     @required this.shopName,
   });
+
+  @override
+  _ProductCardState createState() => _ProductCardState();
+}
+
+class _ProductCardState extends State<ProductCard> {
+  bool isTapped = false;
 
   @override
   Widget build(BuildContext context) {
@@ -30,15 +38,28 @@ class ProductCard extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Expanded(
-                  child: Container(
-                    height: 180,
-                    width: 260,
-                    decoration: BoxDecoration(
-                      image: imageUrl.isNotEmpty
-                          ? DecorationImage(
-                              image: NetworkImage(imageUrl),
-                              fit: BoxFit.fitWidth)
-                          : null,
+                  child: GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        isTapped = !isTapped;
+                      });
+                    },
+                    child: Container(
+                      height: 180,
+                      width: 260,
+                      decoration: BoxDecoration(
+                        image: widget.imageUrl.isNotEmpty
+                            ? DecorationImage(
+                                image: NetworkImage(widget.imageUrl),
+                                fit: BoxFit.fitWidth)
+                            : null,
+                        border: isTapped
+                            ? Border.all(
+                                color: Colors.orange,
+                                width: 3,
+                              )
+                            : Border.all(color: Colors.transparent),
+                      ),
                     ),
                   ),
                 ),
@@ -54,7 +75,7 @@ class ProductCard extends StatelessWidget {
                   children: [
                     Expanded(
                       child: Text(
-                        name,
+                        widget.name,
                         softWrap: true,
                         style: TextStyle(
                           fontFamily: "GoldplayBold",
@@ -71,15 +92,15 @@ class ProductCard extends StatelessWidget {
                 Align(
                     alignment: Alignment.topLeft,
                     child: Text(
-                      '₱ $price',
+                      '${widget.price}',
                       textAlign: TextAlign.start,
                       style: TextStyle(
                           color: Color(0xffFF7A00),
                           fontWeight: FontWeight.bold,
-                          fontSize: 18),
+                          fontSize: 16),
                     )),
                 SizedBox(
-                  height: 25,
+                  height: 19,
                 ),
                 SingleChildScrollView(
                   physics: NeverScrollableScrollPhysics(),
@@ -91,20 +112,20 @@ class ProductCard extends StatelessWidget {
                       Container(
                         // margin: const EdgeInsets.only(right: 30),
                         child: CircleAvatar(
-                          radius: 10,
-                          backgroundImage:
-                              shopImageUrl != null && shopImageUrl.isNotEmpty
-                                  ? NetworkImage(shopImageUrl)
-                                  : null,
+                          radius: 9,
+                          backgroundImage: widget.shopImageUrl != null &&
+                                  widget.shopImageUrl.isNotEmpty
+                              ? NetworkImage(widget.shopImageUrl)
+                              : null,
                         ),
                       ),
                       SizedBox(
-                        width: 1,
+                        width: 3,
                       ),
                       Container(
                         // margin: const EdgeInsets.only(right: 12),
                         child: Text(
-                          shopName,
+                          widget.shopName,
                           textAlign: TextAlign.start,
                           style: TextStyle(
                               color: Colors.black,
