@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:lokalapp/states/current_user.dart';
 import 'package:provider/provider.dart';
+
+import '../states/current_user.dart';
 import '../widgets/rounded_button.dart';
 
 class DraftPost extends StatefulWidget {
@@ -71,7 +72,8 @@ class _DraftPostState extends State<DraftPost> {
           padding: const EdgeInsets.only(top: 10, right: 20),
           child: RoundedButton(
             onPressed: () async {
-              bool postSuccess = await _user.postMessage(_userController.text);
+              bool postSuccess =
+                  await _user.postActivityFeed(_userController.text);
               if (postSuccess) {
                 Navigator.pop(context, true);
               }

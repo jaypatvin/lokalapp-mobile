@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:lokalapp/states/current_user.dart';
 import 'package:provider/provider.dart';
 
+import '../states/current_user.dart';
 import 'welcome_screen.dart';
-
-// import '../welcome_screen.dart';
 
 class Profile extends StatefulWidget {
   @override
@@ -19,12 +17,12 @@ class _ProfileState extends State<Profile> {
   void initState() {
     super.initState();
     this._user = Provider.of<CurrentUser>(context, listen: false);
-    _activities = _user.getTimeline();
+    _activities = _user.getCommunityFeed();
   }
 
   Future<void> _refreshActivities() async {
     setState(() {
-      _activities = _user.getTimeline();
+      _activities = _user.getCommunityFeed();
     });
   }
 
