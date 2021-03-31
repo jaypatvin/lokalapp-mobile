@@ -1,14 +1,43 @@
 import 'package:flutter/material.dart';
+import 'package:lokalapp/screens/discover/checkout.dart';
+import 'package:lokalapp/states/current_user.dart';
 import 'package:lokalapp/utils/themes.dart';
+import 'package:provider/provider.dart';
 
 class OrderConfirmation extends StatelessWidget {
-  buildButtons() {
+  buildButtons(context) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
+        SizedBox(width: 5),
+        Container(
+          padding: const EdgeInsets.all(2),
+          height: 43,
+          width: 190,
+          child: FlatButton(
+            // height: 50,
+            // minWidth: 100,
+            color: Colors.white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20.0),
+              side: BorderSide(color: Color(0XFFCC3752)),
+            ),
+            textColor: Colors.black,
+            child: Text(
+              "CANCEL ORDER",
+              style: TextStyle(
+                  fontFamily: "Goldplay",
+                  fontSize: 14,
+                  color: Color(0XFFCC3752),
+                  fontWeight: FontWeight.w600),
+            ),
+            onPressed: () {},
+          ),
+        ),
         Container(
           height: 43,
           width: 190,
+          padding: const EdgeInsets.all(2),
           child: FlatButton(
             // height: 50,
             // minWidth: 100,
@@ -19,17 +48,20 @@ class OrderConfirmation extends StatelessWidget {
             ),
             textColor: Colors.black,
             child: Text(
-              "CONFIRM ORDER",
+              "PLACE ORDER",
               style: TextStyle(
                   fontFamily: "Goldplay",
                   fontSize: 14,
                   fontWeight: FontWeight.w600),
             ),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+                  context, MaterialPageRoute(builder: (context) => Checkout()));
+            },
           ),
         ),
         SizedBox(
-          width: 10,
+          width: 5,
         ),
       ],
     );
@@ -37,6 +69,7 @@ class OrderConfirmation extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    CurrentUser user = Provider.of(context, listen: false);
     return Scaffold(
         appBar: PreferredSize(
           preferredSize: Size(double.infinity, 100),
@@ -75,7 +108,7 @@ class OrderConfirmation extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.only(top: 30, left: 60),
                       child: Text(
-                        "Order Confirmation",
+                        "Checkout",
                         style: TextStyle(
                             fontFamily: "Goldplay",
                             fontSize: 22,
@@ -140,14 +173,22 @@ class OrderConfirmation extends StatelessWidget {
                                 children: [
                                   Container(
                                     child: CircleAvatar(
-                                      radius: 12,
-                                    ),
+                                        radius: 12,
+                                        // should refactor/simplify this
+                                        backgroundImage: user.userShops[0]
+                                                        .profilePhoto !=
+                                                    null &&
+                                                user.userShops[0].profilePhoto
+                                                    .isNotEmpty
+                                            ? NetworkImage(
+                                                user.userShops[0].profilePhoto)
+                                            : null),
                                   ),
                                   SizedBox(
                                     width: 5,
                                   ),
                                   Text(
-                                    "Shop name",
+                                    user.userShops[0].name,
                                     style: TextStyle(fontSize: 13),
                                   )
                                 ],
@@ -346,7 +387,7 @@ class OrderConfirmation extends StatelessWidget {
                 SizedBox(
                   height: 10,
                 ),
-                buildButtons(),
+                buildButtons(context),
                 SizedBox(
                   height: 20,
                 ),

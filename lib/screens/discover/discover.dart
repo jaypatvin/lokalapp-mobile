@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
-import 'package:lokalapp/screens/checkout.dart';
+import 'package:lokalapp/screens/discover/checkout.dart';
 import 'package:lokalapp/screens/discover/explore_categories.dart';
 import 'package:lokalapp/screens/discover/order_placed.dart';
 import 'package:lokalapp/screens/discover/order_screen_grid.dart';
-import 'package:lokalapp/screens/order_confirmation.dart';
+import 'package:lokalapp/screens/discover/order_confirmation.dart';
+import 'package:lokalapp/screens/discover/product_detail.dart';
 import 'package:lokalapp/screens/profile_screens/components/product_card.dart';
 import 'package:lokalapp/screens/profile_screens/components/store_card.dart';
+import 'package:lokalapp/screens/search/search.dart';
 import 'package:lokalapp/states/current_user.dart';
 import 'package:lokalapp/utils/themes.dart';
 import 'package:provider/provider.dart';
@@ -79,12 +81,18 @@ class Discover extends StatelessWidget {
           padding: const EdgeInsets.all(0.0),
           height: MediaQuery.of(context).size.height * 0.5,
           width: MediaQuery.of(context).size.width / 2,
-          child: ProductCard(
-            name: products[index].name,
-            imageUrl: isGalleryEmpty ? '' : productImage.url,
-            price: products[index].basePrice,
-            shopName: shop.name,
-            shopImageUrl: shop.profilePhoto,
+          child: GestureDetector(
+            onTap: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => ProductDetail()));
+            },
+            child: ProductCard(
+              name: products[index].name,
+              imageUrl: isGalleryEmpty ? '' : productImage.url,
+              price: products[index].basePrice,
+              shopName: shop.name,
+              shopImageUrl: shop.profilePhoto,
+            ),
           ),
         );
       },
@@ -147,27 +155,36 @@ class Discover extends StatelessWidget {
                         width: MediaQuery.of(context).size.width,
                         child: Theme(
                           data: ThemeData(primaryColor: Color(0xffF2F2F2)),
-                          child: TextField(
-                            controller: _searchController,
-                            onTap: () {},
-                            decoration: InputDecoration(
-                              isDense: true, // Added this
-                              filled: true,
-                              border: OutlineInputBorder(
-                                borderSide: BorderSide.none,
-                                borderRadius: const BorderRadius.all(
-                                  const Radius.circular(25.0),
+                          child: GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => Search()));
+                            },
+                            child: TextField(
+                              enabled: false,
+                              // controller: _searchController,
+
+                              decoration: InputDecoration(
+                                isDense: true, // Added this
+                                filled: true,
+                                border: OutlineInputBorder(
+                                  borderSide: BorderSide.none,
+                                  borderRadius: const BorderRadius.all(
+                                    const Radius.circular(25.0),
+                                  ),
                                 ),
+                                fillColor: Color(0xffF2F2F2),
+                                prefixIcon: Icon(
+                                  Icons.search,
+                                  color: Color(0xffBDBDBD),
+                                  size: 30,
+                                ),
+                                hintText: 'Search',
+                                labelStyle: TextStyle(fontSize: 20),
+                                hintStyle: TextStyle(color: Color(0xffBDBDBD)),
                               ),
-                              fillColor: Color(0xffF2F2F2),
-                              prefixIcon: Icon(
-                                Icons.search,
-                                color: Color(0xffBDBDBD),
-                                size: 30,
-                              ),
-                              hintText: 'Search',
-                              labelStyle: TextStyle(fontSize: 20),
-                              hintStyle: TextStyle(color: Color(0xffBDBDBD)),
                             ),
                           ),
                         ),
@@ -323,42 +340,42 @@ class Discover extends StatelessWidget {
                       )),
                     ],
                   ),
-                  Row(
-                    children: [
-                      TextButton(
-                          onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => OrderPlaced()));
-                          },
-                          child: Text("Order placed"))
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      TextButton(
-                          onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => Checkout()));
-                          },
-                          child: Text("Checkout"))
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      TextButton(
-                          onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => OrderConfirmation()));
-                          },
-                          child: Text("Order Confirmation"))
-                    ],
-                  ),
+                  // Row(
+                  //   children: [
+                  //     TextButton(
+                  //         onPressed: () {
+                  //           Navigator.push(
+                  //               context,
+                  //               MaterialPageRoute(
+                  //                   builder: (context) => OrderPlaced()));
+                  //         },
+                  //         child: Text("Order placed"))
+                  //   ],
+                  // ),
+                  // Row(
+                  //   children: [
+                  //     TextButton(
+                  //         onPressed: () {
+                  //           Navigator.push(
+                  //               context,
+                  //               MaterialPageRoute(
+                  //                   builder: (context) => Checkout()));
+                  //         },
+                  //         child: Text("Checkout"))
+                  //   ],
+                  // ),
+                  // Row(
+                  //   children: [
+                  //     TextButton(
+                  //         onPressed: () {
+                  //           Navigator.push(
+                  //               context,
+                  //               MaterialPageRoute(
+                  //                   builder: (context) => OrderConfirmation()));
+                  //         },
+                  //         child: Text("Order Confirmation"))
+                  //   ],
+                  // ),
                   Row(
                     children: [
                       TextButton(
@@ -371,6 +388,18 @@ class Discover extends StatelessWidget {
                           child: Text("Order Grid"))
                     ],
                   ),
+                  // Row(
+                  //   children: [
+                  //     TextButton(
+                  //         onPressed: () {
+                  //           Navigator.push(
+                  //               context,
+                  //               MaterialPageRoute(
+                  //                   builder: (context) => ProductDetail()));
+                  //         },
+                  //         child: Text("Product Detail"))
+                  //   ],
+                  // ),
                   SizedBox(
                     height: 30,
                   ),

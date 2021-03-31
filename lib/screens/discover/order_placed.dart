@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:lokalapp/screens/activity.dart';
+import 'package:lokalapp/screens/discover/discover.dart';
 import 'package:lokalapp/utils/themes.dart';
 
 class OrderPlaced extends StatelessWidget {
-  buildButtons() {
+  buildButtons(context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -25,7 +27,10 @@ class OrderPlaced extends StatelessWidget {
                   fontSize: 14,
                   fontWeight: FontWeight.w700),
             ),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+                  context, MaterialPageRoute(builder: (context) => Activity()));
+            },
           ),
         ),
       ],
@@ -49,7 +54,10 @@ class OrderPlaced extends StatelessWidget {
                     padding: const EdgeInsets.all(18.0),
                     child: GestureDetector(
                       onTap: () {
-                        Navigator.pop(context);
+                        Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(builder: (context) => Discover()),
+                            (route) => false);
                       },
                       child: Text(
                         "Done",
@@ -132,7 +140,7 @@ class OrderPlaced extends StatelessWidget {
                       SizedBox(
                         height: 30,
                       ),
-                      buildButtons()
+                      buildButtons(context)
                     ],
                   )
                 ],

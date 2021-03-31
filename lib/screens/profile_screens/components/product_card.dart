@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:lokalapp/screens/discover/order_screen_grid.dart';
+
+import 'package:lokalapp/states/current_user.dart';
+import 'package:provider/provider.dart';
 
 class ProductCard extends StatefulWidget {
   final String imageUrl;
@@ -23,6 +25,21 @@ class ProductCard extends StatefulWidget {
 class _ProductCardState extends State<ProductCard> {
   bool isTapped = false;
 
+  void addToCart(context) {
+    CurrentUser _user = Provider.of<CurrentUser>(context, listen: false);
+    int index;
+    var products = _user.userProducts;
+    List cart = [];
+    if (isTapped == true) {
+      cart.add(products[index].id);
+      if (cart.contains(products[index].id)) {
+        setState(() {
+          isTapped = !isTapped;
+        });
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -39,11 +56,7 @@ class _ProductCardState extends State<ProductCard> {
               children: [
                 Expanded(
                   child: GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        isTapped = !isTapped;
-                      });
-                    },
+                    onTap: () => addToCart(context),
                     child: Container(
                       height: 180,
                       width: 260,
