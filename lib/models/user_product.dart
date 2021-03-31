@@ -3,58 +3,7 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 
-class ProductGallery {
-  String url;
-  int order;
-  ProductGallery({
-    this.url,
-    this.order,
-  });
-
-  ProductGallery copyWith({
-    String url,
-    int order,
-  }) {
-    return ProductGallery(
-      url: url ?? this.url,
-      order: order ?? this.order,
-    );
-  }
-
-  Map<String, dynamic> toMap() {
-    return {
-      'url': url,
-      'order': order,
-    };
-  }
-
-  factory ProductGallery.fromMap(Map<String, dynamic> map) {
-    if (map == null) return null;
-
-    return ProductGallery(
-      url: map['url'],
-      order: map['order'],
-    );
-  }
-
-  String toJson() => json.encode(toMap());
-
-  factory ProductGallery.fromJson(String source) =>
-      ProductGallery.fromMap(json.decode(source));
-
-  @override
-  String toString() => 'ProductGallery(url: $url, order: $order)';
-
-  @override
-  bool operator ==(Object o) {
-    if (identical(this, o)) return true;
-
-    return o is ProductGallery && o.url == url && o.order == order;
-  }
-
-  @override
-  int get hashCode => url.hashCode ^ order.hashCode;
-}
+import 'lokal_images.dart';
 
 class UserProduct extends ChangeNotifier {
   String id;
@@ -68,7 +17,7 @@ class UserProduct extends ChangeNotifier {
   String productCategory;
   String productPhoto;
   String status;
-  List<ProductGallery> gallery;
+  List<LokalImages> gallery;
   UserProduct({
     this.id,
     this.name,
@@ -96,7 +45,7 @@ class UserProduct extends ChangeNotifier {
     String productCategory,
     String productPhoto,
     String status,
-    List<ProductGallery> gallery,
+    List<LokalImages> gallery,
   }) {
     return UserProduct(
       id: id ?? this.id,
@@ -146,9 +95,8 @@ class UserProduct extends ChangeNotifier {
       productCategory: map['product_category'],
       productPhoto: map['product_photo'],
       status: map['status'],
-      gallery:
-          List<ProductGallery>.from(
-              map['gallery']?.map((x) => ProductGallery.fromMap(x))),
+      gallery: List<LokalImages>.from(
+          map['gallery']?.map((x) => LokalImages.fromMap(x))),
     );
   }
 

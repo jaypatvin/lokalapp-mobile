@@ -5,15 +5,15 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:lokalapp/models/user_product.dart';
-import 'package:lokalapp/models/user_product_post.dart';
-import 'package:lokalapp/models/user_shop.dart';
 
+import '../models/activity_feed.dart';
 import '../models/lokal_user.dart';
+import '../models/user_product.dart';
+import '../models/user_product_post.dart';
+import '../models/user_shop.dart';
 import '../models/user_shop_post.dart';
 import '../services/database.dart';
 import '../services/firebase_auth_service.dart';
-import '../services/get_stream_api_service.dart';
 import '../services/lokal_api_service.dart';
 
 enum FirebaseAuthStatus { Success, UserNotFound, PasswordNotValid, Error }
@@ -59,8 +59,8 @@ class CurrentUser extends ChangeNotifier {
   Timestamp get createdAt => _user.createdAt;
 
   Future<bool> register() async {
-    http.Response response = await LokalApiService()
-        .createUser(data: _postBody, idToken: _userIdToken);
+    http.Response response = await LokalApiService.instance.user
+        .create(data: _postBody, idToken: _userIdToken);
     if (response.statusCode != 200) {
       return false;
     }
@@ -69,7 +69,6 @@ class CurrentUser extends ChangeNotifier {
 
     if (data["status"] == "ok") {
       _user = LokalUser.fromMap(data["data"]);
-      await _getStreamLogin();
 
       // added to remove states for add shops
       //can be removed for registration
@@ -90,8 +89,8 @@ class CurrentUser extends ChangeNotifier {
       _user.id = await Database().getUserDocId(_user.userUids.first);
     }
     Map<String, dynamic> updateData = _user.toMap();
-    http.Response response = await LokalApiService()
-        .updateUserData(data: updateData, idToken: _userIdToken);
+    http.Response response = await LokalApiService.instance.user
+        .update(data: updateData, idToken: _userIdToken);
     if (response.statusCode != 200) {
       return false;
     }
@@ -110,8 +109,8 @@ class CurrentUser extends ChangeNotifier {
   Future<bool> createShop() async {
     postShop.communityId = _user.communityId;
     var _postData = postShop.toMap();
-    var response = await LokalApiService()
-        .createStore(data: _postData, idToken: _userIdToken);
+    var response = await LokalApiService.instance.shop
+        .create(data: _postData, idToken: _userIdToken);
 
     if (response.statusCode != 200) {
       return false;
@@ -127,8 +126,8 @@ class CurrentUser extends ChangeNotifier {
   }
 
   Future<bool> getShops() async {
-    http.Response response = await LokalApiService()
-        .getShopByUserId(userId: _user.id, idToken: _userIdToken);
+    http.Response response = await LokalApiService.instance.shop
+        .getByUserId(userId: _user.id, idToken: _userIdToken);
 
     if (response.statusCode != 200) {
       return false;
@@ -148,16 +147,16 @@ class CurrentUser extends ChangeNotifier {
     return false;
   }
 
-
   Future<bool> updateShop(String uid) async {
     if (_user.id == null || _user.id.isEmpty) {
       _user.id = await Database().getUserDocId(_user.userUids.first);
     }
-     
-        postShop.communityId = _user.communityId;
+
+    postShop.communityId = _user.communityId;
     var _postData = postShop.toMap();
-    http.Response response = await LokalApiService()
-        .updateStore(data: _postData, idToken: _userIdToken,id:   _userShops[0].id  );;
+    http.Response response = await LokalApiService.instance.shop
+        .update(data: _postData, idToken: _userIdToken, id: _userShops[0].id);
+    ;
 
     if (response.statusCode != 200) {
       return false;
@@ -165,8 +164,8 @@ class CurrentUser extends ChangeNotifier {
 
     Map data = json.decode(response.body);
 
-     if (data["status"] == "ok") {
-     await getShops();
+    if (data["status"] == "ok") {
+      await getShops();
       return true;
     } else {
       print(data["status"]);
@@ -174,7 +173,6 @@ class CurrentUser extends ChangeNotifier {
 
     return false;
   }
-
 
   /* ---------------------------------------------------------------------- */
 
@@ -184,8 +182,8 @@ class CurrentUser extends ChangeNotifier {
   Future<bool> createProduct() async {
     postProduct.shopId = _userShops[0].id;
     var _postData = postProduct.toMap();
-    var response = await LokalApiService()
-        .createProduct(data: _postData, idToken: _userIdToken);
+    var response = await LokalApiService.instance.product
+        .create(data: _postData, idToken: _userIdToken);
 
     if (response.statusCode != 200) {
       return false;
@@ -201,7 +199,7 @@ class CurrentUser extends ChangeNotifier {
   }
 
   Future<bool> getUserProducts() async {
-    var response = await LokalApiService()
+    var response = await LokalApiService.instance.product
         .getUserProducts(idToken: _userIdToken, userId: _user.id);
 
     if (response.statusCode != 200) {
@@ -223,7 +221,7 @@ class CurrentUser extends ChangeNotifier {
   }
 
   Future<List<UserProduct>> getCommunityProducts() async {
-    var response = await LokalApiService().getCommunityProducts(
+    var response = await LokalApiService.instance.product.getCommunityProducts(
         idToken: _userIdToken, communityId: _user.communityId);
 
     if (response.statusCode != 200) {
@@ -243,28 +241,55 @@ class CurrentUser extends ChangeNotifier {
     return communityProducts;
   }
 
-  /* ---------------------------------------------------------------------- */
-  Future _getStreamLogin() async {
-    var creds = await GetStreamApiService()
-        .login(userId: _user.userUids.first, idToken: _userIdToken);
-    this._getStreamAccount = {
-      'user': _user.userUids.first,
-      'authToken': creds['authToken'],
-      'feedToken': creds['feedToken'],
-    };
+  Future<List<ActivityFeed>> getCommunityFeed() async {
+    var response = await LokalApiService.instance.activity
+        .getCommunityActivities(
+            communityId: communityId, idToken: _userIdToken);
+
+    if (response.statusCode != 200) {
+      return [];
+    }
+
+    Map data = json.decode(response.body);
+
+    if (data['status'] == 'ok') {
+      List<ActivityFeed> feed = [];
+      for (var activity in data['data']) {
+        var activityFeed = ActivityFeed.fromMap(activity);
+
+        feed.add(activityFeed);
+      }
+      return feed..sort((a, b) => b.createdAt.compareTo(a.createdAt));
+    } else {
+      return [];
+    }
   }
 
-  Future<List<dynamic>> getTimeline() async {
-    return await GetStreamApiService().getTimeline(_getStreamAccount);
-  }
+  Future<bool> postActivityFeed(String message) async {
+    //TODO: implement posting of activityFeed
+    var response = await LokalApiService.instance.activity.create(
+      idToken: _userIdToken,
+      data: {
+        'community_id': communityId,
+        'user_id': id,
+        'message': message,
+      },
+    );
 
-  Future<bool> postMessage(String message) async {
-    return await GetStreamApiService().postMessage(getStreamAccount, message);
+    if (response.statusCode != 200) {
+      return false;
+    }
+    var data = json.decode(response.body);
+    if (data['status'] == 'ok') {
+      return true;
+    }
+
+    return false;
   }
 
   Future<bool> checkInviteCode(String inviteCode) async {
-    http.Response response = await LokalApiService()
-        .checkInviteCode(code: inviteCode, idToken: _userIdToken);
+    http.Response response = await LokalApiService.instance.invite
+        .check(code: inviteCode, idToken: _userIdToken);
     if (response.statusCode != 200) {
       return false;
     }
@@ -279,7 +304,7 @@ class CurrentUser extends ChangeNotifier {
 
   Future<bool> claimInviteCode() async {
     String userDocId = await Database().getUserDocId(_postBody["user_uid"]);
-    http.Response response = await LokalApiService().claimInviteCode(
+    http.Response response = await LokalApiService.instance.invite.claim(
         userId: userDocId,
         code: _inviteCode,
         idToken: _userIdToken,
@@ -329,7 +354,7 @@ class CurrentUser extends ChangeNotifier {
       _user.id = await Database().getUserDocId(_user.userUids.first);
     }
 
-    http.Response response = await LokalApiService().updateUserData(
+    http.Response response = await LokalApiService.instance.user.update(
         data: {"id": _user.id, "registration": _user.registration.toMap()},
         idToken: _userIdToken);
     if (response.statusCode != 200) return false;
@@ -341,8 +366,8 @@ class CurrentUser extends ChangeNotifier {
   Future<Map> _getUserInfo(String uid) async {
     String docId = await Database().getUserDocId(uid);
     if (docId != null && docId.isNotEmpty) {
-      http.Response response = await LokalApiService()
-          .getUserData(userId: docId, idToken: _userIdToken);
+      http.Response response = await LokalApiService.instance.user
+          .getById(userId: docId, idToken: _userIdToken);
       if (response.statusCode != 200) return null;
 
       Map data = json.decode(response.body);
@@ -457,7 +482,6 @@ class CurrentUser extends ChangeNotifier {
     if (map != null) {
       _user = LokalUser.fromMap(map["data"]);
       retVal = FirebaseAuthStatus.Success;
-      await _getStreamLogin();
       // added to remove states for add shops
       await getShops();
       // since we have one shop, we only need to get all products for the user

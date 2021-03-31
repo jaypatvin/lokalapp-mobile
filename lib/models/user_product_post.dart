@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 
-import 'package:lokalapp/models/user_product.dart';
+import 'lokal_images.dart';
 
 class UserProductPost extends ChangeNotifier {
   String name;
@@ -13,7 +13,7 @@ class UserProductPost extends ChangeNotifier {
   int quantity;
   String productCategory;
   String status;
-  List<ProductGallery> gallery;
+  List<LokalImages> gallery;
   UserProductPost({
     this.name,
     this.description,
@@ -33,7 +33,7 @@ class UserProductPost extends ChangeNotifier {
     int quantity,
     String productCategory,
     String status,
-    List<ProductGallery> gallery,
+    List<LokalImages> gallery,
   }) {
     return UserProductPost(
       name: name ?? this.name,
@@ -71,8 +71,8 @@ class UserProductPost extends ChangeNotifier {
       quantity: map['quantity'],
       productCategory: map['product_category'],
       status: map['status'],
-      gallery: List<ProductGallery>.from(
-          map['gallery']?.map((x) => ProductGallery.fromMap(x))),
+      gallery: List<LokalImages>.from(
+          map['gallery']?.map((x) => LokalImages.fromMap(x))),
     );
   }
 

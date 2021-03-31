@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-
-import '../states/current_user.dart';
 import 'package:provider/provider.dart';
+
+import '../models/activity_feed.dart';
+import '../states/current_user.dart';
 import 'expanded_card.dart';
 
 class Timeline extends StatefulWidget {
@@ -10,10 +11,11 @@ class Timeline extends StatefulWidget {
 }
 
 class _TimelineState extends State<Timeline> {
-  Future<List<dynamic>> _activities;
+  List<ActivityFeed> _activities;
   int likeCount;
   Map<String, String> likes;
   bool isLiked;
+  bool isLoading = true;
 
   CurrentUser _user;
 
@@ -21,12 +23,23 @@ class _TimelineState extends State<Timeline> {
   void initState() {
     super.initState();
     this._user = Provider.of<CurrentUser>(context, listen: false);
-    _activities = _user.getTimeline();
+    _user.getCommunityFeed().then((activities) {
+      _activities = activities;
+      setState(() {
+        isLoading = false;
+      });
+    });
   }
 
   Future<void> _refreshActivities() async {
     setState(() {
-      _activities = _user.getTimeline();
+      isLoading = true;
+      _user.getCommunityFeed().then((activities) {
+        _activities = activities;
+        setState(() {
+          isLoading = false;
+        });
+      });
     });
   }
 
@@ -37,15 +50,18 @@ class _TimelineState extends State<Timeline> {
         Padding(
           padding: const EdgeInsets.only(left: 230),
           child: IconButton(
-              icon: Icon(Icons.messenger_outline),
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => ExpandedCard(
-                              activity: snapshot,
-                            )));
-              }),
+            icon: Icon(Icons.messenger_outline),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ExpandedCard(
+                    activity: snapshot,
+                  ),
+                ),
+              );
+            },
+          ),
         ),
       ],
     );
@@ -104,102 +120,75 @@ class _TimelineState extends State<Timeline> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<List<dynamic>>(
-      future: _activities,
-      builder: (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
-        if (!snapshot.hasData) {
-          return Center(child: CircularProgressIndicator());
-        }
-        return Container(
-          height: MediaQuery.of(context).size.height,
-          width: MediaQuery.of(context).size.width,
-          child: Center(
-              child: RefreshIndicator(
-                  onRefresh: _refreshActivities,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        child: ListView(
-                          scrollDirection: Axis.vertical,
-                          shrinkWrap: true,
-                          children: snapshot.data
-                              .map(
-                                (activity) => Container(
-                                    width: MediaQuery.of(context).size.width,
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.max,
-                                      children: [
-                                        ListTile(
-                                          subtitle: Column(
-                                            children: [
-                                              Card(
-                                                shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          16.0),
-                                                ),
-                                                child: Column(
-                                                  children: [
-                                                    SizedBox(
-                                                      height: 10,
-                                                      // width: 30,
-                                                    ),
-                                                    Row(
-                                                      children: [
-                                                        buildHeader(
-                                                            _user.firstName,
-                                                            _user.lastName,
-                                                            _user.profilePhoto ??
-                                                                "")
-                                                      ],
-                                                    ),
-                                                    SizedBox(
-                                                      height: 20,
-                                                    ),
-                                                    Row(
-                                                      // mainAxisSize:
-                                                      //     MainAxisSize.min,
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        SizedBox(
-                                                          width: 26,
-                                                        ),
-                                                        buildMessageBody(
-                                                            activity[
-                                                                "message"]),
-                                                      ],
-                                                    ),
-                                                    SizedBox(
-                                                      height: 20,
-                                                    ),
-                                                    Divider(
-                                                      color: Colors.grey,
-                                                      indent: 25,
-                                                      endIndent: 25,
-                                                    ),
-                                                    buildLikes(activity),
-                                                  ],
-                                                ),
-                                              ),
-                                            ],
+    return isLoading
+        ? Center(child: CircularProgressIndicator())
+        : RefreshIndicator(
+            onRefresh: () => _refreshActivities(),
+            child: ListView.builder(
+              physics: ScrollPhysics(),
+              shrinkWrap: true,
+              itemCount: _activities.length,
+              itemBuilder: (context, index) {
+                var activity = _activities[index];
+                return Container(
+                  width: MediaQuery.of(context).size.width,
+                  child: Center(
+                    child: Container(
+                      width: MediaQuery.of(context).size.width,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          ListTile(
+                            dense: true,
+                            subtitle: Column(
+                              children: [
+                                Card(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(16.0),
+                                  ),
+                                  child: Column(
+                                    children: [
+                                      SizedBox(height: 10),
+                                      Row(
+                                        children: [
+                                          buildHeader(
+                                            _user.firstName,
+                                            _user.lastName,
+                                            _user.profilePhoto ?? "",
                                           ),
-                                        ),
-                                      ],
-                                    )),
-                                // ),
-                                // ),
-                              )
-                              .toList(),
-                        ),
+                                        ],
+                                      ),
+                                      SizedBox(height: 20),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          SizedBox(width: 26),
+                                          buildMessageBody(
+                                            activity.message,
+                                          ),
+                                        ],
+                                      ),
+                                      SizedBox(height: 20),
+                                      Divider(
+                                        color: Colors.grey,
+                                        indent: 25,
+                                        endIndent: 25,
+                                      ),
+                                      buildLikes(activity.toMap()),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
-                  ))),
-        );
-      },
-    );
+                    ),
+                  ),
+                );
+              },
+            ),
+          );
   }
 }

@@ -6,7 +6,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 
-import '../../models/user_product.dart';
+import '../../models/lokal_images.dart';
 import '../../services/database.dart';
 import '../../states/current_user.dart';
 import '../../utils/themes.dart';
@@ -207,13 +207,13 @@ class _AddProductState extends State<AddProduct> {
 
   //TODO: put this somewhere
   Future<bool> createProduct() async {
-    List<ProductGallery> gallery = [];
+    List<LokalImages> gallery = [];
     for (var photoBox in _gallery.photoBoxes) {
       if (photoBox.file == null) {
         continue;
       }
       var mediaUrl = await uploadImage(photoBox.file, fileName: 'productPhoto');
-      gallery.add(ProductGallery(url: mediaUrl, order: gallery.length));
+      gallery.add(LokalImages(url: mediaUrl, order: gallery.length));
     }
     CurrentUser user = Provider.of<CurrentUser>(context, listen: false);
     //TODO: check for price and quantity parse problems

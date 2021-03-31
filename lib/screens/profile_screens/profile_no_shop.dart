@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:lokalapp/screens/add_shop_screens/add%20_shop_cart.dart';
-import 'package:lokalapp/screens/profile_screens/profile_not_verified.dart';
-import 'package:lokalapp/screens/profile_screens/profile_shop_sticky_store.dart';
-import 'package:lokalapp/screens/timeline.dart';
-import 'package:lokalapp/states/current_user.dart';
-import 'package:lokalapp/utils/themes.dart';
-import 'package:provider/provider.dart';
-import '../add_shop_screens/add_shop.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
+import 'package:provider/provider.dart';
+
+import '../../states/current_user.dart';
+import '../../utils/themes.dart';
+import '../add_shop_screens/add%20_shop_cart.dart';
+import '../add_shop_screens/add_shop.dart';
+import '../timeline.dart';
+import 'profile_shop_sticky_store.dart';
 
 // import '../../widgets/rounded_button.dart';
 
@@ -34,40 +34,30 @@ class _ProfileNoShopState extends State<ProfileNoShop> {
 
   Widget buildNoShopText() {
     var shops = Provider.of<CurrentUser>(context, listen: false).userShops;
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          Padding(padding: const EdgeInsets.all(10)),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              shops.length > 0
-                  ? ProfileShopStickyStore(
-                      hasStore: true,
-                    )
-                  : buildAddShopButton()
-            ],
+    return Column(
+      children: [
+        Padding(padding: const EdgeInsets.all(10)),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            shops.length > 0
+                ? ProfileShopStickyStore(
+                    hasStore: true,
+                  )
+                : buildAddShopButton()
+          ],
+        ),
+        SizedBox(
+          height: 20,
+        ),
+        Expanded(
+          child: Container(
+            color: Color(0XFFF1FAFF),
+            child: Timeline(),
           ),
-          SizedBox(
-            height: 20,
-          ),
-          Row(
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              ConstrainedBox(
-                constraints: BoxConstraints(
-                    maxHeight: MediaQuery.of(context).size.height,
-                    maxWidth: MediaQuery.of(context).size.width),
-                child: Container(
-                  color: Color(0XFFF1FAFF),
-                  child: Timeline(),
-                ),
-              )
-            ],
-          )
-        ],
-      ),
+        ),
+      ],
     );
   }
 
