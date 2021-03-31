@@ -1,6 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:lokalapp/screens/discover/order_placed.dart';
+import 'package:lokalapp/states/current_user.dart';
 import 'package:lokalapp/utils/themes.dart';
+import 'package:provider/provider.dart';
 
 class Checkout extends StatefulWidget {
   @override
@@ -65,27 +68,39 @@ class _CheckoutState extends State<Checkout> {
     });
   }
 
-  buildButtons() {
+  buildButtons(context) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
+        SizedBox(width: 5),
         Container(
+          padding: const EdgeInsets.all(2),
           height: 43,
-          width: 180,
-          child: Text(
-            "Order Total: ",
-            style: TextStyle(
-                fontFamily: "Goldplay",
-                fontSize: 20,
-                fontWeight: FontWeight.w600),
+          width: 190,
+          child: FlatButton(
+            // height: 50,
+            // minWidth: 100,
+            color: Colors.white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20.0),
+              side: BorderSide(color: Color(0XFFCC3752)),
+            ),
+            textColor: Colors.black,
+            child: Text(
+              "CANCEL ORDER",
+              style: TextStyle(
+                  fontFamily: "Goldplay",
+                  fontSize: 14,
+                  color: Color(0XFFCC3752),
+                  fontWeight: FontWeight.w600),
+            ),
+            onPressed: () {},
           ),
         ),
-        SizedBox(
-          width: 5,
-        ),
         Container(
           height: 43,
-          width: 180,
+          width: 190,
+          padding: const EdgeInsets.all(2),
           child: FlatButton(
             // height: 50,
             // minWidth: 100,
@@ -96,14 +111,20 @@ class _CheckoutState extends State<Checkout> {
             ),
             textColor: Colors.black,
             child: Text(
-              "CHECKOUT",
+              "PLACE ORDER",
               style: TextStyle(
                   fontFamily: "Goldplay",
                   fontSize: 14,
-                  fontWeight: FontWeight.w700),
+                  fontWeight: FontWeight.w600),
             ),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => OrderPlaced()));
+            },
           ),
+        ),
+        SizedBox(
+          width: 5,
         ),
       ],
     );
@@ -139,6 +160,7 @@ class _CheckoutState extends State<Checkout> {
 
   @override
   Widget build(BuildContext context) {
+    CurrentUser user = Provider.of(context, listen: false);
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: Size(double.infinity, 100),
@@ -175,9 +197,9 @@ class _CheckoutState extends State<Checkout> {
                     ],
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(top: 30, left: 80),
+                    padding: const EdgeInsets.only(top: 30, left: 90),
                     child: Text(
-                      "Shopping Cart",
+                      "Checkout",
                       style: TextStyle(
                           fontFamily: "Goldplay",
                           fontSize: 22,
@@ -226,14 +248,22 @@ class _CheckoutState extends State<Checkout> {
                                 children: [
                                   Container(
                                     child: CircleAvatar(
-                                      radius: 12,
-                                    ),
+                                        radius: 12,
+                                        // should refactor/simplify this
+                                        backgroundImage: user.userShops[0]
+                                                        .profilePhoto !=
+                                                    null &&
+                                                user.userShops[0].profilePhoto
+                                                    .isNotEmpty
+                                            ? NetworkImage(
+                                                user.userShops[0].profilePhoto)
+                                            : null),
                                   ),
                                   SizedBox(
                                     width: 5,
                                   ),
                                   Text(
-                                    "Shop name",
+                                    user.userShops[0].name,
                                     style: TextStyle(fontSize: 13),
                                   )
                                 ],
@@ -409,21 +439,7 @@ class _CheckoutState extends State<Checkout> {
             SizedBox(
               height: 18,
             ),
-            buildButtons(),
-            Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.only(left: 15),
-                  child: Text(
-                    "525.00",
-                    style: TextStyle(
-                        color: Color(0XFFFF7A00),
-                        fontSize: 18,
-                        fontWeight: FontWeight.w700),
-                  ),
-                )
-              ],
-            ),
+            buildButtons(context),
             SizedBox(
               height: 30,
             ),

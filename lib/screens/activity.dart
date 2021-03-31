@@ -11,10 +11,21 @@ class _ActivityState extends State<Activity> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Center(
+        body: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        // IconButton(
+        //     icon: Icon(Icons.arrow_back_sharp),
+        //     onPressed: () {
+        //       Navigator.pop(context);
+        //     }),
+        Center(
             child: Container(
-      color: Colors.red,
-      child: Text("Activity Screen"),
-    )));
+          color: Colors.red,
+          child: Text("Activity Screen"),
+        )),
+      ],
+    ));
   }
 }

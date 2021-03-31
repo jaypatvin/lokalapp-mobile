@@ -124,22 +124,18 @@ class ExploreCategories extends StatelessWidget {
             Expanded(
               child: Container(
                 padding: const EdgeInsets.only(left: 3),
-                height: MediaQuery.of(context).size.height / 9,
+                height: MediaQuery.of(context).size.height / 8,
                 width: MediaQuery.of(context).size.width / 2,
-                child: Container(
-                  height: MediaQuery.of(context).size.height / 2,
-                  width: MediaQuery.of(context).size.width,
-                  child: ListTile(
-                    title: Container(
-                      // padding:
-                      // const EdgeInsets.only(right: 5.0),
+                child: ListTile(
+                  title: Container(
+                    // padding:
+                    // const EdgeInsets.only(right: 5.0),
 
-                      child: Row(
-                        children: icon,
-                      ),
+                    child: Row(
+                      children: icon,
                     ),
-                    subtitle: getTextWidgets(context),
                   ),
+                  subtitle: getTextWidgets(context),
                 ),
               ),
             )
@@ -154,22 +150,18 @@ class ExploreCategories extends StatelessWidget {
             Expanded(
               child: Container(
                 padding: const EdgeInsets.only(left: 3),
-                height: MediaQuery.of(context).size.height / 9,
+                height: MediaQuery.of(context).size.height / 8,
                 width: MediaQuery.of(context).size.width / 2,
-                child: Container(
-                  height: MediaQuery.of(context).size.height / 2,
-                  width: MediaQuery.of(context).size.width,
-                  child: ListTile(
-                    title: Container(
-                      // padding:
-                      // const EdgeInsets.only(right: 5.0),
+                child: ListTile(
+                  title: Container(
+                    // padding:
+                    // const EdgeInsets.only(right: 5.0),
 
-                      child: Row(
-                        children: icon,
-                      ),
+                    child: Row(
+                      children: icon,
                     ),
-                    subtitle: getTextWidgets(context),
                   ),
+                  subtitle: getTextWidgets(context),
                 ),
               ),
             )
@@ -184,22 +176,15 @@ class ExploreCategories extends StatelessWidget {
             Expanded(
               child: Container(
                 padding: const EdgeInsets.only(left: 3),
-                height: MediaQuery.of(context).size.height / 9,
+                height: MediaQuery.of(context).size.height / 8,
                 width: MediaQuery.of(context).size.width / 2,
-                child: Container(
-                  height: MediaQuery.of(context).size.height / 2,
-                  width: MediaQuery.of(context).size.width,
-                  child: ListTile(
-                    title: Container(
-                      // padding:
-                      // const EdgeInsets.only(right: 5.0),
-
-                      child: Row(
-                        children: icon,
-                      ),
+                child: ListTile(
+                  title: Container(
+                    child: Row(
+                      children: icon,
                     ),
-                    subtitle: getTextWidgets(context),
                   ),
+                  subtitle: getTextWidgets(context),
                 ),
               ),
             )
