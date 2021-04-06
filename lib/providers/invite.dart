@@ -13,7 +13,7 @@ class Invite extends ChangeNotifier {
   bool get isChecking => _isChecking;
   bool get isClaiming => _isClaiming;
 
-  Future<bool> check(String inviteCode, String authToken) async {
+  Future<String> check(String inviteCode, String authToken) async {
     _isChecking = true;
     try {
       var response = await LokalApiService.instance.invite
@@ -21,7 +21,7 @@ class Invite extends ChangeNotifier {
       if (response.statusCode != 200) {
         _isChecking = false;
         notifyListeners();
-        return false;
+        return '';
       }
 
       var data = json.decode(response.body);
@@ -29,14 +29,14 @@ class Invite extends ChangeNotifier {
         _code = inviteCode;
         _isChecking = false;
         notifyListeners();
-        return true;
+        return data['data']['community_id'];
       }
     } catch (e) {
       _isChecking = false;
-      return false;
+      return '';
     }
     notifyListeners();
-    return false;
+    return '';
   }
 
   Future<bool> claim({

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lokalapp/providers/post_requests/auth_body.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/invite.dart';
@@ -18,8 +19,10 @@ class _InvitePageState extends State<InvitePage> {
   void validateInviteCode(BuildContext context, String code) async {
     var invite = Provider.of<Invite>(context, listen: false);
     var user = Provider.of<CurrentUser>(context, listen: false);
-    bool inviteCodeExists = await invite.check(code, user.idToken);
-    if (inviteCodeExists) {
+    String communityId = await invite.check(code, user.idToken);
+    if (communityId.isNotEmpty) {
+      Provider.of<AuthBody>(context, listen: false)
+          .update(communityId: communityId);
       Navigator.push(
           context, MaterialPageRoute(builder: (context) => Community()));
     } else {
