@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:lokalapp/screens/discover/checkout.dart';
-import 'package:lokalapp/states/current_user.dart';
-import 'package:lokalapp/utils/themes.dart';
 import 'package:provider/provider.dart';
+
+import '../../providers/shops.dart';
+import '../../utils/themes.dart';
+import 'checkout.dart';
 
 class OrderConfirmation extends StatelessWidget {
   buildButtons(context) {
@@ -69,7 +70,6 @@ class OrderConfirmation extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    CurrentUser user = Provider.of(context, listen: false);
     return Scaffold(
         appBar: PreferredSize(
           preferredSize: Size(double.infinity, 100),
@@ -169,30 +169,34 @@ class OrderConfirmation extends StatelessWidget {
                                 height: 2,
                                 // width: 30,
                               ),
-                              Row(
-                                children: [
-                                  Container(
-                                    child: CircleAvatar(
+                              Consumer<Shops>(builder: (ctx, shops, child) {
+                                return Row(
+                                  children: [
+                                    Container(
+                                      child: CircleAvatar(
                                         radius: 12,
-                                        // should refactor/simplify this
-                                        backgroundImage: user.userShops[0]
-                                                        .profilePhoto !=
-                                                    null &&
-                                                user.userShops[0].profilePhoto
-                                                    .isNotEmpty
-                                            ? NetworkImage(
-                                                user.userShops[0].profilePhoto)
-                                            : null),
-                                  ),
-                                  SizedBox(
-                                    width: 5,
-                                  ),
-                                  Text(
-                                    user.userShops[0].name,
-                                    style: TextStyle(fontSize: 13),
-                                  )
-                                ],
-                              ),
+                                        //TODO: refactor/simplify this
+                                        backgroundImage:
+                                            shops.items[0].profilePhoto !=
+                                                        null &&
+                                                    shops.items[0].profilePhoto
+                                                        .isNotEmpty
+                                                ? NetworkImage(
+                                                    shops.items[0].profilePhoto,
+                                                  )
+                                                : null,
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: 5,
+                                    ),
+                                    Text(
+                                      shops.items[0].name,
+                                      style: TextStyle(fontSize: 13),
+                                    )
+                                  ],
+                                );
+                              }),
                               SizedBox(
                                 height: 20,
                               ),

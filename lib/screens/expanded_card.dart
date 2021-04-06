@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
-import '../states/current_user.dart';
-import '../utils/themes.dart';
 import 'package:provider/provider.dart';
+
+import '../providers/user.dart';
+import '../utils/themes.dart';
 
 class ExpandedCard extends StatelessWidget {
   final Map activity;
   ExpandedCard({@required this.activity});
   @override
   Widget build(BuildContext context) {
-    CurrentUser _user = Provider.of<CurrentUser>(context);
+    // CurrentUser _user = Provider.of<CurrentUser>(context);
     return Scaffold(
         backgroundColor: Colors.white,
         appBar: PreferredSize(
@@ -75,12 +76,16 @@ class ExpandedCard extends StatelessWidget {
                     radius: 30,
                   ),
                 ),
-                Text(
-                  _user.firstName + " " + _user.lastName,
-                  style: TextStyle(
-                      fontFamily: "Goldplay",
-                      fontSize: 24,
-                      fontWeight: FontWeight.w700),
+                Consumer<CurrentUser>(
+                  builder: (context, user, child) {
+                    return Text(
+                      user.firstName + " " + user.lastName,
+                      style: TextStyle(
+                          fontFamily: "Goldplay",
+                          fontSize: 24,
+                          fontWeight: FontWeight.w700),
+                    );
+                  },
                 )
               ],
             ),

@@ -1,16 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:lokalapp/screens/discover/checkout.dart';
-import 'package:lokalapp/screens/discover/order_confirmation.dart';
-
-import 'package:lokalapp/screens/profile_screens/components/store_rating.dart';
-import 'package:lokalapp/states/current_user.dart';
-
-import 'package:lokalapp/utils/themes.dart';
-
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 import 'package:provider/provider.dart';
+
+import '../../providers/products.dart';
+import '../../providers/user.dart';
+import '../../utils/themes.dart';
+import '../profile_screens/components/store_rating.dart';
+import 'checkout.dart';
 
 class ProductDetail extends StatefulWidget {
   @override
@@ -138,7 +136,8 @@ class _ProductDetailState extends State<ProductDetail> {
       },
       builder: (context, index) {
         var user = Provider.of<CurrentUser>(context, listen: false);
-        var products = user.userProducts;
+        var products =
+            Provider.of<Products>(context, listen: false).findByUser(user.id);
         var gallery = products[index].gallery;
         var isGalleryEmpty = gallery == null || gallery.isEmpty;
         var productImage =
@@ -198,7 +197,8 @@ class _ProductDetailState extends State<ProductDetail> {
 
   buildItemAndPrice() {
     var user = Provider.of<CurrentUser>(context, listen: false);
-    var products = user.userProducts;
+    var products =
+        Provider.of<Products>(context, listen: false).findByUser(user.id);
     // int index;
     products.length;
     return Row(
@@ -208,7 +208,7 @@ class _ProductDetailState extends State<ProductDetail> {
         Container(
             padding: const EdgeInsets.only(left: 15),
             child: Text(
-              user.userProducts[0].name,
+              products[0].name,
               style: TextStyle(
                   fontFamily: "Goldplay",
                   fontWeight: FontWeight.w700,
@@ -219,7 +219,7 @@ class _ProductDetailState extends State<ProductDetail> {
             Container(
               padding: const EdgeInsets.only(right: 15),
               child: Text(
-                user.userProducts[0].basePrice.toString(),
+                products[0].basePrice.toString(),
                 // user.userProducts[index].basePrice.toString(),
                 style: TextStyle(
                     color: Color(0XFFFF7A00),
@@ -246,6 +246,8 @@ class _ProductDetailState extends State<ProductDetail> {
 
   buildMessage() {
     var user = Provider.of<CurrentUser>(context, listen: false);
+    var products =
+        Provider.of<Products>(context, listen: false).findByUser(user.id);
     return Row(
       children: [
         Container(
@@ -254,7 +256,7 @@ class _ProductDetailState extends State<ProductDetail> {
             child: Padding(
               padding: const EdgeInsets.only(
                   left: 15, right: 15, top: 1, bottom: 10),
-              child: Text(user.userProducts[0].description),
+              child: Text(products[0].description),
             ),
           ),
         )

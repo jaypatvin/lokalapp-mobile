@@ -1,12 +1,19 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:lokalapp/screens/add_shop_screens/add%20_shop_cart.dart';
 import 'package:provider/provider.dart';
 
-import 'models/user_shop_post.dart';
+import 'providers/activities.dart';
+import 'providers/invite.dart';
+import 'providers/post_requests/auth_body.dart';
+import 'providers/post_requests/product_body.dart';
+import 'providers/post_requests/shop_body.dart';
+import 'providers/products.dart';
+import 'providers/shops.dart';
+import 'providers/user.dart';
+import 'providers/user_auth.dart';
 import 'root/root.dart';
 import 'services/local_image_service.dart';
-import 'states/current_user.dart';
+import 'utils/utility.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,9 +27,38 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        Provider(create: (_) => CurrentUser()),
-        ChangeNotifierProvider(create: (_) => LocalImageService()),
-        Provider(create: (context) => UserShopPost())
+        // auth:
+        ChangeNotifierProvider<UserAuth>(create: (_) => UserAuth()),
+        ChangeNotifierProvider<Invite>(create: (_) => Invite()),
+
+        // states:
+        ChangeNotifierProvider<CurrentUser>(create: (_) => CurrentUser()),
+        ChangeNotifierProxyProvider<CurrentUser, Activities>(
+          create: (_) => Activities(),
+          update: (_, user, activities) =>
+              activities..setCommunityId(user.communityId),
+        ),
+        ChangeNotifierProxyProvider<CurrentUser, Shops>(
+          create: (_) => Shops(),
+          update: (_, user, shops) => shops
+            ..setCommunityId(user.communityId)
+            ..fetch(user.idToken),
+        ),
+        ChangeNotifierProxyProvider<CurrentUser, Products>(
+          create: (_) => Products(),
+          update: (_, user, products) => products
+            ..setCommunityId(user.communityId)
+            ..fetch(user.idToken),
+        ),
+
+        // post body requests:
+        ChangeNotifierProvider<AuthBody>(create: (_) => AuthBody()),
+        ChangeNotifierProvider<ProductBody>(create: (_) => ProductBody()),
+        ChangeNotifierProvider<ShopBody>(create: (_) => ShopBody()),
+
+        // services:
+        Provider<MediaUtility>(create: (_) => MediaUtility.instance),
+        Provider<LocalImageService>(create: (_) => LocalImageService.instance),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

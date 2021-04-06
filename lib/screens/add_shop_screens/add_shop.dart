@@ -1,31 +1,27 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:firebase_storage/firebase_storage.dart';
+
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
-import 'package:lokalapp/screens/add_shop_screens/appbar_shop.dart';
-import 'package:lokalapp/screens/add_shop_screens/basic_information.dart';
-import 'package:lokalapp/screens/add_shop_screens/shop_name.dart';
-import 'package:lokalapp/screens/edit_shop_screen/operating_hours_shop.dart';
-import 'package:lokalapp/screens/edit_shop_screen/set_custom_operating_hours.dart';
-import 'package:lokalapp/screens/profile_screens/profile.dart';
-import 'package:lokalapp/screens/profile_screens/profile_no_shop.dart';
-import 'package:lokalapp/screens/profile_screens/profile_shop.dart';
-import 'package:lokalapp/screens/profile_screens/profile_shop_sticky_store.dart';
-// import 'package:lokalapp/screens/profileScreens/profile_shop.dart';
-import 'package:lokalapp/services/database.dart';
-import 'package:lokalapp/states/current_user.dart';
-// import 'package:lokalapp/widgets/condensed_operating_hours.dart';
-import 'package:lokalapp/widgets/operating_hours.dart';
-import 'package:lokalapp/widgets/rounded_button.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
-import '../../utils/themes.dart';
+
+import '../../providers/post_requests/shop_body.dart';
+import '../../providers/shops.dart';
+import '../../providers/user.dart';
+import '../../services/local_image_service.dart';
+import '../../utils/utility.dart';
+import '../../widgets/operating_hours.dart';
+import '../../widgets/photo_box.dart';
+import '../../widgets/rounded_button.dart';
+import '../edit_shop_screen/operating_hours_shop.dart';
+import '../edit_shop_screen/set_custom_operating_hours.dart';
+import 'appbar_shop.dart';
+import 'basic_information.dart';
 import 'components/condensed_operating_hours.dart';
 import 'shopDescription.dart';
-import 'package:image/image.dart' as Im;
+import 'shop_name.dart';
 
 class AddShop extends StatefulWidget {
   final Map<String, String> account;
@@ -41,7 +37,6 @@ class AddShop extends StatefulWidget {
 class _AddShopState extends State<AddShop> {
   TimeOfDay _date = TimeOfDay.now();
   bool _setOperatingHours = false;
-  File file;
   bool isUploading = false;
   String shopPhotoId = Uuid().v4();
   final picker = ImagePicker();
@@ -53,160 +48,43 @@ class _AddShopState extends State<AddShop> {
   DateTime _opening = DateTime.now();
   DateTime _closing = DateTime.now();
   String shopName;
-  compressImage() async {
-    final tempDir = await getTemporaryDirectory();
-    final path = tempDir.path;
-    Im.Image imageFile = Im.decodeImage(file.readAsBytesSync());
-    final compressedImageFile = File('$path/img_$shopPhotoId.jpg')
-      ..writeAsBytesSync(Im.encodeJpg(imageFile, quality: 90));
-    setState(() {
-      file = compressedImageFile;
-    });
-  }
-
-  Future<String> uploadImage(imageFile) async {
-    UploadTask uploadTask =
-        storageRef.child("profilePhotoId_$shopPhotoId.jpg").putFile(imageFile);
-    TaskSnapshot storageSnap = await uploadTask;
-    String downloadUrl = await storageSnap.ref.getDownloadURL();
-    return downloadUrl;
-  }
+  File shopPhoto;
 
   Future createStore() async {
     setState(() {
       isUploading = true;
     });
     String mediaUrl = "";
-    if (file != null) {
-      await compressImage();
-      mediaUrl = await uploadImage(file);
+    if (shopPhoto != null) {
+      mediaUrl = await Provider.of<LocalImageService>(context, listen: false)
+          .uploadImage(file: shopPhoto, name: 'shop_photo');
     }
-    CurrentUser _user = Provider.of<CurrentUser>(context, listen: false);
-    var userId = await Database().getUserDocId(_user.userUids.first);
+    CurrentUser user = Provider.of<CurrentUser>(context, listen: false);
+    ShopBody shopBody = Provider.of<ShopBody>(context, listen: false);
+    Shops shops = Provider.of<Shops>(context, listen: false);
     try {
-      _user.postShop.userId = userId;
-      _user.postShop.communityId = _user.communityId;
-      _user.postShop.name = shopName;
-      _user.postShop.description = description;
-      _user.postShop.profilePhoto = mediaUrl;
-      _user.postShop.coverPhoto = "";
-      _user.postShop.isClosed = false;
-      _user.postShop.opening = openingHour;
-      _user.postShop.closing = closingHour;
-      _user.postShop.useCustomHours = _setOperatingHours;
-      _user.postShop.customHours =
-          customHours.map((key, value) => MapEntry(key, value.toString()));
-      bool success = await _user.createShop();
+      shopBody.update(
+        userId: user.id,
+        communityId: user.communityId,
+        name: shopName,
+        description: description,
+        profilePhoto: mediaUrl,
+        coverPhoto: "",
+        isClosed: false,
+        opening: openingHour,
+        closing: closingHour,
+        useCustomHours: _setOperatingHours,
+        customHours:
+            customHours.map((key, value) => MapEntry(key, value.toString())),
+      );
+      bool success = await shops.create(user.idToken, shopBody.data);
       if (success) {
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => ProfileShopMain()));
+        shops.fetch(user.idToken);
+        Navigator.pop(context);
       }
     } on Exception catch (_) {
       print(_);
     }
-  }
-
-  handleGallery() async {
-    final pickedImage = await picker.getImage(source: ImageSource.gallery);
-    if (pickedImage != null) {
-      setState(() {
-        file = File(pickedImage.path);
-      });
-      // Navigator.pop(context);
-    }
-  }
-
-  handleCamera() async {
-    // Navigator.pop(context);
-    final pickedImage = await picker.getImage(
-        source: ImageSource.camera, maxHeight: 675, maxWidth: 960);
-    if (pickedImage != null) {
-      setState(() {
-        file = File(pickedImage.path);
-      });
-      //  Navigator.pop(context);
-    }
-  }
-
-  selectImage(parentContext) {
-    return showDialog(
-        context: parentContext,
-        builder: (context) {
-          return SimpleDialog(
-            title: Text("Upload Picture"),
-            children: [
-              SimpleDialogOption(
-                child: Text("Camera"),
-                onPressed: () {
-                  handleCamera();
-                },
-              ),
-              SimpleDialogOption(
-                child: Text("Gallery"),
-                onPressed: () {
-                  handleGallery();
-                },
-              ),
-              SimpleDialogOption(
-                child: Text("Cancel"),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-              )
-            ],
-          );
-        });
-  }
-
-  Widget photoBox() {
-    return GestureDetector(
-      onTap: () {
-        selectImage(context);
-      },
-      child: Container(
-        width: 150.0,
-        height: 140.0,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          border: Border.all(width: 2, color: kTealColor),
-        ),
-        child: IconButton(
-          onPressed: () {
-            selectImage(context);
-          },
-          icon: Icon(
-            Icons.add,
-            color: kTealColor,
-            size: 50,
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget photoBoxWithPic() {
-    return GestureDetector(
-      onTap: () {},
-      child: Container(
-        width: 150.0,
-        height: 140.0,
-        decoration: BoxDecoration(
-          image: DecorationImage(fit: BoxFit.cover, image: FileImage(file)),
-          shape: BoxShape.circle,
-          border: Border.all(width: 2, color: kTealColor),
-        ),
-        child: IconButton(
-          onPressed: () {},
-          icon: file == null
-              ? Icon(
-                  Icons.add,
-                  color: kTealColor,
-                  size: 50,
-                )
-              : Icon(null),
-        ),
-      ),
-    );
   }
 
   @override
@@ -236,7 +114,17 @@ class _AddShopState extends State<AddShop> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                file == null ? photoBox() : photoBoxWithPic(),
+                GestureDetector(
+                  onTap: () async {
+                    var photo =
+                        await Provider.of<MediaUtility>(context, listen: false)
+                            .showMediaDialog(context);
+                    setState(() {
+                      shopPhoto = photo;
+                    });
+                  },
+                  child: PhotoBox(file: shopPhoto, shape: BoxShape.circle),
+                ),
               ],
             ),
             SizedBox(
@@ -398,8 +286,6 @@ class _AddShopState extends State<AddShop> {
     ];
 
     List<Widget> condensedOperatingHours = [];
-    MediaQueryData queryData;
-    queryData = MediaQuery.of(context);
     for (String day in daysOfWeek) {
       condensedOperatingHours.add(
         Container(

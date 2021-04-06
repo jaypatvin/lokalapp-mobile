@@ -1,9 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:lokalapp/screens/discover/order_placed.dart';
-import 'package:lokalapp/states/current_user.dart';
-import 'package:lokalapp/utils/themes.dart';
 import 'package:provider/provider.dart';
+
+import '../../providers/shops.dart';
+import '../../utils/themes.dart';
+import 'order_placed.dart';
 
 class Checkout extends StatefulWidget {
   @override
@@ -160,7 +161,8 @@ class _CheckoutState extends State<Checkout> {
 
   @override
   Widget build(BuildContext context) {
-    CurrentUser user = Provider.of(context, listen: false);
+    //CurrentUser user = Provider.of(context, listen: false);
+    Shops shops = Provider.of<Shops>(context);
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: Size(double.infinity, 100),
@@ -250,20 +252,20 @@ class _CheckoutState extends State<Checkout> {
                                     child: CircleAvatar(
                                         radius: 12,
                                         // should refactor/simplify this
-                                        backgroundImage: user.userShops[0]
-                                                        .profilePhoto !=
-                                                    null &&
-                                                user.userShops[0].profilePhoto
-                                                    .isNotEmpty
-                                            ? NetworkImage(
-                                                user.userShops[0].profilePhoto)
-                                            : null),
+                                        backgroundImage:
+                                            shops.items[0].profilePhoto !=
+                                                        null &&
+                                                    shops.items[0].profilePhoto
+                                                        .isNotEmpty
+                                                ? NetworkImage(
+                                                    shops.items[0].profilePhoto)
+                                                : null),
                                   ),
                                   SizedBox(
                                     width: 5,
                                   ),
                                   Text(
-                                    user.userShops[0].name,
+                                    shops.items[0].name,
                                     style: TextStyle(fontSize: 13),
                                   )
                                 ],
