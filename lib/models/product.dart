@@ -1,11 +1,10 @@
 import 'dart:convert';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 
 import 'lokal_images.dart';
 
-class UserProduct extends ChangeNotifier {
+class Product {
   String id;
   String name;
   String description;
@@ -18,7 +17,7 @@ class UserProduct extends ChangeNotifier {
   String productPhoto;
   String status;
   List<LokalImages> gallery;
-  UserProduct({
+  Product({
     this.id,
     this.name,
     this.description,
@@ -33,7 +32,7 @@ class UserProduct extends ChangeNotifier {
     this.gallery,
   });
 
-  UserProduct copyWith({
+  Product copyWith({
     String id,
     String name,
     String description,
@@ -47,7 +46,7 @@ class UserProduct extends ChangeNotifier {
     String status,
     List<LokalImages> gallery,
   }) {
-    return UserProduct(
+    return Product(
       id: id ?? this.id,
       name: name ?? this.name,
       description: description ?? this.description,
@@ -80,10 +79,10 @@ class UserProduct extends ChangeNotifier {
     };
   }
 
-  factory UserProduct.fromMap(Map<String, dynamic> map) {
+  factory Product.fromMap(Map<String, dynamic> map) {
     if (map == null) return null;
 
-    return UserProduct(
+    return Product(
       id: map['id'],
       name: map['name'],
       description: map['description'],
@@ -95,15 +94,17 @@ class UserProduct extends ChangeNotifier {
       productCategory: map['product_category'],
       productPhoto: map['product_photo'],
       status: map['status'],
-      gallery: List<LokalImages>.from(
-          map['gallery']?.map((x) => LokalImages.fromMap(x))),
+      gallery: map['gallery'] == null
+          ? null
+          : List<LokalImages>.from(
+              map['gallery']?.map((x) => LokalImages.fromMap(x))),
     );
   }
 
   String toJson() => json.encode(toMap());
 
-  factory UserProduct.fromJson(String source) =>
-      UserProduct.fromMap(json.decode(source));
+  factory Product.fromJson(String source) =>
+      Product.fromMap(json.decode(source));
 
   @override
   String toString() {
@@ -114,7 +115,7 @@ class UserProduct extends ChangeNotifier {
   bool operator ==(Object o) {
     if (identical(this, o)) return true;
 
-    return o is UserProduct &&
+    return o is Product &&
         o.id == id &&
         o.name == name &&
         o.description == description &&
