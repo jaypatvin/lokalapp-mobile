@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../../../providers/products.dart';
 import '../../../providers/shops.dart';
 import '../../../providers/user.dart';
+import '../../discover/product_detail.dart';
 import 'product_card.dart';
 
 class StoreCard extends StatelessWidget {
@@ -18,8 +19,11 @@ class StoreCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer3<CurrentUser, Shops, Products>(
         builder: (_, user, shops, products, __) {
-      var items =
-          isUserProducts ? products.findByUser(user.id) : products.items;
+      var items = isUserProducts
+          ? products.findByUser(user.id)
+          : products.items
+              .where((product) => product.userId != user.id)
+              .toList();
       return GridView.builder(
         shrinkWrap: true,
         // primary: true,
@@ -35,12 +39,22 @@ class StoreCard extends StatelessWidget {
           var productImage =
               !isGalleryEmpty ? gallery.firstWhere((g) => g.url != null) : null;
 
-          return ProductCard(
-            name: items[index].name,
-            imageUrl: isGalleryEmpty ? '' : productImage.url,
-            price: items[index].basePrice,
-            shopName: shops.findById(items[index].shopId).name,
-            shopImageUrl: shops.findById(items[index].shopId).profilePhoto,
+          return GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ProductDetail(items[index]),
+                ),
+              );
+            },
+            child: ProductCard(
+              name: items[index].name,
+              imageUrl: isGalleryEmpty ? '' : productImage.url,
+              price: items[index].basePrice,
+              shopName: shops.findById(items[index].shopId).name,
+              shopImageUrl: shops.findById(items[index].shopId).profilePhoto,
+            ),
           );
         },
       );

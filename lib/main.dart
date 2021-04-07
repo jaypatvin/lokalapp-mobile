@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:lokalapp/providers/cart.dart';
 import 'package:provider/provider.dart';
 
 import 'providers/activities.dart';
@@ -50,6 +51,7 @@ class MyApp extends StatelessWidget {
             ..setCommunityId(user.communityId)
             ..fetch(user.idToken),
         ),
+        ChangeNotifierProvider<ShoppingCart>(create: (_) => ShoppingCart()),
 
         // post body requests:
         ChangeNotifierProvider<AuthBody>(create: (_) => AuthBody()),
