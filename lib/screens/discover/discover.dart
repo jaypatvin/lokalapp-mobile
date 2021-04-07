@@ -340,42 +340,7 @@ class Discover extends StatelessWidget {
                       )),
                     ],
                   ),
-                  // Row(
-                  //   children: [
-                  //     TextButton(
-                  //         onPressed: () {
-                  //           Navigator.push(
-                  //               context,
-                  //               MaterialPageRoute(
-                  //                   builder: (context) => OrderPlaced()));
-                  //         },
-                  //         child: Text("Order placed"))
-                  //   ],
-                  // ),
-                  // Row(
-                  //   children: [
-                  //     TextButton(
-                  //         onPressed: () {
-                  //           Navigator.push(
-                  //               context,
-                  //               MaterialPageRoute(
-                  //                   builder: (context) => Checkout()));
-                  //         },
-                  //         child: Text("Checkout"))
-                  //   ],
-                  // ),
-                  // Row(
-                  //   children: [
-                  //     TextButton(
-                  //         onPressed: () {
-                  //           Navigator.push(
-                  //               context,
-                  //               MaterialPageRoute(
-                  //                   builder: (context) => OrderConfirmation()));
-                  //         },
-                  //         child: Text("Order Confirmation"))
-                  //   ],
-                  // ),
+
                   Row(
                     children: [
                       TextButton(
@@ -388,18 +353,7 @@ class Discover extends StatelessWidget {
                           child: Text("Order Grid"))
                     ],
                   ),
-                  // Row(
-                  //   children: [
-                  //     TextButton(
-                  //         onPressed: () {
-                  //           Navigator.push(
-                  //               context,
-                  //               MaterialPageRoute(
-                  //                   builder: (context) => ProductDetail()));
-                  //         },
-                  //         child: Text("Product Detail"))
-                  //   ],
-                  // ),
+
                   SizedBox(
                     height: 30,
                   ),

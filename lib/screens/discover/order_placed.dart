@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lokalapp/screens/activity.dart';
+import 'package:lokalapp/screens/activity/activity_screen.dart';
 import 'package:lokalapp/screens/discover/discover.dart';
 import 'package:lokalapp/utils/themes.dart';
 
@@ -28,8 +28,8 @@ class OrderPlaced extends StatelessWidget {
                   fontWeight: FontWeight.w700),
             ),
             onPressed: () {
-              Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => Activity()));
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => ActivityScreen()));
             },
           ),
         ),
