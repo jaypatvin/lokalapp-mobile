@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:lokalapp/screens/add_product_screen/add_product.dart';
-import 'package:lokalapp/screens/edit_shop_screen/edit_shop.dart';
-import 'package:lokalapp/screens/profile_screens/profile_no_shop.dart';
-import 'profile_shop.dart';
-
-import '../../states/current_user.dart';
 import 'package:provider/provider.dart';
+
+import '../../providers/user.dart';
+import 'profile_no_shop.dart';
 
 class ProfileShopMain extends StatefulWidget {
   // final Map<String, String> account;
@@ -84,7 +81,7 @@ class _ProfileShopMainState extends State<ProfileShopMain> {
 
   @override
   Widget build(BuildContext context) {
-    CurrentUser user = Provider.of<CurrentUser>(context, listen: false);
+    var user = Provider.of<CurrentUser>(context);
     return SafeArea(
         child: Scaffold(
       backgroundColor: Colors.white,

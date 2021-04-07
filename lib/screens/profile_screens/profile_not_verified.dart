@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:lokalapp/states/current_user.dart';
-import 'package:lokalapp/utils/themes.dart';
 import 'package:provider/provider.dart';
+
+import '../../providers/user.dart';
 
 class ProfileNotVerified extends StatefulWidget {
   @override
@@ -85,14 +85,14 @@ class _ProfileNotVerifiedState extends State<ProfileNotVerified> {
   }
 
   Row buildName(context) {
-    CurrentUser _user = Provider.of<CurrentUser>(context, listen: false);
+    var user = Provider.of<CurrentUser>(context, listen: false);
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Text(
           // "Bakey Bakey",
-          _user.firstName + " " + _user.lastName,
+          user.firstName + " " + user.lastName,
           style: TextStyle(
               color: Colors.white,
               fontFamily: "GoldplayBold",

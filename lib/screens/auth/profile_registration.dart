@@ -5,9 +5,14 @@ import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
 
+import '../../providers/invite.dart';
+import '../../providers/post_requests/auth_body.dart';
+import '../../providers/user.dart';
+import '../../providers/user_auth.dart';
 import '../../services/local_image_service.dart';
-import '../../states/current_user.dart';
 import '../../utils/themes.dart';
+import '../../utils/utility.dart';
+import '../../widgets/photo_box.dart';
 import '../../widgets/rounded_button.dart';
 import '../verification_screens/verify_screen.dart';
 
@@ -23,39 +28,7 @@ class _ProfileRegistrationState extends State<ProfileRegistration> {
   TextEditingController _streetAddressController = TextEditingController();
   TextEditingController _locationController = TextEditingController();
   RoundedButton roundedButton = RoundedButton();
-
-  Future<void> selectImage(parentContext) async {
-    return await showDialog(
-      context: parentContext,
-      builder: (context) {
-        return SimpleDialog(
-          title: Text("Upload Picture"),
-          children: [
-            SimpleDialogOption(
-              child: Text("Camera"),
-              onPressed: () {
-                Provider.of<LocalImageService>(context, listen: false)
-                    .launchCamera();
-                Navigator.pop(context);
-              },
-            ),
-            SimpleDialogOption(
-              child: Text("Gallery"),
-              onPressed: () {
-                Provider.of<LocalImageService>(context, listen: false)
-                    .launchGallery();
-                Navigator.pop(context);
-              },
-            ),
-            SimpleDialogOption(
-              child: Text("Cancel"),
-              onPressed: () => Navigator.pop(context),
-            )
-          ],
-        );
-      },
-    );
-  }
+  File profilePhoto;
 
   Future<bool> registerUser() async {
     setState(() {
@@ -64,21 +37,31 @@ class _ProfileRegistrationState extends State<ProfileRegistration> {
 
     LocalImageService _imageService =
         Provider.of<LocalImageService>(context, listen: false);
-    if (_imageService.fileExists) {
-      await _imageService.uploadImage();
+    String mediaUrl = "";
+    if (profilePhoto != null) {
+      mediaUrl = await _imageService.uploadImage(
+          file: profilePhoto, name: 'profile_photo');
     }
 
-    CurrentUser _user = Provider.of<CurrentUser>(context, listen: false);
-    _user.updatePostBody(
-        profilePhoto: _imageService.mediaUrl,
-        firstName: _firstNameController.text,
-        lastName: _lastNameController.text,
-        address: _streetAddressController.text);
+    UserAuth auth = Provider.of<UserAuth>(context, listen: false);
+    CurrentUser user = Provider.of<CurrentUser>(context, listen: false);
+    AuthBody authBody = Provider.of<AuthBody>(context, listen: false);
+    Invite invite = Provider.of<Invite>(context, listen: false);
+    // TODO: add communityId (after API update)
+    authBody.update(
+      profilePhoto: mediaUrl,
+      firstName: _firstNameController.text,
+      lastName: _lastNameController.text,
+      address: _streetAddressController.text,
+      userUid: auth.user.uid,
+      email: auth.user.email,
+    );
 
-    bool isUserCreated = await _user.register();
+    await user.register(authBody.data);
     bool inviteCodeClaimed = false;
-    if (isUserCreated) {
-      inviteCodeClaimed = await _user.claimInviteCode();
+    if (user.state == UserState.LoggedIn) {
+      inviteCodeClaimed = await invite.claim(
+          email: user.email, userId: user.id, authToken: user.idToken);
     }
     return inviteCodeClaimed;
   }
@@ -220,29 +203,6 @@ class _ProfileRegistrationState extends State<ProfileRegistration> {
     );
   }
 
-  Widget photoBox({File file}) {
-    return GestureDetector(
-      onTap: () => selectImage(context),
-      child: Container(
-        width: 180.0,
-        height: 170.0,
-        decoration: BoxDecoration(
-          image: file == null
-              ? null
-              : DecorationImage(fit: BoxFit.cover, image: FileImage(file)),
-          shape: BoxShape.circle,
-          border: Border.all(width: 1, color: kTealColor),
-        ),
-        child: file != null
-            ? null
-            : Icon(
-                Icons.add,
-                color: kTealColor,
-              ),
-      ),
-    );
-  }
-
   Widget profileSetUpText() {
     return Center(
       child: Text(
@@ -279,10 +239,21 @@ class _ProfileRegistrationState extends State<ProfileRegistration> {
                   SizedBox(
                     height: 25.0,
                   ),
-                  Consumer<LocalImageService>(
-                    builder: (context, imageService, child) {
-                      return photoBox(file: imageService.file);
+                  GestureDetector(
+                    onTap: () async {
+                      var photo = await Provider.of<MediaUtility>(context,
+                              listen: false)
+                          .showMediaDialog(context);
+                      setState(() {
+                        profilePhoto = photo;
+                      });
                     },
+                    child: PhotoBox(
+                      file: profilePhoto,
+                      shape: BoxShape.circle,
+                      width: 180.0,
+                      height: 170.0,
+                    ),
                   ),
                 ],
               ),

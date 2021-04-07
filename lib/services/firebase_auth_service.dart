@@ -17,6 +17,14 @@ class FirebaseUser {
 class FirebaseAuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
+  static FirebaseAuthService _service;
+  static FirebaseAuthService get instance {
+    if (_service == null) {
+      _service = FirebaseAuthService();
+    }
+    return _service;
+  }
+
   Future<FirebaseUser> _userFromFirebase(User user) async {
     if (user != null) {
       String idToken = await user.getIdToken();

@@ -32,7 +32,7 @@ class _AddProductGalleryState extends State<AddProductGallery> {
   }
 
   Future<void> selectImage(int index) async {
-    var file = await Utility.instance.showMediaDialog(context);
+    var file = await MediaUtility.instance.showMediaDialog(context);
     if (file != null) {
       setState(() {
         widget._photoBoxes[index] = PhotoBox(

@@ -8,6 +8,7 @@ import 'lokal_images.dart';
 import 'timestamp_time_object.dart';
 
 class ActivityFeed {
+  String id;
   String communityId;
   String userId;
   String message;
@@ -16,6 +17,7 @@ class ActivityFeed {
   List<String> liked;
   DateTime createdAt;
   ActivityFeed({
+    this.id,
     this.communityId,
     this.userId,
     this.message,
@@ -25,6 +27,7 @@ class ActivityFeed {
   });
 
   ActivityFeed copyWith({
+    String id,
     String communityId,
     String userId,
     String message,
@@ -33,6 +36,7 @@ class ActivityFeed {
     DateTime createdAt,
   }) {
     return ActivityFeed(
+      id: id ?? this.id,
       communityId: communityId ?? this.communityId,
       userId: userId ?? this.userId,
       message: message ?? this.message,
@@ -44,6 +48,7 @@ class ActivityFeed {
 
   Map<String, dynamic> toMap() {
     return {
+      'id': id,
       'community_id': communityId,
       'user_id': userId,
       'message': message,
@@ -55,6 +60,7 @@ class ActivityFeed {
 
   factory ActivityFeed.fromMap(Map<String, dynamic> map) {
     return ActivityFeed(
+      id: map['id'],
       communityId: map['community_id'],
       userId: map['user_id'],
       message: map['message'],
@@ -74,7 +80,7 @@ class ActivityFeed {
 
   @override
   String toString() {
-    return 'ActivityFeed(communityId: $communityId, userId: $userId, message: $message, images: $images, liked: $liked, createdAt: $createdAt)';
+    return 'ActivityFeed(id: $id, communityId: $communityId, userId: $userId, message: $message, images: $images, liked: $liked, createdAt: $createdAt)';
   }
 
   @override
@@ -82,6 +88,7 @@ class ActivityFeed {
     if (identical(this, other)) return true;
 
     return other is ActivityFeed &&
+        other.id == id &&
         other.communityId == communityId &&
         other.userId == userId &&
         other.message == message &&
@@ -92,7 +99,8 @@ class ActivityFeed {
 
   @override
   int get hashCode {
-    return communityId.hashCode ^
+    return id.hashCode ^
+        communityId.hashCode ^
         userId.hashCode ^
         message.hashCode ^
         images.hashCode ^

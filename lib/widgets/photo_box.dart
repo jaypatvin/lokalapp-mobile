@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 
 import '../utils/themes.dart';
 
-//TODO: use these in screens using PhotoBoxes
 class PhotoBox extends StatelessWidget {
   final File file;
   final BoxShape shape;
@@ -14,14 +13,14 @@ class PhotoBox extends StatelessWidget {
   const PhotoBox(
       {@required this.file,
       @required this.shape,
-      this.width = 140.0,
-      this.height = 150.0});
+      this.width = 140.0, //140.0 //72.0
+      this.height = 150.0}); //150.0 //75.0
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 72.0,
-      height: 75.0,
+      width: this.width,
+      height: this.height,
       decoration: BoxDecoration(
         image: file == null
             ? null

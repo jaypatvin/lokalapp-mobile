@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../states/current_user.dart';
+import '../providers/activities.dart';
+import '../providers/user.dart';
 import '../widgets/rounded_button.dart';
 
 class DraftPost extends StatefulWidget {
@@ -12,12 +13,12 @@ class DraftPost extends StatefulWidget {
 class _DraftPostState extends State<DraftPost> {
   TextEditingController _userController = TextEditingController();
   GlobalKey<ScaffoldState> _key = GlobalKey<ScaffoldState>();
-  CurrentUser _user;
+  //CurrentUser _user;
   dynamic message;
 
   @override
   void initState() {
-    _user = Provider.of<CurrentUser>(context, listen: false);
+    // _user = Provider.of<CurrentUser>(context, listen: false);
     super.initState();
     _userController.addListener(() {
       setState(() {
@@ -72,8 +73,16 @@ class _DraftPostState extends State<DraftPost> {
           padding: const EdgeInsets.only(top: 10, right: 20),
           child: RoundedButton(
             onPressed: () async {
-              bool postSuccess =
-                  await _user.postActivityFeed(_userController.text);
+              var activities = Provider.of<Activities>(context, listen: false);
+              var user = Provider.of<CurrentUser>(context, listen: false);
+              bool postSuccess = await activities.post(
+                user.idToken,
+                {
+                  'community_id': user.communityId,
+                  'user_id': user.id,
+                  'message': _userController.text,
+                },
+              );
               if (postSuccess) {
                 Navigator.pop(context, true);
               }

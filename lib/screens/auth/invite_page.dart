@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:lokalapp/providers/post_requests/auth_body.dart';
 import 'package:provider/provider.dart';
 
-import '../../states/current_user.dart';
+import '../../providers/invite.dart';
+import '../../providers/user.dart';
 import '../../utils/themes.dart';
 import '../../widgets/rounded_button.dart';
 import 'community.dart';
-import 'profile_registration.dart';
 
 class InvitePage extends StatefulWidget {
   @override
@@ -16,19 +17,14 @@ class _InvitePageState extends State<InvitePage> {
   TextEditingController _codeController = TextEditingController();
 
   void validateInviteCode(BuildContext context, String code) async {
-    var _user = Provider.of<CurrentUser>(context, listen: false);
-    bool inviteCodeExists = await _user.checkInviteCode(code);
-// String inviteCodeExists = "QHdK73bGFQRmgmPr3enN";
-    if (inviteCodeExists) {
-      CurrentUser user = Provider.of<CurrentUser>(context, listen: false);
-
-      if (!user.isAuthenticated) {
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => Community()));
-      } else {
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => ProfileRegistration()));
-      }
+    var invite = Provider.of<Invite>(context, listen: false);
+    var user = Provider.of<CurrentUser>(context, listen: false);
+    String communityId = await invite.check(code, user.idToken);
+    if (communityId.isNotEmpty) {
+      Provider.of<AuthBody>(context, listen: false)
+          .update(communityId: communityId);
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => Community()));
     } else {
       Scaffold.of(context).showSnackBar(
         SnackBar(

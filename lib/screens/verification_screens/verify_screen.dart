@@ -1,13 +1,14 @@
-import 'dart:io' show Platform;
+import 'dart:io' show File, Platform;
 import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../providers/user.dart';
 import '../../services/local_image_service.dart';
-import '../../states/current_user.dart';
 import '../../utils/themes.dart';
+import '../../utils/utility.dart';
 import '../../widgets/rounded_button.dart';
 import '../bottom_navigation.dart';
 import 'verify_confirmation_screen.dart';
@@ -26,39 +27,7 @@ class _VerifyScreenState extends State<VerifyScreen> {
   ];
 
   String _chosenIdType;
-
-  Future<void> selectImage(parentContext) async {
-    return await showDialog(
-      context: parentContext,
-      builder: (context) {
-        return SimpleDialog(
-          title: Text("Upload Picture"),
-          children: [
-            SimpleDialogOption(
-              child: Text("Camera"),
-              onPressed: () {
-                Provider.of<LocalImageService>(context, listen: false)
-                    .launchCamera();
-                Navigator.pop(context);
-              },
-            ),
-            SimpleDialogOption(
-              child: Text("Gallery"),
-              onPressed: () {
-                Provider.of<LocalImageService>(context, listen: false)
-                    .launchGallery();
-                Navigator.pop(context);
-              },
-            ),
-            SimpleDialogOption(
-              child: Text("Cancel"),
-              onPressed: () => Navigator.pop(context),
-            )
-          ],
-        );
-      },
-    );
-  }
+  File _file;
 
   Widget androidDropDown() {
     List<DropdownMenuItem<String>> dropDownItems = [];
@@ -230,8 +199,10 @@ class _VerifyScreenState extends State<VerifyScreen> {
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20.0),
                       side: BorderSide(color: Color(0XFF09A49A))),
-                  onPressed: () {
-                    selectImage(context);
+                  onPressed: () async {
+                    this._file =
+                        await Provider.of<MediaUtility>(context, listen: false)
+                            .showMediaDialog(context);
                   },
                 ),
               ),
@@ -242,16 +213,16 @@ class _VerifyScreenState extends State<VerifyScreen> {
                 onPressed: () async {
                   LocalImageService picker =
                       Provider.of<LocalImageService>(context, listen: false);
-                  if (picker.fileExists) {
-                    String mediaUrl = await picker.uploadImage();
+                  if (_file != null) {
+                    String mediaUrl = await picker.uploadImage(
+                        file: _file, name: 'verification');
 
                     if (mediaUrl != null && mediaUrl.isNotEmpty) {
                       Provider.of<CurrentUser>(context, listen: false)
-                        ..updateUserRegistrationInfo(
-                          idPhoto: mediaUrl,
-                          idType: _chosenIdType,
-                        )
-                        ..verifyUser().then((bool verified) {
+                        ..verify({
+                          'id_photo': mediaUrl,
+                          'id_type': _chosenIdType,
+                        }).then((bool verified) {
                           if (verified) {
                             Navigator.pushAndRemoveUntil(
                                 context,

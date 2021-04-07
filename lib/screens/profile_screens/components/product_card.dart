@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-
-import 'package:lokalapp/states/current_user.dart';
 import 'package:provider/provider.dart';
+
+import '../../../providers/products.dart';
+import '../../../providers/user.dart';
 
 class ProductCard extends StatefulWidget {
   final String imageUrl;
@@ -26,9 +27,10 @@ class _ProductCardState extends State<ProductCard> {
   bool isTapped = false;
 
   void addToCart(context) {
-    CurrentUser _user = Provider.of<CurrentUser>(context, listen: false);
     int index;
-    var products = _user.userProducts;
+    var user = Provider.of<CurrentUser>(context, listen: false);
+    var products =
+        Provider.of<Products>(context, listen: false).findByUser(user.id);
     List cart = [];
     if (isTapped == true) {
       cart.add(products[index].id);
