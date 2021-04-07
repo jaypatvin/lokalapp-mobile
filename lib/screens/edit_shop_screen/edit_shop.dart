@@ -1,29 +1,27 @@
 import 'dart:io';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
-import 'package:lokalapp/models/user_shop_post.dart';
-import 'package:lokalapp/screens/add_shop_screens/appbar_shop.dart';
-import 'package:lokalapp/screens/add_shop_screens/basic_information.dart';
-import 'package:lokalapp/screens/add_shop_screens/shopDescription.dart';
-import 'package:lokalapp/screens/add_shop_screens/shop_name.dart';
-import 'package:lokalapp/screens/edit_shop_screen/operating_hours_shop.dart';
-import 'package:lokalapp/screens/edit_shop_screen/set_custom_operating_hours.dart';
-import 'package:lokalapp/screens/edit_shop_screen/shop_status.dart';
-import 'package:lokalapp/services/database.dart';
-import 'package:lokalapp/services/local_image_service.dart';
-import 'package:lokalapp/services/lokal_api_service.dart';
-import 'package:lokalapp/states/current_user.dart';
-import 'package:lokalapp/utils/themes.dart';
-import 'package:lokalapp/widgets/operating_hours.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
-import 'package:image/image.dart' as Im;
+
+import '../../providers/post_requests/shop_body.dart';
+import '../../providers/shops.dart';
+import '../../providers/user.dart';
+import '../../services/local_image_service.dart';
+import '../../utils/themes.dart';
+import '../../utils/utility.dart';
+import '../../widgets/operating_hours.dart';
+import '../../widgets/photo_box.dart';
+import '../add_shop_screens/appbar_shop.dart';
+import '../add_shop_screens/basic_information.dart';
+import '../add_shop_screens/shopDescription.dart';
+import '../add_shop_screens/shop_name.dart';
+import 'operating_hours_shop.dart';
+import 'set_custom_operating_hours.dart';
+import 'shop_status.dart';
 
 class EditShop extends StatefulWidget {
   final bool isEdit;
@@ -34,7 +32,7 @@ class EditShop extends StatefulWidget {
 
 class _EditShopState extends State<EditShop> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
-  File file;
+  //File file;
   String profilePhotoId = Uuid().v4();
   final picker = ImagePicker();
   bool _setOperatingHours = false;
@@ -51,159 +49,15 @@ class _EditShopState extends State<EditShop> {
   // bool isUploading = true;
   bool isNameValid = true;
   bool isDescriptionValid = true;
-  compressImage() async {
-    final tempDir = await getTemporaryDirectory();
-    final path = tempDir.path;
-    Im.Image imageFile = Im.decodeImage(file.readAsBytesSync());
-    final compressedImageFile = File('$path/img_$profilePhotoId.jpg')
-      ..writeAsBytesSync(Im.encodeJpg(imageFile, quality: 90));
-    setState(() {
-      file = compressedImageFile;
-    });
-  }
-
-  Future<String> uploadImage(imageFile) async {
-    UploadTask uploadTask = storageRef
-        .child("profilePhotoId_$profilePhotoId.jpg")
-        .putFile(imageFile);
-    TaskSnapshot storageSnap = await uploadTask;
-    String downloadUrl = await storageSnap.ref.getDownloadURL();
-    return downloadUrl;
-  }
-
-  handleGallery() async {
-    final pickedImage = await picker.getImage(source: ImageSource.gallery);
-    if (pickedImage != null) {
-      setState(() {
-        file = File(pickedImage.path);
-      });
-      // Navigator.pop(context);
-    }
-  }
-
-  handleCamera() async {
-    // Navigator.pop(context);
-    final pickedImage = await picker.getImage(
-        source: ImageSource.camera, maxHeight: 675, maxWidth: 960);
-    if (pickedImage != null) {
-      setState(() {
-        file = File(pickedImage.path);
-      });
-      //  Navigator.pop(context);
-    }
-  }
-
-  selectImage(parentContext) {
-    return showDialog(
-        context: parentContext,
-        builder: (context) {
-          return SimpleDialog(
-            title: Text("Upload Picture"),
-            children: [
-              SimpleDialogOption(
-                child: Text("Camera"),
-                onPressed: () {
-                  handleCamera();
-                },
-              ),
-              SimpleDialogOption(
-                child: Text("Gallery"),
-                onPressed: () {
-                  handleGallery();
-                },
-              ),
-              SimpleDialogOption(
-                child: Text("Cancel"),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-              )
-            ],
-          );
-        });
-  }
-
-  Widget photoBox() {
-    return GestureDetector(
-      onTap: () {
-        selectImage(context);
-      },
-      child: Container(
-        width: 150.0,
-        height: 140.0,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          border: Border.all(width: 2, color: kTealColor),
-        ),
-        child: IconButton(
-          onPressed: () {
-            selectImage(context);
-          },
-          icon: Icon(
-            Icons.add,
-            color: kTealColor,
-            size: 50,
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget photoBoxWithPic() {
-    return GestureDetector(
-      onTap: () {},
-      child: Container(
-        width: 150.0,
-        height: 140.0,
-        decoration: BoxDecoration(
-          image: DecorationImage(fit: BoxFit.cover, image: FileImage(file)),
-          shape: BoxShape.circle,
-          border: Border.all(width: 2, color: kTealColor),
-        ),
-        child: IconButton(
-          onPressed: () {},
-          icon: file == null
-              ? Icon(
-                  Icons.add,
-                  color: kTealColor,
-                  size: 50,
-                )
-              : Icon(null),
-        ),
-      ),
-    );
-  }
-
-  // Future<Us> userShop;
-  @override
-  initState() {
-    super.initState();
-    getUser();
-  }
-
-  getUser() async {
-    CurrentUser _user = Provider.of(context, listen: false);
-    // UserShopPost shop = UserShopPost();
-    if (_user.id != null) {
-      try {
-        var success = await _user.getShops();
-        _shopNameController.text = _user.userShops[0].name;
-        _shopDescriptionController.text = _user.userShops[0].description;
-
-        if (success) {
-          print('success');
-        }
-      } on Exception catch (_) {
-        print(_);
-      }
-    }
-  }
+  File shopPhoto;
 
   Future updateShop() async {
     LocalImageService _imageService =
         Provider.of<LocalImageService>(context, listen: false);
-    if (_imageService.fileExists) {
-      await _imageService.uploadImage();
+    String mediaUrl = '';
+    if (shopPhoto != null) {
+      mediaUrl =
+          await _imageService.uploadImage(file: shopPhoto, name: 'shop_photo');
     }
     setState(() {
       _shopNameController.text.trim().length < 3 ||
@@ -214,20 +68,26 @@ class _EditShopState extends State<EditShop> {
           ? isDescriptionValid = false
           : isDescriptionValid = true;
     });
-    CurrentUser _user = Provider.of<CurrentUser>(context, listen: false);
+    CurrentUser user = Provider.of<CurrentUser>(context, listen: false);
+    var shops = Provider.of<Shops>(context, listen: false);
+    var userShops =
+        Provider.of<Shops>(context, listen: false).findByUser(user.id);
+    var shopBody = Provider.of<ShopBody>(context, listen: false);
 
     if (isNameValid && isDescriptionValid) {
-       String userId = await Database().getUserDocId(_user.userUids.first);
-
       try {
-        _user.postShop.userId = userId;
-        _user.postShop.name = _shopNameController.text;
-        _user.postShop.description = _shopDescriptionController.text;
-        _user.postShop.opening = openingHour;
-        _user.postShop.closing = closingHour;
-        _user.postShop.status = isSwitched.toString();
-   
-        bool success = await _user.updateShop(userId);
+        shopBody.update(
+          userId: user.id,
+          name: _shopNameController.text,
+          description: _shopDescriptionController.text,
+          opening: openingHour,
+          closing: closingHour,
+          status: isSwitched.toString(),
+          coverPhoto: mediaUrl,
+        );
+
+        bool success = await shops.update(
+            id: userShops[0].id, authToken: user.idToken, data: shopBody.data);
         if (success) {
           SnackBar snackBar = SnackBar(
             content: Text("Shop Updated!"),
@@ -267,7 +127,16 @@ class _EditShopState extends State<EditShop> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                file == null ? photoBox() : photoBoxWithPic(),
+                GestureDetector(
+                  onTap: () async {
+                    setState(() async {
+                      this.shopPhoto = await Provider.of<MediaUtility>(context,
+                              listen: false)
+                          .showMediaDialog(context);
+                    });
+                  },
+                  child: PhotoBox(file: shopPhoto, shape: BoxShape.circle),
+                ),
               ],
             ),
             SizedBox(

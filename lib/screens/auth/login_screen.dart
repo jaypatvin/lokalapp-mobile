@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../states/current_user.dart';
+import '../../providers/user.dart';
+import '../../providers/user_auth.dart';
 import '../../utils/themes.dart';
 import '../../widgets/rounded_button.dart';
 import '../../widgets/sso_block.dart';
@@ -57,29 +58,36 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void _logInUser(
       {@required LoginType type, String email, String password}) async {
-    CurrentUser _users = Provider.of<CurrentUser>(context, listen: false);
+    CurrentUser user = Provider.of<CurrentUser>(context, listen: false);
+    UserAuth auth = Provider.of<UserAuth>(context, listen: false);
     _onLoading();
     try {
-      FirebaseAuthStatus _authStatus;
+      AuthStatus _authStatus;
 
       switch (type) {
         case LoginType.email:
-          _authStatus = await _users.loginUserWithEmail(email, password);
+          _authStatus = await auth.loginWithEmail(email, password);
           break;
         case LoginType.google:
-          _authStatus = await _users.loginUserWithGoogle();
+          _authStatus = await auth.loginrWithGoogle();
           break;
         case LoginType.facebook:
-          _authStatus = await _users.loginUserWithFacebook();
+          _authStatus = await auth.loginWithFacebook();
           break;
         default:
       }
-      if (_authStatus == FirebaseAuthStatus.Success) {
-        Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(builder: (context) => BottomNavigation()),
-            (route) => false);
-      } else if (_authStatus == FirebaseAuthStatus.UserNotFound) {
+      if (_authStatus == AuthStatus.Success) {
+        await user.fetch(auth.user);
+        if (user.state == UserState.LoggedIn) {
+          Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => BottomNavigation()),
+              (route) => false);
+        } else {
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => InvitePage()));
+        }
+      } else if (_authStatus == AuthStatus.UserNotFound) {
         Navigator.push(
             context, MaterialPageRoute(builder: (context) => InvitePage()));
       }

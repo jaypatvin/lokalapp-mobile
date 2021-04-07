@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 
-import '../../states/current_user.dart';
+import '../../providers/user.dart';
+import '../../providers/user_auth.dart';
 import '../../widgets/sso_block.dart';
+import '../bottom_navigation.dart';
 import 'profile_registration.dart';
 
 enum LoginType { email, google, facebook }
@@ -22,30 +23,42 @@ class _CommunityState extends State<Community> {
 
   void _signUpUser(
       {@required LoginType type, String email, String password}) async {
-    CurrentUser _user = Provider.of<CurrentUser>(context, listen: false);
+    //CurrentUser _user = Provider.of<CurrentUser>(context, listen: false);
+    UserAuth auth = Provider.of<UserAuth>(context, listen: false);
     try {
-      FirebaseAuthStatus _authStatus;
+      AuthStatus _authStatus;
 
       switch (type) {
         case LoginType.email:
-          _authStatus = await _user.signUpUser(email, password);
+          _authStatus = await auth.signUp(email, password);
           break;
         case LoginType.google:
-          _authStatus = await _user.loginUserWithGoogle();
+          _authStatus = await auth.loginrWithGoogle();
           break;
         case LoginType.facebook:
-          _authStatus = await _user.loginUserWithFacebook();
+          _authStatus = await auth.loginWithFacebook();
           break;
         default:
       }
-      if (_authStatus == FirebaseAuthStatus.UserNotFound) {
+      if (_authStatus == AuthStatus.NewUser) {
         Navigator.push(context,
             MaterialPageRoute(builder: (context) => ProfileRegistration()));
-      } else if (_authStatus == FirebaseAuthStatus.Success) {
-        Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(builder: (context) => PersistentBottomNavBar()),
-            (route) => false);
+      } else if (_authStatus == AuthStatus.Success) {
+        var user = Provider.of<CurrentUser>(context, listen: false);
+        await user.fetch(auth.user);
+        if (user.state == UserState.LoggedIn) {
+          Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => BottomNavigation()),
+              (route) => false);
+        } else if (user.state == UserState.NotRegistered) {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => ProfileRegistration()));
+        }
+        // Navigator.pushAndRemoveUntil(
+        //     context,
+        //     MaterialPageRoute(builder: (context) => PersistentBottomNavBar()),
+        //     (route) => false);
       }
     } catch (e) {
       // TODO: do something with error

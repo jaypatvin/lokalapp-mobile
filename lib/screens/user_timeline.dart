@@ -5,16 +5,12 @@ import '../providers/activities.dart';
 import '../providers/user.dart';
 import 'expanded_card.dart';
 
-class Timeline extends StatefulWidget {
+class UserTimeline extends StatefulWidget {
   @override
-  _TimelineState createState() => _TimelineState();
+  _UserTimelineState createState() => _UserTimelineState();
 }
 
-class _TimelineState extends State<Timeline> {
-  int likeCount;
-  Map<String, String> likes;
-  bool isLiked;
-
+class _UserTimelineState extends State<UserTimeline> {
   @override
   void initState() {
     super.initState();
@@ -102,6 +98,7 @@ class _TimelineState extends State<Timeline> {
     var user = Provider.of<CurrentUser>(context, listen: false);
     return Consumer<Activities>(
       builder: (ctx, activities, child) {
+        var _activities = activities.findByUser(user.id);
         return activities.isLoading
             ? Center(child: CircularProgressIndicator())
             : RefreshIndicator(
@@ -109,9 +106,9 @@ class _TimelineState extends State<Timeline> {
                 child: ListView.builder(
                   physics: ScrollPhysics(),
                   shrinkWrap: true,
-                  itemCount: activities.feed.length,
+                  itemCount: _activities.length,
                   itemBuilder: (context, index) {
-                    var activity = activities.feed[index];
+                    var activity = _activities[index];
                     return Container(
                       width: MediaQuery.of(context).size.width,
                       child: Center(
@@ -135,15 +132,9 @@ class _TimelineState extends State<Timeline> {
                                           Row(
                                             children: [
                                               buildHeader(
-                                                activity.userId == user.id
-                                                    ? user.firstName
-                                                    : 'another',
-                                                activity.userId == user.id
-                                                    ? user.lastName
-                                                    : 'user',
-                                                activity.userId == user.id
-                                                    ? user.profilePhoto ?? ""
-                                                    : "",
+                                                user.firstName,
+                                                user.lastName,
+                                                user.profilePhoto ?? "",
                                               ),
                                             ],
                                           ),

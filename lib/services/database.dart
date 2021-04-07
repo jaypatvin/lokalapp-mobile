@@ -1,8 +1,9 @@
-import 'dart:convert';
 import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+
 import '../models/lokal_user.dart';
 
 final usersRef = FirebaseFirestore.instance.collection("users");
@@ -11,6 +12,14 @@ final shopRef = FirebaseFirestore.instance.collection("shops");
 final Reference storageRef = FirebaseStorage.instance.ref();
 
 class Database {
+  static Database _database;
+  static Database get instance {
+    if (_database == null) {
+      _database = Database();
+    }
+    return _database;
+  }
+
   Future<Map> getUserInfo(String uid) async {
     Map data;
     try {

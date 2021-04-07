@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:lokalapp/providers/products.dart';
+import 'package:lokalapp/providers/shops.dart';
+import 'package:lokalapp/providers/user.dart';
 import 'package:lokalapp/screens/activity/components/for_delivery_card.dart';
 import 'package:lokalapp/screens/activity/components/prep_order_card.dart';
 import 'package:lokalapp/screens/activity/components/to_confirm_card.dart';
@@ -7,7 +10,7 @@ import 'package:lokalapp/screens/activity/for_delivery_buyer.dart';
 import 'package:lokalapp/screens/activity/my_shop.dart';
 import 'package:lokalapp/screens/activity/order_screen.dart';
 import 'package:lokalapp/screens/activity/to_pay.dart';
-import 'package:lokalapp/states/current_user.dart';
+// import 'package:lokalapp/states/current_user.dart';
 import 'package:lokalapp/utils/themes.dart';
 import 'package:provider/provider.dart';
 
@@ -22,8 +25,9 @@ class _ActivityScreenState extends State<ActivityScreen> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    CurrentUser user = Provider.of(context, listen: false);
-    var products = user.userProducts;
+    var user = CurrentUser().idToken;
+    var shops = Shops().fetch(user);
+    var products = Products().findByShop(user);
     var gallery = products[0].gallery;
 
     var isGalleryEmpty = gallery == null || gallery.isEmpty;
@@ -214,42 +218,42 @@ class _ActivityScreenState extends State<ActivityScreen> {
               height: 20,
             ),
             ToConfirmCard(
-              username: user.userShops[0].name,
+              username: user,
               imageUrl: isGalleryEmpty ? '' : productImage.url,
               width: size.width * 0.9,
-              price: user.userProducts[0].basePrice,
-              productName: user.userProducts[0].name,
-              backgroundImage: user.userShops[0].profilePhoto != null &&
-                      user.userShops[0].profilePhoto.isNotEmpty
-                  ? NetworkImage(user.userShops[0].profilePhoto)
+              price: products[0].basePrice,
+              productName: products[0].name,
+              backgroundImage: products[0].productPhoto != null &&
+                      products[0].productPhoto.isNotEmpty
+                  ? NetworkImage(products[0].productPhoto)
                   : null,
             ),
             SizedBox(
               height: 10,
             ),
             ForDeliveryCard(
-              username: user.userShops[0].name,
+              username: user,
               imageUrl: isGalleryEmpty ? '' : productImage.url,
               width: size.width * 0.9,
-              price: user.userProducts[0].basePrice,
-              productName: user.userProducts[0].name,
-              backgroundImage: user.userShops[0].profilePhoto != null &&
-                      user.userShops[0].profilePhoto.isNotEmpty
-                  ? NetworkImage(user.userShops[0].profilePhoto)
+              price: products[0].basePrice,
+              productName: products[0].name,
+              backgroundImage: products[0].productPhoto != null &&
+                      products[0].productPhoto.isNotEmpty
+                  ? NetworkImage(products[0].productPhoto)
                   : null,
             ),
             SizedBox(
               height: 10,
             ),
             PrepOrderCard(
-              username: user.userShops[0].name,
+              username: user,
               imageUrl: isGalleryEmpty ? '' : productImage.url,
               width: size.width * 0.9,
-              price: user.userProducts[1].basePrice,
-              productName: user.userProducts[0].name,
-              backgroundImage: user.userShops[0].profilePhoto != null &&
-                      user.userShops[0].profilePhoto.isNotEmpty
-                  ? NetworkImage(user.userShops[0].profilePhoto)
+              price: products[0].basePrice,
+              productName: products[0].name,
+              backgroundImage: products[0].productPhoto != null &&
+                      products[0].productPhoto.isNotEmpty
+                  ? NetworkImage(products[0].productPhoto)
                   : null,
             ),
             SizedBox(

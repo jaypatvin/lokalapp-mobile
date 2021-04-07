@@ -2,52 +2,35 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:image/image.dart' as Im;
-import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
 
 import 'database.dart';
 
-class LocalImageService extends ChangeNotifier {
-  String _mediaUrl;
-  String _fileName;
-  File _file;
+class LocalImageService {
   final Uuid _uuid = Uuid();
-  final _picker = ImagePicker();
+  static LocalImageService _service;
 
-  String get mediaUrl => _mediaUrl;
-  File get file => _file;
-  bool get fileExists => _file != null;
-
-  Future<File> _pickFile(ImageSource source) async {
-    final pickedImage = await _picker.getImage(source: source);
-    if (pickedImage != null) {
-      return _file = File(pickedImage.path);
+  static LocalImageService get instance {
+    if (_service == null) {
+      _service = LocalImageService();
     }
-    return null;
+    return _service;
   }
 
-  Future<File> launchCamera() async => await _pickFile(ImageSource.camera);
-
-  Future<File> launchGallery() async => await _pickFile(ImageSource.gallery);
-
-  Future<String> uploadImage() async {
+  Future<String> uploadImage({@required File file, String name = ''}) async {
     // create a new file name from Uuid()
-    _fileName = _uuid.v4();
-    await _compressImage();
-    _mediaUrl = await Database().uploadImage(_file, _fileName);
-    // after uploading, clear file picked
-    _file = null;
-    // since we cannot clear _mediaUrl after using it, we need to use fileExists to determine states
-    return _mediaUrl;
+    var fileName = '$name\_${_uuid.v4()}';
+    var compressedFile = await _compressImage(file, fileName);
+    return await Database().uploadImage(compressedFile, fileName);
   }
 
-  Future<void> _compressImage() async {
+  Future<File> _compressImage(File file, String fileName) async {
     final tempDir = await getTemporaryDirectory();
     final path = tempDir.path;
-    Im.Image imageFile = Im.decodeImage(_file.readAsBytesSync());
-    final compressedImageFile = File('$path/img_$_fileName.jpg')
+    Im.Image imageFile = Im.decodeImage(file.readAsBytesSync());
+    final compressedImageFile = File('$path/img_$fileName.jpg')
       ..writeAsBytesSync(Im.encodeJpg(imageFile, quality: 90));
-    _file = compressedImageFile;
+    return compressedImageFile;
   }
 }

@@ -1,20 +1,17 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:image/image.dart' as Im;
-import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
-import 'package:uuid/uuid.dart';
 
 import '../../models/lokal_images.dart';
-import '../../services/database.dart';
-import '../../states/current_user.dart';
+import '../../providers/post_requests/product_body.dart';
+import '../../providers/products.dart';
+import '../../providers/shops.dart';
+import '../../providers/user.dart';
+import '../../services/local_image_service.dart';
 import '../../utils/themes.dart';
 import '../../widgets/rounded_button.dart';
 import '../add_shop_screens/appbar_shop.dart';
 import '../add_shop_screens/shopDescription.dart';
 import '../edit_shop_screen/set_custom_operating_hours.dart';
-import '../profile_screens/profile_shop.dart';
 import 'components/add_product_gallery.dart';
 import 'item_name.dart';
 
@@ -32,23 +29,6 @@ class _AddProductState extends State<AddProduct> {
   TextEditingController _stockController = TextEditingController();
   AddProductGallery _gallery = AddProductGallery();
 
-  //TODO: move these 2 functions to LocalImageService
-  Future<String> uploadImage(File file, {String fileName = ''}) async {
-    // create a new file name from Uuid()
-    var fn = Uuid().v4();
-    var compressedFile = await _compressImage(file, fileName);
-    return await Database().uploadImage(compressedFile, '${fileName}_$fn');
-  }
-
-  Future<File> _compressImage(File file, String fileName) async {
-    final tempDir = await getTemporaryDirectory();
-    final path = tempDir.path;
-    Im.Image imageFile = Im.decodeImage(file.readAsBytesSync());
-    final compressedImageFile = File('$path/img_$fileName.jpg')
-      ..writeAsBytesSync(Im.encodeJpg(imageFile, quality: 90));
-    return compressedImageFile;
-  }
-
   Widget buildAppBar() {
     return PreferredSize(
         preferredSize: Size(double.infinity, 80),
@@ -59,7 +39,8 @@ class _AddProductState extends State<AddProduct> {
   }
 
   Widget buildDropDown() {
-    var user = Provider.of<CurrentUser>(context, listen: false);
+    //var user = Provider.of<CurrentUser>(context, listen: false);
+    var productBody = Provider.of<ProductBody>(context, listen: false);
     return Container(
       width: 160.0,
       height: 35.0,
@@ -74,7 +55,8 @@ class _AddProductState extends State<AddProduct> {
           iconEnabledColor: kTealColor,
           iconDisabledColor: kTealColor,
           underline: SizedBox(),
-          value: user.postProduct.productCategory,
+          value:
+              productBody.productCategory, //user.postProduct.productCategory,
           hint: Text(
             "Select",
             style:
@@ -86,11 +68,7 @@ class _AddProductState extends State<AddProduct> {
               child: new Text(value),
             );
           }).toList(),
-          onChanged: (value) {
-            setState(() {
-              user.postProduct.productCategory = value;
-            });
-          },
+          onChanged: (value) => productBody.update(productCategory: value),
         ),
       ),
     );
@@ -198,32 +176,41 @@ class _AddProductState extends State<AddProduct> {
       onPressed: () async {
         var productCreated = await createProduct();
         if (productCreated) {
-          Navigator.push(
-              context, MaterialPageRoute(builder: (context) => ProfileShop()));
+          var user = Provider.of<CurrentUser>(context, listen: false);
+          Provider.of<Products>(context, listen: false).fetch(user.idToken);
+          Navigator.pop(context);
         }
       },
     );
   }
 
-  //TODO: put this somewhere
   Future<bool> createProduct() async {
     List<LokalImages> gallery = [];
     for (var photoBox in _gallery.photoBoxes) {
       if (photoBox.file == null) {
         continue;
       }
-      var mediaUrl = await uploadImage(photoBox.file, fileName: 'productPhoto');
+      var mediaUrl =
+          await Provider.of<LocalImageService>(context, listen: false)
+              .uploadImage(file: photoBox.file, name: 'productPhoto');
       gallery.add(LokalImages(url: mediaUrl, order: gallery.length));
     }
     CurrentUser user = Provider.of<CurrentUser>(context, listen: false);
+    var shop =
+        Provider.of<Shops>(context, listen: false).findByUser(user.id).first;
+    var products = Provider.of<Products>(context, listen: false);
+    var productBody = Provider.of<ProductBody>(context, listen: false);
     //TODO: check for price and quantity parse problems
     try {
-      user.postProduct.name = itemName;
-      user.postProduct.description = itemDescription;
-      user.postProduct.gallery = gallery;
-      user.postProduct.basePrice = double.tryParse(_priceController.text);
-      user.postProduct.quantity = int.tryParse(_stockController.text);
-      return await user.createProduct();
+      productBody.update(
+        name: itemName,
+        description: itemDescription,
+        gallery: gallery.map((image) => image.toMap()).toList(),
+        basePrice: double.tryParse(_priceController.text),
+        quantity: int.tryParse(_stockController.text),
+        shopId: shop.id,
+      );
+      return await products.create(user.idToken, productBody.data);
     } on Exception catch (_) {
       print(_);
       return false;

@@ -1,21 +1,28 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:lokalapp/services/local_image_service.dart';
+import 'package:image_picker/image_picker.dart';
 
-class Utility {
-  static Utility _utility;
+class MediaUtility {
+  static MediaUtility _utility;
+  final _picker = ImagePicker();
 
-  static Utility get instance {
+  static MediaUtility get instance {
     if (_utility == null) {
-      _utility = Utility();
+      _utility = MediaUtility();
     }
     return _utility;
   }
 
-  //TODO: use this in screens using imagePicker
+  Future<File> _pickFile(ImageSource source) async {
+    final pickedImage = await _picker.getImage(source: source);
+    if (pickedImage != null) {
+      return File(pickedImage.path);
+    }
+    return null;
+  }
+
   Future<File> showMediaDialog(BuildContext parentContext) async {
-    var imageService = LocalImageService();
     return await showDialog<File>(
       context: parentContext,
       builder: (context) {
@@ -25,14 +32,14 @@ class Utility {
             SimpleDialogOption(
               child: Text("Camera"),
               onPressed: () async {
-                var file = await imageService.launchCamera();
+                var file = await _pickFile(ImageSource.camera);
                 Navigator.pop(context, file);
               },
             ),
             SimpleDialogOption(
               child: Text("Gallery"),
               onPressed: () async {
-                var file = await imageService.launchGallery();
+                var file = await _pickFile(ImageSource.gallery);
                 Navigator.pop(context, file);
               },
             ),

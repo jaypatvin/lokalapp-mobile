@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:lokalapp/services/database.dart';
-import 'package:lokalapp/states/current_user.dart';
-import 'package:provider/provider.dart';
 
 class ShopDescription extends StatefulWidget {
-  Function onChanged;
-  String hintText;
-  String errorText;
-  TextEditingController descriptionController;
+  final Function onChanged;
+  final String hintText;
+  final String errorText;
+  final TextEditingController descriptionController;
   ShopDescription(
       {this.descriptionController,
       this.onChanged,

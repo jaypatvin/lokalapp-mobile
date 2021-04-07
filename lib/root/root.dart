@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
-import '../screens/bottom_navigation.dart';
-import '../screens/welcome_screen.dart';
 import 'package:provider/provider.dart';
 
-import '../screens/splash.dart';
-import '../states/current_user.dart';
-
-enum AuthStatus { notLoggedIn, loggedIn, unknown, notInCommunity, inCommunity }
+import '../providers/user.dart';
+import '../providers/user_auth.dart';
+import '../screens/bottom_navigation.dart';
+import '../screens/welcome_screen.dart';
 
 class Root extends StatefulWidget {
   final Map<String, String> account;
@@ -16,55 +14,31 @@ class Root extends StatefulWidget {
 }
 
 class _RootState extends State<Root> {
-  // AuthStatus _authStatus = AuthStatus.notLoggedIn;
-  AuthStatus _authStatus = AuthStatus.notLoggedIn;
+  UserState _userState;
 
   @override
   void didChangeDependencies() async {
-    // TODO: implement didChangeDependencies
     super.didChangeDependencies();
-    CurrentUser _users = Provider.of<CurrentUser>(context, listen: false);
-    String _returnString = await _users.onStartUp();
-    if (_returnString == "success") {
-      setState(() {
-        _authStatus = AuthStatus.loggedIn;
+    UserAuth auth = Provider.of<UserAuth>(context, listen: false);
+    AuthStatus authStatus = await auth.onStartUp();
 
-        if (_returnString == "success") {
-          if (_users.communityId != null) {
-            setState(() {
-              _authStatus = AuthStatus.inCommunity;
-            });
-          } else
-            setState(() {
-              _authStatus = AuthStatus.notInCommunity;
-            });
-        } else {
-          setState(() {
-            _authStatus = AuthStatus.notLoggedIn;
-          });
-        }
-      });
+    if (authStatus == AuthStatus.Success) {
+      CurrentUser user = Provider.of<CurrentUser>(context, listen: false);
+      await user.fetch(auth.user);
+      setState(() => _userState = user.state);
+    } else {
+      setState(() => _userState = UserState.Error);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    Widget retVal;
+    switch (_userState) {
+      case UserState.LoggedIn:
+        return BottomNavigation();
 
-    switch (_authStatus) {
-      case AuthStatus.unknown:
-        retVal = Splash();
-        break;
-
-      case AuthStatus.notLoggedIn:
-      case AuthStatus.notInCommunity:
-        retVal = WelcomeScreen();
-        break;
-
-      case AuthStatus.loggedIn:
-      case AuthStatus.inCommunity:
-        retVal = BottomNavigation();
+      default:
+        return WelcomeScreen();
     }
-    return retVal;
   }
 }
