@@ -342,10 +342,8 @@ class _CheckoutState extends State<Checkout> {
                                         height: 2,
                                       ),
                                       Container(
-                                          // padding: const EdgeInsets.all(0.0),
                                           child: Text(
                                         "525.00",
-                                        // textAlign: TextAlign.end,
                                         style: TextStyle(
                                             fontWeight: FontWeight.w300),
                                       )),
@@ -359,21 +357,13 @@ class _CheckoutState extends State<Checkout> {
                               Divider(
                                 color: Colors.grey,
                                 indent: 0,
-                                // endIndent: 25,
                               ),
                               SizedBox(
                                 height: 10,
                               ),
                               Row(
-                                // mainAxisAlignment:
-                                // MainAxisAlignment.spaceBetween,
-                                // mainAxisAlignment: MainAxisAlignment.end,
-                                // crossAxisAlignment: CrossAxisAlignment.e,
                                 mainAxisSize: MainAxisSize.max,
                                 children: [
-                                  // SizedBox(
-                                  //   width: 130,
-                                  // ),
                                   Expanded(
                                     child: Row(
                                       children: [
