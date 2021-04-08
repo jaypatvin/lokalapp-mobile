@@ -179,8 +179,9 @@ class Discover extends StatelessWidget {
               SizedBox(
                 height: 12,
               ),
-              Consumer<Products>(builder: (context, products, __) {
-                return products.isLoading
+              Consumer2<Products, Shops>(
+                  builder: (context, products, shops, __) {
+                return products.isLoading || shops.isLoading
                     ? Center(child: CircularProgressIndicator())
                     : Row(
                         mainAxisSize: MainAxisSize.min,
@@ -190,50 +191,46 @@ class Discover extends StatelessWidget {
                             height: MediaQuery.of(context).size.height * 0.4,
                             width: MediaQuery.of(context).size.width,
                             child: ListView.builder(
-                                shrinkWrap: true,
-                                scrollDirection: Axis.horizontal,
-                                itemCount: products.items.length,
-                                itemBuilder: (ctx, index) {
-                                  var shop = Provider.of<Shops>(context,
-                                          listen: false)
-                                      .findById(products.items[index].shopId);
-                                  var gallery = products.items[index].gallery;
-                                  var isGalleryEmpty =
-                                      gallery == null || gallery.isEmpty;
-                                  var productImage = !isGalleryEmpty
-                                      ? gallery
-                                          .firstWhere((g) => g.url.isNotEmpty)
-                                      : null;
-                                  return Container(
-                                    padding: const EdgeInsets.all(0.0),
-                                    height: MediaQuery.of(context).size.height *
-                                        0.5,
-                                    width:
-                                        MediaQuery.of(context).size.width / 2,
-                                    child: GestureDetector(
-                                      onTap: () {
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    ProductDetail()));
-                                      },
-                                      child: ProductCard(
-                                        name: products.items[index].name,
-                                        imageUrl: isGalleryEmpty
-                                            ? ''
-                                            : productImage.url,
-                                        price: products.items[index].basePrice,
-                                        shopName: shop.name,
-                                        shopImageUrl: shop.profilePhoto,
-                                      ),
+                              shrinkWrap: true,
+                              scrollDirection: Axis.horizontal,
+                              itemCount: products.items.length,
+                              itemBuilder: (ctx, index) {
+                                var shop = shops
+                                    .findById(products.items[index].shopId);
+                                var gallery = products.items[index].gallery;
+                                var isGalleryEmpty =
+                                    gallery == null || gallery.isEmpty;
+                                var productImage = !isGalleryEmpty
+                                    ? gallery
+                                        .firstWhere((g) => g.url.isNotEmpty)
+                                    : null;
+                                return Container(
+                                  padding: const EdgeInsets.all(0.0),
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.5,
+                                  width: MediaQuery.of(context).size.width / 2,
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  ProductDetail(
+                                                      products.items[index])));
+                                    },
+                                    child: ProductCard(
+                                      name: products.items[index].name,
+                                      imageUrl: isGalleryEmpty
+                                          ? ''
+                                          : productImage.url,
+                                      price: products.items[index].basePrice,
+                                      shopName: shop.name,
+                                      shopImageUrl: shop.profilePhoto,
                                     ),
-                                  );
-                                }),
-                            // child: ListView(
-                            //     shrinkWrap: true,
-                            //     scrollDirection: Axis.horizontal,
-                            //     children: card),
+                                  ),
+                                );
+                              },
+                            ),
                           ),
                         ],
                       );
@@ -398,18 +395,6 @@ class Discover extends StatelessWidget {
                                 builder: (context) => OrderScreenGrid()));
                       },
                       child: Text("Order Grid"))
-                ],
-              ),
-              Row(
-                children: [
-                  TextButton(
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => ProductDetail()));
-                      },
-                      child: Text("Product Detail"))
                 ],
               ),
               SizedBox(

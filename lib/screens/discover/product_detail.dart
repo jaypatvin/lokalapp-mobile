@@ -1,16 +1,17 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:lokalapp/providers/cart.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 import 'package:provider/provider.dart';
 
-import '../../providers/products.dart';
-import '../../providers/user.dart';
+import '../../models/product.dart';
 import '../../utils/themes.dart';
 import '../profile_screens/components/store_rating.dart';
-import 'checkout.dart';
 
 class ProductDetail extends StatefulWidget {
+  final Product product;
+  ProductDetail(this.product);
   @override
   _ProductDetailState createState() => _ProductDetailState();
 }
@@ -25,6 +26,7 @@ class _ProductDetailState extends State<ProductDetail> {
   TextEditingController _instructionsController = TextEditingController();
   final maxLines = 10;
   int quantity = 1;
+  Product product;
 
   void listener(PhotoViewControllerValue value) {
     setState(() {
@@ -35,7 +37,7 @@ class _ProductDetailState extends State<ProductDetail> {
   @override
   void initState() {
     super.initState();
-
+    this.product = widget.product;
     controller = PhotoViewController()..outputStateStream.listen(listener);
   }
 
@@ -97,18 +99,12 @@ class _ProductDetailState extends State<ProductDetail> {
     );
   }
 
-  final List imageList = [
-    'https://images.the-house.com/keen-elsa-wmns-shoes-black-star-white-17-1.jpg',
-    'https://veryvera.wierstewarthosting.com/wp-content/uploads/2017/02/16053118/brownies.jpg',
-    'https://flavorverse.com/wp-content/uploads/2017/12/Canadian-Food.jpg',
-    'https://img2.mashed.com/img/gallery/food-trends-that-are-about-to-take-over-2020/intro-1575330865.jpg',
-  ];
-
   buildDots() {
+    var gallery = product.gallery;
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
-      children: imageList.map((url) {
-        int index = imageList.indexOf(url);
+      children: gallery.map((url) {
+        int index = gallery.indexOf(url);
         return Container(
           width: 9.0,
           height: 10.0,
@@ -126,7 +122,7 @@ class _ProductDetailState extends State<ProductDetail> {
 
   buildGallery() {
     return PhotoViewGallery.builder(
-      itemCount: imageList.length,
+      itemCount: product.gallery.length,
       onPageChanged: (index) {
         if (this.mounted) {
           setState(() {
@@ -135,16 +131,11 @@ class _ProductDetailState extends State<ProductDetail> {
         }
       },
       builder: (context, index) {
-        var user = Provider.of<CurrentUser>(context, listen: false);
-        var products =
-            Provider.of<Products>(context, listen: false).findByUser(user.id);
-        var gallery = products[index].gallery;
-        var isGalleryEmpty = gallery == null || gallery.isEmpty;
-        var productImage =
-            !isGalleryEmpty ? gallery.firstWhere((g) => g.order == 0) : null;
-        products.length;
+        var image = product.gallery[index];
+        if (image.url.isEmpty) return null;
+
         return PhotoViewGalleryPageOptions(
-          imageProvider: NetworkImage(isGalleryEmpty ? '' : productImage.url),
+          imageProvider: NetworkImage(image.url),
           minScale: PhotoViewComputedScale.contained * 0.8,
           maxScale: PhotoViewComputedScale.covered * 2,
           controller: controller,
@@ -178,16 +169,17 @@ class _ProductDetailState extends State<ProductDetail> {
         children: [
           Expanded(
             child: Container(
-                height: MediaQuery.of(context).size.height / 2,
-                child: Stack(
-                  children: [
-                    buildGallery(),
-                    Align(
-                      alignment: Alignment.bottomCenter,
-                      child: buildDots(),
-                    )
-                  ],
-                )),
+              height: MediaQuery.of(context).size.height / 2,
+              child: Stack(
+                children: [
+                  buildGallery(),
+                  Align(
+                    alignment: Alignment.bottomCenter,
+                    child: buildDots(),
+                  )
+                ],
+              ),
+            ),
           ),
           //  SizedBox(height: 10,),
         ],
@@ -196,19 +188,13 @@ class _ProductDetailState extends State<ProductDetail> {
   }
 
   buildItemAndPrice() {
-    var user = Provider.of<CurrentUser>(context, listen: false);
-    var products =
-        Provider.of<Products>(context, listen: false).findByUser(user.id);
-    // int index;
-    products.length;
     return Row(
-      // crossAxisAlignment: CrossAxisAlignment.space,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Container(
             padding: const EdgeInsets.only(left: 15),
             child: Text(
-              products[0].name,
+              product.name,
               style: TextStyle(
                   fontFamily: "Goldplay",
                   fontWeight: FontWeight.w700,
@@ -219,7 +205,7 @@ class _ProductDetailState extends State<ProductDetail> {
             Container(
               padding: const EdgeInsets.only(right: 15),
               child: Text(
-                products[0].basePrice.toString(),
+                product.basePrice.toString(),
                 // user.userProducts[index].basePrice.toString(),
                 style: TextStyle(
                     color: Color(0XFFFF7A00),
@@ -245,9 +231,6 @@ class _ProductDetailState extends State<ProductDetail> {
   }
 
   buildMessage() {
-    var user = Provider.of<CurrentUser>(context, listen: false);
-    var products =
-        Provider.of<Products>(context, listen: false).findByUser(user.id);
     return Row(
       children: [
         Container(
@@ -256,7 +239,7 @@ class _ProductDetailState extends State<ProductDetail> {
             child: Padding(
               padding: const EdgeInsets.only(
                   left: 15, right: 15, top: 1, bottom: 10),
-              child: Text(products[0].description),
+              child: Text(product.description),
             ),
           ),
         )
@@ -399,8 +382,12 @@ class _ProductDetailState extends State<ProductDetail> {
                   fontWeight: FontWeight.w700),
             ),
             onPressed: () {
-              Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => Checkout()));
+              Provider.of<ShoppingCart>(context, listen: false).add(
+                productId: product.id,
+                quantity: quantity,
+                notes: _instructionsController.text,
+              );
+              Navigator.pop(context);
             },
           ),
         ),
@@ -436,7 +423,6 @@ class _ProductDetailState extends State<ProductDetail> {
 
   buildQuantityButtons() {
     return Row(
-      // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
@@ -470,7 +456,6 @@ class _ProductDetailState extends State<ProductDetail> {
           ),
           buildItemAndPrice(),
           Row(
-            // crossAxisAlignment: CrossAxisAlignment.,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [StoreRating(), buildReviews()],
           ),
@@ -482,17 +467,11 @@ class _ProductDetailState extends State<ProductDetail> {
           SizedBox(
             height: 10,
           ),
-
           buildSpecialInstructions(),
-          // SizedBox(
-          //   height: 20,
-          // ),
           buildSpecialInstructionsTextField(),
-
           SizedBox(
             height: 20,
           ),
-
           buildDivider(),
           SizedBox(
             height: 30,
