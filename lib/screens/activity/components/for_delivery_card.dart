@@ -18,23 +18,6 @@ class ForDeliveryCard extends StatelessWidget {
       this.imageUrl,
       this.price,
       this.productName});
-  // Widget get shopName => Row(
-  //       children: [
-  //         Container(
-  //           child: CircleAvatar(
-  //             radius: 12,
-  //             backgroundImage: backgroundImage,
-  //           ),
-  //         ),
-  //         SizedBox(
-  //           width: 8,
-  //         ),
-  //         Text(
-  //           username,
-  //           style: TextStyle(fontSize: 13),
-  //         )
-  //       ],
-  //     );
 
   Widget get shopName => Consumer<Products>(builder: (context, products, __) {
         return products.isLoading
