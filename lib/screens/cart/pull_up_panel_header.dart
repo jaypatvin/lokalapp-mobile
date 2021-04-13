@@ -63,13 +63,12 @@ class PullUpPanelHeader extends StatelessWidget {
                         builder: (context, cart, child) {
                           var quantity = cart.items.length;
                           double price = 0.0;
-                          for (var item in cart.items) {
-                            var id = item['product'];
+                          cart.items.forEach((key, value) {
                             var product =
                                 Provider.of<Products>(context, listen: false)
-                                    .findById(id);
-                            price += product.basePrice * item['quantity'];
-                          }
+                                    .findById(key);
+                            price += product.basePrice * value['quantity'];
+                          });
                           return Column(
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: [

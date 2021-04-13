@@ -152,10 +152,10 @@ class OrderConfirmation extends StatelessWidget {
                       shrinkWrap: true,
                       itemCount: cart.items.length,
                       itemBuilder: (context, index) {
-                        int quantity = cart.items[index]['quantity'];
-                        String notes = cart.items[index]['notes'];
-                        String productId = cart.items[index]['product'];
-                        var product = products.findById(productId);
+                        String key = cart.items.keys.elementAt(index);
+                        int quantity = cart.items[key]['quantity'];
+                        String notes = cart.items[key]['notes'];
+                        var product = products.findById(key);
                         var shop = shops.findById(product.shopId);
                         var productImage = product.gallery.firstWhere((image) =>
                             image.url != null && image.url.isNotEmpty);
@@ -405,11 +405,12 @@ class OrderConfirmation extends StatelessWidget {
                     Consumer2<ShoppingCart, Products>(
                         builder: (context, cart, products, child) {
                       double price = 0.0;
-                      for (var item in cart.items) {
-                        var id = item['product'];
-                        var product = products.findById(id);
-                        price += product.basePrice * item['quantity'];
-                      }
+                      cart.items.forEach((key, value) {
+                        var product =
+                            Provider.of<Products>(context, listen: false)
+                                .findById(key);
+                        price += product.basePrice * value['quantity'];
+                      });
                       return Container(
                         padding: const EdgeInsets.only(right: 20),
                         child: Text(

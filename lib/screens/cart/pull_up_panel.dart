@@ -31,106 +31,6 @@ class PullUpPanel extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Container(
-                //   decoration: BoxDecoration(
-                //     color: Color(0xFFFF7A00),
-                //     borderRadius: BorderRadius.only(
-                //       topLeft: Radius.circular(35.0),
-                //       topRight: Radius.circular(35.0),
-                //     ),
-                //   ),
-                //   child: Column(
-                //     children: [
-                //       SizedBox(
-                //         height: 18.0,
-                //       ),
-                //       Row(
-                //         mainAxisAlignment: MainAxisAlignment.center,
-                //         children: [
-                //           Container(
-                //             width: MediaQuery.of(context).size.width * 0.10,
-                //             height: 5,
-                //             decoration: BoxDecoration(
-                //               color: kNavyColor,
-                //               borderRadius: BorderRadius.all(
-                //                 Radius.circular(12.0),
-                //               ),
-                //             ),
-                //           ),
-                //         ],
-                //       ),
-                //       SizedBox(
-                //         height: 18.0,
-                //       ),
-                //       Row(
-                //         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                //         children: [
-                //           Text(
-                //             'Shopping Cart',
-                //             style: TextStyle(
-                //               fontFamily: "Goldplay",
-                //               fontSize: 22,
-                //               fontWeight: FontWeight.w600,
-                //               color: kNavyColor,
-                //             ),
-                //           ),
-                //           Consumer<ShoppingCart>(
-                //             builder: (context, cart, child) {
-                //               var quantity = cart.items.length;
-                //               double price = 0.0;
-                //               for (var item in cart.items) {
-                //                 var id = item['product'];
-                //                 var product = Provider.of<Products>(context,
-                //                         listen: false)
-                //                     .findById(id);
-                //                 price += product.basePrice * item['quantity'];
-                //               }
-                //               return Column(
-                //                 crossAxisAlignment: CrossAxisAlignment.end,
-                //                 children: [
-                //                   Text(
-                //                     '$quantity item',
-                //                     style: TextStyle(
-                //                       fontFamily: "Goldplay",
-                //                       fontSize: 16,
-                //                       color: kNavyColor,
-                //                     ),
-                //                   ),
-                //                   Text.rich(
-                //                     TextSpan(
-                //                       children: [
-                //                         TextSpan(
-                //                           text: 'Subtotal: ',
-                //                           style: TextStyle(
-                //                             fontFamily: "Goldplay",
-                //                             fontSize: 16,
-                //                             color: kNavyColor,
-                //                           ),
-                //                         ),
-                //                         TextSpan(
-                //                           text: 'P$price',
-                //                           style: TextStyle(
-                //                             fontFamily: "Goldplay",
-                //                             fontSize: 16,
-                //                             fontWeight: FontWeight.w600,
-                //                             color: kNavyColor,
-                //                           ),
-                //                         ),
-                //                       ],
-                //                     ),
-                //                   ),
-                //                 ],
-                //               );
-                //             },
-                //           ),
-                //         ],
-                //       ),
-                //       SizedBox(
-                //         height: 18.0,
-                //       ),
-                //     ],
-                //   ),
-                // ),
                 PullUpPanelHeader(),
                 Consumer<ShoppingCart>(
                   builder: (context, cart, child) {
@@ -139,11 +39,11 @@ class PullUpPanel extends StatelessWidget {
                       shrinkWrap: true,
                       itemCount: cart.items.length,
                       itemBuilder: (context, index) {
-                        int quantity = cart.items[index]['quantity'];
-                        String productId = cart.items[index]['product'];
+                        String key = cart.items.keys.elementAt(index);
+                        int quantity = cart.items[key]['quantity'];
                         var products =
                             Provider.of<Products>(context, listen: false);
-                        var product = products.findById(productId);
+                        var product = products.findById(key);
                         var productImage = product.gallery.firstWhere((image) =>
                             image.url != null && image.url.isNotEmpty);
                         return Container(
