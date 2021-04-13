@@ -38,24 +38,6 @@ class OrderScreenCard extends StatelessWidget {
       this.controller,
       this.productName});
 
-  // Widget get shopName => Row(
-  //       children: [
-  //         Container(
-  //           child: CircleAvatar(
-  //             radius: 12,
-  //             backgroundImage: backgroundImage,
-  //           ),
-  //         ),
-  //         SizedBox(
-  //           width: 8,
-  //         ),
-  //         Text(
-  //           username,
-  //           style: TextStyle(fontSize: 13),
-  //         )
-  //       ],
-  //     );
-
   Widget get shopName => Consumer<Products>(builder: (context, products, __) {
         return products.isLoading
             ? Container()
@@ -120,72 +102,6 @@ class OrderScreenCard extends StatelessWidget {
         ],
       );
 
-  // Widget get middleSection => Row(
-  //       crossAxisAlignment: CrossAxisAlignment.start,
-  //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //       children: [
-  //         Container(
-  //           width: 80.00,
-  //           height: 70.00,
-  //           decoration: BoxDecoration(
-  //             image: this.imageUrl != null
-  //                 ? DecorationImage(
-  //                     image: NetworkImage(imageUrl.toString()),
-  //                     fit: BoxFit.cover)
-  //                 : null,
-  //           ),
-  //         ),
-  //         Column(
-  //           mainAxisAlignment: MainAxisAlignment.start,
-  //           crossAxisAlignment: CrossAxisAlignment.start,
-  //           mainAxisSize: MainAxisSize.min,
-  //           children: [
-  //             Container(
-  //                 padding: const EdgeInsets.only(right: 90),
-  //                 child: Text(
-  //                   productName,
-  //                   style: TextStyle(
-  //                       fontSize: 16,
-  //                       fontFamily: "GoldplayBold",
-  //                       fontWeight: FontWeight.w700),
-  //                 )),
-  //             SizedBox(
-  //               height: 8,
-  //             ),
-  //             Container(
-  //               child: Text(
-  //                 "For December 20",
-  //                 style: TextStyle(
-  //                     fontSize: 11,
-  //                     fontFamily: "GolplayBold",
-  //                     fontWeight: FontWeight.w300),
-  //               ),
-  //             )
-  //           ],
-  //         ),
-  //         Column(
-  //           mainAxisSize: MainAxisSize.min,
-  //           mainAxisAlignment: MainAxisAlignment.end,
-  //           crossAxisAlignment: CrossAxisAlignment.end,
-  //           children: [
-  //             Text(
-  //               "x1",
-  //               style: TextStyle(fontWeight: FontWeight.bold),
-  //             ),
-  //             SizedBox(
-  //               height: 2,
-  //             ),
-  //             Container(
-  //                 // padding: const EdgeInsets.all(0.0),
-  //                 child: Text(
-  //               "P $price",
-  //               // textAlign: TextAlign.end,
-  //               style: TextStyle(fontWeight: FontWeight.w300),
-  //             )),
-  //           ],
-  //         ),
-  //       ],
-  //     );
   Widget get middleSection =>
       Consumer<Products>(builder: (context, products, __) {
         return products.isLoading
