@@ -46,6 +46,7 @@ dependencies:
   path_provider: ^1.6.24
   pk_skeleton: ^0.0.2
   provider: ^4.3.2+2
+  sliding_up_panel: ^1.0.2
   start_jwt: ^0.2.0
   uuid: ^2.2.2
   velocity_x: ^1.0.1

@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:lokalapp/providers/cart.dart';
+import '../../providers/cart.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 import 'package:provider/provider.dart';
@@ -426,21 +426,40 @@ class _ProductDetailState extends State<ProductDetail> {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        FloatingActionButton(
-          onPressed: minus,
-          child: new Icon(
-            Icons.remove,
-            color: Colors.black,
+        Container(
+          height: 60.0,
+          width: 60.0,
+          child: RawMaterialButton(
+            onPressed: minus,
+            elevation: 5.0,
+            fillColor: Colors.white,
+            shape: CircleBorder(),
+            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            child: Icon(
+              Icons.remove,
+              size: 35.0,
+              color: Colors.black,
+            ),
           ),
-          backgroundColor: Colors.white,
         ),
         SizedBox(
           width: 15,
         ),
-        FloatingActionButton(
-          onPressed: add,
-          child: new Icon(Icons.add, color: Colors.black),
-          backgroundColor: Colors.white,
+        Container(
+          height: 60.0,
+          width: 60.0,
+          child: RawMaterialButton(
+            onPressed: add,
+            elevation: 5.0,
+            fillColor: Colors.white,
+            shape: CircleBorder(),
+            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            child: Icon(
+              Icons.add,
+              size: 35.0,
+              color: Colors.black,
+            ),
+          ),
         ),
       ],
     );

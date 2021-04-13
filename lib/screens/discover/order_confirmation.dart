@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:lokalapp/models/product.dart';
-import 'package:lokalapp/providers/cart.dart';
-import 'package:lokalapp/providers/products.dart';
 import 'package:provider/provider.dart';
 
+import '../../providers/cart.dart';
+import '../../providers/products.dart';
 import '../../providers/shops.dart';
 import '../../utils/themes.dart';
 import 'checkout.dart';
@@ -33,7 +32,9 @@ class OrderConfirmation extends StatelessWidget {
                   color: Color(0XFFCC3752),
                   fontWeight: FontWeight.w600),
             ),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.pop(context);
+            },
           ),
         ),
         Container(
