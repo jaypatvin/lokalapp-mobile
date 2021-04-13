@@ -47,15 +47,13 @@ class DeliveredSeller extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    var user = CurrentUser().idToken;
-    var shops = Shops().fetch(user);
-    var products = Products().findByShop(user);
+    var user = Provider.of<CurrentUser>(context, listen: false);
 
-    var gallery = products[0].gallery;
+    var shops =
+        Provider.of<Shops>(context, listen: false).findByUser(user.id).first;
 
-    var isGalleryEmpty = gallery == null || gallery.isEmpty;
-    var productImage =
-        !isGalleryEmpty ? gallery.firstWhere((g) => g.order == 0) : null;
+    var products =
+        Provider.of<Products>(context, listen: false).findByUser(user.id).first;
     return Scaffold(
       appBar: AppBar(
         leading: Container(),
@@ -78,20 +76,12 @@ class DeliveredSeller extends StatelessWidget {
               buttonMessage: "Order Delivered",
               showButton: true,
               confirmation: "For Delivery",
-
-              imageUrl: isGalleryEmpty ? '' : productImage.url,
               width: size.width * 0.9,
               waitingForSeller: "",
-              // buttonMessage: "Order Received",
               controller: _notesController,
-              username: user,
-
-              price: products[0].basePrice,
-              productName: products[0].name,
-              backgroundImage: products[0].productPhoto != null &&
-                      products[0].productPhoto.isNotEmpty
-                  ? NetworkImage(products[0].productPhoto)
-                  : null,
+              username: shops.name,
+              price: products.basePrice,
+              productName: products.name,
             )
           ],
         ),

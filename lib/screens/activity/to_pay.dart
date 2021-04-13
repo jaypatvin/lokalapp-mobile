@@ -13,14 +13,13 @@ class ToPay extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    var user = CurrentUser().idToken;
-    var shops = Shops().findByUser(user);
-    var products = Products().findByShop(user);
-    var gallery = products[0].gallery;
+    var user = Provider.of<CurrentUser>(context, listen: false);
 
-    var isGalleryEmpty = gallery == null || gallery.isEmpty;
-    var productImage =
-        !isGalleryEmpty ? gallery.firstWhere((g) => g.order == 0) : null;
+    var shops =
+        Provider.of<Shops>(context, listen: false).findByUser(user.id).first;
+
+    var products =
+        Provider.of<Products>(context, listen: false).findByUser(user.id).first;
     return Scaffold(
       appBar: AppBar(
         leading: Container(),
@@ -80,15 +79,10 @@ class ToPay extends StatelessWidget {
               waitingForSeller: "",
               buttonMessage: "Choose Payment Option",
               controller: _notesController,
-              username: shops[0].name,
-              imageUrl: isGalleryEmpty ? '' : productImage.url,
+              username: shops.name,
               width: size.width * 0.9,
-              price: products[0].basePrice,
-              productName: products[0].name,
-              backgroundImage: products[0].productPhoto != null &&
-                      products[0].productPhoto.isNotEmpty
-                  ? NetworkImage(products[0].productPhoto)
-                  : null,
+              price: products.basePrice,
+              productName: products.name,
             )
           ],
         ),

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:lokalapp/providers/products.dart';
+import 'package:lokalapp/providers/shops.dart';
 
 import 'package:lokalapp/utils/themes.dart';
+import 'package:provider/provider.dart';
 
 class OrderScreenCard extends StatelessWidget {
   final double width;
@@ -35,23 +38,66 @@ class OrderScreenCard extends StatelessWidget {
       this.controller,
       this.productName});
 
-  Widget get shopName => Row(
-        children: [
-          Container(
-            child: CircleAvatar(
-              radius: 12,
-              backgroundImage: backgroundImage,
-            ),
-          ),
-          SizedBox(
-            width: 8,
-          ),
-          Text(
-            username,
-            style: TextStyle(fontSize: 13),
-          )
-        ],
-      );
+  // Widget get shopName => Row(
+  //       children: [
+  //         Container(
+  //           child: CircleAvatar(
+  //             radius: 12,
+  //             backgroundImage: backgroundImage,
+  //           ),
+  //         ),
+  //         SizedBox(
+  //           width: 8,
+  //         ),
+  //         Text(
+  //           username,
+  //           style: TextStyle(fontSize: 13),
+  //         )
+  //       ],
+  //     );
+
+  Widget get shopName => Consumer<Products>(builder: (context, products, __) {
+        return products.isLoading
+            ? Container()
+            : Container(
+                height: 30,
+                width: 105,
+                child: ListView.builder(
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    scrollDirection: Axis.horizontal,
+                    itemCount: 1,
+                    itemBuilder: (ctx, index) {
+                      var shop = Provider.of<Shops>(context, listen: false)
+                          .findById(products.items[index].shopId);
+                      var gallery = shop.profilePhoto;
+
+                      return Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Container(
+                            height: 30,
+                            width: 40,
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                image: NetworkImage(gallery),
+                                fit: BoxFit.fill,
+                              ),
+                              shape: BoxShape.circle,
+                            ),
+                          ),
+                          SizedBox(
+                            width: 8,
+                          ),
+                          Text(
+                            username,
+                            style: TextStyle(fontSize: 13),
+                          )
+                        ],
+                      );
+                    }),
+              );
+      });
 
   Widget get toConfirm => Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -74,73 +120,169 @@ class OrderScreenCard extends StatelessWidget {
         ],
       );
 
-  Widget get middleSection => Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Container(
-            width: 80.00,
-            height: 70.00,
-            decoration: BoxDecoration(
-              image: this.imageUrl != null
-                  ? DecorationImage(
-                      image: NetworkImage(imageUrl.toString()),
-                      fit: BoxFit.cover)
-                  : null,
-            ),
-          ),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                  padding: const EdgeInsets.only(right: 90),
-                  child: Text(
-                    productName,
-                    style: TextStyle(
-                        fontSize: 16,
-                        fontFamily: "GoldplayBold",
-                        fontWeight: FontWeight.w700),
-                  )),
-              SizedBox(
-                height: 8,
-              ),
-              Container(
-                child: Text(
-                  "For December 20",
-                  style: TextStyle(
-                      fontSize: 11,
-                      fontFamily: "GolplayBold",
-                      fontWeight: FontWeight.w300),
-                ),
-              )
-            ],
-          ),
-          Column(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.end,
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Text(
-                "x1",
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-              SizedBox(
-                height: 2,
-              ),
-              Container(
-                  // padding: const EdgeInsets.all(0.0),
-                  child: Text(
-                "P $price",
-                // textAlign: TextAlign.end,
-                style: TextStyle(fontWeight: FontWeight.w300),
-              )),
-            ],
-          ),
-        ],
-      );
-
+  // Widget get middleSection => Row(
+  //       crossAxisAlignment: CrossAxisAlignment.start,
+  //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //       children: [
+  //         Container(
+  //           width: 80.00,
+  //           height: 70.00,
+  //           decoration: BoxDecoration(
+  //             image: this.imageUrl != null
+  //                 ? DecorationImage(
+  //                     image: NetworkImage(imageUrl.toString()),
+  //                     fit: BoxFit.cover)
+  //                 : null,
+  //           ),
+  //         ),
+  //         Column(
+  //           mainAxisAlignment: MainAxisAlignment.start,
+  //           crossAxisAlignment: CrossAxisAlignment.start,
+  //           mainAxisSize: MainAxisSize.min,
+  //           children: [
+  //             Container(
+  //                 padding: const EdgeInsets.only(right: 90),
+  //                 child: Text(
+  //                   productName,
+  //                   style: TextStyle(
+  //                       fontSize: 16,
+  //                       fontFamily: "GoldplayBold",
+  //                       fontWeight: FontWeight.w700),
+  //                 )),
+  //             SizedBox(
+  //               height: 8,
+  //             ),
+  //             Container(
+  //               child: Text(
+  //                 "For December 20",
+  //                 style: TextStyle(
+  //                     fontSize: 11,
+  //                     fontFamily: "GolplayBold",
+  //                     fontWeight: FontWeight.w300),
+  //               ),
+  //             )
+  //           ],
+  //         ),
+  //         Column(
+  //           mainAxisSize: MainAxisSize.min,
+  //           mainAxisAlignment: MainAxisAlignment.end,
+  //           crossAxisAlignment: CrossAxisAlignment.end,
+  //           children: [
+  //             Text(
+  //               "x1",
+  //               style: TextStyle(fontWeight: FontWeight.bold),
+  //             ),
+  //             SizedBox(
+  //               height: 2,
+  //             ),
+  //             Container(
+  //                 // padding: const EdgeInsets.all(0.0),
+  //                 child: Text(
+  //               "P $price",
+  //               // textAlign: TextAlign.end,
+  //               style: TextStyle(fontWeight: FontWeight.w300),
+  //             )),
+  //           ],
+  //         ),
+  //       ],
+  //     );
+  Widget get middleSection =>
+      Consumer<Products>(builder: (context, products, __) {
+        return products.isLoading
+            ? Center(child: CircularProgressIndicator())
+            : Container(
+                height: 60,
+                width: MediaQuery.of(context).size.width,
+                child: ListView.builder(
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    scrollDirection: Axis.horizontal,
+                    itemCount: 1,
+                    itemBuilder: (ctx, index) {
+                      var shop = Provider.of<Shops>(context, listen: false)
+                          .findById(products.items[index].shopId);
+                      var gallery = products.items[index].gallery;
+                      var isGalleryEmpty = gallery == null || gallery.isEmpty;
+                      var productImage = !isGalleryEmpty
+                          ? gallery.firstWhere((g) => g.url.isNotEmpty)
+                          : null;
+                      return Row(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            // width: MediaQuery.of(context).size.width,
+                            height: 60.0,
+                            width: 80.0,
+                            // height: MediaQuery.of(context).size.height,
+                            decoration: BoxDecoration(
+                                image: DecorationImage(
+                                    image: NetworkImage(
+                                      isGalleryEmpty ? '' : productImage.url,
+                                    ),
+                                    fit: BoxFit.cover)),
+                          ),
+                          SizedBox(
+                            width: 8,
+                          ),
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Container(
+                                  padding: const EdgeInsets.only(right: 90),
+                                  child: Text(
+                                    productName,
+                                    style: TextStyle(
+                                        fontSize: 16,
+                                        fontFamily: "GoldplayBold",
+                                        fontWeight: FontWeight.w700),
+                                  )),
+                              SizedBox(
+                                height: 15,
+                              ),
+                              Container(
+                                child: Text(
+                                  "December 20",
+                                  style: TextStyle(
+                                      fontSize: 11,
+                                      fontFamily: "GolplayBold",
+                                      fontWeight: FontWeight.w300),
+                                ),
+                              )
+                            ],
+                          ),
+                          SizedBox(
+                            width: 45,
+                          ),
+                          Column(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Text(
+                                "x1",
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                              SizedBox(
+                                height: 2,
+                              ),
+                              Container(
+                                  // padding: const EdgeInsets.all(0.0),
+                                  child: Text(
+                                "P $price",
+                                // textAlign: TextAlign.end,
+                                style: TextStyle(fontWeight: FontWeight.w300),
+                              )),
+                            ],
+                          ),
+                        ],
+                      );
+                    }),
+              );
+      });
   Widget get orderTotal => Container(
           child: Text(
         "Order Total",
