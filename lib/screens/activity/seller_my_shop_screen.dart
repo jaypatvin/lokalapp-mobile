@@ -1,31 +1,18 @@
 import 'package:flutter/material.dart';
-
-import 'package:lokalapp/providers/cart.dart';
 import 'package:lokalapp/providers/products.dart';
 import 'package:lokalapp/providers/shops.dart';
 import 'package:lokalapp/providers/user.dart';
-import 'package:lokalapp/screens/activity/components/for_delivery_card.dart';
-
-import 'package:lokalapp/screens/activity/components/prep_order_card.dart';
-import 'package:lokalapp/screens/activity/components/to_confirm_card.dart';
-import 'package:lokalapp/screens/activity/delivered_buyer.dart';
-import 'package:lokalapp/screens/activity/for_delivery_buyer.dart';
-
-import 'package:lokalapp/screens/activity/order_screen.dart';
-import 'package:lokalapp/screens/activity/seller_my_shop_screen.dart';
-import 'package:lokalapp/screens/activity/to_pay.dart';
-
-import 'package:lokalapp/utils/themes.dart';
+import 'package:lokalapp/screens/activity/delivered_seller.dart';
+import 'package:lokalapp/screens/activity/my_shop.dart';
+import 'package:lokalapp/screens/activity/seller_confirmation.dart';
+import 'package:lokalapp/screens/activity/view_proof_of_payment_seller.dart';
 import 'package:provider/provider.dart';
 
-class ActivityScreen extends StatefulWidget {
-  @override
-  _ActivityScreenState createState() => _ActivityScreenState();
-}
+import 'components/for_delivery_card.dart';
+import 'components/prep_order_card.dart';
+import 'components/to_confirm_card.dart';
 
-class _ActivityScreenState extends State<ActivityScreen> {
-  bool isPressed = false;
-
+class SellerMyShopScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -38,10 +25,9 @@ class _ActivityScreenState extends State<ActivityScreen> {
     var products =
         Provider.of<Products>(context, listen: false).findByUser(user.id).first;
 
-    var cart = Provider.of<ShoppingCart>(context, listen: false).items;
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: kTealColor,
+        backgroundColor: Color(0XFF57183F),
         bottom: PreferredSize(
             child: Container(
               color: Color(0XFFCC3752),
@@ -55,7 +41,7 @@ class _ActivityScreenState extends State<ActivityScreen> {
                     width: 26,
                   ),
                   Text(
-                    "My Activity",
+                    "My Shop",
                     textAlign: TextAlign.center,
                     style: TextStyle(
                         color: Colors.white,
@@ -86,18 +72,13 @@ class _ActivityScreenState extends State<ActivityScreen> {
                   child: Container(
                     child: TextButton(
                       onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => OrderScreen()));
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) => MyShop()));
                       },
                       child: Text(
                         "My Orders",
                         style: TextStyle(
                             fontSize: 14,
-                            decoration: isPressed
-                                ? TextDecoration.underline
-                                : TextDecoration.none,
                             fontFamily: "GoldplayBold",
                             color: Colors.black),
                       ),
@@ -107,12 +88,7 @@ class _ActivityScreenState extends State<ActivityScreen> {
                 Expanded(
                   child: Container(
                       child: TextButton(
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => SellerMyShopScreen()));
-                    },
+                    onPressed: () {},
                     child: Text(
                       "My Shop",
                       style: TextStyle(
@@ -125,19 +101,11 @@ class _ActivityScreenState extends State<ActivityScreen> {
                 Expanded(
                   child: Container(
                     child: TextButton(
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => DeliveredBuyer()));
-                      },
+                      onPressed: () {},
                       child: Text(
                         "History",
                         style: TextStyle(
                             fontSize: 14,
-                            decoration: isPressed
-                                ? TextDecoration.underline
-                                : TextDecoration.none,
                             fontFamily: "GoldplayBold",
                             color: Colors.black),
                       ),
@@ -146,8 +114,101 @@ class _ActivityScreenState extends State<ActivityScreen> {
                 )
               ],
             ),
-            SizedBox(
-              height: 20,
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Expanded(
+                  child: Container(
+                      height: 180,
+                      color: Colors.grey.shade300,
+                      child: ListView(
+                        shrinkWrap: true,
+                        children: [
+                          SizedBox(
+                            height: 40,
+                          ),
+                          Row(
+                            children: [
+                              SizedBox(
+                                width: 20,
+                              ),
+                              Text(
+                                "Total Earnings",
+                                style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500,
+                                    fontFamily: "GoldplayBold"),
+                              ),
+                              SizedBox(
+                                width: 15,
+                              ),
+                              Text(
+                                "15,890.00",
+                                style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500,
+                                    fontFamily: "GoldplayBold"),
+                              )
+                            ],
+                          ),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          Row(
+                            children: [
+                              SizedBox(
+                                width: 20,
+                              ),
+                              Text(
+                                "Items Sold",
+                                style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500,
+                                    fontFamily: "GoldplayBold"),
+                              ),
+                              SizedBox(
+                                width: 40,
+                              ),
+                              Text(
+                                "127",
+                                style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500,
+                                    fontFamily: "GoldplayBold"),
+                              )
+                            ],
+                          ),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          Row(
+                            children: [
+                              SizedBox(
+                                width: 20,
+                              ),
+                              Text(
+                                "Most Popular",
+                                style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500,
+                                    fontFamily: "GoldplayBold"),
+                              ),
+                              SizedBox(
+                                width: 20,
+                              ),
+                              Text(
+                                "Cheesecake Bars",
+                                style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500,
+                                    fontFamily: "GoldplayBold"),
+                              )
+                            ],
+                          ),
+                        ],
+                      )),
+                )
+              ],
             ),
             Row(
               children: [
@@ -158,35 +219,12 @@ class _ActivityScreenState extends State<ActivityScreen> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => OrderScreen()));
+                                builder: (context) => SellerConfirmation()));
                       },
                       child: Text(
                         "For Confirmation",
                         style: TextStyle(
                             fontSize: 14,
-                            decoration: isPressed
-                                ? TextDecoration.underline
-                                : TextDecoration.none,
-                            fontFamily: "GoldplayBold",
-                            color: Colors.black),
-                      ),
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: Container(
-                    child: TextButton(
-                      onPressed: () {
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (context) => ToPay()));
-                      },
-                      child: Text(
-                        "To Pay",
-                        style: TextStyle(
-                            fontSize: 14,
-                            decoration: isPressed
-                                ? TextDecoration.underline
-                                : TextDecoration.none,
                             fontFamily: "GoldplayBold",
                             color: Colors.black),
                       ),
@@ -200,15 +238,32 @@ class _ActivityScreenState extends State<ActivityScreen> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => ForDeliveryBuyer()));
+                                builder: (context) =>
+                                    ViewProofOfPaymentSeller()));
+                      },
+                      child: Text(
+                        "To Pay",
+                        style: TextStyle(
+                            fontSize: 14,
+                            fontFamily: "GoldplayBold",
+                            color: Colors.black),
+                      ),
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: Container(
+                    child: TextButton(
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => DeliveredSeller()));
                       },
                       child: Text(
                         "For Delivery",
                         style: TextStyle(
                             fontSize: 14,
-                            decoration: isPressed
-                                ? TextDecoration.underline
-                                : TextDecoration.none,
                             fontFamily: "GoldplayBold",
                             color: Colors.black),
                       ),
