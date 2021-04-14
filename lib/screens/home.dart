@@ -1,7 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import '../providers/cart.dart';
+import '../providers/pull_up_cart_state.dart';
 import '../utils/themes.dart';
+import 'cart/sliding_up_cart.dart';
 import 'draft_post.dart';
 import 'timeline.dart';
 
@@ -93,16 +97,28 @@ class Home extends StatelessWidget {
           ),
         ),
       ),
-      body: Column(
-        children: [
-          buildTextField(context),
-          SizedBox(
-            height: 8,
-          ),
-          Expanded(
-            child: Timeline(),
-          ),
-        ],
+      body: SlidingUpCart(
+        child: Column(
+          children: [
+            buildTextField(context),
+            SizedBox(
+              height: 8,
+            ),
+            Expanded(
+              child: Timeline(),
+            ),
+            Consumer2<ShoppingCart, PullUpCartState>(
+              builder: (context, cart, cartState, _) {
+                return SizedBox(
+                  height: MediaQuery.of(context).size.height *
+                      (cart.items.length > 0 && cartState.isPanelVisible
+                          ? 0.32
+                          : 0.2),
+                );
+              },
+            ),
+          ],
+        ),
       ),
     );
   }

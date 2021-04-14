@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import '../../../providers/cart.dart';
 import 'package:provider/provider.dart';
 
 import '../../../providers/products.dart';
 import '../../../providers/user.dart';
 
-class ProductCard extends StatefulWidget {
+class ProductCard extends StatelessWidget {
+  final String productId;
   final String imageUrl;
   final String name;
   final double price;
@@ -12,36 +14,13 @@ class ProductCard extends StatefulWidget {
   final String shopName;
 
   const ProductCard({
+    @required this.productId,
     @required this.imageUrl,
     @required this.name,
     @required this.price,
     @required this.shopImageUrl,
     @required this.shopName,
   });
-
-  @override
-  _ProductCardState createState() => _ProductCardState();
-}
-
-class _ProductCardState extends State<ProductCard> {
-  bool isTapped = false;
-
-  void addToCart(context) {
-    int index;
-    var user = Provider.of<CurrentUser>(context, listen: false);
-    var products =
-        Provider.of<Products>(context, listen: false).findByUser(user.id);
-    List cart = [];
-    if (isTapped == true) {
-      cart.add(products[index].id);
-      if (cart.contains(products[index].id)) {
-        setState(() {
-          isTapped = !isTapped;
-        });
-      }
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -50,132 +29,134 @@ class _ProductCardState extends State<ProductCard> {
         color: Colors.white,
         semanticContainer: true,
         clipBehavior: Clip.antiAlias,
-        child: Column(
-          // mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Expanded(
-                  child: GestureDetector(
-                    onTap: () => addToCart(context),
-                    child: Container(
-                      height: 180,
-                      width: 260,
-                      decoration: BoxDecoration(
-                        image: widget.imageUrl.isNotEmpty
-                            ? DecorationImage(
-                                image: NetworkImage(widget.imageUrl),
-                                fit: BoxFit.fitWidth)
-                            : null,
-                        border: isTapped
-                            ? Border.all(
-                                color: Colors.orange,
-                                width: 3,
-                              )
-                            : Border.all(color: Colors.transparent),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
+        child: Consumer<ShoppingCart>(builder: (context, cart, child) {
+          return Container(
+            decoration: BoxDecoration(
+              border: cart.contains(productId)
+                  ? Border.all(
+                      color: Colors.orange,
+                      width: 3,
+                    )
+                  : Border.all(color: Colors.transparent),
             ),
-            SizedBox(
-              height: 10,
-            ),
-            Column(
-              children: [
+            child: Column(
+              children: <Widget>[
                 Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Expanded(
-                      child: Text(
-                        widget.name,
-                        softWrap: true,
-                        style: TextStyle(
-                          fontFamily: "GoldplayBold",
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
+                      child: Container(
+                        height: 180,
+                        width: 260,
+                        decoration: BoxDecoration(
+                          image: imageUrl.isNotEmpty
+                              ? DecorationImage(
+                                  image: NetworkImage(imageUrl),
+                                  fit: BoxFit.fitWidth)
+                              : null,
                         ),
                       ),
                     ),
                   ],
                 ),
                 SizedBox(
-                  height: 15,
+                  height: 10,
                 ),
-                Align(
-                    alignment: Alignment.topLeft,
-                    child: Text(
-                      '${widget.price}',
-                      textAlign: TextAlign.start,
-                      style: TextStyle(
-                          color: Color(0xffFF7A00),
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16),
-                    )),
-                SizedBox(
-                  height: 19,
-                ),
-                SingleChildScrollView(
-                  physics: NeverScrollableScrollPhysics(),
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    // crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        // margin: const EdgeInsets.only(right: 30),
-                        child: CircleAvatar(
-                          radius: 9,
-                          backgroundImage: widget.shopImageUrl != null &&
-                                  widget.shopImageUrl.isNotEmpty
-                              ? NetworkImage(widget.shopImageUrl)
-                              : null,
+                Column(
+                  children: [
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Expanded(
+                          child: Text(
+                            name,
+                            softWrap: true,
+                            style: TextStyle(
+                              fontFamily: "GoldplayBold",
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                         ),
-                      ),
-                      SizedBox(
-                        width: 3,
-                      ),
-                      Container(
-                        // margin: const EdgeInsets.only(right: 12),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 15,
+                    ),
+                    Align(
+                        alignment: Alignment.topLeft,
                         child: Text(
-                          widget.shopName,
+                          '$price',
                           textAlign: TextAlign.start,
                           style: TextStyle(
-                              color: Colors.black,
-                              // fontWeight: FontWeight.bold,
-                              fontSize: 12),
-                        ),
-                      ),
-                      SizedBox(
-                        width: 60,
-                      ),
-                      Row(
+                              color: Color(0xffFF7A00),
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16),
+                        )),
+                    SizedBox(
+                      height: 19,
+                    ),
+                    SingleChildScrollView(
+                      physics: NeverScrollableScrollPhysics(),
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        // crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Container(
-                            child: Icon(
-                              Icons.star,
-                              color: Colors.amber,
-                              size: 14,
+                            // margin: const EdgeInsets.only(right: 30),
+                            child: CircleAvatar(
+                              radius: 9,
+                              backgroundImage: shopImageUrl != null &&
+                                      shopImageUrl.isNotEmpty
+                                  ? NetworkImage(shopImageUrl)
+                                  : null,
                             ),
                           ),
-                          Text(
-                            "4.54",
-                            style: TextStyle(
-                              color: Colors.amber,
-                              fontSize: 14,
+                          SizedBox(
+                            width: 3,
+                          ),
+                          Container(
+                            // margin: const EdgeInsets.only(right: 12),
+                            child: Text(
+                              shopName,
+                              textAlign: TextAlign.start,
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  // fontWeight: FontWeight.bold,
+                                  fontSize: 12),
                             ),
                           ),
+                          SizedBox(
+                            width: 60,
+                          ),
+                          Row(
+                            children: [
+                              Container(
+                                child: Icon(
+                                  Icons.star,
+                                  color: Colors.amber,
+                                  size: 14,
+                                ),
+                              ),
+                              Text(
+                                "4.54",
+                                style: TextStyle(
+                                  color: Colors.amber,
+                                  fontSize: 14,
+                                ),
+                              ),
+                            ],
+                          )
                         ],
-                      )
-                    ],
-                  ),
+                      ),
+                    )
+                  ],
                 )
               ],
-            )
-          ],
-        ),
+            ),
+          );
+        }),
       ),
     );
   }

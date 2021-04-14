@@ -2,20 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/user.dart';
+import '../cart/sliding_up_cart.dart';
 import 'profile_no_shop.dart';
 
 class ProfileShopMain extends StatefulWidget {
-  // final Map<String, String> account;
-  // ProfileShopMain({Key key, @required this.account}) : super(key: key);
-
   @override
   _ProfileShopMainState createState() => _ProfileShopMainState();
 }
-//QHdK73bGFQRmgmPr3enN
 
 class _ProfileShopMainState extends State<ProfileShopMain> {
-  // final bool hasStore;
-
   Padding buildIconSettings() {
     return Padding(
         padding: const EdgeInsets.only(left: 5),
@@ -83,49 +78,50 @@ class _ProfileShopMainState extends State<ProfileShopMain> {
   Widget build(BuildContext context) {
     var user = Provider.of<CurrentUser>(context);
     return SafeArea(
-        child: Scaffold(
-      backgroundColor: Colors.white,
-      appBar: PreferredSize(
-        preferredSize: Size(double.infinity, 220),
-        child: Container(
-          decoration: BoxDecoration(
-            boxShadow: [
-              BoxShadow(color: Colors.black12, spreadRadius: 5, blurRadius: 2)
-            ],
-          ),
-          width: MediaQuery.of(context).size.width,
-          height: 450,
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        appBar: PreferredSize(
+          preferredSize: Size(double.infinity, 220),
           child: Container(
             decoration: BoxDecoration(
-              gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [Color(0xffFFC700), Colors.black45]),
+              boxShadow: [
+                BoxShadow(color: Colors.black12, spreadRadius: 5, blurRadius: 2)
+              ],
             ),
+            width: MediaQuery.of(context).size.width,
+            height: 450,
             child: Container(
-              margin: const EdgeInsets.fromLTRB(0, 8, 0, 0),
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    // crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      buildIconSettings(),
-                      buildIconMore(context),
-                    ],
-                  ),
-                  buildCircleAvatar(user.profilePhoto ?? ""),
-                  SizedBox(
-                    height: 15,
-                  ),
-                  buildName(user.firstName, user.lastName)
-                ],
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [Color(0xffFFC700), Colors.black45]),
+              ),
+              child: Container(
+                margin: const EdgeInsets.fromLTRB(0, 8, 0, 0),
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      // crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        buildIconSettings(),
+                        buildIconMore(context),
+                      ],
+                    ),
+                    buildCircleAvatar(user.profilePhoto ?? ""),
+                    SizedBox(
+                      height: 15,
+                    ),
+                    buildName(user.firstName, user.lastName)
+                  ],
+                ),
               ),
             ),
           ),
         ),
+        body: SlidingUpCart(child: ProfileNoShop()),
       ),
-      body: ProfileNoShop(),
-    ));
+    );
   }
 }
