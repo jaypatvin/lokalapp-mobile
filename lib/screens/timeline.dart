@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../providers/activities.dart';
 import '../providers/user.dart';
+import '../providers/users.dart';
 import 'expanded_card.dart';
 
 class Timeline extends StatefulWidget {
@@ -100,9 +101,9 @@ class _TimelineState extends State<Timeline> {
   @override
   Widget build(BuildContext context) {
     var user = Provider.of<CurrentUser>(context, listen: false);
-    return Consumer<Activities>(
-      builder: (ctx, activities, child) {
-        return activities.isLoading
+    return Consumer2<Activities, Users>(
+      builder: (ctx, activities, users, child) {
+        return activities.isLoading || users.isLoading
             ? Center(child: CircularProgressIndicator())
             : RefreshIndicator(
                 onRefresh: () => activities.fetch(user.idToken),
@@ -112,6 +113,8 @@ class _TimelineState extends State<Timeline> {
                   itemCount: activities.feed.length,
                   itemBuilder: (context, index) {
                     var activity = activities.feed[index];
+                    var communityUser = users.users.firstWhere(
+                        (communityUser) => communityUser.id == activity.userId);
                     return Container(
                       width: MediaQuery.of(context).size.width,
                       child: Center(
@@ -135,15 +138,10 @@ class _TimelineState extends State<Timeline> {
                                           Row(
                                             children: [
                                               buildHeader(
-                                                activity.userId == user.id
-                                                    ? user.firstName
-                                                    : 'another',
-                                                activity.userId == user.id
-                                                    ? user.lastName
-                                                    : 'user',
-                                                activity.userId == user.id
-                                                    ? user.profilePhoto ?? ""
-                                                    : "",
+                                                communityUser.firstName,
+                                                communityUser.lastName,
+                                                communityUser.profilePhoto ??
+                                                    '',
                                               ),
                                             ],
                                           ),

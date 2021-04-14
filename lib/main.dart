@@ -1,17 +1,19 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:lokalapp/providers/cart.dart';
 import 'package:provider/provider.dart';
 
 import 'providers/activities.dart';
+import 'providers/cart.dart';
 import 'providers/invite.dart';
 import 'providers/post_requests/auth_body.dart';
 import 'providers/post_requests/product_body.dart';
 import 'providers/post_requests/shop_body.dart';
 import 'providers/products.dart';
+import 'providers/pull_up_cart_state.dart';
 import 'providers/shops.dart';
 import 'providers/user.dart';
 import 'providers/user_auth.dart';
+import 'providers/users.dart';
 import 'root/root.dart';
 import 'services/local_image_service.dart';
 import 'utils/utility.dart';
@@ -51,7 +53,14 @@ class MyApp extends StatelessWidget {
             ..setCommunityId(user.communityId)
             ..fetch(user.idToken),
         ),
+        ChangeNotifierProxyProvider<CurrentUser, Users>(
+          create: (_) => Users(),
+          update: (_, user, users) =>
+              users..fetch(user.communityId, user.idToken),
+        ),
         ChangeNotifierProvider<ShoppingCart>(create: (_) => ShoppingCart()),
+        ChangeNotifierProvider<PullUpCartState>(
+            create: (_) => PullUpCartState()),
 
         // post body requests:
         ChangeNotifierProvider<AuthBody>(create: (_) => AuthBody()),

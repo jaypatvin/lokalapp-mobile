@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:lokalapp/screens/profile_screens/components/settings.dart';
+import '../../providers/cart.dart';
+import '../../providers/pull_up_cart_state.dart';
+import '../cart/sliding_up_cart.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/products.dart';
@@ -8,6 +10,7 @@ import '../../providers/user.dart';
 import '../../utils/themes.dart';
 import '../add_product_screen/add_product.dart';
 import '../edit_shop_screen/edit_shop.dart';
+import 'components/settings.dart';
 import 'components/store_card.dart';
 import 'components/store_message.dart';
 import 'profile_search_bar.dart';
@@ -149,9 +152,6 @@ class _ProfileShopState extends State<ProfileShop> {
 
   @override
   Widget build(BuildContext context) {
-    // var user = Provider.of<CurrentUser>(context);
-    // var shop = Provider.of<Shops>(context).currentUserShops.first;
-    // var products = Provider.of<Products>(context).findByUser(user.id);
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white,
@@ -197,158 +197,169 @@ class _ProfileShopState extends State<ProfileShop> {
             ),
           ),
         ),
-        body: CustomScrollView(
-          slivers: [
-            Consumer3<CurrentUser, Shops, Products>(
-                builder: (context, user, shops, products, __) {
-              var shop = shops.findByUser(user.id).first;
-              return SliverList(
-                delegate: SliverChildListDelegate(
-                  [
-                    SizedBox(
-                      height: 45,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.only(left: 18),
-                          child: CircleAvatar(
-                            radius: 23,
-                            // should refactor/simplify this
-                            backgroundImage: user.profilePhoto != null &&
-                                    user.profilePhoto.isNotEmpty
-                                ? NetworkImage(user.profilePhoto)
-                                : null,
+        body: SlidingUpCart(
+          child: CustomScrollView(
+            slivers: [
+              Consumer3<CurrentUser, Shops, Products>(
+                  builder: (context, user, shops, products, __) {
+                var shop = shops.findByUser(user.id).first;
+                return SliverList(
+                  delegate: SliverChildListDelegate(
+                    [
+                      SizedBox(
+                        height: 45,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.only(left: 18),
+                            child: CircleAvatar(
+                              radius: 23,
+                              // should refactor/simplify this
+                              backgroundImage: user.profilePhoto != null &&
+                                      user.profilePhoto.isNotEmpty
+                                  ? NetworkImage(user.profilePhoto)
+                                  : null,
+                            ),
                           ),
-                        ),
-                        Row(
-                          children: [
-                            Container(
-                              // padding: const EdgeInsets.only(left: 15),
-                              child: ProfileStoreName(),
-                            ),
-                            SizedBox(
-                              width: 50,
-                            ),
-                            Text("No reviews yet",
-                                style: TextStyle(
-                                  fontFamily: "Goldplay",
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w500,
-                                )),
-                          ],
-                        ),
-                      ],
-                    ),
-                    StoreMessage(
-                      description: shop.description,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Expanded(child: ProfileSearchBar()),
-                      ],
-                    ),
-                    SizedBox(
-                      height: 40,
-                    ),
-                    products.findByUser(user.id).isNotEmpty
-                        ? Column(
+                          Row(
                             children: [
-                              StoreCard(
-                                crossAxisCount: 2,
-                                isUserProducts: true,
-                              ),
                               Container(
-                                height: 40,
-                                width: 200,
-                                child: FlatButton(
-                                  // height: 50,
-                                  // minWidth: 100,
-                                  color: kTealColor,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(25.0),
-                                    side: BorderSide(color: kTealColor),
-                                  ),
-                                  textColor: Colors.black,
-                                  child: Text(
-                                    "ADD PRODUCTS",
-                                    style: TextStyle(
-                                        fontFamily: "Goldplay",
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w700),
-                                  ),
-                                  onPressed: () {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                AddProduct()));
-                                  },
-                                ),
+                                // padding: const EdgeInsets.only(left: 15),
+                                child: ProfileStoreName(),
                               ),
+                              SizedBox(
+                                width: 50,
+                              ),
+                              Text("No reviews yet",
+                                  style: TextStyle(
+                                    fontFamily: "Goldplay",
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w500,
+                                  )),
                             ],
-                          )
-                        : Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Container(
-                                height: 40,
-                                width: 200,
-                                child: FlatButton(
-                                  // height: 50,
-                                  // minWidth: 100,
-                                  color: kTealColor,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(25.0),
-                                    side: BorderSide(color: kTealColor),
-                                  ),
-                                  textColor: Colors.black,
-                                  child: Text(
-                                    "ADD PRODUCTS",
-                                    style: TextStyle(
-                                        fontFamily: "Goldplay",
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w700),
-                                  ),
-                                  onPressed: () {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                AddProduct()));
-                                  },
+                          ),
+                        ],
+                      ),
+                      StoreMessage(
+                        description: shop.description,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Expanded(child: ProfileSearchBar()),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 40,
+                      ),
+                      products.findByUser(user.id).isNotEmpty
+                          ? Column(
+                              children: [
+                                StoreCard(
+                                  crossAxisCount: 2,
+                                  isUserProducts: true,
                                 ),
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Text(
-                                    "No products added",
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w500,
-                                      fontFamily: "Goldplay",
+                                SizedBox(height: 20.0),
+                                Container(
+                                  height: 40,
+                                  width: 200,
+                                  child: FlatButton(
+                                    color: kTealColor,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(25.0),
+                                      side: BorderSide(color: kTealColor),
                                     ),
+                                    textColor: Colors.black,
+                                    child: Text(
+                                      "ADD PRODUCTS",
+                                      style: TextStyle(
+                                          fontFamily: "Goldplay",
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w700),
+                                    ),
+                                    onPressed: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  AddProduct()));
+                                    },
                                   ),
-                                ],
-                              ),
-                            ],
-                          ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                  ],
-                ),
-              );
-            })
-          ],
+                                ),
+                                Consumer2<ShoppingCart, PullUpCartState>(
+                                    builder: (context, cart, cartState, _) {
+                                  return SizedBox(
+                                    height: MediaQuery.of(context).size.height *
+                                        (cart.items.length > 0 &&
+                                                cartState.isPanelVisible
+                                            ? 0.5
+                                            : 0.4),
+                                  );
+                                })
+                              ],
+                            )
+                          : Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Container(
+                                  height: 40,
+                                  width: 200,
+                                  child: FlatButton(
+                                    // height: 50,
+                                    // minWidth: 100,
+                                    color: kTealColor,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(25.0),
+                                      side: BorderSide(color: kTealColor),
+                                    ),
+                                    textColor: Colors.black,
+                                    child: Text(
+                                      "ADD PRODUCTS",
+                                      style: TextStyle(
+                                          fontFamily: "Goldplay",
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w700),
+                                    ),
+                                    onPressed: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  AddProduct()));
+                                    },
+                                  ),
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Text(
+                                      "No products added",
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w500,
+                                        fontFamily: "Goldplay",
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                    ],
+                  ),
+                );
+              }),
+            ],
+          ),
         ),
       ),
     );
