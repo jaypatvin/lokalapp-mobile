@@ -145,10 +145,6 @@ class _EditShopState extends State<EditShop> {
             ShopName(
               shopController: _shopNameController,
               errorText: isNameValid ? null : 'Shop Name too short',
-              // onChanged: (value) {
-              //   setState(() {
-              //     editShopName = value;
-              //   });
             ),
             SizedBox(
               height: 25,
@@ -162,9 +158,6 @@ class _EditShopState extends State<EditShop> {
                   descriptionController: _shopDescriptionController,
                   errorText:
                       isDescriptionValid ? null : 'Shop Description too long.',
-                  // onChanged: (value) {
-                  //   shopDescription = value;
-                  // },
                 )
               ],
             ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lokalapp/screens/profile_screens/components/settings.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/products.dart';
@@ -27,7 +28,10 @@ class _ProfileShopState extends State<ProfileShop> {
             size: 38,
           ),
           color: Colors.white,
-          onPressed: () {},
+          onPressed: () {
+            Navigator.push(
+                context, MaterialPageRoute(builder: (context) => Settings()));
+          },
         ));
   }
 

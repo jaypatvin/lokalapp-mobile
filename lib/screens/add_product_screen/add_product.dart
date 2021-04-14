@@ -31,7 +31,7 @@ class _AddProductState extends State<AddProduct> {
 
   Widget buildAppBar() {
     return PreferredSize(
-        preferredSize: Size(double.infinity, 80),
+        preferredSize: Size(double.infinity, 100),
         child: Center(
             child: AppbarShop(
           shopName: "Add A Product",
