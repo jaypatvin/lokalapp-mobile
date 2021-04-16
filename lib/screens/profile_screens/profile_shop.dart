@@ -10,6 +10,7 @@ import '../../providers/user.dart';
 import '../../utils/themes.dart';
 import '../add_product_screen/add_product.dart';
 import '../edit_shop_screen/edit_shop.dart';
+import 'components/settings.dart';
 import 'components/store_card.dart';
 import 'components/store_message.dart';
 import 'profile_search_bar.dart';
@@ -30,7 +31,10 @@ class _ProfileShopState extends State<ProfileShop> {
             size: 38,
           ),
           color: Colors.white,
-          onPressed: () {},
+          onPressed: () {
+            Navigator.push(
+                context, MaterialPageRoute(builder: (context) => Settings()));
+          },
         ));
   }
 

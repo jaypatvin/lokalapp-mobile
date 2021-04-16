@@ -39,6 +39,7 @@ class _ActivityScreenState extends State<ActivityScreen> {
         Provider.of<Products>(context, listen: false).findByUser(user.id).first;
 
     var cart = Provider.of<ShoppingCart>(context, listen: false).items;
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: kTealColor,
@@ -221,7 +222,7 @@ class _ActivityScreenState extends State<ActivityScreen> {
               height: 20,
             ),
             ToConfirmCard(
-              username: shops.name.toString(),
+              username: shops.name,
               width: size.width * 0.9,
               price: products.basePrice,
               productName: products.name,

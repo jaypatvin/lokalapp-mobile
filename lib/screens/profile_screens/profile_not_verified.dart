@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/user.dart';
+import 'components/settings.dart';
 
 class ProfileNotVerified extends StatefulWidget {
   @override
@@ -60,7 +61,8 @@ class _ProfileNotVerifiedState extends State<ProfileNotVerified> {
           ),
           color: Colors.white,
           onPressed: () {
-            Navigator.pop(context);
+            Navigator.push(
+                context, MaterialPageRoute(builder: (context) => Settings()));
           },
         ));
   }
