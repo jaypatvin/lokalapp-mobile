@@ -21,6 +21,17 @@ import 'product_detail.dart';
 class Discover extends StatelessWidget {
   final TextEditingController _searchController = TextEditingController();
 
+  Widget get consumerCartState => Consumer2<ShoppingCart, PullUpCartState>(
+        builder: (context, cart, cartState, _) {
+          return SizedBox(
+            height: MediaQuery.of(context).size.height *
+                (cart.items.length > 0 && cartState.isPanelVisible
+                    ? 0.32
+                    : 0.2),
+          );
+        },
+      );
+
   Widget getTextWidgets(context) {
     var iconText = [
       "Dessert & Pastries",
@@ -48,6 +59,131 @@ class Discover extends StatelessWidget {
     );
   }
 
+  Widget get consumerShopAndProduct =>
+      Consumer2<Products, Shops>(builder: (context, products, shops, __) {
+        return products.isLoading || shops.isLoading
+            ? Center(child: CircularProgressIndicator())
+            : Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.only(left: 12),
+                    height: MediaQuery.of(context).size.height * 0.4,
+                    width: MediaQuery.of(context).size.width,
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      scrollDirection: Axis.horizontal,
+                      itemCount: products.items.length,
+                      itemBuilder: (ctx, index) {
+                        var shop = shops.findById(products.items[index].shopId);
+                        var gallery = products.items[index].gallery;
+                        var isGalleryEmpty = gallery == null || gallery.isEmpty;
+                        var productImage = !isGalleryEmpty
+                            ? gallery.firstWhere((g) => g.url.isNotEmpty)
+                            : null;
+                        return Container(
+                          padding: const EdgeInsets.all(0.0),
+                          height: MediaQuery.of(context).size.height * 0.5,
+                          width: MediaQuery.of(context).size.width / 2,
+                          child: GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => ProductDetail(
+                                          products.items[index])));
+                            },
+                            child: ProductCard(
+                              productId: products.items[index].id,
+                              name: products.items[index].name,
+                              imageUrl: isGalleryEmpty ? '' : productImage.url,
+                              price: products.items[index].basePrice,
+                              shopName: shop.name,
+                              shopImageUrl: shop.profilePhoto,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              );
+      });
+  Widget get rowRecent => Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.only(left: 20),
+            child: Text(
+              "Recent",
+              style: TextStyle(
+                  fontWeight: FontWeight.w700,
+                  fontFamily: "GoldplayBold",
+                  fontSize: 20),
+            ),
+          )
+        ],
+      );
+
+  Widget get recommended => Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.only(left: 20),
+            child: Text(
+              "Recommended",
+              style: TextStyle(
+                  fontWeight: FontWeight.w700,
+                  fontFamily: "GoldplayBold",
+                  fontSize: 20),
+            ),
+          )
+        ],
+      );
+
+  Widget get appBar => PreferredSize(
+        preferredSize: Size(double.infinity, 75),
+        child: AppBar(
+          backgroundColor: Color(0XFFFF7A00),
+          title: Container(
+            margin: EdgeInsets.only(top: 30.0),
+            child: Center(
+              child: Text(
+                'Discover',
+                style: TextStyle(
+                  fontFamily: "Goldplay",
+                  fontSize: 22,
+                  fontWeight: FontWeight.w600,
+                  color: Color(0XFFFFC700),
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ),
+        ),
+      );
+  Widget get buildSearchTextField => TextField(
+        enabled: false,
+        // controller: _searchController,
+
+        decoration: InputDecoration(
+          isDense: true, // Added this
+          filled: true,
+          border: OutlineInputBorder(
+            borderSide: BorderSide.none,
+            borderRadius: const BorderRadius.all(
+              const Radius.circular(25.0),
+            ),
+          ),
+          fillColor: Color(0xffF2F2F2),
+          prefixIcon: Icon(
+            Icons.search,
+            color: Color(0xffBDBDBD),
+            size: 30,
+          ),
+          hintText: 'Search',
+          labelStyle: TextStyle(fontSize: 20),
+          hintStyle: TextStyle(color: Color(0xffBDBDBD)),
+        ),
+      );
   @override
   Widget build(BuildContext context) {
     List icon = List.generate(
@@ -68,27 +204,7 @@ class Discover extends StatelessWidget {
 
     return SafeArea(
       child: Scaffold(
-        appBar: PreferredSize(
-          preferredSize: Size(double.infinity, 75),
-          child: AppBar(
-            backgroundColor: Color(0XFFFF7A00),
-            title: Container(
-              margin: EdgeInsets.only(top: 30.0),
-              child: Center(
-                child: Text(
-                  'Discover',
-                  style: TextStyle(
-                    fontFamily: "Goldplay",
-                    fontSize: 22,
-                    fontWeight: FontWeight.w600,
-                    color: Color(0XFFFFC700),
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            ),
-          ),
-        ),
+        appBar: appBar,
         body: SlidingUpCart(
           child: SingleChildScrollView(
             scrollDirection: Axis.vertical,
@@ -116,30 +232,7 @@ class Discover extends StatelessWidget {
                                 MaterialPageRoute(
                                     builder: (context) => Search()));
                           },
-                          child: TextField(
-                            enabled: false,
-                            // controller: _searchController,
-
-                            decoration: InputDecoration(
-                              isDense: true, // Added this
-                              filled: true,
-                              border: OutlineInputBorder(
-                                borderSide: BorderSide.none,
-                                borderRadius: const BorderRadius.all(
-                                  const Radius.circular(25.0),
-                                ),
-                              ),
-                              fillColor: Color(0xffF2F2F2),
-                              prefixIcon: Icon(
-                                Icons.search,
-                                color: Color(0xffBDBDBD),
-                                size: 30,
-                              ),
-                              hintText: 'Search',
-                              labelStyle: TextStyle(fontSize: 20),
-                              hintStyle: TextStyle(color: Color(0xffBDBDBD)),
-                            ),
-                          ),
+                          child: buildSearchTextField,
                         ),
                       ),
                     ),
@@ -148,81 +241,11 @@ class Discover extends StatelessWidget {
                 SizedBox(
                   height: 40,
                 ),
-                Row(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.only(left: 20),
-                      child: Text(
-                        "Recommended",
-                        style: TextStyle(
-                            fontWeight: FontWeight.w700,
-                            fontFamily: "GoldplayBold",
-                            fontSize: 20),
-                      ),
-                    )
-                  ],
-                ),
+                recommended,
                 SizedBox(
                   height: 12,
                 ),
-                Consumer2<Products, Shops>(
-                    builder: (context, products, shops, __) {
-                  return products.isLoading || shops.isLoading
-                      ? Center(child: CircularProgressIndicator())
-                      : Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.only(left: 12),
-                              height: MediaQuery.of(context).size.height * 0.4,
-                              width: MediaQuery.of(context).size.width,
-                              child: ListView.builder(
-                                shrinkWrap: true,
-                                scrollDirection: Axis.horizontal,
-                                itemCount: products.items.length,
-                                itemBuilder: (ctx, index) {
-                                  var shop = shops
-                                      .findById(products.items[index].shopId);
-                                  var gallery = products.items[index].gallery;
-                                  var isGalleryEmpty =
-                                      gallery == null || gallery.isEmpty;
-                                  var productImage = !isGalleryEmpty
-                                      ? gallery
-                                          .firstWhere((g) => g.url.isNotEmpty)
-                                      : null;
-                                  return Container(
-                                    padding: const EdgeInsets.all(0.0),
-                                    height: MediaQuery.of(context).size.height *
-                                        0.5,
-                                    width:
-                                        MediaQuery.of(context).size.width / 2,
-                                    child: GestureDetector(
-                                      onTap: () {
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    ProductDetail(products
-                                                        .items[index])));
-                                      },
-                                      child: ProductCard(
-                                        productId: products.items[index].id,
-                                        name: products.items[index].name,
-                                        imageUrl: isGalleryEmpty
-                                            ? ''
-                                            : productImage.url,
-                                        price: products.items[index].basePrice,
-                                        shopName: shop.name,
-                                        shopImageUrl: shop.profilePhoto,
-                                      ),
-                                    ),
-                                  );
-                                },
-                              ),
-                            ),
-                          ],
-                        );
-                }),
+                consumerShopAndProduct,
                 SizedBox(
                   height: 20,
                 ),
@@ -303,20 +326,7 @@ class Discover extends StatelessWidget {
                 SizedBox(
                   height: 25,
                 ),
-                Row(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.only(left: 20),
-                      child: Text(
-                        "Recent",
-                        style: TextStyle(
-                            fontWeight: FontWeight.w700,
-                            fontFamily: "GoldplayBold",
-                            fontSize: 20),
-                      ),
-                    )
-                  ],
-                ),
+                rowRecent,
                 SizedBox(
                   height: 20,
                 ),
@@ -381,16 +391,7 @@ class Discover extends StatelessWidget {
                         child: Text("Order Grid"))
                   ],
                 ),
-                Consumer2<ShoppingCart, PullUpCartState>(
-                  builder: (context, cart, cartState, _) {
-                    return SizedBox(
-                      height: MediaQuery.of(context).size.height *
-                          (cart.items.length > 0 && cartState.isPanelVisible
-                              ? 0.32
-                              : 0.2),
-                    );
-                  },
-                ),
+                consumerCartState
               ],
             ),
           ),

@@ -104,7 +104,7 @@ class OrderConfirmation extends StatelessWidget {
                     ],
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(top: 30, left: 60),
+                    padding: const EdgeInsets.only(top: 30, left: 90),
                     child: Text(
                       "Checkout",
                       style: TextStyle(
@@ -170,7 +170,7 @@ class OrderConfirmation extends StatelessWidget {
                               children: [
                                 ClipPath(
                                   child: Container(
-                                    height: 200,
+                                    height: 210,
                                     width:
                                         MediaQuery.of(context).size.width * 0.9,
                                     decoration: BoxDecoration(
@@ -321,7 +321,7 @@ class OrderConfirmation extends StatelessWidget {
                                           height: 10,
                                         ),
                                         Row(
-                                          mainAxisSize: MainAxisSize.max,
+                                          mainAxisSize: MainAxisSize.min,
                                           children: [
                                             Expanded(
                                               child: Row(
@@ -425,13 +425,13 @@ class OrderConfirmation extends StatelessWidget {
                   ],
                 ),
                 SizedBox(
-                  height: 10,
+                  height: 50,
                 ),
                 Divider(
                   color: Colors.grey,
                 ),
                 SizedBox(
-                  height: 10,
+                  height: 30,
                 ),
                 buildButtons(context),
                 SizedBox(

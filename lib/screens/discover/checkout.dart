@@ -14,54 +14,50 @@ class Checkout extends StatefulWidget {
 class _CheckoutState extends State<Checkout> {
   int selectedRadioTile;
 
-  buildRadioTileDelivery() {
-    return Row(
-      children: [
-        Container(
-          child: Expanded(
-            child: RadioListTile(
-              value: 2,
-              groupValue: selectedRadioTile,
-              title: Text(
-                "Delivery",
-                style: TextStyle(fontSize: 14),
+  Widget get buildRadioTileDelivery => Row(
+        children: [
+          Container(
+            child: Expanded(
+              child: RadioListTile(
+                value: 2,
+                groupValue: selectedRadioTile,
+                title: Text(
+                  "Delivery",
+                  style: TextStyle(fontSize: 14),
+                ),
+                onChanged: (val) {
+                  setSelectedRadioTile(val);
+                },
+                activeColor: Colors.black,
               ),
-              onChanged: (val) {
-                setSelectedRadioTile(val);
-              },
-              activeColor: Colors.black,
             ),
           ),
-        ),
-      ],
-    );
-  }
+        ],
+      );
 
-  buildDeliveryOption() {
-    return Row(
-      children: [
-        Container(
-          padding: const EdgeInsets.only(left: 15),
-          child: Text(
-            "Delivery Option",
-            style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.w700,
-                fontFamily: "Goldplay"),
+  Widget get buildDeliveryOption => Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.only(left: 15),
+            child: Text(
+              "Delivery Option",
+              style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w700,
+                  fontFamily: "Goldplay"),
+            ),
           ),
-        ),
-        SizedBox(
-          width: 10,
-        ),
-        Text("Pick 1",
-            style: TextStyle(
-              fontFamily: "Goldplay",
-              fontSize: 14,
-              fontWeight: FontWeight.w500,
-            )),
-      ],
-    );
-  }
+          SizedBox(
+            width: 10,
+          ),
+          Text("Pick 1",
+              style: TextStyle(
+                fontFamily: "Goldplay",
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+              )),
+        ],
+      );
 
   setSelectedRadioTile(int val) {
     setState(() {
@@ -131,27 +127,25 @@ class _CheckoutState extends State<Checkout> {
     );
   }
 
-  buildRadioTileCustomPickUp() {
-    return Row(children: [
-      Container(
-        child: Expanded(
-          child: RadioListTile(
-            value: 1,
-            groupValue: selectedRadioTile,
-            title: Text(
-              "Customer Pick-up",
-              style: TextStyle(fontSize: 14),
+  Widget get buildRadioTileCustomPickUp => Row(children: [
+        Container(
+          child: Expanded(
+            child: RadioListTile(
+              value: 1,
+              groupValue: selectedRadioTile,
+              title: Text(
+                "Customer Pick-up",
+                style: TextStyle(fontSize: 14),
+              ),
+              onChanged: (val) {
+                print("Radio Tile pressed $val");
+                setSelectedRadioTile(val);
+              },
+              activeColor: Colors.black,
             ),
-            onChanged: (val) {
-              print("Radio Tile pressed $val");
-              setSelectedRadioTile(val);
-            },
-            activeColor: Colors.black,
           ),
         ),
-      ),
-    ]);
-  }
+      ]);
 
   @override
   void initState() {
@@ -197,6 +191,9 @@ class _CheckoutState extends State<Checkout> {
                             }),
                       ),
                     ],
+                  ),
+                  SizedBox(
+                    width: 28,
                   ),
                   Padding(
                     padding: const EdgeInsets.only(top: 30, left: 90),
@@ -417,9 +414,9 @@ class _CheckoutState extends State<Checkout> {
                 SizedBox(
                   height: 25,
                 ),
-                buildDeliveryOption(),
-                buildRadioTileDelivery(),
-                buildRadioTileCustomPickUp()
+                buildDeliveryOption,
+                buildRadioTileDelivery,
+                buildRadioTileCustomPickUp
               ],
             ),
             SizedBox(
