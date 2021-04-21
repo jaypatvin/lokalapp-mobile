@@ -28,8 +28,9 @@ class OrderPlaced extends StatelessWidget {
                   fontWeight: FontWeight.w700),
             ),
             onPressed: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => ActivityScreen()));
+              //dont add yet. it cant push to a screen within bottom navigation
+              // Navigator.push(context,
+              //     MaterialPageRoute(builder: (context) => ActivityScreen()));
             },
           ),
         ),

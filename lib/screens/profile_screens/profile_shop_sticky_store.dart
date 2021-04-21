@@ -81,8 +81,105 @@ class _ProfileShopStickyStoreState extends State<ProfileShopStickyStore> {
     );
   }
 
+  Widget get settings => Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          ConstrainedBox(
+            constraints: BoxConstraints(
+                maxHeight: MediaQuery.of(context).size.height,
+                maxWidth: MediaQuery.of(context).size.width),
+            child: Container(
+                child: ListView(
+              children: [
+                Container(
+                    padding: const EdgeInsets.only(
+                      left: 15,
+                      top: 30,
+                    ),
+                    child: Text(
+                      "My Profile",
+                      style: TextStyle(
+                          fontFamily: "GoldplayBold",
+                          fontWeight: FontWeight.w200),
+                    )),
+                SizedBox(
+                  height: 20,
+                ),
+                Container(
+                  color: Colors.white,
+                  child: ListTile(
+                    leading: Text(
+                      "My Posts",
+                      style: TextStyle(fontFamily: "GoldplayBold"),
+                    ),
+                    trailing: Icon(
+                      Icons.arrow_forward_ios,
+                      size: 14,
+                      color: kTealColor,
+                    ),
+                  ),
+                ),
+                Container(
+                  color: Colors.white,
+                  child: ListTile(
+                    leading: Text(
+                      "Notifications",
+                      style: TextStyle(fontFamily: "GoldplayBold"),
+                    ),
+                    trailing: Icon(
+                      Icons.arrow_forward_ios,
+                      size: 14,
+                      color: kTealColor,
+                    ),
+                  ),
+                ),
+                Container(
+                  color: Colors.white,
+                  child: ListTile(
+                    leading: Text(
+                      "Wishlist",
+                      style: TextStyle(fontFamily: "GoldplayBold"),
+                    ),
+                    trailing: Icon(
+                      Icons.arrow_forward_ios,
+                      size: 14,
+                      color: kTealColor,
+                    ),
+                  ),
+                ),
+                Container(
+                  color: Colors.white,
+                  child: ListTile(
+                    leading: Text(
+                      "Invite a Friend",
+                      style: TextStyle(fontFamily: "GoldplayBold"),
+                    ),
+                    trailing: Icon(
+                      Icons.arrow_forward_ios,
+                      size: 14,
+                      color: kTealColor,
+                    ),
+                  ),
+                ),
+              ],
+            )),
+          )
+        ],
+      );
   @override
   Widget build(BuildContext context) {
-    return buildShopStore(context);
+    return SingleChildScrollView(
+      physics: NeverScrollableScrollPhysics(),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          buildShopStore(context),
+          SizedBox(
+            height: 20,
+          ),
+          settings
+        ],
+      ),
+    );
   }
 }
