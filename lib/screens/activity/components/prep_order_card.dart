@@ -210,47 +210,50 @@ class PrepOrderCard extends StatelessWidget {
                     ),
                     borderRadius: BorderRadius.all(Radius.circular(20))),
                 padding: const EdgeInsets.all(20),
-                child: ListView(children: [
-                  Column(
+                child: ListView(
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
                     children: [
-                      SizedBox(
-                        height: 2,
-                        // width: 30,
-                      ),
-                      toConfirm,
-                      SizedBox(
-                        height: 20,
-                      ),
-                      middleSection,
-                      SizedBox(
-                        height: 9,
-                      ),
-                      Divider(
-                        color: Colors.grey,
-                        indent: 0,
-                        // endIndent: 25,
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        mainAxisSize: MainAxisSize.min,
+                      Column(
                         children: [
-                          shopName,
                           SizedBox(
-                            width: 70,
+                            height: 2,
+                            // width: 30,
                           ),
-                          orderTotal,
+                          toConfirm,
                           SizedBox(
-                            width: 10,
+                            height: 20,
                           ),
-                          totalPrice
+                          middleSection,
+                          SizedBox(
+                            height: 9,
+                          ),
+                          Divider(
+                            color: Colors.grey,
+                            indent: 0,
+                            // endIndent: 25,
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              shopName,
+                              SizedBox(
+                                width: 70,
+                              ),
+                              orderTotal,
+                              SizedBox(
+                                width: 10,
+                              ),
+                              totalPrice
+                            ],
+                          )
                         ],
-                      )
-                    ],
-                  ),
-                ]),
+                      ),
+                    ]),
               ),
             ),
           ],

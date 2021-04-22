@@ -1,20 +1,21 @@
 import 'package:flutter/material.dart';
 
+import '../../utils/themes.dart';
 import 'components/transaction_card.dart';
 
-class MyShop extends StatefulWidget {
+class MyOrders extends StatefulWidget {
   @override
-  _MyShopState createState() => _MyShopState();
+  _MyOrdersState createState() => _MyOrdersState();
 }
 
-class _MyShopState extends State<MyShop> {
-  final Map<int, String> shopFilters = {
+class _MyOrdersState extends State<MyOrders> {
+  int selectedIndex;
+  final Map<int, String> orderFilters = {
     0: 'All',
     1: 'For Confirmation',
-    2: 'For Payment',
+    2: 'To Pay',
     3: 'For Delivery'
   };
-  int selectedIndex = 0;
 
   @override
   void initState() {
@@ -25,11 +26,12 @@ class _MyShopState extends State<MyShop> {
   @override
   Widget build(BuildContext context) {
     return Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
         Container(
           padding: EdgeInsets.all(20.0),
           width: MediaQuery.of(context).size.width,
-          color: Color(0xFF57183F),
+          color: kTealColor,
           child: Text(
             'These are the products you ordered from other stores.',
             style: TextStyle(color: Colors.white),
@@ -43,7 +45,7 @@ class _MyShopState extends State<MyShop> {
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
             shrinkWrap: true,
-            itemCount: shopFilters.length,
+            itemCount: orderFilters.length,
             itemBuilder: (context, index) {
               return Column(
                 mainAxisSize: MainAxisSize.min,
@@ -62,7 +64,7 @@ class _MyShopState extends State<MyShop> {
                             ? const Color(0xFFFFC700)
                             : const Color(0xFFEFEFEF),
                       ),
-                      child: Text(shopFilters[index]),
+                      child: Text(orderFilters[index]),
                     ),
                   ),
                 ],
@@ -77,21 +79,21 @@ class _MyShopState extends State<MyShop> {
             child: Column(
               children: [
                 TransactionCard(
-                  transactionState: 'To Confirm',
+                  transactionState: 'Waiting for Confirmation',
                   date: 'Mar 30',
-                  dealer: 'Jay Jamero',
+                  dealer: 'Bakey Bakey',
                   transasctions: transactions,
-                  enableOtherButton: true,
-                  otherButtonText: 'Confirm Order',
                 ),
                 SizedBox(
                   height: 10.0,
                 ),
                 TransactionCard(
-                  transactionState: 'Waiting for Payment',
+                  transactionState: 'To Pay',
                   date: 'Mar 30',
-                  dealer: 'Jay Jamero',
+                  dealer: 'Bakey Bakey',
                   transasctions: transactions,
+                  enableOtherButton: true,
+                  otherButtonText: 'Pay Now',
                 ),
               ],
             ),
