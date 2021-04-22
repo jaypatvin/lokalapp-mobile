@@ -1,127 +1,103 @@
 import 'package:flutter/material.dart';
-import 'package:lokalapp/providers/products.dart';
-import 'package:lokalapp/providers/shops.dart';
-import 'package:lokalapp/providers/user.dart';
-import 'package:lokalapp/screens/activity/components/order_screen_card.dart';
-import 'package:lokalapp/screens/activity/seller_confirmation.dart';
-import 'package:lokalapp/utils/themes.dart';
-import 'package:provider/provider.dart';
 
-class MyShop extends StatelessWidget {
-  TextEditingController _notesController = TextEditingController();
+import 'components/transaction_card.dart';
 
-  Widget get button => Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            width: 10,
+class MyShop extends StatefulWidget {
+  @override
+  _MyShopState createState() => _MyShopState();
+}
+
+class _MyShopState extends State<MyShop> {
+  final Map<int, String> shopFilters = {
+    0: 'All',
+    1: 'For Confirmation',
+    2: 'For Payment',
+    3: 'For Delivery'
+  };
+  int selectedIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    selectedIndex = 0;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Container(
+          padding: EdgeInsets.all(20.0),
+          width: MediaQuery.of(context).size.width,
+          color: Color(0xFF57183F),
+          child: Text(
+            'These are the products you ordered from other stores.',
+            style: TextStyle(color: Colors.white),
           ),
-          Container(
-            height: 43,
-            width: 160,
-            padding: const EdgeInsets.all(2),
-            child: FlatButton(
-              // height: 50,
-              // minWidth: 100,
-              color: kTealColor,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20.0),
-                side: BorderSide(color: kTealColor),
-              ),
-              textColor: Colors.black,
-              child: Text(
-                "Message Buyer",
-                style: TextStyle(
-                    fontFamily: "Goldplay",
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600),
-              ),
-              onPressed: () {},
-            ),
+        ),
+        SizedBox(
+          height: 10.0,
+        ),
+        Container(
+          height: MediaQuery.of(context).size.height * 0.03,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            shrinkWrap: true,
+            itemCount: shopFilters.length,
+            itemBuilder: (context, index) {
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  GestureDetector(
+                    onTap: () => setState(() {
+                      selectedIndex = index;
+                    }),
+                    child: Container(
+                      margin: EdgeInsets.symmetric(horizontal: 5.0),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10.0, vertical: 5.0),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10.0),
+                        color: selectedIndex == index
+                            ? const Color(0xFFFFC700)
+                            : const Color(0xFFEFEFEF),
+                      ),
+                      child: Text(shopFilters[index]),
+                    ),
+                  ),
+                ],
+              );
+            },
           ),
-        ],
-      );
-  appbar(context) => PreferredSize(
-      child: Container(
-        color: Color(0XFFCC3752),
-        height: 60.0,
-        child: Row(
-          children: [
-            IconButton(
-                icon: Icon(
-                  Icons.arrow_back_sharp,
-                  color: Colors.white,
-                ),
-                onPressed: () {
-                  Navigator.of(context).pop(context);
-                }),
-            SizedBox(
-              width: 120,
-            ),
-            Row(
+        ),
+        SizedBox(height: 10.0),
+        // TODO: ADD LOGIC FOR selectedIndex
+        Expanded(
+          child: SingleChildScrollView(
+            child: Column(
               children: [
-                Text(
-                  "Order",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontFamily: "GoldplayBold",
-                      fontWeight: FontWeight.w500,
-                      fontSize: 18),
+                TransactionCard(
+                  transactionState: 'To Confirm',
+                  date: 'Mar 30',
+                  dealer: 'Jay Jamero',
+                  transasctions: transactions,
+                  enableOtherButton: true,
+                  otherButtonText: 'Confirm Order',
+                ),
+                SizedBox(
+                  height: 10.0,
+                ),
+                TransactionCard(
+                  transactionState: 'Waiting for Payment',
+                  date: 'Mar 30',
+                  dealer: 'Jay Jamero',
+                  transasctions: transactions,
                 ),
               ],
             ),
-          ],
-        ),
-      ),
-      preferredSize: Size.fromHeight(60.0));
-  @override
-  Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
-    var user = Provider.of<CurrentUser>(context, listen: false);
-
-    var shops =
-        Provider.of<Shops>(context, listen: false).findByUser(user.id).first;
-
-    var products =
-        Provider.of<Products>(context, listen: false).findByUser(user.id).first;
-
-    return Scaffold(
-      appBar: AppBar(
-          leading: Container(),
-          backgroundColor: Color(0XFF57183F),
-          bottom: appbar(context)),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            // mainAxisSize: MainAxisSize.min,
-            children: [
-              SizedBox(
-                height: 20,
-              ),
-              OrderScreenCard(
-                button: button,
-                buttonMessage: "Confirm Order",
-                confirmation: "To Confirm",
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => SellerConfirmation()));
-                },
-                buttonLeftText: "Cancel Order",
-                controller: _notesController,
-                width: size.width * 0.9,
-                waitingForSeller: "",
-                username: shops.name,
-                price: products.basePrice,
-                productName: products.name,
-              ),
-            ],
           ),
         ),
-      ),
+      ],
     );
   }
 }

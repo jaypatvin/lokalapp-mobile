@@ -13,7 +13,7 @@ class PullUpPanelHeader extends StatelessWidget {
           cart.items.forEach((key, value) {
             var product =
                 Provider.of<Products>(context, listen: false).findById(key);
-            price += product.basePrice * value['quantity'];
+            price += product.basePrice * value.quantity;
           });
           return Column(
             crossAxisAlignment: CrossAxisAlignment.end,

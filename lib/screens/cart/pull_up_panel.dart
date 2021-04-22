@@ -40,7 +40,7 @@ class PullUpPanel extends StatelessWidget {
                       itemCount: cart.items.length,
                       itemBuilder: (context, index) {
                         String key = cart.items.keys.elementAt(index);
-                        int quantity = cart.items[key]['quantity'];
+                        int quantity = cart.items[key].quantity;
                         var products =
                             Provider.of<Products>(context, listen: false);
                         var product = products.findById(key);
