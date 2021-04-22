@@ -3,6 +3,13 @@ import 'package:flutter/material.dart';
 import '../../utils/themes.dart';
 import 'components/transaction_card.dart';
 
+const Map<int, String> orderFilters = {
+  0: 'All',
+  1: 'For Confirmation',
+  2: 'To Pay',
+  3: 'For Delivery'
+};
+
 class MyOrders extends StatefulWidget {
   @override
   _MyOrdersState createState() => _MyOrdersState();
@@ -10,12 +17,6 @@ class MyOrders extends StatefulWidget {
 
 class _MyOrdersState extends State<MyOrders> {
   int selectedIndex;
-  final Map<int, String> orderFilters = {
-    0: 'All',
-    1: 'For Confirmation',
-    2: 'To Pay',
-    3: 'For Delivery'
-  };
 
   @override
   void initState() {
@@ -79,21 +80,31 @@ class _MyOrdersState extends State<MyOrders> {
             child: Column(
               children: [
                 TransactionCard(
-                  transactionState: 'Waiting for Confirmation',
+                  transactionState: 1,
                   date: 'Mar 30',
                   dealer: 'Bakey Bakey',
                   transasctions: transactions,
+                  isBuyer: true,
                 ),
                 SizedBox(
                   height: 10.0,
                 ),
                 TransactionCard(
-                  transactionState: 'To Pay',
+                  transactionState: 2,
                   date: 'Mar 30',
                   dealer: 'Bakey Bakey',
                   transasctions: transactions,
-                  enableOtherButton: true,
-                  otherButtonText: 'Pay Now',
+                  isBuyer: true,
+                ),
+                SizedBox(
+                  height: 10.0,
+                ),
+                TransactionCard(
+                  transactionState: 3,
+                  date: 'Mar 30',
+                  dealer: 'Bakey Bakey',
+                  transasctions: transactions,
+                  isBuyer: true,
                 ),
               ],
             ),
