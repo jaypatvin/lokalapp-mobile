@@ -39,6 +39,19 @@ class _ProductDetailState extends State<ProductDetail> {
     super.initState();
     this.product = widget.product;
     controller = PhotoViewController()..outputStateStream.listen(listener);
+
+    // get order details from cart if it exists
+    var cart = Provider.of<ShoppingCart>(context, listen: false);
+    if (cart.contains(product.id)) {
+      var order = cart.items[product.id];
+      _instructionsController.value = TextEditingValue(
+        text: order.notes,
+        selection: TextSelection.fromPosition(
+          TextPosition(offset: order.notes.length),
+        ),
+      );
+      this.quantity = order.quantity;
+    }
   }
 
   @override
