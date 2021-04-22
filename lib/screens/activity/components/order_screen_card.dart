@@ -122,80 +122,66 @@ class OrderScreenCard extends StatelessWidget {
                       var productImage = !isGalleryEmpty
                           ? gallery.firstWhere((g) => g.url.isNotEmpty)
                           : null;
-                      return Row(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Container(
-                            // width: MediaQuery.of(context).size.width,
-                            height: 60.0,
-                            width: 80.0,
-                            // height: MediaQuery.of(context).size.height,
-                            decoration: BoxDecoration(
-                                image: DecorationImage(
-                                    image: NetworkImage(
-                                      isGalleryEmpty ? '' : productImage.url,
-                                    ),
-                                    fit: BoxFit.cover)),
-                          ),
-                          SizedBox(
-                            width: 8,
-                          ),
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Container(
-                                  padding: const EdgeInsets.only(right: 90),
+                      return Row(mainAxisSize: MainAxisSize.min,
+                          // crossAxisAlignment: CrossAxisAlignment.start,
+                          // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Container(
+                              // width: MediaQuery.of(context).size.width,
+                              height: 60.0,
+                              width: 60.0,
+                              // height: MediaQuery.of(context).size.height,
+                              decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                      image: NetworkImage(
+                                        isGalleryEmpty ? '' : productImage.url,
+                                      ),
+                                      fit: BoxFit.cover)),
+                            ),
+                            SizedBox(
+                              width: 8,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              // crossAxisAlignment: CrossAxisAlignment.start,
+                              // mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Container(
+                                    padding: const EdgeInsets.all(20),
+                                    child: Text(
+                                      productName,
+                                      style: TextStyle(
+                                          fontSize: 16,
+                                          fontFamily: "GoldplayBold",
+                                          fontWeight: FontWeight.w700),
+                                    )),
+                                // SizedBox(
+                                //   width: 30,
+                                // ),
+                                Container(
+                                  padding: const EdgeInsets.only(
+                                      left: 30, right: 30),
                                   child: Text(
-                                    productName,
-                                    style: TextStyle(
-                                        fontSize: 16,
-                                        fontFamily: "GoldplayBold",
-                                        fontWeight: FontWeight.w700),
-                                  )),
-                              SizedBox(
-                                height: 15,
-                              ),
-                              Container(
-                                child: Text(
-                                  "December 20",
-                                  style: TextStyle(
-                                      fontSize: 11,
-                                      fontFamily: "GolplayBold",
-                                      fontWeight: FontWeight.w300),
+                                    "x1",
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold),
+                                  ),
                                 ),
-                              )
-                            ],
-                          ),
-                          SizedBox(
-                            width: 45,
-                          ),
-                          Column(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              Text(
-                                "x1",
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              ),
-                              SizedBox(
-                                height: 2,
-                              ),
-                              Container(
-                                  // padding: const EdgeInsets.all(0.0),
+                                // SizedBox(
+                                //   width: 30,
+                                // ),
+                                Container(
+                                  padding: const EdgeInsets.only(left: 30),
                                   child: Text(
-                                "P $price",
-                                // textAlign: TextAlign.end,
-                                style: TextStyle(fontWeight: FontWeight.w300),
-                              )),
-                            ],
-                          ),
-                        ],
-                      );
+                                    "P $price",
+                                    // textAlign: TextAlign.end,
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.w300),
+                                  ),
+                                ),
+                              ],
+                            )
+                          ]);
                     }),
               );
       });
@@ -237,13 +223,14 @@ class OrderScreenCard extends StatelessWidget {
               cursorColor: Colors.grey,
               maxLines: 3,
               decoration: new InputDecoration(
+                hintText: "Please do not include nuts",
                 border: InputBorder.none,
                 focusedBorder: InputBorder.none,
                 enabledBorder: InputBorder.none,
                 errorBorder: InputBorder.none,
                 disabledBorder: InputBorder.none,
                 contentPadding:
-                    EdgeInsets.only(left: 15, bottom: 11, top: 11, right: 15),
+                    EdgeInsets.only(left: 30, bottom: 11, top: 11, right: 15),
               ),
               controller: controller,
             ),
@@ -258,13 +245,10 @@ class OrderScreenCard extends StatelessWidget {
           children: [
             ClipPath(
               child: Container(
+                // color: Color(0XFFF1FAFF),
                 height: 250,
                 width: width,
-                decoration: BoxDecoration(
-                    border: Border.all(
-                      color: Colors.grey[400],
-                    ),
-                    borderRadius: BorderRadius.all(Radius.circular(20))),
+
                 padding: const EdgeInsets.all(20),
                 child: ListView(children: [
                   Column(
@@ -273,26 +257,19 @@ class OrderScreenCard extends StatelessWidget {
                         height: 2,
                         // width: 30,
                       ),
-                      toConfirm,
-                      SizedBox(
-                        height: 10,
-                      ),
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Text(
-                            waitingForSeller,
-                            style: TextStyle(
-                                fontSize: 12,
-                                fontFamily: "GoldplayBold",
-                                fontWeight: FontWeight.w400),
-                          )
-                        ],
-                      ),
-                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           shopName,
+                          Container(
+                            child: Text(
+                              "For December 20",
+                              style: TextStyle(
+                                  fontSize: 11,
+                                  fontFamily: "GolplayBold",
+                                  fontWeight: FontWeight.w400),
+                            ),
+                          )
                         ],
                       ),
                       SizedBox(
@@ -328,7 +305,80 @@ class OrderScreenCard extends StatelessWidget {
         ),
       ]);
 
-  Widget get buildButtons => Row(
+  Widget _buildPopupDialog(BuildContext context) {
+    return AlertDialog(
+      // contentPadding: EdgeInsets.all(10.0),
+      insetPadding: EdgeInsets.symmetric(horizontal: 40, vertical: 220),
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(15))),
+      title: Text('Are you sure you want to cancel this order? '),
+      content: Column(
+        children: [
+          SizedBox(
+            height: 20,
+          ),
+          Text("We will notify Bakey Bakey that"),
+          Text("you cancelled this order.")
+        ],
+      ),
+      actions: <Widget>[
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Container(
+              height: 43,
+              width: 140,
+              child: FlatButton(
+                color: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20.0),
+                  side: BorderSide(color: Color(0XFFCC3752)),
+                ),
+                textColor: Colors.black,
+                child: Text(
+                  " Keep Order",
+                  style: TextStyle(
+                      fontFamily: "Goldplay",
+                      fontSize: 13,
+                      color: Color(0XFFCC3752),
+                      fontWeight: FontWeight.w600),
+                ),
+                onPressed: () {},
+              ),
+            ),
+            SizedBox(
+              width: 5,
+            ),
+            Container(
+              height: 43,
+              width: 140,
+              child: FlatButton(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20.0),
+                  side: BorderSide(color: kTealColor),
+                ),
+                textColor: Colors.black,
+                child: Text(
+                  "Cancel Order",
+                  style: TextStyle(
+                      fontFamily: "Goldplay",
+                      fontSize: 13,
+                      color: kTealColor,
+                      fontWeight: FontWeight.w600),
+                ),
+                onPressed: onPressed,
+              ),
+            ),
+            SizedBox(
+              height: 30,
+            )
+          ],
+        ),
+      ],
+    );
+  }
+
+  buildButtons(context) => Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           SizedBox(width: 5),
@@ -354,7 +404,12 @@ class OrderScreenCard extends StatelessWidget {
                           color: Color(0XFFCC3752),
                           fontWeight: FontWeight.w600),
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      showDialog(
+                          context: context,
+                          builder: (BuildContext context) =>
+                              _buildPopupDialog(context));
+                    },
                   ),
                 )
               : Container(
@@ -369,7 +424,7 @@ class OrderScreenCard extends StatelessWidget {
             child: FlatButton(
               // height: 50,
               // minWidth: 100,
-              color: kTealColor,
+              // color: kTealColor,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20.0),
                 side: BorderSide(color: kTealColor),
@@ -380,6 +435,7 @@ class OrderScreenCard extends StatelessWidget {
                 style: TextStyle(
                     fontFamily: "Goldplay",
                     fontSize: 13,
+                    color: kTealColor,
                     fontWeight: FontWeight.w600),
               ),
               onPressed: onPressed,
@@ -402,7 +458,7 @@ class OrderScreenCard extends StatelessWidget {
         notes,
         button,
         SizedBox(height: 130),
-        showButton ? buildButtons : Container()
+        showButton ? buildButtons(context) : Container()
       ],
     );
   }

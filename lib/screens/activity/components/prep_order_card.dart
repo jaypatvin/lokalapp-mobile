@@ -202,6 +202,7 @@ class PrepOrderCard extends StatelessWidget {
           children: [
             ClipPath(
               child: Container(
+                // color: Color(0XFFF1FAFF),
                 height: 210,
                 width: width,
                 decoration: BoxDecoration(
