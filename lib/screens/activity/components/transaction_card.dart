@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:lokalapp/models/transaction.dart';
 import 'package:lokalapp/utils/themes.dart';
 
+import '../for_delivery_buyer.dart';
+import '../order_details.dart';
+import '../to_pay.dart';
+
 // THIS IS A MOCK DATA FOR BUILD PURPOSES
 List<Transaction> transactions = [
   Transaction(
@@ -16,43 +20,129 @@ List<Transaction> transactions = [
   )
 ];
 
+const Map<int, String> buyerActivityState = {
+  0: 'Past Order',
+  1: 'For Seller\'s Confirmation',
+  2: 'To Pay',
+  3: 'To Receive'
+};
+
+const Map<int, String> sellerActivityState = {
+  0: 'Past Order',
+  1: 'Waiting for Payment',
+  2: 'To Confirm',
+  3: 'Payment Received',
+  4: 'To Deliver'
+};
+
 class TransactionCard extends StatelessWidget {
-  final String transactionState;
+  final int transactionState;
   final String date;
   final String dealer;
   final List<Transaction> transasctions;
-  final bool enableOtherButton;
-  final String otherButtonText;
+  final bool isBuyer;
+
+  final bool enableSecondButton;
+  final secondButtonText;
+
+  TransactionCard._(
+      this.transactionState,
+      this.date,
+      this.dealer,
+      this.transasctions,
+      this.isBuyer,
+      this.enableSecondButton,
+      this.secondButtonText);
+
+  factory TransactionCard({
+    @required transactionState,
+    @required date,
+    @required dealer,
+    @required transasctions,
+    @required isBuyer,
+  }) {
+    bool enableSecondButton = false;
+    String secondButtonText = '';
+    if (isBuyer && transactionState == 2) {
+      enableSecondButton = true;
+      secondButtonText = 'Pay Now';
+    } else if (!isBuyer) {
+      switch (transactionState) {
+        case 2:
+          enableSecondButton = true;
+          secondButtonText = 'Confirm Order';
+          break;
+        case 3:
+          enableSecondButton = true;
+          secondButtonText = 'Confirm Payment';
+          break;
+        case 4:
+          enableSecondButton = true;
+          secondButtonText = 'Mark as Delivered';
+          break;
+        default:
+          // do nothing
+          break;
+      }
+    }
+    return TransactionCard._(transactionState, date, dealer, transasctions,
+        isBuyer, enableSecondButton, secondButtonText);
+  }
+
+  void onPress(BuildContext context) {
+    // TODO: ADD NAVIGATION FOR SELLER
+    if (!isBuyer) return;
+    switch (transactionState) {
+      case 1:
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => OrderDetails()));
+        break;
+      case 2:
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => ToPay()));
+        break;
+      case 3:
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => ForDeliveryBuyer()));
+        break;
+      default:
+        // do nothing
+        break;
+    }
+  }
 
   Widget buildActionButtons(BuildContext context) {
-    //TODO: REFACTOR REUSED BUTTON WITH DIFFERENT DESIGNS
-    if (enableOtherButton) {
-      return Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Expanded(
-            child: FlatButton(
-              height: MediaQuery.of(context).size.height * 0.05,
-              color: Color(0xFFF1FAFF),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20.0),
-                side: BorderSide(color: kTealColor),
-              ),
-              textColor: kTealColor,
-              child: Text(
-                "DETAILS",
-                style: TextStyle(
-                    fontFamily: "Goldplay",
-                    fontSize: 14,
-                    fontWeight: FontWeight.w700),
-              ),
-              onPressed: () {},
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Expanded(
+          child: FlatButton(
+            height: MediaQuery.of(context).size.height * 0.05,
+            color: Color(0xFFF1FAFF),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20.0),
+              side: BorderSide(color: kTealColor),
             ),
+            textColor: kTealColor,
+            child: Text(
+              "DETAILS",
+              style: TextStyle(
+                  fontFamily: "Goldplay",
+                  fontSize: 14,
+                  fontWeight: FontWeight.w700),
+            ),
+            onPressed: () => onPress(context),
           ),
-          SizedBox(
+        ),
+        Visibility(
+          visible: enableSecondButton,
+          child: SizedBox(
             width: MediaQuery.of(context).size.width * 0.01,
           ),
-          Expanded(
+        ),
+        Visibility(
+          visible: enableSecondButton,
+          child: Expanded(
             child: FlatButton(
               height: MediaQuery.of(context).size.height * 0.05,
               color: Color(0XFFFF7A00),
@@ -61,7 +151,7 @@ class TransactionCard extends StatelessWidget {
               ),
               textColor: kTealColor,
               child: Text(
-                otherButtonText,
+                secondButtonText,
                 style: TextStyle(
                   fontFamily: "Goldplay",
                   fontSize: 14,
@@ -72,40 +162,11 @@ class TransactionCard extends StatelessWidget {
               onPressed: () {},
             ),
           ),
-        ],
-      );
-    } else {
-      return Container(
-        height: MediaQuery.of(context).size.height * 0.05,
-        width: MediaQuery.of(context).size.width * 0.80,
-        child: FlatButton(
-          color: Color(0xFFF1FAFF),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20.0),
-            side: BorderSide(color: kTealColor),
-          ),
-          textColor: kTealColor,
-          child: Text(
-            "DETAILS",
-            style: TextStyle(
-                fontFamily: "Goldplay",
-                fontSize: 14,
-                fontWeight: FontWeight.w700),
-          ),
-          onPressed: () {},
         ),
-      );
-    }
+      ],
+    );
   }
 
-  TransactionCard({
-    @required this.transactionState,
-    @required this.date,
-    @required this.dealer,
-    @required this.transasctions,
-    this.enableOtherButton = false,
-    this.otherButtonText,
-  });
   @override
   Widget build(BuildContext context) {
     double total = 0;
@@ -127,7 +188,11 @@ class TransactionCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(transactionState),
+                Text(
+                  isBuyer
+                      ? buyerActivityState[transactionState]
+                      : sellerActivityState[transactionState],
+                ),
                 Text('For $date'),
               ],
             ),

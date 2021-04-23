@@ -204,6 +204,7 @@ class ForDeliveryCard extends StatelessWidget {
           children: [
             ClipPath(
               child: Container(
+                // color: Color(0XFFF1FAFF),
                 height: 285,
                 width: width,
                 decoration: BoxDecoration(
