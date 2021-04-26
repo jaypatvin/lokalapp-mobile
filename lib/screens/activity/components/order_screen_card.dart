@@ -145,8 +145,7 @@ class OrderScreenCard extends StatelessWidget {
                             ),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              // crossAxisAlignment: CrossAxisAlignment.start,
-                              // mainAxisSize: MainAxisSize.min,
+                           
                               children: [
                                 Container(
                                     padding: const EdgeInsets.all(20),
@@ -157,9 +156,7 @@ class OrderScreenCard extends StatelessWidget {
                                           fontFamily: "GoldplayBold",
                                           fontWeight: FontWeight.w700),
                                     )),
-                                // SizedBox(
-                                //   width: 30,
-                                // ),
+                                
                                 Container(
                                   padding: const EdgeInsets.only(
                                       left: 30, right: 30),
@@ -169,14 +166,12 @@ class OrderScreenCard extends StatelessWidget {
                                         TextStyle(fontWeight: FontWeight.bold),
                                   ),
                                 ),
-                                // SizedBox(
-                                //   width: 30,
-                                // ),
+                             
                                 Container(
                                   padding: const EdgeInsets.only(left: 30),
                                   child: Text(
                                     "P $price",
-                                    // textAlign: TextAlign.end,
+                              
                                     style:
                                         TextStyle(fontWeight: FontWeight.w300),
                                   ),
@@ -247,7 +242,7 @@ class OrderScreenCard extends StatelessWidget {
           children: [
             ClipPath(
               child: Container(
-                // color: Color(0XFFF1FAFF),
+     
                 height: 250,
                 width: width,
 
@@ -255,8 +250,48 @@ class OrderScreenCard extends StatelessWidget {
                 child: ListView(
                     physics: NeverScrollableScrollPhysics(),
                     children: [
+
                       Column(
                         children: [
+
+                      SizedBox(
+                        height: 2,
+                        // width: 30,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          shopName,
+                          Container(
+                            child: Text(
+                              "For December 20",
+                              style: TextStyle(
+                                  fontSize: 11,
+                                  fontFamily: "GolplayBold",
+                                  fontWeight: FontWeight.w400),
+                            ),
+                          )
+                        ],
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      middleSection,
+                      SizedBox(
+                        height: 9,
+                      ),
+                      Divider(
+                        color: Colors.grey.shade500,
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          orderTotal,
+
                           SizedBox(
                             height: 2,
                             // width: 30,
@@ -317,6 +352,62 @@ class OrderScreenCard extends StatelessWidget {
           borderRadius: BorderRadius.all(Radius.circular(15))),
       title: Text('Are you sure you want to cancel this order? '),
       content: Column(
+
+        children: [
+          SizedBox(
+            height: 20,
+          ),
+          Text("We will notify Bakey Bakey that"),
+          Text("you cancelled this order.")
+        ],
+      ),
+      actions: <Widget>[
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Container(
+              height: 43,
+              width: 140,
+              child: FlatButton(
+                color: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20.0),
+                  side: BorderSide(color: Color(0XFFCC3752)),
+                ),
+                textColor: Colors.black,
+                child: Text(
+                  " Keep Order",
+                  style: TextStyle(
+                      fontFamily: "Goldplay",
+                      fontSize: 13,
+                      color: Color(0XFFCC3752),
+                      fontWeight: FontWeight.w600),
+                ),
+                onPressed: () {},
+              ),
+            ),
+            SizedBox(
+              width: 5,
+            ),
+            Container(
+              height: 43,
+              width: 140,
+              child: FlatButton(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20.0),
+                  side: BorderSide(color: kTealColor),
+                ),
+                textColor: Colors.black,
+                child: Text(
+                  "Cancel Order",
+                  style: TextStyle(
+                      fontFamily: "Goldplay",
+                      fontSize: 13,
+                      color: kTealColor,
+                      fontWeight: FontWeight.w600),
+                ),
+                onPressed: onPressed,
+
         children: [
           SizedBox(
             height: 20,
@@ -382,6 +473,77 @@ class OrderScreenCard extends StatelessWidget {
     );
   }
 
+  buildButtons(context) => Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          SizedBox(width: 5),
+          showCancelButton
+              ? Container(
+                  padding: const EdgeInsets.all(2),
+                  height: 43,
+                  width: 190,
+                  child: FlatButton(
+                    // height: 50,
+                    // minWidth: 100,
+                    color: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20.0),
+                      side: BorderSide(color: Color(0XFFCC3752)),
+                    ),
+                    textColor: Colors.black,
+                    child: Text(
+                      buttonLeftText,
+                      style: TextStyle(
+                          fontFamily: "Goldplay",
+                          fontSize: 13,
+                          color: Color(0XFFCC3752),
+                          fontWeight: FontWeight.w600),
+                    ),
+                    onPressed: () {
+                      showDialog(
+                          context: context,
+                          builder: (BuildContext context) =>
+                              _buildPopupDialog(context));
+                    },
+                  ),
+                )
+              : Container(
+                  padding: const EdgeInsets.all(2),
+                  height: 43,
+                  width: 190,
+                ),
+          Container(
+            height: 43,
+            width: 190,
+            padding: const EdgeInsets.all(2),
+            child: FlatButton(
+              // height: 50,
+              // minWidth: 100,
+              // color: kTealColor,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20.0),
+                side: BorderSide(color: kTealColor),
+              ),
+              textColor: Colors.black,
+              child: Text(
+                buttonMessage,
+                style: TextStyle(
+                    fontFamily: "Goldplay",
+                    fontSize: 13,
+                    color: kTealColor,
+                    fontWeight: FontWeight.w600),
+
+              ),
+            ),
+            SizedBox(
+              height: 30,
+            )
+          ],
+        ),
+      ],
+    );
+  }
+
   buildButtons(context) => Column(
         children: [
           button,
@@ -398,8 +560,7 @@ class OrderScreenCard extends StatelessWidget {
                       height: 43,
                       width: 180,
                       child: FlatButton(
-                        // height: 50,
-                        // minWidth: 100,
+                   
                         color: Colors.white,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20.0),
@@ -432,8 +593,7 @@ class OrderScreenCard extends StatelessWidget {
                 width: 180,
                 padding: const EdgeInsets.all(2),
                 child: FlatButton(
-                  // height: 50,
-                  // minWidth: 100,
+               
                   color: Color(0XFFFF7A00),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20.0),
@@ -466,7 +626,7 @@ class OrderScreenCard extends StatelessWidget {
         orderCard,
         SizedBox(
           height: 18,
-        ),
+),
         showNotes ? notes : Container(),
         // button,
         SizedBox(height: 50),
@@ -474,6 +634,12 @@ class OrderScreenCard extends StatelessWidget {
         SizedBox(
           height: 30,
         ),
+
+        notes,
+        button,
+        SizedBox(height: 130),
+        showButton ? buildButtons(context) : Container()
+
       ],
     );
   }

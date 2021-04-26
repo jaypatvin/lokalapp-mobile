@@ -31,7 +31,7 @@ class ForDeliveryBuyer extends StatelessWidget {
             Row(
               children: [
                 Text(
-                  "Order",
+                  "For Delivery",
                   textAlign: TextAlign.center,
                   style: TextStyle(
                       color: Colors.white,

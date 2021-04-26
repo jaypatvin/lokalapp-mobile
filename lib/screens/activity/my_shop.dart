@@ -2,18 +2,19 @@ import 'package:flutter/material.dart';
 
 import 'components/transaction_card.dart';
 
+const Map<int, String> shopFilters = {
+  0: 'All',
+  1: 'For Confirmation',
+  2: 'For Payment',
+  3: 'For Delivery'
+};
+
 class MyShop extends StatefulWidget {
   @override
   _MyShopState createState() => _MyShopState();
 }
 
 class _MyShopState extends State<MyShop> {
-  final Map<int, String> shopFilters = {
-    0: 'All',
-    1: 'For Confirmation',
-    2: 'For Payment',
-    3: 'For Delivery'
-  };
   int selectedIndex = 0;
 
   @override
@@ -154,7 +155,51 @@ class _MyShopState extends State<MyShop> {
         // TODO: ADD LOGIC FOR selectedIndex
         Expanded(
           child: SingleChildScrollView(
+
             child: tabLogic(),
+
+            child: Column(
+              children: [
+                TransactionCard(
+                  transactionState: 2,
+                  date: 'Mar 30',
+                  dealer: 'Jay Jamero',
+                  transasctions: transactions,
+                  isBuyer: false,
+                ),
+                SizedBox(
+                  height: 10.0,
+                ),
+                TransactionCard(
+                  transactionState: 1,
+                  date: 'Mar 30',
+                  dealer: 'Jay Jamero',
+                  transasctions: transactions,
+                  isBuyer: false,
+                ),
+                SizedBox(
+                  height: 10.0,
+                ),
+                TransactionCard(
+                  transactionState: 3,
+                  date: 'Mar 30',
+                  dealer: 'Jay Jamero',
+                  transasctions: transactions,
+                  isBuyer: false,
+                ),
+                SizedBox(
+                  height: 10.0,
+                ),
+                TransactionCard(
+                  transactionState: 4,
+                  date: 'Mar 30',
+                  dealer: 'Jay Jamero',
+                  transasctions: transactions,
+                  isBuyer: false,
+                ),
+              ],
+            ),
+
           ),
         ),
       ],
