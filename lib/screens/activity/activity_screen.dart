@@ -93,16 +93,6 @@ class _ActivityScreenState extends State<ActivityScreen>
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
 
-    // var user = Provider.of<CurrentUser>(context, listen: false);
-
-    // var products =
-    //     Provider.of<Products>(context, listen: false).findByUser(user.id).first;
-
-    // var cart = Provider.of<ShoppingCart>(context, listen: false).items;
-
-    // var shops =
-    //     Provider.of<Shops>(context, listen: false).findByUser(user.id).first;
-
     return DefaultTabController(
       length: 2,
       child: Scaffold(

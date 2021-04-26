@@ -13,55 +13,57 @@ class ProofOfPayment extends StatelessWidget {
 
   appbar(context) => PreferredSize(
       child: Container(
-        color: Color(0XFFCC3752),
-        height: 60.0,
+        padding: const EdgeInsets.only(top: 40),
+        height: 100.0,
+        decoration: BoxDecoration(color: kTealColor),
         child: Row(
           children: [
             IconButton(
                 icon: Icon(
                   Icons.arrow_back_sharp,
                   color: Colors.white,
+                  size: 28,
                 ),
                 onPressed: () {
-                  _goBack(context);
+                  Navigator.of(context).pop(context);
                 }),
             SizedBox(
-              width: 120,
+              width: 40,
             ),
             Row(
               children: [
                 Text(
-                  "Order",
+                  "Bank Transfer/ Deposit",
                   textAlign: TextAlign.center,
                   style: TextStyle(
                       color: Colors.white,
-                      fontFamily: "GoldplayBold",
-                      fontWeight: FontWeight.w500,
-                      fontSize: 18),
+                      fontFamily: "Goldplay",
+                      fontWeight: FontWeight.w600,
+                      fontSize: 20),
                 ),
               ],
             ),
           ],
         ),
       ),
-      preferredSize: Size.fromHeight(60.0));
+      preferredSize: Size.fromHeight(90.0));
 
   buildButtons(context) => Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          SizedBox(width: 20),
+          // SizedBox(width: 20),
           Container(
-            padding: const EdgeInsets.all(2),
+            padding: const EdgeInsets.only(left: 10, right: 25),
             height: 43,
-            width: 250,
+            width: MediaQuery.of(context).size.width * 0.9,
             child: FlatButton(
               // height: 50,
               // minWidth: 100,
-              color: Colors.white,
+              color: kTealColor,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20.0),
-                side: BorderSide(color: Color(0XFFCC3752)),
+                // side: BorderSide(color: Color(0XFFCC3752)),
               ),
               textColor: Colors.black,
               child: Text(
@@ -69,7 +71,8 @@ class ProofOfPayment extends StatelessWidget {
                 style: TextStyle(
                     fontFamily: "Goldplay",
                     fontSize: 14,
-                    color: Color(0XFFCC3752),
+                    color: Colors.white,
+                    // color: Color(0XFFCC3752),
                     fontWeight: FontWeight.w600),
               ),
               onPressed: () {},
@@ -80,15 +83,15 @@ class ProofOfPayment extends StatelessWidget {
           ),
           Container(
             height: 43,
-            width: 190,
-            padding: const EdgeInsets.all(2),
+            width: MediaQuery.of(context).size.width * 0.9,
+            padding: const EdgeInsets.only(left: 10, right: 25),
             child: FlatButton(
                 // height: 50,
                 // minWidth: 100,
-                color: kTealColor,
+                color: Colors.grey.shade400,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20.0),
-                  side: BorderSide(color: kTealColor),
+                  // side: BorderSide(color: kTealColor),
                 ),
                 textColor: Colors.black,
                 child: Text(
@@ -96,6 +99,7 @@ class ProofOfPayment extends StatelessWidget {
                   style: TextStyle(
                       fontFamily: "Goldplay",
                       fontSize: 14,
+                      color: Colors.white,
                       fontWeight: FontWeight.w600),
                 ),
                 onPressed: () {
@@ -111,88 +115,190 @@ class ProofOfPayment extends StatelessWidget {
   buildBody(context) => SingleChildScrollView(
         child: Column(
           children: [
-            SizedBox(
-              height: 30,
-            ),
-            Text(
-              "Bank Deposit",
-              style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                  fontFamily: "Goldplay"),
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            Text(
-              "Bank",
-              style: TextStyle(
-                  fontSize: 14,
-                  // fontWeight: FontWeight.w600,
-                  fontFamily: "GoldplayBold"),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Text(
-              "Account Name",
-              style: TextStyle(
-                  fontSize: 14,
-                  // fontWeight: FontWeight.w600,
-                  fontFamily: "GoldplayBold"),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Text(
-              "Account Number",
-              style: TextStyle(
-                  fontSize: 14,
-                  // fontWeight: FontWeight.w600,
-                  fontFamily: "GoldplayBold"),
-            ),
-            SizedBox(
-              height: 30,
-            ),
-            Text(
-              "Bank",
-              style: TextStyle(
-                  fontSize: 14,
-                  // fontWeight: FontWeight.w600,
-                  fontFamily: "GoldplayBold"),
+            Container(
+              margin: const EdgeInsets.only(left: 30, top: 30),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    "Please deposit",
+                    style: TextStyle(fontWeight: FontWeight.w600, fontSize: 15),
+                  ),
+                  SizedBox(
+                    width: 6,
+                  ),
+                  Text(
+                    "P1,380",
+                    style: TextStyle(
+                        color: Color(0XFFFF7A00),
+                        fontWeight: FontWeight.w600,
+                        fontSize: 16),
+                  ),
+                  SizedBox(
+                    width: 6,
+                  ),
+                  Expanded(
+                    child: Text(
+                      "to any of these bank ",
+                      style:
+                          TextStyle(fontWeight: FontWeight.w600, fontSize: 15),
+                    ),
+                  ),
+                ],
+              ),
             ),
             SizedBox(
               height: 10,
-            ),
-            Text(
-              "Account Name",
-              style: TextStyle(
-                  fontSize: 14,
-                  // fontWeight: FontWeight.w600,
-                  fontFamily: "GoldplayBold"),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Text(
-              "Account Number",
-              style: TextStyle(
-                  fontSize: 14,
-                  // fontWeight: FontWeight.w600,
-                  fontFamily: "GoldplayBold"),
-            ),
-            SizedBox(
-              height: 80,
-              // width: 80,
             ),
             Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Container(
-                  child: buildButtons(context),
+                SizedBox(
+                  width: 30,
                 ),
+                Text(
+                  "accounts:",
+                  style: TextStyle(fontWeight: FontWeight.w600, fontSize: 15),
+                )
               ],
+            ),
+            SizedBox(
+              height: 30,
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 30),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Bank Of The Philippine Islands",
+                    style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w600,
+                        fontFamily: "Goldplay"),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Row(
+                    children: [
+                      Text(
+                        "Account Number:",
+                        style: TextStyle(
+                            fontSize: 16,
+                            // fontWeight: FontWeight.w600,
+                            fontFamily: "GoldplayBold"),
+                      ),
+                      SizedBox(
+                        width: 35,
+                      ),
+                      Text(
+                        "0123456789",
+                        style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            fontFamily: "GoldplayBold"),
+                      )
+                    ],
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Row(
+                    children: [
+                      Text(
+                        "Account Name",
+                        style: TextStyle(
+                            fontSize: 16,
+                            // fontWeight: FontWeight.w600,
+                            fontFamily: "GoldplayBold"),
+                      ),
+                      SizedBox(
+                        width: 50,
+                      ),
+                      Text(
+                        "Ida De Jesus",
+                        style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            fontFamily: "GoldplayBold"),
+                      )
+                    ],
+                  ),
+                  SizedBox(
+                    height: 30,
+                  ),
+                  Text(
+                    "Unionbank of the Philippines",
+                    style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w600,
+                        fontFamily: "Goldplay"),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Row(
+                    children: [
+                      Text(
+                        "Account Number",
+                        style: TextStyle(
+                            fontSize: 16,
+                            // fontWeight: FontWeight.w600,
+                            fontFamily: "GoldplayBold"),
+                      ),
+                      SizedBox(
+                        width: 38,
+                      ),
+                      Text(
+                        "0123456789",
+                        style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            fontFamily: "GoldplayBold"),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Row(
+                    children: [
+                      Text(
+                        "Account Name",
+                        style: TextStyle(
+                            fontSize: 16,
+                            // fontWeight: FontWeight.w600,
+                            fontFamily: "GoldplayBold"),
+                      ),
+                      SizedBox(
+                        width: 50,
+                      ),
+                      Text(
+                        "Ida De Jesus",
+                        style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            fontFamily: "GoldplayBold"),
+                      )
+                    ],
+                  ),
+                  SizedBox(
+                    height: 90,
+                    // width: 80,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Container(
+                        child: buildButtons(context),
+                      ),
+                    ],
+                  )
+                ],
+              ),
             )
           ],
         ),
@@ -200,12 +306,6 @@ class ProofOfPayment extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          leading: Container(),
-          backgroundColor: kTealColor,
-          bottom: appbar(context),
-        ),
-        body: buildBody(context));
+    return Scaffold(appBar: appbar(context), body: buildBody(context));
   }
 }

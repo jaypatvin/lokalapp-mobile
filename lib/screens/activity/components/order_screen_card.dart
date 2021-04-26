@@ -14,6 +14,7 @@ class OrderScreenCard extends StatelessWidget {
   final bool showCancelButton;
   final double price;
   final String buttonMessage;
+  final bool showNotes;
   final String waitingForSeller;
   final String productName;
   Widget button;
@@ -25,6 +26,7 @@ class OrderScreenCard extends StatelessWidget {
       {this.width,
       this.backgroundImage,
       this.buttonLeftText,
+      this.showNotes = false,
       this.confirmation,
       this.showCancelButton = true,
       this.waitingForSeller,
@@ -250,55 +252,57 @@ class OrderScreenCard extends StatelessWidget {
                 width: width,
 
                 padding: const EdgeInsets.all(20),
-                child: ListView(children: [
-                  Column(
+                child: ListView(
+                    physics: NeverScrollableScrollPhysics(),
                     children: [
-                      SizedBox(
-                        height: 2,
-                        // width: 30,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      Column(
                         children: [
-                          shopName,
-                          Container(
-                            child: Text(
-                              "For December 20",
-                              style: TextStyle(
-                                  fontSize: 11,
-                                  fontFamily: "GolplayBold",
-                                  fontWeight: FontWeight.w400),
-                            ),
+                          SizedBox(
+                            height: 2,
+                            // width: 30,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              shopName,
+                              Container(
+                                child: Text(
+                                  "For December 20",
+                                  style: TextStyle(
+                                      fontSize: 11,
+                                      fontFamily: "GolplayBold",
+                                      fontWeight: FontWeight.w400),
+                                ),
+                              )
+                            ],
+                          ),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          middleSection,
+                          SizedBox(
+                            height: 9,
+                          ),
+                          Divider(
+                            color: Colors.grey.shade500,
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              orderTotal,
+                              SizedBox(
+                                width: 10,
+                              ),
+                              totalPrice
+                            ],
                           )
                         ],
                       ),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      middleSection,
-                      SizedBox(
-                        height: 9,
-                      ),
-                      Divider(
-                        color: Colors.grey.shade500,
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          orderTotal,
-                          SizedBox(
-                            width: 10,
-                          ),
-                          totalPrice
-                        ],
-                      )
-                    ],
-                  ),
-                ]),
+                    ]),
               ),
             ),
           ],
@@ -378,71 +382,79 @@ class OrderScreenCard extends StatelessWidget {
     );
   }
 
-  buildButtons(context) => Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  buildButtons(context) => Column(
         children: [
-          SizedBox(width: 5),
-          showCancelButton
-              ? Container(
-                  padding: const EdgeInsets.all(2),
-                  height: 43,
-                  width: 190,
-                  child: FlatButton(
-                    // height: 50,
-                    // minWidth: 100,
-                    color: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20.0),
-                      side: BorderSide(color: Color(0XFFCC3752)),
-                    ),
-                    textColor: Colors.black,
-                    child: Text(
-                      buttonLeftText,
-                      style: TextStyle(
-                          fontFamily: "Goldplay",
-                          fontSize: 13,
-                          color: Color(0XFFCC3752),
-                          fontWeight: FontWeight.w600),
-                    ),
-                    onPressed: () {
-                      showDialog(
-                          context: context,
-                          builder: (BuildContext context) =>
-                              _buildPopupDialog(context));
-                    },
-                  ),
-                )
-              : Container(
-                  padding: const EdgeInsets.all(2),
-                  height: 43,
-                  width: 190,
-                ),
-          Container(
-            height: 43,
-            width: 190,
-            padding: const EdgeInsets.all(2),
-            child: FlatButton(
-              // height: 50,
-              // minWidth: 100,
-              // color: kTealColor,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20.0),
-                side: BorderSide(color: kTealColor),
-              ),
-              textColor: Colors.black,
-              child: Text(
-                buttonMessage,
-                style: TextStyle(
-                    fontFamily: "Goldplay",
-                    fontSize: 13,
-                    color: kTealColor,
-                    fontWeight: FontWeight.w600),
-              ),
-              onPressed: onPressed,
-            ),
-          ),
+          button,
           SizedBox(
-            width: 5,
+            height: 18,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              SizedBox(width: 5),
+              showCancelButton
+                  ? Container(
+                      padding: const EdgeInsets.all(2),
+                      height: 43,
+                      width: 180,
+                      child: FlatButton(
+                        // height: 50,
+                        // minWidth: 100,
+                        color: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20.0),
+                          side: BorderSide(color: Color(0XFFCC3752)),
+                        ),
+                        textColor: Colors.black,
+                        child: Text(
+                          buttonLeftText,
+                          style: TextStyle(
+                              fontFamily: "Goldplay",
+                              fontSize: 13,
+                              color: Color(0XFFCC3752),
+                              fontWeight: FontWeight.w600),
+                        ),
+                        onPressed: () {
+                          showDialog(
+                              context: context,
+                              builder: (BuildContext context) =>
+                                  _buildPopupDialog(context));
+                        },
+                      ),
+                    )
+                  : Container(
+                      padding: const EdgeInsets.all(2),
+                      height: 43,
+                      width: 180,
+                    ),
+              Container(
+                height: 43,
+                width: 180,
+                padding: const EdgeInsets.all(2),
+                child: FlatButton(
+                  // height: 50,
+                  // minWidth: 100,
+                  color: Color(0XFFFF7A00),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20.0),
+                    side: BorderSide(color: Color(0XFFFF7A00)),
+                  ),
+                  textColor: Colors.black,
+                  child: Text(
+                    buttonMessage,
+                    style: TextStyle(
+                        fontFamily: "Goldplay",
+                        fontSize: 13,
+                        color: Colors.white,
+                        fontWeight: FontWeight.w600),
+                  ),
+                  onPressed: onPressed,
+                ),
+              ),
+              SizedBox(
+                width: 5,
+              ),
+            ],
           ),
         ],
       );
@@ -455,10 +467,13 @@ class OrderScreenCard extends StatelessWidget {
         SizedBox(
           height: 18,
         ),
-        notes,
-        button,
-        SizedBox(height: 130),
-        showButton ? buildButtons(context) : Container()
+        showNotes ? notes : Container(),
+        // button,
+        SizedBox(height: 50),
+        showButton ? buildButtons(context) : button,
+        SizedBox(
+          height: 30,
+        ),
       ],
     );
   }

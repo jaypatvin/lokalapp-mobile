@@ -207,11 +207,7 @@ class ForDeliveryCard extends StatelessWidget {
                 // color: Color(0XFFF1FAFF),
                 height: 285,
                 width: width,
-                decoration: BoxDecoration(
-                    border: Border.all(
-                      color: Colors.grey[400],
-                    ),
-                    borderRadius: BorderRadius.all(Radius.circular(20))),
+
                 padding: const EdgeInsets.all(20),
                 child: ListView(
                     shrinkWrap: true,
@@ -219,6 +215,7 @@ class ForDeliveryCard extends StatelessWidget {
                     children: [
                       Column(
                         children: [
+                          shopName,
                           SizedBox(
                             height: 2,
                             // width: 30,
@@ -247,7 +244,7 @@ class ForDeliveryCard extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              shopName,
+                              // shopName,
                               SizedBox(
                                 width: 70,
                               ),
