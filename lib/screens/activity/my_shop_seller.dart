@@ -31,86 +31,6 @@ class _MyShopSellerState extends State<MyShopSeller> {
     selectedIndex = 0;
   }
 
-  tabLogic() {
-    switch (selectedIndex) {
-      case (0):
-        {
-          return Column(
-            children: [
-              TransactionCard(
-                transactionState: 'Waiting for Confirmation',
-                date: 'Mar 30',
-                dealer: 'Bakey Bakey',
-                transasctions: transactions,
-              ),
-              SizedBox(
-                height: 10.0,
-              ),
-              TransactionCard(
-                transactionState: 'To Pay',
-                date: 'Mar 30',
-                dealer: 'Bakey Bakey',
-                transasctions: transactions,
-                enableOtherButton: true,
-                otherButtonText: 'Pay Now',
-              ),
-              SizedBox(
-                height: 10.0,
-              ),
-              TransactionCard(
-                transactionState: 'For Devlivery',
-                date: 'Mar 30',
-                dealer: 'Bakey Bakey',
-                transasctions: transactions,
-                enableOtherButton: true,
-                otherButtonText: 'Pay Now',
-              ),
-              SizedBox(
-                height: 30.0,
-              ),
-            ],
-          );
-        }
-      case (1):
-        {
-          return TransactionCard(
-            transactionState: 'Waiting for Confirmation',
-            date: 'Mar 30',
-            dealer: 'Bakey Bakey',
-            transasctions: transactions,
-          );
-        }
-        break;
-      case (2):
-        {
-          return TransactionCard(
-            transactionState: 'To Pay',
-            date: 'Mar 30',
-            dealer: 'Bakey Bakey',
-            transasctions: transactions,
-            enableOtherButton: true,
-            otherButtonText: 'Pay Now',
-          );
-        }
-        break;
-      case (3):
-        {
-          return TransactionCard(
-            transactionState: 'For Devlivery',
-            date: 'Mar 30',
-            dealer: 'Bakey Bakey',
-            transasctions: transactions,
-            enableOtherButton: true,
-            otherButtonText: 'Pay Now',
-          );
-        }
-        break;
-      default:
-        Container();
-        break;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -233,7 +153,6 @@ class _MyShopSellerState extends State<MyShopSeller> {
           height: size.height * 0.45,
           width: size.width,
           child: ListView(shrinkWrap: true, children: [
-            tabLogic(),
             SizedBox(
               height: 30,
             )

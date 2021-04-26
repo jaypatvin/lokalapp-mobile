@@ -2,18 +2,19 @@ import 'package:flutter/material.dart';
 
 import 'components/transaction_card.dart';
 
+const Map<int, String> shopFilters = {
+  0: 'All',
+  1: 'For Confirmation',
+  2: 'For Payment',
+  3: 'For Delivery'
+};
+
 class MyShop extends StatefulWidget {
   @override
   _MyShopState createState() => _MyShopState();
 }
 
 class _MyShopState extends State<MyShop> {
-  final Map<int, String> shopFilters = {
-    0: 'All',
-    1: 'For Confirmation',
-    2: 'For Payment',
-    3: 'For Delivery'
-  };
   int selectedIndex = 0;
 
   @override
@@ -42,8 +43,8 @@ class _MyShopState extends State<MyShop> {
                 date: 'Mar 30',
                 dealer: 'Bakey Bakey',
                 transasctions: transactions,
-                enableOtherButton: true,
-                otherButtonText: 'Pay Now',
+                // enableOtherButton: true,
+                // otherButtonText: 'Pay Now',
               ),
               SizedBox(
                 height: 10.0,
@@ -53,8 +54,8 @@ class _MyShopState extends State<MyShop> {
                 date: 'Mar 30',
                 dealer: 'Bakey Bakey',
                 transasctions: transactions,
-                enableOtherButton: true,
-                otherButtonText: 'Pay Now',
+                // enableOtherButton: true,
+                // otherButtonText: 'Pay Now',
               ),
               SizedBox(
                 height: 30.0,
@@ -79,8 +80,8 @@ class _MyShopState extends State<MyShop> {
             date: 'Mar 30',
             dealer: 'Bakey Bakey',
             transasctions: transactions,
-            enableOtherButton: true,
-            otherButtonText: 'Pay Now',
+            // enableOtherButton: true,
+            // otherButtonText: 'Pay Now',
           );
         }
         break;
@@ -91,8 +92,8 @@ class _MyShopState extends State<MyShop> {
             date: 'Mar 30',
             dealer: 'Bakey Bakey',
             transasctions: transactions,
-            enableOtherButton: true,
-            otherButtonText: 'Pay Now',
+            // enableOtherButton: true,
+            // otherButtonText: 'Pay Now',
           );
         }
         break;
