@@ -1,14 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lokalapp/providers/cart.dart';
-import 'package:lokalapp/providers/products.dart';
-import 'package:lokalapp/providers/shops.dart';
-import 'package:lokalapp/providers/user.dart';
-import 'package:lokalapp/screens/activity/buyer/order_details.dart';
-import 'package:provider/provider.dart';
 
-import '../components/for_delivery_card.dart';
-import '../components/prep_order_card.dart';
-import '../components/to_confirm_card.dart';
 import '../components/transaction_card.dart';
 
 class MyShopSeller extends StatefulWidget {
