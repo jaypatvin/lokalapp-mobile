@@ -145,7 +145,7 @@ class ToConfirmCard extends StatelessWidget {
                                   style: TextStyle(
                                       fontSize: 11,
                                       fontFamily: "GolplayBold",
-                                      fontWeight: FontWeight.w300),
+                                      fontWeight: FontWeight.w700),
                                 ),
                               )
                             ],

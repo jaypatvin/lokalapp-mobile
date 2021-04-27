@@ -4,7 +4,7 @@ import 'package:lokalapp/providers/shops.dart';
 import 'package:lokalapp/providers/user.dart';
 import 'package:provider/provider.dart';
 
-import 'components/order_screen_card.dart';
+import '../components/order_screen_card.dart';
 
 class DeliveredSeller extends StatelessWidget {
   final TextEditingController _notesController = TextEditingController();

@@ -5,7 +5,7 @@ import 'package:lokalapp/providers/user.dart';
 import 'package:lokalapp/utils/themes.dart';
 import 'package:provider/provider.dart';
 
-import 'components/order_screen_card.dart';
+import '../components/order_screen_card.dart';
 
 class Paid extends StatelessWidget {
   final TextEditingController _notesController = TextEditingController();

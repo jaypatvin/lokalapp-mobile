@@ -1,21 +1,22 @@
 import 'package:flutter/material.dart';
 
-import 'components/transaction_card.dart';
+import '../../../utils/themes.dart';
+import '../components/transaction_card.dart';
 
-const Map<int, String> shopFilters = {
+const Map<int, String> orderFilters = {
   0: 'All',
   1: 'For Confirmation',
-  2: 'For Payment',
+  2: 'To Pay',
   3: 'For Delivery'
 };
 
-class MyShop extends StatefulWidget {
+class MyOrders extends StatefulWidget {
   @override
-  _MyShopState createState() => _MyShopState();
+  _MyOrdersState createState() => _MyOrdersState();
 }
 
-class _MyShopState extends State<MyShop> {
-  int selectedIndex = 0;
+class _MyOrdersState extends State<MyOrders> {
+  int selectedIndex;
 
   @override
   void initState() {
@@ -25,37 +26,36 @@ class _MyShopState extends State<MyShop> {
 
   tabLogic() {
     switch (selectedIndex) {
-      case (0):
+      case 0:
         {
           return Column(
             children: [
               TransactionCard(
-                transactionState: 'Waiting for Confirmation',
+                transactionState: 1,
                 date: 'Mar 30',
                 dealer: 'Bakey Bakey',
                 transasctions: transactions,
+                isBuyer: true,
               ),
               SizedBox(
                 height: 10.0,
               ),
               TransactionCard(
-                transactionState: 'To Pay',
+                transactionState: 2,
                 date: 'Mar 30',
                 dealer: 'Bakey Bakey',
                 transasctions: transactions,
-                // enableOtherButton: true,
-                // otherButtonText: 'Pay Now',
+                isBuyer: true,
               ),
               SizedBox(
                 height: 10.0,
               ),
               TransactionCard(
-                transactionState: 'For Devlivery',
+                transactionState: 3,
                 date: 'Mar 30',
                 dealer: 'Bakey Bakey',
                 transasctions: transactions,
-                // enableOtherButton: true,
-                // otherButtonText: 'Pay Now',
+                isBuyer: true,
               ),
               SizedBox(
                 height: 30.0,
@@ -63,37 +63,36 @@ class _MyShopState extends State<MyShop> {
             ],
           );
         }
-      case (1):
+      case 1:
         {
           return TransactionCard(
-            transactionState: 'Waiting for Confirmation',
+            transactionState: 1,
             date: 'Mar 30',
             dealer: 'Bakey Bakey',
             transasctions: transactions,
+            isBuyer: true,
           );
         }
         break;
-      case (2):
+      case 2:
         {
           return TransactionCard(
-            transactionState: 'To Pay',
+            transactionState: 2,
             date: 'Mar 30',
             dealer: 'Bakey Bakey',
             transasctions: transactions,
-            // enableOtherButton: true,
-            // otherButtonText: 'Pay Now',
+            isBuyer: true,
           );
         }
         break;
-      case (3):
+      case 3:
         {
           return TransactionCard(
-            transactionState: 'For Devlivery',
+            transactionState: 3,
             date: 'Mar 30',
             dealer: 'Bakey Bakey',
             transasctions: transactions,
-            // enableOtherButton: true,
-            // otherButtonText: 'Pay Now',
+            isBuyer: true,
           );
         }
         break;
@@ -106,11 +105,12 @@ class _MyShopState extends State<MyShop> {
   @override
   Widget build(BuildContext context) {
     return Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
         Container(
           padding: EdgeInsets.all(20.0),
           width: MediaQuery.of(context).size.width,
-          color: Color(0xFF57183F),
+          color: kTealColor,
           child: Text(
             'These are the products you ordered from other stores.',
             style: TextStyle(color: Colors.white),
@@ -120,11 +120,11 @@ class _MyShopState extends State<MyShop> {
           height: 10.0,
         ),
         Container(
-          height: MediaQuery.of(context).size.height * 0.03,
+          height: MediaQuery.of(context).size.height * 0.04,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
             shrinkWrap: true,
-            itemCount: shopFilters.length,
+            itemCount: orderFilters.length,
             itemBuilder: (context, index) {
               return Column(
                 mainAxisSize: MainAxisSize.min,
@@ -143,7 +143,7 @@ class _MyShopState extends State<MyShop> {
                             ? const Color(0xFFFFC700)
                             : const Color(0xFFEFEFEF),
                       ),
-                      child: Text(shopFilters[index]),
+                      child: Text(orderFilters[index]),
                     ),
                   ),
                 ],
@@ -155,7 +155,9 @@ class _MyShopState extends State<MyShop> {
         // TODO: ADD LOGIC FOR selectedIndex
         Expanded(
           child: SingleChildScrollView(
-            child: tabLogic(),
+            child: Column(
+              children: [tabLogic()],
+            ),
           ),
         ),
       ],

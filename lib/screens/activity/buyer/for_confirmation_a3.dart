@@ -5,12 +5,12 @@ import 'package:lokalapp/providers/user.dart';
 
 import 'package:lokalapp/screens/activity/components/for_delivery_card.dart';
 import 'package:lokalapp/screens/activity/components/order_screen_card.dart';
-import 'package:lokalapp/screens/activity/payment_option.dart';
+import 'package:lokalapp/screens/activity/buyer/payment_option.dart';
 
 import 'package:lokalapp/utils/themes.dart';
 import 'package:provider/provider.dart';
 
-class ToPay extends StatelessWidget {
+class ForConfirmation extends StatelessWidget {
   TextEditingController _notesController = TextEditingController();
 
   appBar(context) => PreferredSize(
@@ -66,9 +66,9 @@ class ToPay extends StatelessWidget {
                   SizedBox(
                     height: 8,
                   ),
-                  Text("Order Confirmed!",
+                  Text("Waiting for confirmation",
                       style: TextStyle(
-                          color: Color(0xFFFFC700),
+                          color: Colors.white,
                           fontSize: 16,
                           fontFamily: "Goldplay",
                           fontWeight: FontWeight.w600))
@@ -78,12 +78,39 @@ class ToPay extends StatelessWidget {
           ),
         ),
       );
-  button(context) => Row(
+  button(context) => Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           SizedBox(
             width: 10,
+          ),
+          Container(
+            height: 40,
+            width: MediaQuery.of(context).size.width * 0.8,
+            // padding: const EdgeInsets.only(left: 10, right: 30),
+            child: FlatButton(
+              // height: 50,
+              // minWidth: 100,
+              // color: kTealColor,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20.0),
+                side: BorderSide(color: kTealColor),
+              ),
+              textColor: Colors.black,
+              child: Text(
+                "View Proof of Payment",
+                style: TextStyle(
+                    fontFamily: "Goldplay",
+                    color: kTealColor,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600),
+              ),
+              onPressed: () {},
+            ),
+          ),
+          SizedBox(
+            height: 15,
           ),
           Container(
             height: 40,
@@ -137,7 +164,8 @@ class ToPay extends StatelessWidget {
                 price: products.basePrice,
                 productName: products.name,
                 button: button(context),
-                showCancelButton: true,
+                showCancelButton: false,
+                showButton: false,
                 onPressed: () {
                   Navigator.push(context,
                       MaterialPageRoute(builder: (context) => PaymentOption()));
@@ -145,7 +173,8 @@ class ToPay extends StatelessWidget {
                 buttonLeftText: "Cancel Order",
                 confirmation: "Paid, Processing Payment",
                 waitingForSeller: "",
-                buttonMessage: "Pay Now",
+                showNotes: true,
+                buttonMessage: "View",
                 controller: _notesController),
             SizedBox(
               height: 20,

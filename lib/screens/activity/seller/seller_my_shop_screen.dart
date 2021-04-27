@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:lokalapp/providers/products.dart';
 import 'package:lokalapp/providers/shops.dart';
 import 'package:lokalapp/providers/user.dart';
-import 'package:lokalapp/screens/activity/delivered_seller.dart';
-import 'package:lokalapp/screens/activity/my_shop.dart';
-import 'package:lokalapp/screens/activity/seller_confirmation.dart';
-import 'package:lokalapp/screens/activity/view_proof_of_payment_seller.dart';
+import 'package:lokalapp/screens/activity/seller/delivered_seller.dart';
+import 'package:lokalapp/screens/activity/seller/my_shop.dart';
+import 'package:lokalapp/screens/activity/seller/seller_confirmation.dart';
+import 'package:lokalapp/screens/activity/seller/view_proof_of_payment_seller.dart';
 import 'package:provider/provider.dart';
 
-import 'components/for_delivery_card.dart';
-import 'components/prep_order_card.dart';
-import 'components/to_confirm_card.dart';
+import '../components/for_delivery_card.dart';
+import '../components/prep_order_card.dart';
+import '../components/to_confirm_card.dart';
 
 class SellerMyShopScreen extends StatelessWidget {
   @override
@@ -71,10 +71,7 @@ class SellerMyShopScreen extends StatelessWidget {
                 Expanded(
                   child: Container(
                     child: TextButton(
-                      onPressed: () {
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (context) => MyShop()));
-                      },
+                      onPressed: () {},
                       child: Text(
                         "My Orders",
                         style: TextStyle(

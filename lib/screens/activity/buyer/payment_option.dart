@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lokalapp/screens/activity/proof_of_payment.dart';
+import 'package:lokalapp/screens/activity/buyer/proof_of_payment.dart';
 import 'package:lokalapp/utils/themes.dart';
 
 class PaymentOption extends StatelessWidget {

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lokalapp/screens/activity/activity_screen.dart';
+
 import 'package:lokalapp/screens/discover/discover.dart';
 import 'package:lokalapp/utils/themes.dart';
 

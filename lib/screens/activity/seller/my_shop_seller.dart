@@ -3,13 +3,13 @@ import 'package:lokalapp/providers/cart.dart';
 import 'package:lokalapp/providers/products.dart';
 import 'package:lokalapp/providers/shops.dart';
 import 'package:lokalapp/providers/user.dart';
-import 'package:lokalapp/screens/activity/order_details.dart';
+import 'package:lokalapp/screens/activity/buyer/order_details.dart';
 import 'package:provider/provider.dart';
 
-import 'components/for_delivery_card.dart';
-import 'components/prep_order_card.dart';
-import 'components/to_confirm_card.dart';
-import 'components/transaction_card.dart';
+import '../components/for_delivery_card.dart';
+import '../components/prep_order_card.dart';
+import '../components/to_confirm_card.dart';
+import '../components/transaction_card.dart';
 
 class MyShopSeller extends StatefulWidget {
   @override
@@ -29,6 +29,84 @@ class _MyShopSellerState extends State<MyShopSeller> {
   void initState() {
     super.initState();
     selectedIndex = 0;
+  }
+
+  tabLogic() {
+    switch (selectedIndex) {
+      case 0:
+        {
+          return Column(
+            children: [
+              TransactionCard(
+                transactionState: 1,
+                date: 'Mar 30',
+                dealer: 'Bakey Bakey',
+                transasctions: transactions,
+                isBuyer: true,
+              ),
+              SizedBox(
+                height: 10.0,
+              ),
+              TransactionCard(
+                transactionState: 2,
+                date: 'Mar 30',
+                dealer: 'Bakey Bakey',
+                transasctions: transactions,
+                isBuyer: true,
+              ),
+              SizedBox(
+                height: 10.0,
+              ),
+              TransactionCard(
+                transactionState: 3,
+                date: 'Mar 30',
+                dealer: 'Bakey Bakey',
+                transasctions: transactions,
+                isBuyer: true,
+              ),
+              SizedBox(
+                height: 30.0,
+              ),
+            ],
+          );
+        }
+      case 1:
+        {
+          return TransactionCard(
+            transactionState: 1,
+            date: 'Mar 30',
+            dealer: 'Bakey Bakey',
+            transasctions: transactions,
+            isBuyer: true,
+          );
+        }
+        break;
+      case 2:
+        {
+          return TransactionCard(
+            transactionState: 2,
+            date: 'Mar 30',
+            dealer: 'Bakey Bakey',
+            transasctions: transactions,
+            isBuyer: true,
+          );
+        }
+        break;
+      case 3:
+        {
+          return TransactionCard(
+            transactionState: 3,
+            date: 'Mar 30',
+            dealer: 'Bakey Bakey',
+            transasctions: transactions,
+            isBuyer: true,
+          );
+        }
+        break;
+      default:
+        Container();
+        break;
+    }
   }
 
   @override
@@ -148,14 +226,15 @@ class _MyShopSellerState extends State<MyShopSeller> {
               );
             },
           )),
-      SizedBox(height: 10.0),
+      // SizedBox(height: 5.0),
       Container(
           height: size.height * 0.45,
           width: size.width,
           child: ListView(shrinkWrap: true, children: [
             SizedBox(
               height: 30,
-            )
+            ),
+            tabLogic()
           ])),
     ]));
   }

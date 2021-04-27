@@ -269,9 +269,9 @@ class OrderScreenCard extends StatelessWidget {
                                 child: Text(
                                   "For December 20",
                                   style: TextStyle(
-                                      fontSize: 11,
+                                      fontSize: 12,
                                       fontFamily: "GolplayBold",
-                                      fontWeight: FontWeight.w400),
+                                      fontWeight: FontWeight.w700),
                                 ),
                               )
                             ],
@@ -403,7 +403,7 @@ class OrderScreenCard extends StatelessWidget {
                         color: Colors.white,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20.0),
-                          side: BorderSide(color: Color(0XFFCC3752)),
+                          side: BorderSide(color: kTealColor),
                         ),
                         textColor: Colors.black,
                         child: Text(
@@ -411,14 +411,14 @@ class OrderScreenCard extends StatelessWidget {
                           style: TextStyle(
                               fontFamily: "Goldplay",
                               fontSize: 13,
-                              color: Color(0XFFCC3752),
+                              color: kTealColor,
                               fontWeight: FontWeight.w600),
                         ),
                         onPressed: () {
-                          showDialog(
-                              context: context,
-                              builder: (BuildContext context) =>
-                                  _buildPopupDialog(context));
+                          // showDialog(
+                          //     context: context,
+                          //     builder: (BuildContext context) =>
+                          //         _buildPopupDialog(context));
                         },
                       ),
                     )

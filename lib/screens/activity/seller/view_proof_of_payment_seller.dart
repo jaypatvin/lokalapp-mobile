@@ -2,14 +2,47 @@ import 'package:flutter/material.dart';
 import 'package:lokalapp/providers/products.dart';
 import 'package:lokalapp/providers/shops.dart';
 import 'package:lokalapp/providers/user.dart';
+import 'package:lokalapp/screens/activity/seller/delivered_seller.dart';
 import 'package:lokalapp/utils/themes.dart';
 import 'package:provider/provider.dart';
 
-import 'components/order_screen_card.dart';
+import '../components/order_screen_card.dart';
 
-class DeliveredBuyer extends StatelessWidget {
+class ViewProofOfPaymentSeller extends StatelessWidget {
   final TextEditingController _notesController = TextEditingController();
-  Widget get placeholder => Container();
+
+  button(context) => Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: 10,
+          ),
+          Container(
+            height: 43,
+            width: 160,
+            padding: const EdgeInsets.all(2),
+            child: FlatButton(
+              // height: 50,
+              // minWidth: 100,
+              color: kTealColor,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20.0),
+                side: BorderSide(color: kTealColor),
+              ),
+              textColor: Colors.black,
+              child: Text(
+                "Message Buyer",
+                style: TextStyle(
+                    fontFamily: "Goldplay",
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600),
+              ),
+              onPressed: () {},
+            ),
+          ),
+        ],
+      );
   appbar(context) => PreferredSize(
       child: Container(
         color: Color(0XFFCC3752),
@@ -58,7 +91,7 @@ class DeliveredBuyer extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         leading: Container(),
-        backgroundColor: kTealColor,
+        backgroundColor: Color(0XFF57183F),
         bottom: appbar(context),
       ),
       body: SingleChildScrollView(
@@ -68,15 +101,19 @@ class DeliveredBuyer extends StatelessWidget {
               height: 20,
             ),
             OrderScreenCard(
-              button: placeholder,
-              showCancelButton: false,
-              onPressed: () {},
-              showButton: false,
-              confirmation: "Delivered",
-              width: size.width * 0.9,
+              button: button(context),
+              showCancelButton: true,
+              onPressed: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => DeliveredSeller()));
+              },
+              buttonLeftText: "View Proof Of Payment",
+              confirmation: "Paid, Processing Payment",
               waitingForSeller: "",
+              buttonMessage: "Confirm Payment",
               controller: _notesController,
               username: shops.name,
+              width: size.width * 0.9,
               price: products.basePrice,
               productName: products.name,
             )

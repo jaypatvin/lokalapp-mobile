@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:lokalapp/models/transaction.dart';
-import 'package:lokalapp/screens/activity/to_pay.dart';
+import 'package:lokalapp/screens/activity/buyer/declined_order_a7.dart';
+import 'package:lokalapp/screens/activity/buyer/for_confirmation_a3.dart';
+import 'package:lokalapp/screens/activity/buyer/for_delivery_confirmed_a5.dart';
+import 'package:lokalapp/screens/activity/buyer/order_again_a6.dart';
+import 'package:lokalapp/screens/activity/buyer/to_pay.dart';
 import 'package:lokalapp/utils/themes.dart';
 
-import '../for_delivery_buyer.dart';
-import '../order_details.dart';
-import '../to_pay.dart';
+import '../buyer/for_delivery_buyer_a4.dart';
+import '../buyer/order_details.dart';
+import '../buyer/to_pay.dart';
 
 // THIS IS A MOCK DATA FOR BUILD PURPOSES
 List<Transaction> transactions = [
@@ -60,6 +64,7 @@ class TransactionCard extends StatelessWidget {
     @required date,
     @required dealer,
     @required transasctions,
+    @required enableSecondButton,
     @required isBuyer,
   }) {
     bool enableSecondButton = false;
@@ -95,8 +100,8 @@ class TransactionCard extends StatelessWidget {
     if (!isBuyer) return;
     switch (transactionState) {
       case 1:
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => OrderDetails()));
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => ForConfirmation()));
         break;
       case 2:
         Navigator.push(
