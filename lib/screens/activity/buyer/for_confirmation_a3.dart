@@ -11,7 +11,7 @@ import 'package:lokalapp/utils/themes.dart';
 import 'package:provider/provider.dart';
 
 class ForConfirmation extends StatelessWidget {
-  TextEditingController _notesController = TextEditingController();
+  final TextEditingController _notesController = TextEditingController();
 
   appBar(context) => PreferredSize(
         preferredSize: Size(double.infinity, 95),

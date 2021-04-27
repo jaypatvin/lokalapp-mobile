@@ -245,91 +245,53 @@ class OrderScreenCard extends StatelessWidget {
                   child: ListView(
                       physics: NeverScrollableScrollPhysics(),
                       children: [
-                        Column(children: [
-                          SizedBox(
-                            height: 2,
-                            // width: 30,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              shopName,
-                              Container(
-                                child: Text(
-                                  "For December 20",
-                                  style: TextStyle(
-                                      fontSize: 11,
-                                      fontFamily: "GolplayBold",
-                                      fontWeight: FontWeight.w400),
-                                ),
-                              )
-                            ],
-                          ),
-                          SizedBox(
-                            height: 20,
-                          ),
-                          middleSection,
-                          SizedBox(
-                            height: 9,
-                          ),
-                          Divider(
-                            color: Colors.grey.shade500,
-                          ),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              orderTotal,
-                              SizedBox(
-                                height: 2,
-                                // width: 30,
-                              ),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  shopName,
-                                  Container(
-                                    child: Text(
-                                      "For December 20",
-                                      style: TextStyle(
-                                          fontSize: 12,
-                                          fontFamily: "GolplayBold",
-                                          fontWeight: FontWeight.w700),
-                                    ),
-                                  )
-                                ],
-                              ),
-                              SizedBox(
-                                height: 20,
-                              ),
-                              middleSection,
-                              SizedBox(
-                                height: 9,
-                              ),
-                              Divider(
-                                color: Colors.grey.shade500,
-                              ),
-                              SizedBox(
-                                height: 10,
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                children: [
-                                  orderTotal,
-                                  SizedBox(
-                                    width: 10,
+                        Column(
+                          children: [
+                            SizedBox(
+                              height: 2,
+                              // width: 30,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                shopName,
+                                Container(
+                                  child: Text(
+                                    "For December 20",
+                                    style: TextStyle(
+                                        fontSize: 11,
+                                        fontFamily: "GolplayBold",
+                                        fontWeight: FontWeight.w700),
                                   ),
-                                  totalPrice
-                                ],
-                              )
-                            ],
-                          ),
-                        ]),
+                                )
+                              ],
+                            ),
+                            SizedBox(
+                              height: 20,
+                            ),
+                            middleSection,
+                            SizedBox(
+                              height: 9,
+                            ),
+                            Divider(
+                              color: Colors.grey.shade500,
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                orderTotal,
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                totalPrice
+                              ],
+                            )
+                          ],
+                        ),
                       ]),
                 ),
               ),
