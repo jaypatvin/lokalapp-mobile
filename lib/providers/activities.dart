@@ -11,7 +11,7 @@ class Activities extends ChangeNotifier {
   bool _isLoading;
 
   bool get isLoading => _isLoading;
-  List get feed {
+  List<ActivityFeed> get feed {
     return [..._feed];
   }
 

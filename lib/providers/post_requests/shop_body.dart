@@ -16,7 +16,7 @@ class ShopBody extends ChangeNotifier {
     String opening,
     String closing,
     bool useCustomHours,
-    Map<String, String> customHours,
+    Map<String, String> operatingHours,
     String status,
   }) {
     _shopBody['name'] = name ?? _shopBody['name'];
@@ -25,14 +25,15 @@ class ShopBody extends ChangeNotifier {
     _shopBody['description'] = description ?? _shopBody['description'];
     _shopBody['profile_photo'] = profilePhoto ?? _shopBody['profile_photo'];
     _shopBody['cover_photo'] = coverPhoto ?? _shopBody['cover_photo'];
-    _shopBody['is_closed'] = isClosed ?? _shopBody['isClosed'];
+    _shopBody['is_close'] = isClosed ?? _shopBody['isClose'];
     _shopBody['opening'] = opening ?? _shopBody['opening'];
     _shopBody['closing'] = closing ?? _shopBody['closing'];
     //TODO: CHECK THIS
     _shopBody['use_custom_hours'] =
         useCustomHours ?? _shopBody['use_custom_hours'];
     _shopBody['status'] = status ?? _shopBody['status'];
-    _shopBody['custom_hours'] = customHours ?? _shopBody['custom_hours'];
+    _shopBody['operating_hours'] =
+        operatingHours ?? _shopBody['operating_hours'];
 
     notifyListeners();
   }

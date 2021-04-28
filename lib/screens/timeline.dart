@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lokalapp/models/activity_feed.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/activities.dart';
@@ -23,7 +24,7 @@ class _TimelineState extends State<Timeline> {
     Provider.of<Activities>(context, listen: false).fetch(user.idToken);
   }
 
-  Row buildComments(Map snapshot) {
+  Row buildComments(ActivityFeed activityFeed) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
@@ -36,7 +37,7 @@ class _TimelineState extends State<Timeline> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => ExpandedCard(
-                    activity: snapshot,
+                    activity: activityFeed,
                   ),
                 ),
               );
@@ -77,7 +78,7 @@ class _TimelineState extends State<Timeline> {
     );
   }
 
-  Row buildLikes(Map snapshot) {
+  Row buildLikes(ActivityFeed activityFeed) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
@@ -93,7 +94,7 @@ class _TimelineState extends State<Timeline> {
           ),
         ),
         Text("5"),
-        buildComments(snapshot)
+        buildComments(activityFeed)
       ],
     );
   }
@@ -162,7 +163,7 @@ class _TimelineState extends State<Timeline> {
                                             indent: 25,
                                             endIndent: 25,
                                           ),
-                                          buildLikes(activity.toMap()),
+                                          buildLikes(activity),
                                         ],
                                       ),
                                     ),
