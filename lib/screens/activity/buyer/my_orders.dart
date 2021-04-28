@@ -87,13 +87,26 @@ class _MyOrdersState extends State<MyOrders> {
         break;
       case 3:
         {
-          return TransactionCard(
-            transactionState: 3,
+          return Column(
+            children: [
+              TransactionCard(
+                transactionState: 3,
+                date: 'Mar 30',
+                dealer: 'Bakey Bakey',
+                transasctions: transactions,
+                isBuyer: true,
+              ),
+              SizedBox(height: 10.0,)
+              ,TransactionCard(
+            transactionState: 4,
             date: 'Mar 30',
             dealer: 'Bakey Bakey',
             transasctions: transactions,
             isBuyer: true,
+          )
+            ],
           );
+          
         }
         break;
       default:
@@ -155,9 +168,7 @@ class _MyOrdersState extends State<MyOrders> {
         // TODO: ADD LOGIC FOR selectedIndex
         Expanded(
           child: SingleChildScrollView(
-            child: Column(
-              children: [tabLogic()],
-            ),
+            child: tabLogic(),
           ),
         ),
       ],

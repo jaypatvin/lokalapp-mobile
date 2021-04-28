@@ -2,18 +2,19 @@ import 'package:flutter/material.dart';
 
 import '../components/transaction_card.dart';
 
+const Map<int, String> shopFilters = {
+  0: 'All',
+  1: 'For Confirmation',
+  2: 'For Payment',
+  3: 'For Delivery'
+};
+
 class MyShopSeller extends StatefulWidget {
   @override
   _MyShopSellerState createState() => _MyShopSellerState();
 }
 
 class _MyShopSellerState extends State<MyShopSeller> {
-  final Map<int, String> shopFilters = {
-    0: 'All',
-    1: 'For Confirmation',
-    2: 'For Payment',
-    3: 'For Delivery'
-  };
   int selectedIndex = 0;
 
   @override
@@ -57,7 +58,14 @@ class _MyShopSellerState extends State<MyShopSeller> {
                 isBuyer: false,
               ),
               SizedBox(
-                height: 30.0,
+                height: 10.0,
+              ),
+              TransactionCard(
+                transactionState: 4,
+                date: 'Mar 30',
+                dealer: 'Bakey Bakey',
+                transasctions: transactions,
+                isBuyer: false,
               ),
             ],
           );
@@ -75,19 +83,33 @@ class _MyShopSellerState extends State<MyShopSeller> {
         break;
       case 2:
         {
-          return TransactionCard(
-            transactionState: 2,
-            date: 'Mar 30',
-            dealer: 'Bakey Bakey',
-            transasctions: transactions,
-            isBuyer: false,
+          return Column(
+            children: [
+              TransactionCard(
+                transactionState: 2,
+                date: 'Mar 30',
+                dealer: 'Bakey Bakey',
+                transasctions: transactions,
+                isBuyer: false,
+              ),
+              SizedBox(
+                height: 10.0,
+              ),
+              TransactionCard(
+                transactionState: 3,
+                date: 'Mar 30',
+                dealer: 'Bakey Bakey',
+                transasctions: transactions,
+                isBuyer: false,
+              ),
+            ],
           );
         }
         break;
       case 3:
         {
           return TransactionCard(
-            transactionState: 3,
+            transactionState: 4,
             date: 'Mar 30',
             dealer: 'Bakey Bakey',
             transasctions: transactions,
@@ -103,92 +125,22 @@ class _MyShopSellerState extends State<MyShopSeller> {
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
-
-    return SafeArea(
-        child: Column(mainAxisSize: MainAxisSize.min, children: [
-      Container(
-        padding: EdgeInsets.all(10.0),
-        width: MediaQuery.of(context).size.width,
-        color: Color(0xFF57183F),
-        child: Column(
-          children: [
-            SizedBox(
-              height: 10,
-            ),
-            Text(
-              'These are the products you ordered from other stores.',
-              style: TextStyle(color: Colors.white),
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Total Earnings",
-                  style: TextStyle(color: Colors.white),
-                ),
-                Text(
-                  "16,980,00.00",
-                  style: TextStyle(color: Color(0XFFFF7A00)),
-                ),
-              ],
-            ),
-            SizedBox(
-              height: 15,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Items Sold",
-                  style: TextStyle(color: Colors.white),
-                ),
-                SizedBox(
-                  width: 10,
-                ),
-                Text(
-                  "127",
-                  style: TextStyle(color: Color(0XFFFF7A00)),
-                ),
-              ],
-            ),
-            SizedBox(
-              height: 15,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Most Popular",
-                  style: TextStyle(color: Colors.white),
-                ),
-                // SizedBox(
-                //   width: 15,
-                // ),
-                Text(
-                  "Cheesecake Bars",
-                  style: TextStyle(color: Color(0XFFFF7A00)),
-                ),
-              ],
-            ),
-            SizedBox(
-              height: 10,
-            )
-          ],
+    return Column(
+      children: [
+        Container(
+          padding: EdgeInsets.all(20.0),
+          width: MediaQuery.of(context).size.width,
+          color: Color(0xFF57183F),
+          child: Text(
+            'These are the products you ordered from other stores.',
+            style: TextStyle(color: Colors.white),
+          ),
         ),
-      ),
-      SizedBox(
-        height: 12,
-      ),
-      Container(
-          height: 40,
-          width: size.width,
+        SizedBox(
+          height: 10.0,
+        ),
+        Container(
+          height: MediaQuery.of(context).size.height * 0.03,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
             shrinkWrap: true,
@@ -217,17 +169,16 @@ class _MyShopSellerState extends State<MyShopSeller> {
                 ],
               );
             },
-          )),
-      // SizedBox(height: 5.0),
-      Container(
-          height: size.height * 0.45,
-          width: size.width,
-          child: ListView(shrinkWrap: true, children: [
-            SizedBox(
-              height: 30,
-            ),
-            tabLogic()
-          ])),
-    ]));
+          ),
+        ),
+        SizedBox(height: 10.0),
+        // TODO: ADD LOGIC FOR selectedIndex
+        Expanded(
+          child: SingleChildScrollView(
+            child: tabLogic(),
+          ),
+        ),
+      ],
+    );
   }
 }
