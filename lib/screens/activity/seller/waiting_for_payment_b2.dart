@@ -2,16 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:lokalapp/providers/products.dart';
 import 'package:lokalapp/providers/shops.dart';
 import 'package:lokalapp/providers/user.dart';
-
-import 'package:lokalapp/screens/activity/components/for_delivery_card.dart';
 import 'package:lokalapp/screens/activity/components/order_screen_card.dart';
 import 'package:lokalapp/screens/activity/buyer/payment_option.dart';
-
+import 'package:lokalapp/screens/activity/seller/order_confimred_b1.dart';
 import 'package:lokalapp/utils/themes.dart';
+
 import 'package:provider/provider.dart';
 
-class ToPay extends StatelessWidget {
-  TextEditingController _notesController = TextEditingController();
+class WaitingForPayment extends StatelessWidget {
+  final TextEditingController _notesController = TextEditingController();
 
   appBar(context) => PreferredSize(
         preferredSize: Size(double.infinity, 95),
@@ -24,10 +23,9 @@ class ToPay extends StatelessWidget {
           width: MediaQuery.of(context).size.width,
           height: 210,
           child: Container(
-            decoration: BoxDecoration(color: kTealColor),
+            decoration: BoxDecoration(color: Color(0XFF57183F)),
             child: Container(
               margin: const EdgeInsets.only(top: 48, left: 10),
-              // margin: const EdgeInsets.fromLTRB(0, 40, 0, 0),
               child: Column(
                 children: [
                   Row(
@@ -45,9 +43,9 @@ class ToPay extends StatelessWidget {
                         ),
                       ),
                       SizedBox(
-                        width: 100,
+                        width: 80,
                       ),
-                      Row(
+                      Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
@@ -59,19 +57,19 @@ class ToPay extends StatelessWidget {
                                 fontSize: 22,
                                 fontWeight: FontWeight.w600),
                           ),
+                          SizedBox(
+                            height: 8,
+                          ),
+                          Text("Waiting for confirmation",
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                  fontFamily: "Goldplay",
+                                  fontWeight: FontWeight.w600))
                         ],
                       ),
                     ],
                   ),
-                  SizedBox(
-                    height: 8,
-                  ),
-                  Text("Order Confirmed!",
-                      style: TextStyle(
-                          color: Color(0xFFFFC700),
-                          fontSize: 16,
-                          fontFamily: "Goldplay",
-                          fontWeight: FontWeight.w600))
                 ],
               ),
             ),
@@ -79,39 +77,35 @@ class ToPay extends StatelessWidget {
         ),
       );
 
-  // button(context) => Row(
-  //       mainAxisAlignment: MainAxisAlignment.center,
-  //       crossAxisAlignment: CrossAxisAlignment.center,
-  //       children: [
-  //         SizedBox(
-  //           width: 10,
-  //         ),
-  //         Container(
-  //           height: 40,
-  //           width: MediaQuery.of(context).size.width * 0.8,
-  //           // padding: const EdgeInsets.only(left: 10, right: 30),
-  //           child: FlatButton(
-  //             // height: 50,
-  //             // minWidth: 100,
-  //             // color: kTealColor,
-  //             shape: RoundedRectangleBorder(
-  //               borderRadius: BorderRadius.circular(20.0),
-  //               side: BorderSide(color: kTealColor),
-  //             ),
-  //             textColor: Colors.black,
-  //             child: Text(
-  //               "Message Shop",
-  //               style: TextStyle(
-  //                   fontFamily: "Goldplay",
-  //                   color: kTealColor,
-  //                   fontSize: 14,
-  //                   fontWeight: FontWeight.w600),
-  //             ),
-  //             onPressed: () {},
-  //           ),
-  //         ),
-  //       ],
-  //     );
+  button(context) => Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          SizedBox(
+            width: 10,
+          ),
+          Container(
+            height: 40,
+            width: MediaQuery.of(context).size.width * 0.9,
+            child: FlatButton(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20.0),
+                side: BorderSide(color: kTealColor),
+              ),
+              textColor: Colors.black,
+              child: Text(
+                "Message Buyer",
+                style: TextStyle(
+                    fontFamily: "Goldplay",
+                    color: kTealColor,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600),
+              ),
+              onPressed: () {},
+            ),
+          ),
+        ],
+      );
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -138,8 +132,9 @@ class ToPay extends StatelessWidget {
                 price: products.basePrice,
                 productName: products.name,
                 showNotes: true,
-                button: Container(),
-                showCancelButton: true,
+                button: button(context),
+                showCancelButton: false,
+                showButton: false,
                 onPressed: () {
                   Navigator.push(context,
                       MaterialPageRoute(builder: (context) => PaymentOption()));

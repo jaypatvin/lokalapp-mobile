@@ -33,7 +33,8 @@ class _MyShopSellerState extends State<MyShopSeller> {
                 date: 'Mar 30',
                 dealer: 'Bakey Bakey',
                 transasctions: transactions,
-                isBuyer: true,
+                // enableSecondButton: true,
+                isBuyer: false,
               ),
               SizedBox(
                 height: 10.0,
@@ -43,7 +44,7 @@ class _MyShopSellerState extends State<MyShopSeller> {
                 date: 'Mar 30',
                 dealer: 'Bakey Bakey',
                 transasctions: transactions,
-                isBuyer: true,
+                isBuyer: false,
               ),
               SizedBox(
                 height: 10.0,
@@ -53,7 +54,7 @@ class _MyShopSellerState extends State<MyShopSeller> {
                 date: 'Mar 30',
                 dealer: 'Bakey Bakey',
                 transasctions: transactions,
-                isBuyer: true,
+                isBuyer: false,
               ),
               SizedBox(
                 height: 30.0,
@@ -68,7 +69,7 @@ class _MyShopSellerState extends State<MyShopSeller> {
             date: 'Mar 30',
             dealer: 'Bakey Bakey',
             transasctions: transactions,
-            isBuyer: true,
+            isBuyer: false,
           );
         }
         break;
@@ -79,7 +80,7 @@ class _MyShopSellerState extends State<MyShopSeller> {
             date: 'Mar 30',
             dealer: 'Bakey Bakey',
             transasctions: transactions,
-            isBuyer: true,
+            isBuyer: false,
           );
         }
         break;
@@ -90,7 +91,7 @@ class _MyShopSellerState extends State<MyShopSeller> {
             date: 'Mar 30',
             dealer: 'Bakey Bakey',
             transasctions: transactions,
-            isBuyer: true,
+            isBuyer: false,
           );
         }
         break;

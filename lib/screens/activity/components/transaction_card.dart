@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:lokalapp/models/transaction.dart';
-import 'package:lokalapp/screens/activity/buyer/declined_order_a7.dart';
+
 import 'package:lokalapp/screens/activity/buyer/for_confirmation_a3.dart';
-import 'package:lokalapp/screens/activity/buyer/for_delivery_confirmed_a5.dart';
-import 'package:lokalapp/screens/activity/buyer/order_again_a6.dart';
+
 import 'package:lokalapp/screens/activity/buyer/to_pay.dart';
+import 'package:lokalapp/screens/activity/seller/confirm_payment_b3.dart';
+import 'package:lokalapp/screens/activity/seller/order_details_b1.dart';
+import 'package:lokalapp/screens/activity/seller/to_ship_b4.dart';
+import 'package:lokalapp/screens/activity/seller/waiting_for_payment_b2.dart';
 import 'package:lokalapp/utils/themes.dart';
 
 import '../buyer/for_delivery_buyer_a4.dart';
-import '../buyer/order_details.dart';
+
 import '../buyer/to_pay.dart';
 
 // THIS IS A MOCK DATA FOR BUILD PURPOSES
@@ -117,28 +120,50 @@ class TransactionCard extends StatelessWidget {
     }
   }
 
+  void onPressedSeller(BuildContext context) {
+    if (isBuyer) return;
+    switch (transactionState) {
+      case 1:
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => WaitingForPayment()));
+        break;
+      case 2:
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => OrderDetailsSeller()));
+        break;
+      case 3:
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => ConfirmPaymentSeller()));
+        break;
+
+      default:
+        // do nothing
+        break;
+    }
+  }
+
   Widget buildActionButtons(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Expanded(
           child: FlatButton(
-            height: MediaQuery.of(context).size.height * 0.05,
-            color: Color(0xFFF1FAFF),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20.0),
-              side: BorderSide(color: kTealColor),
-            ),
-            textColor: kTealColor,
-            child: Text(
-              "DETAILS",
-              style: TextStyle(
-                  fontFamily: "Goldplay",
-                  fontSize: 14,
-                  fontWeight: FontWeight.w700),
-            ),
-            onPressed: () => onPress(context),
-          ),
+              height: MediaQuery.of(context).size.height * 0.05,
+              color: Color(0xFFF1FAFF),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20.0),
+                side: BorderSide(color: kTealColor),
+              ),
+              textColor: kTealColor,
+              child: Text(
+                "DETAILS",
+                style: TextStyle(
+                    fontFamily: "Goldplay",
+                    fontSize: 14,
+                    fontWeight: FontWeight.w700),
+              ),
+              onPressed: () =>
+                  isBuyer ? onPress(context) : onPressedSeller(context)),
         ),
         Visibility(
           visible: enableSecondButton,

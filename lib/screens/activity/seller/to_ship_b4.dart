@@ -2,15 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:lokalapp/providers/products.dart';
 import 'package:lokalapp/providers/shops.dart';
 import 'package:lokalapp/providers/user.dart';
-
-import 'package:lokalapp/screens/activity/components/for_delivery_card.dart';
 import 'package:lokalapp/screens/activity/components/order_screen_card.dart';
 import 'package:lokalapp/screens/activity/buyer/payment_option.dart';
-
+import 'package:lokalapp/screens/activity/seller/payment_confirmed_b3.dart';
 import 'package:lokalapp/utils/themes.dart';
+
 import 'package:provider/provider.dart';
 
-class ForConfirmation extends StatelessWidget {
+class ToShipSeller extends StatelessWidget {
   final TextEditingController _notesController = TextEditingController();
 
   appBar(context) => PreferredSize(
@@ -24,10 +23,9 @@ class ForConfirmation extends StatelessWidget {
           width: MediaQuery.of(context).size.width,
           height: 210,
           child: Container(
-            decoration: BoxDecoration(color: kTealColor),
+            decoration: BoxDecoration(color: Color(0XFF57183F)),
             child: Container(
-              margin: const EdgeInsets.only(top: 48, left: 10),
-              // margin: const EdgeInsets.fromLTRB(0, 40, 0, 0),
+              margin: const EdgeInsets.only(top: 70, left: 15),
               child: Column(
                 children: [
                   Row(
@@ -47,7 +45,7 @@ class ForConfirmation extends StatelessWidget {
                       SizedBox(
                         width: 100,
                       ),
-                      Row(
+                      Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
@@ -59,19 +57,19 @@ class ForConfirmation extends StatelessWidget {
                                 fontSize: 22,
                                 fontWeight: FontWeight.w600),
                           ),
+                          SizedBox(
+                            height: 8,
+                          ),
+                          Text("To Ship",
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                  fontFamily: "Goldplay",
+                                  fontWeight: FontWeight.w600))
                         ],
                       ),
                     ],
                   ),
-                  SizedBox(
-                    height: 8,
-                  ),
-                  Text("Waiting for confirmation",
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                          fontFamily: "Goldplay",
-                          fontWeight: FontWeight.w600))
                 ],
               ),
             ),
@@ -80,62 +78,94 @@ class ForConfirmation extends StatelessWidget {
       );
 
   button(context) => Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              SizedBox(
+                width: 10,
+              ),
+              Container(
+                height: 40,
+                width: MediaQuery.of(context).size.width * 0.8,
+                // padding: const EdgeInsets.only(left: 10, right: 30),
+                child: FlatButton(
+                  color: kTealColor,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20.0),
+                    side: BorderSide(color: kTealColor),
+                  ),
+                  textColor: Colors.black,
+                  child: Text(
+                    "View Proof of Payment",
+                    style: TextStyle(
+                        fontFamily: "Goldplay",
+                        color: Colors.white,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600),
+                  ),
+                  onPressed: () {},
+                ),
+              ),
+            ],
+          ),
           SizedBox(
-            width: 10,
+            height: 10,
           ),
-          Container(
-            height: 40,
-            width: MediaQuery.of(context).size.width * 0.8,
-            // padding: const EdgeInsets.only(left: 10, right: 30),
-            child: FlatButton(
-              // height: 50,
-              // minWidth: 100,
-              // color: kTealColor,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20.0),
-                side: BorderSide(color: kTealColor),
+          Row(
+            children: [
+              Container(
+                height: 40,
+                width: MediaQuery.of(context).size.width * 0.5,
+                padding: const EdgeInsets.only(left: 10, right: 10),
+                child: FlatButton(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20.0),
+                    side: BorderSide(color: kTealColor),
+                  ),
+                  textColor: Colors.black,
+                  child: Text(
+                    "Message Buyer",
+                    style: TextStyle(
+                        fontFamily: "Goldplay",
+                        color: kTealColor,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600),
+                  ),
+                  onPressed: () {},
+                ),
               ),
-              textColor: Colors.black,
-              child: Text(
-                "View Proof of Payment",
-                style: TextStyle(
-                    fontFamily: "Goldplay",
-                    color: kTealColor,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600),
+              Container(
+                height: 40,
+                width: MediaQuery.of(context).size.width * 0.5,
+                padding: const EdgeInsets.only(left: 10, right: 10),
+                child: FlatButton(
+                  // height: 50,
+                  // minWidth: 100,
+                  color: Color(0XFFFF7A00),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20.0),
+                    side: BorderSide(color: Color(0XFFFF7A00)),
+                  ),
+                  textColor: Colors.black,
+                  child: Text(
+                    "Ship Out",
+                    style: TextStyle(
+                        fontFamily: "Goldplay",
+                        color: Colors.white,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600),
+                  ),
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => PaymentConfirmedSeller()));
+                  },
+                ),
               ),
-              onPressed: () {},
-            ),
-          ),
-          SizedBox(
-            height: 15,
-          ),
-          Container(
-            height: 40,
-            width: MediaQuery.of(context).size.width * 0.8,
-            // padding: const EdgeInsets.only(left: 10, right: 30),
-            child: FlatButton(
-              // height: 50,
-              // minWidth: 100,
-              // color: kTealColor,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20.0),
-                side: BorderSide(color: kTealColor),
-              ),
-              textColor: Colors.black,
-              child: Text(
-                "Message Shop",
-                style: TextStyle(
-                    fontFamily: "Goldplay",
-                    color: kTealColor,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600),
-              ),
-              onPressed: () {},
-            ),
+            ],
           ),
         ],
       );
@@ -149,7 +179,6 @@ class ForConfirmation extends StatelessWidget {
 
     var products =
         Provider.of<Products>(context, listen: false).findByUser(user.id).first;
-
     return Scaffold(
       appBar: appBar(context),
       body: SingleChildScrollView(
@@ -165,6 +194,7 @@ class ForConfirmation extends StatelessWidget {
                 width: size.width * 0.9,
                 price: products.basePrice,
                 productName: products.name,
+                showNotes: true,
                 button: button(context),
                 showCancelButton: false,
                 showButton: false,
@@ -175,8 +205,7 @@ class ForConfirmation extends StatelessWidget {
                 buttonLeftText: "Cancel Order",
                 confirmation: "Paid, Processing Payment",
                 waitingForSeller: "",
-                showNotes: true,
-                buttonMessage: "View",
+                buttonMessage: "Pay Now",
                 controller: _notesController),
             SizedBox(
               height: 20,

@@ -298,135 +298,6 @@ class OrderScreenCard extends StatelessWidget {
             ])
       ]);
 
-  // Widget _buildPopupDialog(BuildContext context) {
-  //   return AlertDialog(
-  //     // contentPadding: EdgeInsets.all(10.0),
-  //     insetPadding: EdgeInsets.symmetric(horizontal: 40, vertical: 220),
-  //     shape: RoundedRectangleBorder(
-  //         borderRadius: BorderRadius.all(Radius.circular(15))),
-  //     title: Text('Are you sure you want to cancel this order? '),
-  //     content: Column(
-
-  //       children: [
-  //         SizedBox(
-  //           height: 20,
-  //         ),
-  //         Text("We will notify Bakey Bakey that"),
-  //         Text("you cancelled this order.")
-  //       ],
-  //     ),
-  //     actions: <Widget>[
-  //       Row(
-  //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //         children: [
-  //           Container(
-  //             height: 43,
-  //             width: 140,
-  //             child: FlatButton(
-  //               color: Colors.white,
-  //               shape: RoundedRectangleBorder(
-  //                 borderRadius: BorderRadius.circular(20.0),
-  //                 side: BorderSide(color: Color(0XFFCC3752)),
-  //               ),
-  //               textColor: Colors.black,
-  //               child: Text(
-  //                 " Keep Order",
-  //                 style: TextStyle(
-  //                     fontFamily: "Goldplay",
-  //                     fontSize: 13,
-  //                     color: Color(0XFFCC3752),
-  //                     fontWeight: FontWeight.w600),
-  //               ),
-  //               onPressed: () {},
-  //             ),
-  //           ),
-  //           SizedBox(
-  //             width: 5,
-  //           ),
-  //           Container(
-  //             height: 43,
-  //             width: 140,
-  //             child: FlatButton(
-  //               shape: RoundedRectangleBorder(
-  //                 borderRadius: BorderRadius.circular(20.0),
-  //                 side: BorderSide(color: kTealColor),
-  //               ),
-  //               textColor: Colors.black,
-  //               child: Text(
-  //                 "Cancel Order",
-  //                 style: TextStyle(
-  //                     fontFamily: "Goldplay",
-  //                     fontSize: 13,
-  //                     color: kTealColor,
-  //                     fontWeight: FontWeight.w600),
-  //               ),
-  //               onPressed: onPressed,
-
-  //       children: [
-  //         SizedBox(
-  //           height: 20,
-  //         ),
-  //         Text("We will notify Bakey Bakey that"),
-  //         Text("you cancelled this order.")
-  //       ],
-  //     ),
-  //     actions: <Widget>[
-  //       Row(
-  //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //         children: [
-  //           Container(
-  //             height: 43,
-  //             width: 140,
-  //             child: FlatButton(
-  //               color: Colors.white,
-  //               shape: RoundedRectangleBorder(
-  //                 borderRadius: BorderRadius.circular(20.0),
-  //                 side: BorderSide(color: Color(0XFFCC3752)),
-  //               ),
-  //               textColor: Colors.black,
-  //               child: Text(
-  //                 " Keep Order",
-  //                 style: TextStyle(
-  //                     fontFamily: "Goldplay",
-  //                     fontSize: 13,
-  //                     color: Color(0XFFCC3752),
-  //                     fontWeight: FontWeight.w600),
-  //               ),
-  //               onPressed: () {},
-  //             ),
-  //           ),
-  //           SizedBox(
-  //             width: 5,
-  //           ),
-  //           Container(
-  //             height: 43,
-  //             width: 140,
-  //             child: FlatButton(
-  //               shape: RoundedRectangleBorder(
-  //                 borderRadius: BorderRadius.circular(20.0),
-  //                 side: BorderSide(color: kTealColor),
-  //               ),
-  //               textColor: Colors.black,
-  //               child: Text(
-  //                 "Cancel Order",
-  //                 style: TextStyle(
-  //                     fontFamily: "Goldplay",
-  //                     fontSize: 13,
-  //                     color: kTealColor,
-  //                     fontWeight: FontWeight.w600),
-  //               ),
-  //               onPressed: onPressed,
-  //             ),
-  //           ),
-  //           SizedBox(
-  //             height: 30,
-  //           )
-  //         ],
-  //       ),
-  //     ],
-  //   )]));
-  // }
-
   buildButtons(context) =>
       Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
         SizedBox(width: 5),
@@ -470,9 +341,8 @@ class OrderScreenCard extends StatelessWidget {
           width: 190,
           padding: const EdgeInsets.all(2),
           child: FlatButton(
-            // height: 50,
-            // minWidth: 100,
-            // color: kTealColor,
+            // color: Color(0XFFFF7A00),
+            onPressed: onPressed,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(20.0),
               side: BorderSide(color: kTealColor),
@@ -500,15 +370,10 @@ class OrderScreenCard extends StatelessWidget {
         ),
         showNotes ? notes : Container(),
         // button,
-        SizedBox(height: 50),
-        showButton ? buildButtons(context) : button,
-        SizedBox(
-          height: 30,
-        ),
+        SizedBox(height: 60),
 
-        notes,
         button,
-        SizedBox(height: 130),
+        SizedBox(height: 60),
         showButton ? buildButtons(context) : Container()
       ],
     );
