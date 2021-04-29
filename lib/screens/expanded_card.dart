@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:lokalapp/models/activity_feed.dart';
+import 'package:lokalapp/providers/users.dart';
 import 'package:provider/provider.dart';
 
-import '../providers/user.dart';
 import '../utils/themes.dart';
 
 class ExpandedCard extends StatelessWidget {
-  final Map activity;
+  final ActivityFeed activity;
   ExpandedCard({@required this.activity});
   @override
   Widget build(BuildContext context) {
     // CurrentUser _user = Provider.of<CurrentUser>(context);
+    var user = Provider.of<Users>(context).findById(activity.userId);
     return Scaffold(
         backgroundColor: Colors.white,
         appBar: PreferredSize(
@@ -27,8 +29,6 @@ class ExpandedCard extends StatelessWidget {
                 margin: const EdgeInsets.fromLTRB(0, 20, 0, 0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-
-                  // crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Padding(
                       padding: const EdgeInsets.only(top: 32),
@@ -44,8 +44,6 @@ class ExpandedCard extends StatelessWidget {
                       ),
                     ),
                     Row(
-                      // mainAxisAlignment: MainAxisAlignment.end,
-                      // crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         Padding(
                           padding: const EdgeInsets.only(left: 280, top: 29),
@@ -67,26 +65,26 @@ class ExpandedCard extends StatelessWidget {
           ),
         ),
         body: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
             Row(
               children: [
                 Padding(
                   padding: const EdgeInsets.all(30.0),
                   child: CircleAvatar(
-                    radius: 30,
+                    backgroundImage: user.profilePhoto.isNotEmpty
+                        ? NetworkImage(user.profilePhoto)
+                        : null,
+                    radius: 30.0,
                   ),
                 ),
-                Consumer<CurrentUser>(
-                  builder: (context, user, child) {
-                    return Text(
-                      user.firstName + " " + user.lastName,
-                      style: TextStyle(
-                          fontFamily: "Goldplay",
-                          fontSize: 24,
-                          fontWeight: FontWeight.w700),
-                    );
-                  },
-                )
+                Text(
+                  user.firstName + " " + user.lastName,
+                  style: TextStyle(
+                      fontFamily: "Goldplay",
+                      fontSize: 24,
+                      fontWeight: FontWeight.w700),
+                ),
               ],
             ),
             Row(
@@ -96,7 +94,7 @@ class ExpandedCard extends StatelessWidget {
                     child: Padding(
                       padding: const EdgeInsets.only(left: 20, right: 20),
                       child: Text(
-                        activity["message"],
+                        activity.message,
                         softWrap: true,
                         style: TextStyle(fontSize: 20),
                       ),

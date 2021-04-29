@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:lokalapp/screens/activity/seller/my_shop.dart';
+import 'package:lokalapp/screens/activity/seller/my_shop_seller.dart';
 
-import 'my_orders.dart';
-import 'my_shop.dart';
+import 'buyer/my_orders.dart';
 
 class Activity extends StatefulWidget {
   @override
@@ -90,7 +91,7 @@ class _ActivityState extends State<Activity>
           controller: _tabController,
           children: [
             MyOrders(),
-            MyShop(),
+            MyShopSeller(),
           ],
         ),
       ),

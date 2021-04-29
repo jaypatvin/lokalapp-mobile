@@ -3,7 +3,7 @@ import 'package:lokalapp/providers/products.dart';
 import 'package:lokalapp/providers/shops.dart';
 import 'package:lokalapp/providers/user.dart';
 import 'package:lokalapp/screens/activity/components/order_screen_card.dart';
-import 'package:lokalapp/screens/activity/view_proof_of_payment_seller.dart';
+import 'package:lokalapp/screens/activity/seller/view_proof_of_payment_seller.dart';
 
 import 'package:lokalapp/utils/themes.dart';
 import 'package:provider/provider.dart';

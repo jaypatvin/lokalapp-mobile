@@ -2,16 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:lokalapp/providers/products.dart';
 import 'package:lokalapp/providers/shops.dart';
 import 'package:lokalapp/providers/user.dart';
-import 'package:lokalapp/screens/activity/delivered_seller.dart';
+import 'package:lokalapp/screens/activity/components/order_screen_card.dart';
+import 'package:lokalapp/screens/activity/seller/seller_confirmation.dart';
 import 'package:lokalapp/utils/themes.dart';
 import 'package:provider/provider.dart';
 
-import 'components/order_screen_card.dart';
-
-class ViewProofOfPaymentSeller extends StatelessWidget {
+class MyShop extends StatelessWidget {
   final TextEditingController _notesController = TextEditingController();
 
-  button(context) => Row(
+  Widget get button => Row(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -23,8 +22,6 @@ class ViewProofOfPaymentSeller extends StatelessWidget {
             width: 160,
             padding: const EdgeInsets.all(2),
             child: FlatButton(
-              // height: 50,
-              // minWidth: 100,
               color: kTealColor,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20.0),
@@ -34,9 +31,10 @@ class ViewProofOfPaymentSeller extends StatelessWidget {
               child: Text(
                 "Message Buyer",
                 style: TextStyle(
-                    fontFamily: "Goldplay",
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600),
+                  fontFamily: "Goldplay",
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
               onPressed: () {},
             ),
@@ -77,7 +75,6 @@ class ViewProofOfPaymentSeller extends StatelessWidget {
         ),
       ),
       preferredSize: Size.fromHeight(60.0));
-
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -88,36 +85,40 @@ class ViewProofOfPaymentSeller extends StatelessWidget {
 
     var products =
         Provider.of<Products>(context, listen: false).findByUser(user.id).first;
+
     return Scaffold(
       appBar: AppBar(
-        leading: Container(),
-        backgroundColor: Color(0XFF57183F),
-        bottom: appbar(context),
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            SizedBox(
-              height: 20,
-            ),
-            OrderScreenCard(
-              button: button(context),
-              showCancelButton: true,
-              onPressed: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => DeliveredSeller()));
-              },
-              buttonLeftText: "View Proof Of Payment",
-              confirmation: "Paid, Processing Payment",
-              waitingForSeller: "",
-              buttonMessage: "Confirm Payment",
-              controller: _notesController,
-              username: shops.name,
-              width: size.width * 0.9,
-              price: products.basePrice,
-              productName: products.name,
-            )
-          ],
+          leading: Container(),
+          backgroundColor: Color(0XFF57183F),
+          bottom: appbar(context)),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Column(
+            // mainAxisSize: MainAxisSize.min,
+            children: [
+              SizedBox(
+                height: 20,
+              ),
+              OrderScreenCard(
+                button: button,
+                buttonMessage: "Confirm Order",
+                confirmation: "To Confirm",
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => SellerConfirmation()));
+                },
+                buttonLeftText: "Cancel Order",
+                controller: _notesController,
+                width: size.width * 0.9,
+                waitingForSeller: "",
+                username: shops.name,
+                price: products.basePrice,
+                productName: products.name,
+              ),
+            ],
+          ),
         ),
       ),
     );

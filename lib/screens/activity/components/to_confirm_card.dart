@@ -145,7 +145,7 @@ class ToConfirmCard extends StatelessWidget {
                                   style: TextStyle(
                                       fontSize: 11,
                                       fontFamily: "GolplayBold",
-                                      fontWeight: FontWeight.w300),
+                                      fontWeight: FontWeight.w700),
                                 ),
                               )
                             ],
@@ -207,12 +207,12 @@ class ToConfirmCard extends StatelessWidget {
                 // color: Color(0XFFF1AFF),
                 height: 210,
                 width: width,
-                decoration: BoxDecoration(
-                    border: Border.all(
-                      color: Colors.grey[400],
-                    ),
-                    borderRadius: BorderRadius.all(Radius.circular(20))),
-                padding: const EdgeInsets.all(20),
+                // decoration: BoxDecoration(
+                //     border: Border.all(
+                //       color: Colors.grey[400],
+                //     ),
+                //     borderRadius: BorderRadius.all(Radius.circular(20))),
+                // padding: const EdgeInsets.all(20),
                 child: ListView(
                     physics: NeverScrollableScrollPhysics(),
                     children: [
