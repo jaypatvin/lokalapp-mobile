@@ -8,7 +8,7 @@ import 'package:provider/provider.dart';
 
 import '../components/order_screen_card.dart';
 
-class PaymentConfirmedSeller extends StatelessWidget {
+class OrderShippedOut extends StatelessWidget {
   final TextEditingController _notesController = TextEditingController();
   buildButtons(context) => Column(
         mainAxisAlignment: MainAxisAlignment.center,

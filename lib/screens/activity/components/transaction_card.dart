@@ -1,5 +1,11 @@
 import 'package:flutter/material.dart';
-
+import 'package:lokalapp/models/transaction.dart';
+import '../buyer/declined_order_a7.dart';
+import '../seller/past_order_delivered_b6.dart';
+import '../seller/payment_confirmed_b3.dart';
+import '../seller/shipped_out_b5.dart';
+import '../seller/to_ship_b4.dart';
+import 'package:lokalapp/utils/themes.dart';
 import '../../../models/transaction.dart';
 import '../../../utils/themes.dart';
 import '../buyer/for_confirmation_a3.dart';
@@ -11,7 +17,6 @@ import '../buyer/to_pay.dart';
 import '../seller/confirm_payment_b3.dart';
 import '../seller/order_confimred_b1.dart';
 import '../seller/order_details_b1.dart';
-import '../seller/order_shipped_out.dart';
 import '../seller/waiting_for_payment_b2.dart';
 
 // THIS IS A MOCK DATA FOR BUILD PURPOSES
@@ -41,7 +46,9 @@ const Map<int, String> sellerActivityState = {
   1: 'To Confirm',
   2: 'Waiting for Payment',
   3: 'Payment Received',
-  4: 'To Ship'
+  4: 'To Ship',
+  5: 'Shipped Out',
+  6: 'Declined Order'
 };
 
 class TransactionCard extends StatelessWidget {
@@ -175,7 +182,11 @@ class TransactionCard extends StatelessWidget {
   void onPressedSeller(BuildContext context) {
     if (isBuyer) return;
     switch (transactionState) {
-      case 2:
+      case 0:
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => PastOrderDelivered()));
+        break;
+      case 1:
         Navigator.push(context,
             MaterialPageRoute(builder: (context) => WaitingForPayment()));
         break;
@@ -187,7 +198,18 @@ class TransactionCard extends StatelessWidget {
         Navigator.push(context,
             MaterialPageRoute(builder: (context) => ConfirmPaymentSeller()));
         break;
-
+      case 4:
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => ToShipSeller()));
+        break;
+      case 5:
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => ShippedOut()));
+        break;
+      case 6:
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => DeclinedOrder()));
+        break;
       default:
         // do nothing
         break;
@@ -312,14 +334,13 @@ class TransactionCard extends StatelessWidget {
                       Container(
                         width: MediaQuery.of(context).size.width * 0.12,
                         height: MediaQuery.of(context).size.width * 0.12,
-                        color: Colors.pink,
-                        // TODO: ADD IMAGE FOR PRODUCT
-                        // decoration: BoxDecoration(
-                        //   image: DecorationImage(
-                        //     image: NetworkImage(transasctions[index].url),
-                        //     fit: BoxFit.cover,
-                        //   ),
-                        // ),
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image: NetworkImage(
+                                "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.living-lifestyle.co.za%2Fwp-content%2Fuploads%2F2016%2F06%2Fmoltenpeanutbutterchocolatefondantcake6x4.jpg&f=1&nofb=1"),
+                            fit: BoxFit.cover,
+                          ),
+                        ),
                       ),
                       Text(item.productName),
                       Text('x${item.quantity}'),

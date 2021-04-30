@@ -15,6 +15,7 @@ class OrderScreenCard extends StatelessWidget {
   final double price;
   final String buttonMessage;
   final bool showNotes;
+  Function leftButtonOnPressed;
   final String waitingForSeller;
   final String productName;
   Widget button;
@@ -31,6 +32,7 @@ class OrderScreenCard extends StatelessWidget {
       this.confirmation,
       this.showCancelButton = true,
       this.waitingForSeller,
+      this.leftButtonOnPressed,
       this.username,
       this.onPressed,
       this.showButton = true,
@@ -323,12 +325,7 @@ class OrderScreenCard extends StatelessWidget {
                         color: Color(0XFFCC3752),
                         fontWeight: FontWeight.w600),
                   ),
-                  onPressed: () {
-                    // showDialog(
-                    //     context: context,
-                    //     builder: (BuildContext context) =>
-                    //         _buildPopupDialog(context));
-                  },
+                  onPressed: leftButtonOnPressed,
                 ),
               )
             : Container(

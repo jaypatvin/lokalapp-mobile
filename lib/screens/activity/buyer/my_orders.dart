@@ -30,6 +30,9 @@ class _MyOrdersState extends State<MyOrders> {
         {
           return Column(
             children: [
+              SizedBox(
+                height: 10,
+              ),
               TransactionCard(
                 transactionState: 1,
                 date: 'Mar 30',
