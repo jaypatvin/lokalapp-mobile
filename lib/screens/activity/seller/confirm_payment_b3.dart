@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:lokalapp/providers/products.dart';
-import 'package:lokalapp/providers/shops.dart';
-import 'package:lokalapp/providers/user.dart';
-import 'package:lokalapp/screens/activity/components/order_screen_card.dart';
-import 'package:lokalapp/screens/activity/buyer/payment_option.dart';
-import 'package:lokalapp/screens/activity/seller/order_confimred_b1.dart';
-import 'package:lokalapp/screens/activity/seller/payment_confirmed_b3.dart';
-import 'package:lokalapp/utils/themes.dart';
-
 import 'package:provider/provider.dart';
+
+import '../../../providers/products.dart';
+import '../../../providers/shops.dart';
+import '../../../providers/user.dart';
+import '../../../utils/themes.dart';
+import '../buyer/payment_option.dart';
+import '../components/order_screen_card.dart';
+import 'payment_confirmed_b3.dart';
+import 'view_proof_of_payment_seller.dart';
 
 class ConfirmPaymentSeller extends StatelessWidget {
   final TextEditingController _notesController = TextEditingController();
@@ -97,7 +97,12 @@ class ConfirmPaymentSeller extends StatelessWidget {
                         fontSize: 14,
                         fontWeight: FontWeight.w600),
                   ),
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ViewProofOfPaymentSeller()));
+                  },
                 ),
               ),
             ],

@@ -16,10 +16,8 @@ import '../../widgets/operating_hours.dart';
 import '../../widgets/photo_box.dart';
 import '../../widgets/rounded_button.dart';
 import '../edit_shop_screen/operating_hours_shop.dart';
-import '../edit_shop_screen/set_custom_operating_hours.dart';
 import 'appbar_shop.dart';
 import 'basic_information.dart';
-import 'components/condensed_operating_hours.dart';
 import 'shopDescription.dart';
 import 'shop_name.dart';
 
@@ -74,8 +72,7 @@ class _AddShopState extends State<AddShop> {
         opening: openingHour,
         closing: closingHour,
         useCustomHours: _setOperatingHours,
-        customHours:
-            customHours.map((key, value) => MapEntry(key, value.toString())),
+        operatingHours: {'start_time': openingHour, 'end_time': closingHour},
       );
       bool success = await shops.create(user.idToken, shopBody.data);
       if (success) {
@@ -240,18 +237,6 @@ class _AddShopState extends State<AddShop> {
             SizedBox(
               height: 20,
             ),
-            SetCustomoperatingHours(
-              label: "Set Custom Operating Hours",
-              value: _setOperatingHours,
-              onChanged: (value) {
-                setState(() {
-                  _setOperatingHours = value;
-                });
-              },
-            ),
-            SizedBox(height: 10),
-            Container(
-                child: _setOperatingHours ? buildDaysOfWeek() : Container()),
             SizedBox(height: MediaQuery.of(context).size.height * 0.05),
             RoundedButton(
               label: "SUBMIT",
@@ -266,67 +251,6 @@ class _AddShopState extends State<AddShop> {
           ],
         ),
       ),
-    );
-  }
-
-  Map<String, Days> customHours = Map();
-
-  Widget buildDaysOfWeek() {
-    DateTime _openingCustom = DateTime.now();
-    DateTime _closingCustom = DateTime.now();
-
-    List<String> daysOfWeek = [
-      "Monday",
-      "Tuesday",
-      "Wednesday",
-      "Thursday",
-      "Friday",
-      "Saturday",
-      "Sunday",
-    ];
-
-    List<Widget> condensedOperatingHours = [];
-    for (String day in daysOfWeek) {
-      condensedOperatingHours.add(
-        Container(
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: CondensedOperatingHours(
-                  day: day,
-                  onChangedOpening: (value) {
-                    setState(() {
-                      _openingCustom = value;
-                      openingCustomHour =
-                          DateFormat("h:mm a").format(_openingCustom);
-                      customHours[day] = Days();
-                      customHours[day].opening = openingCustomHour;
-                    });
-                  },
-                  onChangedClosing: (value) {
-                    setState(() {
-                      _closingCustom = value;
-                      closingCustomHour =
-                          DateFormat("h:mm a").format(_closingCustom);
-
-                      customHours[day].closing = closingCustomHour;
-                    });
-                  },
-                ),
-              ),
-            ],
-          ),
-        ),
-      );
-    }
-    return Wrap(
-      spacing: 5.0,
-      runSpacing: 2.0,
-      direction: Axis.vertical,
-      children: condensedOperatingHours,
     );
   }
 }
