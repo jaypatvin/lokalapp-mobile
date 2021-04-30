@@ -4,11 +4,12 @@ import 'package:lokalapp/providers/shops.dart';
 import 'package:lokalapp/providers/user.dart';
 import 'package:lokalapp/screens/activity/components/order_screen_card.dart';
 import 'package:lokalapp/screens/activity/buyer/payment_option.dart';
-
+import 'package:lokalapp/screens/activity/seller/order_confimred_b1.dart';
 import 'package:lokalapp/utils/themes.dart';
+
 import 'package:provider/provider.dart';
 
-class PastOrderDelivered extends StatelessWidget {
+class DeclinedOrder extends StatelessWidget {
   final TextEditingController _notesController = TextEditingController();
 
   appBar(context) => PreferredSize(
@@ -25,7 +26,6 @@ class PastOrderDelivered extends StatelessWidget {
             decoration: BoxDecoration(color: Color(0XFF57183F)),
             child: Container(
               margin: const EdgeInsets.only(top: 48, left: 10),
-              // margin: const EdgeInsets.fromLTRB(0, 40, 0, 0),
               child: Column(
                 children: [
                   Row(
@@ -43,13 +43,13 @@ class PastOrderDelivered extends StatelessWidget {
                         ),
                       ),
                       SizedBox(
-                        width: 100,
+                        width: 80,
                       ),
-                      Row(
+                      Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            "Past Order",
+                            "Order Details",
                             textAlign: TextAlign.center,
                             style: TextStyle(
                                 color: Colors.white,
@@ -57,26 +57,27 @@ class PastOrderDelivered extends StatelessWidget {
                                 fontSize: 22,
                                 fontWeight: FontWeight.w600),
                           ),
+                          SizedBox(
+                            height: 8,
+                          ),
+                          Text("Declined Order",
+                              style: TextStyle(
+                                  color: Color(0XFFCC3752),
+                                  fontSize: 16,
+                                  fontFamily: "Goldplay",
+                                  fontWeight: FontWeight.w600))
                         ],
                       ),
                     ],
                   ),
-                  SizedBox(
-                    height: 8,
-                  ),
-                  Text("Delivered",
-                      style: TextStyle(
-                          color: Color(0XFFFFC700),
-                          fontSize: 16,
-                          fontFamily: "Goldplay",
-                          fontWeight: FontWeight.w600))
                 ],
               ),
             ),
           ),
         ),
       );
-  button(context) => Column(
+
+  button(context) => Row(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
@@ -85,36 +86,8 @@ class PastOrderDelivered extends StatelessWidget {
           ),
           Container(
             height: 40,
-            width: MediaQuery.of(context).size.width * 0.8,
-            // padding: const EdgeInsets.only(left: 10, right: 30),
+            width: MediaQuery.of(context).size.width * 0.9,
             child: FlatButton(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20.0),
-                side: BorderSide(color: kTealColor),
-              ),
-              textColor: Colors.black,
-              child: Text(
-                "View Proof of Payment",
-                style: TextStyle(
-                    fontFamily: "Goldplay",
-                    color: kTealColor,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600),
-              ),
-              onPressed: () {},
-            ),
-          ),
-          SizedBox(
-            height: 15,
-          ),
-          Container(
-            height: 40,
-            width: MediaQuery.of(context).size.width * 0.8,
-            // padding: const EdgeInsets.only(left: 10, right: 30),
-            child: FlatButton(
-              // height: 50,
-              // minWidth: 100,
-              // color: kTealColor,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20.0),
                 side: BorderSide(color: kTealColor),
@@ -151,13 +124,14 @@ class PastOrderDelivered extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             SizedBox(
-              height: 40,
+              height: 20,
             ),
             OrderScreenCard(
                 username: shops.name,
                 width: size.width * 0.9,
                 price: products.basePrice,
                 productName: products.name,
+                showNotes: true,
                 button: button(context),
                 showCancelButton: false,
                 showButton: false,
@@ -168,8 +142,7 @@ class PastOrderDelivered extends StatelessWidget {
                 buttonLeftText: "Cancel Order",
                 confirmation: "Paid, Processing Payment",
                 waitingForSeller: "",
-                showNotes: true,
-                buttonMessage: "View",
+                buttonMessage: "Pay Now",
                 controller: _notesController),
             SizedBox(
               height: 20,

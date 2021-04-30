@@ -5,7 +5,10 @@ import 'package:lokalapp/screens/activity/buyer/for_confirmation_a3.dart';
 
 import 'package:lokalapp/screens/activity/buyer/to_pay.dart';
 import 'package:lokalapp/screens/activity/seller/confirm_payment_b3.dart';
+import 'package:lokalapp/screens/activity/seller/declined_order_b7.dart';
 import 'package:lokalapp/screens/activity/seller/order_details_b1.dart';
+import 'package:lokalapp/screens/activity/seller/past_order_delivered.b6.dart';
+import 'package:lokalapp/screens/activity/seller/shipped_out_b5.dart';
 import 'package:lokalapp/screens/activity/seller/to_ship_b4.dart';
 import 'package:lokalapp/screens/activity/seller/waiting_for_payment_b2.dart';
 import 'package:lokalapp/utils/themes.dart';
@@ -40,7 +43,9 @@ const Map<int, String> sellerActivityState = {
   1: 'Waiting for Payment',
   2: 'To Confirm',
   3: 'Payment Received',
-  4: 'To Deliver'
+  4: 'To Ship',
+  5: 'Shipped Out',
+  6: 'Declined Order'
 };
 
 class TransactionCard extends StatelessWidget {
@@ -123,6 +128,10 @@ class TransactionCard extends StatelessWidget {
   void onPressedSeller(BuildContext context) {
     if (isBuyer) return;
     switch (transactionState) {
+      case 0:
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => PastOrderDelivered()));
+        break;
       case 1:
         Navigator.push(context,
             MaterialPageRoute(builder: (context) => WaitingForPayment()));
@@ -135,7 +144,18 @@ class TransactionCard extends StatelessWidget {
         Navigator.push(context,
             MaterialPageRoute(builder: (context) => ConfirmPaymentSeller()));
         break;
-
+      case 4:
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => ToShipSeller()));
+        break;
+      case 5:
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => ShippedOut()));
+        break;
+      case 6:
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => DeclinedOrder()));
+        break;
       default:
         // do nothing
         break;
@@ -261,14 +281,13 @@ class TransactionCard extends StatelessWidget {
                       Container(
                         width: MediaQuery.of(context).size.width * 0.12,
                         height: MediaQuery.of(context).size.width * 0.12,
-                        color: Colors.pink,
-                        // TODO: ADD IMAGE FOR PRODUCT
-                        // decoration: BoxDecoration(
-                        //   image: DecorationImage(
-                        //     image: NetworkImage(transasctions[index].url),
-                        //     fit: BoxFit.cover,
-                        //   ),
-                        // ),
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image: NetworkImage(
+                                "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.living-lifestyle.co.za%2Fwp-content%2Fuploads%2F2016%2F06%2Fmoltenpeanutbutterchocolatefondantcake6x4.jpg&f=1&nofb=1"),
+                            fit: BoxFit.cover,
+                          ),
+                        ),
                       ),
                       Text(item.productName),
                       Text('x${item.quantity}'),

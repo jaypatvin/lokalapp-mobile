@@ -9,10 +9,13 @@ class MyShopSeller extends StatefulWidget {
 
 class _MyShopSellerState extends State<MyShopSeller> {
   final Map<int, String> shopFilters = {
-    0: 'All',
-    1: 'For Confirmation',
-    2: 'For Payment',
-    3: 'For Delivery'
+    0: 'Past Order',
+    1: 'Waiting for Payment',
+    2: 'To Confirm',
+    3: 'Payment Received',
+    4: 'To Ship',
+    5: 'Shipped Out',
+    6: 'Declined Order'
   };
   int selectedIndex = 0;
 
@@ -28,12 +31,25 @@ class _MyShopSellerState extends State<MyShopSeller> {
         {
           return Column(
             children: [
+              SizedBox(
+                height: 10.0,
+              ),
+              TransactionCard(
+                transactionState: 0,
+                date: 'Mar 30',
+                dealer: 'Bakey Bakey',
+                transasctions: transactions,
+                // enableSecondButton: true,
+                isBuyer: false,
+              ),
+              SizedBox(
+                height: 10.0,
+              ),
               TransactionCard(
                 transactionState: 1,
                 date: 'Mar 30',
                 dealer: 'Bakey Bakey',
                 transasctions: transactions,
-                // enableSecondButton: true,
                 isBuyer: false,
               ),
               SizedBox(
@@ -51,6 +67,36 @@ class _MyShopSellerState extends State<MyShopSeller> {
               ),
               TransactionCard(
                 transactionState: 3,
+                date: 'Mar 30',
+                dealer: 'Bakey Bakey',
+                transasctions: transactions,
+                isBuyer: false,
+              ),
+              SizedBox(
+                height: 10.0,
+              ),
+              TransactionCard(
+                transactionState: 4,
+                date: 'Mar 30',
+                dealer: 'Bakey Bakey',
+                transasctions: transactions,
+                isBuyer: false,
+              ),
+              SizedBox(
+                height: 10.0,
+              ),
+              TransactionCard(
+                transactionState: 5,
+                date: 'Mar 30',
+                dealer: 'Bakey Bakey',
+                transasctions: transactions,
+                isBuyer: false,
+              ),
+              SizedBox(
+                height: 10.0,
+              ),
+              TransactionCard(
+                transactionState: 6,
                 date: 'Mar 30',
                 dealer: 'Bakey Bakey',
                 transasctions: transactions,
@@ -88,6 +134,39 @@ class _MyShopSellerState extends State<MyShopSeller> {
         {
           return TransactionCard(
             transactionState: 3,
+            date: 'Mar 30',
+            dealer: 'Bakey Bakey',
+            transasctions: transactions,
+            isBuyer: false,
+          );
+        }
+        break;
+      case 4:
+        {
+          return TransactionCard(
+            transactionState: 4,
+            date: 'Mar 30',
+            dealer: 'Bakey Bakey',
+            transasctions: transactions,
+            isBuyer: false,
+          );
+        }
+        break;
+      case 5:
+        {
+          return TransactionCard(
+            transactionState: 5,
+            date: 'Mar 30',
+            dealer: 'Bakey Bakey',
+            transasctions: transactions,
+            isBuyer: false,
+          );
+        }
+        break;
+      case 6:
+        {
+          return TransactionCard(
+            transactionState: 6,
             date: 'Mar 30',
             dealer: 'Bakey Bakey',
             transasctions: transactions,
