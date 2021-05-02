@@ -8,45 +8,43 @@ class ItemName extends StatefulWidget {
 }
 
 class _ItemNameState extends State<ItemName> {
-  Row buildItemName() {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisAlignment: MainAxisAlignment.center,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Container(
-          margin: EdgeInsets.all(5.0),
-          width: MediaQuery.of(context).size.width / 1.3,
-          child: TextField(
-            onChanged: widget.onChanged,
-            decoration: InputDecoration(
-              fillColor: Color(0xffF2F2F2),
-              filled: true,
-              isDense: true,
-              contentPadding: const EdgeInsets.symmetric(
-                horizontal: 20,
-                vertical: 13,
-              ),
-              hintText: "Item Name",
-              hintStyle: TextStyle(
-                fontFamily: "GoldplayBold",
-                fontSize: 14,
-                color: Color(0xFFBDBDBD),
-                // fontWeight: FontWeight.w500
-              ),
-              alignLabelWithHint: true,
-              border: const OutlineInputBorder(
-                borderSide: BorderSide.none,
-                borderRadius: const BorderRadius.all(
-                  Radius.circular(
-                    30.0,
-                  ),
-                ),
+  Container buildItemName() {
+    return Container(
+      margin: EdgeInsets.all(5.0),
+      child: TextField(
+        onChanged: widget.onChanged,
+        decoration: InputDecoration(
+          fillColor: Color(0xffF2F2F2),
+          filled: true,
+          isDense: true,
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 20,
+            vertical: 13,
+          ),
+          hintText: "Item Name",
+          hintStyle: TextStyle(
+            fontFamily: "GoldplayBold",
+            fontSize: 14,
+            color: Color(0xFFBDBDBD),
+            // fontWeight: FontWeight.w500
+          ),
+          alignLabelWithHint: true,
+          border: const OutlineInputBorder(
+            borderSide: BorderSide.none,
+            borderRadius: const BorderRadius.all(
+              Radius.circular(
+                30.0,
               ),
             ),
           ),
-        )
-      ],
+        ),
+        style: TextStyle(
+          fontWeight: FontWeight.w700,
+          fontFamily: "GoldplayBold",
+          fontSize: 20.0,
+          // fontWeight: FontWeight.w500
+        ),
+      ),
     );
   }
 

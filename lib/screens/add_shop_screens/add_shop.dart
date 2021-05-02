@@ -18,7 +18,7 @@ import '../../widgets/rounded_button.dart';
 import '../edit_shop_screen/operating_hours_shop.dart';
 import 'appbar_shop.dart';
 import 'basic_information.dart';
-import 'shopDescription.dart';
+import 'shop_description.dart';
 import 'shop_name.dart';
 
 class AddShop extends StatefulWidget {

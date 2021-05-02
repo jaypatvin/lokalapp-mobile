@@ -17,7 +17,7 @@ import '../../widgets/operating_hours.dart';
 import '../../widgets/photo_box.dart';
 import '../add_shop_screens/appbar_shop.dart';
 import '../add_shop_screens/basic_information.dart';
-import '../add_shop_screens/shopDescription.dart';
+import '../add_shop_screens/shop_description.dart';
 import '../add_shop_screens/shop_name.dart';
 import 'operating_hours_shop.dart';
 import 'set_custom_operating_hours.dart';
