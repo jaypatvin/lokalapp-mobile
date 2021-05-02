@@ -26,8 +26,8 @@ class WeekdayPicker extends StatefulWidget {
     this.weekdayBackgroundColor = Colors.transparent,
     this.weekdayTextStyle,
     this.daysHaveCircularBorder = true,
-    this.onDayPressed,
-    this.markedDaysMap,
+    @required this.onDayPressed,
+    @required this.markedDaysMap,
   });
   @override
   _WeekdayPickerState createState() => _WeekdayPickerState();
@@ -57,15 +57,17 @@ class _WeekdayPickerState extends State<WeekdayPicker> {
         child: Container(
           padding: const EdgeInsets.all(2.0),
           decoration: BoxDecoration(
-              border: Border.all(color: Colors.orange),
-              shape: widget.daysHaveCircularBorder
-                  ? BoxShape.circle
-                  : BoxShape.rectangle,
-              borderRadius: widget.daysHaveCircularBorder
-                  ? null
-                  : BorderRadius.all(
-                      Radius.circular(15.0),
-                    )),
+            border:
+                Border.all(color: isMarked ? Colors.orange : Colors.grey[300]),
+            shape: widget.daysHaveCircularBorder
+                ? BoxShape.circle
+                : BoxShape.rectangle,
+            borderRadius: widget.daysHaveCircularBorder
+                ? null
+                : BorderRadius.all(
+                    Radius.circular(15.0),
+                  ),
+          ),
           child: FlatButton(
             color: isMarked ? Colors.orange : Colors.transparent,
             onPressed: () {

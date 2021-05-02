@@ -9,6 +9,7 @@ Widget customAppBar({
   bool centerTitle = true,
   Function onPressedLeading,
   double elevation = 4.0,
+  Color leadingColor = Colors.white,
 }) {
   return AppBar(
     leading: !buildLeading
@@ -19,7 +20,7 @@ Widget customAppBar({
                 return IconButton(
                   icon: Icon(
                     Icons.arrow_back_sharp,
-                    color: Colors.white,
+                    color: leadingColor,
                   ),
                   onPressed: onPressedLeading,
                 );

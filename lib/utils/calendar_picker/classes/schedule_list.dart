@@ -26,6 +26,10 @@ class ScheduleList {
     }
   }
 
+  void removeWhere(bool Function(DateTime) test) {
+    _schedule.removeWhere(test);
+  }
+
   void clear() {
     if (_schedule != null) {
       _schedule.clear();

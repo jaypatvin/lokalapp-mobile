@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../utils/themes.dart';
 
 class RoundedButton extends StatelessWidget {
@@ -10,6 +11,8 @@ class RoundedButton extends StatelessWidget {
   final double height;
   final FontWeight fontWeight;
   final Color fontColor;
+  final TextAlign textAlign;
+  final Color color;
   RoundedButton({
     this.label,
     this.onPressed,
@@ -19,13 +22,16 @@ class RoundedButton extends StatelessWidget {
     this.fontSize,
     this.fontWeight,
     this.fontColor = kNavyColor,
+    this.textAlign = TextAlign.center,
+    this.color = kTealColor,
   });
 
   @override
   Widget build(BuildContext context) {
     return FlatButton(
       onPressed: onPressed,
-      color: kTealColor,
+      disabledColor: Colors.grey[300],
+      color: this.color,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(30.0),
       ),
@@ -35,6 +41,7 @@ class RoundedButton extends StatelessWidget {
         height: this.height,
         child: Text(
           this.label,
+          textAlign: this.textAlign,
           style: TextStyle(
             color: this.fontColor,
             fontSize: this.fontSize,

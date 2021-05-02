@@ -1,279 +1,113 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:uuid/uuid.dart';
 
 import '../../providers/post_requests/shop_body.dart';
-import '../../providers/shops.dart';
-import '../../providers/user.dart';
-import '../../services/local_image_service.dart';
+import '../../utils/themes.dart';
 import '../../utils/utility.dart';
-import '../../widgets/operating_hours.dart';
+import '../../widgets/custom_app_bar.dart';
+import '../../widgets/input_description.dart';
+import '../../widgets/input_name.dart';
 import '../../widgets/photo_box.dart';
 import '../../widgets/rounded_button.dart';
-import '../edit_shop_screen/operating_hours_shop.dart';
-import 'appbar_shop.dart';
-import 'basic_information.dart';
-import 'shop_description.dart';
-import 'shop_name.dart';
+import 'shop_schedule.dart';
 
 class AddShop extends StatefulWidget {
-  final Map<String, String> account;
-  final dynamic description;
-  final DateTime time;
-  final String day;
-  static String id = '/addShop';
-  AddShop({Key key, this.account, this.description, this.time, this.day})
-      : super(key: key);
+  @override
   _AddShopState createState() => _AddShopState();
 }
 
 class _AddShopState extends State<AddShop> {
-  TimeOfDay _date = TimeOfDay.now();
-  bool _setOperatingHours = false;
-  bool isUploading = false;
-  String shopPhotoId = Uuid().v4();
-  final picker = ImagePicker();
-  String openingHour;
-  String closingHour;
-  String openingCustomHour;
-  String closingCustomHour;
-  String description;
-  DateTime _opening = DateTime.now();
-  DateTime _closing = DateTime.now();
-  String shopName;
   File shopPhoto;
-
-  Future createStore() async {
-    setState(() {
-      isUploading = true;
-    });
-    String mediaUrl = "";
-    if (shopPhoto != null) {
-      mediaUrl = await Provider.of<LocalImageService>(context, listen: false)
-          .uploadImage(file: shopPhoto, name: 'shop_photo');
-    }
-    CurrentUser user = Provider.of<CurrentUser>(context, listen: false);
-    ShopBody shopBody = Provider.of<ShopBody>(context, listen: false);
-    Shops shops = Provider.of<Shops>(context, listen: false);
-    try {
-      shopBody.update(
-        userId: user.id,
-        communityId: user.communityId,
-        name: shopName,
-        description: description,
-        profilePhoto: mediaUrl,
-        coverPhoto: "",
-        isClosed: false,
-        opening: openingHour,
-        closing: closingHour,
-        useCustomHours: _setOperatingHours,
-        operatingHours: {'start_time': openingHour, 'end_time': closingHour},
-      );
-      bool success = await shops.create(user.idToken, shopBody.data);
-      if (success) {
-        shops.fetch(user.idToken);
-        Navigator.pop(context);
-      }
-    } on Exception catch (_) {
-      print(_);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
+    double padding = height * 0.05;
     return Scaffold(
-      backgroundColor: Colors.white,
-      // resizeToAvoidBottomPadding: false,
-      resizeToAvoidBottomInset: false, // added as above is deprecated
-      appBar: PreferredSize(
-          preferredSize: Size(double.infinity, 80),
-          child: Center(
-              child: AppbarShop(
-            isEdit: false,
-            shopName: "Add Shop",
-          ))),
-      body: SingleChildScrollView(
+      appBar: customAppBar(
+        titleText: "Add Shop",
+        onPressedLeading: () {
+          Navigator.pop(context);
+        },
+      ),
+      resizeToAvoidBottomInset: false,
+      body: Container(
+        padding: EdgeInsets.fromLTRB(padding, padding, padding, 0.0),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            SizedBox(
-              height: 50,
-            ),
-            BasicInformation(),
-            SizedBox(
-              height: 40,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                GestureDetector(
-                  onTap: () async {
-                    var photo =
-                        await Provider.of<MediaUtility>(context, listen: false)
-                            .showMediaDialog(context);
-                    setState(() {
-                      shopPhoto = photo;
-                    });
-                  },
-                  child: PhotoBox(file: shopPhoto, shape: BoxShape.circle),
-                ),
-              ],
+            Text(
+              "Basic Information",
+              style: kTextStyle.copyWith(fontSize: 24.0),
             ),
             SizedBox(
-              height: 25,
+              height: height * 0.05,
             ),
-            ShopName(
-              onChanged: (value) {
+            GestureDetector(
+              onTap: () async {
+                var photo =
+                    await Provider.of<MediaUtility>(context, listen: false)
+                        .showMediaDialog(context);
                 setState(() {
-                  shopName = value;
+                  shopPhoto = photo;
                 });
               },
+              child: PhotoBox(file: shopPhoto, shape: BoxShape.circle),
             ),
             SizedBox(
-              height: 25,
+              height: height * 0.05,
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                ShopDescription(
-                  onChanged: (value) {
-                    description = value;
-                  },
-                )
-              ],
-            ),
-            SizedBox(
-              height: 40,
-            ),
-            OperatingHoursShop(),
-            SizedBox(
-              height: 35,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(5.0),
-                  child: Container(
-                    height: 50,
-                    width: 330,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        SizedBox(
-                          width: 8,
-                        ),
-                        Expanded(
-                          child: Container(
-                              width: MediaQuery.of(context).size.width * 0.30,
-                              height: MediaQuery.of(context).size.height * 0.1,
-                              child: OperatingHours(
-                                state: "Opening",
-                                onChanged: (date) {
-                                  setState(() {
-                                    _opening = date;
-                                    openingHour =
-                                        DateFormat("h:mm a").format(date);
-                                  });
-                                },
-                              )),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(
-              height: 25,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(5.0),
-                  child: Container(
-                    height: 50,
-                    width: 330,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        SizedBox(
-                          width: 5,
-                        ),
-                        Expanded(
-                          child: Container(
-                              width: MediaQuery.of(context).size.width * 0.50,
-                              height: MediaQuery.of(context).size.height * 0.1,
-                              child: OperatingHours(
-                                state: "Closing",
-                                onChanged: (date) {
-                                  setState(() {
-                                    _closing = date;
-                                    closingHour =
-                                        DateFormat("h:mm a").format(date);
-                                  });
-                                },
-                              )),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            SizedBox(height: MediaQuery.of(context).size.height * 0.05),
-            RoundedButton(
-              label: "SUBMIT",
-              fontSize: 16,
-              fontWeight: FontWeight.w700,
-              fontFamily: "GoldplayBold",
-              onPressed: () {
-                createStore();
+            InputName(
+              hintText: "Shop Name",
+              onChanged: (value) {
+                Provider.of<ShopBody>(context, listen: false)
+                    .update(name: value);
               },
             ),
-            SizedBox(height: MediaQuery.of(context).size.height * 0.05),
+            SizedBox(
+              height: height * 0.02,
+            ),
+            InputDescription(
+              hintText: "Shop Description",
+              onChanged: (value) {
+                Provider.of<ShopBody>(context, listen: false)
+                    .update(description: value);
+              },
+            ),
+            Spacer(),
+            Consumer<ShopBody>(builder: (context, shop, child) {
+              bool isVisible =
+                  shop.name.isNotEmpty && shop.description.isNotEmpty;
+              return Visibility(
+                visible: isVisible,
+                child: RoundedButton(
+                  label: "Set Shop Schedule",
+                  height: 10,
+                  minWidth: width * 0.6,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w700,
+                  fontFamily: "Goldplay",
+                  fontColor: Colors.white,
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (BuildContext context) => ShopSchedule(),
+                      ),
+                    );
+                  },
+                ),
+              );
+            }),
+            SizedBox(
+              height: height * 0.02,
+            ),
           ],
         ),
       ),
     );
   }
-}
-
-class Days {
-  String opening;
-  String closing;
-  Days({this.opening, this.closing});
-
-  Map<String, dynamic> toMap() {
-    return {
-      'opening': opening,
-      'closing': closing,
-    };
-  }
-
-  factory Days.fromMap(Map<String, dynamic> map) {
-    if (map == null) return null;
-
-    return Days(opening: map['opening'], closing: map['closing']);
-  }
-
-  String toJson() => json.encode(toMap());
-
-  factory Days.fromJson(String source) => Days.fromMap(json.decode(source));
 }

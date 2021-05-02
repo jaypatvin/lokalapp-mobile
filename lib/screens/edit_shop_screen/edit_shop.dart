@@ -13,12 +13,12 @@ import '../../providers/user.dart';
 import '../../services/local_image_service.dart';
 import '../../utils/themes.dart';
 import '../../utils/utility.dart';
-import '../../widgets/operating_hours.dart';
+import '../../widgets/input_description.dart';
+import '../../widgets/input_name.dart';
 import '../../widgets/photo_box.dart';
 import '../add_shop_screens/appbar_shop.dart';
 import '../add_shop_screens/basic_information.dart';
-import '../add_shop_screens/shop_description.dart';
-import '../add_shop_screens/shop_name.dart';
+import '../add_shop_screens/components/operating_hours.dart';
 import 'operating_hours_shop.dart';
 import 'set_custom_operating_hours.dart';
 import 'shop_status.dart';
@@ -142,8 +142,8 @@ class _EditShopState extends State<EditShop> {
             SizedBox(
               height: 25,
             ),
-            ShopName(
-              shopController: _shopNameController,
+            InputName(
+              onChanged: (value) => _shopNameController.text = value,
               errorText: isNameValid ? null : 'Shop Name too short',
             ),
             SizedBox(
@@ -153,9 +153,9 @@ class _EditShopState extends State<EditShop> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                ShopDescription(
+                InputDescription(
                   hintText: "Description",
-                  descriptionController: _shopDescriptionController,
+                  onChanged: (value) => _shopDescriptionController.text = value,
                   errorText:
                       isDescriptionValid ? null : 'Shop Description too long.',
                 )

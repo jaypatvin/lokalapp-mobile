@@ -1,21 +1,18 @@
 import 'package:flutter/material.dart';
 
-class ShopDescription extends StatefulWidget {
-  final Function onChanged;
-  final String hintText;
+class InputDescription extends StatelessWidget {
+  final int maxLines;
+  final Function(String) onChanged;
   final String errorText;
-  final TextEditingController descriptionController;
-  ShopDescription(
-      {this.descriptionController,
-      this.onChanged,
-      this.hintText,
-      this.errorText});
-  @override
-  _ShopDescriptionState createState() => _ShopDescriptionState();
-}
+  final String hintText;
 
-class _ShopDescriptionState extends State<ShopDescription> {
-  final maxLines = 10;
+  InputDescription({
+    this.maxLines = 10,
+    @required this.onChanged,
+    this.errorText,
+    this.hintText,
+  });
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -23,8 +20,7 @@ class _ShopDescriptionState extends State<ShopDescription> {
       height: maxLines * 15.0,
       color: Colors.transparent,
       child: TextField(
-        controller: widget.descriptionController,
-        onChanged: widget.onChanged,
+        onChanged: this.onChanged,
         cursorColor: Colors.black,
         keyboardType: TextInputType.multiline,
         maxLines: maxLines,
@@ -32,7 +28,7 @@ class _ShopDescriptionState extends State<ShopDescription> {
         decoration: InputDecoration(
           fillColor: Colors.white,
           filled: true,
-          errorText: widget.errorText,
+          errorText: this.errorText,
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
             borderSide: BorderSide(
@@ -52,7 +48,7 @@ class _ShopDescriptionState extends State<ShopDescription> {
           // disabledBorder: InputBorder.none,
           contentPadding:
               EdgeInsets.only(left: 18, bottom: 11, top: 30, right: 15),
-          hintText: widget.hintText,
+          hintText: this.hintText,
           hintStyle: TextStyle(
             color: Color(0xFFBDBDBD),
             fontSize: 14,

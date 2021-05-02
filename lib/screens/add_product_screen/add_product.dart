@@ -4,10 +4,10 @@ import 'package:provider/provider.dart';
 
 import '../../providers/post_requests/product_body.dart';
 import '../../widgets/custom_app_bar.dart';
+import '../../widgets/input_description.dart';
+import '../../widgets/input_name.dart';
 import '../../widgets/rounded_button.dart';
-import '../add_shop_screens/shop_description.dart';
 import 'components/add_product_gallery.dart';
-import 'item_name.dart';
 import 'product_details.dart';
 
 class AddProduct extends StatefulWidget {
@@ -92,24 +92,6 @@ class _AddProductState extends State<AddProduct> {
     );
   }
 
-  ItemName buildItemName() {
-    return ItemName(
-      onChanged: (value) {
-        Provider.of<ProductBody>(context, listen: false).update(name: value);
-      },
-    );
-  }
-
-  ShopDescription buildItemDescription() {
-    return ShopDescription(
-      hintText: "Item Description",
-      onChanged: (value) {
-        Provider.of<ProductBody>(context, listen: false)
-            .update(description: value);
-      },
-    );
-  }
-
   Widget buildBody() {
     var horizontalPadding = MediaQuery.of(context).size.width * 0.05;
     var topPadding = MediaQuery.of(context).size.height * 0.02;
@@ -143,7 +125,13 @@ class _AddProductState extends State<AddProduct> {
             SizedBox(
               height: MediaQuery.of(context).size.height * 0.005,
             ),
-            buildItemName(),
+            InputName(
+              onChanged: (value) {
+                Provider.of<ProductBody>(context, listen: false)
+                    .update(name: value);
+              },
+              hintText: "Item Name",
+            ),
             SizedBox(
               height: MediaQuery.of(context).size.height * 0.02,
             ),
@@ -151,16 +139,22 @@ class _AddProductState extends State<AddProduct> {
               "Description",
               style: productTextStyle,
             ),
-            buildItemDescription(),
+            InputDescription(
+              onChanged: (value) {
+                Provider.of<ProductBody>(context, listen: false)
+                    .update(description: value);
+              },
+              hintText: "Product Description",
+            ),
             SizedBox(
               height: 20,
             ),
             buildProductPrice(),
-            SizedBox(
-              // TODO: modify to accomodate bottom navbar
-              height: MediaQuery.of(context).size.height * 0.1,
-            ),
+            Spacer(),
             buildSubmitButton(),
+            SizedBox(
+              height: MediaQuery.of(context).size.height * 0.02,
+            ),
           ],
         ),
       ),
@@ -183,6 +177,7 @@ class _AddProductState extends State<AddProduct> {
             Navigator.pop(context);
           },
         ),
+        resizeToAvoidBottomInset: false,
         body: buildBody());
   }
 }

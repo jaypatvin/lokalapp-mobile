@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 
-class ItemName extends StatefulWidget {
-  final Function onChanged;
-  ItemName({@required this.onChanged});
-  @override
-  _ItemNameState createState() => _ItemNameState();
-}
+class InputName extends StatelessWidget {
+  final Function(String) onChanged;
+  final String hintText;
+  final String errorText;
 
-class _ItemNameState extends State<ItemName> {
-  Container buildItemName() {
+  InputName({@required this.onChanged, this.hintText, this.errorText});
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.all(5.0),
       child: TextField(
-        onChanged: widget.onChanged,
+        onChanged: this.onChanged,
         decoration: InputDecoration(
           fillColor: Color(0xffF2F2F2),
           filled: true,
@@ -21,7 +21,7 @@ class _ItemNameState extends State<ItemName> {
             horizontal: 20,
             vertical: 13,
           ),
-          hintText: "Item Name",
+          hintText: this.hintText,
           hintStyle: TextStyle(
             fontFamily: "GoldplayBold",
             fontSize: 14,
@@ -37,6 +37,7 @@ class _ItemNameState extends State<ItemName> {
               ),
             ),
           ),
+          errorText: this.errorText,
         ),
         style: TextStyle(
           fontWeight: FontWeight.w700,
@@ -46,10 +47,5 @@ class _ItemNameState extends State<ItemName> {
         ),
       ),
     );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return buildItemName();
   }
 }
