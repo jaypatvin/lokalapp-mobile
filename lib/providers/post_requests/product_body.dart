@@ -1,7 +1,14 @@
 import 'package:flutter/foundation.dart';
 
 class ProductBody extends ChangeNotifier {
-  Map<String, dynamic> _productBody = Map();
+  Map<String, dynamic> _productBody = {
+    "name": "",
+    "description": "",
+    "shop_id": "",
+    "base_price": 0.0,
+    "quantity": 0,
+    "gallery": [],
+  };
   Map get data => _productBody;
 
   String get name => data['name'];
@@ -35,4 +42,14 @@ class ProductBody extends ChangeNotifier {
 
     notifyListeners();
   }
+
+  void clear() => update(
+      name: "",
+      description: "",
+      shopId: "",
+      basePrice: 0.0,
+      quantity: 0,
+      productCategory: "A",
+      status: "enabled",
+      gallery: []);
 }

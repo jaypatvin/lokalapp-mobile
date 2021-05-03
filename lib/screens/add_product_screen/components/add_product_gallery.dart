@@ -41,20 +41,23 @@ class _AddProductGalleryState extends State<AddProductGallery> {
           width: width,
           height: height,
         );
-        if (widget._photoBoxes.last.file != null) {
+        if (widget._photoBoxes.last.file != null &&
+            widget._photoBoxes.length < 4) {
           widget._photoBoxes.removeWhere((p) => p.file == null);
           var _pb = List<PhotoBox>.from(widget._photoBoxes);
           widget._photoBoxes
             ..clear()
-            ..addAll({
-              ..._pb,
-              PhotoBox(
-                file: null,
-                shape: boxShape,
-                width: width,
-                height: height,
-              ),
-            });
+            ..addAll(
+              {
+                ..._pb,
+                PhotoBox(
+                  file: null,
+                  shape: boxShape,
+                  width: width,
+                  height: height,
+                ),
+              },
+            );
         }
       });
     }

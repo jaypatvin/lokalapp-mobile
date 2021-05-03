@@ -1,9 +1,22 @@
 import 'package:flutter/foundation.dart';
 
 class ShopBody extends ChangeNotifier {
-  Map<String, dynamic> _shopBody = Map();
+  Map<String, dynamic> _shopBody = {
+    'name': '',
+    'description': '',
+    'community_id': '',
+    'profile_photo': '',
+    'cover_photo': '',
+    'is_close': false,
+    'status': 'enabled'
+  };
 
   Map get data => _shopBody;
+
+  String get name => _shopBody['name'];
+  String get description => _shopBody['description'];
+  String get profilePhoto => _shopBody['profile_photo'];
+  String get coverPhoto => _shopBody['cover_photo'];
 
   void update({
     String name,
@@ -37,4 +50,16 @@ class ShopBody extends ChangeNotifier {
 
     notifyListeners();
   }
+
+  void clear() => update(
+      name: '',
+      description: '',
+      profilePhoto: '',
+      coverPhoto: '',
+      isClosed: false,
+      opening: '',
+      closing: '',
+      useCustomHours: false,
+      operatingHours: Map(),
+      status: 'enabled');
 }
