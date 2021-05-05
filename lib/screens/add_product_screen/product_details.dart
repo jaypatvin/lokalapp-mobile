@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lokalapp/screens/add_product_screen/product_variant.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/post_requests/product_body.dart';
@@ -29,33 +30,36 @@ class _ProductDetailsState extends State<ProductDetails> {
           style: kTextStyle,
         ),
         Spacer(),
-        Container(
-          width: MediaQuery.of(context).size.width * 0.55,
-          decoration: BoxDecoration(
-              color: Colors.grey.shade200,
-              borderRadius: BorderRadius.circular(20.0),
-              border: Border.all(color: Colors.grey.shade200)),
-          child: ButtonTheme(
-            alignedDropdown: true,
-            child: DropdownButton<String>(
-              isExpanded: true,
-              iconEnabledColor: kTealColor,
-              iconDisabledColor: kTealColor,
-              underline: SizedBox(),
-              value: productBody
-                  .productCategory, //user.postProduct.productCategory,
-              hint: Text(
-                "Select",
-                style: TextStyle(
-                    color: Colors.grey.shade400, fontFamily: "Goldplay"),
+        Expanded(
+          child: Container(
+            width: MediaQuery.of(context).size.width * 0.55,
+            decoration: BoxDecoration(
+                color: Colors.grey.shade200,
+                borderRadius: BorderRadius.circular(20.0),
+                border: Border.all(color: Colors.grey.shade200)),
+            child: ButtonTheme(
+              alignedDropdown: true,
+              child: DropdownButton<String>(
+                isExpanded: true,
+                iconEnabledColor: kTealColor,
+                iconDisabledColor: kTealColor,
+                underline: SizedBox(),
+                value: productBody
+                    .productCategory, //user.postProduct.productCategory,
+                hint: Text(
+                  "Select",
+                  style: TextStyle(
+                      color: Colors.grey.shade400, fontFamily: "Goldplay"),
+                ),
+                items: <String>['A', 'B', 'C', 'D'].map((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: new Text(value),
+                  );
+                }).toList(),
+                onChanged: (value) =>
+                    productBody.update(productCategory: value),
               ),
-              items: <String>['A', 'B', 'C', 'D'].map((String value) {
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: new Text(value),
-                );
-              }).toList(),
-              onChanged: (value) => productBody.update(productCategory: value),
             ),
           ),
         ),
@@ -208,7 +212,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                   context,
                   MaterialPageRoute(
                     builder: (BuildContext context) =>
-                        ProductSchedule(gallery: widget.gallery),
+                        ProductVariant(gallery: widget.gallery),
                   ),
                 );
               },

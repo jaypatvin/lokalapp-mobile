@@ -3,7 +3,7 @@ import 'package:lokalapp/utils/themes.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/user.dart';
-import 'components/settings.dart';
+import 'settings/settings.dart';
 
 class ProfileNotVerified extends StatefulWidget {
   @override

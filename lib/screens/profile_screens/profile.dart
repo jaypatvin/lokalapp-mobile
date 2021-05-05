@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:lokalapp/screens/profile_screens/components/settings.dart';
+import 'package:lokalapp/screens/profile_screens/settings/settings.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/user.dart';
 import '../cart/sliding_up_cart.dart';
+import 'edit_profile.dart';
 import 'profile_no_shop.dart';
 
 class ProfileShopMain extends StatefulWidget {
@@ -22,8 +23,8 @@ class _ProfileShopMainState extends State<ProfileShopMain> {
           ),
           color: Colors.white,
           onPressed: () {
-            // Navigator.push(
-            //     context, MaterialPageRoute(builder: (context) => Settings()));
+            Navigator.push(
+                context, MaterialPageRoute(builder: (context) => Settings()));
           },
         ));
   }
@@ -38,8 +39,8 @@ class _ProfileShopMainState extends State<ProfileShopMain> {
           ),
           color: Colors.white,
           onPressed: () {
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) => Settings()));
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => EditProfile()));
           },
         ));
   }
