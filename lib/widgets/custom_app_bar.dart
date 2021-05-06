@@ -8,8 +8,9 @@ Widget customAppBar({
   Color backgroundColor,
   bool centerTitle = true,
   Function onPressedLeading,
-  double elevation = 4.0,
+  double elevation = 0, //4.0,
   Color leadingColor = Colors.white,
+  PreferredSizeWidget bottom,
 }) {
   return AppBar(
     leading: !buildLeading
@@ -37,5 +38,6 @@ Widget customAppBar({
     centerTitle: centerTitle,
     backgroundColor: backgroundColor ?? Color(0xff57183f),
     elevation: elevation,
+    bottom: bottom,
   );
 }

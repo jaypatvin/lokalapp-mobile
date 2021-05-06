@@ -129,7 +129,7 @@ class ShopModel {
       'description': description,
       'profile_photo': profilePhoto,
       'cover_photo': coverPhoto,
-      'is_closed': isClosed,
+      'is_close': isClosed,
       'status': status,
       'operating_hours': operatingHours?.toMap(),
     };
@@ -146,7 +146,7 @@ class ShopModel {
       description: map['description'],
       profilePhoto: map['profile_photo'],
       coverPhoto: map['cover_photo'],
-      isClosed: map['is_closed'],
+      isClosed: map['is_close'],
       status: map['status'],
       operatingHours: CustomHours.fromMap(map['operating_hours']),
     );

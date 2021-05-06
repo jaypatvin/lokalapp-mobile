@@ -2,26 +2,19 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
-import 'package:uuid/uuid.dart';
-
-import '../../providers/post_requests/shop_body.dart';
 import '../../providers/shops.dart';
 import '../../providers/user.dart';
 import '../../services/local_image_service.dart';
+import 'package:provider/provider.dart';
+
+import '../../providers/post_requests/shop_body.dart';
 import '../../utils/themes.dart';
 import '../../utils/utility.dart';
+import '../../widgets/custom_app_bar.dart';
 import '../../widgets/input_description.dart';
 import '../../widgets/input_name.dart';
 import '../../widgets/photo_box.dart';
-import '../add_shop_screens/appbar_shop.dart';
-import '../add_shop_screens/basic_information.dart';
-import '../add_shop_screens/components/operating_hours.dart';
-import 'operating_hours_shop.dart';
-import 'set_custom_operating_hours.dart';
-import 'shop_status.dart';
+import '../../widgets/rounded_button.dart';
 
 class EditShop extends StatefulWidget {
   final bool isEdit;
@@ -31,302 +24,325 @@ class EditShop extends StatefulWidget {
 }
 
 class _EditShopState extends State<EditShop> {
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
-  //File file;
-  String profilePhotoId = Uuid().v4();
-  final picker = ImagePicker();
-  bool _setOperatingHours = false;
-  bool isLoading = false;
-  String editShopName;
-  bool isSwitched = false;
-  String shopDescription;
-  DateTime _opening = DateTime.now();
-  DateTime _closing = DateTime.now();
-  String openingHour;
-  String closingHour;
-  TextEditingController _shopNameController = TextEditingController();
-  TextEditingController _shopDescriptionController = TextEditingController();
-  // bool isUploading = true;
-  bool isNameValid = true;
-  bool isDescriptionValid = true;
+  final TextEditingController shopNameController = TextEditingController();
+  final TextEditingController shopDescController = TextEditingController();
   File shopPhoto;
+  File shopCoverPhoto;
+  bool toggleValue = false;
+  bool animating = false;
 
-  Future updateShop() async {
-    LocalImageService _imageService =
-        Provider.of<LocalImageService>(context, listen: false);
-    String mediaUrl = '';
-    if (shopPhoto != null) {
-      mediaUrl =
-          await _imageService.uploadImage(file: shopPhoto, name: 'shop_photo');
-    }
+  @override
+  initState() {
+    var user = Provider.of<CurrentUser>(context, listen: false);
+    var shop =
+        Provider.of<Shops>(context, listen: false).findByUser(user.id).first;
+    shopNameController.text = shop.name;
+    shopDescController.text = shop.description;
+
+    Provider.of<ShopBody>(context, listen: false)
+      ..clear()
+      ..update(
+        name: shop.name,
+        description: shop.description,
+        coverPhoto: shop.coverPhoto,
+        profilePhoto: shop.profilePhoto,
+      );
+
+    toggleValue = shop.status == "enabled";
+
+    super.initState();
+  }
+
+  toggleButton() {
     setState(() {
-      _shopNameController.text.trim().length < 3 ||
-              _shopNameController.text.isEmpty
-          ? isNameValid = false
-          : isNameValid = true;
-      _shopDescriptionController.text.trim().length > 100
-          ? isDescriptionValid = false
-          : isDescriptionValid = true;
+      toggleValue = !toggleValue;
+      animating = true;
     });
-    CurrentUser user = Provider.of<CurrentUser>(context, listen: false);
+    var status = toggleValue ? "enabled" : "disabled";
+    Provider.of<ShopBody>(context, listen: false).update(status: status);
+  }
+
+  updateShop() async {
     var shops = Provider.of<Shops>(context, listen: false);
-    var userShops =
-        Provider.of<Shops>(context, listen: false).findByUser(user.id);
     var shopBody = Provider.of<ShopBody>(context, listen: false);
+    var user = Provider.of<CurrentUser>(context, listen: false);
+    var shop = shops.findByUser(user.id).first;
+    var imageService = Provider.of<LocalImageService>(context, listen: false);
 
-    if (isNameValid && isDescriptionValid) {
+    var shopPhotoUrl = shopBody.profilePhoto;
+    if (shopPhoto != null) {
       try {
-        shopBody.update(
-          userId: user.id,
-          name: _shopNameController.text,
-          description: _shopDescriptionController.text,
-          opening: openingHour,
-          closing: closingHour,
-          status: isSwitched.toString(),
-          coverPhoto: mediaUrl,
+        shopPhotoUrl = await imageService.uploadImage(
+          file: shopPhoto,
+          name: "shop-photo",
         );
-
-        bool success = await shops.update(
-            id: userShops[0].id, authToken: user.idToken, data: shopBody.data);
-        if (success) {
-          SnackBar snackBar = SnackBar(
-            content: Text("Shop Updated!"),
-          );
-          _scaffoldKey.currentState.showSnackBar(snackBar);
-          Navigator.pop(context);
-        }
-      } on Exception catch (_) {
-        print(_);
+      } catch (e) {
+        shopPhotoUrl = shopBody.profilePhoto;
       }
     }
+
+    var shopCoverPhotoUrl = shopBody.coverPhoto;
+    if (shopCoverPhoto != null) {
+      try {
+        shopCoverPhotoUrl = await imageService.uploadImage(
+          file: shopCoverPhoto,
+          name: "shop-cover-photo",
+        );
+      } catch (e) {
+        shopCoverPhotoUrl = shopBody.coverPhoto;
+      }
+    }
+
+    shopBody.update(
+      name: shopNameController.text,
+      description: shopDescController.text,
+      profilePhoto: shopPhotoUrl,
+      coverPhoto: shopCoverPhotoUrl,
+      status: toggleValue ? "enabled" : "disabled",
+    );
+
+    return await shops.update(
+      id: shop.id,
+      authToken: user.idToken,
+      data: shopBody.data,
+    );
+  }
+
+  Widget buildToggleButton({double height = 40.0, double width = 100.0}) {
+    return InkWell(
+      onTap: toggleButton,
+      child: AnimatedContainer(
+        duration: Duration(milliseconds: 1),
+        height: height,
+        width: width,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20.0),
+          color: toggleValue
+              ? Colors.greenAccent[100]
+              : Colors.grey.withOpacity(0.5),
+        ),
+        child: Stack(
+          children: [
+            Visibility(
+              visible: !animating,
+              child: Padding(
+                padding: toggleValue
+                    ? EdgeInsets.only(left: width * 0.15)
+                    : EdgeInsets.only(right: width * 0.15),
+                child: Align(
+                  alignment: toggleValue
+                      ? Alignment.centerLeft
+                      : Alignment.centerRight,
+                  child: Text(
+                    toggleValue ? "Open" : "Closed",
+                    style: kTextStyle,
+                  ),
+                ),
+              ),
+            ),
+            AnimatedPositioned(
+              onEnd: () => setState(() => animating = false),
+              duration: Duration(milliseconds: 500),
+              curve: Curves.linear,
+              top: 3.0,
+              left: toggleValue ? width * 0.6 : 0.0,
+              right: toggleValue ? 0.0 : width * 0.6,
+              child: AnimatedSwitcher(
+                duration: Duration(milliseconds: 500),
+                // transitionBuilder: (Widget child, Animation<double> animation) {
+                //return RotationTransition(turns: animation, child: child);
+                //return ScaleTransition(child: child, scale: animation);
+                // },
+                child: toggleValue
+                    ? Icon(
+                        Icons.check_circle,
+                        color: Colors.green,
+                        size: height * 0.8,
+                        key: UniqueKey(),
+                      )
+                    : Icon(
+                        Icons.remove_circle_outline,
+                        color: Colors.grey,
+                        size: height * 0.8,
+                        key: UniqueKey(),
+                      ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget buildPhotoSection(double height, double width) {
+    var shopBody = Provider.of<ShopBody>(context, listen: false);
+    return Container(
+      height: height * 0.25,
+      child: Stack(
+        children: [
+          Center(
+            child: PhotoBox(
+              file: shopCoverPhoto,
+              shape: BoxShape.rectangle,
+              width: width,
+              height: height * 0.25,
+              url: shopBody.coverPhoto,
+            ),
+          ),
+          Center(
+            child: GestureDetector(
+              onTap: () async {
+                var photo =
+                    await Provider.of<MediaUtility>(context, listen: false)
+                        .showMediaDialog(context);
+                setState(() {
+                  shopPhoto = photo;
+                });
+              },
+              child: PhotoBox(
+                file: shopPhoto,
+                shape: BoxShape.circle,
+                url: shopBody.profilePhoto,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
+    double padding = height * 0.05;
     return Scaffold(
-      key: _scaffoldKey,
-      backgroundColor: Colors.white,
-      appBar: PreferredSize(
-          preferredSize: Size(double.infinity, 83),
-          child: Center(
-              child: AppbarShop(
-            isEdit: true,
-            shopName: "Edit Shop",
-          ))),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            SizedBox(
-              height: 50,
-            ),
-            BasicInformation(),
-            SizedBox(
-              height: 40,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
+      appBar: customAppBar(
+        titleText: "Edit Shop",
+        onPressedLeading: () {
+          Navigator.pop(context);
+        },
+        bottom: PreferredSize(
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: width * 0.05),
+            height: height * 0.06,
+            color: Color(0XFFF1FAFF),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                GestureDetector(
+                Text(
+                  "Shop Status",
+                  style: kTextStyle.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                buildToggleButton(
+                  height: height * 0.04,
+                  width: width * 0.22,
+                ),
+              ],
+            ),
+          ),
+          preferredSize: Size.fromHeight(height * 0.06),
+        ),
+      ),
+      resizeToAvoidBottomInset: false,
+      body: Container(
+        padding: EdgeInsets.fromLTRB(0.0, padding, 0.0, 0.0),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                "Basic Information",
+                style: kTextStyle.copyWith(fontSize: 24.0),
+              ),
+              SizedBox(
+                height: height * 0.02,
+              ),
+              buildPhotoSection(height, width),
+              SizedBox(
+                height: height * 0.02,
+              ),
+              InkWell(
+                  child: Text(
+                    //"+ Add a Cover Photo",
+
+                    "+ Edit Cover Photo",
+                    style: kTextStyle.copyWith(
+                      decoration: TextDecoration.underline,
+                      color: kTealColor,
+                    ),
+                  ),
                   onTap: () async {
-                    setState(() async {
-                      this.shopPhoto = await Provider.of<MediaUtility>(context,
-                              listen: false)
-                          .showMediaDialog(context);
+                    var photo =
+                        await Provider.of<MediaUtility>(context, listen: false)
+                            .showMediaDialog(context);
+                    setState(() {
+                      shopCoverPhoto = photo;
                     });
+                  }),
+              SizedBox(
+                height: height * 0.02,
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: padding),
+                child: InputName(
+                  controller: shopNameController,
+                  hintText: "Shop Name",
+                  onChanged: (value) {
+                    Provider.of<ShopBody>(context, listen: false)
+                        .update(name: value);
                   },
-                  child: PhotoBox(file: shopPhoto, shape: BoxShape.circle),
                 ),
-              ],
-            ),
-            SizedBox(
-              height: 25,
-            ),
-            InputName(
-              onChanged: (value) => _shopNameController.text = value,
-              errorText: isNameValid ? null : 'Shop Name too short',
-            ),
-            SizedBox(
-              height: 25,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                InputDescription(
-                  hintText: "Description",
-                  onChanged: (value) => _shopDescriptionController.text = value,
-                  errorText:
-                      isDescriptionValid ? null : 'Shop Description too long.',
-                )
-              ],
-            ),
-            SizedBox(
-              height: 30,
-            ),
-            OperatingHoursShop(),
-            SizedBox(
-              height: 35,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(5.0),
-                  child: Container(
-                    height: 50,
-                    width: 330,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        SizedBox(
-                          width: 8,
-                        ),
-                        Expanded(
-                          child: Container(
-                              width: 150,
-                              height: 100,
-                              child: OperatingHours(
-                                state: "Opening Time",
-                                onChanged: (date) {
-                                  setState(() {
-                                    _opening = date;
-                                    openingHour = DateFormat.Hms()
-                                        .format(date); //date.toIso8601String();
-                                  });
-                                },
-                              )),
-                        ),
-                      ],
-                    ),
-                  ),
+              ),
+              SizedBox(
+                height: height * 0.02,
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: padding),
+                child: InputDescription(
+                  controller: shopDescController,
+                  hintText: "Shop Description",
+                  onChanged: (value) {
+                    Provider.of<ShopBody>(context, listen: false)
+                        .update(description: value);
+                  },
                 ),
-              ],
-            ),
-            SizedBox(
-              height: 25,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(5.0),
-                  child: Container(
-                    height: 50,
-                    width: 330,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        SizedBox(
-                          width: 5,
-                        ),
-                        Expanded(
-                          child: Container(
-                              width: MediaQuery.of(context).size.width * 0.50,
-                              height: MediaQuery.of(context).size.height * 0.1,
-                              child: OperatingHours(
-                                state: "Closing Time",
-                                onChanged: (date) {
-                                  setState(() {
-                                    _closing = date;
-                                    closingHour = DateFormat.Hms()
-                                        .format(date); //date.toIso8601String();
-                                  });
-                                },
-                              )),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            SetCustomoperatingHours(
-                label: "Set Custom Operating Hours",
-                onChanged: (value) {
-                  setState(() {
-                    _setOperatingHours = value;
-                  });
-                },
-                value: _setOperatingHours),
-            SizedBox(
-              height: 20,
-            ),
-            ShopStatus(),
-            SizedBox(
-              height: 20,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.height * 0.1,
-                  child: ListView(children: [
-                    ListTile(
-                      leading: isSwitched ? Text("Active") : Text("Inactive"),
-                      trailing: CupertinoSwitch(
-                        value: isSwitched,
-                        onChanged: (value) {
-                          setState(() {
-                            isSwitched = value;
-                          });
-                        },
-                        activeColor: Colors.green,
+              ),
+              SizedBox(
+                height: height * 0.02,
+              ),
+              RoundedButton(
+                label: "Apply Changes",
+                height: 10,
+                minWidth: width * 0.6,
+                fontSize: 16,
+                fontWeight: FontWeight.w700,
+                fontFamily: "Goldplay",
+                fontColor: Colors.white,
+                onPressed: () async {
+                  bool success = await updateShop();
+                  if (success) {
+                    var user = Provider.of<CurrentUser>(context, listen: false);
+                    Provider.of<Shops>(context, listen: false).fetch(user.id);
+                    Navigator.pop(context);
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Failed to update shop'),
                       ),
-                    ),
-                  ]),
-                )
-              ],
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  height: 40,
-                  width: 120,
-                  child: FlatButton(
-                    // height: 50,
-                    // minWidth: 100,
-                    color: isSwitched ? Colors.white : kTealColor,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(25.0),
-                      side: BorderSide(color: kTealColor),
-                    ),
-                    textColor: isSwitched ? kTealColor : Colors.black,
-                    child: Text(
-                      "SAVE",
-                      style: TextStyle(
-                          fontFamily: "Goldplay",
-                          fontSize: 14,
-                          fontWeight: FontWeight.w700),
-                    ),
-                    onPressed: () {
-                      updateShop();
-                    },
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(
-              height: 30,
-            ),
-          ],
+                    );
+                  }
+                },
+              ),
+              SizedBox(
+                height: height * 0.02,
+              ),
+            ],
+          ),
         ),
       ),
     );
