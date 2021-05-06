@@ -25,6 +25,9 @@ class _AddProductState extends State<AddProduct> {
 
   Widget buildProductPrice() {
     return Row(
+      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Text(
           "Product Price",
@@ -150,7 +153,10 @@ class _AddProductState extends State<AddProduct> {
               height: 20,
             ),
             buildProductPrice(),
-            Spacer(),
+            // Spacer(),
+            SizedBox(
+              height: 50,
+            ),
             buildSubmitButton(),
             SizedBox(
               height: MediaQuery.of(context).size.height * 0.02,
@@ -178,6 +184,6 @@ class _AddProductState extends State<AddProduct> {
           },
         ),
         resizeToAvoidBottomInset: false,
-        body: buildBody());
+        body: SafeArea(child: buildBody()));
   }
 }

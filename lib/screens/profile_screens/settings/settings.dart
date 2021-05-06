@@ -1,7 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:lokalapp/screens/profile_screens/settings/chat/chat_settings.dart';
+import 'package:lokalapp/screens/profile_screens/settings/email/my_account.dart';
+import 'package:lokalapp/screens/profile_screens/settings/help%20center/help_center.dart';
+import 'package:lokalapp/screens/profile_screens/settings/notification%20settings/notification_setting.dart';
+import 'package:lokalapp/screens/profile_screens/settings/privacy%20setting/privacy_setting.dart';
+import 'package:lokalapp/screens/profile_screens/settings/terms%20of%20service/terms_of_service.dart';
 import 'package:lokalapp/utils/themes.dart';
 
-import 'invite_a_friend.dart';
+import '../components/invite_a_friend.dart';
+import 'about/about.dart';
 
 class Settings extends StatelessWidget {
   Widget get buildButton => Container(
@@ -86,7 +93,9 @@ class Settings extends StatelessWidget {
               child: Text(
                 "Account Settings",
                 style: TextStyle(
-                    fontFamily: "GoldplayBold", fontWeight: FontWeight.w200),
+                    fontFamily: "GoldplayBold",
+                    fontWeight: FontWeight.w300,
+                    color: kTealColor),
               )),
           SizedBox(
             height: 20,
@@ -95,27 +104,39 @@ class Settings extends StatelessWidget {
             color: Colors.white,
             child: ListTile(
               leading: Text(
-                "My Profile",
+                "My Account",
                 style: TextStyle(fontFamily: "GoldplayBold"),
               ),
-              trailing: Icon(
-                Icons.arrow_forward_ios,
-                size: 14,
-                color: kTealColor,
+              trailing: GestureDetector(
+                onTap: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => MyAccount()));
+                },
+                child: Icon(
+                  Icons.arrow_forward_ios,
+                  size: 14,
+                  color: kTealColor,
+                ),
               ),
             ),
           ),
-          Container(
-            color: Colors.white,
-            child: ListTile(
-              leading: Text(
-                "Chat Settings",
-                style: TextStyle(fontFamily: "GoldplayBold"),
-              ),
-              trailing: Icon(
-                Icons.arrow_forward_ios,
-                size: 14,
-                color: kTealColor,
+          GestureDetector(
+            onTap: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => ChatSettings()));
+            },
+            child: Container(
+              color: Colors.white,
+              child: ListTile(
+                leading: Text(
+                  "Chat Settings",
+                  style: TextStyle(fontFamily: "GoldplayBold"),
+                ),
+                trailing: Icon(
+                  Icons.arrow_forward_ios,
+                  size: 14,
+                  color: kTealColor,
+                ),
               ),
             ),
           ),
@@ -126,10 +147,18 @@ class Settings extends StatelessWidget {
                 "Notification Settings",
                 style: TextStyle(fontFamily: "GoldplayBold"),
               ),
-              trailing: Icon(
-                Icons.arrow_forward_ios,
-                size: 14,
-                color: kTealColor,
+              trailing: GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => NotificationSetting()));
+                },
+                child: Icon(
+                  Icons.arrow_forward_ios,
+                  size: 14,
+                  color: kTealColor,
+                ),
               ),
             ),
           ),
@@ -140,10 +169,18 @@ class Settings extends StatelessWidget {
                 "Privacy Settings",
                 style: TextStyle(fontFamily: "GoldplayBold"),
               ),
-              trailing: Icon(
-                Icons.arrow_forward_ios,
-                size: 14,
-                color: kTealColor,
+              trailing: GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => PrivacySetting()));
+                },
+                child: Icon(
+                  Icons.arrow_forward_ios,
+                  size: 14,
+                  color: kTealColor,
+                ),
               ),
             ),
           ),
@@ -178,7 +215,9 @@ class Settings extends StatelessWidget {
               child: Text(
                 "Support",
                 style: TextStyle(
-                    fontFamily: "GoldplayBold", fontWeight: FontWeight.w200),
+                    fontFamily: "GoldplayBold",
+                    fontWeight: FontWeight.w300,
+                    color: kTealColor),
               )),
           SizedBox(
             height: 20,
@@ -190,10 +229,16 @@ class Settings extends StatelessWidget {
                 "Help Center",
                 style: TextStyle(fontFamily: "GoldplayBold"),
               ),
-              trailing: Icon(
-                Icons.arrow_forward_ios,
-                size: 14,
-                color: kTealColor,
+              trailing: GestureDetector(
+                onTap: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => HelpCenter()));
+                },
+                child: Icon(
+                  Icons.arrow_forward_ios,
+                  size: 14,
+                  color: kTealColor,
+                ),
               ),
             ),
           ),
@@ -218,10 +263,18 @@ class Settings extends StatelessWidget {
                 "Terms of Service",
                 style: TextStyle(fontFamily: "GoldplayBold"),
               ),
-              trailing: Icon(
-                Icons.arrow_forward_ios,
-                size: 14,
-                color: kTealColor,
+              trailing: GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => TermsOfService()));
+                },
+                child: Icon(
+                  Icons.arrow_forward_ios,
+                  size: 14,
+                  color: kTealColor,
+                ),
               ),
             ),
           ),
@@ -246,10 +299,16 @@ class Settings extends StatelessWidget {
                 "About",
                 style: TextStyle(fontFamily: "GoldplayBold"),
               ),
-              trailing: Icon(
-                Icons.arrow_forward_ios,
-                size: 14,
-                color: kTealColor,
+              trailing: GestureDetector(
+                onTap: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => About()));
+                },
+                child: Icon(
+                  Icons.arrow_forward_ios,
+                  size: 14,
+                  color: kTealColor,
+                ),
               ),
             ),
           ),

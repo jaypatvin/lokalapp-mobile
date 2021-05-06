@@ -33,8 +33,8 @@ class RoundedButton extends StatelessWidget {
       disabledColor: Colors.grey[300],
       color: this.color,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(30.0),
-      ),
+          borderRadius: BorderRadius.circular(30.0),
+          side: BorderSide(color: kTealColor)),
       child: MaterialButton(
         onPressed: this.onPressed,
         minWidth: this.minWidth,

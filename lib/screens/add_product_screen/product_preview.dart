@@ -195,17 +195,31 @@ class _ProductPreviewState extends State<ProductPreview> {
                   fontColor: Colors.white,
                   onPressed: () async {
                     var success = await createProduct();
-                    if (success) {
-                      
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (BuildContext context) =>
-                              AddProductConfirmation(),
-                        ),
-                      );
+                    try {
+                      if (success) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (BuildContext context) =>
+                                AddProductConfirmation(),
+                          ),
+                        );
+                      } else if (!success) {
+                        final snackBar = SnackBar(
+                          content: Text('Error loading image'),
+                          action: SnackBarAction(
+                            label: 'Undo',
+                            onPressed: () {
+                              // Some code to undo the change.
+                            },
+                          ),
+                        );
+
+                        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                      }
+                    } catch (e) {
+                      print(e);
                     }
-                    // TODO: do something if unsuccessful
                   },
                 ),
                 SizedBox(
