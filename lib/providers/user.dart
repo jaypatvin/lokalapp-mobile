@@ -105,6 +105,33 @@ class CurrentUser extends ChangeNotifier {
     return data["status"] == "ok";
   }
 
+  Future<bool> update(Map body) async {
+    http.Response response = await LokalApiService.instance.user.update(
+      data: {"id": this.id, ...body},
+      idToken: idToken,
+    );
+
+    if (response.statusCode != 200) return false;
+
+    Map data = json.decode(response.body);
+
+    if (data["status"] != "ok") return false;
+
+    try {
+      // update user data after updating
+      // should not throw any errors except on network error connection
+      response = await LokalApiService.instance.user
+          .getById(userId: _user.id, idToken: _idToken);
+      data = json.decode(response.body);
+      _user = LokalUser.fromMap(data['data']);
+      notifyListeners();
+      return true;
+    } catch (e) {
+      // TODO: retry fetching user data
+      return false;
+    }
+  }
+
   void reset() {
     _user = null;
     _idToken = null;

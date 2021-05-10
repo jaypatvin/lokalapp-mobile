@@ -2,14 +2,17 @@ import 'dart:io';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-
-import 'package:lokalapp/providers/user.dart';
-
-import 'package:lokalapp/utils/themes.dart';
-import 'package:lokalapp/utils/utility.dart';
-
-import 'package:lokalapp/widgets/photo_box.dart';
 import 'package:provider/provider.dart';
+
+import '../../providers/post_requests/auth_body.dart';
+import '../../providers/user.dart';
+import '../../services/local_image_service.dart';
+import '../../utils/themes.dart';
+import '../../utils/utility.dart';
+import '../../widgets/custom_app_bar.dart';
+import '../../widgets/input_name.dart';
+import '../../widgets/photo_box.dart';
+import '../../widgets/rounded_button.dart';
 
 class EditProfile extends StatefulWidget {
   @override
@@ -18,242 +21,174 @@ class EditProfile extends StatefulWidget {
 
 class _EditProfileState extends State<EditProfile> {
   TextEditingController _fNameController = TextEditingController();
-
   TextEditingController _lNameController = TextEditingController();
-
   TextEditingController _streetController = TextEditingController();
+  File _profilePhoto;
 
-  TextEditingController _locationController = TextEditingController();
+  @override
+  initState() {
+    var user = Provider.of<CurrentUser>(context, listen: false);
+    Provider.of<AuthBody>(context, listen: false).update(
+      firstName: user.firstName,
+      lastName: user.lastName,
+      profilePhoto: user.profilePhoto,
+      email: user.email,
+      communityId: user.communityId,
+    );
 
-  var updatedProfileUrl;
-  bool updatedImage = false;
-  buildInput(String initialVal, Function onChanged, context) {
-    return Container(
-      width: MediaQuery.of(context).size.width * 0.8,
-      padding: const EdgeInsets.only(top: 6),
-      // height: MediaQuery.of(context).size.height * 0.5,
-      child: TextFormField(
-        initialValue: initialVal,
-        onChanged: onChanged,
-        decoration: InputDecoration(
-          fillColor: Colors.white,
-          filled: true,
-          isDense: true,
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: 20,
-            vertical: 13,
-          ),
-          hintText: '',
-          hintStyle: TextStyle(
-            fontFamily: "GoldplayBold",
-            fontSize: 14,
-            color: Colors.white,
-            // fontWeight: FontWeight.w500
-          ),
-          alignLabelWithHint: true,
-          border: const OutlineInputBorder(
-            borderSide: BorderSide.none,
-            borderRadius: const BorderRadius.all(
-              Radius.circular(
-                30.0,
+    _fNameController.text = user.firstName;
+    _lNameController.text = user.lastName;
+    _streetController.text = user.address.street;
+    super.initState();
+  }
+
+  Future updateUser() async {
+    var user = Provider.of<CurrentUser>(context, listen: false);
+    var authBody = Provider.of<AuthBody>(context, listen: false);
+    var imageService = Provider.of<LocalImageService>(context, listen: false);
+    try {
+      var userPhotoUrl = authBody.profilePhoto;
+      if (_profilePhoto != null) {
+        try {
+          userPhotoUrl = await imageService.uploadImage(
+            file: _profilePhoto,
+            name: "profile-photo",
+          );
+        } catch (e) {
+          userPhotoUrl = authBody.profilePhoto;
+        }
+      }
+
+      authBody.update(
+        firstName: _fNameController.text,
+        lastName: _lNameController.text,
+        address: _streetController.text,
+        profilePhoto: userPhotoUrl,
+      );
+
+      return await user.update(authBody.data);
+    } catch (e) {
+      // do something with error
+      print(e);
+    }
+  }
+
+  Widget buildPhotoSection(double height, double width) {
+    var authBody = Provider.of<AuthBody>(context, listen: false);
+    return GestureDetector(
+      onTap: () async {
+        var photo = await Provider.of<MediaUtility>(context, listen: false)
+            .showMediaDialog(context);
+        setState(() {
+          _profilePhoto = photo;
+        });
+      },
+      child: Container(
+        height: height * 0.25,
+        child: Stack(
+          children: [
+            Center(
+              child: ColorFiltered(
+                colorFilter: const ColorFilter.mode(
+                  Colors.grey,
+                  BlendMode.modulate,
+                ),
+                child: PhotoBox(
+                  file: _profilePhoto,
+                  shape: BoxShape.circle,
+                  url: authBody.profilePhoto,
+                  displayBorder: false,
+                ),
               ),
             ),
-          ),
-          errorText: '',
-        ),
-        style: TextStyle(
-          fontWeight: FontWeight.w700,
-          fontFamily: "GoldplayBold",
-          fontSize: 20.0,
-          // fontWeight: FontWeight.w500
+            Center(
+              child: Text(
+                "Edit Photo",
+                style: kTextStyle.copyWith(
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
   }
 
-  // Future updateUser(context) async {
-  //   var user = Provider.of<CurrentUser>(context, listen: false);
-  //   try {
-  //     LokalUser lokalUser = LokalUser(
-  //       firstName: _fNameController.text,
-  //       lastName: _lNameController.text,
-  //       // address: _streetController.text
-  //     );
-
-  //     await Database()
-  //         .updateUser(lokalUser,key, value);
-  //     Navigator.pop(context);
-  //   } catch (e) {
-  //     print(e);
-  //   }
-  // }
-
-  Widget get buildButton => Container(
-        height: 43,
-        width: 190,
-        padding: const EdgeInsets.all(2),
-        child: FlatButton(
-          color: kTealColor,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20.0),
-            side: BorderSide(color: kTealColor),
-          ),
-          textColor: Colors.black,
-          child: Text(
-            "Apply Changes",
-            style: TextStyle(
-                fontFamily: "Goldplay",
-                fontSize: 14,
-                color: Colors.white,
-                fontWeight: FontWeight.w600),
-          ),
-          onPressed: () {
-            // updateUser(context);
-          },
-        ),
-      );
-
   @override
   Widget build(BuildContext context) {
-    var user = Provider.of<CurrentUser>(context, listen: false);
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
+    double padding = height * 0.05;
     return Scaffold(
-        backgroundColor: Color(0xffF1FAFF),
-        resizeToAvoidBottomInset: true,
-        appBar: PreferredSize(
-          preferredSize: Size(double.infinity, 100),
-          child: Container(
-            decoration: BoxDecoration(
-              boxShadow: [
-                BoxShadow(color: Colors.black12, spreadRadius: 5, blurRadius: 2)
-              ],
-            ),
-            width: MediaQuery.of(context).size.width,
-            height: 100,
-            child: Container(
-              decoration: BoxDecoration(color: kTealColor),
-              child: Container(
-                margin: const EdgeInsets.fromLTRB(0, 40, 0, 0),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.only(right: 10),
-                      child: IconButton(
-                          icon: Icon(
-                            Icons.arrow_back_sharp,
-                            color: Colors.white,
-                          ),
-                          onPressed: () {
-                            Navigator.pop(context);
-                          }),
-                    ),
-                    SizedBox(
-                      width: 60,
-                    ),
-                    Container(
-                      padding: const EdgeInsets.only(left: 30),
-                      child: Text(
-                        "Edit Profile",
-                        style: TextStyle(
-                            fontFamily: "Goldplay",
-                            fontSize: 22,
-                            fontWeight: FontWeight.w600,
-                            color: Color(0XFFFFC700)),
-                      ),
-                    ),
-                  ],
-                ),
+      backgroundColor: Color(0xffF1FAFF),
+      resizeToAvoidBottomInset: true,
+      appBar: customAppBar(
+        titleText: "Edit Profile",
+        backgroundColor: kTealColor,
+        onPressedLeading: () => Navigator.pop(context),
+      ),
+      body: Container(
+        padding: EdgeInsets.all(padding),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              buildPhotoSection(height, width),
+              SizedBox(
+                height: height * 0.02,
               ),
-            ),
+              InputName(
+                controller: _fNameController,
+                hintText: "First Name",
+                fillColor: Colors.white,
+              ),
+              SizedBox(
+                height: height * 0.02,
+              ),
+              InputName(
+                controller: _lNameController,
+                hintText: "Last Name",
+                fillColor: Colors.white,
+              ),
+              SizedBox(
+                height: height * 0.04,
+              ),
+              InputName(
+                controller: _streetController,
+                hintText: "Street",
+                fillColor: Colors.white,
+              ),
+              SizedBox(
+                height: height * 0.05,
+              ),
+              RoundedButton(
+                label: "Apply Changes",
+                height: 10,
+                minWidth: width * 0.6,
+                fontSize: 16,
+                fontWeight: FontWeight.w700,
+                fontFamily: "Goldplay",
+                fontColor: Colors.white,
+                onPressed: () async {
+                  bool success = await updateUser();
+                  if (success) {
+                    Navigator.pop(context);
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text("Failed to update user profile"),
+                      ),
+                    );
+                  }
+                },
+              ),
+            ],
           ),
         ),
-        body: ListView(
-            // physics: NeverScrollableScrollPhysics(),
-            shrinkWrap: true,
-            scrollDirection: Axis.vertical,
-            children: [
-              Column(children: [
-                SizedBox(
-                  height: 30,
-                ),
-                Stack(children: [
-                  updatedImage
-                      ? Center(
-                          child: PhotoBox(
-                              file: updatedProfileUrl, shape: BoxShape.circle),
-                        )
-                      : CircleAvatar(
-                          radius: 70,
-                          backgroundImage: NetworkImage(user.profilePhoto)),
-                  updatedImage
-                      ? Container()
-                      : Positioned(
-                          top: 40,
-                          left: 40,
-                          right: 40,
-                          bottom: 40,
-                          child: BackdropFilter(
-                              filter: ImageFilter.blur(sigmaX: 1, sigmaY: 1),
-                              child: Container(
-                                color: Colors.black.withOpacity(0),
-                              )),
-                        ),
-                  Positioned(
-                      top: 5,
-                      left: 13,
-                      right: 5,
-                      bottom: 0,
-                      child: Row(
-                        children: [
-                          updatedImage
-                              ? Text("")
-                              : Icon(
-                                  Icons.create,
-                                  color: Colors.white,
-                                  size: 16,
-                                ),
-                          TextButton(
-                            onPressed: () async {
-                              setState(() async {
-                                updatedProfileUrl =
-                                    await Provider.of<MediaUtility>(context,
-                                            listen: false)
-                                        .showMediaDialog(context);
-                                updatedImage = true;
-                              });
-                            },
-                            child: Text(
-                              updatedImage ? " " : "Edit Photo",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 16,
-                                  fontFamily: "GoldplayBold",
-                                  color: Colors.white),
-                            ),
-                          ),
-                        ],
-                      )),
-                ]),
-                SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.05,
-                ),
-                buildInput(user.firstName, (value) {
-                  _fNameController.text = value;
-                }, context),
-                buildInput(user.lastName, (value) {
-                  _lNameController.text = value;
-                }, context),
-                SizedBox(
-                  height: 20,
-                ),
-                buildInput(user.address.street, (value) {
-                  _streetController.text = value;
-                }, context),
-                SizedBox(
-                  height: 15,
-                ),
-                buildButton
-              ])
-            ]));
+      ),
+    );
   }
 }

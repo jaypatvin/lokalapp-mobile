@@ -5,6 +5,12 @@ class AuthBody extends ChangeNotifier {
 
   Map get data => _authBody;
 
+  String get firstName => _authBody["first_name"];
+  String get lastName => _authBody["last_name"];
+  String get profilePhoto => _authBody["profile_photo"];
+  String get email => _authBody["email"];
+  String get street => _authBody["street"];
+
   void update({
     String firstName,
     String lastName,
