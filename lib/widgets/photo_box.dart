@@ -9,12 +9,15 @@ class PhotoBox extends StatelessWidget {
   final BoxShape shape;
   final double width;
   final double height;
+  final String url;
 
-  const PhotoBox(
-      {@required this.file,
-      @required this.shape,
-      this.width = 140.0, //140.0 //72.0
-      this.height = 150.0}); //150.0 //75.0
+  const PhotoBox({
+    @required this.shape,
+    this.file,
+    this.url = '',
+    this.width = 140.0, //140.0 //72.0
+    this.height = 150.0,
+  }); //150.0 //75.0
 
   @override
   Widget build(BuildContext context) {
@@ -22,16 +25,17 @@ class PhotoBox extends StatelessWidget {
       width: this.width,
       height: this.height,
       decoration: BoxDecoration(
-        image: file == null
+        image: file == null && this.url.isEmpty
             ? null
             : DecorationImage(
                 fit: BoxFit.cover,
-                image: FileImage(file),
+                image: file != null ? FileImage(file) : NetworkImage(this.url),
               ),
         shape: shape,
         border: Border.all(width: 1, color: kTealColor),
+        color: Colors.grey[50],
       ),
-      child: file == null
+      child: file == null && this.url.isEmpty
           ? Icon(
               Icons.add,
               color: kTealColor,

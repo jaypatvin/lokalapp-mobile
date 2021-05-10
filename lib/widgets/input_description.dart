@@ -5,12 +5,14 @@ class InputDescription extends StatelessWidget {
   final Function(String) onChanged;
   final String errorText;
   final String hintText;
+  final TextEditingController controller;
 
   InputDescription({
     this.maxLines = 10,
     @required this.onChanged,
     this.errorText,
     this.hintText,
+    this.controller,
   });
 
   @override
@@ -20,6 +22,7 @@ class InputDescription extends StatelessWidget {
       height: maxLines * 15.0,
       color: Colors.transparent,
       child: TextField(
+        controller: this.controller,
         onChanged: this.onChanged,
         cursorColor: Colors.black,
         keyboardType: TextInputType.multiline,

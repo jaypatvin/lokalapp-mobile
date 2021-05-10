@@ -4,14 +4,21 @@ class InputName extends StatelessWidget {
   final Function(String) onChanged;
   final String hintText;
   final String errorText;
+  final TextEditingController controller;
 
-  InputName({@required this.onChanged, this.hintText, this.errorText});
+  InputName({
+    @required this.onChanged,
+    this.hintText,
+    this.errorText,
+    this.controller,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.all(5.0),
       child: TextField(
+        controller: this.controller,
         onChanged: this.onChanged,
         decoration: InputDecoration(
           fillColor: Color(0xffF2F2F2),
