@@ -1,22 +1,46 @@
 import 'package:flutter/material.dart';
-import 'package:lokalapp/models/lokal_user.dart';
+import 'package:lokalapp/providers/post_requests/auth_body.dart';
+import 'package:lokalapp/providers/user.dart';
 import 'package:lokalapp/screens/profile_screens/settings/email/email_changed.dart';
+import 'package:lokalapp/services/database.dart';
 import 'package:lokalapp/utils/themes.dart';
+import 'package:provider/provider.dart';
 
-class ChangeEmail extends StatelessWidget {
-  TextEditingController newEmailController = TextEditingController();
-  TextEditingController confirmEmailController = TextEditingController();
-  TextEditingController pwController = TextEditingController();
+class ChangeEmail extends StatefulWidget {
+  @override
+  _ChangeEmailState createState() => _ChangeEmailState();
+}
+
+class _ChangeEmailState extends State<ChangeEmail> {
+  String newEmail;
+
+  String confirmEmail;
+
+  String pw;
 
   bool confirmed = false;
 
-  buildInput(context, controller) {
+  Future updateEmail() async {
+    CurrentUser currentUser = Provider.of<CurrentUser>(context, listen: false);
+    AuthBody authBody = Provider.of<AuthBody>(context, listen: false);
+
+    try {
+      authBody.update(email: newEmail);
+      await usersRef.doc(currentUser.id).update({'email': newEmail});
+      Navigator.pop(context);
+    } on Exception catch (_) {
+      print(_);
+    }
+  }
+
+  buildInput(context, Function onChanged, bool obscureText) {
     return Container(
       // width: MediaQuery.of(context).size.width * 0.5,
       padding: const EdgeInsets.only(top: 6, left: 30, right: 30),
       // height: MediaQuery.of(context).size.height * 0.5,
       child: TextFormField(
-        controller: controller,
+        obscureText: obscureText,
+        onChanged: onChanged,
         decoration: InputDecoration(
           fillColor: Colors.white,
           filled: true,
@@ -53,10 +77,6 @@ class ChangeEmail extends StatelessWidget {
     );
   }
 
-  // updateEmail(){
-  //   LokalUser user = LokalUser()
-  // }
-
   buildButton(context) => Container(
         height: 43,
         width: 190,
@@ -77,8 +97,13 @@ class ChangeEmail extends StatelessWidget {
                 fontWeight: FontWeight.w600),
           ),
           onPressed: () {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => EmailChanged()));
+            try {
+              if (newEmail == confirmEmail) {
+                updateEmail();
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => EmailChanged()));
+              }
+            } catch (e) {}
           },
         ),
       );
@@ -151,7 +176,11 @@ class ChangeEmail extends StatelessWidget {
                       fontSize: 14,
                     ),
                   )),
-              buildInput(context, newEmailController),
+              buildInput(context, (value) {
+                setState(() {
+                  newEmail = value;
+                });
+              }, false),
               SizedBox(
                 height: 10,
               ),
@@ -164,7 +193,11 @@ class ChangeEmail extends StatelessWidget {
                       fontSize: 14,
                     ),
                   )),
-              buildInput(context, confirmEmailController),
+              buildInput(context, (value) {
+                setState(() {
+                  confirmEmail = value;
+                });
+              }, false),
               SizedBox(
                 height: 10,
               ),
@@ -177,7 +210,11 @@ class ChangeEmail extends StatelessWidget {
                       fontSize: 14,
                     ),
                   )),
-              buildInput(context, pwController),
+              buildInput(context, (value) {
+                setState(() {
+                  pw = value;
+                });
+              }, true),
               SizedBox(
                 height: MediaQuery.of(context).size.height * 0.2,
               ),

@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import 'package:lokalapp/providers/schedule.dart';
+import 'package:lokalapp/screens/add_shop_screens/components/condensed_operating_hours.dart';
+import 'package:lokalapp/screens/add_shop_screens/components/operating_hours.dart';
+import 'package:lokalapp/screens/add_shop_screens/shop_schedule/customize_availability.dart';
+import 'package:provider/provider.dart';
 
-import '../../utils/calendar_picker/calendar_picker.dart';
-import '../../utils/calendar_picker/classes/schedule_list.dart';
-import '../../utils/calendar_picker/weekday_picker.dart';
-import '../../utils/themes.dart';
-import '../../widgets/custom_app_bar.dart';
-import '../../widgets/rounded_button.dart';
+import '../../../utils/calendar_picker/calendar_picker.dart';
+import '../../../utils/calendar_picker/classes/schedule_list.dart';
+import '../../../utils/calendar_picker/weekday_picker.dart';
+import '../../../utils/themes.dart';
+import '../../../widgets/custom_app_bar.dart';
+import '../../../widgets/rounded_button.dart';
 
 // TODO: create state holder using provider for schedule to be used by calendar and weekday picker
 // this will also remove textediting controller, dropdown value, and markedDays
@@ -17,21 +22,22 @@ class ShopSchedule extends StatefulWidget {
 }
 
 class _ShopScheduleState extends State<ShopSchedule> {
-  TextEditingController repeatController = TextEditingController();
-  final List<String> repeatChoices = ['Days', 'Weeks', 'Months'];
-  String dropDownValue;
   List<int> _markedDaysMap = [];
   DateTime startDate;
   ScheduleList _markedStartDate = ScheduleList([]);
+  bool isPressed = false;
+  List<String> repeatChoices = ['Days', 'Weeks', 'Months'];
 
   @override
   initState() {
-    dropDownValue = repeatChoices[0];
+    var sched = Provider.of<Schedule>(context);
+    sched.dropDownValue = repeatChoices[0];
 
     super.initState();
   }
 
   Future<DateTime> showCalendarPicker() async {
+    var sched = Provider.of<Schedule>(context, listen: false);
     var date = DateTime.now();
     await showDialog<DateTime>(
       context: context,
@@ -71,7 +77,7 @@ class _ShopScheduleState extends State<ShopSchedule> {
                         });
                       },
                       markedDatesMap: _markedStartDate,
-                      selectableDaysMap: dropDownValue == "Weeks"
+                      selectableDaysMap: sched.dropDownValue == "Weeks"
                           ? _markedDaysMap
                           : [1, 2, 3, 4, 5, 6, 7],
                     ),
@@ -118,6 +124,7 @@ class _ShopScheduleState extends State<ShopSchedule> {
   }
 
   Widget startDatePicker() {
+    var sched = Provider.of<Schedule>(context);
     return Row(
       children: [
         Text(
@@ -135,9 +142,10 @@ class _ShopScheduleState extends State<ShopSchedule> {
             label: startDate != null
                 ? DateFormat.MMMMd().format(startDate)
                 : "Select Start Date",
-            onPressed: dropDownValue != "Weeks" || _markedDaysMap.isNotEmpty
-                ? showCalendarPicker
-                : null,
+            onPressed:
+                sched.dropDownValue != "Weeks" || _markedDaysMap.isNotEmpty
+                    ? showCalendarPicker
+                    : null,
             fontColor: Colors.white,
             fontSize: 20.0,
           ),
@@ -147,6 +155,9 @@ class _ShopScheduleState extends State<ShopSchedule> {
   }
 
   Widget repeatabilityPicker() {
+    var controller = Provider.of<Schedule>(context);
+    var dropDownValue = Provider.of<Schedule>(context).getDropDownVal;
+    final onChange = Provider.of<Schedule>(context);
     return Row(
       children: [
         Text(
@@ -162,7 +173,7 @@ class _ShopScheduleState extends State<ShopSchedule> {
         Container(
           width: MediaQuery.of(context).size.width * 0.2,
           child: TextField(
-            controller: repeatController,
+            onChanged: (text) => controller.setDisplayText(text),
             keyboardType: TextInputType.number,
             inputFormatters: [FilteringTextInputFormatter.digitsOnly],
             decoration: InputDecoration(
@@ -203,7 +214,7 @@ class _ShopScheduleState extends State<ShopSchedule> {
                   return DropdownMenuItem<String>(
                     value: value,
                     child: Text(
-                      int.tryParse(repeatController.text) == 1
+                      int.tryParse(controller.getRepeatController) == 1
                           ? value.substring(0, value.length - 1)
                           : value,
                     ),
@@ -211,9 +222,7 @@ class _ShopScheduleState extends State<ShopSchedule> {
                 }).toList(),
                 value: dropDownValue,
                 onChanged: (value) {
-                  setState(() {
-                    dropDownValue = value;
-                  });
+                  onChange.setDropDownValues(value);
                 },
                 style: kTextStyle.copyWith(
                   color: Colors.black,
@@ -227,15 +236,54 @@ class _ShopScheduleState extends State<ShopSchedule> {
     );
   }
 
+  button(width) => Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          SizedBox(
+            width: 10,
+          ),
+          Container(
+            height: 43,
+            width: width,
+            padding: const EdgeInsets.all(2),
+            child: FlatButton(
+              color: kTealColor,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20.0),
+                side: BorderSide(color: kTealColor),
+              ),
+              textColor: Colors.black,
+              child: Text(
+                "Confirm",
+                style: TextStyle(
+                  fontFamily: "Goldplay",
+                  fontSize: 14,
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => CustomizeAvailability()));
+              },
+            ),
+          ),
+        ],
+      );
+
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
+    var sched = Provider.of<Schedule>(context, listen: false);
     return Scaffold(
       backgroundColor: Colors.white,
       resizeToAvoidBottomInset: false,
       appBar: customAppBar(
-          titleText: "ShopSchedule",
+          titleText: "Shop Schedule",
           titleStyle: TextStyle(
             color: Colors.black,
           ),
@@ -255,6 +303,9 @@ class _ShopScheduleState extends State<ShopSchedule> {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
+              SizedBox(
+                height: 20,
+              ),
               Text(
                 "Days Available",
                 style: kTextStyle.copyWith(fontSize: 24.0),
@@ -270,9 +321,9 @@ class _ShopScheduleState extends State<ShopSchedule> {
                 height: height * 0.02,
               ),
               repeatabilityPicker(),
-              SizedBox(height: height * 0.02),
+              SizedBox(height: height * 0.07),
               Visibility(
-                visible: dropDownValue == 'Weeks',
+                visible: sched.dropDownValue == 'Weeks',
                 child: Column(
                   children: [
                     WeekdayPicker(
@@ -348,6 +399,24 @@ class _ShopScheduleState extends State<ShopSchedule> {
                 ),
               ),
               startDatePicker(),
+              SizedBox(height: height * 0.08),
+              // SizedBox(height: height * 0.02),
+              Container(
+                  padding: const EdgeInsets.all(8),
+                  child: Text(
+                    "Hours",
+                    style: kTextStyle.copyWith(fontSize: 22.0),
+                  )),
+              CondensedOperatingHours(
+                day: "From:",
+              ),
+              SizedBox(
+                height: height * 0.1,
+              ),
+              button(width * 0.7),
+              SizedBox(
+                height: height * 0.3,
+              ),
             ],
           ),
         ),

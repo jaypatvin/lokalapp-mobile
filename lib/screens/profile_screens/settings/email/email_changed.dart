@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lokalapp/utils/themes.dart';
 
+import '../../../bottom_navigation.dart';
 import '../settings.dart';
 
 class EmailChanged extends StatelessWidget {
@@ -26,7 +27,7 @@ class EmailChanged extends StatelessWidget {
           onPressed: () {
             Navigator.pushAndRemoveUntil(
                 context,
-                MaterialPageRoute(builder: (context) => Settings()),
+                MaterialPageRoute(builder: (context) => BottomNavigation()),
                 (route) => false);
           },
         ),

@@ -17,7 +17,7 @@ class OperatingHours extends StatelessWidget {
           width: 8,
         ),
         Container(
-          width: MediaQuery.of(context).size.width * .33,
+          width: MediaQuery.of(context).size.width * .50,
           child: Text(
             state,
             softWrap: true,
@@ -31,10 +31,13 @@ class OperatingHours extends StatelessWidget {
         SizedBox(
           width: 5,
         ),
+        Text("to:"),
         Expanded(
           child: Container(
-            width: MediaQuery.of(context).size.width * 0.50,
-            height: MediaQuery.of(context).size.height * 0.1,
+            width: MediaQuery.of(context).size.width * 0.56,
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(10))),
+            height: MediaQuery.of(context).size.height * 0.07,
             child: TimePickerButton(
               minTime: 0,
               maxTime: 24,

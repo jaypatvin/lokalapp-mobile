@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
@@ -20,9 +19,9 @@ class EditProfile extends StatefulWidget {
 }
 
 class _EditProfileState extends State<EditProfile> {
-  TextEditingController _fNameController = TextEditingController();
-  TextEditingController _lNameController = TextEditingController();
-  TextEditingController _streetController = TextEditingController();
+  final TextEditingController _fNameController = TextEditingController();
+  final TextEditingController _lNameController = TextEditingController();
+  final TextEditingController _streetController = TextEditingController();
   File _profilePhoto;
 
   @override
@@ -41,6 +40,7 @@ class _EditProfileState extends State<EditProfile> {
     _streetController.text = user.address.street;
     super.initState();
   }
+
 
   Future updateUser() async {
     var user = Provider.of<CurrentUser>(context, listen: false);
@@ -114,7 +114,7 @@ class _EditProfileState extends State<EditProfile> {
       ),
     );
   }
-
+  
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
