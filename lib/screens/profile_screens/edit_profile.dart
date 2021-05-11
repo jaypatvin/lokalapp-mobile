@@ -1,9 +1,13 @@
-import 'dart:io';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:lokalapp/models/lokal_user.dart';
+import 'package:lokalapp/providers/post_requests/auth_body.dart';
 
 import 'package:lokalapp/providers/user.dart';
+import 'package:lokalapp/services/database.dart';
+
+import 'package:lokalapp/services/local_image_service.dart';
 
 import 'package:lokalapp/utils/themes.dart';
 import 'package:lokalapp/utils/utility.dart';
@@ -17,13 +21,13 @@ class EditProfile extends StatefulWidget {
 }
 
 class _EditProfileState extends State<EditProfile> {
-  TextEditingController _fNameController = TextEditingController();
+  final TextEditingController _fNameController = TextEditingController();
 
-  TextEditingController _lNameController = TextEditingController();
+  final TextEditingController _lNameController = TextEditingController();
 
-  TextEditingController _streetController = TextEditingController();
+  final TextEditingController _streetController = TextEditingController();
 
-  TextEditingController _locationController = TextEditingController();
+  final TextEditingController _locationController = TextEditingController();
 
   var updatedProfileUrl;
   bool updatedImage = false;
@@ -71,22 +75,37 @@ class _EditProfileState extends State<EditProfile> {
     );
   }
 
-  // Future updateUser(context) async {
-  //   var user = Provider.of<CurrentUser>(context, listen: false);
-  //   try {
-  //     LokalUser lokalUser = LokalUser(
-  //       firstName: _fNameController.text,
-  //       lastName: _lNameController.text,
-  //       // address: _streetController.text
-  //     );
+  Future updateProfile() async {
+    LocalImageService _imageService =
+        Provider.of<LocalImageService>(context, listen: false);
+    String mediaUrl = '';
+    if (updatedProfileUrl != null) {
+      mediaUrl = await _imageService.uploadImage(
+          file: updatedProfileUrl, name: 'profile_photo');
+    }
+    CurrentUser currentUser = Provider.of<CurrentUser>(context, listen: false);
+    AuthBody authBody = Provider.of<AuthBody>(context, listen: false);
+    var street = UserAddress(street: _streetController.text);
+    try {
+      authBody.update(
+          firstName: _fNameController.text,
+          lastName: _lNameController.text,
+          // userUid: user.id,
+          address: UserAddress(street: _streetController.text).toString(),
+          profilePhoto: mediaUrl);
 
-  //     await Database()
-  //         .updateUser(lokalUser,key, value);
-  //     Navigator.pop(context);
-  //   } catch (e) {
-  //     print(e);
-  //   }
-  // }
+      await usersRef.doc(currentUser.id).update({
+        'first_name': _fNameController.text,
+        'last_name': _lNameController.text,
+        // userUid: user.id,
+        'address': street,
+        'profile_photo': mediaUrl
+      });
+      Navigator.pop(context);
+    } on Exception catch (_) {
+      print(_);
+    }
+  }
 
   Widget get buildButton => Container(
         height: 43,
@@ -108,7 +127,7 @@ class _EditProfileState extends State<EditProfile> {
                 fontWeight: FontWeight.w600),
           ),
           onPressed: () {
-            // updateUser(context);
+            updateProfile();
           },
         ),
       );
