@@ -23,11 +23,14 @@ class CondensedOperatingHours extends StatelessWidget {
       // mainAxisSize: MainAxisSize.max,
       children: [
         Container(
-          width: MediaQuery.of(context).size.width * .26,
+          width: MediaQuery.of(context).size.width * .1,
           child: Text(
             day,
             softWrap: true,
-            style: TextStyle(fontFamily: "GoldplayBold", fontSize: 16),
+            style: TextStyle(
+              fontFamily: "GoldplayBold",
+              // fontSize: 16
+            ),
           ),
         ),
         Container(
@@ -40,6 +43,7 @@ class CondensedOperatingHours extends StatelessWidget {
           ),
         ),
         SizedBox(width: MediaQuery.of(context).size.width * 0.02),
+        Container(padding: const EdgeInsets.all(5), child: Text("to:")),
         Container(
           height: 50,
           width: 130,
