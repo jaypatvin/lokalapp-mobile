@@ -1,0 +1,924 @@
+import 'dart:io';
+
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:intl/date_symbols.dart';
+import 'package:intl/intl.dart' show DateFormat;
+import 'package:provider/provider.dart';
+
+import '../../providers/post_requests/operating_hours_body.dart';
+import '../../utils/calendar_picker/calendar_picker.dart';
+import '../../utils/calendar_picker/day_of_month_picker.dart';
+import '../../utils/calendar_picker/weekday_picker.dart';
+import '../../utils/themes.dart';
+import '../../widgets/custom_app_bar.dart';
+import '../../widgets/rounded_button.dart';
+import 'customize_availability.dart';
+import 'shop_schedule/repeat_choices.dart';
+
+class ShopSchedule extends StatefulWidget {
+  final File shopPhoto;
+
+  const ShopSchedule(this.shopPhoto);
+
+  @override
+  _ShopScheduleState createState() => _ShopScheduleState();
+}
+
+class _ShopScheduleState extends State<ShopSchedule> {
+  TextEditingController repeatController = TextEditingController();
+  RepeatChoices repeatChoice;
+  TimeOfDay _opening;
+  TimeOfDay _closing;
+
+  // Days and Weeks
+  List<int> _markedDaysMap = [];
+  DateTime _startDate;
+  List<DateTime> _markedStartDate = [];
+
+  // MONTH
+  int _markedStartDayOfMonth = 0;
+  int _startDayOfMonth = 0;
+  List<String> _ordinalNumbers = [
+    "First",
+    "Second",
+    "Third",
+    "Fourth",
+    "Fifth"
+  ];
+  String _ordinalChoice;
+  String _monthDayChoice;
+  String _monthChoice;
+
+  @override
+  initState() {
+    super.initState();
+    repeatChoice = RepeatChoices.days;
+    _opening = TimeOfDay(hour: 8, minute: 0);
+    _closing = TimeOfDay(hour: 17, minute: 0);
+
+    _ordinalChoice = _ordinalNumbers[0];
+    var day = DateTime.now().weekday;
+    if (day == 0) day = 7;
+    _monthDayChoice = en_USSymbols.WEEKDAYS[day];
+    _monthChoice = en_USSymbols.MONTHS[DateTime.now().month - 1];
+
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      Provider.of<OperatingHoursBody>(context, listen: false).update(
+        startTime: getTimeOfDayString(_opening),
+        endTime: getTimeOfDayString(_closing),
+        repeatType: repeatChoice.value,
+        repeatUnit: 1,
+        startDates: [DateFormat("yyyy-MM-dd").format(DateTime.now())],
+      );
+    });
+  }
+
+  // MONTH STATE:
+  /* ------------------------------------------------------------------------ */
+  Future<int> showDayOfMonthPicker() async {
+    return await showDialog<int>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, StateSetter setState) {
+            return Center(
+              child: Dialog(
+                insetPadding: EdgeInsets.zero,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30.0)),
+                child: SingleChildScrollView(
+                  physics: NeverScrollableScrollPhysics(),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height * 0.02,
+                      ),
+                      Text(
+                        "Start Date",
+                        style: kTextStyle.copyWith(
+                          fontSize: 24.0,
+                        ),
+                      ),
+                      DayOfMonthPicker(
+                        width: MediaQuery.of(context).size.width * 0.95,
+                        padding: EdgeInsets.all(5.0),
+                        onDayPressed: (day) {
+                          setState(() {
+                            if (_markedStartDayOfMonth == day) {
+                              _markedStartDayOfMonth = 0;
+                            } else {
+                              _markedStartDayOfMonth = day;
+                            }
+                          });
+                        },
+                        markedDay: _markedStartDayOfMonth,
+                      ),
+                      Container(
+                        padding: EdgeInsets.all(
+                            MediaQuery.of(context).size.width * 0.05),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            RoundedButton(
+                              label: "Cancel",
+                              color: Color(
+                                0xFFF1FAFF,
+                              ),
+                              onPressed: () {
+                                _markedStartDayOfMonth = _startDayOfMonth;
+                                Navigator.pop(context, _startDayOfMonth);
+                              },
+                            ),
+                            RoundedButton(
+                              label: "Confirm",
+                              fontColor: Colors.white,
+                              onPressed: () {
+                                this.setState(() {
+                                  _startDayOfMonth = _markedStartDayOfMonth;
+                                });
+                                setMonthStartDate(day: _startDayOfMonth);
+                                Navigator.pop(context, this._startDayOfMonth);
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  // to be shown when Month is chosen as repeatChoice
+  Widget buildDayOfMonthBody() {
+    var height = MediaQuery.of(context).size.height;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        RoundedButton(
+          textAlign: TextAlign.start,
+          minWidth: double.infinity,
+          label: _startDayOfMonth == 0
+              ? 'Select Start Day'
+              : '${getOrdinal(_startDayOfMonth)} of the month',
+          onPressed: showDayOfMonthPicker,
+          fontColor: Colors.white,
+          fontSize: 20.0,
+        ),
+        Align(
+          alignment: Alignment.center,
+          child: Padding(
+            padding: EdgeInsets.symmetric(vertical: height * 0.01),
+            child: Text(
+              'or',
+              style: kTextStyle.copyWith(
+                fontWeight: FontWeight.normal,
+                fontSize: 20.0,
+              ),
+            ),
+          ),
+        ),
+        Row(
+          children: [
+            Expanded(
+              child: Container(
+                padding: EdgeInsets.symmetric(
+                    horizontal: MediaQuery.of(context).size.width * 0.05),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(30.0),
+                  border: Border.all(
+                    color: Colors.transparent,
+                  ),
+                  color: Colors.grey[200],
+                ),
+                child: DropdownButtonHideUnderline(
+                  child: DropdownButton<String>(
+                    items: _ordinalNumbers.map((String choice) {
+                      return DropdownMenuItem<String>(
+                        value: choice,
+                        child: Text(choice),
+                      );
+                    }).toList(),
+                    value: _ordinalChoice,
+                    onChanged: (value) {
+                      setState(() {
+                        _ordinalChoice = value;
+                      });
+                      setMonthDayOfWeek();
+                    },
+                    style: kTextStyle.copyWith(
+                      color: Colors.black,
+                      fontWeight: FontWeight.normal,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(
+              width: MediaQuery.of(context).size.width * 0.02,
+            ),
+            Expanded(
+              child: Container(
+                padding: EdgeInsets.symmetric(
+                    horizontal: MediaQuery.of(context).size.width * 0.05),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(30.0),
+                  border: Border.all(
+                    color: Colors.transparent,
+                  ),
+                  color: Colors.grey[200],
+                ),
+                child: DropdownButtonHideUnderline(
+                  child: DropdownButton<String>(
+                    items: en_USSymbols.WEEKDAYS.map((String choice) {
+                      return DropdownMenuItem<String>(
+                        value: choice,
+                        child: Text(choice),
+                      );
+                    }).toList(),
+                    value: _monthDayChoice,
+                    onChanged: (value) {
+                      setState(() {
+                        _monthDayChoice = value;
+                      });
+                      setMonthDayOfWeek();
+                    },
+                    style: kTextStyle.copyWith(
+                      color: Colors.black,
+                      fontWeight: FontWeight.normal,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+        SizedBox(
+          height: MediaQuery.of(context).size.height * 0.02,
+        ),
+        Row(
+          children: [
+            Text(
+              'Start Month',
+              style: kTextStyle.copyWith(
+                fontWeight: FontWeight.normal,
+                fontSize: 20.0,
+              ),
+            ),
+            SizedBox(
+              width: MediaQuery.of(context).size.width * 0.02,
+            ),
+            Expanded(
+              child: Container(
+                padding: EdgeInsets.symmetric(
+                    horizontal: MediaQuery.of(context).size.width * 0.05),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(30.0),
+                  border: Border.all(
+                    color: Colors.transparent,
+                  ),
+                  color: Colors.grey[200],
+                ),
+                child: DropdownButtonHideUnderline(
+                  child: DropdownButton<String>(
+                    items: en_USSymbols.MONTHS.map((String choice) {
+                      return DropdownMenuItem<String>(
+                        value: choice,
+                        child: Text(choice),
+                      );
+                    }).toList(),
+                    value: _monthChoice,
+                    onChanged: (value) {
+                      var month = en_USSymbols.MONTHS.indexOf(_monthChoice);
+
+                      setState(() {
+                        _monthChoice = value;
+                      });
+                      setMonthDayOfWeek();
+                      setMonthStartDate(month: month + 1);
+                    },
+                    style: kTextStyle.copyWith(
+                      color: Colors.black,
+                      fontWeight: FontWeight.normal,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  // change state functions
+  String getOrdinal(int input) {
+    int value = input % 100;
+
+    if (3 < value && value < 21) {
+      return "${input}th";
+    }
+
+    switch (input % 10) {
+      case 1:
+        return "${input}st";
+      case 2:
+        return "${input}nd";
+      case 3:
+        return "${input}rd";
+      default:
+        return "${input}th";
+    }
+  }
+
+  void setMonthStartDate({int day, int month}) {
+    _startDate ??= DateTime.now();
+
+    _startDate = DateTime(
+      _startDate.year,
+      month ?? _startDate.month,
+      day ?? _startDate.day,
+    );
+
+    Provider.of<OperatingHoursBody>(context, listen: false).update(
+      startDates: [DateFormat("yyyy-MM-dd").format(_startDate)],
+    );
+  }
+
+  void setMonthDayOfWeek() {
+    var ordinal = _ordinalNumbers.indexOf(_ordinalChoice) + 1;
+    var month = en_USSymbols.MONTHS.indexOf(_monthChoice) + 1;
+    var weekday = en_USSymbols.WEEKDAYS.indexOf(_monthDayChoice);
+    if (weekday == 0) weekday = 7;
+
+    var now = DateTime.now();
+    now = DateTime(now.year, month, 1);
+
+    var count = 0;
+
+    while (count < ordinal) {
+      while (true) {
+        if (now.weekday == weekday) {
+          count++;
+          if (count < ordinal) now = now.add(Duration(days: 1));
+          break;
+        }
+        now = now.add(Duration(days: 1));
+      }
+    }
+    _startDate = DateTime(now.year, now.month, now.day);
+
+    Provider.of<OperatingHoursBody>(context, listen: false).update(
+      startDates: [DateFormat("yyyy-MM-dd").format(_startDate)],
+    );
+  }
+  /* ------------------------------------------------------------------------ */
+
+  Future<DateTime> showCalendarPicker() async {
+    return await showDialog<DateTime>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return Center(
+          child: Dialog(
+            insetPadding: EdgeInsets.zero,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(30.0)),
+            child: SingleChildScrollView(
+              physics: NeverScrollableScrollPhysics(),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.02,
+                  ),
+                  Text(
+                    "Start Date",
+                    style: kTextStyle.copyWith(
+                      fontSize: 24.0,
+                    ),
+                  ),
+                  Container(
+                    width: MediaQuery.of(context).size.width * 0.95,
+                    height: MediaQuery.of(context).size.height * 0.56,
+                    padding: EdgeInsets.all(5.0),
+                    child: CalendarCarousel(
+                      width: MediaQuery.of(context).size.width * 0.95,
+                      onDayPressed: (day) {
+                        setState(() {
+                          if (_markedStartDate.contains(day)) {
+                            _markedStartDate.clear();
+                          } else {
+                            _markedStartDate
+                              ..clear()
+                              ..add(day);
+                          }
+                        });
+                      },
+                      markedDatesMap: _markedStartDate,
+                      selectableDaysMap: repeatChoice == RepeatChoices.weeks
+                          ? _markedDaysMap
+                          : [1, 2, 3, 4, 5, 6, 0],
+                    ),
+                  ),
+                  Container(
+                    padding: EdgeInsets.all(
+                        MediaQuery.of(context).size.width * 0.05),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        RoundedButton(
+                          label: "Cancel",
+                          color: Color(
+                            0xFFF1FAFF,
+                          ),
+                          onPressed: () {
+                            _markedStartDate
+                              ..clear()
+                              ..add(_startDate);
+                            Navigator.pop(context, _startDate);
+                          },
+                        ),
+                        RoundedButton(
+                          label: "Confirm",
+                          fontColor: Colors.white,
+                          onPressed: () {
+                            setState(() {
+                              if (_markedStartDate.isNotEmpty)
+                                _startDate = _markedStartDate.first;
+                              else
+                                _startDate = null;
+                            });
+                            // TODO: update provider
+                            Provider.of<OperatingHoursBody>(context,
+                                    listen: false)
+                                .update(startDates: [
+                              DateFormat('yyyy-MM-dd').format(_startDate)
+                            ]);
+                            Navigator.pop(context, _startDate);
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget startDatePicker() {
+    return Row(
+      children: [
+        Text(
+          "Start date",
+          style: kTextStyle.copyWith(
+              fontWeight: FontWeight.normal, fontSize: 18.0),
+        ),
+        SizedBox(
+          width: MediaQuery.of(context).size.width * 0.05,
+        ),
+        Expanded(
+          child: RoundedButton(
+            textAlign: TextAlign.start,
+            minWidth: double.infinity,
+            label: _startDate != null
+                ? DateFormat.MMMMd().format(_startDate)
+                : "Select Start Date",
+            onPressed:
+                repeatChoice != RepeatChoices.weeks || _markedDaysMap.isNotEmpty
+                    ? showCalendarPicker
+                    : null,
+            fontColor: Colors.white,
+            fontSize: 20.0,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget repeatabilityPicker() {
+    return Row(
+      children: [
+        Text(
+          "Every",
+          style: kTextStyle.copyWith(
+            fontWeight: FontWeight.normal,
+            fontSize: 20.0,
+          ),
+        ),
+        SizedBox(
+          width: MediaQuery.of(context).size.width * 0.05,
+        ),
+        Container(
+          width: MediaQuery.of(context).size.width * 0.2,
+          child: TextField(
+            controller: repeatController,
+            keyboardType: TextInputType.number,
+            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+            decoration: InputDecoration(
+              enabledBorder: UnderlineInputBorder(
+                borderSide: BorderSide(color: Colors.black),
+              ),
+              focusedBorder: UnderlineInputBorder(
+                borderSide: BorderSide(color: Colors.black),
+              ),
+              border: UnderlineInputBorder(
+                borderSide: BorderSide(color: Colors.black),
+              ),
+            ),
+            onChanged: (String value) {
+              Provider.of<OperatingHoursBody>(context, listen: false)
+                  .update(repeatUnit: int.parse(value));
+            },
+            textAlign: TextAlign.center,
+            style: kTextStyle.copyWith(
+              color: kTealColor,
+              fontSize: 32.0,
+            ),
+          ),
+        ),
+        SizedBox(
+          width: MediaQuery.of(context).size.width * 0.05,
+        ),
+        Expanded(
+          child: Container(
+            padding: EdgeInsets.symmetric(
+                horizontal: MediaQuery.of(context).size.width * 0.05),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(30.0),
+              border: Border.all(
+                color: Colors.transparent,
+              ),
+              color: Colors.grey[200],
+            ),
+            child: DropdownButtonHideUnderline(
+              child: DropdownButton<RepeatChoices>(
+                items: RepeatChoices.values.map((RepeatChoices choice) {
+                  return DropdownMenuItem<RepeatChoices>(
+                    value: choice,
+                    child: Text(
+                      int.tryParse(repeatController.text) == 1
+                          ? choice.value.substring(0, choice.value.length - 1)
+                          : choice.value,
+                    ),
+                  );
+                }).toList(),
+                value: repeatChoice,
+                onChanged: (choice) {
+                  setState(() {
+                    repeatChoice = choice;
+                  });
+                  Provider.of<OperatingHoursBody>(context, listen: false)
+                      .update(repeatType: choice.value.toLowerCase());
+                },
+                style: kTextStyle.copyWith(
+                  color: Colors.black,
+                  fontWeight: FontWeight.normal,
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Future<void> selectTime(
+      TimeOfDay initialTime, Function(TimeOfDay) onSet) async {
+    final TimeOfDay pickedTime = await showTimePicker(
+        context: context,
+        initialTime: initialTime ?? TimeOfDay.now(),
+        builder: (BuildContext context, Widget child) {
+          return MediaQuery(
+            data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: false),
+            child: child,
+          );
+        });
+
+    if (pickedTime != null) onSet(pickedTime);
+  }
+
+  String getTimeOfDayString(TimeOfDay time) {
+    String timeOfDay = TimeOfDay(
+      hour: time.hour,
+      minute: time.minute,
+    ).replacing(hour: time.hourOfPeriod).format(context);
+    String period = time.period == DayPeriod.am ? "AM" : "PM";
+
+    return '$timeOfDay $period';
+  }
+
+  Widget hoursPicker() {
+    SizedBox spacerBox = SizedBox(
+      width: MediaQuery.of(context).size.width * 0.03,
+    );
+    return Row(
+      children: [
+        Text(
+          "Every",
+          style: kTextStyle.copyWith(
+            fontWeight: FontWeight.normal,
+            fontSize: 20.0,
+          ),
+        ),
+        spacerBox,
+        Expanded(
+          child: Container(
+            padding: EdgeInsets.symmetric(
+                horizontal: MediaQuery.of(context).size.width * 0.02),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(30.0),
+              border: Border.all(
+                color: Colors.transparent,
+              ),
+              color: Colors.grey[200],
+            ),
+            child: TextButton(
+              onPressed: () {
+                selectTime(this._opening, (pickedTime) {
+                  if (pickedTime == _opening) return;
+                  setState(() {
+                    _opening = pickedTime;
+                  });
+                  // TODO: update Provider
+                  Provider.of<OperatingHoursBody>(context, listen: false)
+                      .update(startTime: getTimeOfDayString(_opening));
+                });
+              },
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      getTimeOfDayString(_opening),
+                      style: kTextStyle.copyWith(
+                        fontWeight: FontWeight.normal,
+                        //fontSize: 18.0,
+                      ),
+                    ),
+                  ),
+                  Icon(
+                    Icons.arrow_drop_down_sharp,
+                    color: kTealColor,
+                  ),
+                ],
+              ),
+              style: TextButton.styleFrom(
+                primary: Colors.black,
+              ),
+            ),
+          ),
+        ),
+        spacerBox,
+        Text(
+          "To",
+          style: kTextStyle.copyWith(
+            fontWeight: FontWeight.normal,
+            fontSize: 20.0,
+          ),
+        ),
+        spacerBox,
+        Expanded(
+          child: Container(
+            padding: EdgeInsets.symmetric(
+                horizontal: MediaQuery.of(context).size.width * 0.02),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(30.0),
+              border: Border.all(
+                color: Colors.transparent,
+              ),
+              color: Colors.grey[200],
+            ),
+            child: TextButton(
+              onPressed: () {
+                selectTime(this._closing, (pickedTime) {
+                  if (pickedTime == _closing) return;
+                  setState(() {
+                    _closing = pickedTime;
+                  });
+                  // TODO: update Provider
+                  Provider.of<OperatingHoursBody>(context, listen: false)
+                      .update(endTime: getTimeOfDayString(_closing));
+                });
+              },
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      getTimeOfDayString(_closing),
+                      style: kTextStyle.copyWith(
+                        fontWeight: FontWeight.normal,
+                        //fontSize: 18.0,
+                      ),
+                    ),
+                  ),
+                  Icon(
+                    Icons.arrow_drop_down_sharp,
+                    color: kTealColor,
+                  ),
+                ],
+              ),
+              style: TextButton.styleFrom(
+                primary: Colors.black,
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget buildBody() {
+    double height = MediaQuery.of(context).size.height;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          "Days Available",
+          style: kTextStyle.copyWith(fontSize: 24.0),
+        ),
+        Text(
+          "Set your shop's availability",
+          style: kTextStyle.copyWith(
+            fontWeight: FontWeight.w600,
+            fontSize: 18.0,
+          ),
+        ),
+        SizedBox(
+          height: height * 0.02,
+        ),
+        repeatabilityPicker(),
+        SizedBox(height: height * 0.02),
+        Visibility(
+          visible: repeatChoice == RepeatChoices.weeks,
+          child: Column(
+            children: [
+              WeekdayPicker(
+                onDayPressed: (int index) {
+                  if (_markedDaysMap.contains(index)) {
+                    setState(() {
+                      _markedDaysMap.remove(index);
+                      if (_markedStartDate.isEmpty) return;
+                      var markedStart = _markedStartDate.first;
+                      var startDay = markedStart.weekday;
+                      if (startDay == 7) startDay = 0;
+                      if (startDay == index) _markedStartDate.clear();
+
+                      int day = _startDate.weekday;
+                      if (day == 7) day = 0;
+                      if (day == index) {
+                        for (DateTime indexDay = DateTime(DateTime.now().year,
+                                DateTime.now().month, DateTime.now().day);
+                            indexDay.month <= DateTime.now().month + 1;
+                            indexDay = indexDay.add(Duration(days: 1))) {
+                          int day = indexDay.weekday;
+                          if (day == 7) day = 0;
+                          if (_markedDaysMap.contains(day)) {
+                            _startDate = indexDay;
+                            return;
+                          } else
+                            _startDate = null;
+                        }
+                      }
+                    });
+                  } else {
+                    setState(() {
+                      _markedDaysMap.add(index);
+                      if (_markedStartDate.isNotEmpty) return;
+                      for (DateTime indexDay = DateTime(DateTime.now().year,
+                              DateTime.now().month, DateTime.now().day);
+                          indexDay.month <= DateTime.now().month + 1;
+                          indexDay = indexDay.add(Duration(days: 1))) {
+                        int day = indexDay.weekday;
+                        if (day == 7) day = 0;
+                        if (day == index) {
+                          _startDate = indexDay;
+                          _markedStartDate.add(indexDay);
+                          return;
+                        }
+                      }
+                    });
+                  }
+                },
+                markedDaysMap: _markedDaysMap,
+              ),
+              SizedBox(
+                height: height * 0.02,
+              ),
+              Visibility(
+                visible: _markedDaysMap.isEmpty,
+                child: Text(
+                  "Select a day or days to repeat every week",
+                  style: kTextStyle.copyWith(
+                    color: Colors.red,
+                    fontWeight: FontWeight.normal,
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: height * 0.02,
+              ),
+            ],
+          ),
+        ),
+        Visibility(
+          visible: repeatChoice != RepeatChoices.months,
+          child: startDatePicker(),
+        ),
+        Visibility(
+          visible: repeatChoice == RepeatChoices.months,
+          child: buildDayOfMonthBody(),
+        ),
+        SizedBox(
+          height: height * 0.05,
+        ),
+        Text(
+          "Hours",
+          style: kTextStyle.copyWith(fontSize: 24.0),
+        ),
+        SizedBox(
+          height: height * 0.02,
+        ),
+        hoursPicker(),
+      ],
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    double height = MediaQuery.of(context).size.height;
+    double width = MediaQuery.of(context).size.width;
+    return Scaffold(
+      backgroundColor: Colors.white,
+      resizeToAvoidBottomInset: false,
+      appBar: customAppBar(
+          titleText: "Shop Schedule",
+          titleStyle: TextStyle(
+            color: Colors.black,
+          ),
+          backgroundColor: Colors.white,
+          leadingColor: Colors.black,
+          elevation: 0.0,
+          onPressedLeading: () {
+            Navigator.pop(context);
+          }),
+      body: Container(
+        padding: EdgeInsets.symmetric(
+          horizontal: width * 0.05,
+          vertical: height * 0.02,
+        ),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              buildBody(),
+              SizedBox(
+                height: height * 0.05,
+              ),
+              RoundedButton(
+                label: "Confirm",
+                height: 10,
+                minWidth: double.infinity,
+                fontSize: 16,
+                fontWeight: FontWeight.w700,
+                fontFamily: "GoldplayBold",
+                fontColor: Colors.white,
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (BuildContext context) => CustomizeAvailability(
+                        repeatChoice: this.repeatChoice,
+                        repeatEvery: int.tryParse(this.repeatController.text),
+                        selectableDays: this._markedDaysMap,
+                        startDate: this._startDate ?? DateTime.now(),
+                        shopPhoto: widget.shopPhoto,
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}

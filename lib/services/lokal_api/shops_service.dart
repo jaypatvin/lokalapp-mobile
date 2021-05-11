@@ -44,6 +44,24 @@ class ShopsService {
     return response;
   }
 
+  Future<http.Response> setOperatingHours({
+    @required Map data,
+    @required String idToken,
+    @required String id,
+  }) async {
+    var body = json.encode(data);
+    http.Response response = await http.put(
+      "$shopsUrl/$id/operatingHours",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer $idToken"
+      },
+      body: body,
+    );
+
+    return response;
+  }
+
   // --GET
 
   Future<http.Response> getById(
@@ -61,6 +79,12 @@ class ShopsService {
   Future<http.Response> getByUserId(
       {@required String userId, @required String idToken}) async {
     return await http.get("$usersUrl/$userId/shops",
+        headers: {"Authorization": "Bearer $idToken"});
+  }
+
+  Future<http.Response> getOperatingHours(
+      {@required String shopId, @required String idToken}) async {
+    return await http.get("$shopsUrl/$shopId/operatingHours",
         headers: {"Authorization": "Bearer $idToken"});
   }
 }

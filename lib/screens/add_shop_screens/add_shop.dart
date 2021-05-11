@@ -11,7 +11,7 @@ import '../../widgets/input_description.dart';
 import '../../widgets/input_name.dart';
 import '../../widgets/photo_box.dart';
 import '../../widgets/rounded_button.dart';
-import 'shop_schedule/shop_schedule.dart';
+import 'shop_schedule.dart';
 
 class AddShop extends StatefulWidget {
   @override
@@ -95,7 +95,9 @@ class _AddShopState extends State<AddShop> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (BuildContext context) => ShopSchedule(),
+                        builder: (BuildContext context) {
+                          return ShopSchedule(this.shopPhoto);
+                        },
                       ),
                     );
                   },
