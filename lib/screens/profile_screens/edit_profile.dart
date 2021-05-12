@@ -1,4 +1,4 @@
-import 'dart:ui';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -40,7 +40,6 @@ class _EditProfileState extends State<EditProfile> {
     _streetController.text = user.address.street;
     super.initState();
   }
-
 
   Future updateUser() async {
     var user = Provider.of<CurrentUser>(context, listen: false);
@@ -114,7 +113,7 @@ class _EditProfileState extends State<EditProfile> {
       ),
     );
   }
-  
+
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
