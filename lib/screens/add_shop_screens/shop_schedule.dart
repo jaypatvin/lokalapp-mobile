@@ -49,6 +49,9 @@ class _ShopScheduleState extends State<ShopSchedule> {
   String _ordinalChoice;
   String _monthDayChoice;
   String _monthChoice;
+  // this will be used to determine if user used the date picker
+  // or used the dropdown buttons for start date of month repeatability
+  bool _usedDatePicker = false;
 
   @override
   initState() {
@@ -139,6 +142,7 @@ class _ShopScheduleState extends State<ShopSchedule> {
                                 this.setState(() {
                                   _startDayOfMonth = _markedStartDayOfMonth;
                                 });
+                                _usedDatePicker = true;
                                 setMonthStartDate(day: _startDayOfMonth);
                                 Navigator.pop(context, this._startDayOfMonth);
                               },
@@ -214,6 +218,7 @@ class _ShopScheduleState extends State<ShopSchedule> {
                       setState(() {
                         _ordinalChoice = value;
                       });
+                      _usedDatePicker = false;
                       setMonthDayOfWeek();
                     },
                     style: kTextStyle.copyWith(
@@ -251,6 +256,7 @@ class _ShopScheduleState extends State<ShopSchedule> {
                       setState(() {
                         _monthDayChoice = value;
                       });
+                      _usedDatePicker = false;
                       setMonthDayOfWeek();
                     },
                     style: kTextStyle.copyWith(
@@ -304,8 +310,12 @@ class _ShopScheduleState extends State<ShopSchedule> {
                       setState(() {
                         _monthChoice = value;
                       });
-                      setMonthDayOfWeek();
-                      setMonthStartDate(month: month + 1);
+
+                      if (_usedDatePicker) {
+                        setMonthStartDate(month: month + 1);
+                      } else {
+                        setMonthDayOfWeek();
+                      }
                     },
                     style: kTextStyle.copyWith(
                       color: Colors.black,
@@ -344,11 +354,13 @@ class _ShopScheduleState extends State<ShopSchedule> {
   void setMonthStartDate({int day, int month}) {
     _startDate ??= DateTime.now();
 
-    _startDate = DateTime(
-      _startDate.year,
-      month ?? _startDate.month,
-      day ?? _startDate.day,
-    );
+    setState(() {
+      _startDate = DateTime(
+        _startDate.year,
+        month ?? _startDate.month,
+        day ?? _startDate.day,
+      );
+    });
 
     Provider.of<OperatingHoursBody>(context, listen: false).update(
       startDates: [DateFormat("yyyy-MM-dd").format(_startDate)],
@@ -356,31 +368,35 @@ class _ShopScheduleState extends State<ShopSchedule> {
   }
 
   void setMonthDayOfWeek() {
-    var ordinal = _ordinalNumbers.indexOf(_ordinalChoice) + 1;
-    var month = en_USSymbols.MONTHS.indexOf(_monthChoice) + 1;
-    var weekday = en_USSymbols.WEEKDAYS.indexOf(_monthDayChoice);
-    if (weekday == 0) weekday = 7;
+    // var ordinal = _ordinalNumbers.indexOf(_ordinalChoice) + 1;
+    // var month = en_USSymbols.MONTHS.indexOf(_monthChoice) + 1;
+    // var weekday = en_USSymbols.WEEKDAYS.indexOf(_monthDayChoice);
+    // if (weekday == 0) weekday = 7;
 
-    var now = DateTime.now();
-    now = DateTime(now.year, month, 1);
+    // var now = DateTime.now();
+    // now = DateTime(now.year, month, 1);
 
-    var count = 0;
+    // var count = 0;
 
-    while (count < ordinal) {
-      while (true) {
-        if (now.weekday == weekday) {
-          count++;
-          if (count < ordinal) now = now.add(Duration(days: 1));
-          break;
-        }
-        now = now.add(Duration(days: 1));
-      }
-    }
-    _startDate = DateTime(now.year, now.month, now.day);
+    // while (count < ordinal) {
+    //   while (true) {
+    //     if (now.weekday == weekday) {
+    //       count++;
+    //       if (count < ordinal) now = now.add(Duration(days: 1));
+    //       break;
+    //     }
+    //     now = now.add(Duration(days: 1));
+    //   }
+    // }
+    // _startDate = DateTime(now.year, now.month, now.day);
 
-    Provider.of<OperatingHoursBody>(context, listen: false).update(
-      startDates: [DateFormat("yyyy-MM-dd").format(_startDate)],
-    );
+    // Provider.of<OperatingHoursBody>(context, listen: false).update(
+    //   startDates: [DateFormat("yyyy-MM-dd").format(_startDate)],
+    // );
+    setState(() {
+      _startDate = null;
+      _startDayOfMonth = 0;
+    });
   }
   /* ------------------------------------------------------------------------ */
 
@@ -459,7 +475,6 @@ class _ShopScheduleState extends State<ShopSchedule> {
                               else
                                 _startDate = null;
                             });
-                            // TODO: update provider
                             Provider.of<OperatingHoursBody>(context,
                                     listen: false)
                                 .update(startDates: [
@@ -910,6 +925,13 @@ class _ShopScheduleState extends State<ShopSchedule> {
                         selectableDays: this._markedDaysMap,
                         startDate: this._startDate ?? DateTime.now(),
                         shopPhoto: widget.shopPhoto,
+                        usedDatePicker: _usedDatePicker,
+                        monthOrdinal:
+                            _ordinalNumbers.indexOf(_ordinalChoice) + 1,
+                        monthWeekDay:
+                            en_USSymbols.WEEKDAYS.indexOf(_monthDayChoice),
+                        startMonth:
+                            en_USSymbols.MONTHS.indexOf(_monthChoice) + 1,
                       ),
                     ),
                   );

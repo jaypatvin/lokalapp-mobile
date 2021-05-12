@@ -2,10 +2,10 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart' show DateFormat;
-import '../../models/operating_hours.dart';
-import '../../providers/post_requests/operating_hours_body.dart';
 import 'package:provider/provider.dart';
 
+import '../../models/operating_hours.dart';
+import '../../providers/post_requests/operating_hours_body.dart';
 import '../../providers/post_requests/shop_body.dart';
 import '../../providers/shops.dart';
 import '../../providers/user.dart';
@@ -24,6 +24,10 @@ class CustomizeAvailability extends StatefulWidget {
   final List selectableDays;
   final DateTime startDate;
   final File shopPhoto;
+  final bool usedDatePicker;
+  final int monthOrdinal;
+  final int monthWeekDay;
+  final int startMonth;
 
   const CustomizeAvailability({
     @required this.repeatChoice,
@@ -31,6 +35,10 @@ class CustomizeAvailability extends StatefulWidget {
     @required this.startDate,
     @required this.repeatEvery,
     this.shopPhoto,
+    this.usedDatePicker = true,
+    this.monthOrdinal,
+    this.monthWeekDay,
+    this.startMonth,
   });
   @override
   _CustomizeAvailabilityState createState() => _CustomizeAvailabilityState();
@@ -67,10 +75,23 @@ class _CustomizeAvailabilityState extends State<CustomizeAvailability> {
         });
         break;
       case RepeatChoices.months:
-        initialDates = dayGenerator.getRepeatedMonthDays(
-          startDate: widget.startDate,
-          everyNMonths: widget.repeatEvery,
-        );
+        if (widget.usedDatePicker) {
+          initialDates = dayGenerator.getRepeatedMonthDaysByStartDate(
+            startDate: widget.startDate,
+            everyNMonths: widget.repeatEvery,
+          );
+        } else {
+          initialDates = dayGenerator.getRepeatedMonthDaysByNthDay(
+            everyNMonths: widget.repeatEvery,
+            ordinal: widget.monthOrdinal,
+            weekday: widget.monthWeekDay,
+            month: widget.startMonth,
+          );
+          WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+            Provider.of<OperatingHoursBody>(context, listen: false).update(
+                startDates: [DateFormat("yyyy-MM-dd").format(initialDates[0])]);
+          });
+        }
         break;
       default:
         // do nothing

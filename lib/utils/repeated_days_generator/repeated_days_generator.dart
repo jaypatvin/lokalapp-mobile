@@ -1,4 +1,3 @@
-import 'package:intl/intl.dart' show DateFormat;
 import 'package:jiffy/jiffy.dart';
 
 class RepeatedDaysGenerator {
@@ -94,7 +93,7 @@ class RepeatedDaysGenerator {
     return repeatedDays;
   }
 
-  List<DateTime> getRepeatedMonthDays(
+  List<DateTime> getRepeatedMonthDaysByStartDate(
       {DateTime startDate, int everyNMonths = 1}) {
     startDate ??= DateTime.now();
     final repeatedDays = <DateTime>[];
@@ -120,6 +119,62 @@ class RepeatedDaysGenerator {
         }
       }
       repeatedDays.add(indexDay);
+
+      // for exactly 1 year from startDate
+      if (startDate.month == indexDay.month &&
+          startDate.year + 1 == indexDay.year) {
+        break;
+      }
+    }
+
+    return repeatedDays;
+  }
+
+  List<DateTime> getRepeatedMonthDaysByNthDay({
+    int everyNMonths = 1,
+    int ordinal = 1, // first
+    int weekday = 1, // Monday
+    int month = 1, // January
+  }) {
+    final repeatedDays = <DateTime>[];
+
+    if (weekday == 0) weekday = 7;
+    var startDate = DateTime(DateTime.now().year, month, 1);
+
+    // we need to start at the first day of the month to be able to determine
+    // the "nth day" of the month
+    // we'll then iterate to the next month on the same day (first day) until
+    // next year on the same month
+    for (var indexDay = startDate;
+        true;
+        indexDay = Jiffy(indexDay).add(months: 1),) {
+      var now = DateTime(indexDay.year, indexDay.month, indexDay.day);
+      var count = 0;
+      var nextMonth = false;
+
+      // here, we'll count how many day (i.e., Mondays) we've gone through
+      // 2nd Monday will mean that we count 2 Mondays for the month
+      start:
+      while (count < ordinal) {
+        while (true) {
+          // this is for the rare instances where users will pick 5th as the
+          // option, where most months only have 4 weeks
+          if (now.month > indexDay.month || now.year > indexDay.year) {
+            nextMonth = true;
+            break start;
+          }
+          if (now.weekday == weekday) {
+            count++;
+            if (count < ordinal) now = now.add(Duration(days: 1));
+            break;
+          }
+          now = now.add(Duration(days: 1));
+        }
+      }
+
+      if (!nextMonth) {
+        repeatedDays.add(now);
+      }
 
       // for exactly 1 year from startDate
       if (startDate.month == indexDay.month &&
