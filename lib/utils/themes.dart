@@ -4,6 +4,7 @@ const kTealColor = Color(0xFF09A49A);
 const kNavyColor = Color(0xFF103045);
 const kInviteScreenColor = Color(0xFFF1FAFF);
 const kTextFieldBorderColor = Color(0xFFF2F2F2);
+const kYellowColor = Color(0xffFFC700);
 // TODO: rename this textstyle
 const TextStyle kTextStyle = TextStyle(
   fontWeight: FontWeight.w700,

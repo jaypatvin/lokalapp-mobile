@@ -4,7 +4,7 @@ import 'package:lokalapp/screens/activity/activity.dart';
 import 'package:lokalapp/screens/profile_screens/profile.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 
-import 'chat.dart';
+import 'chat/chat.dart';
 import 'discover/discover.dart';
 import 'home.dart';
 
