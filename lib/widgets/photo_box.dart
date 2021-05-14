@@ -10,6 +10,7 @@ class PhotoBox extends StatelessWidget {
   final double width;
   final double height;
   final String url;
+  final bool displayBorder;
 
   const PhotoBox({
     @required this.shape,
@@ -17,6 +18,7 @@ class PhotoBox extends StatelessWidget {
     this.url = '',
     this.width = 140.0, //140.0 //72.0
     this.height = 150.0,
+    this.displayBorder = true,
   }); //150.0 //75.0
 
   @override
@@ -32,7 +34,7 @@ class PhotoBox extends StatelessWidget {
                 image: file != null ? FileImage(file) : NetworkImage(this.url),
               ),
         shape: shape,
-        border: Border.all(width: 1, color: kTealColor),
+        border: displayBorder ? Border.all(width: 1, color: kTealColor) : null,
         color: Colors.grey[50],
       ),
       child: file == null && this.url.isEmpty
