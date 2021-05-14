@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart' show DateFormat;
 
-import 'classes/schedule_list.dart';
 import 'src/calendar_header.dart';
 import 'src/default_styles.dart';
 import 'src/weekday_row.dart';
@@ -22,7 +21,8 @@ class CalendarCarousel extends StatefulWidget {
   final double width;
   final DateTime selectedDateTime;
   final Function(DateTime) onDayPressed;
-  final ScheduleList markedDatesMap;
+  final List<DateTime> markedDatesMap;
+  final DateTime startDate;
 
   final bool headerTitleTouchable;
   final Function onHeaderTitlePressed;
@@ -45,6 +45,7 @@ class CalendarCarousel extends StatefulWidget {
     this.onRightArrowPressed,
     this.showOnlyCurrentMonthDate = false,
     this.selectableDaysMap,
+    this.startDate,
   }) : super(key: key);
 
   @override
@@ -71,6 +72,7 @@ class _CalendarState extends State<CalendarCarousel> {
   int _pageNum = 0;
   DateTime minDate;
   DateTime maxDate;
+  DateTime startDate;
 
   /// When FIRSTDAYOFWEEK is 0 in dart-intl, it represents Monday. However it is the second day in the arrays of Weekdays.
   /// Therefore we need to add 1 modulo 7 to pick the right weekday from intl. (cf. [GlobalMaterialLocalizations])
@@ -93,6 +95,9 @@ class _CalendarState extends State<CalendarCarousel> {
       DateTime.now().month,
       DateTime.now().day,
     );
+    startDate = widget.startDate ?? DateTime.now().subtract(Duration(days: 1));
+    if (startDate.difference(DateTime.now()).inDays == 0)
+      startDate = startDate.subtract(Duration(days: 1));
 
     _selectedDate = widget.selectedDateTime ?? DateTime.now();
 
@@ -122,6 +127,7 @@ class _CalendarState extends State<CalendarCarousel> {
       width: widget.width,
       height: widget.height,
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           CalendarHeader(
               headerMargin: const EdgeInsets.symmetric(vertical: 16.0),
@@ -318,9 +324,7 @@ class _CalendarState extends State<CalendarCarousel> {
                   // TODO: set limit for selectable
                   // currently, users can select until the next year of the same date
                   if (now.millisecondsSinceEpoch <
-                      DateTime.now()
-                          .subtract(Duration(days: 1))
-                          .millisecondsSinceEpoch)
+                      startDate.millisecondsSinceEpoch)
                     isSelectable = false;
                   else if (maxDate != null &&
                       now.millisecondsSinceEpoch >

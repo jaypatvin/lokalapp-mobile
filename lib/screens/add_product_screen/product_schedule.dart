@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:lokalapp/providers/post_requests/product_body.dart';
-import 'package:lokalapp/screens/add_product_screen/product_preview.dart';
 import 'package:provider/provider.dart';
 
+import '../../providers/post_requests/product_body.dart';
 import '../../utils/calendar_picker/calendar_picker.dart';
-import '../../utils/calendar_picker/classes/schedule_list.dart';
 import '../../utils/themes.dart';
 import '../../widgets/custom_app_bar.dart';
 import '../../widgets/rounded_button.dart';
 import 'components/add_product_gallery.dart';
 import 'components/product_header.dart';
+import 'product_preview.dart';
 
 class ProductSchedule extends StatefulWidget {
   final AddProductGallery gallery;
@@ -22,7 +21,7 @@ enum ProductScheduleState { shop, custom }
 
 class _ProductScheduleState extends State<ProductSchedule> {
   ProductScheduleState _productSchedule;
-  ScheduleList _markedDateMap = ScheduleList([]);
+  List<DateTime> _markedDateMap = [];
 
   // TODO: implement this logic to a common shop-product schedule
   List<int> _selectableDaysMap = [];

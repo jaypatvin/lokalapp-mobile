@@ -2,99 +2,7 @@ import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class CustomDay {
-  String name;
-  String opening;
-  String closing;
-  CustomDay({
-    this.opening,
-    this.closing,
-    this.name,
-  });
-
-  Map<String, dynamic> toMap() {
-    return {
-      'opening': opening,
-      'closing': closing,
-    };
-  }
-
-  factory CustomDay.fromMap(Map<String, dynamic> map) {
-    if (map == null) return null;
-
-    return CustomDay(
-      opening: map['opening'],
-      closing: map['closing'],
-    );
-  }
-
-  String toJson() => json.encode(toMap());
-
-  factory CustomDay.fromJson(String source) =>
-      CustomDay.fromMap(json.decode(source));
-}
-
-class CustomHours {
-  bool isCustom;
-  String opening;
-  String closing;
-  CustomDay mon;
-  CustomDay tue;
-  CustomDay wed;
-  CustomDay thu;
-  CustomDay fri;
-  CustomDay sat;
-  CustomDay sun;
-  CustomHours({
-    this.isCustom,
-    this.opening,
-    this.closing,
-    this.mon,
-    this.tue,
-    this.wed,
-    this.thu,
-    this.fri,
-    this.sat,
-    this.sun,
-  });
-
-  Map<String, dynamic> toMap() {
-    return {
-      'is_custom': isCustom,
-      'opening': opening,
-      'closing': closing,
-      'mon': mon,
-      'tue': tue,
-      'wed': wed,
-      'thu': thu,
-      'fri': fri,
-      'sat': sat,
-      'sun': sun,
-    };
-  }
-
-  factory CustomHours.fromMap(Map<String, dynamic> map) {
-    if (map == null) return null;
-
-    return CustomHours(
-      isCustom: map['is_custom'],
-      opening: map['opening'],
-      closing: map['closing'],
-      mon: CustomDay.fromMap(map['mon']),
-      tue: CustomDay.fromMap(map['tue']),
-      wed: CustomDay.fromMap(map['wed']),
-      thu: CustomDay.fromMap(map['thu']),
-      fri: CustomDay.fromMap(map['fri']),
-      sat: CustomDay.fromMap(map['sat']),
-      sun: CustomDay.fromMap(map['sun']),
-    );
-  }
-
-  String toJson() => json.encode(toMap());
-
-  factory CustomHours.fromJson(String source) =>
-      CustomHours.fromMap(json.decode(source));
-}
+import 'operating_hours.dart';
 
 class ShopModel {
   String id;
@@ -106,7 +14,7 @@ class ShopModel {
   String coverPhoto;
   bool isClosed;
   String status;
-  CustomHours operatingHours;
+  OperatingHours operatingHours;
   ShopModel({
     this.id,
     this.name,
@@ -148,7 +56,9 @@ class ShopModel {
       coverPhoto: map['cover_photo'],
       isClosed: map['is_close'],
       status: map['status'],
-      operatingHours: CustomHours.fromMap(map['operating_hours']),
+      operatingHours: map['operating_hours'] != null
+          ? OperatingHours.fromMap(map['operating_hours'])
+          : OperatingHours(),
     );
   }
   factory ShopModel.fromDocument(DocumentSnapshot doc) {

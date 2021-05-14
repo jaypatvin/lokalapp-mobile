@@ -1,17 +1,17 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:lokalapp/providers/schedule.dart';
-import 'package:lokalapp/screens/add_shop_screens/shop_schedule/shop_schedule.dart';
 import 'package:provider/provider.dart';
 
 import 'providers/activities.dart';
 import 'providers/cart.dart';
 import 'providers/invite.dart';
 import 'providers/post_requests/auth_body.dart';
+import 'providers/post_requests/operating_hours_body.dart';
 import 'providers/post_requests/product_body.dart';
 import 'providers/post_requests/shop_body.dart';
 import 'providers/products.dart';
 import 'providers/pull_up_cart_state.dart';
+import 'providers/schedule.dart';
 import 'providers/shops.dart';
 import 'providers/user.dart';
 import 'providers/user_auth.dart';
@@ -68,6 +68,8 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider<AuthBody>(create: (_) => AuthBody()),
         ChangeNotifierProvider<ProductBody>(create: (_) => ProductBody()),
         ChangeNotifierProvider<ShopBody>(create: (_) => ShopBody()),
+        ChangeNotifierProvider<OperatingHoursBody>(
+            create: (_) => OperatingHoursBody()),
 
         // services:
         Provider<MediaUtility>(create: (_) => MediaUtility.instance),
