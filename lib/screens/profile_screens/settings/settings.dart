@@ -1,17 +1,20 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:lokalapp/screens/profile_screens/settings/chat/chat_settings.dart';
-import 'package:lokalapp/screens/profile_screens/settings/email/my_account.dart';
-import 'package:lokalapp/screens/profile_screens/settings/help%20center/help_center.dart';
-import 'package:lokalapp/screens/profile_screens/settings/notification%20settings/notification_setting.dart';
-import 'package:lokalapp/screens/profile_screens/settings/privacy%20setting/privacy_setting.dart';
-import 'package:lokalapp/screens/profile_screens/settings/terms%20of%20service/terms_of_service.dart';
-import 'package:lokalapp/utils/themes.dart';
 
+import '../../../root/root.dart';
+import '../../../utils/context_keeper.dart';
+import '../../../utils/themes.dart';
 import '../components/invite_a_friend.dart';
 import 'about/about.dart';
+import 'chat/chat_settings.dart';
+import 'email/my_account.dart';
+import 'help%20center/help_center.dart';
+import 'notification%20settings/notification_setting.dart';
+import 'privacy%20setting/privacy_setting.dart';
+import 'terms%20of%20service/terms_of_service.dart';
 
 class Settings extends StatelessWidget {
-  Widget get buildButton => Container(
+  Widget buildButton(BuildContext context) => Container(
         padding: const EdgeInsets.only(left: 80, top: 0, right: 80, bottom: 0),
         child: FlatButton(
             color: Color(0XFFCC3752),
@@ -27,7 +30,16 @@ class Settings extends StatelessWidget {
                   fontSize: 16,
                   fontWeight: FontWeight.w600),
             ),
-            onPressed: () {}),
+            onPressed: () {
+              FirebaseAuth.instance.signOut();
+              Navigator.pushAndRemoveUntil(
+                ContextKeeper.buildContext,
+                MaterialPageRoute(
+                  builder: (context) => Root(),
+                ),
+                (route) => false,
+              );
+            }),
       );
   @override
   Widget build(BuildContext context) {
@@ -315,7 +327,7 @@ class Settings extends StatelessWidget {
           SizedBox(
             height: 30,
           ),
-          buildButton,
+          buildButton(context),
           SizedBox(
             height: 20,
           )
