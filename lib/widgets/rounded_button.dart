@@ -30,7 +30,7 @@ class RoundedButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return FlatButton(
       onPressed: onPressed,
-      disabledColor: Colors.grey[300],
+      // disabledColor: Colors.grey[300],
       color: this.color,
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(30.0),

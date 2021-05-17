@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:lokalapp/providers/schedule.dart';
 import 'package:lokalapp/screens/add_shop_screens/shop_schedule/shop_schedule.dart';
+import 'package:lokalapp/utils/themes.dart';
 import 'package:provider/provider.dart';
 
 import 'providers/activities.dart';
@@ -77,7 +78,7 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'Flutter Demo',
         theme: ThemeData(
-          primarySwatch: Colors.blue,
+          // primarySwatch: kTealColor,
           textTheme: Theme.of(context).textTheme.apply(
                 fontFamily: 'GoldplayBold',
               ),
