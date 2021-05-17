@@ -1,9 +1,8 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../widgets/rounded_button.dart';
-import 'package:carousel_slider/carousel_slider.dart';
-
 import 'auth/invite_page.dart';
 import 'auth/login_screen.dart';
 
@@ -20,8 +19,8 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   final List _list = [1, 2, 3, 4];
   @override
   void initState() {
-    _buttonCarouselController = CarouselController();
     super.initState();
+    _buttonCarouselController = CarouselController();
   }
 
   Widget slider() {

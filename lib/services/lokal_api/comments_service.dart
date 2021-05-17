@@ -23,7 +23,7 @@ class CommentsService {
 
   Future<http.Response> getActivityComments(
       {@required String activityId, @required String idToken}) async {
-    return await http.get("$activitiesUrl/activities/comments",
+    return await http.get("$activitiesUrl/$activityId/comments",
         headers: {"Authorization": "Bearer $idToken"});
   }
 
@@ -35,9 +35,11 @@ class CommentsService {
 
 // --POST
   Future<http.Response> create(
-      {@required String idToken, @required Map data}) async {
+      {@required activityId,
+      @required String idToken,
+      @required Map data}) async {
     var body = json.encode(data);
-    var response = await http.post('$activitiesUrl/comments',
+    var response = await http.post('$activitiesUrl/$activityId/comments',
         headers: {
           "Content-Type": "application/json",
           "Authorization": "Bearer $idToken"
