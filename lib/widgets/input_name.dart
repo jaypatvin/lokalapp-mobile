@@ -5,12 +5,14 @@ class InputName extends StatelessWidget {
   final String hintText;
   final String errorText;
   final TextEditingController controller;
+  final Color fillColor;
 
   InputName({
-    @required this.onChanged,
+    this.onChanged,
     this.hintText,
     this.errorText,
     this.controller,
+    this.fillColor = const Color(0xFFF2F2F2),
   });
 
   @override
@@ -21,7 +23,7 @@ class InputName extends StatelessWidget {
         controller: this.controller,
         onChanged: this.onChanged,
         decoration: InputDecoration(
-          fillColor: Color(0xffF2F2F2),
+          fillColor: this.fillColor,
           filled: true,
           isDense: true,
           contentPadding: const EdgeInsets.symmetric(

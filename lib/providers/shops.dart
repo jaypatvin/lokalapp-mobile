@@ -17,16 +17,10 @@ class Shops extends ChangeNotifier {
   }
 
   String get communityId => _communityId;
-  // List<ShopModel> get currentUserShops =>
-  //     _shops.where((shop) => shop.userId == _currentUserId);
 
   void setCommunityId(String id) {
     _communityId = id;
   }
-
-  // void setCurrentUserId(String id) {
-  //   _currentUserId = id;
-  // }
 
   ShopModel findById(String id) {
     return _shops.firstWhere((shop) => shop.id == id);
@@ -71,8 +65,9 @@ class Shops extends ChangeNotifier {
       Map body = json.decode(response.body);
 
       if (body['status'] == 'ok') {
-        //await fetch(authToken);
-        // call fetch manually
+        var shop = ShopModel.fromMap(data["data"]);
+        _shops.add(shop);
+        notifyListeners();
         return true;
       }
       return false;
@@ -97,6 +92,29 @@ class Shops extends ChangeNotifier {
       if (body['status'] == 'ok') {
         //await fetch(authToken);
         // call fetch manually
+        return true;
+      }
+      return false;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<bool> setOperatingHours(
+      {@required String id,
+      @required String authToken,
+      @required Map data}) async {
+    try {
+      var response = await LokalApiService.instance.shop
+          .setOperatingHours(data: data, idToken: authToken, id: id);
+
+      if (response.statusCode != 200) return false;
+
+      Map body = json.decode(response.body);
+
+      if (body['status'] == 'ok') {
+        // call fetch manually?
+        // or getOperatingHours
         return true;
       }
       return false;
