@@ -1,11 +1,114 @@
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:lokalapp/providers/user.dart';
 import 'package:lokalapp/utils/themes.dart';
+import 'package:lokalapp/utils/utility.dart';
 import 'package:lokalapp/widgets/custom_app_bar.dart';
 import 'package:provider/provider.dart';
 
-class ChatView extends StatelessWidget {
+class ChatView extends StatefulWidget {
+  @override
+  _ChatViewState createState() => _ChatViewState();
+}
+
+class _ChatViewState extends State<ChatView> {
+  final _picker = ImagePicker();
+  TextEditingController _messageController = TextEditingController();
+  openGallery(BuildContext context) {
+    return showModalBottomSheet(
+        context: context,
+        builder: (context) {
+          return AnimatedContainer(
+            duration: Duration(seconds: 1),
+            curve: Curves.easeIn,
+            child: ListView(
+                scrollDirection: Axis.horizontal,
+                shrinkWrap: true,
+                children: [
+                  Column(
+                    children: [
+                      SizedBox(
+                        height: 20,
+                        width: MediaQuery.of(context).size.width,
+                      ),
+                      Row(
+                        children: [
+                          SizedBox(
+                            width: 10,
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              _picker.getImage(source: ImageSource.camera);
+                            },
+                            child: Container(
+                              height: 125.0,
+                              width: 130.0,
+                              decoration: BoxDecoration(
+                                color: Color(0XFFFF7A00),
+                              ),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  SizedBox(
+                                    height: 5,
+                                  ),
+                                  Icon(
+                                    Icons.camera_alt_outlined,
+                                    color: Colors.white,
+                                  ),
+                                  Text(
+                                    "Take a photo",
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 12,
+                                        fontFamily: "GoldplayBold"),
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            width: 5,
+                          ),
+                          Container(
+                            height: 125.0,
+                            width: 130.0,
+                            decoration: BoxDecoration(
+                                color: Colors.transparent,
+                                image: DecorationImage(
+                                    image: NetworkImage(
+                                        'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi1.wp.com%2Fkatzenworld.co.uk%2Fwp-content%2Fuploads%2F2019%2F06%2Ffunny-cat.jpeg%3Ffit%3D1920%252C1920%26ssl%3D1&f=1&nofb=1'))),
+                          ),
+                          SizedBox(
+                            width: 5,
+                          ),
+                          Container(
+                            height: 125.0,
+                            width: 130.0,
+                            decoration: BoxDecoration(
+                                color: Colors.transparent,
+                                image: DecorationImage(
+                                    image: NetworkImage(
+                                        'https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2F4.bp.blogspot.com%2F-Jx21kNqFSTU%2FUXemtqPhZCI%2FAAAAAAAAh74%2FBMGSzpU6F48%2Fs640%2Ffunny-cat-pictures-047-001.jpg&f=1&nofb=1'))),
+                          )
+                        ],
+                      ),
+                    ],
+                  ),
+                ]),
+            // height: ,
+            height: MediaQuery.of(context).size.height * 0.23,
+            width: MediaQuery.of(context).size.width,
+            decoration: BoxDecoration(
+                color: Color(0xffF1FAFF),
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(12.0),
+                    topRight: Radius.circular(12.0))),
+          );
+        });
+  }
+
   List<ChatMessage> messages = [
     ChatMessage(messageContent: "Hello, Will", messageType: "receiver"),
     ChatMessage(messageContent: "How can I help you?", messageType: "receiver"),
@@ -19,7 +122,9 @@ class ChatView extends StatelessWidget {
         messageContent: "I'll get the family sized cake. ",
         messageType: "sender"),
   ];
+
   dynamic time = DateFormat.jm().format(DateTime.now());
+
   @override
   Widget build(BuildContext context) {
     var user = Provider.of<CurrentUser>(context, listen: false);
@@ -80,19 +185,19 @@ class ChatView extends StatelessWidget {
               itemBuilder: (context, index) {
                 return Container(
                   padding:
-                      EdgeInsets.only(left: 14, right: 14, top: 10, bottom: 10),
+                      EdgeInsets.only(left: 14, right: 14, top: 8, bottom: 8),
                   child: Align(
                     alignment: (messages[index].messageType == "receiver"
                         ? Alignment.topLeft
                         : Alignment.topRight),
                     child: Container(
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
+                        borderRadius: BorderRadius.circular(8),
                         color: (messages[index].messageType == "receiver"
                             ? kTealColor
                             : Color(0xffF1FAFF)),
                       ),
-                      padding: EdgeInsets.all(16),
+                      padding: EdgeInsets.all(8),
                       child: Text(
                         messages[index].messageContent,
                         style: TextStyle(
@@ -117,7 +222,9 @@ class ChatView extends StatelessWidget {
               child: Row(
                 children: <Widget>[
                   GestureDetector(
-                    onTap: () {},
+                    onTap: () {
+                      openGallery(context);
+                    },
                     child: Container(
                       height: 30,
                       width: 30,
@@ -137,6 +244,7 @@ class ChatView extends StatelessWidget {
                   ),
                   Expanded(
                     child: TextField(
+                      controller: _messageController,
                       decoration: InputDecoration(
                         suffixIcon: Icon(
                           Icons.send,

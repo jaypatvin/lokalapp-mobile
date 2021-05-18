@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:lokalapp/root/root.dart';
 import 'package:lokalapp/widgets/onboarding.dart';
 
 import 'package:provider/provider.dart';
@@ -190,17 +191,21 @@ class Home extends StatelessWidget {
     );
   }
 
+  // buildOnboarding() async {
+  //   return Onboarding(
+  //     buttonText: "Okay!",
+  //     icon: Icons.home_outlined,
+  //     firstSentence: 'The Home Tab is where you can',
+  //     secondSentence: 'find posts, photos and updates',
+  //     thirdSentence: 'shared by the people in this' + " ",
+  //     fourthSentence: 'community or share some of yours! ',
+  //   );
+  // }
+
   @override
   Widget build(BuildContext context) {
     Future.delayed(Duration.zero, () => showAlert(context));
-    // () => Onboarding(
-    //       buttonText: "Okay!",
-    //       icon: Icons.home_outlined,
-    //       firstSentence: 'The Home Tab is where you can',
-    //       secondSentence: 'find posts, photos and updates',
-    //       thirdSentence: 'shared by the people in this' + " ",
-    //       fourthSentence: 'community or share some of yours! ',
-    //     ));
+
     return Scaffold(
       backgroundColor: Color(0xffF1FAFF),
       resizeToAvoidBottomInset: true,
