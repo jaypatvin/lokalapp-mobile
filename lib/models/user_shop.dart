@@ -58,7 +58,7 @@ class ShopModel {
       status: map['status'],
       operatingHours: map['operating_hours'] != null
           ? OperatingHours.fromMap(map['operating_hours'])
-          : OperatingHours(),
+          : null,
     );
   }
   factory ShopModel.fromDocument(DocumentSnapshot doc) {
