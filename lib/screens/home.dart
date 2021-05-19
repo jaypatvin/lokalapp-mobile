@@ -191,21 +191,9 @@ class Home extends StatelessWidget {
     );
   }
 
-  // buildOnboarding() async {
-  //   return Onboarding(
-  //     buttonText: "Okay!",
-  //     icon: Icons.home_outlined,
-  //     firstSentence: 'The Home Tab is where you can',
-  //     secondSentence: 'find posts, photos and updates',
-  //     thirdSentence: 'shared by the people in this' + " ",
-  //     fourthSentence: 'community or share some of yours! ',
-  //   );
-  // }
-
   @override
   Widget build(BuildContext context) {
-    Future.delayed(Duration.zero, () => showAlert(context));
-
+    // Future.delayed(Duration.zero, () => showAlert(context));
     return Scaffold(
       backgroundColor: Color(0xffF1FAFF),
       resizeToAvoidBottomInset: true,

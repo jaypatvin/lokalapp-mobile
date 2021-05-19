@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:lokalapp/screens/add_product_screen/add_product.dart';
-import 'package:lokalapp/utils/themes.dart';
+
+import '../../utils/themes.dart';
 import '../../widgets/custom_app_bar.dart';
 import '../../widgets/rounded_button.dart';
+import '../add_product_screen/add_product.dart';
 
 class AddShopConfirmation extends StatelessWidget {
   Widget listingButton(BuildContext context) {

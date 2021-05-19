@@ -47,23 +47,32 @@ class CustomizeAvailability extends StatefulWidget {
 class _CustomizeAvailabilityState extends State<CustomizeAvailability> {
   List<DateTime> initialDates;
   List<DateTime> markedDates;
+  bool _shopCreated = false;
 
   @override
   initState() {
     super.initState();
+
+    OperatingHours _operatingHours;
+    var user = Provider.of<CurrentUser>(context, listen: false);
+    var shops = Provider.of<Shops>(context, listen: false).findByUser(user.id);
+    if (shops.isNotEmpty) _operatingHours = shops.first.operatingHours;
+
     var dayGenerator = RepeatedDaysGenerator.instance;
     switch (widget.repeatChoice) {
-      case RepeatChoices.days:
+      case RepeatChoices.day:
         initialDates = dayGenerator.getRepeatedDays(
           startDate: widget.startDate,
           everyNDays: widget.repeatEvery,
+          validate: _operatingHours == null,
         );
         break;
-      case RepeatChoices.weeks:
+      case RepeatChoices.week:
         initialDates = dayGenerator.getRepeatedWeekDays(
           startDate: widget.startDate,
           everyNWeeks: widget.repeatEvery,
           selectedDays: widget.selectableDays,
+          validate: _operatingHours == null,
         );
         var startDates = <String>[];
         for (int i = 0; i < widget.selectableDays.length; i++) {
@@ -74,11 +83,12 @@ class _CustomizeAvailabilityState extends State<CustomizeAvailability> {
               .update(startDates: [...startDates]);
         });
         break;
-      case RepeatChoices.months:
+      case RepeatChoices.month:
         if (widget.usedDatePicker) {
           initialDates = dayGenerator.getRepeatedMonthDaysByStartDate(
             startDate: widget.startDate,
             everyNMonths: widget.repeatEvery,
+            validate: _operatingHours == null,
           );
         } else {
           initialDates = dayGenerator.getRepeatedMonthDaysByNthDay(
@@ -98,6 +108,26 @@ class _CustomizeAvailabilityState extends State<CustomizeAvailability> {
         break;
     }
     markedDates = [...initialDates];
+
+    if (_operatingHours != null) {
+      var unavailableDates = <DateTime>[];
+      _operatingHours.unavailableDates.forEach((element) {
+        unavailableDates.add(DateFormat("yyyy-MM-dd").parse(element));
+      });
+      markedDates.removeWhere((element) => unavailableDates.contains(element));
+
+      _operatingHours.customDates.forEach((element) {
+        var date = DateFormat("yyyy-MM-dd").parse(element.date);
+        if (!markedDates.contains(date)) {
+          markedDates.add(date);
+        }
+      });
+
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+        Provider.of<OperatingHoursBody>(context, listen: false)
+            .update(startDates: [..._operatingHours.startDates]);
+      });
+    }
   }
 
   Future<List<DateTime>> showCalendarPicker() async {
@@ -146,7 +176,7 @@ class _CustomizeAvailabilityState extends State<CustomizeAvailability> {
                       },
                       markedDatesMap: selectedDates,
                       selectableDaysMap:
-                          widget.repeatChoice == RepeatChoices.weeks
+                          widget.repeatChoice == RepeatChoices.week
                               ? widget.selectableDays
                               : [1, 2, 3, 4, 5, 6, 0],
                     ),
@@ -212,16 +242,15 @@ class _CustomizeAvailabilityState extends State<CustomizeAvailability> {
           .map((date) => DateFormat("yyyy-MM-dd").format(date))
           .toList(),
     );
-
-    var data = operatingHours.data;
     return await shops.setOperatingHours(
       id: userShop.id,
       authToken: user.idToken,
-      data: data,
+      data: operatingHours.data,
     );
   }
 
   Future<bool> createShop() async {
+    if (_shopCreated) return true;
     var file = widget.shopPhoto;
     String mediaUrl = "";
     if (file != null) {
@@ -241,10 +270,7 @@ class _CustomizeAvailabilityState extends State<CustomizeAvailability> {
     try {
       bool success = await shops.create(user.idToken, shopBody.data);
       if (success) {
-        bool updated = await updateShopSchedule();
-        if (!updated) return false;
-
-        shops.fetch(user.idToken);
+        await shops.fetch(user.idToken);
         return true;
       }
     } on Exception catch (e) {
@@ -313,13 +339,36 @@ class _CustomizeAvailabilityState extends State<CustomizeAvailability> {
               fontFamily: "GoldplayBold",
               fontColor: Colors.white,
               onPressed: () async {
-                var success = await createShop();
+                var user = Provider.of<CurrentUser>(context, listen: false);
+                var shops = Provider.of<Shops>(context, listen: false)
+                    .findByUser(user.id);
 
-                if (success) {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (BuildContext context) => AddShopConfirmation(),
+                _shopCreated = shops.length > 0 ? true : await createShop();
+                if (_shopCreated) {
+                  bool updated = await updateShopSchedule();
+                  if (updated) {
+                    var user = Provider.of<CurrentUser>(context, listen: false);
+                    Provider.of<Shops>(context, listen: false)
+                        .fetch(user.idToken);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (BuildContext context) =>
+                            AddShopConfirmation(),
+                      ),
+                    );
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content:
+                            Text("Failed to upload shop schedule. Try again"),
+                      ),
+                    );
+                  }
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text("Failed to create shop. Try again"),
                     ),
                   );
                 }

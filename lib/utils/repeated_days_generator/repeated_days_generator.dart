@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:jiffy/jiffy.dart';
 
 class RepeatedDaysGenerator {
@@ -15,7 +16,11 @@ class RepeatedDaysGenerator {
     return diff >= 0;
   }
 
-  List<DateTime> getRepeatedDays({DateTime startDate, int everyNDays = 1}) {
+  List<DateTime> getRepeatedDays({
+    @required DateTime startDate,
+    int everyNDays = 1,
+    bool validate = true,
+  }) {
     startDate ??= DateTime.now();
     // this logic generation is pretty straightforward
     //  we add everyNDays to the startDate until next month
@@ -28,7 +33,7 @@ class RepeatedDaysGenerator {
         indexDay.month <= startDate.month + 1;
         indexDay = indexDay.add(Duration(days: everyNDays))) {
       // check that the days (esp. for starting date) is at least today
-      if (!_isValidDate(indexDay)) continue;
+      if (!_isValidDate(indexDay) && validate) continue;
       repeatedDays.add(indexDay);
     }
 
@@ -36,9 +41,10 @@ class RepeatedDaysGenerator {
   }
 
   List<DateTime> getRepeatedWeekDays({
-    DateTime startDate,
+    @required DateTime startDate,
     int everyNWeeks = 1,
     List<int> selectedDays = const [0, 1, 2, 3, 4, 5, 6],
+    bool validate = true,
   }) {
     startDate ??= DateTime.now();
     // we need to make sure that the selectedDays are sorted from 0-6 (Sunday to Saturday)
@@ -70,7 +76,7 @@ class RepeatedDaysGenerator {
           true;
           indexDay = indexDay.add(Duration(days: 1))) {
         // check that the days (esp. for starting date) is at least today
-        if (!_isValidDate(indexDay)) continue;
+        if (!_isValidDate(indexDay) && validate) continue;
         if (indexDay.difference(initialDate).inDays < 0) continue;
 
         var day = indexDay.weekday;
@@ -93,8 +99,11 @@ class RepeatedDaysGenerator {
     return repeatedDays;
   }
 
-  List<DateTime> getRepeatedMonthDaysByStartDate(
-      {DateTime startDate, int everyNMonths = 1}) {
+  List<DateTime> getRepeatedMonthDaysByStartDate({
+    @required DateTime startDate,
+    int everyNMonths = 1,
+    bool validate = true,
+  }) {
     startDate ??= DateTime.now();
     final repeatedDays = <DateTime>[];
 
@@ -103,7 +112,7 @@ class RepeatedDaysGenerator {
         true; // this will be handled by the break check for exactly 1 year
         indexDay = Jiffy(indexDay).add(months: everyNMonths)) {
       // check that the days (esp. for starting date) is at least today
-      if (!_isValidDate(indexDay)) continue;
+      if (!_isValidDate(indexDay) && validate) continue;
 
       // this is for days like 31
       // not every month contains a date of 31 and Feb only has up to 29 days
