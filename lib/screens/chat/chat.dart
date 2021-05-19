@@ -142,7 +142,7 @@ class Chat extends StatelessWidget {
 
   Widget get buildSearchTextField => Container(
         padding: const EdgeInsets.all(12),
-        height: 70,
+        height: 65,
         child: TextField(
           enabled: false,
           controller: _searchController,
@@ -159,10 +159,11 @@ class Chat extends StatelessWidget {
             prefixIcon: Icon(
               Icons.search,
               color: Color(0xffBDBDBD),
-              size: 20,
+              size: 23,
             ),
             hintText: 'Search Chats',
             labelStyle: TextStyle(fontSize: 20),
+            contentPadding: const EdgeInsets.symmetric(vertical: 1),
             hintStyle: TextStyle(color: Color(0xffBDBDBD)),
           ),
         ),
@@ -180,7 +181,7 @@ class Chat extends StatelessWidget {
   dynamic time = DateFormat.jm().format(DateTime.now());
   @override
   Widget build(BuildContext context) {
-    Future.delayed(Duration.zero, () => showAlert(context));
+    // Future.delayed(Duration.zero, () => showAlert(context));
     var user = Provider.of<CurrentUser>(context, listen: false);
     return Scaffold(
       appBar: customAppBar(
