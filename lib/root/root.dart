@@ -8,7 +8,9 @@ import '../screens/welcome_screen.dart';
 
 class Root extends StatefulWidget {
   final Map<String, String> account;
-  Root({this.account});
+  Root({
+    this.account,
+  });
   @override
   _RootState createState() => _RootState();
 }
