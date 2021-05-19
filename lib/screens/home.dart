@@ -192,7 +192,7 @@ class Home extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Future.delayed(Duration.zero, () => showAlert(context));
+    // Future.delayed(Duration.zero, () => showAlert(context));
     // () => Onboarding(
     //       buttonText: "Okay!",
     //       icon: Icons.home_outlined,

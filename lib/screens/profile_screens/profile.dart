@@ -205,7 +205,7 @@ class _ProfileShopMainState extends State<ProfileShopMain> {
 
   @override
   Widget build(BuildContext context) {
-    Future.delayed(Duration.zero, () => showAlert(context));
+    //Future.delayed(Duration.zero, () => showAlert(context));
     var user = Provider.of<CurrentUser>(context);
     return SafeArea(
       child: Scaffold(
