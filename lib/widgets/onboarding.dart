@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:lokalapp/screens/home.dart';
 import 'package:lokalapp/utils/themes.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class Onboarding extends StatelessWidget {
+class Onboarding extends StatefulWidget {
   final IconData icon;
   final String iconText;
   final String firstSentence;
@@ -18,6 +20,11 @@ class Onboarding extends StatelessWidget {
       this.secondSentence,
       this.firstSentence});
 
+  @override
+  _OnboardingState createState() => _OnboardingState();
+}
+
+class _OnboardingState extends State<Onboarding> {
   showAlert(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
@@ -49,13 +56,13 @@ class Onboarding extends StatelessWidget {
                         padding: EdgeInsets.all(8),
                         width: width * 0.25,
                         child: Icon(
-                          icon,
+                          widget.icon,
                           size: 80,
                           color: Color(0xffCC3752),
                         ),
                       ),
                       Text(
-                        iconText,
+                        widget.iconText,
                         style: TextStyle(color: Color(0xffCC3752)),
                       )
                     ],
@@ -73,7 +80,7 @@ class Onboarding extends StatelessWidget {
                             padding: EdgeInsets.only(
                                 left: 10, top: 30, right: 15, bottom: 5),
                             child: Text(
-                              firstSentence,
+                              widget.firstSentence,
                               textAlign: TextAlign.left,
                               style: TextStyle(fontSize: 14),
                             ),
@@ -82,7 +89,7 @@ class Onboarding extends StatelessWidget {
                             padding: EdgeInsets.only(
                                 left: 8, right: 15, bottom: 5, top: 1),
                             child: Text(
-                              secondSentence,
+                              widget.secondSentence,
                               textAlign: TextAlign.left,
                               style: TextStyle(fontSize: 14),
                             ),
@@ -91,7 +98,7 @@ class Onboarding extends StatelessWidget {
                               padding:
                                   EdgeInsets.only(right: 30, bottom: 5, top: 1),
                               child: Text(
-                                thirdSentence,
+                                widget.thirdSentence,
                                 textAlign: TextAlign.left,
                                 style: TextStyle(fontSize: 14),
                               )),
@@ -99,7 +106,7 @@ class Onboarding extends StatelessWidget {
                               padding: EdgeInsets.only(
                                   left: 10, right: 15, bottom: 5, top: 1),
                               child: Text(
-                                fourthSentence,
+                                widget.fourthSentence,
                                 textAlign: TextAlign.left,
                                 style: TextStyle(fontSize: 14),
                               )),
@@ -120,7 +127,7 @@ class Onboarding extends StatelessWidget {
                                     ),
                                     textColor: kTealColor,
                                     child: Text(
-                                      buttonText,
+                                      widget.buttonText,
                                       style: TextStyle(
                                           fontFamily: "Goldplay",
                                           fontSize: 14,

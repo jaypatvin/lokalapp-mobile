@@ -1,5 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:lokalapp/screens/bottom_navigation.dart';
+import 'package:lokalapp/screens/home.dart';
 import 'package:provider/provider.dart';
 
 import 'providers/activities.dart';
@@ -19,7 +21,11 @@ import 'providers/users.dart';
 import 'root/root.dart';
 import 'services/local_image_service.dart';
 import 'utils/utility.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+import 'widgets/onboarding.dart';
+
+int initScreen;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();

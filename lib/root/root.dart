@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:lokalapp/screens/home.dart';
+import 'package:lokalapp/widgets/onboarding.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/user.dart';
@@ -38,7 +40,6 @@ class _RootState extends State<Root> {
     switch (_userState) {
       case UserState.LoggedIn:
         return BottomNavigation();
-
       default:
         return WelcomeScreen();
     }

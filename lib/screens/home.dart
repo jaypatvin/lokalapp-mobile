@@ -1,3 +1,4 @@
+import 'package:after_layout/after_layout.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:lokalapp/root/root.dart';
@@ -12,7 +13,14 @@ import 'cart/sliding_up_cart.dart';
 import 'draft_post.dart';
 import 'timeline.dart';
 
-class Home extends StatelessWidget {
+class Home extends StatefulWidget {
+  static const id = '/home';
+
+  @override
+  _HomeState createState() => _HomeState();
+}
+
+class _HomeState extends State<Home> with AfterLayoutMixin<Home> {
   Padding buildTextField(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(left: 20, top: 30, right: 20, bottom: 0),
@@ -58,6 +66,79 @@ class Home extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Color(0xffF1FAFF),
+      resizeToAvoidBottomInset: true,
+      appBar: PreferredSize(
+        preferredSize: Size(double.infinity, 100),
+        child: Container(
+          decoration: BoxDecoration(
+            boxShadow: [
+              BoxShadow(color: Colors.black12, spreadRadius: 5, blurRadius: 2)
+            ],
+          ),
+          width: MediaQuery.of(context).size.width,
+          height: 100,
+          child: Container(
+            decoration: BoxDecoration(color: kTealColor),
+            child: Container(
+              margin: const EdgeInsets.fromLTRB(0, 20, 0, 0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(top: 30),
+                    child: Text(
+                      "White Plains",
+                      style: TextStyle(
+                          fontFamily: "Goldplay",
+                          fontSize: 22,
+                          fontWeight: FontWeight.w600,
+                          color: Color(0XFFFFC700)),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+      body: SlidingUpCart(
+        child: Column(
+          children: [
+            buildTextField(context),
+            SizedBox(
+              height: 8,
+            ),
+            Expanded(
+              child: Timeline(),
+            ),
+            Consumer2<ShoppingCart, PullUpCartState>(
+              builder: (context, cart, cartState, _) {
+                return SizedBox(
+                  height: MediaQuery.of(context).size.height *
+                      (cart.items.length > 0 && cartState.isPanelVisible
+                          ? 0.32
+                          : 0.2),
+                );
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  @override
+  void afterFirstLayout(BuildContext context) {
+    // TODO: implement afterFirstLayout
+
+    showAlert(context);
   }
 
   showAlert(BuildContext context) {
@@ -186,85 +267,6 @@ class Home extends StatelessWidget {
               ],
             ),
           ),
-        ),
-      ),
-    );
-  }
-
-  // buildOnboarding() async {
-  //   return Onboarding(
-  //     buttonText: "Okay!",
-  //     icon: Icons.home_outlined,
-  //     firstSentence: 'The Home Tab is where you can',
-  //     secondSentence: 'find posts, photos and updates',
-  //     thirdSentence: 'shared by the people in this' + " ",
-  //     fourthSentence: 'community or share some of yours! ',
-  //   );
-  // }
-
-  @override
-  Widget build(BuildContext context) {
-    Future.delayed(Duration.zero, () => showAlert(context));
-
-    return Scaffold(
-      backgroundColor: Color(0xffF1FAFF),
-      resizeToAvoidBottomInset: true,
-      appBar: PreferredSize(
-        preferredSize: Size(double.infinity, 100),
-        child: Container(
-          decoration: BoxDecoration(
-            boxShadow: [
-              BoxShadow(color: Colors.black12, spreadRadius: 5, blurRadius: 2)
-            ],
-          ),
-          width: MediaQuery.of(context).size.width,
-          height: 100,
-          child: Container(
-            decoration: BoxDecoration(color: kTealColor),
-            child: Container(
-              margin: const EdgeInsets.fromLTRB(0, 20, 0, 0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(top: 30),
-                    child: Text(
-                      "White Plains",
-                      style: TextStyle(
-                          fontFamily: "Goldplay",
-                          fontSize: 22,
-                          fontWeight: FontWeight.w600,
-                          color: Color(0XFFFFC700)),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ),
-      body: SlidingUpCart(
-        child: Column(
-          children: [
-            buildTextField(context),
-            SizedBox(
-              height: 8,
-            ),
-            Expanded(
-              child: Timeline(),
-            ),
-            Consumer2<ShoppingCart, PullUpCartState>(
-              builder: (context, cart, cartState, _) {
-                return SizedBox(
-                  height: MediaQuery.of(context).size.height *
-                      (cart.items.length > 0 && cartState.isPanelVisible
-                          ? 0.32
-                          : 0.2),
-                );
-              },
-            ),
-          ],
         ),
       ),
     );
