@@ -1,14 +1,18 @@
+import 'package:after_layout/after_layout.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:lokalapp/screens/activity/activity.dart';
 import 'package:lokalapp/screens/profile_screens/profile.dart';
+import 'package:lokalapp/widgets/onboarding.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:after_layout/after_layout.dart';
 import 'chat/chat.dart';
 import 'discover/discover.dart';
 import 'home.dart';
 
 class BottomNavigation extends StatefulWidget {
+  static const id = 'bottomNav';
   @override
   _BottomNavigationState createState() => _BottomNavigationState();
 }
@@ -29,6 +33,21 @@ class _BottomNavigationState extends State<BottomNavigation> {
         ProfileShopMain(),
       ];
     }
+
+    // Future checkFirstSeen() async {
+    //   SharedPreferences prefs = await SharedPreferences.getInstance();
+    //   bool _seen = (prefs.getBool('seen') ?? false);
+
+    //   if (_seen) {
+    //     _buildScreens();
+    //     // Navigator.of(context).pushReplacement(
+    //     //     new MaterialPageRoute(builder: (context) => Home()));
+    //   } else {
+    //     await prefs.setBool('seen', true);
+    //     Navigator.of(context).pushReplacement(
+    //         new MaterialPageRoute(builder: (context) => Onboarding()));
+    //   }
+    // }
 
     List<PersistentBottomNavBarItem> _navBarsItems() {
       return [

@@ -52,10 +52,11 @@ dependencies:
   sliding_up_panel: ^1.0.2
   start_jwt: ^0.2.0
   uuid: ^2.2.2
+  after_layout: ^1.1.0
   velocity_x: ^1.0.1
   photo_view: ^0.11.1
   persistent_bottom_nav_bar: ^3.1.0
-
+  shared_preferences:
 dev_dependencies:
   flutter_test:
     sdk: flutter

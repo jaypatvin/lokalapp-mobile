@@ -1,3 +1,4 @@
+import 'package:after_layout/after_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:lokalapp/screens/profile_screens/settings/settings.dart';
 import 'package:lokalapp/utils/themes.dart';
@@ -13,7 +14,8 @@ class ProfileShopMain extends StatefulWidget {
   _ProfileShopMainState createState() => _ProfileShopMainState();
 }
 
-class _ProfileShopMainState extends State<ProfileShopMain> {
+class _ProfileShopMainState extends State<ProfileShopMain>
+    with AfterLayoutMixin<ProfileShopMain> {
   Padding buildIconSettings() {
     return Padding(
         padding: const EdgeInsets.only(left: 5),
@@ -62,6 +64,13 @@ class _ProfileShopMainState extends State<ProfileShopMain> {
         )),
       ],
     );
+  }
+
+  @override
+  void afterFirstLayout(BuildContext context) {
+    // TODO: implement afterFirstLayout
+
+    showAlert(context);
   }
 
   showAlert(BuildContext context) {

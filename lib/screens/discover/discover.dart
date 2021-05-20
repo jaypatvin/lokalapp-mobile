@@ -1,3 +1,4 @@
+import 'package:after_layout/after_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
@@ -18,7 +19,12 @@ import 'order_placed.dart';
 import 'order_screen_grid.dart';
 import 'product_detail.dart';
 
-class Discover extends StatelessWidget {
+class Discover extends StatefulWidget {
+  @override
+  _DiscoverState createState() => _DiscoverState();
+}
+
+class _DiscoverState extends State<Discover> with AfterLayoutMixin<Discover> {
   final TextEditingController _searchController = TextEditingController();
 
   Widget get consumerCartState => Consumer2<ShoppingCart, PullUpCartState>(
@@ -31,136 +37,6 @@ class Discover extends StatelessWidget {
           );
         },
       );
-  showAlert(BuildContext context) {
-    double width = MediaQuery.of(context).size.width;
-    double height = MediaQuery.of(context).size.height;
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        insetPadding: EdgeInsets.symmetric(horizontal: 22),
-        // contentPadding: EdgeInsets.zero,
-        clipBehavior: Clip.antiAliasWithSaveLayer,
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(32.0))),
-        contentPadding: EdgeInsets.only(top: 10.0),
-        content: Container(
-          height: height * 0.3,
-          width: width * 0.9,
-          decoration:
-              BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5))),
-          child: Container(
-            width: width * 0.9,
-            child: Row(
-              children: <Widget>[
-                ClipRRect(
-                  borderRadius: BorderRadius.all(Radius.circular(5)),
-                  child: Column(
-                    children: [
-                      SizedBox(
-                        height: 20,
-                      ),
-                      Container(
-                        padding: EdgeInsets.all(8),
-                        width: width * 0.25,
-                        child: Icon(
-                          Icons.web_asset_outlined,
-                          size: 80,
-                          color: Color(0xffCC3752),
-                        ),
-                      ),
-                      Text(
-                        "Discover",
-                        style: TextStyle(color: Color(0xffCC3752)),
-                      )
-                    ],
-                  ),
-                ),
-                Expanded(
-                  child: Center(
-                    child: Container(
-                      padding: EdgeInsets.only(
-                          left: 10, top: 5, right: 15, bottom: 5),
-                      width: MediaQuery.of(context).size.width * 0.9,
-                      child: Column(
-                        children: <Widget>[
-                          Container(
-                            padding: EdgeInsets.only(
-                                left: 10, top: 30, right: 15, bottom: 5),
-                            child: Text(
-                              'Discover is where you can find',
-                              textAlign: TextAlign.left,
-                              style: TextStyle(fontSize: 14),
-                            ),
-                          ),
-                          Container(
-                            padding:
-                                EdgeInsets.only(right: 15, bottom: 5, top: 1),
-                            child: Text(
-                              'food, products, services or ' + " " + " ",
-                              textAlign: TextAlign.left,
-                              style: TextStyle(fontSize: 14),
-                            ),
-                          ),
-                          Container(
-                              padding:
-                                  EdgeInsets.only(right: 30, bottom: 5, top: 1),
-                              child: Text(
-                                'anything that is being sold',
-                                textAlign: TextAlign.left,
-                                style: TextStyle(fontSize: 14),
-                              )),
-                          Container(
-                              padding:
-                                  EdgeInsets.only(right: 25, bottom: 5, top: 1),
-                              child: Text(
-                                ' in this community. ' + " " + " " + " " + " ",
-                                textAlign: TextAlign.left,
-                                style: TextStyle(fontSize: 14),
-                              )),
-                          SizedBox(
-                            height: 30,
-                          ),
-                          Row(
-                            children: [
-                              Center(
-                                child: Container(
-                                  height: 43,
-                                  width: 180,
-                                  child: FlatButton(
-                                    color: kTealColor,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(20.0),
-                                      side: BorderSide(color: kTealColor),
-                                    ),
-                                    textColor: kTealColor,
-                                    child: Text(
-                                      "Okay!",
-                                      style: TextStyle(
-                                          fontFamily: "Goldplay",
-                                          fontSize: 14,
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.w700),
-                                    ),
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                    },
-                                  ),
-                                ),
-                              ),
-                            ],
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
 
   Widget getTextWidgets(context) {
     var iconText = [
@@ -239,6 +115,7 @@ class Discover extends StatelessWidget {
                 ],
               );
       });
+
   Widget get rowRecent => Row(
         children: [
           Container(
@@ -290,6 +167,7 @@ class Discover extends StatelessWidget {
           ),
         ),
       );
+
   Widget get buildSearchTextField => TextField(
         enabled: false,
         // controller: _searchController,
@@ -314,6 +192,7 @@ class Discover extends StatelessWidget {
           hintStyle: TextStyle(color: Color(0xffBDBDBD)),
         ),
       );
+
   @override
   Widget build(BuildContext context) {
     List icon = List.generate(
@@ -331,7 +210,7 @@ class Discover extends StatelessWidget {
         ),
       ),
     ).toList();
-    Future.delayed(Duration.zero, () => showAlert(context));
+
     return SafeArea(
       child: Scaffold(
         appBar: appBar,
@@ -522,6 +401,144 @@ class Discover extends StatelessWidget {
                   ],
                 ),
                 consumerCartState
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  @override
+  void afterFirstLayout(BuildContext context) {
+    // TODO: implement afterFirstLayout
+
+    showAlert(context);
+  }
+
+  showAlert(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        insetPadding: EdgeInsets.symmetric(horizontal: 22),
+        // contentPadding: EdgeInsets.zero,
+        clipBehavior: Clip.antiAliasWithSaveLayer,
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(32.0))),
+        contentPadding: EdgeInsets.only(top: 10.0),
+        content: Container(
+          height: height * 0.3,
+          width: width * 0.9,
+          decoration:
+              BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5))),
+          child: Container(
+            width: width * 0.9,
+            child: Row(
+              children: <Widget>[
+                ClipRRect(
+                  borderRadius: BorderRadius.all(Radius.circular(5)),
+                  child: Column(
+                    children: [
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Container(
+                        padding: EdgeInsets.all(8),
+                        width: width * 0.25,
+                        child: Icon(
+                          Icons.web_asset_outlined,
+                          size: 80,
+                          color: Color(0xffCC3752),
+                        ),
+                      ),
+                      Text(
+                        "Discover",
+                        style: TextStyle(color: Color(0xffCC3752)),
+                      )
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: Center(
+                    child: Container(
+                      padding: EdgeInsets.only(
+                          left: 10, top: 5, right: 15, bottom: 5),
+                      width: MediaQuery.of(context).size.width * 0.9,
+                      child: Column(
+                        children: <Widget>[
+                          Container(
+                            padding: EdgeInsets.only(
+                                left: 10, top: 30, right: 15, bottom: 5),
+                            child: Text(
+                              'Discover is where you can find',
+                              textAlign: TextAlign.left,
+                              style: TextStyle(fontSize: 14),
+                            ),
+                          ),
+                          Container(
+                            padding:
+                                EdgeInsets.only(right: 15, bottom: 5, top: 1),
+                            child: Text(
+                              'food, products, services or ' + " " + " ",
+                              textAlign: TextAlign.left,
+                              style: TextStyle(fontSize: 14),
+                            ),
+                          ),
+                          Container(
+                              padding:
+                                  EdgeInsets.only(right: 30, bottom: 5, top: 1),
+                              child: Text(
+                                'anything that is being sold',
+                                textAlign: TextAlign.left,
+                                style: TextStyle(fontSize: 14),
+                              )),
+                          Container(
+                              padding:
+                                  EdgeInsets.only(right: 25, bottom: 5, top: 1),
+                              child: Text(
+                                ' in this community. ' + " " + " " + " " + " ",
+                                textAlign: TextAlign.left,
+                                style: TextStyle(fontSize: 14),
+                              )),
+                          SizedBox(
+                            height: 30,
+                          ),
+                          Row(
+                            children: [
+                              Center(
+                                child: Container(
+                                  height: 43,
+                                  width: 180,
+                                  child: FlatButton(
+                                    color: kTealColor,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(20.0),
+                                      side: BorderSide(color: kTealColor),
+                                    ),
+                                    textColor: kTealColor,
+                                    child: Text(
+                                      "Okay!",
+                                      style: TextStyle(
+                                          fontFamily: "Goldplay",
+                                          fontSize: 14,
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.w700),
+                                    ),
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                  ),
+                                ),
+                              ),
+                            ],
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
               ],
             ),
           ),

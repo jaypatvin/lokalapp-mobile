@@ -1,3 +1,4 @@
+import 'package:after_layout/after_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:lokalapp/screens/activity/seller/my_shop.dart';
 import 'package:lokalapp/screens/activity/seller/my_shop_seller.dart';
@@ -11,7 +12,7 @@ class Activity extends StatefulWidget {
 }
 
 class _ActivityState extends State<Activity>
-    with SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin, AfterLayoutMixin<Activity> {
   TabController _tabController;
   Color _indicatorColor;
 
@@ -61,6 +62,49 @@ class _ActivityState extends State<Activity>
         ),
       ],
     );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return DefaultTabController(
+      length: 2,
+      child: Scaffold(
+        appBar: AppBar(
+          elevation: 0,
+          backgroundColor: const Color(0xFFF1FAFF),
+          bottom: PreferredSize(
+            preferredSize: _tabBar.preferredSize,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: _tabBar,
+            ),
+          ),
+          title: Center(
+            child: Text(
+              'Activity',
+              style: TextStyle(
+                color: Colors.black,
+              ),
+            ),
+          ),
+        ),
+        body: TabBarView(
+          physics: NeverScrollableScrollPhysics(),
+          controller: _tabController,
+          children: [
+            MyOrders(),
+            MyShopSeller(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  @override
+  void afterFirstLayout(BuildContext context) {
+    // TODO: implement afterFirstLayout
+
+    showAlert(context);
   }
 
   showAlert(BuildContext context) {
@@ -188,43 +232,6 @@ class _ActivityState extends State<Activity>
               ],
             ),
           ),
-        ),
-      ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    Future.delayed(Duration.zero, () => showAlert(context));
-    return DefaultTabController(
-      length: 2,
-      child: Scaffold(
-        appBar: AppBar(
-          elevation: 0,
-          backgroundColor: const Color(0xFFF1FAFF),
-          bottom: PreferredSize(
-            preferredSize: _tabBar.preferredSize,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: _tabBar,
-            ),
-          ),
-          title: Center(
-            child: Text(
-              'Activity',
-              style: TextStyle(
-                color: Colors.black,
-              ),
-            ),
-          ),
-        ),
-        body: TabBarView(
-          physics: NeverScrollableScrollPhysics(),
-          controller: _tabController,
-          children: [
-            MyOrders(),
-            MyShopSeller(),
-          ],
         ),
       ),
     );
