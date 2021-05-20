@@ -66,74 +66,6 @@ class _ProfileShopMainState extends State<ProfileShopMain>
     );
   }
 
-  Row buildName(String firstName, String lastName) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Text(
-          firstName + " " + lastName,
-          style: TextStyle(
-              color: Colors.white,
-              fontFamily: "GoldplayBold",
-              fontSize: 24,
-              fontWeight: FontWeight.bold),
-        )
-      ],
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    var user = Provider.of<CurrentUser>(context);
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        appBar: PreferredSize(
-          preferredSize: Size(double.infinity, 220),
-          child: Container(
-            decoration: BoxDecoration(
-              boxShadow: [
-                BoxShadow(color: Colors.black12, spreadRadius: 5, blurRadius: 2)
-              ],
-            ),
-            width: MediaQuery.of(context).size.width,
-            height: 450,
-            child: Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [Color(0xffFFC700), Colors.black45]),
-              ),
-              child: Container(
-                margin: const EdgeInsets.fromLTRB(0, 8, 0, 0),
-                child: Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      // crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        buildIconSettings(),
-                        buildIconMore(context),
-                      ],
-                    ),
-                    buildCircleAvatar(user.profilePhoto ?? ""),
-                    SizedBox(
-                      height: 15,
-                    ),
-                    buildName(user.firstName, user.lastName)
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ),
-        body: SlidingUpCart(child: ProfileNoShop()),
-      ),
-    );
-  }
-
   @override
   void afterFirstLayout(BuildContext context) {
     // TODO: implement afterFirstLayout
@@ -259,6 +191,75 @@ class _ProfileShopMainState extends State<ProfileShopMain>
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  Row buildName(String firstName, String lastName) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Text(
+          firstName + " " + lastName,
+          style: TextStyle(
+              color: Colors.white,
+              fontFamily: "GoldplayBold",
+              fontSize: 24,
+              fontWeight: FontWeight.bold),
+        )
+      ],
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    //Future.delayed(Duration.zero, () => showAlert(context));
+    var user = Provider.of<CurrentUser>(context);
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        appBar: PreferredSize(
+          preferredSize: Size(double.infinity, 220),
+          child: Container(
+            decoration: BoxDecoration(
+              boxShadow: [
+                BoxShadow(color: Colors.black12, spreadRadius: 5, blurRadius: 2)
+              ],
+            ),
+            width: MediaQuery.of(context).size.width,
+            height: 450,
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [Color(0xffFFC700), Colors.black45]),
+              ),
+              child: Container(
+                margin: const EdgeInsets.fromLTRB(0, 8, 0, 0),
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      // crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        buildIconSettings(),
+                        buildIconMore(context),
+                      ],
+                    ),
+                    buildCircleAvatar(user.profilePhoto ?? ""),
+                    SizedBox(
+                      height: 15,
+                    ),
+                    buildName(user.firstName, user.lastName)
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+        body: SlidingUpCart(child: ProfileNoShop()),
       ),
     );
   }

@@ -1,14 +1,14 @@
-enum RepeatChoices { days, weeks, months }
+enum RepeatChoices { day, week, month }
 
 extension RepeatChoicesExtension on RepeatChoices {
   String get value {
     switch (this) {
-      case RepeatChoices.days:
-        return 'Days';
-      case RepeatChoices.weeks:
-        return 'Weeks';
-      case RepeatChoices.months:
-        return 'Months';
+      case RepeatChoices.day:
+        return 'Day';
+      case RepeatChoices.week:
+        return 'Week';
+      case RepeatChoices.month:
+        return 'Month';
       default:
         return null;
     }
