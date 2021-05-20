@@ -102,7 +102,7 @@ class AddShopConfirmation extends StatelessWidget {
               onPressed: () {
                 // TODO: define route names for easier navigation
                 int count = 0;
-                Navigator.of(context).popUntil((_) => count++ >= 5);
+                Navigator.of(context).popUntil((_) => count++ >= 4);
               },
             ),
           ],
