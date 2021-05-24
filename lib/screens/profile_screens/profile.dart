@@ -1,6 +1,7 @@
 import 'package:after_layout/after_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:lokalapp/screens/profile_screens/settings/settings.dart';
+import 'package:lokalapp/utils/shared_preference.dart';
 import 'package:lokalapp/utils/themes.dart';
 import 'package:provider/provider.dart';
 
@@ -16,6 +17,16 @@ class ProfileShopMain extends StatefulWidget {
 
 class _ProfileShopMainState extends State<ProfileShopMain>
     with AfterLayoutMixin<ProfileShopMain> {
+  var _userSharedPreferences = UserSharedPreferences();
+
+  @override
+  void initState() {
+    super.initState();
+
+    _userSharedPreferences = UserSharedPreferences();
+    _userSharedPreferences.init();
+  }
+
   Padding buildIconSettings() {
     return Padding(
         padding: const EdgeInsets.only(left: 5),
@@ -64,13 +75,6 @@ class _ProfileShopMainState extends State<ProfileShopMain>
         )),
       ],
     );
-  }
-
-  @override
-  void afterFirstLayout(BuildContext context) {
-    // TODO: implement afterFirstLayout
-
-    showAlert(context);
   }
 
   showAlert(BuildContext context) {
@@ -262,5 +266,21 @@ class _ProfileShopMainState extends State<ProfileShopMain>
         body: SlidingUpCart(child: ProfileNoShop()),
       ),
     );
+  }
+
+  @override
+  void afterFirstLayout(BuildContext context) {
+    // TODO: implement afterFirstLayout
+
+    _userSharedPreferences.isProfile ? Container() : showAlert(context);
+    setState(() {
+      _userSharedPreferences.isProfile = true;
+    });
+  }
+
+  @override
+  dispose() {
+    _userSharedPreferences?.dispose();
+    super.dispose();
   }
 }

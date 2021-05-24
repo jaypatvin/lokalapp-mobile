@@ -2,6 +2,7 @@ import 'package:after_layout/after_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:lokalapp/screens/activity/seller/my_shop.dart';
 import 'package:lokalapp/screens/activity/seller/my_shop_seller.dart';
+import 'package:lokalapp/utils/shared_preference.dart';
 import 'package:lokalapp/utils/themes.dart';
 
 import 'buyer/my_orders.dart';
@@ -13,6 +14,7 @@ class Activity extends StatefulWidget {
 
 class _ActivityState extends State<Activity>
     with SingleTickerProviderStateMixin, AfterLayoutMixin<Activity> {
+  var _userSharedPreferences = UserSharedPreferences();
   TabController _tabController;
   Color _indicatorColor;
 
@@ -22,12 +24,8 @@ class _ActivityState extends State<Activity>
     _indicatorColor = Color(0xFF09A49A);
     _tabController = TabController(length: 2, vsync: this);
     _tabController?.addListener(_handleTabSelection);
-  }
-
-  @override
-  void dispose() {
-    _tabController?.dispose();
-    super.dispose();
+    _userSharedPreferences = UserSharedPreferences();
+    _userSharedPreferences.init();
   }
 
   void _handleTabSelection() {
@@ -104,7 +102,10 @@ class _ActivityState extends State<Activity>
   void afterFirstLayout(BuildContext context) {
     // TODO: implement afterFirstLayout
 
-    showAlert(context);
+    _userSharedPreferences.isActivity ? Container() : showAlert(context);
+    setState(() {
+      _userSharedPreferences.isActivity = true;
+    });
   }
 
   showAlert(BuildContext context) {
@@ -235,5 +236,12 @@ class _ActivityState extends State<Activity>
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _tabController?.dispose();
+    _userSharedPreferences?.dispose();
+    super.dispose();
   }
 }

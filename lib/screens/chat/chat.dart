@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:lokalapp/models/lokal_user.dart';
 import 'package:lokalapp/providers/user.dart';
 import 'package:lokalapp/screens/chat/chat_view.dart';
+import 'package:lokalapp/utils/shared_preference.dart';
 import 'package:lokalapp/utils/themes.dart';
 import 'package:lokalapp/widgets/custom_app_bar.dart';
 import 'package:provider/provider.dart';
@@ -15,6 +16,14 @@ class Chat extends StatefulWidget {
 
 class _ChatState extends State<Chat> with AfterLayoutMixin<Chat> {
   final TextEditingController _searchController = TextEditingController();
+  var _userSharedPreferences = UserSharedPreferences();
+  @override
+  void initState() {
+    super.initState();
+
+    _userSharedPreferences = UserSharedPreferences();
+    _userSharedPreferences.init();
+  }
 
   Widget get buildSearchTextField => Container(
         padding: const EdgeInsets.all(12),
@@ -58,7 +67,6 @@ class _ChatState extends State<Chat> with AfterLayoutMixin<Chat> {
 
   @override
   Widget build(BuildContext context) {
-    // Future.delayed(Duration.zero, () => showAlert(context));
     var user = Provider.of<CurrentUser>(context, listen: false);
     return Scaffold(
       appBar: customAppBar(
@@ -108,6 +116,22 @@ class _ChatState extends State<Chat> with AfterLayoutMixin<Chat> {
         ),
       ),
     );
+  }
+
+  @override
+  void afterFirstLayout(BuildContext context) {
+    // TODO: implement afterFirstLayout
+
+    _userSharedPreferences.isChat ? Container() : showAlert(context);
+    setState(() {
+      _userSharedPreferences.isChat = true;
+    });
+  }
+
+  @override
+  dispose() {
+    _userSharedPreferences?.dispose();
+    super.dispose();
   }
 
   showAlert(BuildContext context) {
@@ -238,12 +262,5 @@ class _ChatState extends State<Chat> with AfterLayoutMixin<Chat> {
         ),
       ),
     );
-  }
-
-  @override
-  void afterFirstLayout(BuildContext context) {
-    // TODO: implement afterFirstLayout
-
-    showAlert(context);
   }
 }

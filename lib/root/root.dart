@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lokalapp/screens/home.dart';
+import 'package:lokalapp/utils/shared_preference.dart';
 import 'package:lokalapp/widgets/onboarding.dart';
 import 'package:provider/provider.dart';
 
@@ -24,11 +25,13 @@ class _RootState extends State<Root> {
   void didChangeDependencies() async {
     super.didChangeDependencies();
     UserAuth auth = Provider.of<UserAuth>(context, listen: false);
+
     AuthStatus authStatus = await auth.onStartUp();
 
     if (authStatus == AuthStatus.Success) {
       CurrentUser user = Provider.of<CurrentUser>(context, listen: false);
       await user.fetch(auth.user);
+
       setState(() => _userState = user.state);
     } else {
       setState(() => _userState = UserState.Error);
@@ -40,6 +43,7 @@ class _RootState extends State<Root> {
     switch (_userState) {
       case UserState.LoggedIn:
         return BottomNavigation();
+
       default:
         return WelcomeScreen();
     }

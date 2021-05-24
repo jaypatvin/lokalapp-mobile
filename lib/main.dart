@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:lokalapp/screens/bottom_navigation.dart';
 import 'package:lokalapp/screens/home.dart';
+import 'package:lokalapp/utils/shared_preference.dart';
 import 'package:provider/provider.dart';
 
 import 'providers/activities.dart';
@@ -25,19 +26,40 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'widgets/onboarding.dart';
 
-int initScreen;
+UserSharedPreferences _userSharedPreferences;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  _userSharedPreferences = UserSharedPreferences();
   await Firebase.initializeApp();
 
   runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  @override
+  initState() {
+    _userSharedPreferences = UserSharedPreferences();
+    _userSharedPreferences.init();
+    super.initState();
+  }
+
+  @override
+  dispose() {
+    _userSharedPreferences?.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+        //shared preference
+        Provider<UserSharedPreferences>.value(value: _userSharedPreferences),
         // auth:
         ChangeNotifierProvider<UserAuth>(create: (_) => UserAuth()),
         ChangeNotifierProvider<Invite>(create: (_) => Invite()),
@@ -81,17 +103,21 @@ class MyApp extends StatelessWidget {
         Provider<MediaUtility>(create: (_) => MediaUtility.instance),
         Provider<LocalImageService>(create: (_) => LocalImageService.instance),
       ],
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'Flutter Demo',
-        theme: ThemeData(
-          // primarySwatch: kTealColor,
-          textTheme: Theme.of(context).textTheme.apply(
-                fontFamily: 'GoldplayBold',
+      child: StreamBuilder<Object>(
+          stream: _userSharedPreferences.stream,
+          builder: (context, snapshot) {
+            return MaterialApp(
+              debugShowCheckedModeBanner: false,
+              title: 'Flutter Demo',
+              theme: ThemeData(
+                // primarySwatch: kTealColor,
+                textTheme: Theme.of(context).textTheme.apply(
+                      fontFamily: 'GoldplayBold',
+                    ),
               ),
-        ),
-        home: Root(),
-      ),
+              home: Root(),
+            );
+          }),
     );
   }
 }
