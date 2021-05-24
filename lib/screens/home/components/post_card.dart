@@ -7,8 +7,8 @@ import '../../../models/activity_feed.dart';
 import '../../../models/lokal_images.dart';
 import '../../../providers/users.dart';
 import '../../../utils/themes.dart';
-import '../../../widgets/photo_view_gallery/gallery_network_photo_thumbnail.dart';
-import '../../../widgets/photo_view_gallery/gallery_network_photo_view.dart';
+import '../../../widgets/photo_view_gallery/gallery/gallery_network_photo_view.dart';
+import '../../../widgets/photo_view_gallery/thumbnails/network_photo_thumbnail.dart';
 
 class PostCard extends StatelessWidget {
   final ActivityFeed activityFeed;
@@ -137,7 +137,7 @@ class PostCard extends StatelessWidget {
       itemCount: count,
       crossAxisCount: 2,
       itemBuilder: (ctx, index) {
-        return GalleryNetworkPhotoThumbnail(
+        return NetworkPhotoThumbnail(
           galleryItem: images[index],
           onTap: () => openGallery(context, index, images),
         );

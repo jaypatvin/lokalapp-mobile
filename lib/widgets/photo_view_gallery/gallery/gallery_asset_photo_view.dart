@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:photo_manager/photo_manager.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
+import 'package:photo_widget/photo_widget.dart';
 
-import '../../models/lokal_images.dart';
-
-class GalleryNetworkPhotoView extends StatefulWidget {
-  GalleryNetworkPhotoView({
+class GalleryAssetPhotoView extends StatefulWidget {
+  GalleryAssetPhotoView({
     this.loadingBuilder,
     this.backgroundDecoration,
     this.minScale,
@@ -21,15 +21,14 @@ class GalleryNetworkPhotoView extends StatefulWidget {
   final dynamic maxScale;
   final int initialIndex;
   final PageController pageController;
-  final List<LokalImages> galleryItems;
+  final List<AssetEntity> galleryItems;
   final Axis scrollDirection;
 
   @override
-  _GalleryNetworkPhotoViewState createState() =>
-      _GalleryNetworkPhotoViewState();
+  _GalleryFilePhotoView createState() => _GalleryFilePhotoView();
 }
 
-class _GalleryNetworkPhotoViewState extends State<GalleryNetworkPhotoView> {
+class _GalleryFilePhotoView extends State<GalleryAssetPhotoView> {
   int currentIndex;
 
   @override
@@ -83,13 +82,14 @@ class _GalleryNetworkPhotoViewState extends State<GalleryNetworkPhotoView> {
   }
 
   PhotoViewGalleryPageOptions _buildItem(BuildContext context, int index) {
-    final LokalImages item = widget.galleryItems[index];
+    // final File item = widget.galleryItems[index];
+    final AssetEntity entity = widget.galleryItems[index];
     return PhotoViewGalleryPageOptions(
-      imageProvider: NetworkImage(item.url),
+      imageProvider: AssetEntityFileImage(entity),
       initialScale: PhotoViewComputedScale.contained,
       minScale: PhotoViewComputedScale.contained * (0.5 + index / 10),
       maxScale: PhotoViewComputedScale.covered * 4.1,
-      heroAttributes: PhotoViewHeroAttributes(tag: item.url),
+      heroAttributes: PhotoViewHeroAttributes(tag: entity.title),
     );
   }
 }

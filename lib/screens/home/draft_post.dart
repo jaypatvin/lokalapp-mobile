@@ -1,8 +1,7 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:photo_manager/photo_manager.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/lokal_images.dart';
@@ -10,10 +9,11 @@ import '../../providers/activities.dart';
 import '../../providers/user.dart';
 import '../../services/local_image_service.dart';
 import '../../utils/themes.dart';
-import '../../utils/utility.dart';
 import '../../widgets/custom_app_bar.dart';
-import '../../widgets/photo_view_gallery/gallery_file_photo_thumbnail.dart';
-import '../../widgets/photo_view_gallery/gallery_file_photo_view.dart';
+import '../../widgets/photo_picker_gallery/image_gallery_picker.dart';
+import '../../widgets/photo_picker_gallery/provider/custom_photo_provider.dart';
+import '../../widgets/photo_view_gallery/gallery/gallery_asset_photo_view.dart';
+import '../../widgets/photo_view_gallery/thumbnails/asset_photo_thumbnail.dart';
 import '../../widgets/rounded_button.dart';
 
 class DraftPost extends StatefulWidget {
@@ -21,15 +21,47 @@ class DraftPost extends StatefulWidget {
   _DraftPostState createState() => _DraftPostState();
 }
 
-class _DraftPostState extends State<DraftPost> {
-  TextEditingController _userController = TextEditingController();
-  GlobalKey<ScaffoldState> _key = GlobalKey<ScaffoldState>();
-  List<File> _images = [];
+class _DraftPostState extends State<DraftPost> with TickerProviderStateMixin {
+  final TextEditingController _userController = TextEditingController();
+  final GlobalKey<ScaffoldState> _key = GlobalKey<ScaffoldState>();
+  CustomPickerDataProvider provider;
+  bool showImagePicker = false;
 
   @override
   void initState() {
-    // _user = Provider.of<CurrentUser>(context, listen: false);
     super.initState();
+    provider = Provider.of<CustomPickerDataProvider>(context, listen: false);
+    provider.onPickMax.addListener(showMaxAssetsText);
+    provider.pickedNotifier.addListener(onPick);
+    providerInit();
+  }
+
+  @override
+  void dispose() {
+    provider.picked.clear();
+    provider.removeListener(showMaxAssetsText);
+    provider.pickedNotifier.removeListener(onPick);
+    super.dispose();
+  }
+
+  void onPick() {
+    setState(() {});
+  }
+
+  Future<void> providerInit() async {
+    final pathList = await PhotoManager.getAssetPathList(
+      onlyAll: true,
+      type: RequestType.image,
+    );
+    provider.resetPathList(pathList);
+  }
+
+  void showMaxAssetsText() {
+    // TODO: use OKToast
+    final snackBar = SnackBar(
+      content: Text("You have reached the limit of 5 media per post."),
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
   Widget buildCard() {
@@ -75,14 +107,8 @@ class _DraftPostState extends State<DraftPost> {
               color: Colors.grey,
             ),
           ),
-          onTap: () async {
-            var _utils = Provider.of<MediaUtility>(context, listen: false);
-            var file = await _utils.showMediaDialog(context);
-            if (_images.length > 5) {
-              _images.remove(_images.first);
-            }
-            _images.add(file);
-          },
+          onTap: () =>
+              setState(() => this.showImagePicker = !this.showImagePicker),
         ),
         Spacer(),
         RoundedButton(
@@ -93,10 +119,12 @@ class _DraftPostState extends State<DraftPost> {
             var user = Provider.of<CurrentUser>(context, listen: false);
 
             var gallery = <LokalImages>[];
-            for (var image in _images) {
+            for (var asset in provider.picked) {
+              var file = await asset.file;
               var url =
-                  await service.uploadImage(file: image, name: "post_photo");
-              gallery.add(LokalImages(url: url, order: _images.indexOf(image)));
+                  await service.uploadImage(file: file, name: 'post_photo');
+              gallery.add(
+                  LokalImages(url: url, order: provider.picked.indexOf(asset)));
             }
 
             bool postSuccess = await activities.post(
@@ -128,8 +156,8 @@ class _DraftPostState extends State<DraftPost> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => GalleryFilePhotoView(
-          galleryItems: this._images,
+        builder: (context) => GalleryAssetPhotoView(
+          galleryItems: this.provider.picked,
           backgroundDecoration: const BoxDecoration(
             color: Colors.black,
           ),
@@ -143,19 +171,17 @@ class _DraftPostState extends State<DraftPost> {
   Widget buildPostImages({
     BuildContext context,
   }) {
-    var images = this._images;
-    var count = images.length;
+    var count = provider.picked.length;
     return StaggeredGridView.countBuilder(
       shrinkWrap: true,
       physics: NeverScrollableScrollPhysics(),
       itemCount: count,
       crossAxisCount: 2,
       itemBuilder: (ctx, index) {
-        return GalleryFilePhotoThumbnail(
-          galleryItem: images[index],
-          onTap: () {
-            openGallery(context, index);
-          },
+        return AssetPhotoThumbnail(
+          galleryItem: this.provider.picked[index],
+          onTap: () => openGallery(context, index),
+          onRemove: () => setState(() => this.provider.picked.removeAt(index)),
         );
       },
       staggeredTileBuilder: (index) {
@@ -202,9 +228,9 @@ class _DraftPostState extends State<DraftPost> {
       body: SingleChildScrollView(
         physics: AlwaysScrollableScrollPhysics(),
         child: Column(
-          children: <Widget>[
+          children: [
             Visibility(
-              visible: _images.length > 0,
+              visible: provider.picked.length > 0,
               child: buildPostImages(context: context),
             ),
             Container(
@@ -218,6 +244,18 @@ class _DraftPostState extends State<DraftPost> {
                 vertical: height * 0.02,
               ),
               child: postButton(),
+            ),
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 200),
+              height: this.showImagePicker ? 200 : 0.0,
+              child: ImageGalleryPicker(
+                provider,
+                pickerHeight: 200,
+                assetHeight: 200,
+                assetWidth: 200,
+                thumbSize: 200,
+                enableSpecialItemBuilder: true,
+              ),
             ),
           ],
         ),

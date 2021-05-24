@@ -1,20 +1,26 @@
-import 'package:flutter/gestures.dart';
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:intl/intl.dart' show DateFormat;
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:photo_manager/photo_manager.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/activity_feed.dart';
 import '../../models/lokal_images.dart';
-import '../../models/lokal_user.dart';
 import '../../providers/activities.dart';
 import '../../providers/user.dart';
 import '../../providers/users.dart';
+import '../../services/local_image_service.dart';
+import '../../utils/functions.utils.dart';
 import '../../utils/themes.dart';
 import '../../widgets/custom_app_bar.dart';
-import '../../widgets/photo_view_gallery/gallery_network_photo_thumbnail.dart';
-import '../../widgets/photo_view_gallery/gallery_network_photo_view.dart';
+import '../../widgets/photo_picker_gallery/image_gallery_picker.dart';
+import '../../widgets/photo_picker_gallery/provider/custom_photo_provider.dart';
+import '../../widgets/photo_view_gallery/thumbnails/asset_photo_thumbnail.dart';
+import '../../widgets/photo_view_gallery/thumbnails/network_photo_thumbnail.dart';
+import 'components/comment_card.dart';
 
 class PostDetails extends StatefulWidget {
   final ActivityFeed activity;
@@ -33,6 +39,54 @@ class PostDetails extends StatefulWidget {
 
 class _PostDetailsState extends State<PostDetails> {
   final TextEditingController commentInputController = TextEditingController();
+  final ScrollController scrollController = ScrollController();
+  bool showImagePicker = false;
+  CustomPickerDataProvider provider;
+
+  @override
+  void initState() {
+    super.initState();
+    provider = Provider.of<CustomPickerDataProvider>(context, listen: false);
+    provider.onPickMax.addListener(showMaxAssetsText);
+    provider.pickedNotifier.addListener(onPick);
+    providerInit();
+  }
+
+  @override
+  void dispose() {
+    provider.picked.clear();
+    provider.removeListener(showMaxAssetsText);
+    provider.pickedNotifier.removeListener(onPick);
+    super.dispose();
+  }
+
+  void onPick() {
+    setState(() {
+      Timer(Duration(milliseconds: 300), () {
+        scrollController.animateTo(
+          scrollController.position.maxScrollExtent,
+          duration: Duration(milliseconds: 200),
+          curve: Curves.ease,
+        );
+      });
+    });
+  }
+
+  Future<void> providerInit() async {
+    final pathList = await PhotoManager.getAssetPathList(
+      onlyAll: true,
+      type: RequestType.image,
+    );
+    provider.resetPathList(pathList);
+  }
+
+  void showMaxAssetsText() {
+    // TODO: maybe use OKToast plugin
+    final snackBar = SnackBar(
+      content: Text("You have reached the limit of 5 media per post."),
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
 
   Widget buildHeader({
     @required String firstName,
@@ -75,7 +129,8 @@ class _PostDetailsState extends State<PostDetails> {
           IconButton(
             icon: Icon(MdiIcons.commentOutline),
             onPressed: () {
-              //TODO: set focus on comment
+              //TODO: set focus on comment ?
+              // should we do something about it ?
             },
           ),
           Text(this.widget.activity.commentCount.toString(), style: kTextStyle),
@@ -141,72 +196,6 @@ class _PostDetailsState extends State<PostDetails> {
     );
   }
 
-  Widget buildCommmentBody({
-    @required LokalUser user,
-    @required String message,
-  }) {
-    var photo = user.profilePhoto ?? "";
-    return ListTile(
-      onLongPress: onCommentLongPress,
-      leading: GestureDetector(
-        onTap: () => this.widget.onUserPressed(user.id),
-        child: CircleAvatar(
-          backgroundImage: photo.isNotEmpty ? NetworkImage(photo) : null,
-        ),
-      ),
-      title: RichText(
-        text: TextSpan(
-          children: [
-            TextSpan(
-              text: "${user.firstName} ${user.lastName}",
-              style: kTextStyle.copyWith(
-                color: Colors.black,
-              ),
-              recognizer: TapGestureRecognizer()
-                ..onTap = () => this.widget.onUserPressed(user.id),
-            ),
-            TextSpan(
-              text: " $message",
-              style: kTextStyle.copyWith(
-                color: Colors.black,
-                fontWeight: FontWeight.normal,
-              ),
-            ),
-          ],
-        ),
-      ),
-      trailing: IconButton(
-        icon: Icon(
-          MdiIcons.heartOutline,
-          color: Colors.black,
-        ),
-        onPressed: () {
-          debugPrint("Pressed Like");
-        },
-      ),
-    );
-  }
-
-  void openGallery(
-    BuildContext context,
-    final int index,
-    final List<LokalImages> galleryItems,
-  ) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => GalleryNetworkPhotoView(
-          galleryItems: galleryItems,
-          backgroundDecoration: const BoxDecoration(
-            color: Colors.black,
-          ),
-          initialIndex: index,
-          scrollDirection: Axis.horizontal,
-        ),
-      ),
-    );
-  }
-
   Widget buildPostImages({
     BuildContext context,
   }) {
@@ -218,7 +207,7 @@ class _PostDetailsState extends State<PostDetails> {
       itemCount: count,
       crossAxisCount: 2,
       itemBuilder: (ctx, index) {
-        return GalleryNetworkPhotoThumbnail(
+        return NetworkPhotoThumbnail(
           galleryItem: images[index],
           onTap: () => openGallery(context, index, images),
         );
@@ -234,11 +223,98 @@ class _PostDetailsState extends State<PostDetails> {
     );
   }
 
-  Widget buildCommentInput({BuildContext context}) {
+  void removeAsset(int index) {
+    setState(() {
+      provider.picked.removeAt(index);
+    });
+  }
+
+  Future<void> createComment() async {
+    debugPrint("Send a comment");
+    var cUser = Provider.of<CurrentUser>(context, listen: false);
+    var service = Provider.of<LocalImageService>(context, listen: false);
+    var gallery = <LokalImages>[];
+    for (var asset in provider.picked) {
+      var file = await asset.file;
+      var url = await service.uploadImage(file: file, name: 'post_photo');
+      gallery.add(LokalImages(url: url, order: provider.picked.indexOf(asset)));
+    }
+
+    Map<String, dynamic> body = {
+      "user_id": cUser.id,
+      "message": commentInputController.text,
+      "images": gallery.map((x) => x.toMap()).toList(),
+    };
+
+    var success =
+        await Provider.of<Activities>(context, listen: false).createComment(
+      authToken: cUser.idToken,
+      activityId: widget.activity.id,
+      body: body,
+    );
+
+    if (success) {
+      commentInputController.clear();
+      setState(() {
+        provider.picked.clear();
+      });
+      Provider.of<Activities>(context, listen: false).fetchComments(
+        authToken: cUser.idToken,
+        activityId: widget.activity.id,
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Cannot create a comment"),
+        ),
+      );
+    }
+  }
+
+  Widget buildCommentInputImages(BuildContext context) {
+    if (provider.picked.length <= 0) {
+      return Container();
+    }
+    return ListView.builder(
+      shrinkWrap: true,
+      scrollDirection: Axis.horizontal,
+      addRepaintBoundaries: true,
+      itemCount: provider.picked.length,
+      itemBuilder: (ctx, index) {
+        return Container(
+          margin: EdgeInsets.symmetric(horizontal: 0.5),
+          height: 100,
+          width: 100,
+          child: AssetPhotoThumbnail(
+            galleryItem: provider.picked[index],
+            onTap: () => openInputGallery(
+              context,
+              index,
+              provider.picked,
+            ),
+            onRemove: () => setState(() => provider.picked.removeAt(index)),
+            fit: BoxFit.cover,
+            decoration: BoxDecoration(
+              border: Border.all(
+                color: Colors.black.withOpacity(0.3),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget buildCommentTextField(BuildContext context) {
     return TextField(
       maxLines: null,
       controller: commentInputController,
       decoration: InputDecoration(
+        border: InputBorder.none,
+        focusedBorder: InputBorder.none,
+        enabledBorder: InputBorder.none,
+        errorBorder: InputBorder.none,
+        disabledBorder: InputBorder.none,
         fillColor: Colors.white,
         filled: true,
         isDense: true,
@@ -252,16 +328,6 @@ class _PostDetailsState extends State<PostDetails> {
           color: Colors.grey[400],
         ),
         alignLabelWithHint: true,
-        enabledBorder: OutlineInputBorder(
-          borderRadius: const BorderRadius.all(
-            Radius.circular(
-              30.0,
-            ),
-          ),
-          borderSide: BorderSide(
-            color: Colors.grey[200],
-          ),
-        ),
         suffixIcon: Padding(
           padding: EdgeInsets.all(5.0),
           child: CircleAvatar(
@@ -269,41 +335,72 @@ class _PostDetailsState extends State<PostDetails> {
             backgroundColor: kTealColor,
             child: IconButton(
               icon: Icon(Icons.arrow_forward),
-              onPressed: () async {
-                debugPrint("Send a comment");
-                var cUser = Provider.of<CurrentUser>(context, listen: false);
-                Map<String, String> body = {
-                  "user_id": cUser.id,
-                  "message": commentInputController.text,
-                };
-
-                var success =
-                    await Provider.of<Activities>(context, listen: false)
-                        .createComment(
-                  authToken: cUser.idToken,
-                  activityId: widget.activity.id,
-                  body: body,
-                );
-
-                if (success) {
-                  commentInputController.clear();
-                  Provider.of<Activities>(context, listen: false).fetchComments(
-                    authToken: cUser.idToken,
-                    activityId: widget.activity.id,
-                  );
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text("Cannot create a comment"),
-                    ),
-                  );
-                }
-              },
+              onPressed: createComment,
               color: Colors.white,
             ),
           ),
         ),
       ),
+    );
+  }
+
+  Widget buildCommentInput({BuildContext context}) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        GestureDetector(
+          child: Container(
+            padding: EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(100),
+              border: Border.all(width: 1, color: kTealColor),
+            ),
+            child: Icon(
+              MdiIcons.fileImageOutline,
+              color: kTealColor,
+            ),
+          ),
+          onTap: () {
+            setState(() {
+              this.showImagePicker = !this.showImagePicker;
+              Timer(Duration(milliseconds: 300), () {
+                scrollController.animateTo(
+                  scrollController.position.maxScrollExtent,
+                  duration: Duration(milliseconds: 200),
+                  curve: Curves.ease,
+                );
+              });
+            });
+          },
+        ),
+        SizedBox(width: MediaQuery.of(context).size.width * 0.02),
+        Expanded(
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.all(
+                Radius.circular(30.0),
+              ),
+              border: Border.all(color: kTealColor),
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(30.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  AnimatedContainer(
+                    height: provider.picked.length > 0 ? 100 : 0.0,
+                    duration: const Duration(milliseconds: 200),
+                    child: buildCommentInputImages(context),
+                  ),
+                  buildCommentTextField(context),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -326,7 +423,7 @@ class _PostDetailsState extends State<PostDetails> {
               color: Colors.white,
               size: 33,
             ),
-            onPressed: () {},
+            onPressed: () => Navigator.pop(context),
           ),
         ],
       ),
@@ -336,6 +433,7 @@ class _PostDetailsState extends State<PostDetails> {
           activityId: widget.activity.id,
         ),
         child: SingleChildScrollView(
+          controller: scrollController,
           physics: AlwaysScrollableScrollPhysics(),
           child: Container(
             child: Column(
@@ -402,11 +500,18 @@ class _PostDetailsState extends State<PostDetails> {
                               var commentUser =
                                   Provider.of<Users>(context, listen: false)
                                       .findById(comment.userId);
+
                               return Column(
                                 children: [
-                                  buildCommmentBody(
+                                  CommentCard(
                                     user: commentUser,
                                     message: comment.message,
+                                    images: comment.images ?? [],
+                                    onLongPress: this.onCommentLongPress,
+                                    onUserPressed: widget.onUserPressed,
+                                    onLike: () {
+                                      debugPrint("Liked comment ${comment.id}");
+                                    },
                                   ),
                                   Divider(),
                                 ],
@@ -424,6 +529,18 @@ class _PostDetailsState extends State<PostDetails> {
                 ),
                 SizedBox(
                   height: height * 0.02,
+                ),
+                AnimatedContainer(
+                  duration: const Duration(milliseconds: 200),
+                  height: this.showImagePicker ? 200.0 : 0.0,
+                  child: ImageGalleryPicker(
+                    provider,
+                    pickerHeight: 200,
+                    assetHeight: 200,
+                    assetWidth: 200,
+                    thumbSize: 200,
+                    enableSpecialItemBuilder: true,
+                  ),
                 ),
               ],
             ),

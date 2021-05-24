@@ -1,15 +1,15 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
-import '../../models/lokal_images.dart';
-
-class GalleryNetworkPhotoThumbnail extends StatelessWidget {
-  const GalleryNetworkPhotoThumbnail({
+class FilePhotoThumbnail extends StatelessWidget {
+  const FilePhotoThumbnail({
     Key key,
     @required this.galleryItem,
     @required this.onTap,
   }) : super(key: key);
 
-  final LokalImages galleryItem;
+  final File galleryItem;
 
   final GestureTapCallback onTap;
 
@@ -19,9 +19,10 @@ class GalleryNetworkPhotoThumbnail extends StatelessWidget {
       child: GestureDetector(
         onTap: onTap,
         child: Hero(
-          tag: galleryItem.url,
-          child: Image.network(
-            galleryItem.url,
+          tag: galleryItem.absolute,
+          child: Image.file(
+            galleryItem,
+            alignment: Alignment.topCenter,
             fit: BoxFit.cover,
           ),
         ),

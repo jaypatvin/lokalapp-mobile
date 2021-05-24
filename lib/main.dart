@@ -19,6 +19,7 @@ import 'providers/users.dart';
 import 'root/root.dart';
 import 'services/local_image_service.dart';
 import 'utils/utility.dart';
+import 'widgets/photo_picker_gallery/provider/custom_photo_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -70,6 +71,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider<ShopBody>(create: (_) => ShopBody()),
         ChangeNotifierProvider<OperatingHoursBody>(
             create: (_) => OperatingHoursBody()),
+        ChangeNotifierProvider(create: (_) => CustomPickerDataProvider(max: 5)),
 
         // services:
         Provider<MediaUtility>(create: (_) => MediaUtility.instance),
