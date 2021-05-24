@@ -22,8 +22,11 @@ import 'shop_schedule/repeat_choices.dart';
 
 class ShopSchedule extends StatefulWidget {
   final File shopPhoto;
+  final bool forEditing;
+  final Function() onShopEdit;
 
-  const ShopSchedule(this.shopPhoto);
+  const ShopSchedule(this.shopPhoto,
+      {this.forEditing = false, this.onShopEdit});
 
   @override
   _ShopScheduleState createState() => _ShopScheduleState();
@@ -66,7 +69,14 @@ class _ShopScheduleState extends State<ShopSchedule> {
     var shops = Provider.of<Shops>(context, listen: false).findByUser(user.id);
     if (shops.isNotEmpty) _operatingHours = shops.first.operatingHours;
 
-    if (_operatingHours == null) {
+    bool validOperatingHours = _operatingHours != null &&
+        _operatingHours.startTime.isNotEmpty &&
+        _operatingHours.endTime.isNotEmpty &&
+        _operatingHours.repeatUnit > 0 &&
+        _operatingHours.repeatType.isNotEmpty &&
+        _operatingHours.startDates.isNotEmpty;
+
+    if (!validOperatingHours) {
       repeatChoice = RepeatChoices.day;
       _opening = TimeOfDay(hour: 8, minute: 0);
       _closing = TimeOfDay(hour: 17, minute: 0);
@@ -88,6 +98,12 @@ class _ShopScheduleState extends State<ShopSchedule> {
       _closing = stringToTimeOfDay(_operatingHours.endTime);
 
       // Day and week:
+      _operatingHours.startDates.forEach((element) {
+        var date = DateFormat("yyyy-MM-dd").parse(element);
+        var weekday = date.weekday;
+        if (weekday == 7) weekday = 0;
+        _markedDaysMap.add(weekday);
+      });
       _startDate = DateFormat("yyyy-MM-dd").parse(
         _operatingHours.startDates.first,
       );
@@ -922,6 +938,8 @@ class _ShopScheduleState extends State<ShopSchedule> {
                             en_USSymbols.WEEKDAYS.indexOf(_monthDayChoice),
                         startMonth:
                             en_USSymbols.MONTHS.indexOf(_monthChoice) + 1,
+                        forEditing: widget.forEditing,
+                        onShopEdit: widget.onShopEdit,
                       ),
                     ),
                   );

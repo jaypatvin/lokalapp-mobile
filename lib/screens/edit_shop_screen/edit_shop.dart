@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:lokalapp/providers/post_requests/operating_hours_body.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/post_requests/shop_body.dart';
@@ -31,9 +32,12 @@ class _EditShopState extends State<EditShop> {
   File shopCoverPhoto;
   bool toggleValue = false;
   bool animating = false;
+  bool editedShopSchedule = false;
 
   @override
   initState() {
+    super.initState();
+
     var user = Provider.of<CurrentUser>(context, listen: false);
     var shop =
         Provider.of<Shops>(context, listen: false).findByUser(user.id).first;
@@ -49,9 +53,9 @@ class _EditShopState extends State<EditShop> {
         profilePhoto: shop.profilePhoto,
       );
 
-    toggleValue = shop.status == "enabled";
+    Provider.of<OperatingHoursBody>(context, listen: false)..clear();
 
-    super.initState();
+    toggleValue = shop.status == "enabled";
   }
 
   toggleButton() {
@@ -212,17 +216,17 @@ class _EditShopState extends State<EditShop> {
     );
   }
 
-  void changeShopSchedule() {
-    var user = Provider.of<CurrentUser>(context, listen: false);
-    var shop =
-        Provider.of<Shops>(context, listen: false).findByUser(user.id).first;
-    var operatingHours = shop.operatingHours;
+  Future<bool> _updateShopSchedule() async {
+    var operatingHoursBody =
+        Provider.of<OperatingHoursBody>(context, listen: false);
 
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (BuildContext context) => ShopSchedule(shopPhoto),
-      ),
+    var user = Provider.of<CurrentUser>(context, listen: false);
+    var shops = Provider.of<Shops>(context, listen: false);
+    var userShop = shops.findByUser(user.id).first;
+    return await shops.setOperatingHours(
+      id: userShop.id,
+      authToken: user.idToken,
+      data: operatingHoursBody.data,
     );
   }
 
@@ -334,7 +338,22 @@ class _EditShopState extends State<EditShop> {
                 width: width * 0.8,
                 height: height * 0.06,
                 child: TextButton(
-                  onPressed: changeShopSchedule,
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (BuildContext context) => ShopSchedule(
+                          shopPhoto,
+                          forEditing: true,
+                          onShopEdit: () {
+                            setState(() {
+                              editedShopSchedule = true;
+                            });
+                          },
+                        ),
+                      ),
+                    );
+                  },
                   style: TextButton.styleFrom(
                     backgroundColor: Colors.white,
                     primary: kTealColor,
@@ -359,15 +378,23 @@ class _EditShopState extends State<EditShop> {
                 fontFamily: "Goldplay",
                 fontColor: Colors.white,
                 onPressed: () async {
-                  bool success = await updateShop();
-                  if (success) {
+                  try {
+                    bool success = await updateShop();
+                    if (!success) throw "Update shop error";
+
+                    if (editedShopSchedule) {
+                      success = await _updateShopSchedule();
+
+                      if (!success) throw "Update operating hours error";
+                    }
                     var user = Provider.of<CurrentUser>(context, listen: false);
-                    Provider.of<Shops>(context, listen: false).fetch(user.id);
+                    Provider.of<Shops>(context, listen: false)
+                        .fetch(user.idToken);
                     Navigator.pop(context);
-                  } else {
+                  } catch (e) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Failed to update shop'),
+                      SnackBar(
+                        content: Text(e.toString()),
                       ),
                     );
                   }

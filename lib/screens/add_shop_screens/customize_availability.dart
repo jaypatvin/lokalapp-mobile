@@ -28,6 +28,8 @@ class CustomizeAvailability extends StatefulWidget {
   final int monthOrdinal;
   final int monthWeekDay;
   final int startMonth;
+  final bool forEditing;
+  final Function onShopEdit;
 
   const CustomizeAvailability({
     @required this.repeatChoice,
@@ -39,6 +41,8 @@ class CustomizeAvailability extends StatefulWidget {
     this.monthOrdinal,
     this.monthWeekDay,
     this.startMonth,
+    this.forEditing = false,
+    this.onShopEdit,
   });
   @override
   _CustomizeAvailabilityState createState() => _CustomizeAvailabilityState();
@@ -109,7 +113,14 @@ class _CustomizeAvailabilityState extends State<CustomizeAvailability> {
     }
     markedDates = [...initialDates];
 
-    if (_operatingHours != null) {
+    bool validOperatingHours = _operatingHours != null &&
+        _operatingHours.startTime.isNotEmpty &&
+        _operatingHours.endTime.isNotEmpty &&
+        _operatingHours.repeatUnit > 0 &&
+        _operatingHours.repeatType.isNotEmpty &&
+        _operatingHours.startDates.isNotEmpty;
+
+    if (validOperatingHours) {
       var unavailableDates = <DateTime>[];
       _operatingHours.unavailableDates.forEach((element) {
         unavailableDates.add(DateFormat("yyyy-MM-dd").parse(element));
@@ -123,10 +134,10 @@ class _CustomizeAvailabilityState extends State<CustomizeAvailability> {
         }
       });
 
-      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-        Provider.of<OperatingHoursBody>(context, listen: false)
-            .update(startDates: [..._operatingHours.startDates]);
-      });
+      // WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      //   Provider.of<OperatingHoursBody>(context, listen: false)
+      //       .update(startDates: [..._operatingHours.startDates]);
+      // });
     }
   }
 
@@ -219,12 +230,9 @@ class _CustomizeAvailabilityState extends State<CustomizeAvailability> {
     );
   }
 
-  Future<bool> updateShopSchedule() async {
+  void setUpShotSchedule() {
     markedDates.sort();
     initialDates.sort();
-    var user = Provider.of<CurrentUser>(context, listen: false);
-    var shops = Provider.of<Shops>(context, listen: false);
-    var userShop = shops.findByUser(user.id).first;
     var operatingHours =
         Provider.of<OperatingHoursBody>(context, listen: false);
 
@@ -242,6 +250,14 @@ class _CustomizeAvailabilityState extends State<CustomizeAvailability> {
           .map((date) => DateFormat("yyyy-MM-dd").format(date))
           .toList(),
     );
+  }
+
+  Future<bool> updateShopSchedule() async {
+    var user = Provider.of<CurrentUser>(context, listen: false);
+    var shops = Provider.of<Shops>(context, listen: false);
+    var userShop = shops.findByUser(user.id).first;
+    var operatingHours =
+        Provider.of<OperatingHoursBody>(context, listen: false);
     return await shops.setOperatingHours(
       id: userShop.id,
       authToken: user.idToken,
@@ -339,12 +355,15 @@ class _CustomizeAvailabilityState extends State<CustomizeAvailability> {
               fontFamily: "GoldplayBold",
               fontColor: Colors.white,
               onPressed: () async {
-                var user = Provider.of<CurrentUser>(context, listen: false);
-                var shops = Provider.of<Shops>(context, listen: false)
-                    .findByUser(user.id);
-
-                _shopCreated = shops.length > 0 ? true : await createShop();
+                if (widget.forEditing) {
+                  if (widget.onShopEdit != null) widget.onShopEdit();
+                  int count = 0;
+                  Navigator.of(context).popUntil((_) => count++ >= 2);
+                  return;
+                }
+                _shopCreated = await createShop();
                 if (_shopCreated) {
+                  setUpShotSchedule();
                   bool updated = await updateShopSchedule();
                   if (updated) {
                     var user = Provider.of<CurrentUser>(context, listen: false);
