@@ -1,12 +1,9 @@
-import 'package:after_layout/after_layout.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:lokalapp/screens/activity/activity.dart';
 import 'package:lokalapp/screens/profile_screens/profile.dart';
-import 'package:lokalapp/widgets/onboarding.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:after_layout/after_layout.dart';
+
 import 'chat/chat.dart';
 import 'discover/discover.dart';
 import 'home.dart';
@@ -19,7 +16,7 @@ class BottomNavigation extends StatefulWidget {
 
 class _BottomNavigationState extends State<BottomNavigation> {
   int pageIndex = 0;
-  // PageController _pageController = PageController();
+
   PersistentTabController _controller;
 
   @override
@@ -34,57 +31,42 @@ class _BottomNavigationState extends State<BottomNavigation> {
       ];
     }
 
-    // Future checkFirstSeen() async {
-    //   SharedPreferences prefs = await SharedPreferences.getInstance();
-    //   bool _seen = (prefs.getBool('seen') ?? false);
-
-    //   if (_seen) {
-    //     _buildScreens();
-    //     // Navigator.of(context).pushReplacement(
-    //     //     new MaterialPageRoute(builder: (context) => Home()));
-    //   } else {
-    //     await prefs.setBool('seen', true);
-    //     Navigator.of(context).pushReplacement(
-    //         new MaterialPageRoute(builder: (context) => Onboarding()));
-    //   }
-    // }
-
     List<PersistentBottomNavBarItem> _navBarsItems() {
       return [
         PersistentBottomNavBarItem(
           icon: Icon(Icons.home_outlined),
           title: ("Home"),
           iconSize: 34,
-          activeColorPrimary: Color(0xFFCC3752),
-          inactiveColorPrimary: Color(0xFF103045),
+          // activeColorPrimary: Color(0xFFCC3752),
+          // inactiveColorPrimary: Color(0xFF103045),
         ),
         PersistentBottomNavBarItem(
           icon: Icon(Icons.web_asset_outlined),
           title: ("Discover"),
           iconSize: 34,
-          activeColorPrimary: Color(0xFFCC3752),
-          inactiveColorPrimary: Color(0xFF103045),
+          // activeColorPrimary: Color(0xFFCC3752),
+          // inactiveColorPrimary: Color(0xFF103045),
         ),
         PersistentBottomNavBarItem(
           icon: Icon(Icons.chat_outlined),
           title: ("Chat"),
           iconSize: 34,
-          activeColorPrimary: Color(0xFFCC3752),
-          inactiveColorPrimary: Color(0xFF103045),
+          // activeColorPrimary: Color(0xFFCC3752),
+          // inactiveColorPrimary: Color(0xFF103045),
         ),
         PersistentBottomNavBarItem(
           icon: Icon(Icons.pie_chart_outlined),
           title: ("Activity"),
           iconSize: 34,
-          activeColorPrimary: Color(0xFFCC3752),
-          inactiveColorPrimary: Color(0xFF103045),
+          // activeColorPrimary: Color(0xFFCC3752),
+          // inactiveColorPrimary: Color(0xFF103045),
         ),
         PersistentBottomNavBarItem(
           icon: Icon(Icons.person),
           title: ("Profile"),
           iconSize: 34,
-          activeColorPrimary: Color(0xFFCC3752),
-          inactiveColorPrimary: Color(0xFF103045),
+          // activeColorPrimary: Color(0xFFCC3752),
+          // inactiveColorPrimary: Color(0xFF103045),
         ),
       ];
     }

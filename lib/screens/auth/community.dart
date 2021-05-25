@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lokalapp/utils/shared_preference.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/user.dart';
@@ -139,7 +140,7 @@ class _CommunityState extends State<Community> {
                 fontFamily: "GoldplayBoldIt",
                 fontWeight: FontWeight.bold),
           ),
-          onPressed: () {
+          onPressed: () async {
             _signUpUser(
                 type: LoginType.email,
                 email: _emailController.text.trim(),

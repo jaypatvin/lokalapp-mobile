@@ -1,6 +1,7 @@
 import 'package:after_layout/after_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:lokalapp/utils/shared_preference.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/cart.dart';
@@ -26,7 +27,7 @@ class Discover extends StatefulWidget {
 
 class _DiscoverState extends State<Discover> with AfterLayoutMixin<Discover> {
   final TextEditingController _searchController = TextEditingController();
-
+  var _userSharedPreferences = UserSharedPreferences();
   Widget get consumerCartState => Consumer2<ShoppingCart, PullUpCartState>(
         builder: (context, cart, cartState, _) {
           return SizedBox(
@@ -192,6 +193,13 @@ class _DiscoverState extends State<Discover> with AfterLayoutMixin<Discover> {
           hintStyle: TextStyle(color: Color(0xffBDBDBD)),
         ),
       );
+  @override
+  void initState() {
+    super.initState();
+
+    _userSharedPreferences = UserSharedPreferences();
+    _userSharedPreferences.init();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -413,7 +421,16 @@ class _DiscoverState extends State<Discover> with AfterLayoutMixin<Discover> {
   void afterFirstLayout(BuildContext context) {
     // TODO: implement afterFirstLayout
 
-    showAlert(context);
+    _userSharedPreferences.isDiscover ? Container() : showAlert(context);
+    setState(() {
+      _userSharedPreferences.isDiscover = true;
+    });
+  }
+
+  @override
+  dispose() {
+    _userSharedPreferences?.dispose();
+    super.dispose();
   }
 
   showAlert(BuildContext context) {
