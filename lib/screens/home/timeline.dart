@@ -159,7 +159,21 @@ class Timeline extends StatelessWidget {
             this.onCommentsPressed(activity, context);
           },
           onLike: () {
-            debugPrint("Liked ${activity.id}");
+            if (activity.liked) {
+              Provider.of<Activities>(context, listen: false).unlikePost(
+                authToken: user.idToken,
+                activityId: activity.id,
+                userId: user.id,
+              );
+              debugPrint("Unliked ${activity.id}");
+            } else {
+              Provider.of<Activities>(context, listen: false).likePost(
+                authToken: user.idToken,
+                activityId: activity.id,
+                userId: user.id,
+              );
+              debugPrint("Liked ${activity.id}");
+            }
           },
           onTripleDotsPressed: () {
             user.id == activity.userId

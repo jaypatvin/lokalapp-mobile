@@ -510,8 +510,31 @@ class _PostDetailsState extends State<PostDetails> {
                                     onLongPress: this.onCommentLongPress,
                                     onUserPressed: widget.onUserPressed,
                                     onLike: () {
-                                      debugPrint("Liked comment ${comment.id}");
+                                      if (comment.liked) {
+                                        Provider.of<Activities>(context,
+                                                listen: false)
+                                            .unlikeComment(
+                                          authToken: cUser.idToken,
+                                          commentId: comment.id,
+                                          activityId: widget.activity.id,
+                                          userId: cUser.id,
+                                        );
+                                        debugPrint(
+                                            "Unliked comment ${comment.id}");
+                                      } else {
+                                        Provider.of<Activities>(context,
+                                                listen: false)
+                                            .likeComment(
+                                          authToken: cUser.idToken,
+                                          commentId: comment.id,
+                                          activityId: widget.activity.id,
+                                          userId: cUser.id,
+                                        );
+                                        debugPrint(
+                                            "Liked comment ${comment.id}");
+                                      }
                                     },
+                                    liked: comment.liked,
                                   ),
                                   Divider(),
                                 ],

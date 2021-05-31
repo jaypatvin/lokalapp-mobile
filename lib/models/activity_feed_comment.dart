@@ -12,12 +12,14 @@ class ActivityFeedComment {
   String message;
   List<LokalImages> images;
   DateTime createdAt;
+  bool liked;
   ActivityFeedComment({
     this.id,
     this.userId,
     this.message,
     this.images,
     this.createdAt,
+    this.liked,
   });
 
   ActivityFeedComment copyWith({
@@ -26,6 +28,7 @@ class ActivityFeedComment {
     String message,
     List<LokalImages> images,
     DateTime createdAt,
+    bool liked,
   }) {
     return ActivityFeedComment(
       id: id ?? this.id,
@@ -33,6 +36,7 @@ class ActivityFeedComment {
       message: message ?? this.message,
       images: images ?? this.images,
       createdAt: createdAt ?? this.createdAt,
+      liked: liked ?? this.liked,
     );
   }
 
@@ -43,6 +47,7 @@ class ActivityFeedComment {
       'message': message,
       'images': images?.map((x) => x.toMap())?.toList(),
       'created_at': Timestamp.fromDate(createdAt),
+      'liked': liked,
     };
   }
 
@@ -56,6 +61,7 @@ class ActivityFeedComment {
       createdAt: DateTime.fromMicrosecondsSinceEpoch(
           TimestampObject.fromMap(map['created_at']).seconds * 1000000 +
               TimestampObject.fromMap(map['created_at']).nanoseconds ~/ 1000),
+      liked: map['liked'] ?? false,
     );
   }
 
@@ -66,7 +72,7 @@ class ActivityFeedComment {
 
   @override
   String toString() {
-    return 'ActivityFeedComment(id: $id, userId: $userId, message: $message, images: $images, createdAt: $createdAt)';
+    return 'ActivityFeedComment(id: $id, userId: $userId, message: $message, images: $images, createdAt: $createdAt, liked: $liked)';
   }
 
   @override
@@ -78,7 +84,8 @@ class ActivityFeedComment {
         other.userId == userId &&
         other.message == message &&
         listEquals(other.images, images) &&
-        other.createdAt == createdAt;
+        other.createdAt == createdAt &&
+        other.liked == liked;
   }
 
   @override
@@ -87,6 +94,7 @@ class ActivityFeedComment {
         userId.hashCode ^
         message.hashCode ^
         images.hashCode ^
-        createdAt.hashCode;
+        createdAt.hashCode ^
+        liked.hashCode;
   }
 }

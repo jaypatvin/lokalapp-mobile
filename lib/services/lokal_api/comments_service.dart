@@ -49,11 +49,46 @@ class CommentsService {
     return response;
   }
 
+  Future<http.Response> like({
+    @required String idToken,
+    @required String activityId,
+    @required String commentId,
+    @required String userId,
+  }) async {
+    var body = json.encode({"user_id": userId});
+    var response = await http.post(
+        "$activitiesUrl/$activityId/comments/$commentId/like",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer $idToken"
+        },
+        body: body);
+    return response;
+  }
+
 // --DELETE
   Future<http.Response> delete(
       {@required activityId, @required commentId, @required idToken}) async {
     return await http.delete('$activitiesUrl/$activityId/comments/$commentId',
         headers: {"Authorization": "Bearer $idToken"});
+  }
+
+  Future<http.Response> unlike({
+    @required String idToken,
+    @required String activityId,
+    @required String commentId,
+    @required String userId,
+  }) async {
+    final url =
+        Uri.parse("$activitiesUrl/$activityId/comments/$commentId/unlike");
+    final request = http.Request("DELETE", url);
+    request.headers.addAll(<String, String>{
+      "Content-Type": "application/json",
+      "Authorization": "Bearer $idToken"
+    });
+    request.body = jsonEncode({"user_id": userId});
+    final response = await request.send();
+    return await http.Response.fromStream(response);
   }
 
 // --PUT

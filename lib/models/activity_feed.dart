@@ -14,21 +14,22 @@ class ActivityFeed {
   String message;
   List<LokalImages> images;
   List<ActivityFeedComment> comments;
-  List<String> liked;
+  bool liked;
   DateTime createdAt;
   int likedCount = 0;
   int commentCount = 0;
-  ActivityFeed(
-      {this.id,
-      this.communityId,
-      this.userId,
-      this.message,
-      this.images,
-      this.comments,
-      this.liked,
-      this.createdAt,
-      this.likedCount,
-      this.commentCount});
+  ActivityFeed({
+    this.id,
+    this.communityId,
+    this.userId,
+    this.message,
+    this.images,
+    this.comments,
+    this.liked,
+    this.createdAt,
+    this.likedCount,
+    this.commentCount,
+  });
 
   ActivityFeed copyWith({
     String id,
@@ -37,7 +38,7 @@ class ActivityFeed {
     String message,
     List<LokalImages> images,
     List<ActivityFeedComment> comments,
-    List<String> liked,
+    bool liked,
     DateTime createdAt,
     int likedCount,
     int commentCount,
@@ -77,7 +78,7 @@ class ActivityFeed {
       message: map['message'],
       images: List<LokalImages>.from(
           map['images']?.map((x) => LokalImages.fromMap(x))),
-      liked: map['liked'] == null ? null : List<String>.from(map['liked']),
+      liked: map['liked'] ?? false,
       comments: map['comments'] == null
           ? null
           : List<ActivityFeedComment>.from(
@@ -115,7 +116,7 @@ class ActivityFeed {
         other.message == message &&
         listEquals(other.images, images) &&
         listEquals(other.comments, comments) &&
-        listEquals(other.liked, liked) &&
+        other.liked == liked &&
         other.createdAt == createdAt &&
         other.likedCount == likedCount &&
         other.commentCount == commentCount;

@@ -33,6 +33,112 @@ class Activities extends ChangeNotifier {
     return _feed.where((activity) => activity.userId == userId).toList();
   }
 
+  Future<bool> likePost({
+    @required String authToken,
+    @required String activityId,
+    @required String userId,
+  }) async {
+    var response = await LokalApiService.instance.activity.like(
+      idToken: authToken,
+      activityId: activityId,
+      userId: userId,
+    );
+
+    if (response.statusCode != 200) {
+      return false;
+    }
+    var data = json.decode(response.body);
+    if (data['status'] == 'ok') {
+      var feed = _feed.where((feed) => feed.id == activityId).first;
+      feed.likedCount++;
+      feed.liked = true;
+      notifyListeners();
+      return true;
+    }
+    return false;
+  }
+
+  Future<bool> unlikePost({
+    @required String authToken,
+    @required String activityId,
+    @required String userId,
+  }) async {
+    var response = await LokalApiService.instance.activity.unlike(
+      idToken: authToken,
+      activityId: activityId,
+      userId: userId,
+    );
+
+    if (response.statusCode != 200) {
+      return false;
+    }
+    var data = json.decode(response.body);
+    if (data['status'] == 'ok') {
+      var feed = _feed.where((feed) => feed.id == activityId).first;
+      feed.likedCount--;
+      feed.liked = false;
+      notifyListeners();
+      return true;
+    }
+    return false;
+  }
+
+  Future<bool> likeComment({
+    @required String authToken,
+    @required String commentId,
+    @required String activityId,
+    @required String userId,
+  }) async {
+    var response = await LokalApiService.instance.comment.like(
+      idToken: authToken,
+      activityId: activityId,
+      userId: userId,
+      commentId: commentId,
+    );
+
+    if (response.statusCode != 200) {
+      return false;
+    }
+    var data = json.decode(response.body);
+    if (data['status'] == 'ok') {
+      var feed = _feed.where((feed) => feed.id == activityId).first;
+      var comment =
+          feed.comments.where((comment) => comment.id == commentId).first;
+      comment.liked = true;
+      notifyListeners();
+      return true;
+    }
+    return false;
+  }
+
+  Future<bool> unlikeComment({
+    @required String authToken,
+    @required String commentId,
+    @required String activityId,
+    @required String userId,
+  }) async {
+    var response = await LokalApiService.instance.comment.unlike(
+      idToken: authToken,
+      activityId: activityId,
+      userId: userId,
+      commentId: commentId,
+    );
+
+    if (response.statusCode != 200) {
+      return false;
+    }
+    var data = json.decode(response.body);
+    if (data['status'] == 'ok') {
+      var feed = _feed.where((feed) => feed.id == activityId).first;
+      var comment =
+          feed.comments.where((comment) => comment.id == commentId).first;
+      comment.liked = false;
+      notifyListeners();
+      return true;
+    }
+    return false;
+  }
+
   Future<bool> createComment({
     @required String authToken,
     @required String activityId,
@@ -111,7 +217,6 @@ class Activities extends ChangeNotifier {
         for (var activity in data['data']) {
           var _activity = ActivityFeed.fromMap(activity);
           _activity.comments = [];
-          _activity.liked = [];
           activities.add(_activity);
         }
 

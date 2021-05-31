@@ -63,7 +63,6 @@ class PostCard extends StatelessWidget {
           backgroundImage: photo.isNotEmpty ? NetworkImage(photo) : null,
         ),
       ),
-      //TODO: add mins. since created
       title: GestureDetector(
         onTap: this.onUserPressed,
         child: Row(
@@ -201,11 +200,20 @@ class PostCard extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           IconButton(
-                            icon: Icon(MdiIcons.heartOutline),
+                            icon: Icon(
+                              this.activityFeed.liked
+                                  ? MdiIcons.heart
+                                  : MdiIcons.heartOutline,
+                              color: this.activityFeed.liked
+                                  ? Colors.red
+                                  : Colors.black,
+                            ),
                             onPressed: this.onLike,
                           ),
-                          Text(this.activityFeed.likedCount.toString(),
-                              style: kTextStyle),
+                          Text(
+                            this.activityFeed.likedCount.toString(),
+                            style: kTextStyle,
+                          ),
                           Spacer(),
                           buildComments(),
                         ],

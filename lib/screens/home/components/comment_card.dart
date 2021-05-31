@@ -15,6 +15,7 @@ class CommentCard extends StatelessWidget {
   final Function(String) onUserPressed;
   final Function onLike;
   final List<LokalImages> images;
+  final bool liked;
 
   const CommentCard({
     Key key,
@@ -24,6 +25,7 @@ class CommentCard extends StatelessWidget {
     this.onUserPressed,
     this.onLike,
     this.images,
+    this.liked = false,
   }) : super(key: key);
 
   Widget buildImages() {
@@ -102,8 +104,8 @@ class CommentCard extends StatelessWidget {
           ),
           trailing: IconButton(
             icon: Icon(
-              MdiIcons.heartOutline,
-              color: Colors.black,
+              this.liked ? MdiIcons.heart : MdiIcons.heartOutline,
+              color: this.liked ? Colors.red : Colors.black,
             ),
             onPressed: onLike,
           ),
