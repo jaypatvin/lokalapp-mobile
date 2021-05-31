@@ -89,7 +89,7 @@ class ActivityFeed {
       createdAt: DateTime.fromMicrosecondsSinceEpoch(
           TimestampObject.fromMap(map['created_at']).seconds * 1000000 +
               TimestampObject.fromMap(map['created_at']).nanoseconds ~/ 1000),
-      likedCount: map['_meta'] != null ? map['_meta']['liked_count'] ?? 0 : 0,
+      likedCount: map['_meta'] != null ? map['_meta']['likes_count'] ?? 0 : 0,
       commentCount:
           map['_meta'] != null ? map['_meta']['comment_count'] ?? 0 : 0,
     );
