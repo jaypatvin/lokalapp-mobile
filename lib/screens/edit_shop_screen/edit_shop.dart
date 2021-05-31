@@ -2,12 +2,13 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '../../providers/shops.dart';
-import '../../providers/user.dart';
-import '../../services/local_image_service.dart';
+import 'package:lokalapp/providers/post_requests/operating_hours_body.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/post_requests/shop_body.dart';
+import '../../providers/shops.dart';
+import '../../providers/user.dart';
+import '../../services/local_image_service.dart';
 import '../../utils/themes.dart';
 import '../../utils/utility.dart';
 import '../../widgets/custom_app_bar.dart';
@@ -15,6 +16,7 @@ import '../../widgets/input_description.dart';
 import '../../widgets/input_name.dart';
 import '../../widgets/photo_box.dart';
 import '../../widgets/rounded_button.dart';
+import '../add_shop_screens/shop_schedule.dart';
 
 class EditShop extends StatefulWidget {
   final bool isEdit;
@@ -30,9 +32,12 @@ class _EditShopState extends State<EditShop> {
   File shopCoverPhoto;
   bool toggleValue = false;
   bool animating = false;
+  bool editedShopSchedule = false;
 
   @override
   initState() {
+    super.initState();
+
     var user = Provider.of<CurrentUser>(context, listen: false);
     var shop =
         Provider.of<Shops>(context, listen: false).findByUser(user.id).first;
@@ -48,9 +53,9 @@ class _EditShopState extends State<EditShop> {
         profilePhoto: shop.profilePhoto,
       );
 
-    toggleValue = shop.status == "enabled";
+    Provider.of<OperatingHoursBody>(context, listen: false)..clear();
 
-    super.initState();
+    toggleValue = shop.status == "enabled";
   }
 
   toggleButton() {
@@ -211,6 +216,20 @@ class _EditShopState extends State<EditShop> {
     );
   }
 
+  Future<bool> _updateShopSchedule() async {
+    var operatingHoursBody =
+        Provider.of<OperatingHoursBody>(context, listen: false);
+
+    var user = Provider.of<CurrentUser>(context, listen: false);
+    var shops = Provider.of<Shops>(context, listen: false);
+    var userShop = shops.findByUser(user.id).first;
+    return await shops.setOperatingHours(
+      id: userShop.id,
+      authToken: user.idToken,
+      data: operatingHoursBody.data,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
@@ -315,6 +334,41 @@ class _EditShopState extends State<EditShop> {
               SizedBox(
                 height: height * 0.02,
               ),
+              SizedBox(
+                width: width * 0.8,
+                height: height * 0.06,
+                child: TextButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (BuildContext context) => ShopSchedule(
+                          shopPhoto,
+                          forEditing: true,
+                          onShopEdit: () {
+                            setState(() {
+                              editedShopSchedule = true;
+                            });
+                          },
+                        ),
+                      ),
+                    );
+                  },
+                  style: TextButton.styleFrom(
+                    backgroundColor: Colors.white,
+                    primary: kTealColor,
+                    textStyle: kTextStyle.copyWith(
+                      color: kTealColor,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30.0),
+                      side: BorderSide(color: kTealColor),
+                    ),
+                  ),
+                  child: Text("Change Shop Schedule"),
+                ),
+              ),
+              SizedBox(height: height * 0.01),
               RoundedButton(
                 label: "Apply Changes",
                 height: 10,
@@ -324,15 +378,23 @@ class _EditShopState extends State<EditShop> {
                 fontFamily: "Goldplay",
                 fontColor: Colors.white,
                 onPressed: () async {
-                  bool success = await updateShop();
-                  if (success) {
+                  try {
+                    bool success = await updateShop();
+                    if (!success) throw "Update shop error";
+
+                    if (editedShopSchedule) {
+                      success = await _updateShopSchedule();
+
+                      if (!success) throw "Update operating hours error";
+                    }
                     var user = Provider.of<CurrentUser>(context, listen: false);
-                    Provider.of<Shops>(context, listen: false).fetch(user.id);
+                    Provider.of<Shops>(context, listen: false)
+                        .fetch(user.idToken);
                     Navigator.pop(context);
-                  } else {
+                  } catch (e) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Failed to update shop'),
+                      SnackBar(
+                        content: Text(e.toString()),
                       ),
                     );
                   }

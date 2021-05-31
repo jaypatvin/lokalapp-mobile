@@ -9,13 +9,14 @@ import 'home.dart';
 import 'profile_screens/profile.dart';
 
 class BottomNavigation extends StatefulWidget {
+  static const id = 'bottomNav';
   @override
   _BottomNavigationState createState() => _BottomNavigationState();
 }
 
 class _BottomNavigationState extends State<BottomNavigation> {
   int pageIndex = 0;
-  // PageController _pageController = PageController();
+
   PersistentTabController _controller;
 
   @override

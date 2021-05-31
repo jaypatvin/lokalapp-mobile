@@ -6,10 +6,14 @@ import 'package:intl/date_symbols.dart';
 import 'package:intl/intl.dart' show DateFormat;
 import 'package:provider/provider.dart';
 
+import '../../models/operating_hours.dart';
 import '../../providers/post_requests/operating_hours_body.dart';
+import '../../providers/shops.dart';
+import '../../providers/user.dart';
 import '../../utils/calendar_picker/calendar_picker.dart';
 import '../../utils/calendar_picker/day_of_month_picker.dart';
 import '../../utils/calendar_picker/weekday_picker.dart';
+import '../../utils/functions.utils.dart';
 import '../../utils/themes.dart';
 import '../../widgets/custom_app_bar.dart';
 import '../../widgets/rounded_button.dart';
@@ -18,8 +22,11 @@ import 'shop_schedule/repeat_choices.dart';
 
 class ShopSchedule extends StatefulWidget {
   final File shopPhoto;
+  final bool forEditing;
+  final Function() onShopEdit;
 
-  const ShopSchedule(this.shopPhoto);
+  const ShopSchedule(this.shopPhoto,
+      {this.forEditing = false, this.onShopEdit});
 
   @override
   _ShopScheduleState createState() => _ShopScheduleState();
@@ -56,25 +63,68 @@ class _ShopScheduleState extends State<ShopSchedule> {
   @override
   initState() {
     super.initState();
-    repeatChoice = RepeatChoices.days;
-    _opening = TimeOfDay(hour: 8, minute: 0);
-    _closing = TimeOfDay(hour: 17, minute: 0);
+    OperatingHours _operatingHours;
 
-    _ordinalChoice = _ordinalNumbers[0];
-    var day = DateTime.now().weekday;
-    if (day == 0) day = 7;
-    _monthDayChoice = en_USSymbols.WEEKDAYS[day];
-    _monthChoice = en_USSymbols.MONTHS[DateTime.now().month - 1];
+    var user = Provider.of<CurrentUser>(context, listen: false);
+    var shops = Provider.of<Shops>(context, listen: false).findByUser(user.id);
+    if (shops.isNotEmpty) _operatingHours = shops.first.operatingHours;
 
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      Provider.of<OperatingHoursBody>(context, listen: false).update(
-        startTime: getTimeOfDayString(_opening),
-        endTime: getTimeOfDayString(_closing),
-        repeatType: repeatChoice.value,
-        repeatUnit: 1,
-        startDates: [DateFormat("yyyy-MM-dd").format(DateTime.now())],
+    bool validOperatingHours = _operatingHours != null &&
+        _operatingHours.startTime.isNotEmpty &&
+        _operatingHours.endTime.isNotEmpty &&
+        _operatingHours.repeatUnit > 0 &&
+        _operatingHours.repeatType.isNotEmpty &&
+        _operatingHours.startDates.isNotEmpty;
+
+    if (!validOperatingHours) {
+      repeatChoice = RepeatChoices.day;
+      _opening = TimeOfDay(hour: 8, minute: 0);
+      _closing = TimeOfDay(hour: 17, minute: 0);
+
+      _ordinalChoice = _ordinalNumbers[0];
+      var day = DateTime.now().weekday;
+      if (day == 0) day = 7;
+      _monthDayChoice = en_USSymbols.WEEKDAYS[day];
+      _monthChoice = en_USSymbols.MONTHS[DateTime.now().month - 1];
+    } else {
+      RepeatChoices.values.forEach((element) {
+        // Common:
+        if (element.value.toLowerCase() == _operatingHours.repeatType) {
+          repeatChoice = element;
+        }
+      });
+      repeatController.text = _operatingHours.repeatUnit.toString();
+      _opening = stringToTimeOfDay(_operatingHours.startTime);
+      _closing = stringToTimeOfDay(_operatingHours.endTime);
+
+      // Day and week:
+      _operatingHours.startDates.forEach((element) {
+        var date = DateFormat("yyyy-MM-dd").parse(element);
+        var weekday = date.weekday;
+        if (weekday == 7) weekday = 0;
+        _markedDaysMap.add(weekday);
+      });
+      _startDate = DateFormat("yyyy-MM-dd").parse(
+        _operatingHours.startDates.first,
       );
-    });
+      _markedStartDate = [_startDate];
+
+      // Month:
+      var _ordinal = 0;
+      _markedStartDayOfMonth = _startDayOfMonth = _startDate.day;
+      for (var indexDay = DateTime(_startDate.year, _startDate.month, 1);
+          indexDay.day <= _startDate.day;
+          indexDay = indexDay.add(Duration(days: 1)),) {
+        if (indexDay.weekday == _startDate.weekday) {
+          _ordinal++;
+        }
+      }
+      _ordinalChoice = _ordinalNumbers[_ordinal - 1];
+      _monthChoice = en_USSymbols.MONTHS[_startDate.month - 1];
+      var _weekday = _startDate.weekday;
+      if (_weekday == 7) _weekday = 7;
+      _monthDayChoice = en_USSymbols.WEEKDAYS[_weekday];
+    }
   }
 
   // MONTH STATE:
@@ -361,38 +411,9 @@ class _ShopScheduleState extends State<ShopSchedule> {
         day ?? _startDate.day,
       );
     });
-
-    Provider.of<OperatingHoursBody>(context, listen: false).update(
-      startDates: [DateFormat("yyyy-MM-dd").format(_startDate)],
-    );
   }
 
   void setMonthDayOfWeek() {
-    // var ordinal = _ordinalNumbers.indexOf(_ordinalChoice) + 1;
-    // var month = en_USSymbols.MONTHS.indexOf(_monthChoice) + 1;
-    // var weekday = en_USSymbols.WEEKDAYS.indexOf(_monthDayChoice);
-    // if (weekday == 0) weekday = 7;
-
-    // var now = DateTime.now();
-    // now = DateTime(now.year, month, 1);
-
-    // var count = 0;
-
-    // while (count < ordinal) {
-    //   while (true) {
-    //     if (now.weekday == weekday) {
-    //       count++;
-    //       if (count < ordinal) now = now.add(Duration(days: 1));
-    //       break;
-    //     }
-    //     now = now.add(Duration(days: 1));
-    //   }
-    // }
-    // _startDate = DateTime(now.year, now.month, now.day);
-
-    // Provider.of<OperatingHoursBody>(context, listen: false).update(
-    //   startDates: [DateFormat("yyyy-MM-dd").format(_startDate)],
-    // );
     setState(() {
       _startDate = null;
       _startDayOfMonth = 0;
@@ -442,7 +463,7 @@ class _ShopScheduleState extends State<ShopSchedule> {
                         });
                       },
                       markedDatesMap: _markedStartDate,
-                      selectableDaysMap: repeatChoice == RepeatChoices.weeks
+                      selectableDaysMap: repeatChoice == RepeatChoices.week
                           ? _markedDaysMap
                           : [1, 2, 3, 4, 5, 6, 0],
                     ),
@@ -475,11 +496,6 @@ class _ShopScheduleState extends State<ShopSchedule> {
                               else
                                 _startDate = null;
                             });
-                            Provider.of<OperatingHoursBody>(context,
-                                    listen: false)
-                                .update(startDates: [
-                              DateFormat('yyyy-MM-dd').format(_startDate)
-                            ]);
                             Navigator.pop(context, _startDate);
                           },
                         ),
@@ -514,7 +530,7 @@ class _ShopScheduleState extends State<ShopSchedule> {
                 ? DateFormat.MMMMd().format(_startDate)
                 : "Select Start Date",
             onPressed:
-                repeatChoice != RepeatChoices.weeks || _markedDaysMap.isNotEmpty
+                repeatChoice != RepeatChoices.week || _markedDaysMap.isNotEmpty
                     ? showCalendarPicker
                     : null,
             fontColor: Colors.white,
@@ -555,10 +571,6 @@ class _ShopScheduleState extends State<ShopSchedule> {
                 borderSide: BorderSide(color: Colors.black),
               ),
             ),
-            onChanged: (String value) {
-              Provider.of<OperatingHoursBody>(context, listen: false)
-                  .update(repeatUnit: int.parse(value));
-            },
             textAlign: TextAlign.center,
             style: kTextStyle.copyWith(
               color: kTealColor,
@@ -587,8 +599,8 @@ class _ShopScheduleState extends State<ShopSchedule> {
                     value: choice,
                     child: Text(
                       int.tryParse(repeatController.text) == 1
-                          ? choice.value.substring(0, choice.value.length - 1)
-                          : choice.value,
+                          ? choice.value
+                          : choice.value + "s",
                     ),
                   );
                 }).toList(),
@@ -597,8 +609,6 @@ class _ShopScheduleState extends State<ShopSchedule> {
                   setState(() {
                     repeatChoice = choice;
                   });
-                  Provider.of<OperatingHoursBody>(context, listen: false)
-                      .update(repeatType: choice.value.toLowerCase());
                 },
                 style: kTextStyle.copyWith(
                   color: Colors.black,
@@ -625,16 +635,6 @@ class _ShopScheduleState extends State<ShopSchedule> {
         });
 
     if (pickedTime != null) onSet(pickedTime);
-  }
-
-  String getTimeOfDayString(TimeOfDay time) {
-    String timeOfDay = TimeOfDay(
-      hour: time.hour,
-      minute: time.minute,
-    ).replacing(hour: time.hourOfPeriod).format(context);
-    String period = time.period == DayPeriod.am ? "AM" : "PM";
-
-    return '$timeOfDay $period';
   }
 
   Widget hoursPicker() {
@@ -669,16 +669,13 @@ class _ShopScheduleState extends State<ShopSchedule> {
                   setState(() {
                     _opening = pickedTime;
                   });
-                  // TODO: update Provider
-                  Provider.of<OperatingHoursBody>(context, listen: false)
-                      .update(startTime: getTimeOfDayString(_opening));
                 });
               },
               child: Row(
                 children: [
                   Expanded(
                     child: Text(
-                      getTimeOfDayString(_opening),
+                      getTimeOfDayString(context, _opening),
                       style: kTextStyle.copyWith(
                         fontWeight: FontWeight.normal,
                         //fontSize: 18.0,
@@ -724,16 +721,13 @@ class _ShopScheduleState extends State<ShopSchedule> {
                   setState(() {
                     _closing = pickedTime;
                   });
-                  // TODO: update Provider
-                  Provider.of<OperatingHoursBody>(context, listen: false)
-                      .update(endTime: getTimeOfDayString(_closing));
                 });
               },
               child: Row(
                 children: [
                   Expanded(
                     child: Text(
-                      getTimeOfDayString(_closing),
+                      getTimeOfDayString(context, _closing),
                       style: kTextStyle.copyWith(
                         fontWeight: FontWeight.normal,
                         //fontSize: 18.0,
@@ -780,7 +774,7 @@ class _ShopScheduleState extends State<ShopSchedule> {
         repeatabilityPicker(),
         SizedBox(height: height * 0.02),
         Visibility(
-          visible: repeatChoice == RepeatChoices.weeks,
+          visible: repeatChoice == RepeatChoices.week,
           child: Column(
             children: [
               WeekdayPicker(
@@ -852,11 +846,11 @@ class _ShopScheduleState extends State<ShopSchedule> {
           ),
         ),
         Visibility(
-          visible: repeatChoice != RepeatChoices.months,
+          visible: repeatChoice != RepeatChoices.month,
           child: startDatePicker(),
         ),
         Visibility(
-          visible: repeatChoice == RepeatChoices.months,
+          visible: repeatChoice == RepeatChoices.month,
           child: buildDayOfMonthBody(),
         ),
         SizedBox(
@@ -916,6 +910,18 @@ class _ShopScheduleState extends State<ShopSchedule> {
                 fontFamily: "GoldplayBold",
                 fontColor: Colors.white,
                 onPressed: () {
+                  Provider.of<OperatingHoursBody>(context, listen: false)
+                      .update(
+                    startDates: [
+                      DateFormat("yyyy-MM-dd").format(
+                        _startDate ?? DateTime.now(),
+                      ),
+                    ],
+                    startTime: getTimeOfDayString(context, _opening),
+                    endTime: getTimeOfDayString(context, _closing),
+                    repeatType: repeatChoice.value?.toLowerCase(),
+                    repeatUnit: int.tryParse(repeatController.text) ?? 1,
+                  );
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -932,6 +938,8 @@ class _ShopScheduleState extends State<ShopSchedule> {
                             en_USSymbols.WEEKDAYS.indexOf(_monthDayChoice),
                         startMonth:
                             en_USSymbols.MONTHS.indexOf(_monthChoice) + 1,
+                        forEditing: widget.forEditing,
+                        onShopEdit: widget.onShopEdit,
                       ),
                     ),
                   );

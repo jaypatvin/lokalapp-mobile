@@ -94,54 +94,173 @@ class Settings extends StatelessWidget {
           ),
         ),
       ),
-      body: ListView(
-        // shrinkWrap: true,
-        children: [
-          Container(
-              padding: const EdgeInsets.only(
-                left: 15,
-                top: 30,
-              ),
-              child: Text(
-                "Account Settings",
-                style: TextStyle(
-                    fontFamily: "GoldplayBold",
-                    fontWeight: FontWeight.w300,
-                    color: kTealColor),
-              )),
-          SizedBox(
-            height: 20,
-          ),
-          Container(
-            color: Colors.white,
-            child: ListTile(
-              leading: Text(
-                "My Account",
-                style: TextStyle(fontFamily: "GoldplayBold"),
-              ),
-              trailing: GestureDetector(
-                onTap: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => MyAccount()));
-                },
-                child: Icon(
-                  Icons.arrow_forward_ios,
-                  size: 14,
-                  color: kTealColor,
+      body: SafeArea(
+        child: ListView(
+          children: [
+            Container(
+                padding: const EdgeInsets.only(
+                  left: 15,
+                  top: 30,
                 ),
-              ),
+                child: Text(
+                  "Account Settings",
+                  style: TextStyle(
+                      fontFamily: "GoldplayBold",
+                      fontWeight: FontWeight.w300,
+                      color: kTealColor),
+                )),
+            SizedBox(
+              height: 20,
             ),
-          ),
-          GestureDetector(
-            onTap: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => ChatSettings()));
-            },
-            child: Container(
+            Container(
               color: Colors.white,
               child: ListTile(
                 leading: Text(
-                  "Chat Settings",
+                  "My Account",
+                  style: TextStyle(fontFamily: "GoldplayBold"),
+                ),
+                trailing: GestureDetector(
+                  onTap: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => MyAccount()));
+                  },
+                  child: Icon(
+                    Icons.arrow_forward_ios,
+                    size: 14,
+                    color: kTealColor,
+                  ),
+                ),
+              ),
+            ),
+            GestureDetector(
+              onTap: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => ChatSettings()));
+              },
+              child: Container(
+                color: Colors.white,
+                child: ListTile(
+                  leading: Text(
+                    "Chat Settings",
+                    style: TextStyle(fontFamily: "GoldplayBold"),
+                  ),
+                  trailing: Icon(
+                    Icons.arrow_forward_ios,
+                    size: 14,
+                    color: kTealColor,
+                  ),
+                ),
+              ),
+            ),
+            Container(
+              color: Colors.white,
+              child: ListTile(
+                leading: Text(
+                  "Notification Settings",
+                  style: TextStyle(fontFamily: "GoldplayBold"),
+                ),
+                trailing: GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => NotificationSetting()));
+                  },
+                  child: Icon(
+                    Icons.arrow_forward_ios,
+                    size: 14,
+                    color: kTealColor,
+                  ),
+                ),
+              ),
+            ),
+            Container(
+              color: Colors.white,
+              child: ListTile(
+                leading: Text(
+                  "Privacy Settings",
+                  style: TextStyle(fontFamily: "GoldplayBold"),
+                ),
+                trailing: GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => PrivacySetting()));
+                  },
+                  child: Icon(
+                    Icons.arrow_forward_ios,
+                    size: 14,
+                    color: kTealColor,
+                  ),
+                ),
+              ),
+            ),
+            Container(
+              color: Colors.white,
+              child: ListTile(
+                leading: Text(
+                  "Invite a friend",
+                  style: TextStyle(fontFamily: "GoldplayBold"),
+                ),
+                trailing: GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => InviteAFriend()));
+                  },
+                  child: Icon(
+                    Icons.arrow_forward_ios,
+                    size: 14,
+                    color: kTealColor,
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            Container(
+                padding: const EdgeInsets.only(
+                  left: 15,
+                  top: 30,
+                ),
+                child: Text(
+                  "Support",
+                  style: TextStyle(
+                      fontFamily: "GoldplayBold",
+                      fontWeight: FontWeight.w300,
+                      color: kTealColor),
+                )),
+            SizedBox(
+              height: 20,
+            ),
+            Container(
+              color: Colors.white,
+              child: ListTile(
+                leading: Text(
+                  "Help Center",
+                  style: TextStyle(fontFamily: "GoldplayBold"),
+                ),
+                trailing: GestureDetector(
+                  onTap: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => HelpCenter()));
+                  },
+                  child: Icon(
+                    Icons.arrow_forward_ios,
+                    size: 14,
+                    color: kTealColor,
+                  ),
+                ),
+              ),
+            ),
+            Container(
+              color: Colors.white,
+              child: ListTile(
+                leading: Text(
+                  "Contact Us",
                   style: TextStyle(fontFamily: "GoldplayBold"),
                 ),
                 trailing: Icon(
@@ -151,187 +270,51 @@ class Settings extends StatelessWidget {
                 ),
               ),
             ),
-          ),
-          Container(
-            color: Colors.white,
-            child: ListTile(
-              leading: Text(
-                "Notification Settings",
-                style: TextStyle(fontFamily: "GoldplayBold"),
+            Container(
+              color: Colors.white,
+              child: ListTile(
+                leading: Text(
+                  "Terms of Service",
+                  style: TextStyle(fontFamily: "GoldplayBold"),
+                ),
+                trailing: GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => TermsOfService()));
+                  },
+                  child: Icon(
+                    Icons.arrow_forward_ios,
+                    size: 14,
+                    color: kTealColor,
+                  ),
+                ),
               ),
-              trailing: GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => NotificationSetting()));
-                },
-                child: Icon(
+            ),
+            Container(
+              color: Colors.white,
+              child: ListTile(
+                leading: Text(
+                  "Privacy Policy",
+                  style: TextStyle(fontFamily: "GoldplayBold"),
+                ),
+                trailing: Icon(
                   Icons.arrow_forward_ios,
                   size: 14,
                   color: kTealColor,
                 ),
               ),
             ),
-          ),
-          Container(
-            color: Colors.white,
-            child: ListTile(
-              leading: Text(
-                "Privacy Settings",
-                style: TextStyle(fontFamily: "GoldplayBold"),
-              ),
-              trailing: GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => PrivacySetting()));
-                },
-                child: Icon(
-                  Icons.arrow_forward_ios,
-                  size: 14,
-                  color: kTealColor,
-                ),
-              ),
+            SizedBox(
+              height: 30,
             ),
-          ),
-          Container(
-            color: Colors.white,
-            child: ListTile(
-              leading: Text(
-                "Invite a friend",
-                style: TextStyle(fontFamily: "GoldplayBold"),
-              ),
-              trailing: GestureDetector(
-                onTap: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => InviteAFriend()));
-                },
-                child: Icon(
-                  Icons.arrow_forward_ios,
-                  size: 14,
-                  color: kTealColor,
-                ),
-              ),
-            ),
-          ),
-          SizedBox(
-            height: 20,
-          ),
-          Container(
-              padding: const EdgeInsets.only(
-                left: 15,
-                top: 30,
-              ),
-              child: Text(
-                "Support",
-                style: TextStyle(
-                    fontFamily: "GoldplayBold",
-                    fontWeight: FontWeight.w300,
-                    color: kTealColor),
-              )),
-          SizedBox(
-            height: 20,
-          ),
-          Container(
-            color: Colors.white,
-            child: ListTile(
-              leading: Text(
-                "Help Center",
-                style: TextStyle(fontFamily: "GoldplayBold"),
-              ),
-              trailing: GestureDetector(
-                onTap: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => HelpCenter()));
-                },
-                child: Icon(
-                  Icons.arrow_forward_ios,
-                  size: 14,
-                  color: kTealColor,
-                ),
-              ),
-            ),
-          ),
-          Container(
-            color: Colors.white,
-            child: ListTile(
-              leading: Text(
-                "Contact Us",
-                style: TextStyle(fontFamily: "GoldplayBold"),
-              ),
-              trailing: Icon(
-                Icons.arrow_forward_ios,
-                size: 14,
-                color: kTealColor,
-              ),
-            ),
-          ),
-          Container(
-            color: Colors.white,
-            child: ListTile(
-              leading: Text(
-                "Terms of Service",
-                style: TextStyle(fontFamily: "GoldplayBold"),
-              ),
-              trailing: GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => TermsOfService()));
-                },
-                child: Icon(
-                  Icons.arrow_forward_ios,
-                  size: 14,
-                  color: kTealColor,
-                ),
-              ),
-            ),
-          ),
-          Container(
-            color: Colors.white,
-            child: ListTile(
-              leading: Text(
-                "Privacy Policy",
-                style: TextStyle(fontFamily: "GoldplayBold"),
-              ),
-              trailing: Icon(
-                Icons.arrow_forward_ios,
-                size: 14,
-                color: kTealColor,
-              ),
-            ),
-          ),
-          Container(
-            color: Colors.white,
-            child: ListTile(
-              leading: Text(
-                "About",
-                style: TextStyle(fontFamily: "GoldplayBold"),
-              ),
-              trailing: GestureDetector(
-                onTap: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => About()));
-                },
-                child: Icon(
-                  Icons.arrow_forward_ios,
-                  size: 14,
-                  color: kTealColor,
-                ),
-              ),
-            ),
-          ),
-          SizedBox(
-            height: 30,
-          ),
-          buildButton(context),
-          SizedBox(
-            height: 20,
-          )
-        ],
+            buildButton(context),
+            SizedBox(
+              height: 20,
+            )
+          ],
+        ),
       ),
     );
   }

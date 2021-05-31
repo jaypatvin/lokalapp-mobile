@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+
 import 'package:provider/provider.dart';
 
 import '../providers/activities.dart';
@@ -14,6 +15,8 @@ import 'home/draft_post.dart';
 import 'home/timeline.dart';
 
 class Home extends StatefulWidget {
+  static const id = '/home';
+
   @override
   _HomeState createState() => _HomeState();
 }

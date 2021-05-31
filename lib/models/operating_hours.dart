@@ -105,7 +105,7 @@ class OperatingHours {
     return {
       'start_time': startTime,
       'end_time': endTime,
-      'repeat_type': repeatType.toLowerCase(),
+      'repeat_type': repeatType?.toLowerCase(),
       'repeat_unit': repeatUnit,
       'start_dates': startDates,
       'unavailable_dates': unavailableDates,
@@ -114,21 +114,37 @@ class OperatingHours {
   }
 
   factory OperatingHours.fromMap(Map<String, dynamic> map) {
+    var _customDates = <CustomDates>[];
+    var _unavailableDates = <String>[];
+
+    if (map['schedule'] != null && map['schedule']['custom'] != null) {
+      Map<String, dynamic> schedule = map['schedule']['custom'];
+      schedule.forEach((key, value) {
+        if (value['unavailable'] != null && value['unavailable']) {
+          _unavailableDates.add(key);
+        } else {
+          _customDates.add(
+            CustomDates(
+              date: key,
+              startTime: value['start_time'],
+              endTime: value['end_time'],
+            ),
+          );
+        }
+      });
+    }
+
     return OperatingHours(
       startTime: map['start_time'] ?? '',
       endTime: map['end_time'] ?? '',
-      repeatType: map['repeat_unit'] ?? '',
+      repeatType: map['repeat_type'] ?? '',
       repeatUnit: map['repeat_every'] ?? 0,
+      // repeatUnit: map['repeat_unit'] ?? 0,
       startDates: map['start_dates'] != null
           ? List<String>.from(map['start_dates'])
           : <String>[],
-      unavailableDates: map['unavailable_dates'] != null
-          ? List<String>.from(map['unavailable_dates'])
-          : <String>[],
-      customDates: map['custom_dates'] != null
-          ? List<CustomDates>.from(
-              map['custom_dates']?.map((x) => CustomDates.fromMap(x)))
-          : <CustomDates>[],
+      unavailableDates: _unavailableDates,
+      customDates: _customDates,
     );
   }
 

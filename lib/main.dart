@@ -18,21 +18,44 @@ import 'providers/user_auth.dart';
 import 'providers/users.dart';
 import 'root/root.dart';
 import 'services/local_image_service.dart';
+import 'utils/shared_preference.dart';
 import 'utils/utility.dart';
 import 'widgets/photo_picker_gallery/provider/custom_photo_provider.dart';
 
+UserSharedPreferences _userSharedPreferences;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  _userSharedPreferences = UserSharedPreferences();
   await Firebase.initializeApp();
 
   runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  @override
+  initState() {
+    _userSharedPreferences = UserSharedPreferences();
+    _userSharedPreferences.init();
+    super.initState();
+  }
+
+  @override
+  dispose() {
+    _userSharedPreferences?.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+        //shared preference
+        Provider<UserSharedPreferences>.value(value: _userSharedPreferences),
         // auth:
         ChangeNotifierProvider<UserAuth>(create: (_) => UserAuth()),
         ChangeNotifierProvider<Invite>(create: (_) => Invite()),
@@ -77,17 +100,21 @@ class MyApp extends StatelessWidget {
         Provider<MediaUtility>(create: (_) => MediaUtility.instance),
         Provider<LocalImageService>(create: (_) => LocalImageService.instance),
       ],
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'Flutter Demo',
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-          textTheme: Theme.of(context).textTheme.apply(
-                fontFamily: 'GoldplayBold',
+      child: StreamBuilder<Object>(
+          stream: _userSharedPreferences.stream,
+          builder: (context, snapshot) {
+            return MaterialApp(
+              debugShowCheckedModeBanner: false,
+              title: 'Flutter Demo',
+              theme: ThemeData(
+                // primarySwatch: kTealColor,
+                textTheme: Theme.of(context).textTheme.apply(
+                      fontFamily: 'GoldplayBold',
+                    ),
               ),
-        ),
-        home: Root(),
-      ),
+              home: Root(),
+            );
+          }),
     );
   }
 }
