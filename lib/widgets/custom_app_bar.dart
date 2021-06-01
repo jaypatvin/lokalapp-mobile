@@ -24,6 +24,7 @@ Widget customAppBar({
   double elevation = 0, //4.0,
   Color leadingColor = Colors.white,
   PreferredSizeWidget bottom,
+  List<Widget> actions,
 }) {
   return AppBar(
     leading: !buildLeading
@@ -49,28 +50,26 @@ Widget customAppBar({
                 );
               },
             ),
-    title: Padding(
-      padding: addPaddingText
-          ? EdgeInsets.only(
-              top: topText,
-              bottom: bottomText,
-              left: leftText,
-              right: rightText)
-          : EdgeInsets.zero,
-      child: Text(
-        titleText,
-        style: TextStyle(
-          color: Color(0xFFFFC700),
-          fontFamily: "Goldplay",
-          fontWeight: FontWeight.w800,
-        ).merge(titleStyle),
-      ),
-    ),
-    // actions: [
-    //   Visibility(
-    //       visible: addIcon,
-    //       child: IconButton(icon: iconTrailing, onPressed: onPressedTrailing))
-    // ],
+    title: titleText != null
+        ? Padding(
+            padding: addPaddingText
+                ? EdgeInsets.only(
+                    top: topText,
+                    bottom: bottomText,
+                    left: leftText,
+                    right: rightText)
+                : EdgeInsets.zero,
+            child: Text(
+              titleText,
+              style: TextStyle(
+                color: Color(0xFFFFC700),
+                fontFamily: "Goldplay",
+                fontWeight: FontWeight.w800,
+              ).merge(titleStyle),
+            ),
+          )
+        : null,
+    actions: actions,
     centerTitle: centerTitle,
     backgroundColor: backgroundColor ?? Color(0xff57183f),
     elevation: elevation,

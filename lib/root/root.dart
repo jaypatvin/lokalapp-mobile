@@ -8,6 +8,7 @@ import '../providers/user.dart';
 import '../providers/user_auth.dart';
 import '../screens/bottom_navigation.dart';
 import '../screens/welcome_screen.dart';
+import '../utils/context_keeper.dart';
 
 class Root extends StatefulWidget {
   final Map<String, String> account;
@@ -20,6 +21,12 @@ class Root extends StatefulWidget {
 
 class _RootState extends State<Root> {
   UserState _userState;
+
+  @override
+  initState() {
+    super.initState();
+    ContextKeeper().init(context);
+  }
 
   @override
   void didChangeDependencies() async {
