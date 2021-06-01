@@ -2,10 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:lokalapp/providers/products.dart';
 import 'package:lokalapp/providers/shops.dart';
 import 'package:lokalapp/providers/user.dart';
-
-import 'package:lokalapp/screens/activity/components/for_delivery_card.dart';
 import 'package:lokalapp/screens/activity/components/order_screen_card.dart';
 import 'package:lokalapp/screens/activity/buyer/payment_option.dart';
+import 'package:lokalapp/screens/chat/chat_view.dart';
 
 import 'package:lokalapp/utils/themes.dart';
 import 'package:provider/provider.dart';
@@ -32,7 +31,6 @@ class ForConfirmation extends StatelessWidget {
                 children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
-                    // crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       GestureDetector(
                         onTap: () {
@@ -88,12 +86,7 @@ class ForConfirmation extends StatelessWidget {
           ),
           Container(
             height: 40,
-            width: MediaQuery.of(context).size.width * 0.8,
-            // padding: const EdgeInsets.only(left: 10, right: 30),
             child: FlatButton(
-              // height: 50,
-              // minWidth: 100,
-              // color: kTealColor,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20.0),
                 side: BorderSide(color: kTealColor),
@@ -116,11 +109,7 @@ class ForConfirmation extends StatelessWidget {
           Container(
             height: 40,
             width: MediaQuery.of(context).size.width * 0.8,
-            // padding: const EdgeInsets.only(left: 10, right: 30),
             child: FlatButton(
-              // height: 50,
-              // minWidth: 100,
-              // color: kTealColor,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20.0),
                 side: BorderSide(color: kTealColor),
@@ -134,21 +123,47 @@ class ForConfirmation extends StatelessWidget {
                     fontSize: 14,
                     fontWeight: FontWeight.w600),
               ),
-              onPressed: () {},
+              onPressed: () {
+                var user = Provider.of<CurrentUser>(context, listen: false);
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => ChatView(
+                              shopId: Provider.of<Shops>(context, listen: false)
+                                  .findByUser(user.id)
+                                  .first,
+                              buyerId: user.id,
+                              communityId: user.communityId,
+                            )));
+              },
             ),
           ),
         ],
       );
+  var shops;
+  var products;
+  findByIdShop(BuildContext context) {
+    var user = Provider.of<CurrentUser>(context, listen: false);
+    var shopUser =
+        Provider.of<Shops>(context, listen: false).findByUser(user.id).first ??
+            print("store null");
+    var product = Provider.of<Products>(context, listen: false)
+            .findByUser(user.id)
+            .first ??
+        print("product null");
+    // if (shopUser  && product != null) {
+    // shops = shopUser;
+    // products = product.toMap();
+    // } else {
+    // print("shop and product null");
+    // }
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     var user = Provider.of<CurrentUser>(context, listen: false);
-
-    var shops =
-        Provider.of<Shops>(context, listen: false).findByUser(user.id).first;
-
-    var products =
-        Provider.of<Products>(context, listen: false).findByUser(user.id).first;
+    findByIdShop(context);
 
     return Scaffold(
       appBar: appBar(context),

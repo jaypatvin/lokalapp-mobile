@@ -1,14 +1,22 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:lokalapp/models/chat.dart';
+import 'package:lokalapp/models/chat_user.dart';
+import 'package:lokalapp/models/conversation.dart';
+import 'package:lokalapp/models/user_shop.dart';
+import 'package:lokalapp/utils/chat_utils.dart';
 
 import '../models/lokal_user.dart';
 
 final usersRef = FirebaseFirestore.instance.collection("users");
 final inviteRef = FirebaseFirestore.instance.collection("invites");
 final shopRef = FirebaseFirestore.instance.collection("shops");
+final messageRef = FirebaseFirestore.instance.collection("chat");
 final Reference storageRef = FirebaseStorage.instance.ref();
 
 class Database {
@@ -109,5 +117,66 @@ class Database {
     TaskSnapshot storageSnap = await uploadTask;
     String downloadUrl = await storageSnap.ref.getDownloadURL();
     return downloadUrl;
+  }
+
+  Future<bool> checkIfDocExists(id) async {
+    try {
+      var collectionRef = FirebaseFirestore.instance
+          .collection('chats')
+          .doc(id)
+          .collection('conversations');
+      var doc = await collectionRef.doc(id).get();
+      return doc.exists;
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  static uploadChats(
+      // String docId,
+      bool archived,
+      Map<String, dynamic> lastMessage,
+      ShopModel shopId,
+      String customerName,
+      String communityId,
+      String senderId,
+      String recieverId) async {
+    final refChat = messageRef;
+
+    final ref = refChat.doc(refChat.id);
+    final newChat = Chat(
+        archived: archived,
+        lastMessage: lastMessage,
+        customerName: customerName,
+        createdAt: DateTime.now(),
+        communityId: communityId,
+        members: [senderId, recieverId]
+        // updatedAt:,
+        );
+    await refChat.add(newChat.toJson());
+    final refUsers = FirebaseFirestore.instance.collection('chats');
+    await refUsers
+        .doc(refUsers.id)
+        .update({UserField.lastMessageTime: DateTime.now()});
+  }
+
+  static uploadConversations(String conversationId, String message,
+      String senderId, bool archived) async {
+    final refMessages = FirebaseFirestore.instance
+        .collection('chats/$conversationId/conversation');
+
+    final newMessage = Conversation(
+        message: message,
+        archived: archived,
+        senderId: senderId,
+        createdAt: DateTime.now(),
+        sentAt: DateTime.now());
+
+    await refMessages.add(newMessage.toJson());
+
+    final refUsers = FirebaseFirestore.instance.collection('conversation');
+    await refUsers
+        .doc(refUsers.id)
+        .update({UserField.lastMessageTime: DateTime.now()});
   }
 }

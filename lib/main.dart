@@ -1,6 +1,8 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:lokalapp/screens/bottom_navigation.dart';
+import 'package:lokalapp/screens/chat/chat_helpers.dart';
 import 'package:lokalapp/screens/home.dart';
 import 'package:lokalapp/utils/shared_preference.dart';
 import 'package:provider/provider.dart';
@@ -31,7 +33,12 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   _userSharedPreferences = UserSharedPreferences();
   await Firebase.initializeApp();
-
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
+  SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
+  SystemChrome.setEnabledSystemUIOverlays([]);
   runApp(MyApp());
 }
 
@@ -98,12 +105,15 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider<ShopBody>(create: (_) => ShopBody()),
         ChangeNotifierProvider<OperatingHoursBody>(
             create: (_) => OperatingHoursBody()),
-
+//Chat
+        ChangeNotifierProvider<ChatHelpers>(
+          create: (_) => ChatHelpers(),
+        ),
         // services:
         Provider<MediaUtility>(create: (_) => MediaUtility.instance),
         Provider<LocalImageService>(create: (_) => LocalImageService.instance),
       ],
-      child: StreamBuilder<Object>(
+      child: StreamBuilder<UserSharedPreferences>(
           stream: _userSharedPreferences.stream,
           builder: (context, snapshot) {
             return MaterialApp(
