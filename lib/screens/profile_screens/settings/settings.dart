@@ -1,45 +1,46 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:lokalapp/root/root.dart';
-import 'package:lokalapp/screens/profile_screens/settings/chat/chat_settings.dart';
-import 'package:lokalapp/screens/profile_screens/settings/email/my_account.dart';
-import 'package:lokalapp/screens/profile_screens/settings/help%20center/help_center.dart';
-import 'package:lokalapp/screens/profile_screens/settings/notification%20settings/notification_setting.dart';
-import 'package:lokalapp/screens/profile_screens/settings/privacy%20setting/privacy_setting.dart';
-import 'package:lokalapp/screens/profile_screens/settings/terms%20of%20service/terms_of_service.dart';
-import 'package:lokalapp/services/firebase_auth_service.dart';
-import 'package:lokalapp/utils/themes.dart';
-import 'package:provider/provider.dart';
 
+import '../../../root/root.dart';
+import '../../../utils/context_keeper.dart';
+import '../../../utils/themes.dart';
 import '../components/invite_a_friend.dart';
 import 'about/about.dart';
+import 'chat/chat_settings.dart';
+import 'email/my_account.dart';
+import 'help%20center/help_center.dart';
+import 'notification%20settings/notification_setting.dart';
+import 'privacy%20setting/privacy_setting.dart';
+import 'terms%20of%20service/terms_of_service.dart';
 
 class Settings extends StatelessWidget {
-  buildButton(context) {
-    Container(
-      padding: const EdgeInsets.only(left: 80, top: 0, right: 80, bottom: 0),
-      child: FlatButton(
-          color: Color(0XFFCC3752),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20.0),
-            side: BorderSide(color: Color(0XFFCC3752)),
-          ),
-          textColor: Colors.black,
-          child: Text(
-            "LOG OUT",
-            style: TextStyle(
-                fontFamily: "Goldplay",
-                fontSize: 16,
-                fontWeight: FontWeight.w600),
-          ),
-          onPressed: () {
-            var user = Provider.of<FirebaseAuthService>(context, listen: false);
-            user.signOut();
-            Navigator.pushReplacement(
-                context, MaterialPageRoute(builder: (context) => Root()));
-          }),
-    );
-  }
-
+  Widget buildButton(BuildContext context) => Container(
+        padding: const EdgeInsets.only(left: 80, top: 0, right: 80, bottom: 0),
+        child: FlatButton(
+            color: Color(0XFFCC3752),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20.0),
+              side: BorderSide(color: Color(0XFFCC3752)),
+            ),
+            textColor: Colors.black,
+            child: Text(
+              "LOG OUT",
+              style: TextStyle(
+                  fontFamily: "Goldplay",
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600),
+            ),
+            onPressed: () {
+              FirebaseAuth.instance.signOut();
+              Navigator.pushAndRemoveUntil(
+                ContextKeeper.buildContext,
+                MaterialPageRoute(
+                  builder: (context) => Root(),
+                ),
+                (route) => false,
+              );
+            }),
+      );
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -305,58 +306,10 @@ class Settings extends StatelessWidget {
                 ),
               ),
             ),
-            Container(
-              color: Colors.white,
-              child: ListTile(
-                leading: Text(
-                  "About",
-                  style: TextStyle(fontFamily: "GoldplayBold"),
-                ),
-                trailing: GestureDetector(
-                  onTap: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => About()));
-                  },
-                  child: Icon(
-                    Icons.arrow_forward_ios,
-                    size: 14,
-                    color: kTealColor,
-                  ),
-                ),
-              ),
-            ),
             SizedBox(
               height: 30,
             ),
-            Container(
-              padding:
-                  const EdgeInsets.only(left: 80, top: 0, right: 80, bottom: 0),
-              child: FlatButton(
-                  color: Color(0XFFCC3752),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20.0),
-                    side: BorderSide(color: Color(0XFFCC3752)),
-                  ),
-                  textColor: Colors.black,
-                  child: Text(
-                    "LOG OUT",
-                    style: TextStyle(
-                        fontFamily: "Goldplay",
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600),
-                  ),
-                  onPressed: () {
-                    // this._authService = Provider.of<FirebaseAuthService>(
-                    //     context,
-                    //     listen: false);
-                    // _authService.signOut();
-                    FirebaseAuthService().signOut();
-                    Navigator.pushAndRemoveUntil(
-                        context,
-                        MaterialPageRoute(builder: (context) => Root()),
-                        (route) => false);
-                  }),
-            ),
+            buildButton(context),
             SizedBox(
               height: 20,
             )

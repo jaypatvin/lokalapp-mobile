@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 
+import '../../providers/activities.dart';
 import '../../providers/cart.dart';
 import '../../providers/pull_up_cart_state.dart';
 import '../../providers/shops.dart';
@@ -9,7 +10,7 @@ import '../../providers/user.dart';
 import '../../utils/themes.dart';
 import '../add_shop_screens/add%20_shop_cart.dart';
 import '../add_shop_screens/add_shop.dart';
-import '../user_timeline.dart';
+import '../home/timeline.dart';
 import 'profile_shop_sticky_store.dart';
 
 class ProfileNoShop extends StatefulWidget {
@@ -57,7 +58,18 @@ class _ProfileNoShopState extends State<ProfileNoShop> {
                 Expanded(
                   child: Container(
                     color: Color(0XFFF1FAFF),
-                    child: UserTimeline(),
+                    child: Consumer<Activities>(
+                      builder: (context, activities, child) {
+                        return activities.isLoading
+                            ? Center(child: CircularProgressIndicator())
+                            : RefreshIndicator(
+                                onRefresh: () => activities.fetch(user.idToken),
+                                child: Timeline(
+                                  activities.findByUser(user.id),
+                                ),
+                              );
+                      },
+                    ),
                   ),
                 ),
                 Consumer2<ShoppingCart, PullUpCartState>(
@@ -105,6 +117,16 @@ class _ProfileNoShopState extends State<ProfileNoShop> {
         },
       ),
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    var activities = Provider.of<Activities>(context, listen: false);
+    if (activities.feed.length == 0) {
+      var user = Provider.of<CurrentUser>(context, listen: false);
+      activities.fetch(user.idToken);
+    }
   }
 
   @override

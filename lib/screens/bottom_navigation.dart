@@ -1,12 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:lokalapp/screens/activity/activity.dart';
-import 'package:lokalapp/screens/profile_screens/profile.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 
+import 'activity/activity.dart';
 import 'chat/chat.dart';
 import 'discover/discover.dart';
 import 'home.dart';
+import 'profile_screens/profile.dart';
 
 class BottomNavigation extends StatefulWidget {
   static const id = 'bottomNav';
@@ -37,36 +37,36 @@ class _BottomNavigationState extends State<BottomNavigation> {
           icon: Icon(Icons.home_outlined),
           title: ("Home"),
           iconSize: 34,
-          // activeColorPrimary: Color(0xFFCC3752),
-          // inactiveColorPrimary: Color(0xFF103045),
+          activeColorPrimary: Color(0xFFCC3752),
+          inactiveColorPrimary: Color(0xFF103045),
         ),
         PersistentBottomNavBarItem(
           icon: Icon(Icons.web_asset_outlined),
           title: ("Discover"),
           iconSize: 34,
-          // activeColorPrimary: Color(0xFFCC3752),
-          // inactiveColorPrimary: Color(0xFF103045),
+          activeColorPrimary: Color(0xFFCC3752),
+          inactiveColorPrimary: Color(0xFF103045),
         ),
         PersistentBottomNavBarItem(
           icon: Icon(Icons.chat_outlined),
           title: ("Chat"),
           iconSize: 34,
-          // activeColorPrimary: Color(0xFFCC3752),
-          // inactiveColorPrimary: Color(0xFF103045),
+          activeColorPrimary: Color(0xFFCC3752),
+          inactiveColorPrimary: Color(0xFF103045),
         ),
         PersistentBottomNavBarItem(
           icon: Icon(Icons.pie_chart_outlined),
           title: ("Activity"),
           iconSize: 34,
-          // activeColorPrimary: Color(0xFFCC3752),
-          // inactiveColorPrimary: Color(0xFF103045),
+          activeColorPrimary: Color(0xFFCC3752),
+          inactiveColorPrimary: Color(0xFF103045),
         ),
         PersistentBottomNavBarItem(
           icon: Icon(Icons.person),
           title: ("Profile"),
           iconSize: 34,
-          // activeColorPrimary: Color(0xFFCC3752),
-          // inactiveColorPrimary: Color(0xFF103045),
+          activeColorPrimary: Color(0xFFCC3752),
+          inactiveColorPrimary: Color(0xFF103045),
         ),
       ];
     }

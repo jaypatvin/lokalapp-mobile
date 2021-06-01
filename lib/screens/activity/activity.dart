@@ -1,11 +1,10 @@
 import 'package:after_layout/after_layout.dart';
 import 'package:flutter/material.dart';
-import 'package:lokalapp/screens/activity/seller/my_shop.dart';
-import 'package:lokalapp/screens/activity/seller/my_shop_seller.dart';
-import 'package:lokalapp/utils/shared_preference.dart';
-import 'package:lokalapp/utils/themes.dart';
 
+import '../../utils/shared_preference.dart';
+import '../../utils/themes.dart';
 import 'buyer/my_orders.dart';
+import 'seller/my_shop_seller.dart';
 
 class Activity extends StatefulWidget {
   @override

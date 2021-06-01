@@ -1,8 +1,5 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:lokalapp/screens/bottom_navigation.dart';
-import 'package:lokalapp/screens/home.dart';
-import 'package:lokalapp/utils/shared_preference.dart';
 import 'package:provider/provider.dart';
 
 import 'providers/activities.dart';
@@ -21,10 +18,9 @@ import 'providers/user_auth.dart';
 import 'providers/users.dart';
 import 'root/root.dart';
 import 'services/local_image_service.dart';
+import 'utils/shared_preference.dart';
 import 'utils/utility.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
-import 'widgets/onboarding.dart';
+import 'widgets/photo_picker_gallery/provider/custom_photo_provider.dart';
 
 UserSharedPreferences _userSharedPreferences;
 void main() async {
@@ -98,6 +94,7 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider<ShopBody>(create: (_) => ShopBody()),
         ChangeNotifierProvider<OperatingHoursBody>(
             create: (_) => OperatingHoursBody()),
+        ChangeNotifierProvider(create: (_) => CustomPickerDataProvider(max: 5)),
 
         // services:
         Provider<MediaUtility>(create: (_) => MediaUtility.instance),
