@@ -38,6 +38,11 @@ class Activities extends ChangeNotifier {
     @required String activityId,
     @required String userId,
   }) async {
+    var feed = _feed.where((feed) => feed.id == activityId).first;
+    feed.likedCount++;
+    feed.liked = true;
+    notifyListeners();
+
     var response = await LokalApiService.instance.activity.like(
       idToken: authToken,
       activityId: activityId,
@@ -45,14 +50,13 @@ class Activities extends ChangeNotifier {
     );
 
     if (response.statusCode != 200) {
+      feed.likedCount--;
+      feed.liked = false;
+      notifyListeners();
       return false;
     }
     var data = json.decode(response.body);
     if (data['status'] == 'ok') {
-      var feed = _feed.where((feed) => feed.id == activityId).first;
-      feed.likedCount++;
-      feed.liked = true;
-      notifyListeners();
       return true;
     }
     return false;
@@ -63,6 +67,11 @@ class Activities extends ChangeNotifier {
     @required String activityId,
     @required String userId,
   }) async {
+    var feed = _feed.where((feed) => feed.id == activityId).first;
+    feed.likedCount--;
+    feed.liked = false;
+    notifyListeners();
+
     var response = await LokalApiService.instance.activity.unlike(
       idToken: authToken,
       activityId: activityId,
@@ -70,14 +79,13 @@ class Activities extends ChangeNotifier {
     );
 
     if (response.statusCode != 200) {
+      feed.likedCount++;
+      feed.liked = true;
+      notifyListeners();
       return false;
     }
     var data = json.decode(response.body);
     if (data['status'] == 'ok') {
-      var feed = _feed.where((feed) => feed.id == activityId).first;
-      feed.likedCount--;
-      feed.liked = false;
-      notifyListeners();
       return true;
     }
     return false;
@@ -89,6 +97,12 @@ class Activities extends ChangeNotifier {
     @required String activityId,
     @required String userId,
   }) async {
+    var feed = _feed.where((feed) => feed.id == activityId).first;
+    var comment =
+        feed.comments.where((comment) => comment.id == commentId).first;
+    comment.liked = true;
+    notifyListeners();
+
     var response = await LokalApiService.instance.comment.like(
       idToken: authToken,
       activityId: activityId,
@@ -97,15 +111,12 @@ class Activities extends ChangeNotifier {
     );
 
     if (response.statusCode != 200) {
+      comment.liked = false;
+      notifyListeners();
       return false;
     }
     var data = json.decode(response.body);
     if (data['status'] == 'ok') {
-      var feed = _feed.where((feed) => feed.id == activityId).first;
-      var comment =
-          feed.comments.where((comment) => comment.id == commentId).first;
-      comment.liked = true;
-      notifyListeners();
       return true;
     }
     return false;
@@ -117,6 +128,12 @@ class Activities extends ChangeNotifier {
     @required String activityId,
     @required String userId,
   }) async {
+    var feed = _feed.where((feed) => feed.id == activityId).first;
+    var comment =
+        feed.comments.where((comment) => comment.id == commentId).first;
+    comment.liked = false;
+    notifyListeners();
+
     var response = await LokalApiService.instance.comment.unlike(
       idToken: authToken,
       activityId: activityId,
@@ -125,15 +142,12 @@ class Activities extends ChangeNotifier {
     );
 
     if (response.statusCode != 200) {
+      comment.liked = false;
+      notifyListeners();
       return false;
     }
     var data = json.decode(response.body);
     if (data['status'] == 'ok') {
-      var feed = _feed.where((feed) => feed.id == activityId).first;
-      var comment =
-          feed.comments.where((comment) => comment.id == commentId).first;
-      comment.liked = false;
-      notifyListeners();
       return true;
     }
     return false;

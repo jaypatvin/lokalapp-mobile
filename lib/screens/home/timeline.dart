@@ -14,6 +14,24 @@ class Timeline extends StatelessWidget {
 
   Timeline(this.activities);
 
+  void onLike(BuildContext context, ActivityFeed activity, CurrentUser user) {
+    if (activity.liked) {
+      Provider.of<Activities>(context, listen: false).unlikePost(
+        authToken: user.idToken,
+        activityId: activity.id,
+        userId: user.id,
+      );
+      debugPrint("Unliked ${activity.id}");
+    } else {
+      Provider.of<Activities>(context, listen: false).likePost(
+        authToken: user.idToken,
+        activityId: activity.id,
+        userId: user.id,
+      );
+      debugPrint("Liked ${activity.id}");
+    }
+  }
+
   void onCommentsPressed(ActivityFeed activity, BuildContext context) {
     var user = Provider.of<CurrentUser>(context, listen: false);
     Provider.of<Activities>(context, listen: false)
@@ -25,7 +43,7 @@ class Timeline extends StatelessWidget {
           onUserPressed: (user) {
             debugPrint("Go to $user");
           },
-          onLike: () {},
+          onLike: () => onLike(context, activity, user),
           activity: activity,
         ),
       ),
@@ -158,23 +176,7 @@ class Timeline extends StatelessWidget {
           onCommentsPressed: () {
             this.onCommentsPressed(activity, context);
           },
-          onLike: () {
-            if (activity.liked) {
-              Provider.of<Activities>(context, listen: false).unlikePost(
-                authToken: user.idToken,
-                activityId: activity.id,
-                userId: user.id,
-              );
-              debugPrint("Unliked ${activity.id}");
-            } else {
-              Provider.of<Activities>(context, listen: false).likePost(
-                authToken: user.idToken,
-                activityId: activity.id,
-                userId: user.id,
-              );
-              debugPrint("Liked ${activity.id}");
-            }
-          },
+          onLike: () => onLike(context, activity, user),
           onTripleDotsPressed: () {
             user.id == activity.userId
                 ? this.onUserTripleDotsPressed(context)
