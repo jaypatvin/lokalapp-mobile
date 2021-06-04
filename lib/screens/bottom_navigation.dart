@@ -37,61 +37,36 @@ class _BottomNavigationState extends State<BottomNavigation> {
           icon: Icon(Icons.home_outlined),
           title: ("Home"),
           iconSize: 34,
-<<<<<<< HEAD
           activeColor: Color(0xFFCC3752),
           inactiveColor: Color(0xFF103045),
-=======
-          activeColorPrimary: Color(0xFFCC3752),
-          inactiveColorPrimary: Color(0xFF103045),
->>>>>>> 432af54534b97048824e29c54afd54e81c5d6f37
         ),
         PersistentBottomNavBarItem(
           icon: Icon(Icons.web_asset_outlined),
           title: ("Discover"),
           iconSize: 34,
-<<<<<<< HEAD
           activeColor: Color(0xFFCC3752),
           inactiveColor: Color(0xFF103045),
-=======
-          activeColorPrimary: Color(0xFFCC3752),
-          inactiveColorPrimary: Color(0xFF103045),
->>>>>>> 432af54534b97048824e29c54afd54e81c5d6f37
         ),
         PersistentBottomNavBarItem(
           icon: Icon(Icons.chat_outlined),
           title: ("Chat"),
           iconSize: 34,
-<<<<<<< HEAD
           activeColor: Color(0xFFCC3752),
           inactiveColor: Color(0xFF103045),
-=======
-          activeColorPrimary: Color(0xFFCC3752),
-          inactiveColorPrimary: Color(0xFF103045),
->>>>>>> 432af54534b97048824e29c54afd54e81c5d6f37
         ),
         PersistentBottomNavBarItem(
           icon: Icon(Icons.pie_chart_outlined),
           title: ("Activity"),
           iconSize: 34,
-<<<<<<< HEAD
           activeColor: Color(0xFFCC3752),
           inactiveColor: Color(0xFF103045),
-=======
-          activeColorPrimary: Color(0xFFCC3752),
-          inactiveColorPrimary: Color(0xFF103045),
->>>>>>> 432af54534b97048824e29c54afd54e81c5d6f37
         ),
         PersistentBottomNavBarItem(
           icon: Icon(Icons.person),
           title: ("Profile"),
           iconSize: 34,
-<<<<<<< HEAD
           activeColor: Color(0xFFCC3752),
           inactiveColor: Color(0xFF103045),
-=======
-          activeColorPrimary: Color(0xFFCC3752),
-          inactiveColorPrimary: Color(0xFF103045),
->>>>>>> 432af54534b97048824e29c54afd54e81c5d6f37
         ),
       ];
     }

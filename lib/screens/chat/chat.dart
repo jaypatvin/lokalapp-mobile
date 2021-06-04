@@ -1,10 +1,14 @@
+import 'dart:convert';
+
 import 'package:after_layout/after_layout.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:lokalapp/models/lokal_user.dart';
+import 'package:lokalapp/providers/chat.dart';
 import 'package:lokalapp/providers/user.dart';
 import 'package:lokalapp/screens/chat/chat_helpers.dart';
+import 'package:lokalapp/screens/chat/chat_message_stream.dart';
 import 'package:lokalapp/screens/chat/chat_view.dart';
 import 'package:lokalapp/services/database.dart';
 import 'package:lokalapp/utils/shared_preference.dart';
@@ -66,16 +70,12 @@ class _ChatState extends State<Chat> with AfterLayoutMixin<Chat> {
             child: imgUrl.isNotEmpty ? Image.network(imgUrl) : null,
           )),
     );
-    // child: StreamBuilder<QuerySnapshot>(
-    //   stream: usersRef.snapshots(),
-    // ));
   }
 
   dynamic time = DateFormat.jm().format(DateTime.now());
-
+  List members;
   @override
   Widget build(BuildContext context) {
-    var user = Provider.of<CurrentUser>(context, listen: false);
     return Scaffold(
       appBar: customAppBar(
           titleText: "",
@@ -102,28 +102,50 @@ class _ChatState extends State<Chat> with AfterLayoutMixin<Chat> {
               height: 20,
             ),
             buildSearchTextField,
-            ListView(
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => ChatView()));
-                  },
-                  child: ListTile(
-                    leading: buildCircleAvatar(user.profilePhoto ?? ""),
-                    title: Text(user.firstName + " " + user.lastName),
-                    subtitle: Text("Lokal ph is the best"),
-                    trailing: Text('$time'),
-                  ),
-                )
-              ],
-            ),
+            StreamBuilder<QuerySnapshot>(
+                // initialData  : [],
+                stream: MessageStreamFirebase.getUsers(
+                    ["T5vmCrEYDoZGgl77Vzlv", "b0f2YX5JSskVFiorX9zc"],
+                    "T5vmCrEYDoZGgl77Vzlv"),
+                builder: (BuildContext context, AsyncSnapshot snapshot) {
+                  if (!snapshot.hasData) {
+                    return Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+
+                  return Container(
+                    height: MediaQuery.of(context).size.height,
+                    width: MediaQuery.of(context).size.width,
+                    child: ListView(
+                        shrinkWrap: true, children: makeListWiget(snapshot)),
+                  );
+                }),
           ],
         ),
       ),
     );
+  }
+
+  List<Widget> makeListWiget(AsyncSnapshot snapshot) {
+    var user = Provider.of<CurrentUser>(context, listen: false);
+    return snapshot.data.docs.map<Widget>((document) {
+      return GestureDetector(
+        onTap: () {
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => ChatView()));
+        },
+        child: ListTile(
+          leading: buildCircleAvatar(user.profilePhoto ?? ""),
+          title: Text(document.get('title')),
+          subtitle: Row(
+            children: [
+              Expanded(child: Text(document['last_message']['content']))
+            ],
+          ),
+        ),
+      );
+    }).toList();
   }
 
   @override

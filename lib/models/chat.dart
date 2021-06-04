@@ -10,32 +10,34 @@ class UserFieldChat {
 
 class Chat extends ChangeNotifier {
   String title;
-  Map<String, String> lastMessage;
+  String message;
   DateTime createdAt;
   bool archived;
   String shopId;
   String customerName;
   String communityId;
   List members;
+  String userId;
   DateTime updatedAt;
 
-  Chat({
-    this.title,
-    this.communityId,
-    this.archived,
-    this.customerName,
-    this.updatedAt,
-    this.shopId,
-    this.lastMessage,
-    this.createdAt,
-    this.members,
-  });
+  Chat(
+      {this.title,
+      this.communityId,
+      this.archived,
+      this.customerName,
+      this.updatedAt,
+      this.shopId,
+      this.message,
+      this.createdAt,
+      this.members,
+      this.userId});
 
   Map<String, dynamic> toMap() {
     return {
-      'last_message': lastMessage,
+      'message': message,
       'updated_at': updatedAt,
       'archived': archived,
+      'user_id': userId,
       'customer_name': customerName,
       'title': title,
       'community_id': communityId,
@@ -52,8 +54,9 @@ class Chat extends ChangeNotifier {
       shopId: map['shop_id'],
       customerName: map['customer_name'],
       archived: map['archived'],
-      lastMessage: map['last_message'],
+      message: map['message'],
       title: map['title'],
+      userId: map['user_id'],
       updatedAt: map['updated_at'],
       communityId: map['community_id'],
       members: map['members'],
@@ -66,7 +69,7 @@ class Chat extends ChangeNotifier {
         title: json['title'],
         communityId: json['community_id'],
         updatedAt: json['updated_at'],
-        lastMessage: json['last_message'],
+        message: json['message'],
         members: json['members'],
         customerName: json['customer_name'],
         shopId: json['shop_id'],
@@ -80,7 +83,7 @@ class Chat extends ChangeNotifier {
         'customer_name': customerName,
         'members': members,
         'updated_at': updatedAt,
-        'last_message': lastMessage,
+        'message': message,
         'community_id': communityId,
         'created_at': Utils.fromDateTimeToJson(createdAt),
       };
@@ -89,8 +92,9 @@ class Chat extends ChangeNotifier {
         title: doc.data()['title'],
         shopId: doc.data()['shop_id'],
         archived: doc.data()['archived'],
+        userId: doc.data()['user_id'],
         updatedAt: doc.data()['updated_at'],
-        lastMessage: doc.data()['last_message'],
+        message: doc.data()['message'],
         customerName: doc.data()['customer_name'],
         communityId: doc.data()['community_id'],
         createdAt: doc.data()['created_at'],

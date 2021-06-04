@@ -1,13 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-<<<<<<< HEAD
 import 'package:flutter/services.dart';
-import 'package:lokalapp/screens/bottom_navigation.dart';
-import 'package:lokalapp/screens/chat/chat_helpers.dart';
-import 'package:lokalapp/screens/home.dart';
-import 'package:lokalapp/utils/shared_preference.dart';
-=======
->>>>>>> 432af54534b97048824e29c54afd54e81c5d6f37
+import 'package:lokalapp/providers/chat.dart';
 import 'package:provider/provider.dart';
 
 import 'providers/activities.dart';
@@ -92,14 +86,17 @@ class _MyAppState extends State<MyApp> {
             ..setCommunityId(user.communityId)
             ..fetch(user.idToken),
         ),
+
         ChangeNotifierProxyProvider<CurrentUser, Users>(
           create: (_) => Users(),
           update: (_, user, users) =>
               users..fetch(user.communityId, user.idToken),
         ),
+
         ChangeNotifierProvider<ShoppingCart>(create: (_) => ShoppingCart()),
         ChangeNotifierProvider<PullUpCartState>(
             create: (_) => PullUpCartState()),
+        ChangeNotifierProvider<ChatProvider>(create: (_) => ChatProvider()),
         ChangeNotifierProvider<Schedule>(create: (_) => Schedule()),
         // post body requests:
         ChangeNotifierProvider<AuthBody>(create: (_) => AuthBody()),
@@ -107,15 +104,8 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider<ShopBody>(create: (_) => ShopBody()),
         ChangeNotifierProvider<OperatingHoursBody>(
             create: (_) => OperatingHoursBody()),
-<<<<<<< HEAD
-//Chat
-        ChangeNotifierProvider<ChatHelpers>(
-          create: (_) => ChatHelpers(),
-        ),
-=======
         ChangeNotifierProvider(create: (_) => CustomPickerDataProvider(max: 5)),
 
->>>>>>> 432af54534b97048824e29c54afd54e81c5d6f37
         // services:
         Provider<MediaUtility>(create: (_) => MediaUtility.instance),
         Provider<LocalImageService>(create: (_) => LocalImageService.instance),
