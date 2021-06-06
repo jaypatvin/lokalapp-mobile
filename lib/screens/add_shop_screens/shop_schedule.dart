@@ -69,12 +69,7 @@ class _ShopScheduleState extends State<ShopSchedule> {
     var shops = Provider.of<Shops>(context, listen: false).findByUser(user.id);
     if (shops.isNotEmpty) _operatingHours = shops.first.operatingHours;
 
-    bool validOperatingHours = _operatingHours != null &&
-        _operatingHours.startTime.isNotEmpty &&
-        _operatingHours.endTime.isNotEmpty &&
-        _operatingHours.repeatUnit > 0 &&
-        _operatingHours.repeatType.isNotEmpty &&
-        _operatingHours.startDates.isNotEmpty;
+    bool validOperatingHours = isValidOperatingHours(_operatingHours);
 
     if (!validOperatingHours) {
       repeatChoice = RepeatChoices.day;
@@ -87,12 +82,6 @@ class _ShopScheduleState extends State<ShopSchedule> {
       _monthDayChoice = en_USSymbols.WEEKDAYS[day];
       _monthChoice = en_USSymbols.MONTHS[DateTime.now().month - 1];
     } else {
-      RepeatChoices.values.forEach((element) {
-        // Common:
-        if (element.value.toLowerCase() == _operatingHours.repeatType) {
-          repeatChoice = element;
-        }
-      });
       repeatController.text = _operatingHours.repeatUnit.toString();
       _opening = stringToTimeOfDay(_operatingHours.startTime);
       _closing = stringToTimeOfDay(_operatingHours.endTime);
@@ -124,6 +113,20 @@ class _ShopScheduleState extends State<ShopSchedule> {
       var _weekday = _startDate.weekday;
       if (_weekday == 7) _weekday = 7;
       _monthDayChoice = en_USSymbols.WEEKDAYS[_weekday];
+
+      var repeatType = _operatingHours.repeatType;
+      if (repeatType.split("-").length > 1) {
+        repeatChoice = RepeatChoices.month;
+        _usedDatePicker = true;
+        _startDayOfMonth = 0;
+      } else {
+        RepeatChoices.values.forEach((element) {
+          // Common:
+          if (element.value?.toLowerCase() == _operatingHours.repeatType) {
+            repeatChoice = element;
+          }
+        });
+      }
     }
   }
 
@@ -193,6 +196,7 @@ class _ShopScheduleState extends State<ShopSchedule> {
                                   _startDayOfMonth = _markedStartDayOfMonth;
                                 });
                                 _usedDatePicker = true;
+                                //repeatChoice = RepeatChoices.month;
                                 setMonthStartDate(day: _startDayOfMonth);
                                 Navigator.pop(context, this._startDayOfMonth);
                               },
@@ -269,6 +273,7 @@ class _ShopScheduleState extends State<ShopSchedule> {
                         _ordinalChoice = value;
                       });
                       _usedDatePicker = false;
+                      //repeatChoice = RepeatChoices.month;
                       setMonthDayOfWeek();
                     },
                     style: kTextStyle.copyWith(
@@ -307,6 +312,7 @@ class _ShopScheduleState extends State<ShopSchedule> {
                         _monthDayChoice = value;
                       });
                       _usedDatePicker = false;
+                      //repeatChoice = RepeatChoices.month;
                       setMonthDayOfWeek();
                     },
                     style: kTextStyle.copyWith(
@@ -356,7 +362,6 @@ class _ShopScheduleState extends State<ShopSchedule> {
                     value: _monthChoice,
                     onChanged: (value) {
                       var month = en_USSymbols.MONTHS.indexOf(_monthChoice);
-
                       setState(() {
                         _monthChoice = value;
                       });
@@ -910,6 +915,20 @@ class _ShopScheduleState extends State<ShopSchedule> {
                 fontFamily: "GoldplayBold",
                 fontColor: Colors.white,
                 onPressed: () {
+                  var _repeatType = "";
+
+                  if (!_usedDatePicker) {
+                    var weekdayIndex =
+                        en_USSymbols.WEEKDAYS.indexOf(_monthDayChoice);
+                    var weekday =
+                        en_USSymbols.SHORTWEEKDAYS[weekdayIndex].toLowerCase();
+                    _repeatType =
+                        "${_ordinalNumbers.indexOf(_ordinalChoice) + 1}-$weekday";
+                    //repeatChoice = RepeatChoices.nDay;
+                  } else {
+                    _repeatType = repeatChoice.value?.toLowerCase();
+                  }
+
                   Provider.of<OperatingHoursBody>(context, listen: false)
                       .update(
                     startDates: [
@@ -919,7 +938,7 @@ class _ShopScheduleState extends State<ShopSchedule> {
                     ],
                     startTime: getTimeOfDayString(context, _opening),
                     endTime: getTimeOfDayString(context, _closing),
-                    repeatType: repeatChoice.value?.toLowerCase(),
+                    repeatType: _repeatType,
                     repeatUnit: int.tryParse(repeatController.text) ?? 1,
                   );
                   Navigator.push(
@@ -932,12 +951,6 @@ class _ShopScheduleState extends State<ShopSchedule> {
                         startDate: this._startDate ?? DateTime.now(),
                         shopPhoto: widget.shopPhoto,
                         usedDatePicker: _usedDatePicker,
-                        monthOrdinal:
-                            _ordinalNumbers.indexOf(_ordinalChoice) + 1,
-                        monthWeekDay:
-                            en_USSymbols.WEEKDAYS.indexOf(_monthDayChoice),
-                        startMonth:
-                            en_USSymbols.MONTHS.indexOf(_monthChoice) + 1,
                         forEditing: widget.forEditing,
                         onShopEdit: widget.onShopEdit,
                       ),

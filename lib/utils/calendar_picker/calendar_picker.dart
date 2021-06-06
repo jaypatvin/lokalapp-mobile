@@ -31,6 +31,7 @@ class CalendarCarousel extends StatefulWidget {
 
   final bool showOnlyCurrentMonthDate;
   final List<int> selectableDaysMap;
+  final List<DateTime> selectableDates;
 
   CalendarCarousel({
     Key key,
@@ -44,8 +45,9 @@ class CalendarCarousel extends StatefulWidget {
     this.onLeftArrowPressed,
     this.onRightArrowPressed,
     this.showOnlyCurrentMonthDate = false,
-    this.selectableDaysMap,
+    this.selectableDaysMap = const [],
     this.startDate,
+    this.selectableDates = const [],
   }) : super(key: key);
 
   @override
@@ -330,7 +332,9 @@ class _CalendarState extends State<CalendarCarousel> {
                       now.millisecondsSinceEpoch >
                           maxDate.millisecondsSinceEpoch)
                     isSelectable = false;
-                  else if (!widget.selectableDaysMap.contains(day))
+                  else if (!widget.selectableDaysMap.contains(day) &&
+                      !widget.selectableDates
+                          .contains(DateTime(now.year, now.month, now.day)))
                     isSelectable = false;
 
                   TextStyle textStyle = getDefaultDayStyle(

@@ -138,8 +138,7 @@ class OperatingHours {
       startTime: map['start_time'] ?? '',
       endTime: map['end_time'] ?? '',
       repeatType: map['repeat_type'] ?? '',
-      repeatUnit: map['repeat_every'] ?? 0,
-      // repeatUnit: map['repeat_unit'] ?? 0,
+      repeatUnit: map['repeat_unit'] ?? 0,
       startDates: map['start_dates'] != null
           ? List<String>.from(map['start_dates'])
           : <String>[],

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:intl/date_symbols.dart';
 import 'package:intl/intl.dart' show DateFormat;
 import 'package:provider/provider.dart';
 
@@ -18,6 +19,8 @@ import '../../widgets/rounded_button.dart';
 import 'shop_confirmation.dart';
 import 'shop_schedule/repeat_choices.dart';
 
+import "../../utils/functions.utils.dart";
+
 class CustomizeAvailability extends StatefulWidget {
   final RepeatChoices repeatChoice;
   final int repeatEvery;
@@ -25,9 +28,6 @@ class CustomizeAvailability extends StatefulWidget {
   final DateTime startDate;
   final File shopPhoto;
   final bool usedDatePicker;
-  final int monthOrdinal;
-  final int monthWeekDay;
-  final int startMonth;
   final bool forEditing;
   final Function onShopEdit;
 
@@ -36,11 +36,8 @@ class CustomizeAvailability extends StatefulWidget {
     @required this.selectableDays,
     @required this.startDate,
     @required this.repeatEvery,
+    @required this.usedDatePicker,
     this.shopPhoto,
-    this.usedDatePicker = true,
-    this.monthOrdinal,
-    this.monthWeekDay,
-    this.startMonth,
     this.forEditing = false,
     this.onShopEdit,
   });
@@ -82,10 +79,8 @@ class _CustomizeAvailabilityState extends State<CustomizeAvailability> {
         for (int i = 0; i < widget.selectableDays.length; i++) {
           startDates.add(DateFormat("yyyy-MM-dd").format(initialDates[i]));
         }
-        WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-          Provider.of<OperatingHoursBody>(context, listen: false)
-              .update(startDates: [...startDates]);
-        });
+        Provider.of<OperatingHoursBody>(context, listen: false)
+            .update(startDates: [...startDates]);
         break;
       case RepeatChoices.month:
         if (widget.usedDatePicker) {
@@ -95,17 +90,17 @@ class _CustomizeAvailabilityState extends State<CustomizeAvailability> {
             validate: _operatingHours == null,
           );
         } else {
+          var provider =
+              Provider.of<OperatingHoursBody>(context, listen: false);
+          var type = provider.operatingHours.repeatType.split("-");
           initialDates = dayGenerator.getRepeatedMonthDaysByNthDay(
             everyNMonths: widget.repeatEvery,
-            ordinal: widget.monthOrdinal,
-            weekday: widget.monthWeekDay,
-            month: widget.startMonth,
+            ordinal: int.parse(type[0]),
+            weekday: en_USSymbols.SHORTWEEKDAYS.indexOf(type[1].capitalize()),
+            month: DateTime.now().month,
           );
-          WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-            Provider.of<OperatingHoursBody>(context, listen: false).update(
-                startDates: [DateFormat("yyyy-MM-dd").format(initialDates[0])]);
-          });
         }
+
         break;
       default:
         // do nothing
@@ -133,11 +128,6 @@ class _CustomizeAvailabilityState extends State<CustomizeAvailability> {
           markedDates.add(date);
         }
       });
-
-      // WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      //   Provider.of<OperatingHoursBody>(context, listen: false)
-      //       .update(startDates: [..._operatingHours.startDates]);
-      // });
     }
   }
 
@@ -214,7 +204,7 @@ class _CustomizeAvailabilityState extends State<CustomizeAvailability> {
                             setState(() {
                               markedDates = selectedDates;
                             });
-                            // TODO: update provider
+
                             Navigator.pop(context, markedDates);
                           },
                         ),
@@ -355,6 +345,7 @@ class _CustomizeAvailabilityState extends State<CustomizeAvailability> {
               fontFamily: "GoldplayBold",
               fontColor: Colors.white,
               onPressed: () async {
+                setUpShotSchedule();
                 if (widget.forEditing) {
                   if (widget.onShopEdit != null) widget.onShopEdit();
                   int count = 0;
@@ -363,7 +354,6 @@ class _CustomizeAvailabilityState extends State<CustomizeAvailability> {
                 }
                 _shopCreated = await createShop();
                 if (_shopCreated) {
-                  setUpShotSchedule();
                   bool updated = await updateShopSchedule();
                   if (updated) {
                     var user = Provider.of<CurrentUser>(context, listen: false);
