@@ -1,20 +1,16 @@
-import 'dart:convert';
-
 import 'package:after_layout/after_layout.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:lokalapp/models/lokal_user.dart';
-import 'package:lokalapp/providers/chat.dart';
-import 'package:lokalapp/providers/user.dart';
-import 'package:lokalapp/screens/chat/chat_helpers.dart';
-import 'package:lokalapp/screens/chat/chat_message_stream.dart';
-import 'package:lokalapp/screens/chat/chat_view.dart';
-import 'package:lokalapp/services/database.dart';
-import 'package:lokalapp/utils/shared_preference.dart';
-import 'package:lokalapp/utils/themes.dart';
-import 'package:lokalapp/widgets/custom_app_bar.dart';
 import 'package:provider/provider.dart';
+
+import '../../providers/user.dart';
+import '../../utils/shared_preference.dart';
+import '../../utils/themes.dart';
+import '../../widgets/custom_app_bar.dart';
+import 'chat_helpers.dart';
+import 'chat_message_stream.dart';
+import 'chat_view.dart';
 
 class Chat extends StatefulWidget {
   @override
@@ -68,7 +64,7 @@ class _ChatState extends State<Chat> with AfterLayoutMixin<Chat> {
           backgroundColor: Colors.transparent,
           child: ClipOval(
             child: imgUrl.isNotEmpty ? Image.network(imgUrl) : null,
-          )),
+          ),),
     );
   }
 
@@ -76,6 +72,8 @@ class _ChatState extends State<Chat> with AfterLayoutMixin<Chat> {
   List members;
   @override
   Widget build(BuildContext context) {
+    final currentUser = Provider.of<CurrentUser>(context, listen: false);
+
     return Scaffold(
       appBar: customAppBar(
           titleText: "",
@@ -103,37 +101,41 @@ class _ChatState extends State<Chat> with AfterLayoutMixin<Chat> {
             ),
             buildSearchTextField,
             StreamBuilder<QuerySnapshot>(
-                // initialData  : [],
-                stream: MessageStreamFirebase.getUsers(
-                    ["T5vmCrEYDoZGgl77Vzlv", "b0f2YX5JSskVFiorX9zc"],
-                    "T5vmCrEYDoZGgl77Vzlv"),
-                builder: (BuildContext context, AsyncSnapshot snapshot) {
-                  if (!snapshot.hasData) {
-                    return Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  }
-
-                  return Container(
-                    height: MediaQuery.of(context).size.height,
-                    width: MediaQuery.of(context).size.width,
-                    child: ListView(
-                        shrinkWrap: true, children: makeListWiget(snapshot)),
+              stream: MessageStreamFirebase.getUserChats(currentUser.id),
+              builder: (BuildContext context,
+                  AsyncSnapshot<QuerySnapshot> snapshot) {
+                if (!snapshot.hasData) {
+                  return Center(
+                    child: CircularProgressIndicator(),
                   );
-                }),
+                }
+                return Container(
+                  height: MediaQuery.of(context).size.height,
+                  width: MediaQuery.of(context).size.width,
+                  child: ListView(
+                    shrinkWrap: true,
+                    children: makeListWidget(snapshot),
+                  ),
+                );
+              },
+            ),
           ],
         ),
       ),
     );
   }
 
-  List<Widget> makeListWiget(AsyncSnapshot snapshot) {
+  List<Widget> makeListWidget(AsyncSnapshot<QuerySnapshot> snapshot) {
     var user = Provider.of<CurrentUser>(context, listen: false);
     return snapshot.data.docs.map<Widget>((document) {
       return GestureDetector(
         onTap: () {
           Navigator.push(
-              context, MaterialPageRoute(builder: (context) => ChatView()));
+            context,
+            MaterialPageRoute(
+              builder: (context) => ChatView(document),
+            ),
+          );
         },
         child: ListTile(
           leading: buildCircleAvatar(user.profilePhoto ?? ""),

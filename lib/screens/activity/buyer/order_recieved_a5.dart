@@ -36,17 +36,19 @@ class OrderRecieved extends StatelessWidget {
                     fontWeight: FontWeight.w600),
               ),
               onPressed: () {
-                var user = Provider.of<CurrentUser>(context, listen: false);
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => ChatView(
-                              shopId: Provider.of<Shops>(context, listen: false)
-                                  .findByUser(user.id)
-                                  .first,
-                              buyerId: user.id,
-                              communityId: user.communityId,
-                            )));
+                // var user = Provider.of<CurrentUser>(context, listen: false);
+                // Navigator.push(
+                //   context,
+                //   MaterialPageRoute(
+                //     builder: (context) => ChatView(
+                //       shopId: Provider.of<Shops>(context, listen: false)
+                //           .findByUser(user.id)
+                //           .first,
+                //       buyerId: user.id,
+                //       communityId: user.communityId,
+                //     ),
+                //   ),
+                // );
               },
             ),
           ),

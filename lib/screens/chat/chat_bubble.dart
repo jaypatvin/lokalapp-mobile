@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:lokalapp/models/chat.dart';
+import 'package:lokalapp/models/conversation.dart';
 import 'package:lokalapp/utils/themes.dart';
 
 // class ChatBubble extends StatelessWidget {
@@ -47,7 +48,7 @@ import 'package:lokalapp/utils/themes.dart';
 // }
 
 class MessagesWidget extends StatelessWidget {
-  final Chat message;
+  final Conversation message;
   final bool isMe;
 
   const MessagesWidget({
