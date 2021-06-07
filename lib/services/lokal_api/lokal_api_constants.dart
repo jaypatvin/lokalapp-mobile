@@ -5,3 +5,4 @@ const shopsUrl = '$_baseUrl/shops';
 const inviteUrl = '$_baseUrl/invite';
 const communityUrl = '$_baseUrl/community';
 const productsUrl = '$_baseUrl/products';
+const chatsUrl = '$_baseUrl/chats';

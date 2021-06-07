@@ -1,3 +1,5 @@
+import 'package:lokalapp/services/lokal_api/chat_service.dart';
+
 import 'lokal_api/activity_feed_service.dart';
 import 'lokal_api/comments_service.dart';
 import 'lokal_api/community_service.dart';
@@ -23,4 +25,5 @@ class LokalApiService {
   ProductsService get product => ProductsService.instance;
   ShopsService get shop => ShopsService.instance;
   UsersService get user => UsersService.instance;
+  ChatService get chat => ChatService.instance;
 }

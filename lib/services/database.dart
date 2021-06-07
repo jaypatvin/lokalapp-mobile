@@ -1,14 +1,22 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:lokalapp/models/chat.dart';
+import 'package:lokalapp/models/chat_user.dart';
+import 'package:lokalapp/models/conversation.dart';
+import 'package:lokalapp/models/user_shop.dart';
+import 'package:lokalapp/utils/chat_utils.dart';
 
 import '../models/lokal_user.dart';
 
 final usersRef = FirebaseFirestore.instance.collection("users");
 final inviteRef = FirebaseFirestore.instance.collection("invites");
 final shopRef = FirebaseFirestore.instance.collection("shops");
+final messageRef = FirebaseFirestore.instance.collection("chat");
 final Reference storageRef = FirebaseStorage.instance.ref();
 
 class Database {
@@ -109,5 +117,18 @@ class Database {
     TaskSnapshot storageSnap = await uploadTask;
     String downloadUrl = await storageSnap.ref.getDownloadURL();
     return downloadUrl;
+  }
+
+  Future<bool> checkIfDocExists(id) async {
+    try {
+      var collectionRef = FirebaseFirestore.instance
+          .collection('chats')
+          .doc(id)
+          .collection('conversations');
+      var doc = await collectionRef.doc(id).get();
+      return doc.exists;
+    } catch (e) {
+      throw e;
+    }
   }
 }

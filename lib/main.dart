@@ -1,5 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:lokalapp/providers/chat.dart';
 import 'package:provider/provider.dart';
 
 import 'providers/activities.dart';
@@ -27,7 +29,12 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   _userSharedPreferences = UserSharedPreferences();
   await Firebase.initializeApp();
-
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
+  SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
+  SystemChrome.setEnabledSystemUIOverlays([]);
   runApp(MyApp());
 }
 
@@ -79,14 +86,17 @@ class _MyAppState extends State<MyApp> {
             ..setCommunityId(user.communityId)
             ..fetch(user.idToken),
         ),
+
         ChangeNotifierProxyProvider<CurrentUser, Users>(
           create: (_) => Users(),
           update: (_, user, users) =>
               users..fetch(user.communityId, user.idToken),
         ),
+
         ChangeNotifierProvider<ShoppingCart>(create: (_) => ShoppingCart()),
         ChangeNotifierProvider<PullUpCartState>(
             create: (_) => PullUpCartState()),
+        ChangeNotifierProvider<ChatProvider>(create: (_) => ChatProvider()),
         ChangeNotifierProvider<Schedule>(create: (_) => Schedule()),
         // post body requests:
         ChangeNotifierProvider<AuthBody>(create: (_) => AuthBody()),
@@ -100,7 +110,7 @@ class _MyAppState extends State<MyApp> {
         Provider<MediaUtility>(create: (_) => MediaUtility.instance),
         Provider<LocalImageService>(create: (_) => LocalImageService.instance),
       ],
-      child: StreamBuilder<Object>(
+      child: StreamBuilder<UserSharedPreferences>(
           stream: _userSharedPreferences.stream,
           builder: (context, snapshot) {
             return MaterialApp(

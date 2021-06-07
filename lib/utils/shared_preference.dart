@@ -20,14 +20,6 @@ class UserSharedPreferences {
     return isReady;
   }
 
-  // buildStream() {
-  //   Stream stream = _streamController.stream;
-  //   StreamSubscription<Widget> streamSubscription = stream.listen((value) {
-  //     return Onboarding();
-  //   });
-  //   streamSubscription.cancel();
-  // }
-
   static const String _isHomeKey = 'is_home_app_opened';
 
   bool get isHome => _preference?.getBool(_isHomeKey) ?? false;

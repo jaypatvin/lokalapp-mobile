@@ -3,6 +3,7 @@ import 'package:lokalapp/providers/products.dart';
 import 'package:lokalapp/providers/shops.dart';
 import 'package:lokalapp/providers/user.dart';
 import 'package:lokalapp/screens/activity/activity.dart';
+import 'package:lokalapp/screens/chat/chat_view.dart';
 import 'package:lokalapp/utils/themes.dart';
 import 'package:provider/provider.dart';
 
@@ -20,9 +21,6 @@ class OrderRecieved extends StatelessWidget {
             height: 43,
             width: MediaQuery.of(context).size.width * 0.9,
             child: FlatButton(
-              // height: 50,
-              // minWidth: 100,
-              // color: kTealColor,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20.0),
                 side: BorderSide(color: kTealColor),
@@ -37,7 +35,21 @@ class OrderRecieved extends StatelessWidget {
                     // color: Color(0XFFCC3752),
                     fontWeight: FontWeight.w600),
               ),
-              onPressed: () {},
+              onPressed: () {
+                // var user = Provider.of<CurrentUser>(context, listen: false);
+                // Navigator.push(
+                //   context,
+                //   MaterialPageRoute(
+                //     builder: (context) => ChatView(
+                //       shopId: Provider.of<Shops>(context, listen: false)
+                //           .findByUser(user.id)
+                //           .first,
+                //       buyerId: user.id,
+                //       communityId: user.communityId,
+                //     ),
+                //   ),
+                // );
+              },
             ),
           ),
           SizedBox(
