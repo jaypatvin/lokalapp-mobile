@@ -2,10 +2,12 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:lokalapp/models/lokal_images.dart';
+import 'package:lokalapp/providers/post_requests/operating_hours_body.dart';
 import 'package:lokalapp/providers/products.dart';
 import 'package:lokalapp/providers/shops.dart';
 import 'package:lokalapp/providers/user.dart';
 import 'package:lokalapp/screens/add_product_screen/confirmation.dart';
+import 'package:lokalapp/screens/add_product_screen/product_schedule.dart';
 import 'package:lokalapp/services/local_image_service.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
@@ -19,7 +21,11 @@ import 'components/add_product_gallery.dart';
 
 class ProductPreview extends StatefulWidget {
   final AddProductGallery gallery;
-  ProductPreview({@required this.gallery});
+  final ProductScheduleState scheduleState;
+  ProductPreview({
+    @required this.gallery,
+    @required this.scheduleState,
+  });
 
   @override
   _ProductPreviewState createState() => _ProductPreviewState();
@@ -152,6 +158,48 @@ class _ProductPreviewState extends State<ProductPreview> {
     }
   }
 
+  Future<bool> setAvailability() async {
+    var user = Provider.of<CurrentUser>(context, listen: false);
+    var products = Provider.of<Products>(context, listen: false);
+    var product = products.items.last; // this should get the latest item added
+    var hoursBody = Provider.of<OperatingHoursBody>(context, listen: false);
+
+    try {
+      return await products.setAvailability(
+        id: product.id,
+        authToken: user.idToken,
+        data: hoursBody.data,
+      );
+    } catch (e) {
+      // do something with the error
+      return false;
+    }
+  }
+
+  Future<void> onConfirm() async {
+    final shopCreated = await createProduct();
+    if (shopCreated) {
+      if (widget.scheduleState == ProductScheduleState.custom) {
+        final availabilitySet = await setAvailability();
+        if (!availabilitySet) {
+          final snackBar = SnackBar(
+            content: Text('Failed to set product availability'),
+          );
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        }
+      }
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (BuildContext context) => AddProductConfirmation(),
+        ),
+      );
+    } else {
+      final snackBar = SnackBar(content: Text('Failed to create shop'));
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
@@ -186,41 +234,37 @@ class _ProductPreviewState extends State<ProductPreview> {
                 ),
                 Spacer(),
                 RoundedButton(
-                  label: "Next",
+                  label: "Confirm",
                   height: 10,
                   minWidth: double.infinity,
                   fontSize: 16,
                   fontWeight: FontWeight.w700,
                   fontFamily: "GoldplayBold",
                   fontColor: Colors.white,
-                  onPressed: () async {
-                    var success = await createProduct();
-                    try {
-                      if (success) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (BuildContext context) =>
-                                AddProductConfirmation(),
-                          ),
-                        );
-                      } else if (!success) {
-                        final snackBar = SnackBar(
-                          content: Text('Error loading image'),
-                          action: SnackBarAction(
-                            label: 'Undo',
-                            onPressed: () {
-                              // Some code to undo the change.
-                            },
-                          ),
-                        );
+                  onPressed: onConfirm,
+                  // onPressed: () async {
+                  //   // if (success) {
+                  //   //   Navigator.push(
+                  //   //     context,
+                  //   //     MaterialPageRoute(
+                  //   //       builder: (BuildContext context) =>
+                  //   //           AddProductConfirmation(),
+                  //   //     ),
+                  //   //   );
+                  //   // } else if (!success) {
+                  //   //   final snackBar = SnackBar(
+                  //   //     content: Text('Error loading image'),
+                  //   //     action: SnackBarAction(
+                  //   //       label: 'Undo',
+                  //   //       onPressed: () {
+                  //   //         // Some code to undo the change.
+                  //   //       },
+                  //   //     ),
+                  //   //   );
 
-                        ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                      }
-                    } catch (e) {
-                      print(e);
-                    }
-                  },
+                  //   //   ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                  //   // }
+                  // },
                 ),
                 SizedBox(
                   height: height * 0.02,

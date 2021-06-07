@@ -30,11 +30,15 @@ class RepeatedDaysGenerator {
       startDate.month,
       startDate.day,
     );
-        indexDay.month <= startDate.month + 1;
+        true;
         indexDay = indexDay.add(Duration(days: everyNDays))) {
       // check that the days (esp. for starting date) is at least today
       if (!_isValidDate(indexDay) && validate) continue;
       repeatedDays.add(indexDay);
+
+      // for exactly 1 year from startDate
+      if (startDate.month == indexDay.month &&
+          startDate.year + 1 == indexDay.year) break;
     }
 
     return repeatedDays;

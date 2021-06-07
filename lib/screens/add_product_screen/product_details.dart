@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:lokalapp/screens/add_product_screen/product_variant.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/post_requests/product_body.dart';
@@ -98,7 +97,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                 color: Colors.grey.shade400,
                 fontSize: 14,
               ),
-              hintText: "PHP",
+              hintText: "Quantity",
             ),
             onChanged: (value) {
               Provider.of<ProductBody>(context, listen: false)
@@ -212,7 +211,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                   context,
                   MaterialPageRoute(
                     builder: (BuildContext context) =>
-                        ProductVariant(gallery: widget.gallery),
+                        ProductSchedule(gallery: widget.gallery),
                   ),
                 );
               },

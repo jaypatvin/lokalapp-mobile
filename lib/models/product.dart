@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
+import 'package:lokalapp/models/operating_hours.dart';
 
 import 'lokal_images.dart';
 
@@ -16,6 +17,7 @@ class Product {
   String productCategory;
   String productPhoto;
   String status;
+  OperatingHours availability;
   List<LokalImages> gallery;
   Product({
     this.id,
@@ -30,6 +32,7 @@ class Product {
     this.productPhoto,
     this.status,
     this.gallery,
+    this.availability,
   });
 
   Product copyWith({
@@ -45,6 +48,7 @@ class Product {
     String productPhoto,
     String status,
     List<LokalImages> gallery,
+    OperatingHours availability,
   }) {
     return Product(
       id: id ?? this.id,
@@ -59,6 +63,7 @@ class Product {
       productPhoto: productPhoto ?? this.productPhoto,
       status: status ?? this.status,
       gallery: gallery ?? this.gallery,
+      availability: availability ?? this.availability,
     );
   }
 
@@ -76,6 +81,7 @@ class Product {
       'product_photo': productPhoto,
       'status': status,
       'gallery': gallery?.map((x) => x?.toMap())?.toList(),
+      'availability': availability?.toMap(),
     };
   }
 
@@ -98,6 +104,9 @@ class Product {
           ? null
           : List<LokalImages>.from(
               map['gallery']?.map((x) => LokalImages.fromMap(x))),
+      availability: map['availability'] != null
+          ? OperatingHours.fromMap(map['availability'])
+          : null,
     );
   }
 
@@ -108,7 +117,7 @@ class Product {
 
   @override
   String toString() {
-    return 'UserProduct(id: $id, name: $name, description: $description, shopId: $shopId, userId: $userId, communityId: $communityId, basePrice: $basePrice, quantity: $quantity, productCategory: $productCategory, productPhoto: $productPhoto, status: $status, gallery: $gallery)';
+    return 'UserProduct(id: $id, name: $name, description: $description, shopId: $shopId, userId: $userId, communityId: $communityId, basePrice: $basePrice, quantity: $quantity, productCategory: $productCategory, productPhoto: $productPhoto, status: $status, gallery: $gallery, availability: $availability)';
   }
 
   @override
@@ -127,7 +136,8 @@ class Product {
         o.productCategory == productCategory &&
         o.productPhoto == productPhoto &&
         o.status == status &&
-        listEquals(o.gallery, gallery);
+        listEquals(o.gallery, gallery) &&
+        o.availability == availability;
   }
 
   @override
@@ -143,6 +153,7 @@ class Product {
         productCategory.hashCode ^
         productPhoto.hashCode ^
         status.hashCode ^
-        gallery.hashCode;
+        gallery.hashCode ^
+        availability.hashCode;
   }
 }

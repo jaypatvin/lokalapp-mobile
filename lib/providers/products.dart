@@ -69,7 +69,8 @@ class Products extends ChangeNotifier {
 
       if (body['status'] == 'ok') {
         // await fetch(authToken);
-        // i think the app should fetch manually
+        _products.add(Product.fromMap(body['data']));
+        notifyListeners();
         return true;
       }
       return false;
@@ -94,6 +95,30 @@ class Products extends ChangeNotifier {
       if (body['status'] == 'ok') {
         //await fetch(authToken);
         // the app should fetch manually
+        return true;
+      }
+      return false;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<bool> setAvailability({
+    @required String id,
+    @required String authToken,
+    @required Map data,
+  }) async {
+    try {
+      var response = await LokalApiService.instance.product
+          .setAvailability(productId: id, data: data, idToken: authToken);
+
+      if (response.statusCode != 200) return false;
+
+      Map body = json.decode(response.body);
+
+      if (body['status'] == 'ok') {
+        // await fetch(authToken);
+        // manually fetch data
         return true;
       }
       return false;
