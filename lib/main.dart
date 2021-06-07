@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:lokalapp/providers/chat.dart';
+import 'package:lokalapp/screens/chat/chat_helpers.dart';
 import 'package:provider/provider.dart';
 
 import 'providers/activities.dart';
@@ -97,6 +98,7 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider<PullUpCartState>(
             create: (_) => PullUpCartState()),
         ChangeNotifierProvider<ChatProvider>(create: (_) => ChatProvider()),
+        ChangeNotifierProvider<ChatHelpers>(create: (_) => ChatHelpers()),
         ChangeNotifierProvider<Schedule>(create: (_) => Schedule()),
         // post body requests:
         ChangeNotifierProvider<AuthBody>(create: (_) => AuthBody()),

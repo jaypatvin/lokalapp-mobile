@@ -3,9 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:lokalapp/models/chat.dart';
 import 'package:lokalapp/models/conversation.dart';
+import 'package:lokalapp/screens/chat/chat_helpers.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
-
+import 'package:emoji_picker/emoji_picker.dart';
 import '../../models/user_shop.dart';
 import '../../providers/chat.dart';
 import '../../providers/user.dart';
@@ -24,44 +25,27 @@ class ChatView extends StatefulWidget {
 
 class _ChatViewState extends State<ChatView> {
   bool showSpinner = false;
-  String messageText;
+  // String messageText;
   final Uuid _uuid = Uuid();
   var chatSnapshot;
-  // @override
-  // void initState() {
-  //   // TODO: implement initState
-  //   getUsers();
-  //   super.initState();
-  // }
 
-  void messageStream() async {
-    await for (var snapshot in messageRef.snapshots()) {
-      for (var message in snapshot.docs) {
-        print(message.data());
-      }
-    }
-  }
-
-  getUsers() async {
-    var user = Provider.of<CurrentUser>(context, listen: false);
-    var members;
-    chatSnapshot = await messageRef
-        .where(members, arrayContainsAny: [user.id]).snapshots();
-  }
+  bool show = false;
+  FocusNode focusNode = FocusNode();
+  bool sendButton = false;
 
   TextEditingController _messageController = TextEditingController();
 
   dynamic time = DateFormat.jm().format(DateTime.now());
-  Future<bool> createProduct() async {
+  Future createMessage() async {
     var chat = Provider.of<ChatProvider>(context, listen: false);
 
     var user = Provider.of<CurrentUser>(context, listen: false);
 
     try {
       var chatList = {
-        // 'user_id': document.id,
+        'user_id': user.id,
         'members': [user.id],
-        'message': messageText
+        'message': _messageController.text
       };
       await chat.create(user.idToken, chatList);
     } on Exception catch (e) {
@@ -73,6 +57,8 @@ class _ChatViewState extends State<ChatView> {
   @override
   Widget build(BuildContext context) {
     var user = Provider.of<CurrentUser>(context, listen: false);
+    var helper = Provider.of<ChatHelpers>(context, listen: false);
+    var chat = Provider.of<ChatProvider>(context, listen: false);
     return Scaffold(
       resizeToAvoidBottomInset: true,
       appBar: customAppBar(
@@ -114,15 +100,96 @@ class _ChatViewState extends State<ChatView> {
           children: [
             Expanded(
               child: Container(
-                padding: EdgeInsets.all(10),
+                height: MediaQuery.of(context).size.height,
+                width: MediaQuery.of(context).size.width,
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(25),
-                    topRight: Radius.circular(25),
-                  ),
                 ),
                 child: MessageStream(widget.chatDocument.id),
+              ),
+            ),
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Container(
+                height: 70,
+                color: Color(0XFFF1FAFF),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Row(
+                      children: [
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Container(
+                              margin: const EdgeInsets.all(8.0),
+                              height: 40,
+                              width: 40,
+                              decoration: BoxDecoration(
+                                  border:
+                                      Border.all(width: 1, color: kTealColor),
+                                  color: Colors.transparent,
+                                  shape: BoxShape.circle),
+                              child: IconButton(
+                                icon: Icon(
+                                  Icons.attach_file,
+                                  color: kTealColor,
+                                ),
+                                onPressed: () {
+                                  helper.openGallery(context);
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                        Container(
+                          width: MediaQuery.of(context).size.width - 60,
+                          height: 50,
+                          child: Card(
+                            margin:
+                                EdgeInsets.only(left: 2, right: 2, bottom: 8),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(25),
+                                side: BorderSide(color: kTealColor, width: 1)),
+                            child: TextFormField(
+                              cursorColor: Colors.grey,
+                              controller: _messageController,
+                              focusNode: focusNode,
+                              textAlignVertical: TextAlignVertical.center,
+                              keyboardType: TextInputType.multiline,
+                              maxLines: 5,
+                              minLines: 1,
+                              decoration: InputDecoration(
+                                contentPadding:
+                                    EdgeInsets.only(top: 1.0, left: 10.0),
+                                border: InputBorder.none,
+                                hintText: "Type a message",
+                                hintStyle: TextStyle(color: Colors.grey),
+                                suffixIcon: IconButton(
+                                    icon: Icon(
+                                      Icons.send,
+                                      color: kTealColor,
+                                    ),
+                                    onPressed: () async {
+                                      var chatList = {
+                                        'user_id': user.id,
+                                        'members': [
+                                          user.id,
+                                          "b0f2YX5JSskVFiorX9zc"
+                                        ],
+                                        'message': _messageController.text
+                                      };
+                                      await chat.create(user.idToken, chatList);
+                                      _messageController.clear();
+                                    }),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
           ],

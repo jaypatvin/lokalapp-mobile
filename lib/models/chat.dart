@@ -4,10 +4,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:lokalapp/utils/chat_utils.dart';
 
-class UserFieldChat {
-  static final String lastMessageTime = 'lastMessageTime';
-}
-
 class Chat extends ChangeNotifier {
   String title;
   String message;
