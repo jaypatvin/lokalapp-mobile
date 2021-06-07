@@ -121,8 +121,14 @@ class _PostDetailsState extends State<PostDetails> {
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           IconButton(
-            icon: Icon(MdiIcons.heartOutline),
-            onPressed: this.widget.onLike,
+            icon: Icon(
+              widget.activity.liked ? MdiIcons.heart : MdiIcons.heartOutline,
+              color: widget.activity.liked ? Colors.red : Colors.black,
+            ),
+            onPressed: () {
+              this.widget.onLike();
+              setState(() {});
+            },
           ),
           Text(this.widget.activity.likedCount.toString(), style: kTextStyle),
           Spacer(),
