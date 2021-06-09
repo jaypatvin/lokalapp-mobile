@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
-
+import 'package:flutter_svg/flutter_svg.dart';
 import 'activity/activity.dart';
 import 'chat/chat.dart';
 import 'discover/discover.dart';
@@ -31,38 +31,59 @@ class _BottomNavigationState extends State<BottomNavigation> {
       ];
     }
 
+    String assetHome = 'assets/bottomNavIcons/Home.svg';
+    Widget svgHome = new SvgPicture.asset(
+      assetHome,
+    );
+    String assetDiscover = 'assets/bottomNavIcons/Discover.svg';
+    Widget svgDiscover = new SvgPicture.asset(
+      assetDiscover,
+    );
+    String assetChat = 'assets/bottomNavIcons/Chats.svg';
+    Widget svgChat = new SvgPicture.asset(
+      assetChat,
+    );
+    String assetActivity = 'assets/bottomNavIcons/Activity.svg';
+    Widget svgActivity = new SvgPicture.asset(
+      assetActivity,
+    );
+    String assetProfile = 'assets/bottomNavIcons/Profile.svg';
+    Widget svgProfile = new SvgPicture.asset(
+      assetProfile,
+      // color: Color(0xFFCC3752),
+    );
     List<PersistentBottomNavBarItem> _navBarsItems() {
       return [
         PersistentBottomNavBarItem(
-          icon: Icon(Icons.home_outlined),
+          icon: svgHome,
           title: ("Home"),
           iconSize: 34,
           activeColor: Color(0xFFCC3752),
           inactiveColor: Color(0xFF103045),
         ),
         PersistentBottomNavBarItem(
-          icon: Icon(Icons.web_asset_outlined),
+          icon: svgDiscover,
           title: ("Discover"),
           iconSize: 34,
           activeColor: Color(0xFFCC3752),
           inactiveColor: Color(0xFF103045),
         ),
         PersistentBottomNavBarItem(
-          icon: Icon(Icons.chat_outlined),
+          icon: svgChat,
           title: ("Chat"),
           iconSize: 34,
           activeColor: Color(0xFFCC3752),
           inactiveColor: Color(0xFF103045),
         ),
         PersistentBottomNavBarItem(
-          icon: Icon(Icons.pie_chart_outlined),
+          icon: svgActivity,
           title: ("Activity"),
           iconSize: 34,
           activeColor: Color(0xFFCC3752),
           inactiveColor: Color(0xFF103045),
         ),
         PersistentBottomNavBarItem(
-          icon: Icon(Icons.person),
+          icon: svgProfile,
           title: ("Profile"),
           iconSize: 34,
           activeColor: Color(0xFFCC3752),
@@ -77,9 +98,11 @@ class _BottomNavigationState extends State<BottomNavigation> {
       controller: _controller,
       screens: _buildScreens(),
       items: _navBarsItems(),
+      // navBarHeight: 60.0,
+
       confineInSafeArea: true,
       backgroundColor: Colors.white,
-      padding: NavBarPadding.only(top: 1),
+      padding: NavBarPadding.only(bottom: 3),
       margin: EdgeInsets.all(2),
       handleAndroidBackButtonPress: true,
       resizeToAvoidBottomInset:
@@ -93,8 +116,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
       ),
       popAllScreensOnTapOfSelectedTab: true,
       popActionScreens: PopActionScreensType.all,
-      bottomScreenMargin: 50,
-      // navBarHeight: 40,
+
       itemAnimationProperties: ItemAnimationProperties(
         // Navigation Bar's items animation properties.
         duration: Duration(milliseconds: 200),

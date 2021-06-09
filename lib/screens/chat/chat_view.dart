@@ -1,19 +1,24 @@
+import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:lokalapp/models/chat.dart';
 import 'package:lokalapp/models/conversation.dart';
+import 'package:lokalapp/providers/users.dart';
+import 'package:lokalapp/screens/chat/chat_helpers.dart';
+import 'package:lokalapp/screens/chat/chat_profile.dart';
+
+import 'package:lokalapp/utils/utility.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
-
-import '../../models/user_shop.dart';
 import '../../providers/chat.dart';
 import '../../providers/user.dart';
-import '../../services/database.dart';
 import '../../utils/themes.dart';
 import '../../widgets/custom_app_bar.dart';
 import 'chat_bubble.dart';
 import 'chat_message_stream.dart';
+import 'package:swipe_to/swipe_to.dart';
+
+import 'new_message.dart';
 
 class ChatView extends StatefulWidget {
   final QueryDocumentSnapshot chatDocument;
@@ -24,55 +29,71 @@ class ChatView extends StatefulWidget {
 
 class _ChatViewState extends State<ChatView> {
   bool showSpinner = false;
-  String messageText;
+  // String messageText;
   final Uuid _uuid = Uuid();
   var chatSnapshot;
-  // @override
-  // void initState() {
-  //   // TODO: implement initState
-  //   getUsers();
-  //   super.initState();
-  // }
 
-  void messageStream() async {
-    await for (var snapshot in messageRef.snapshots()) {
-      for (var message in snapshot.docs) {
-        print(message.data());
-      }
-    }
-  }
-
-  getUsers() async {
-    var user = Provider.of<CurrentUser>(context, listen: false);
-    var members;
-    chatSnapshot = await messageRef
-        .where(members, arrayContainsAny: [user.id]).snapshots();
-  }
-
+  bool show = false;
+  FocusNode focusNode = FocusNode();
+  bool sendButton = false;
+  File pickedImage;
   TextEditingController _messageController = TextEditingController();
-
+  Conversation replyMessage;
+  bool isReplied = false;
+  var snap;
   dynamic time = DateFormat.jm().format(DateTime.now());
-  Future<bool> createProduct() async {
-    var chat = Provider.of<ChatProvider>(context, listen: false);
 
+  void replyToMessage(
+    Conversation message,
+  ) {
+    setState(() {
+      replyMessage = message;
+      isReplied = true;
+    });
+  }
+
+  void cancelReply() {
+    setState(() {
+      replyMessage = null;
+    });
+  }
+
+  replied() {
+    double didReplyTrue = 120.0;
+    double didReplyFalse = 80.0;
+    setState(() {
+      isReplied ? didReplyTrue : didReplyFalse;
+      isReplied = false;
+    });
+  }
+
+  void onSendMessage() async {
     var user = Provider.of<CurrentUser>(context, listen: false);
-
-    try {
-      var chatList = {
-        // 'user_id': document.id,
-        'members': [user.id],
-        'message': messageText
-      };
-      await chat.create(user.idToken, chatList);
-    } on Exception catch (e) {
-      print(e);
-      return false;
-    }
+    var helper = Provider.of<ChatHelpers>(context, listen: false);
+    var chat = Provider.of<ChatProvider>(context, listen: false);
+    var lokalUser = Provider.of<Users>(context, listen: false);
+    var current = lokalUser.findById(widget.chatDocument.data()['members'][1]);
+    var chatList = {
+      'user_id': user.id,
+      'members': [
+        user.id,
+        widget.chatDocument.data()['members'][1] == current.id
+            ? current.id
+            : current.id
+      ],
+      'message': _messageController.text
+    };
+    await chat.create(user.idToken, chatList);
+    _messageController.clear();
   }
 
   @override
   Widget build(BuildContext context) {
     var user = Provider.of<CurrentUser>(context, listen: false);
+    var helper = Provider.of<ChatHelpers>(context, listen: false);
+    var chat = Provider.of<ChatProvider>(context, listen: false);
+    var lokalUser = Provider.of<Users>(context, listen: false);
+    var current = lokalUser.findById(widget.chatDocument.data()['members'][1]);
     return Scaffold(
       resizeToAvoidBottomInset: true,
       appBar: customAppBar(
@@ -87,11 +108,25 @@ class _ChatViewState extends State<ChatView> {
         leftText: 0.0,
         rightText: 0.0,
         addIcon: true,
-        iconTrailing: Icon(
-          Icons.more_horiz,
-          color: Colors.black,
-          size: 28,
-        ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 18),
+            child: IconButton(
+                icon: Icon(
+                  Icons.more_horiz,
+                  color: Colors.black,
+                  size: 30,
+                ),
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => ChatProfile(
+                                chatDocument: widget.chatDocument,
+                              )));
+                }),
+          )
+        ],
         onPressedLeading: () {
           Navigator.pop(context);
         },
@@ -114,15 +149,80 @@ class _ChatViewState extends State<ChatView> {
           children: [
             Expanded(
               child: Container(
-                padding: EdgeInsets.all(10),
+                height: MediaQuery.of(context).size.height,
+                width: MediaQuery.of(context).size.width,
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(25),
-                    topRight: Radius.circular(25),
-                  ),
                 ),
-                child: MessageStream(widget.chatDocument.id),
+                child: MessageStream(widget.chatDocument.id, (message) {
+                  replyToMessage(message);
+                  focusNode.requestFocus();
+                }, replyMessage),
+              ),
+            ),
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Container(
+                height: replied(),
+                color: Color(0XFFF1FAFF),
+                child: Row(
+                  children: [
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Container(
+                          margin: const EdgeInsets.all(8.0),
+                          height: 40,
+                          width: 40,
+                          decoration: BoxDecoration(
+                              border: Border.all(width: 1, color: kTealColor),
+                              color: Colors.transparent,
+                              shape: BoxShape.circle),
+                          child: IconButton(
+                            icon: Icon(
+                              Icons.attach_file,
+                              color: kTealColor,
+                            ),
+                            onPressed: () async {
+                              var photo = await Provider.of<MediaUtility>(
+                                      context,
+                                      listen: false)
+                                  .showMediaDialog(context);
+                              setState(() {
+                                pickedImage = photo;
+                              });
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                    Expanded(
+                      child: NewMessageWidget(
+                        snap: widget.chatDocument,
+                        messageController: _messageController,
+                        focusNode: focusNode,
+                        idUser: current.id,
+                        onCancelReply: cancelReply,
+                        replyMessage: replyMessage,
+                        onSend: () async {
+                          var chatList = {
+                            'user_id': user.id,
+                            'members': [
+                              user.id,
+                              widget.chatDocument.data()['members'][1] ==
+                                      current.id
+                                  ? current.id
+                                  : current.id
+                            ],
+                            'message': _messageController.text
+                          };
+                          await chat.create(user.idToken, chatList);
+                          _messageController.clear();
+                        },
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ],
@@ -134,10 +234,14 @@ class _ChatViewState extends State<ChatView> {
 
 class MessageStream extends StatelessWidget {
   final String chatId;
-  MessageStream(this.chatId);
+  final Function onSwipedMessage;
+  final Conversation replyMessage;
+  MessageStream(this.chatId, this.onSwipedMessage, this.replyMessage);
+
   @override
   Widget build(BuildContext context) {
     var user = Provider.of<CurrentUser>(context, listen: false);
+
     return StreamBuilder<QuerySnapshot>(
       stream: MessageStreamFirebase.getConversation(this.chatId),
       builder: (context, snapshot) {
@@ -161,9 +265,14 @@ class MessageStream extends StatelessWidget {
                         final Conversation message = Conversation.fromMap(
                           messages[index].data(),
                         );
-                        return MessagesWidget(
-                          message: message,
-                          isMe: message.senderId == user.id,
+
+                        return SwipeTo(
+                          onRightSwipe: () => onSwipedMessage(message),
+                          child: MessagesWidget(
+                            isReply: replyMessage,
+                            message: message,
+                            isMe: message.senderId == user.id,
+                          ),
                         );
                       },
                     );

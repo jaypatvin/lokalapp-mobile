@@ -133,8 +133,7 @@ class ChatHelpers with ChangeNotifier {
     );
   }
 
-  final _picker = ImagePicker();
-  openGallery(BuildContext context) {
+  openGallery(BuildContext context, Function onTap) {
     return showModalBottomSheet(
         context: context,
         builder: (context) {
@@ -157,9 +156,7 @@ class ChatHelpers with ChangeNotifier {
                             width: 10,
                           ),
                           GestureDetector(
-                            onTap: () {
-                              _picker.getImage(source: ImageSource.camera);
-                            },
+                            onTap: onTap,
                             child: Container(
                               height: 125.0,
                               width: 130.0,

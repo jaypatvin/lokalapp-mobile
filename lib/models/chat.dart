@@ -4,21 +4,17 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:lokalapp/utils/chat_utils.dart';
 
-class UserFieldChat {
-  static final String lastMessageTime = 'lastMessageTime';
-}
-
 class Chat extends ChangeNotifier {
   String title;
   String message;
-  DateTime createdAt;
+  Timestamp createdAt;
   bool archived;
   String shopId;
   String customerName;
   String communityId;
   List members;
   String userId;
-  DateTime updatedAt;
+  Timestamp updatedAt;
 
   Chat(
       {this.title,
@@ -65,15 +61,16 @@ class Chat extends ChangeNotifier {
   }
 
   static Chat fromJson(Map<String, dynamic> json) => Chat(
-        archived: json['archived'],
-        title: json['title'],
-        communityId: json['community_id'],
-        updatedAt: json['updated_at'],
-        message: json['message'],
-        members: json['members'],
-        customerName: json['customer_name'],
-        shopId: json['shop_id'],
-        createdAt: Utils.toDateTime(json['createdAt']),
+      archived: json['archived'],
+      title: json['title'],
+      communityId: json['community_id'],
+      updatedAt: json['updated_at'],
+      message: json['message'],
+      members: json['members'],
+      customerName: json['customer_name'],
+      shopId: json['shop_id'],
+      createdAt: Timestamp.now()
+      // createdAt: Utils.toDateTime(json['createdAt']),
       );
 
   Map<String, dynamic> toJson() => {
@@ -85,7 +82,8 @@ class Chat extends ChangeNotifier {
         'updated_at': updatedAt,
         'message': message,
         'community_id': communityId,
-        'created_at': Utils.fromDateTimeToJson(createdAt),
+        'created_at': createdAt
+        // 'created_at': Utils.fromDateTimeToJson(createdAt),
       };
   factory Chat.fromDocument(DocumentSnapshot doc) {
     return Chat(
