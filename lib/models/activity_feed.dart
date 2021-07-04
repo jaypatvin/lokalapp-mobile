@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 
+import "../utils/functions.utils.dart";
 import 'activity_feed_comment.dart';
 import 'lokal_images.dart';
 import 'timestamp_time_object.dart';
@@ -86,9 +87,10 @@ class ActivityFeed {
                 (x) => ActivityFeedComment.fromMap(map),
               ),
             ),
-      createdAt: DateTime.fromMicrosecondsSinceEpoch(
-          TimestampObject.fromMap(map['created_at']).seconds * 1000000 +
-              TimestampObject.fromMap(map['created_at']).nanoseconds ~/ 1000),
+      // createdAt: DateTime.fromMicrosecondsSinceEpoch(
+      //     TimestampObject.fromMap(map['created_at']).seconds * 1000000 +
+      //         TimestampObject.fromMap(map['created_at']).nanoseconds ~/ 1000),
+      createdAt: TimestampObject.fromMap(map['created_at']).toDateTime(),
       likedCount: map['_meta'] != null ? map['_meta']['likes_count'] ?? 0 : 0,
       commentCount:
           map['_meta'] != null ? map['_meta']['comment_count'] ?? 0 : 0,

@@ -16,8 +16,6 @@ Widget customAppBar({
   double rightText,
   double leftText,
   Color backgroundColor,
-  Icon iconTrailing,
-  bool addIcon = false,
   bool centerTitle = true,
   Function onPressedLeading,
   Function onPressedTrailing,
