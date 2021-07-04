@@ -1,13 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:lokalapp/models/conversation.dart';
-import 'package:lokalapp/providers/chat.dart';
-import 'package:lokalapp/providers/user.dart';
-import 'package:lokalapp/providers/users.dart';
-import 'package:lokalapp/utils/themes.dart';
-import 'package:provider/provider.dart';
 
-import 'chat_helpers.dart';
+import '../../models/conversation.dart';
+import '../../utils/themes.dart';
 import 'components/reply_message.dart';
 
 class NewMessageWidget extends StatefulWidget {
@@ -102,19 +97,20 @@ class _NewMessageWidgetState extends State<NewMessageWidget> {
     ]);
   }
 
-  Widget buildReply() => Container(
-        padding: EdgeInsets.all(8),
-        decoration: BoxDecoration(
-          color: Colors.grey.withOpacity(0.2),
-          borderRadius: BorderRadius.only(
-            topLeft: inputTopRadius,
-            topRight: inputTopRadius,
-          ),
+  Widget buildReply() {
+    return Container(
+      padding: EdgeInsets.all(8),
+      decoration: BoxDecoration(
+        color: Colors.grey.withOpacity(0.2),
+        borderRadius: BorderRadius.only(
+          topLeft: inputTopRadius,
+          topRight: inputTopRadius,
         ),
-        child: ReplyMessageWidget(
-          snapshot: widget.snap,
-          message: widget.replyMessage,
-          onCancelReply: widget.onCancelReply,
-        ),
-      );
+      ),
+      child: ReplyMessageWidget(
+        message: widget.replyMessage,
+        onCancelReply: widget.onCancelReply,
+      ),
+    );
+  }
 }

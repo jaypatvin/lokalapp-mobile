@@ -16,10 +16,12 @@ class ChatService {
   }
 
   // --POST
-  Future<http.Response> create(
-      {@required Map data, @required String idToken}) async {
+  Future<http.Response> create({
+    @required Map data,
+    @required String idToken,
+  }) async {
     var body = json.encode(data);
-    var response = await http.post(
+    return await http.post(
       "$chatsUrl",
       headers: {
         "Content-Type": "application/json",
@@ -27,14 +29,80 @@ class ChatService {
       },
       body: body,
     );
+  }
 
-    return response;
+  Future<http.Response> createConversation({
+    @required String chatId,
+    @required Map data,
+    @required String idToken,
+  }) async {
+    var body = json.encode(data);
+    return await http.post(
+      "$chatsUrl/$chatId/conversation",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer $idToken",
+      },
+      body: body,
+    );
+  }
+
+  // --PUT
+  Future<http.Response> updateTitle({
+    @required Map data,
+    @required String id,
+    @required String idToken,
+  }) async {
+    var body = json.encode(data);
+    return await http.put(
+      "$chatsUrl/$id/updateTitle",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer $idToken",
+      },
+      body: body,
+    );
+  }
+
+  Future<http.Response> invite({
+    @required Map data,
+    @required String id,
+    @required String idToken,
+  }) async {
+    var body = json.encode(data);
+    return await http.put(
+      "$chatsUrl/$id/invite",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer $idToken"
+      },
+      body: body,
+    );
+  }
+
+  Future<http.Response> removeUser({
+    @required Map data,
+    @required String id,
+    @required String idToken,
+  }) async {
+    var body = json.encode(data);
+    return await http.put(
+      "$chatsUrl/$id/removeUser",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer $idToken"
+      },
+      body: body,
+    );
   }
 
   // --DELETE
-  Future<http.Response> delete(
-      {@required String chatId, @required String idToken}) async {
-    return await http.delete('$chatsUrl/$chatId',
+  Future<http.Response> deleteMessage({
+    @required String chatId,
+    @required String messageId,
+    @required String idToken,
+  }) async {
+    return await http.delete("$chatsUrl/$chatId/conversation/$messageId",
         headers: {"Authorization": "Bearer $idToken"});
   }
 }

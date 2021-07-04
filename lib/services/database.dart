@@ -1,22 +1,15 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:lokalapp/models/chat.dart';
-import 'package:lokalapp/models/chat_user.dart';
-import 'package:lokalapp/models/conversation.dart';
-import 'package:lokalapp/models/user_shop.dart';
-import 'package:lokalapp/utils/chat_utils.dart';
 
 import '../models/lokal_user.dart';
 
 final usersRef = FirebaseFirestore.instance.collection("users");
 final inviteRef = FirebaseFirestore.instance.collection("invites");
 final shopRef = FirebaseFirestore.instance.collection("shops");
-final messageRef = FirebaseFirestore.instance.collection("chat");
+final chatsRef = FirebaseFirestore.instance.collection("chats");
 final Reference storageRef = FirebaseStorage.instance.ref();
 
 class Database {
@@ -26,6 +19,38 @@ class Database {
       _database = Database();
     }
     return _database;
+  }
+
+  Stream getUserChats(String userId) {
+    return chatsRef.where("members", arrayContains: userId).snapshots();
+  }
+
+  Stream getConversations(String chatId) {
+    return chatsRef
+        .doc(chatId)
+        .collection("conversation")
+        .orderBy("created_at", descending: true)
+        .snapshots();
+  }
+
+  Future<DocumentSnapshot> getConversationDocument(
+    String chatId,
+    String conversationId,
+  ) {
+    return chatsRef
+        .doc(chatId)
+        .collection("conversation")
+        .doc(conversationId)
+        .get();
+  }
+
+  Future<DocumentSnapshot> getConversationByReference(
+      DocumentReference reference) {
+    return reference.get();
+  }
+
+  Future<DocumentSnapshot> getChatDocument(String chatId) {
+    return chatsRef.doc(chatId).get();
   }
 
   Future<Map> getUserInfo(String uid) async {

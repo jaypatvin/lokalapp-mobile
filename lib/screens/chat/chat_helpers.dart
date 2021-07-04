@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:lokalapp/utils/themes.dart';
 
-class ChatHelpers with ChangeNotifier {
+class ChatHelpers {
   showAlert(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
@@ -131,97 +131,5 @@ class ChatHelpers with ChangeNotifier {
         ),
       ),
     );
-  }
-
-  openGallery(BuildContext context, Function onTap) {
-    return showModalBottomSheet(
-        context: context,
-        builder: (context) {
-          return AnimatedContainer(
-            duration: Duration(seconds: 1),
-            curve: Curves.easeIn,
-            child: ListView(
-                scrollDirection: Axis.horizontal,
-                shrinkWrap: true,
-                children: [
-                  Column(
-                    children: [
-                      SizedBox(
-                        height: 20,
-                        width: MediaQuery.of(context).size.width,
-                      ),
-                      Row(
-                        children: [
-                          SizedBox(
-                            width: 10,
-                          ),
-                          GestureDetector(
-                            onTap: onTap,
-                            child: Container(
-                              height: 125.0,
-                              width: 130.0,
-                              decoration: BoxDecoration(
-                                color: Color(0XFFFF7A00),
-                              ),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  SizedBox(
-                                    height: 5,
-                                  ),
-                                  Icon(
-                                    Icons.camera_alt_outlined,
-                                    color: Colors.white,
-                                  ),
-                                  Text(
-                                    "Take a photo",
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 12,
-                                        fontFamily: "GoldplayBold"),
-                                  )
-                                ],
-                              ),
-                            ),
-                          ),
-                          SizedBox(
-                            width: 5,
-                          ),
-                          Container(
-                            height: 125.0,
-                            width: 130.0,
-                            decoration: BoxDecoration(
-                                color: Colors.transparent,
-                                image: DecorationImage(
-                                    image: NetworkImage(
-                                        'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi1.wp.com%2Fkatzenworld.co.uk%2Fwp-content%2Fuploads%2F2019%2F06%2Ffunny-cat.jpeg%3Ffit%3D1920%252C1920%26ssl%3D1&f=1&nofb=1'))),
-                          ),
-                          SizedBox(
-                            width: 5,
-                          ),
-                          Container(
-                            height: 125.0,
-                            width: 130.0,
-                            decoration: BoxDecoration(
-                                color: Colors.transparent,
-                                image: DecorationImage(
-                                    image: NetworkImage(
-                                        'https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2F4.bp.blogspot.com%2F-Jx21kNqFSTU%2FUXemtqPhZCI%2FAAAAAAAAh74%2FBMGSzpU6F48%2Fs640%2Ffunny-cat-pictures-047-001.jpg&f=1&nofb=1'))),
-                          )
-                        ],
-                      ),
-                    ],
-                  ),
-                ]),
-            // height: ,
-            height: MediaQuery.of(context).size.height * 0.23,
-            width: MediaQuery.of(context).size.width,
-            decoration: BoxDecoration(
-                color: Color(0xffF1FAFF),
-                borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(12.0),
-                    topRight: Radius.circular(12.0))),
-          );
-        });
   }
 }
