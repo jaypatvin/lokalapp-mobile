@@ -1,15 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:lokalapp/models/chat.dart';
-import 'package:lokalapp/models/conversation.dart';
-import 'package:lokalapp/models/lokal_user.dart';
-import 'package:lokalapp/providers/user.dart';
-import 'package:lokalapp/providers/users.dart';
-import 'package:lokalapp/screens/chat/shared_media.dart';
-import 'package:lokalapp/utils/themes.dart';
 import 'package:provider/provider.dart';
 
-import 'chat_message_stream.dart';
+import '../../providers/user.dart';
+import '../../providers/users.dart';
+import '../../services/database.dart';
+import '../../utils/themes.dart';
+import 'shared_media.dart';
 
 class ChatProfile extends StatefulWidget {
   final QueryDocumentSnapshot chatDocument;
@@ -115,7 +112,7 @@ class _ChatProfileState extends State<ChatProfile> {
               ],
             ),
             StreamBuilder<QuerySnapshot>(
-                stream: MessageStreamFirebase.getUserChats(user.id),
+                stream: Database.instance.getUserChats(user.id),
                 builder: (context, snapshot) {
                   switch (snapshot.connectionState) {
                     case ConnectionState.waiting:

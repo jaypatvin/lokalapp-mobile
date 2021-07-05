@@ -1,148 +1,340 @@
-import 'dart:io';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import 'package:lokalapp/models/conversation.dart';
-import 'package:lokalapp/providers/users.dart';
-import 'package:lokalapp/screens/chat/chat_helpers.dart';
-import 'package:lokalapp/screens/chat/chat_profile.dart';
+import 'dart:async';
+import 'dart:convert';
 
-import 'package:lokalapp/utils/utility.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:photo_manager/photo_manager.dart';
 import 'package:provider/provider.dart';
-import 'package:uuid/uuid.dart';
-import '../../providers/chat.dart';
+
+import '../../models/conversation.dart';
 import '../../providers/user.dart';
+import '../../services/database.dart';
+import '../../services/local_image_service.dart';
+import '../../services/lokal_api_service.dart';
+import '../../utils/functions.utils.dart';
 import '../../utils/themes.dart';
 import '../../widgets/custom_app_bar.dart';
-import 'chat_bubble.dart';
-import 'chat_message_stream.dart';
-import 'package:swipe_to/swipe_to.dart';
-
-import 'new_message.dart';
+import '../../widgets/photo_picker_gallery/image_gallery_picker.dart';
+import '../../widgets/photo_picker_gallery/provider/custom_photo_provider.dart';
+import '../../widgets/photo_view_gallery/thumbnails/asset_photo_thumbnail.dart';
+import 'chat_profile.dart';
+import 'components/message_stream.dart';
+import 'components/reply_message.dart';
 
 class ChatView extends StatefulWidget {
   final QueryDocumentSnapshot chatDocument;
-  ChatView(this.chatDocument);
+
+  // There may be better ways to implement this
+  final bool createMessage;
+  final List<String> members;
+  final String shopId;
+  final String productId;
+
+  const ChatView(
+    this.createMessage, {
+    this.chatDocument,
+    this.members,
+    this.shopId,
+    this.productId,
+  });
+
   @override
   _ChatViewState createState() => _ChatViewState();
 }
 
 class _ChatViewState extends State<ChatView> {
-  bool showSpinner = false;
-  // String messageText;
-  final Uuid _uuid = Uuid();
-  var chatSnapshot;
+  // TODO: clean up repeated codes
+  // these repeated codes are from post_details.dart
 
-  bool show = false;
-  FocusNode focusNode = FocusNode();
-  bool sendButton = false;
-  File pickedImage;
-  TextEditingController _messageController = TextEditingController();
+  final TextEditingController chatInputController = TextEditingController();
+  final ScrollController scrollController = ScrollController();
+
+  String replyId = "";
   Conversation replyMessage;
-  bool isReplied = false;
-  var snap;
-  dynamic time = DateFormat.jm().format(DateTime.now());
+  bool showImagePicker = false;
+  CustomPickerDataProvider provider;
 
-  void replyToMessage(
-    Conversation message,
-  ) {
-    setState(() {
-      replyMessage = message;
-      isReplied = true;
-    });
+  // this is placed outside of the build function to
+  // avoid rebuilds on the StreamBuilder
+  Stream<QuerySnapshot> _messageStream;
+
+  // needed to keep track if creating a new message
+  bool _createNewMessage = false;
+  String _chatId = "";
+
+  @override
+  void initState() {
+    super.initState();
+
+    // we're reusing the image picker used in the post and comments section
+    provider = Provider.of<CustomPickerDataProvider>(context, listen: false);
+    provider.onPickMax.addListener(showMaxAssetsText);
+    // no need to add onPickListener (like in post_details) since we are not
+    // using SingleChildScrollView to build the screen
+    provider.pickedNotifier.addListener(() => setState(() {}));
+
+    providerInit();
+
+    if (!widget.createMessage) {
+      this._chatId = widget.chatDocument.id;
+      _messageStream = Database.instance.getConversations(this._chatId);
+    }
+    _createNewMessage = widget.createMessage;
   }
 
-  void cancelReply() {
-    setState(() {
-      replyMessage = null;
-    });
+  @override
+  void dispose() {
+    // we need to clear and remove the picked images and listeners
+    // so that we can use it in its initial state on other screens
+    provider.picked.clear();
+    provider.removeListener(showMaxAssetsText);
+
+    super.dispose();
   }
 
-  replied() {
-    double didReplyTrue = 120.0;
-    double didReplyFalse = 80.0;
-    setState(() {
-      isReplied ? didReplyTrue : didReplyFalse;
-      isReplied = false;
-    });
+  Future<void> providerInit() async {
+    final pathList = await PhotoManager.getAssetPathList(
+      onlyAll: true,
+      type: RequestType.image,
+    );
+    provider.resetPathList(pathList);
   }
 
-  void onSendMessage() async {
-    var user = Provider.of<CurrentUser>(context, listen: false);
-    var helper = Provider.of<ChatHelpers>(context, listen: false);
-    var chat = Provider.of<ChatProvider>(context, listen: false);
-    var lokalUser = Provider.of<Users>(context, listen: false);
-    var current = lokalUser.findById(widget.chatDocument.data()['members'][1]);
-    var chatList = {
-      'user_id': user.id,
-      'members': [
-        user.id,
-        widget.chatDocument.data()['members'][1] == current.id
-            ? current.id
-            : current.id
-      ],
-      'message': _messageController.text
+  void showMaxAssetsText() {
+    // TODO: maybe use OKToast plugin
+    final snackBar = SnackBar(
+      content: Text("You have reached the limit of 5 media per post."),
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
+
+  Future<void> onSendMessage() async {
+    final user = Provider.of<CurrentUser>(context, listen: false);
+    var service = Provider.of<LocalImageService>(context, listen: false);
+    var gallery = <Map<String, dynamic>>[];
+
+    for (var asset in provider.picked) {
+      var file = await asset.file;
+      var url = await service.uploadImage(file: file, name: 'post_photo');
+      gallery.add({
+        "url": url,
+        "type": "image",
+        "order": provider.pickIndex(asset),
+      });
+    }
+
+    // TODO: clean this up, we're still creating a body directly
+    final Map<String, dynamic> body = {
+      "user_id": user.id,
+      "reply_to": replyId,
+      "message": chatInputController.text,
+      "media": gallery,
     };
-    await chat.create(user.idToken, chatList);
-    _messageController.clear();
+
+    if (this._createNewMessage) {
+      body.addAll({
+        "members": widget.members,
+        "shop_id": widget.shopId,
+        "product_id": widget.productId,
+      });
+      LokalApiService.instance.chat
+          .create(
+        data: body,
+        idToken: user.idToken,
+      )
+          .then((response) {
+        if (response.statusCode != 200) {
+          return;
+        }
+
+        final Map<String, dynamic> body = jsonDecode(response.body);
+        final String id = body["data"]["id"];
+        setState(() {
+          this._chatId = body["data"]["id"];
+          this._createNewMessage = false;
+          this._messageStream = Database.instance.getConversations(id);
+        });
+      });
+    } else {
+      await LokalApiService.instance.chat.createConversation(
+        chatId: this._chatId,
+        data: body,
+        idToken: user.idToken,
+      );
+    }
+    chatInputController.clear();
+    setState(() {
+      provider.picked.clear();
+      replyId = "";
+      showImagePicker = false;
+    });
+  }
+
+  // TODO: create component to be used here and in comments
+  Widget buildChatTextField(BuildContext context) {
+    return TextField(
+      maxLines: null,
+      controller: chatInputController,
+      decoration: InputDecoration(
+        border: InputBorder.none,
+        focusedBorder: InputBorder.none,
+        enabledBorder: InputBorder.none,
+        errorBorder: InputBorder.none,
+        disabledBorder: InputBorder.none,
+        fillColor: Colors.white,
+        filled: true,
+        isDense: true,
+        contentPadding: EdgeInsets.symmetric(
+          horizontal: 25,
+          vertical: 10,
+        ),
+        hintText: "Type a message",
+        hintStyle: kTextStyle.copyWith(
+          fontWeight: FontWeight.normal,
+          color: Colors.grey[400],
+        ),
+        alignLabelWithHint: true,
+        suffixIcon: Padding(
+          padding: EdgeInsets.all(5.0),
+          child: CircleAvatar(
+            radius: 20.0,
+            backgroundColor: kTealColor,
+            child: IconButton(
+              icon: Icon(Icons.send),
+              onPressed: () => onSendMessage(),
+              color: Colors.white,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  // TODO: create component to be used here and in comments
+  Widget buildChatInputImages(BuildContext context) {
+    if (provider.picked.length <= 0) {
+      return Container();
+    }
+    return ListView.builder(
+      shrinkWrap: true,
+      scrollDirection: Axis.horizontal,
+      addRepaintBoundaries: true,
+      itemCount: provider.picked.length,
+      itemBuilder: (ctx, index) {
+        return Container(
+          margin: EdgeInsets.symmetric(horizontal: 0.5),
+          height: 100,
+          width: 100,
+          child: AssetPhotoThumbnail(
+            galleryItem: provider.picked[index],
+            onTap: () => openInputGallery(
+              context,
+              index,
+              provider.picked,
+            ),
+            onRemove: () => setState(() => provider.picked.removeAt(index)),
+            fit: BoxFit.cover,
+            decoration: BoxDecoration(
+              border: Border.all(
+                color: Colors.black.withOpacity(0.3),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget buildChatInput({BuildContext context}) {
+    return Column(
+      children: [
+        replyMessage != null
+            ? ReplyMessageWidget(
+                message: replyMessage,
+                onCancelReply: () => setState(() => replyMessage = null))
+            : Container(),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            GestureDetector(
+              child: Container(
+                padding: EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(100),
+                  border: Border.all(width: 1, color: kTealColor),
+                ),
+                child: Icon(
+                  MdiIcons.fileImageOutline,
+                  color: kTealColor,
+                ),
+              ),
+              onTap: () {
+                setState(() {
+                  this.showImagePicker = !this.showImagePicker;
+                });
+              },
+            ),
+            SizedBox(width: MediaQuery.of(context).size.width * 0.02),
+            Expanded(
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 200),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(30.0),
+                  ),
+                  border: Border.all(color: kTealColor),
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(30.0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      AnimatedContainer(
+                        height: provider.picked.length > 0 ? 100 : 0.0,
+                        duration: const Duration(milliseconds: 200),
+                        child: buildChatInputImages(context),
+                      ),
+                      buildChatTextField(context),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    var user = Provider.of<CurrentUser>(context, listen: false);
-    var helper = Provider.of<ChatHelpers>(context, listen: false);
-    var chat = Provider.of<ChatProvider>(context, listen: false);
-    var lokalUser = Provider.of<Users>(context, listen: false);
-    var current = lokalUser.findById(widget.chatDocument.data()['members'][1]);
     return Scaffold(
-      resizeToAvoidBottomInset: true,
       appBar: customAppBar(
-        addPaddingLeading: true,
-        topLeading: 23.0,
-        bottomLeading: 0.0,
-        rightLeading: 0.0,
-        leftLeading: 0.0,
-        addPaddingText: true,
-        topText: 28.0,
-        bottomText: 0.0,
-        leftText: 0.0,
-        rightText: 0.0,
-        addIcon: true,
-        actions: [
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 18),
-            child: IconButton(
-                icon: Icon(
-                  Icons.more_horiz,
-                  color: Colors.black,
-                  size: 30,
-                ),
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => ChatProfile(
-                                chatDocument: widget.chatDocument,
-                              )));
-                }),
-          )
-        ],
-        onPressedLeading: () {
-          Navigator.pop(context);
-        },
-        titleStyle: TextStyle(
-            fontFamily: "GoldplayBold",
-            fontSize: 22,
-            color: Colors.black,
-            fontWeight: FontWeight.w600),
-        titleText: widget.chatDocument.data()['title'],
-        leadingColor: Colors.black,
         backgroundColor: kYellowColor,
-        buildLeading: true,
-        bottom: PreferredSize(
-          preferredSize: Size(double.infinity, 20),
-          child: Container(),
-        ),
+        titleText: widget.chatDocument.data()["title"],
+        titleStyle: kTextStyle.copyWith(color: kNavyColor),
+        leadingColor: kNavyColor,
+        onPressedLeading: () => Navigator.pop(context),
+        actions: [
+          IconButton(
+            icon: Icon(
+              Icons.more_horiz,
+              color: kNavyColor,
+              size: 33,
+            ),
+            onPressed: () => Navigator.push(
+              context,
+              CupertinoPageRoute(
+                builder: (ctx) {
+                  return ChatProfile(chatDocument: widget.chatDocument);
+                },
+              ),
+            ),
+          ),
+        ],
       ),
       body: SafeArea(
         child: Column(
@@ -154,75 +346,44 @@ class _ChatViewState extends State<ChatView> {
                 decoration: BoxDecoration(
                   color: Colors.white,
                 ),
-                child: MessageStream(widget.chatDocument.id, (message) {
-                  replyToMessage(message);
-                  focusNode.requestFocus();
-                }, replyMessage),
+                child: _messageStream == null
+                    ? Center(
+                        child: Text(
+                          "Say Hi...",
+                          style: TextStyle(fontSize: 24, color: Colors.black),
+                        ),
+                      )
+                    : MessageStream(
+                        messageStream: this._messageStream,
+                        onRightSwipe: (id, conversation) {
+                          this.replyId = id;
+                          setState(() {
+                            replyMessage = conversation;
+                          });
+                        },
+                      ),
               ),
             ),
             Align(
               alignment: Alignment.bottomCenter,
-              child: Container(
-                height: replied(),
-                color: Color(0XFFF1FAFF),
-                child: Row(
-                  children: [
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Container(
-                          margin: const EdgeInsets.all(8.0),
-                          height: 40,
-                          width: 40,
-                          decoration: BoxDecoration(
-                              border: Border.all(width: 1, color: kTealColor),
-                              color: Colors.transparent,
-                              shape: BoxShape.circle),
-                          child: IconButton(
-                            icon: Icon(
-                              Icons.attach_file,
-                              color: kTealColor,
-                            ),
-                            onPressed: () async {
-                              var photo = await Provider.of<MediaUtility>(
-                                      context,
-                                      listen: false)
-                                  .showMediaDialog(context);
-                              setState(() {
-                                pickedImage = photo;
-                              });
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                    Expanded(
-                      child: NewMessageWidget(
-                        snap: widget.chatDocument,
-                        messageController: _messageController,
-                        focusNode: focusNode,
-                        idUser: current.id,
-                        onCancelReply: cancelReply,
-                        replyMessage: replyMessage,
-                        onSend: () async {
-                          var chatList = {
-                            'user_id': user.id,
-                            'members': [
-                              user.id,
-                              widget.chatDocument.data()['members'][1] ==
-                                      current.id
-                                  ? current.id
-                                  : current.id
-                            ],
-                            'message': _messageController.text
-                          };
-                          await chat.create(user.idToken, chatList);
-                          _messageController.clear();
-                        },
-                      ),
-                    ),
-                  ],
-                ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: buildChatInput(context: context),
+              ),
+            ),
+            SizedBox(
+              height: 20.0,
+            ),
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 200),
+              height: this.showImagePicker ? 200.0 : 0.0,
+              child: ImageGalleryPicker(
+                provider,
+                pickerHeight: 200,
+                assetHeight: 200,
+                assetWidth: 200,
+                thumbSize: 200,
+                enableSpecialItemBuilder: true,
               ),
             ),
           ],
@@ -230,62 +391,4 @@ class _ChatViewState extends State<ChatView> {
       ),
     );
   }
-}
-
-class MessageStream extends StatelessWidget {
-  final String chatId;
-  final Function onSwipedMessage;
-  final Conversation replyMessage;
-  MessageStream(this.chatId, this.onSwipedMessage, this.replyMessage);
-
-  @override
-  Widget build(BuildContext context) {
-    var user = Provider.of<CurrentUser>(context, listen: false);
-
-    return StreamBuilder<QuerySnapshot>(
-      stream: MessageStreamFirebase.getConversation(this.chatId),
-      builder: (context, snapshot) {
-        switch (snapshot.connectionState) {
-          case ConnectionState.waiting:
-            return Center(child: CircularProgressIndicator());
-          default:
-            if (snapshot.hasError) {
-              print(snapshot.error);
-              return buildText('Something Went Wrong Try later');
-            } else {
-              final messages = snapshot.data.docs;
-
-              return messages.isEmpty
-                  ? buildText('Say Hi..')
-                  : ListView.builder(
-                      physics: BouncingScrollPhysics(),
-                      reverse: true,
-                      itemCount: messages.length,
-                      itemBuilder: (context, index) {
-                        final Conversation message = Conversation.fromMap(
-                          messages[index].data(),
-                        );
-
-                        return SwipeTo(
-                          onRightSwipe: () => onSwipedMessage(message),
-                          child: MessagesWidget(
-                            isReply: replyMessage,
-                            message: message,
-                            isMe: message.senderId == user.id,
-                          ),
-                        );
-                      },
-                    );
-            }
-        }
-      },
-    );
-  }
-
-  Widget buildText(String text) => Center(
-        child: Text(
-          text,
-          style: TextStyle(fontSize: 24, color: Colors.black),
-        ),
-      );
 }

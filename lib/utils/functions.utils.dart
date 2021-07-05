@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lokalapp/models/timestamp_time_object.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:intl/intl.dart' show DateFormat;
 import '../models/operating_hours.dart';
@@ -76,4 +77,9 @@ extension StringExtension on String {
     if (this == "null" || isEmpty) return this;
     return "${this[0].toUpperCase()}${this.substring(1).toLowerCase()}";
   }
+}
+
+extension TimestampObjectExtension on TimestampObject {
+  DateTime toDateTime() => DateTime.fromMicrosecondsSinceEpoch(
+      this.seconds * 1000000 + this.nanoseconds ~/ 1000);
 }
