@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
@@ -61,6 +62,7 @@ class _ChatViewState extends State<ChatView> {
 
   // needed to keep track if creating a new message
   bool _createNewMessage = false;
+  String _chatId = "";
 
   @override
   void initState() {
@@ -75,7 +77,10 @@ class _ChatViewState extends State<ChatView> {
 
     providerInit();
 
-    _messageStream = Database.instance.getConversations(widget.chatDocument.id);
+    if (!widget.createMessage) {
+      this._chatId = widget.chatDocument.id;
+      _messageStream = Database.instance.getConversations(this._chatId);
+    }
     _createNewMessage = widget.createMessage;
   }
 
@@ -134,16 +139,27 @@ class _ChatViewState extends State<ChatView> {
         "shop_id": widget.shopId,
         "product_id": widget.productId,
       });
-      await LokalApiService.instance.chat.create(
+      LokalApiService.instance.chat
+          .create(
         data: body,
         idToken: user.idToken,
-      );
-      setState(() {
-        this._createNewMessage = false;
+      )
+          .then((response) {
+        if (response.statusCode != 200) {
+          return;
+        }
+
+        final Map<String, dynamic> body = jsonDecode(response.body);
+        final String id = body["data"]["id"];
+        setState(() {
+          this._chatId = body["data"]["id"];
+          this._createNewMessage = false;
+          this._messageStream = Database.instance.getConversations(id);
+        });
       });
     } else {
       await LokalApiService.instance.chat.createConversation(
-        chatId: widget.chatDocument.id,
+        chatId: this._chatId,
         data: body,
         idToken: user.idToken,
       );
@@ -330,7 +346,7 @@ class _ChatViewState extends State<ChatView> {
                 decoration: BoxDecoration(
                   color: Colors.white,
                 ),
-                child: widget.createMessage
+                child: _messageStream == null
                     ? Center(
                         child: Text(
                           "Say Hi...",
