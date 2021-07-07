@@ -5,8 +5,6 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/chat_model.dart';
-import '../../models/product.dart';
-import '../../models/user_shop.dart';
 import '../../providers/products.dart';
 import '../../providers/shops.dart';
 import '../../providers/user.dart';
@@ -17,13 +15,9 @@ import '../../utils/themes.dart';
 import '../../widgets/custom_app_bar.dart';
 import 'chat_helpers.dart';
 import 'chat_view.dart';
+import 'components/chat_avatar.dart';
 
-class _ChatAvatar {
-  final String displayName;
-  final String profilePhoto;
 
-  const _ChatAvatar(this.displayName, this.profilePhoto);
-}
 
 class Chat extends StatefulWidget {
   const Chat({Key key}) : super(key: key);
@@ -90,32 +84,7 @@ class _ChatState extends State<Chat> with AfterLayoutMixin<Chat> {
     );
   }
 
-  Widget buildUserAvatar(_ChatAvatar user, {double radius = 25.0}) {
-    final imgUrl = user.profilePhoto ?? "";
-    return Container(
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey[600]),
-        shape: BoxShape.circle,
-      ),
-      child: CircleAvatar(
-        radius: radius,
-        backgroundColor: Colors.transparent,
-        child: imgUrl.isNotEmpty
-            ? Container(
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  image: DecorationImage(
-                    fit: BoxFit.cover,
-                    image: NetworkImage(imgUrl),
-                  ),
-                ),
-              )
-            : Text(user.displayName[0]),
-      ),
-    );
-  }
-
-  Widget buildCircleAvatar(List<_ChatAvatar> members) {
+  Widget buildCircleAvatar(List<ChatMember> members) {
     final multUsers = members.length > 1;
     return Container(
       height: 50.0,
@@ -125,65 +94,73 @@ class _ChatState extends State<Chat> with AfterLayoutMixin<Chat> {
       child: Stack(
         alignment: multUsers ? Alignment.bottomLeft : Alignment.center,
         children: new List<Widget>.generate(members.length, (index) {
+          final member = members[index];
           if (multUsers) {
             return Positioned(
               top: 15.0 * index - 2.5 * members.length,
               right: 15.0 * index - 2.5 * members.length,
-              child: buildUserAvatar(members[index],
-                  radius: 45.0 / members.length),
+              child: ChatAvatar(
+                displayName: member.displayName,
+                displayPhoto: member.displayPhoto,
+                radius: 45.0 / members.length,
+              ),
             );
           } else {
-            return Positioned.fill(child: buildUserAvatar(members[index]));
+            return Positioned.fill(
+              child: ChatAvatar(
+                displayName: member.displayName,
+                displayPhoto: member.displayPhoto,
+              ),
+            );
           }
         }),
       ),
     );
   }
 
-  Widget buildChatList(AsyncSnapshot<QuerySnapshot> conversations) {
+  Widget buildChatList(AsyncSnapshot<QuerySnapshot> chatSnapshot) {
     return ListView.builder(
       padding: EdgeInsets.all(10.0),
-      itemCount: conversations.data.docs.length,
+      itemCount: chatSnapshot.data.docs.length,
       itemBuilder: (ctx, index) {
         final cUserId = Provider.of<CurrentUser>(context, listen: false).id;
         final document = {
-          ...conversations.data.docs[index].data(),
-          "id": conversations.data.docs[index].id,
+          ...chatSnapshot.data.docs[index].data(),
+          "id": chatSnapshot.data.docs[index].id,
         };
         final chat = ChatModel.fromMap(document);
-        final members = <_ChatAvatar>[];
+        final members = <ChatMember>[];
 
-        // ShopModel shop;
-        // Product product;
         String title = chat.title;
-
-        // if (chat.shopId != null && chat.shopId.isNotEmpty) {
-        //   shop =
-        //       Provider.of<Shops>(context, listen: false).findById(chat.shopId);
-        //   members.add(_ChatAvatar(shop.name, shop.profilePhoto));
-        // }
-        // if (chat.productId != null && chat.productId.isNotEmpty) {
-        //   product = Provider.of<Products>(context, listen: false)
-        //       .findById(chat.productId);
-        //   members.clear();
-        //   members.add(_ChatAvatar(product.name, product.productPhoto));
-        // }
 
         if (chat.chatType == ChatType.shop) {
           final shop =
               Provider.of<Shops>(context, listen: false).findById(chat.shopId);
-          members.add(_ChatAvatar(shop.name, shop.profilePhoto));
+          members.add(ChatMember(
+            displayName: shop.name,
+            displayPhoto: shop.profilePhoto,
+            type: chat.chatType,
+          ));
         } else if (chat.chatType == ChatType.product) {
           final product = Provider.of<Products>(context, listen: false)
               .findById(chat.productId);
-          members.add(_ChatAvatar(product.name, product.gallery[0].url));
+          members.add(ChatMember(
+            displayName: product.name,
+            displayPhoto: product.gallery[0].url,
+            type: chat.chatType,
+          ));
         } else {
-          final ids = chat.members..retainWhere((id) => cUserId != id);
+          final ids = [...chat.members];
+          ids.retainWhere((id) => cUserId != id);
 
           members.addAll(ids.map((id) {
             final user =
                 Provider.of<Users>(context, listen: false).findById(id);
-            return _ChatAvatar(user.displayName, user.profilePhoto);
+            return ChatMember(
+              displayName: user.displayName,
+              displayPhoto: user.profilePhoto,
+              type: chat.chatType,
+            );
           }).toList());
 
           final memberNames = members.map((user) => user.displayName).toList();
@@ -197,7 +174,7 @@ class _ChatState extends State<Chat> with AfterLayoutMixin<Chat> {
               MaterialPageRoute(
                 builder: (context) => ChatView(
                   false,
-                  chatDocument: conversations.data.docs[index],
+                  chat: chat,
                 ),
               ),
             );
