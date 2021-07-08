@@ -21,14 +21,23 @@ class Database {
     return _database;
   }
 
-  Stream getUserChats(String userId) {
+  Stream<QuerySnapshot> getUserChats(String userId) {
     return chatsRef.where("members", arrayContains: userId).snapshots();
   }
 
-  Stream getConversations(String chatId) {
+  Stream<QuerySnapshot> getConversations(String chatId) {
     return chatsRef
         .doc(chatId)
         .collection("conversation")
+        .orderBy("created_at", descending: true)
+        .snapshots();
+  }
+
+  Stream<QuerySnapshot> getConversationsWithMedia(String chatId) {
+    return chatsRef
+        .doc(chatId)
+        .collection("conversation")
+        .where("media", isNotEqualTo: [])
         .orderBy("created_at", descending: true)
         .snapshots();
   }

@@ -8,6 +8,7 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:photo_manager/photo_manager.dart';
 import 'package:provider/provider.dart';
 
+import '../../models/chat_model.dart';
 import '../../models/conversation.dart';
 import '../../providers/user.dart';
 import '../../services/database.dart';
@@ -24,7 +25,7 @@ import 'components/message_stream.dart';
 import 'components/reply_message.dart';
 
 class ChatView extends StatefulWidget {
-  final QueryDocumentSnapshot chatDocument;
+  final ChatModel chat;
 
   // There may be better ways to implement this
   final bool createMessage;
@@ -34,7 +35,7 @@ class ChatView extends StatefulWidget {
 
   const ChatView(
     this.createMessage, {
-    this.chatDocument,
+    this.chat,
     this.members,
     this.shopId,
     this.productId,
@@ -62,7 +63,8 @@ class _ChatViewState extends State<ChatView> {
 
   // needed to keep track if creating a new message
   bool _createNewMessage = false;
-  String _chatId = "";
+  String _chatTitle;
+  ChatModel _chat;
 
   @override
   void initState() {
@@ -78,8 +80,9 @@ class _ChatViewState extends State<ChatView> {
     providerInit();
 
     if (!widget.createMessage) {
-      this._chatId = widget.chatDocument.id;
-      _messageStream = Database.instance.getConversations(this._chatId);
+      this._chatTitle = widget.chat.title;
+      this._chat = widget.chat;
+      _messageStream = Database.instance.getConversations(this._chat.id);
     }
     _createNewMessage = widget.createMessage;
   }
@@ -150,16 +153,15 @@ class _ChatViewState extends State<ChatView> {
         }
 
         final Map<String, dynamic> body = jsonDecode(response.body);
-        final String id = body["data"]["id"];
         setState(() {
-          this._chatId = body["data"]["id"];
+          this._chat = ChatModel.fromMap(body["data"]);
           this._createNewMessage = false;
-          this._messageStream = Database.instance.getConversations(id);
+          this._messageStream = Database.instance.getConversations(_chat.id);
         });
       });
     } else {
       await LokalApiService.instance.chat.createConversation(
-        chatId: this._chatId,
+        chatId: this._chat.id,
         data: body,
         idToken: user.idToken,
       );
@@ -314,26 +316,26 @@ class _ChatViewState extends State<ChatView> {
     return Scaffold(
       appBar: customAppBar(
         backgroundColor: kYellowColor,
-        titleText: widget.chatDocument.data()["title"],
+        titleText: this._chatTitle,
         titleStyle: kTextStyle.copyWith(color: kNavyColor),
         leadingColor: kNavyColor,
         onPressedLeading: () => Navigator.pop(context),
         actions: [
           IconButton(
-            icon: Icon(
-              Icons.more_horiz,
-              color: kNavyColor,
-              size: 33,
-            ),
-            onPressed: () => Navigator.push(
-              context,
-              CupertinoPageRoute(
-                builder: (ctx) {
-                  return ChatProfile(chatDocument: widget.chatDocument);
-                },
+              icon: Icon(
+                Icons.more_horiz,
+                color: kNavyColor,
+                size: 33,
               ),
-            ),
-          ),
+              onPressed: () {
+                if (this._chat != null)
+                  Navigator.push(
+                    context,
+                    CupertinoPageRoute(
+                      builder: (ctx) => ChatProfile(this._chat),
+                    ),
+                  );
+              }),
         ],
       ),
       body: SafeArea(

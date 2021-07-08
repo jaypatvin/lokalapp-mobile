@@ -1,57 +1,96 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
 
+import '../../models/chat_model.dart';
+import '../../providers/shops.dart';
 import '../../providers/user.dart';
 import '../../providers/users.dart';
-import '../../services/database.dart';
-import '../../utils/themes.dart';
+import 'components/chat_avatar.dart';
 import 'shared_media.dart';
 
 class ChatProfile extends StatefulWidget {
-  final QueryDocumentSnapshot chatDocument;
-  ChatProfile({this.chatDocument});
+  final ChatModel chat;
+  ChatProfile(this.chat);
 
   @override
   _ChatProfileState createState() => _ChatProfileState();
 }
 
 class _ChatProfileState extends State<ChatProfile> {
-  buildCircleAvatar(String imgUrl, double height, double width) {
-    return Container(
-      height: height,
-      width: width,
-      decoration: new BoxDecoration(
-        color: Colors.transparent,
-        borderRadius: BorderRadius.all(const Radius.circular(50.0)),
-      ),
-      child: ClipOval(
-        child: imgUrl.isNotEmpty
-            ? Image.network(
-                imgUrl,
-                fit: BoxFit.cover,
-              )
-            : null,
-      ),
-    );
+  final _members = <ChatMember>[];
+
+  @override
+  void initState() {
+    super.initState();
+
+    final userId = Provider.of<CurrentUser>(context, listen: false).id;
+    switch (widget.chat.chatType) {
+      case ChatType.user:
+        final index = widget.chat.members.indexOf(userId);
+        widget.chat.members
+          ..removeAt(index)
+          ..insert(0, userId)
+          ..forEach((id) {
+            final user =
+                Provider.of<Users>(context, listen: false).findById(id);
+            _members.add(
+              ChatMember(
+                displayName: user.displayName,
+                id: user.id,
+                displayPhoto: user.profilePhoto,
+                type: ChatType.user,
+              ),
+            );
+          });
+        break;
+      case ChatType.shop:
+      case ChatType.product:
+        final user = Provider.of<CurrentUser>(context, listen: false);
+        final shop = Provider.of<Shops>(context, listen: false)
+            .findById(widget.chat.shopId);
+        _members.addAll([
+          ChatMember(
+            displayName: user.displayName,
+            id: user.id,
+            displayPhoto: user.profilePhoto,
+            type: ChatType.user,
+          ),
+          ChatMember(
+            displayName: shop.name,
+            id: shop.id,
+            displayPhoto: shop.profilePhoto,
+            type: ChatType.shop,
+          ),
+        ]);
+        break;
+      default:
+        break;
+    }
   }
 
-  Widget buildText(String text) => Center(
-        child: Text(
-          text,
-          style: TextStyle(fontSize: 24, color: Colors.black),
-        ),
-      );
+  Widget buildTitle() {
+    final names = <String>[];
+    final userId = Provider.of<CurrentUser>(context, listen: false).id;
+    _members.forEach((user) {
+      if (user.id == userId)
+        names.add("You");
+      else
+        names.add(user.displayName);
+    });
+
+    final title = names.join(", ");
+    return Text(title);
+  }
+
   @override
   Widget build(BuildContext context) {
-    var user = Provider.of<CurrentUser>(context, listen: false);
-
-    var lokalUser = Provider.of<Users>(context, listen: false);
-    var current = lokalUser.findById(widget.chatDocument.data()['members'][1]);
     return Scaffold(
-        backgroundColor: Colors.white,
-        body: SingleChildScrollView(
-          child: Column(children: [
+      backgroundColor: Colors.white,
+      body: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
             SizedBox(
               height: 30,
             ),
@@ -71,161 +110,72 @@ class _ChatProfileState extends State<ChatProfile> {
               ],
             ),
             SizedBox(
-              height: 10,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                buildCircleAvatar(user.profilePhoto ?? "", 100.0, 100.0),
-                SizedBox(
-                  width: 5,
-                ),
-                buildCircleAvatar(
-                    widget.chatDocument.data()['members'][1] == current.id
-                        ? current.profilePhoto
-                        : null,
-                    100.0,
-                    100.0),
-              ],
+              height: 100.0,
+              child: ListView.builder(
+                itemCount: _members.length,
+                physics: NeverScrollableScrollPhysics(),
+                scrollDirection: Axis.horizontal,
+                shrinkWrap: true,
+                itemBuilder: (ctx, index) {
+                  final displayName = _members[index].displayName;
+                  final imgUrl = _members[index].displayPhoto ?? "";
+                  return ChatAvatar(
+                    displayName: displayName,
+                    displayPhoto: imgUrl,
+                    radius: 50.0,
+                  );
+                },
+              ),
             ),
             SizedBox(
               height: 10,
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                widget.chatDocument.data()['members'][0] == user.id
-                    ? Text(
-                        "You , ",
-                        style: TextStyle(
-                            fontWeight: FontWeight.w700, fontSize: 18.0),
-                      )
-                    : user.firstName,
-                Text(
-                  widget.chatDocument.data()['members'][1] == current.id
-                      ? current.firstName + " " + current.lastName
-                      : '',
-                  style: TextStyle(fontWeight: FontWeight.w700, fontSize: 18.0),
-                ),
-              ],
+            Center(
+              child: buildTitle(),
             ),
-            StreamBuilder<QuerySnapshot>(
-                stream: Database.instance.getUserChats(user.id),
-                builder: (context, snapshot) {
-                  switch (snapshot.connectionState) {
-                    case ConnectionState.waiting:
-                      return Center(child: CircularProgressIndicator());
-                    default:
-                      if (snapshot.hasError) {
-                        print(snapshot.error);
-                        return Center(
-                            child: buildText('Something Went Wrong Try later'));
-                      } else {
-                        final data = snapshot.data.docs;
-
-                        return ListView.builder(
-                            shrinkWrap: true,
-                            physics: BouncingScrollPhysics(),
-                            reverse: true,
-                            itemCount: data.length,
-                            itemBuilder: (context, index) {
-                              return Container(
-                                  height: MediaQuery.of(context).size.height,
-                                  width: MediaQuery.of(context).size.width,
-                                  child: Column(children: [
-                                    SizedBox(
-                                      height: 30,
-                                    ),
-                                    Theme(
-                                      data: ThemeData(
-                                          unselectedWidgetColor: kTealColor,
-                                          buttonColor: kTealColor,
-                                          accentColor: kTealColor),
-                                      child: ExpansionTile(
-                                        title: Text(
-                                          "Chat Members",
-                                          style: TextStyle(
-                                              fontSize: 16.0,
-                                              fontWeight: FontWeight.w500),
-                                        ),
-                                        children: <Widget>[
-                                          ListTile(
-                                            leading: buildCircleAvatar(
-                                                user.profilePhoto ?? '',
-                                                50.0,
-                                                50.0),
-                                            title: Text(widget.chatDocument
-                                                        .data()['members'][0] ==
-                                                    user.id
-                                                ? user.firstName +
-                                                    " " +
-                                                    user.lastName
-                                                : ""),
-                                          ),
-                                          SizedBox(
-                                            width: 10,
-                                          ),
-                                          ListTile(
-                                            leading: buildCircleAvatar(
-                                                widget.chatDocument.data()[
-                                                            'members'][1] ==
-                                                        current.id
-                                                    ? current.profilePhoto
-                                                    : null,
-                                                50.0,
-                                                50.0),
-                                            title: Text(widget.chatDocument
-                                                        .data()['members'][1] ==
-                                                    current.id
-                                                ? current.firstName +
-                                                    " " +
-                                                    current.lastName
-                                                : ''),
-                                          ),
-                                          SizedBox(
-                                            width: 20,
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    Theme(
-                                      data: ThemeData(
-                                          unselectedWidgetColor: kTealColor,
-                                          buttonColor: kTealColor,
-                                          accentColor: kTealColor),
-                                      child: ListTile(
-                                        leading: Text(
-                                          "Shared Media",
-                                          style: TextStyle(
-                                              fontSize: 16.0,
-                                              fontWeight: FontWeight.w600),
-                                        ),
-                                        trailing: Container(
-                                          width: 28,
-                                          child: IconButton(
-                                              icon: Icon(
-                                                Icons.arrow_forward,
-                                                color: kTealColor,
-                                                size: 18.0,
-                                              ),
-                                              onPressed: () {
-                                                Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            SharedMedia()));
-                                              }),
-                                        ),
-                                      ),
-                                    ),
-                                  ]));
-                            });
-                      }
-                  }
-                })
-          ]),
-        ));
+            ListTileTheme(
+              minVerticalPadding: 0,
+              child: ExpansionTile(
+                title: Text("Chat Members"),
+                children: [
+                  ListView.builder(
+                    itemCount: _members.length,
+                    padding: EdgeInsets.zero,
+                    physics: NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    itemBuilder: (ctx, index) {
+                      final user = _members[index];
+                      final displayName =
+                          user.displayName + (index == 0 ? " (You)" : "");
+                      return ListTile(
+                        leading: ChatAvatar(
+                          displayName: user.displayName,
+                          displayPhoto: user.displayPhoto,
+                          radius: 25.0,
+                        ),
+                        title: Text(displayName),
+                      );
+                    },
+                  )
+                ],
+              ),
+            ),
+            ListTile(
+              title: Text("Shared Media"),
+              trailing: IconButton(
+                icon: Icon(MdiIcons.chevronRight),
+                padding: EdgeInsets.zero,
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => SharedMedia()),
+                  );
+                },
+              ),
+            )
+          ],
+        ),
+      ),
+    );
   }
 }
