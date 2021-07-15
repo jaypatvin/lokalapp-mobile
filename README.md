@@ -1,5 +1,6 @@
-# PROJECT ARCHITECTURE FOR LOKAL APP:
+# LOKAL APP:
 
+## Folder Structure
 1. ASSETS - LOGOS/ IMAGES,...
 2. FONTS
 3. FUNCTIONS - CLOUD FUNCTIONS FOR FIREBASE
@@ -32,3 +33,5 @@
 
 Flutter SDK for build: `>=2.7.0 <3.0.0` <br>
 Android SDK for build: `>=16.0 <=30.0`
+
+
