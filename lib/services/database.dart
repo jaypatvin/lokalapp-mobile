@@ -10,8 +10,10 @@ final usersRef = FirebaseFirestore.instance.collection("users");
 final inviteRef = FirebaseFirestore.instance.collection("invites");
 final shopRef = FirebaseFirestore.instance.collection("shops");
 final chatsRef = FirebaseFirestore.instance.collection("chats");
+final ordersRef = FirebaseFirestore.instance.collection("orders");
 final Reference storageRef = FirebaseStorage.instance.ref();
 
+// this class should be refactored for each collection
 class Database {
   static Database _database;
   static Database get instance {
@@ -19,6 +21,39 @@ class Database {
       _database = Database();
     }
     return _database;
+  }
+
+  CollectionReference getOrderStatuses() {
+    return FirebaseFirestore.instance.collection("order_status");
+  }
+
+  Stream<QuerySnapshot> getUserOrders(String userId, {int statusCode}) {
+    if (statusCode != null) {
+      return ordersRef
+          .where("buyer_id", isEqualTo: userId)
+          .where("status_code", isEqualTo: statusCode)
+          .orderBy("created_at", descending: true)
+          .snapshots();
+    }
+
+    return ordersRef
+        .where("buyer_id", isEqualTo: userId)
+        .orderBy("created_at", descending: true)
+        .snapshots();
+  }
+
+  Stream<QuerySnapshot> getShopOrders(String shopId, {int statusCode}) {
+    if (statusCode != null) {
+      return ordersRef
+          .where("shop_id", isEqualTo: shopId)
+          .where("status_code", isEqualTo: statusCode)
+          .orderBy("created_at", descending: true)
+          .snapshots();
+    }
+    return ordersRef
+        .where("shop_id", isEqualTo: shopId)
+        .orderBy("created_at", descending: true)
+        .snapshots();
   }
 
   Stream<QuerySnapshot> getUserChats(String userId) {
