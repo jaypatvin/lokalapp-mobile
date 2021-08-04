@@ -1,10 +1,11 @@
 import 'package:after_layout/after_layout.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
+import '../../services/database.dart';
 import '../../utils/shared_preference.dart';
 import '../../utils/themes.dart';
-import 'buyer/my_orders.dart';
-import 'seller/my_shop_seller.dart';
+import 'transactions.dart';
 
 class Activity extends StatefulWidget {
   @override
@@ -16,6 +17,9 @@ class _ActivityState extends State<Activity>
   var _userSharedPreferences = UserSharedPreferences();
   TabController _tabController;
   Color _indicatorColor;
+
+  final buyerStatuses = <int, String>{};
+  final sellerStatuses = <int, String>{};
 
   @override
   void initState() {
@@ -51,56 +55,69 @@ class _ActivityState extends State<Activity>
         color: _indicatorColor,
       ),
       tabs: [
-        Tab(
-          text: 'My Orders',
-        ),
-        Tab(
-          text: 'My Shop',
-        ),
+        Tab(text: 'My Orders'),
+        Tab(text: 'My Shop'),
       ],
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 2,
-      child: Scaffold(
-        appBar: AppBar(
-          elevation: 0,
-          backgroundColor: const Color(0xFFF1FAFF),
-          bottom: PreferredSize(
-            preferredSize: _tabBar.preferredSize,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: _tabBar,
-            ),
-          ),
-          title: Center(
-            child: Text(
-              'Activity',
-              style: TextStyle(
-                color: Colors.black,
+    return FutureBuilder(
+      // could probably use Firebase.instance?
+      future: Database.instance.getOrderStatuses().get(),
+      builder: (ctx, AsyncSnapshot<QuerySnapshot> snapshot) {
+        if (snapshot != null &&
+            (snapshot.connectionState != ConnectionState.done ||
+                snapshot.hasError)) {
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+        snapshot.data.docs.forEach((doc) {
+          final statusCode = int.parse(doc.id);
+          final dataMap = doc.data();
+          buyerStatuses[statusCode] = dataMap["buyer_status"];
+          sellerStatuses[statusCode] = dataMap["seller_status"];
+        });
+        return DefaultTabController(
+          length: 2,
+          child: Scaffold(
+            appBar: AppBar(
+              elevation: 0,
+              backgroundColor: const Color(0xFFF1FAFF),
+              bottom: PreferredSize(
+                preferredSize: _tabBar.preferredSize,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: _tabBar,
+                ),
+              ),
+              title: Center(
+                child: Text(
+                  'Activity',
+                  style: TextStyle(
+                    color: Colors.black,
+                  ),
+                ),
               ),
             ),
+            body: TabBarView(
+              physics: NeverScrollableScrollPhysics(),
+              controller: _tabController,
+              children: [
+                Transactions(buyerStatuses, true),
+                Transactions(sellerStatuses, false),
+              ],
+            ),
           ),
-        ),
-        body: TabBarView(
-          physics: NeverScrollableScrollPhysics(),
-          controller: _tabController,
-          children: [
-            MyOrders(),
-            MyShopSeller(),
-          ],
-        ),
-      ),
+        );
+      },
     );
   }
 
   @override
   void afterFirstLayout(BuildContext context) {
-    // TODO: implement afterFirstLayout
-
     _userSharedPreferences.isActivity ? Container() : showAlert(context);
     setState(() {
       _userSharedPreferences.isActivity = true;
