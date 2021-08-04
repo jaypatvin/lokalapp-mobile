@@ -62,7 +62,7 @@ Widget customAppBar({
               style: TextStyle(
                 color: Color(0xFFFFC700),
                 fontFamily: "Goldplay",
-                fontWeight: FontWeight.w800,
+                fontWeight: FontWeight.w600,
               ).merge(titleStyle),
             ),
           )
