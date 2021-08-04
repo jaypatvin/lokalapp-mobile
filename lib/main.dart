@@ -1,12 +1,10 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:lokalapp/providers/chat.dart';
-import 'package:lokalapp/screens/chat/chat_helpers.dart';
 import 'package:provider/provider.dart';
 
 import 'providers/activities.dart';
 import 'providers/cart.dart';
+import 'providers/chat.dart';
 import 'providers/invite.dart';
 import 'providers/post_requests/auth_body.dart';
 import 'providers/post_requests/operating_hours_body.dart';
@@ -20,6 +18,7 @@ import 'providers/user.dart';
 import 'providers/user_auth.dart';
 import 'providers/users.dart';
 import 'root/root.dart';
+import 'screens/chat/chat_helpers.dart';
 import 'services/local_image_service.dart';
 import 'utils/shared_preference.dart';
 import 'utils/utility.dart';
@@ -53,6 +52,7 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
+    // TODO: clean this up -> separate file
     return MultiProvider(
       providers: [
         //shared preference
@@ -112,10 +112,8 @@ class _MyAppState extends State<MyApp> {
             debugShowCheckedModeBanner: false,
             title: 'Flutter Demo',
             theme: ThemeData(
-              // primarySwatch: kTealColor,
-              textTheme: Theme.of(context).textTheme.apply(
-                    fontFamily: 'GoldplayBold',
-                  ),
+              fontFamily: "Goldplay",
+              scaffoldBackgroundColor: Colors.white,
             ),
             home: Root(),
           );
