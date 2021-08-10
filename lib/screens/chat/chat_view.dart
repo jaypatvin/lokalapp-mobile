@@ -4,7 +4,7 @@ import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:lokalapp/services/firestore.utils.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:provider/provider.dart';
 
@@ -14,22 +14,20 @@ import '../../providers/user.dart';
 import '../../services/database.dart';
 import '../../services/local_image_service.dart';
 import '../../services/lokal_api_service.dart';
-import '../../utils/functions.utils.dart';
 import '../../utils/themes.dart';
 import '../../widgets/custom_app_bar.dart';
 import '../../widgets/photo_picker_gallery/image_gallery_picker.dart';
 import '../../widgets/photo_picker_gallery/provider/custom_photo_provider.dart';
-import '../../widgets/photo_view_gallery/thumbnails/asset_photo_thumbnail.dart';
 import 'chat_profile.dart';
+import 'components/chat_input.dart';
 import 'components/message_stream.dart';
-import 'components/reply_message.dart';
 
 class ChatView extends StatefulWidget {
   final ChatModel chat;
 
   // There may be better ways to implement this
   final bool createMessage;
-  final List<String> members;
+  final List<String> members; // should include shopId or productId
   final String shopId;
   final String productId;
 
@@ -63,7 +61,7 @@ class _ChatViewState extends State<ChatView> {
 
   // needed to keep track if creating a new message
   bool _createNewMessage = false;
-  String _chatTitle;
+  String _chatTitle = "New message";
   ChatModel _chat;
 
   @override
@@ -83,6 +81,18 @@ class _ChatViewState extends State<ChatView> {
       this._chatTitle = widget.chat.title;
       this._chat = widget.chat;
       _messageStream = Database.instance.getConversations(this._chat.id);
+    } else {
+      checkExistingChat().then((chat) {
+        if (chat == null) {
+          return;
+        }
+
+        setState(() {
+          this._chat = chat;
+          this._chatTitle = chat.title;
+          this._messageStream = Database.instance.getConversations(chat.id);
+        });
+      });
     }
     _createNewMessage = widget.createMessage;
   }
@@ -105,15 +115,30 @@ class _ChatViewState extends State<ChatView> {
     provider.resetPathList(pathList);
   }
 
+  Future<ChatModel> checkExistingChat() async {
+    final userId = Provider.of<CurrentUser>(context, listen: false).id;
+    final hashId = hashArrayOfStrings([...widget.members, userId]);
+    var chat = await Database.instance.getGroupChatByHash(hashId);
+    if (chat == null) {
+      chat = await Database.instance.getChatById(hashId);
+    }
+
+    if (chat != null) {
+      return ChatModel.fromMap(chat);
+    }
+
+    return null;
+  }
+
   void showMaxAssetsText() {
     // TODO: maybe use OKToast plugin
     final snackBar = SnackBar(
-      content: Text("You have reached the limit of 5 media per post."),
+      content: Text("You have reached the limit of 5 media per message."),
     );
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
-  Future<void> onSendMessage() async {
+  void onSendMessage() async {
     final user = Provider.of<CurrentUser>(context, listen: false);
     var service = Provider.of<LocalImageService>(context, listen: false);
     var gallery = <Map<String, dynamic>>[];
@@ -138,26 +163,23 @@ class _ChatViewState extends State<ChatView> {
 
     if (this._createNewMessage) {
       body.addAll({
-        "members": widget.members,
+        "members": [...widget.members, user.id],
         "shop_id": widget.shopId,
         "product_id": widget.productId,
       });
-      LokalApiService.instance.chat
-          .create(
-        data: body,
-        idToken: user.idToken,
-      )
-          .then((response) {
-        if (response.statusCode != 200) {
-          return;
-        }
+      final response = await LokalApiService.instance.chat
+          .create(data: body, idToken: user.idToken);
 
-        final Map<String, dynamic> body = jsonDecode(response.body);
-        setState(() {
-          this._chat = ChatModel.fromMap(body["data"]);
-          this._createNewMessage = false;
-          this._messageStream = Database.instance.getConversations(_chat.id);
-        });
+      if (response.statusCode != 200) {
+        return;
+      }
+      final Map<String, dynamic> _body = jsonDecode(response.body);
+      final _chat = await Database.instance.getChatById(_body["data"]["id"]);
+      setState(() {
+        this._chat = ChatModel.fromMap(_chat);
+        this._chatTitle = this._chat.title;
+        this._createNewMessage = false;
+        this._messageStream = Database.instance.getConversations(this._chat.id);
       });
     } else {
       await LokalApiService.instance.chat.createConversation(
@@ -174,140 +196,77 @@ class _ChatViewState extends State<ChatView> {
     });
   }
 
-  // TODO: create component to be used here and in comments
-  Widget buildChatTextField(BuildContext context) {
-    return TextField(
-      maxLines: null,
-      controller: chatInputController,
-      decoration: InputDecoration(
-        border: InputBorder.none,
-        focusedBorder: InputBorder.none,
-        enabledBorder: InputBorder.none,
-        errorBorder: InputBorder.none,
-        disabledBorder: InputBorder.none,
-        fillColor: Colors.white,
-        filled: true,
-        isDense: true,
-        contentPadding: EdgeInsets.symmetric(
-          horizontal: 25,
-          vertical: 10,
+  Widget _buildMessages() {
+    if (_messageStream == null) {
+      return Center(
+        child: Text(
+          "Say Hi...",
+          style: TextStyle(fontSize: 24, color: Colors.black),
         ),
-        hintText: "Type a message",
-        hintStyle: kTextStyle.copyWith(
-          fontWeight: FontWeight.normal,
-          color: Colors.grey[400],
-        ),
-        alignLabelWithHint: true,
-        suffixIcon: Padding(
-          padding: EdgeInsets.all(5.0),
-          child: CircleAvatar(
-            radius: 20.0,
-            backgroundColor: kTealColor,
-            child: IconButton(
-              icon: Icon(Icons.send),
-              onPressed: () => onSendMessage(),
-              color: Colors.white,
-            ),
-          ),
+      );
+    }
+    return MessageStream(
+      messageStream: this._messageStream,
+      onRightSwipe: (id, conversation) {
+        this.replyId = id;
+        setState(() {
+          replyMessage = conversation;
+        });
+      },
+    );
+  }
+
+  Widget _buildChatInput() {
+    return Align(
+      alignment: Alignment.bottomCenter,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+        child: ChatInput(
+          onMessageSend: onSendMessage,
+          onShowImagePicker: () => setState(() {
+            this.showImagePicker = !this.showImagePicker;
+          }),
+          onCancelReply: () => setState(() => replyMessage = null),
+          onImageRemove: (index) => setState(() {
+            provider.picked.removeAt(index);
+          }),
+          chatInputController: this.chatInputController,
+          replyMessage: this.replyMessage,
+          images: this.provider.picked,
         ),
       ),
     );
   }
 
-  // TODO: create component to be used here and in comments
-  Widget buildChatInputImages(BuildContext context) {
-    if (provider.picked.length <= 0) {
-      return Container();
-    }
-    return ListView.builder(
-      shrinkWrap: true,
-      scrollDirection: Axis.horizontal,
-      addRepaintBoundaries: true,
-      itemCount: provider.picked.length,
-      itemBuilder: (ctx, index) {
-        return Container(
-          margin: EdgeInsets.symmetric(horizontal: 0.5),
-          height: 100,
-          width: 100,
-          child: AssetPhotoThumbnail(
-            galleryItem: provider.picked[index],
-            onTap: () => openInputGallery(
-              context,
-              index,
-              provider.picked,
-            ),
-            onRemove: () => setState(() => provider.picked.removeAt(index)),
-            fit: BoxFit.cover,
-            decoration: BoxDecoration(
-              border: Border.all(
-                color: Colors.black.withOpacity(0.3),
-              ),
-            ),
-          ),
-        );
-      },
+  Widget _buildImagePicker() {
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 200),
+      height: this.showImagePicker ? 200.0 : 0.0,
+      child: ImageGalleryPicker(
+        provider,
+        pickerHeight: 200,
+        assetHeight: 200,
+        assetWidth: 200,
+        thumbSize: 200,
+        enableSpecialItemBuilder: true,
+      ),
     );
   }
 
-  Widget buildChatInput({BuildContext context}) {
-    return Column(
-      children: [
-        replyMessage != null
-            ? ReplyMessageWidget(
-                message: replyMessage,
-                onCancelReply: () => setState(() => replyMessage = null))
-            : Container(),
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            GestureDetector(
-              child: Container(
-                padding: EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(100),
-                  border: Border.all(width: 1, color: kTealColor),
-                ),
-                child: Icon(
-                  MdiIcons.fileImageOutline,
-                  color: kTealColor,
-                ),
-              ),
-              onTap: () {
-                setState(() {
-                  this.showImagePicker = !this.showImagePicker;
-                });
-              },
-            ),
-            SizedBox(width: MediaQuery.of(context).size.width * 0.02),
-            Expanded(
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 200),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(30.0),
-                  ),
-                  border: Border.all(color: kTealColor),
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(30.0),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      AnimatedContainer(
-                        height: provider.picked.length > 0 ? 100 : 0.0,
-                        duration: const Duration(milliseconds: 200),
-                        child: buildChatInputImages(context),
-                      ),
-                      buildChatTextField(context),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ],
+  Widget _buildDetailsButton() {
+    return IconButton(
+      icon: Icon(
+        Icons.more_horiz,
+        color: kNavyColor,
+        size: 33,
+      ),
+      onPressed: () {
+        if (this._chat != null)
+          Navigator.push(
+            context,
+            CupertinoPageRoute(builder: (ctx) => ChatProfile(this._chat)),
+          );
+      },
     );
   }
 
@@ -320,23 +279,7 @@ class _ChatViewState extends State<ChatView> {
         titleStyle: kTextStyle.copyWith(color: kNavyColor),
         leadingColor: kNavyColor,
         onPressedLeading: () => Navigator.pop(context),
-        actions: [
-          IconButton(
-              icon: Icon(
-                Icons.more_horiz,
-                color: kNavyColor,
-                size: 33,
-              ),
-              onPressed: () {
-                if (this._chat != null)
-                  Navigator.push(
-                    context,
-                    CupertinoPageRoute(
-                      builder: (ctx) => ChatProfile(this._chat),
-                    ),
-                  );
-              }),
-        ],
+        actions: [_buildDetailsButton()],
       ),
       body: SafeArea(
         child: Column(
@@ -348,46 +291,14 @@ class _ChatViewState extends State<ChatView> {
                 decoration: BoxDecoration(
                   color: Colors.white,
                 ),
-                child: _messageStream == null
-                    ? Center(
-                        child: Text(
-                          "Say Hi...",
-                          style: TextStyle(fontSize: 24, color: Colors.black),
-                        ),
-                      )
-                    : MessageStream(
-                        messageStream: this._messageStream,
-                        onRightSwipe: (id, conversation) {
-                          this.replyId = id;
-                          setState(() {
-                            replyMessage = conversation;
-                          });
-                        },
-                      ),
+                child: _buildMessages(),
               ),
             ),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: buildChatInput(context: context),
-              ),
-            ),
+            _buildChatInput(),
             SizedBox(
               height: 20.0,
             ),
-            AnimatedContainer(
-              duration: const Duration(milliseconds: 200),
-              height: this.showImagePicker ? 200.0 : 0.0,
-              child: ImageGalleryPicker(
-                provider,
-                pickerHeight: 200,
-                assetHeight: 200,
-                assetWidth: 200,
-                thumbSize: 200,
-                enableSpecialItemBuilder: true,
-              ),
-            ),
+            _buildImagePicker(),
           ],
         ),
       ),
