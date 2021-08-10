@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../../models/order.dart';
 import '../../../../../utils/themes.dart';
 import '../message_buttons.dart';
 import '../order_actions.dart';
@@ -8,14 +9,16 @@ import '../view_payment_button.dart';
 
 class Status300Buttons extends StatelessWidget {
   final bool isBuyer;
+  final Order order;
   final void Function(OrderAction) onPress;
   final String paymentMethod;
-  const Status300Buttons(
-      {Key key,
-      this.isBuyer = true,
-      @required this.onPress,
-      @required this.paymentMethod})
-      : super(key: key);
+  const Status300Buttons({
+    Key key,
+    this.isBuyer = true,
+    @required this.order,
+    @required this.onPress,
+    @required this.paymentMethod,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +55,7 @@ class Status300Buttons extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              MessageBuyerButton(),
+              MessageBuyerButton(order: this.order),
               SizedBox(width: MediaQuery.of(context).size.width * 0.01),
               OrderButton(
                 "Confirm Payment",

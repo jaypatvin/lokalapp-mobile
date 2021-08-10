@@ -138,38 +138,44 @@ class OrderDetailsButtons extends StatelessWidget {
       case 100:
         return Status100Buttons(
           isBuyer: this.isBuyer,
+          order: this.order,
           onPress: (action) => this.onPress(context, action),
         );
       case 200:
         return Status200Buttons(
           isBuyer: this.isBuyer,
+          order: this.order,
           onPress: (action) => this.onPress(context, action),
         );
       case 300:
         return Status300Buttons(
           isBuyer: this.isBuyer,
+          order: this.order,
           onPress: (action) => this.onPress(context, action),
           paymentMethod: this.order.paymentMethod,
         );
       case 400:
         return Status400Buttons(
           isBuyer: this.isBuyer,
+          order: this.order,
           onPress: (action) => this.onPress(context, action),
         );
       case 500:
         return Status500Buttons(
           isBuyer: this.isBuyer,
+          order: this.order,
           onPress: (action) => this.onPress(context, action),
         );
       case 600:
         return Status600Buttons(
           isBuyer: this.isBuyer,
+          order: this.order,
           onPress: (action) => this.onPress(context, action),
         );
       default:
         return this.isBuyer
-            ? Row(children: [MessageSellerButton()])
-            : Row(children: [MessageBuyerButton()]);
+            ? Row(children: [MessageSellerButton(order: this.order)])
+            : Row(children: [MessageBuyerButton(order: this.order)]);
     }
   }
 }

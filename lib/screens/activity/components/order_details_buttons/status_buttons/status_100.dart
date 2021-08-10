@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../../models/order.dart';
 import '../../../../../utils/themes.dart';
 import '../message_buttons.dart';
 import '../order_actions.dart';
@@ -7,10 +8,12 @@ import '../order_button.dart';
 
 class Status100Buttons extends StatelessWidget {
   final bool isBuyer;
+  final Order order;
   final void Function(OrderAction) onPress;
   const Status100Buttons({
     Key key,
     this.isBuyer = true,
+    @required this.order,
     @required this.onPress,
   }) : super(key: key);
 
@@ -39,7 +42,7 @@ class Status100Buttons extends StatelessWidget {
         children: [
           Row(
             children: [
-              MessageBuyerButton(),
+              MessageBuyerButton(order: this.order),
             ],
           ),
           SizedBox(height: MediaQuery.of(context).size.height * 0.01),
