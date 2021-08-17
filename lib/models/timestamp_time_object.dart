@@ -53,3 +53,8 @@ class TimestampObject {
   @override
   int get hashCode => seconds.hashCode ^ nanoseconds.hashCode;
 }
+
+extension TimestampObjectExtension on TimestampObject {
+  DateTime toDateTime() => DateTime.fromMicrosecondsSinceEpoch(
+      this.seconds * 1000000 + this.nanoseconds ~/ 1000);
+}
