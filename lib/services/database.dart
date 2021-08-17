@@ -87,7 +87,10 @@ class Database {
   }
 
   Stream<QuerySnapshot> getUserChats(String userId) {
-    return chatsRef.where("members", arrayContains: userId).snapshots();
+    return chatsRef
+        .where("members", arrayContains: userId)
+        .orderBy("created_at", descending: true)
+        .snapshots();
   }
 
   Stream<QuerySnapshot> getConversations(String chatId) {
