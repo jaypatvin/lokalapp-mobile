@@ -12,12 +12,9 @@ import '../../providers/users.dart';
 import '../../services/database.dart';
 import '../../utils/shared_preference.dart';
 import '../../utils/themes.dart';
-import '../../widgets/custom_app_bar.dart';
 import 'chat_helpers.dart';
 import 'chat_view.dart';
 import 'components/chat_avatar.dart';
-
-
 
 class Chat extends StatefulWidget {
   const Chat({Key key}) : super(key: key);
@@ -26,15 +23,79 @@ class Chat extends StatefulWidget {
   _ChatState createState() => _ChatState();
 }
 
-class _ChatState extends State<Chat> with AfterLayoutMixin<Chat> {
+class _ChatState extends State<Chat>
+    with TickerProviderStateMixin, AfterLayoutMixin<Chat> {
+  TabController _tabController;
+  Color _indicatorColor;
+
+  AnimationController _animationController;
+  Animation<Color> _colorAnimation;
+
   final TextEditingController _searchController = TextEditingController();
   final _userSharedPreferences = UserSharedPreferences();
 
   @override
   void initState() {
     super.initState();
+    _tabController = TabController(length: 2, vsync: this);
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 250),
+    );
+
+    _indicatorColor = kTealColor;
+    _tabController.addListener(_tabSelectionHandler);
+    _colorAnimation = ColorTween(
+      begin: kTealColor,
+      end: kPurpleColor,
+    ).animate(_animationController)
+      ..addListener(() {
+        setState(() {});
+      });
 
     _userSharedPreferences.init();
+  }
+
+  void _tabSelectionHandler() {
+    setState(() {
+      switch (_tabController?.index) {
+        case 0:
+          _indicatorColor = kTealColor;
+          _animationController.reverse();
+          break;
+        case 1:
+          _indicatorColor = kPurpleColor;
+          _animationController.forward();
+          break;
+      }
+    });
+  }
+
+  Widget _tabChild({
+    @required String imgUrl,
+    @required String name,
+    @required int index,
+  }) {
+    final width = MediaQuery.of(context).size.width;
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Row(
+        children: [
+          ChatAvatar(
+            displayName: name,
+            displayPhoto: imgUrl,
+            radius: index == _tabController?.index ? 25.0 : 15.0,
+          ),
+          SizedBox(width: width * 0.03),
+          Text(
+            name,
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -190,41 +251,126 @@ class _ChatState extends State<Chat> with AfterLayoutMixin<Chat> {
     );
   }
 
+  Widget getChats(String id) {
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          SizedBox(
+            height: 20,
+          ),
+          buildSearchTextField(),
+          StreamBuilder<QuerySnapshot>(
+            stream: Database.instance.getUserChats(id),
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) {
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+              return Container(
+                height: MediaQuery.of(context).size.height,
+                width: MediaQuery.of(context).size.width,
+                child: buildChatList(snapshot),
+              );
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    final currentUser = Provider.of<CurrentUser>(context, listen: false);
+    final user = context.read<CurrentUser>();
+    final shop = context.read<Shops>().findByUser(user.id).first;
+    final size = MediaQuery.of(context).size;
     return Scaffold(
-      appBar: customAppBar(
-        titleText: "Chats",
-        titleStyle: kTextStyle.copyWith(color: kNavyColor, fontSize: 24.0),
-        backgroundColor: kYellowColor,
-        buildLeading: false,
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            SizedBox(
-              height: 20,
+      appBar: ChatAppBar(
+        height: size.height * 0.15,
+        backgroundColor: _colorAnimation.value,
+        bottom: PreferredSize(
+          preferredSize: Size(size.width, size.height * 0.075),
+          child: Container(
+            padding: EdgeInsets.only(
+              bottom: 16.0,
+              left: 16.0,
+              right: 16.0,
             ),
-            buildSearchTextField(),
-            StreamBuilder<QuerySnapshot>(
-              stream: Database.instance.getUserChats(currentUser.id),
-              builder: (context, snapshot) {
-                if (!snapshot.hasData) {
-                  return Center(
-                    child: CircularProgressIndicator(),
-                  );
-                }
-                return Container(
-                  height: MediaQuery.of(context).size.height,
-                  width: MediaQuery.of(context).size.width,
-                  child: buildChatList(snapshot),
-                );
-              },
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(30.0),
+                color: Colors.white.withOpacity(0.5),
+              ),
+              child: TabBar(
+                controller: _tabController,
+                labelColor: Colors.black,
+                unselectedLabelColor: Colors.white,
+                //indicatorSize: TabBarIndicatorSize.label,
+                indicator: BoxDecoration(
+                  borderRadius: BorderRadius.circular(30.0),
+                  color: Colors.white,
+                ),
+                tabs: [
+                  _tabChild(
+                    imgUrl: user.profilePhoto,
+                    name: user.displayName,
+                    index: 0,
+                  ),
+                  _tabChild(
+                    imgUrl: shop.profilePhoto,
+                    name: shop.name,
+                    index: 1,
+                  )
+                ],
+              ),
             ),
-          ],
+          ),
         ),
       ),
+      body: TabBarView(
+        physics: NeverScrollableScrollPhysics(),
+        controller: _tabController,
+        children: [
+          getChats(user.id),
+          getChats(shop.id),
+        ],
+      ),
+    );
+  }
+}
+
+class ChatAppBar extends PreferredSize {
+  final double height;
+  final Color backgroundColor;
+  final PreferredSizeWidget bottom;
+  const ChatAppBar({
+    Key key,
+    this.height = 50.0,
+    this.backgroundColor,
+    this.bottom,
+  });
+
+  @override
+  Size get preferredSize => Size.fromHeight(height);
+
+  @override
+  Widget build(BuildContext context) {
+    return AppBar(
+      title: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8.0),
+        child: Text(
+          "Chats",
+          style: TextStyle(
+            color: Colors.white,
+            fontFamily: "Goldplay",
+            fontWeight: FontWeight.w600,
+            fontSize: 24.0,
+          ),
+        ),
+      ),
+      centerTitle: true,
+      backgroundColor: this.backgroundColor,
+      bottom: this.bottom,
     );
   }
 }
