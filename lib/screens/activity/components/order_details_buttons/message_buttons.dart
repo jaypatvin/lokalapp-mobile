@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:lokalapp/models/order.dart';
-import 'package:lokalapp/screens/chat/chat_view.dart';
 
-import 'package:lokalapp/utils/themes.dart';
-
+import '../../../../models/order.dart';
+import '../../../../utils/themes.dart';
+import '../../../chat/chat_view.dart';
 import 'order_button.dart';
 
 class MessageBuyerButton extends StatelessWidget {
@@ -31,10 +30,9 @@ class MessageBuyerButton extends StatelessWidget {
 class MessageSellerButton extends StatelessWidget {
   final Order order;
 
-  const MessageSellerButton({Key key, this.order}) : super(key: key);
+  const MessageSellerButton({Key key, @required this.order}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    // TODO: ADD MESSAGE SELLER FUNCTION
     return OrderButton("Message Seller", kTealColor, false, () {
       Navigator.push(
         context,

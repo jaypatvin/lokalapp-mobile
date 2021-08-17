@@ -34,7 +34,7 @@ class Status300Buttons extends StatelessWidget {
             SizedBox(height: MediaQuery.of(context).size.height * 0.01),
             Row(
               children: [
-                MessageSellerButton(),
+                MessageSellerButton(order: this.order),
               ],
             ),
           ],

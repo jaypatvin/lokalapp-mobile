@@ -31,7 +31,7 @@ class Status100Buttons extends StatelessWidget {
               () => this.onPress(OrderAction.cancel),
             ),
             SizedBox(width: MediaQuery.of(context).size.width * 0.01),
-            MessageSellerButton(),
+            MessageSellerButton(order: this.order),
           ],
         ),
       );

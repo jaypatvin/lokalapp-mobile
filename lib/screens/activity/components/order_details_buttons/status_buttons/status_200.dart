@@ -25,7 +25,7 @@ class Status200Buttons extends StatelessWidget {
           children: [
             Row(
               children: [
-                MessageSellerButton(),
+                MessageSellerButton(order: this.order),
               ],
             ),
             SizedBox(height: MediaQuery.of(context).size.height * 0.01),

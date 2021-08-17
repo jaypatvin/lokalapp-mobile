@@ -33,7 +33,7 @@ class Status500Buttons extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                MessageSellerButton(),
+                MessageSellerButton(order: this.order),
                 SizedBox(width: MediaQuery.of(context).size.width * 0.01),
                 OrderButton(
                   "Order Received",
