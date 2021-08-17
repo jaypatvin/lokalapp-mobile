@@ -4,7 +4,6 @@ import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:lokalapp/services/firestore.utils.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:provider/provider.dart';
 
@@ -12,6 +11,7 @@ import '../../models/chat_model.dart';
 import '../../models/conversation.dart';
 import '../../providers/user.dart';
 import '../../services/database.dart';
+import '../../services/firestore.utils.dart';
 import '../../services/local_image_service.dart';
 import '../../services/lokal_api_service.dart';
 import '../../utils/themes.dart';
@@ -54,6 +54,7 @@ class _ChatViewState extends State<ChatView> {
   Conversation replyMessage;
   bool showImagePicker = false;
   CustomPickerDataProvider provider;
+  Color _indicatorColor;
 
   // this is placed outside of the build function to
   // avoid rebuilds on the StreamBuilder
@@ -76,25 +77,30 @@ class _ChatViewState extends State<ChatView> {
     provider.pickedNotifier.addListener(() => setState(() {}));
 
     providerInit();
-
-    if (!widget.createMessage) {
+    final userId = context.read<CurrentUser>().id;
+    if (!widget.createMessage ?? true) {
       this._chatTitle = widget.chat.title;
       this._chat = widget.chat;
       _messageStream = Database.instance.getConversations(this._chat.id);
+
+      _indicatorColor =
+          widget.chat.members.contains(userId) ? kTealColor : kPurpleColor;
     } else {
+      _indicatorColor =
+          widget.members.contains(userId) ? kTealColor : kPurpleColor;
       checkExistingChat().then((chat) {
         if (chat == null) {
           return;
         }
-
         setState(() {
           this._chat = chat;
           this._chatTitle = chat.title;
           this._messageStream = Database.instance.getConversations(chat.id);
+          _createNewMessage = false;
         });
       });
     }
-    _createNewMessage = widget.createMessage;
+    _createNewMessage = widget?.createMessage ?? false;
   }
 
   @override
@@ -116,8 +122,7 @@ class _ChatViewState extends State<ChatView> {
   }
 
   Future<ChatModel> checkExistingChat() async {
-    final userId = Provider.of<CurrentUser>(context, listen: false).id;
-    final hashId = hashArrayOfStrings([...widget.members, userId]);
+    final hashId = hashArrayOfStrings([...widget.members]);
     var chat = await Database.instance.getGroupChatByHash(hashId);
     if (chat == null) {
       chat = await Database.instance.getChatById(hashId);
@@ -128,6 +133,21 @@ class _ChatViewState extends State<ChatView> {
     }
 
     return null;
+
+    // the code below is slow, i don't know how to handle it yet
+
+    // final idToken = context.read<CurrentUser>().idToken;
+    // final response = await LokalApiService.instance.chat.getChatByMembers(
+    //   idToken: idToken,
+    //   members: widget.members,
+    // );
+
+    // if (response.statusCode != 200) {
+    //   return null;
+    // }
+
+    // final Map<String, dynamic> body = json.decode(response.body);
+    // return ChatModel.fromMap(body["data"]);
   }
 
   void showMaxAssetsText() {
@@ -163,7 +183,7 @@ class _ChatViewState extends State<ChatView> {
 
     if (this._createNewMessage) {
       body.addAll({
-        "members": [...widget.members, user.id],
+        "members": widget.members,
         "shop_id": widget.shopId,
         "product_id": widget.productId,
       });
@@ -182,7 +202,7 @@ class _ChatViewState extends State<ChatView> {
         this._messageStream = Database.instance.getConversations(this._chat.id);
       });
     } else {
-      await LokalApiService.instance.chat.createConversation(
+      LokalApiService.instance.chat.createConversation(
         chatId: this._chat.id,
         data: body,
         idToken: user.idToken,
@@ -257,7 +277,7 @@ class _ChatViewState extends State<ChatView> {
     return IconButton(
       icon: Icon(
         Icons.more_horiz,
-        color: kNavyColor,
+        color: Colors.white,
         size: 33,
       ),
       onPressed: () {
@@ -274,10 +294,10 @@ class _ChatViewState extends State<ChatView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: customAppBar(
-        backgroundColor: kYellowColor,
+        backgroundColor: _indicatorColor ?? kYellowColor,
         titleText: this._chatTitle,
-        titleStyle: kTextStyle.copyWith(color: kNavyColor),
-        leadingColor: kNavyColor,
+        titleStyle: kTextStyle.copyWith(color: Colors.white),
+        leadingColor: Colors.white,
         onPressedLeading: () => Navigator.pop(context),
         actions: [_buildDetailsButton()],
       ),

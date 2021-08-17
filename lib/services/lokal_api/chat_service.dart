@@ -15,6 +15,29 @@ class ChatService {
     return _instance;
   }
 
+  // --GET
+  Future<http.Response> getChatByMembers({
+    @required String idToken,
+    @required List<String> members,
+  }) async {
+    String url = "$baseUrl/getChatByMemberIds?";
+    members.forEach((member) {
+      if (member == members[0]) {
+        url += "memberIds=$member";
+        return;
+      }
+      url += "&memberIds=$member";
+    });
+
+    return await http.get(
+      url,
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer $idToken"
+      },
+    );
+  }
+
   // --POST
   Future<http.Response> create({
     @required Map data,
