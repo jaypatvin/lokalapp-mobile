@@ -27,6 +27,36 @@ class Database {
     return FirebaseFirestore.instance.collection("order_status");
   }
 
+  Future<Map<String, dynamic>> getChatById(id) async {
+    final chat =
+        await FirebaseFirestore.instance.collection("chats").doc(id).get();
+
+    final data = chat.data();
+
+    if (data != null) {
+      return {"id": chat.id, ...data};
+    }
+    return data;
+  }
+
+  Future<Map<String, dynamic>> getGroupChatByHash(String groupHash) async {
+    final chat = await FirebaseFirestore.instance
+        .collection("chats")
+        .where("group_hash", isEqualTo: groupHash)
+        .limit(1)
+        .get();
+
+    Map<String, dynamic> data = chat != null && chat.docs.length > 0
+        ? {"id": chat.docs[0].id, ...chat.docs[0].data()}
+        : null;
+
+    return data;
+  }
+
+  String getChatId(List<String> members) {
+    return "";
+  }
+
   Stream<QuerySnapshot> getUserOrders(String userId, {int statusCode}) {
     if (statusCode != null) {
       return ordersRef
@@ -57,7 +87,10 @@ class Database {
   }
 
   Stream<QuerySnapshot> getUserChats(String userId) {
-    return chatsRef.where("members", arrayContains: userId).snapshots();
+    return chatsRef
+        .where("members", arrayContains: userId)
+        .orderBy("created_at", descending: true)
+        .snapshots();
   }
 
   Stream<QuerySnapshot> getConversations(String chatId) {

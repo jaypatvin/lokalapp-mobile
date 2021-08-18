@@ -4,6 +4,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
+import 'timestamp_time_object.dart';
+
 enum ChatType { user, shop, product }
 
 extension ChatTypeExtension on ChatType {
@@ -49,7 +51,9 @@ class Message {
   factory Message.fromMap(Map<String, dynamic> map) {
     return Message(
       content: map['content'],
-      createdAt: (map['created_at'] as Timestamp)?.toDate(),
+      createdAt: map['created_at'] is Timestamp
+          ? (map['created_at'] as Timestamp)?.toDate()
+          : TimestampObject.fromMap(map['created_at']).toDateTime(),
     );
   }
 
@@ -164,6 +168,38 @@ class ChatModel {
 
     return ChatModel(
       id: map['id'],
+      members: List<String>.from(map['members']),
+      title: map['title'],
+      chatType: chatType,
+      archived: map['archived'],
+      communityId: map['community_d'],
+      createdAt: map['created_at'] is Timestamp
+          ? (map['created_at'] as Timestamp).toDate()
+          : TimestampObject.fromMap(map['created_at']).toDateTime(),
+      lastMessage: Message.fromMap(map['last_message']),
+      shopId: map['shop_id'],
+      customerName: map['customer_name'],
+      productId: map['product_id'],
+    );
+  }
+
+  factory ChatModel.fromDocument(QueryDocumentSnapshot snapshot) {
+    final map = snapshot.data();
+    ChatType chatType;
+    switch (map['chat_type']) {
+      case "product":
+        chatType = ChatType.product;
+        break;
+      case "shop":
+        chatType = ChatType.shop;
+        break;
+      default:
+        chatType = ChatType.user;
+        break;
+    }
+
+    return ChatModel(
+      id: snapshot.id,
       members: List<String>.from(map['members']),
       title: map['title'],
       chatType: chatType,
