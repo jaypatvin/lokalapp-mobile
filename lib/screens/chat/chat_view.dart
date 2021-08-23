@@ -293,7 +293,7 @@ class _ChatViewState extends State<ChatView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: customAppBar(
+      appBar: CustomAppBar(
         backgroundColor: _indicatorColor ?? kYellowColor,
         titleText: this._chatTitle,
         titleStyle: kTextStyle.copyWith(color: Colors.white),

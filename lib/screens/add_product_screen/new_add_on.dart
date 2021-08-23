@@ -121,7 +121,7 @@ class _NewAddOnState extends State<NewAddOn> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: customAppBar(
+      appBar: CustomAppBar(
         titleText: "New Add-on",
         onPressedLeading: () {
           Navigator.pop(context);

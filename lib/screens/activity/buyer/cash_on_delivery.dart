@@ -53,7 +53,7 @@ class CashOnDelivery extends StatelessWidget {
         .products
         .fold(0.0, (double prev, product) => prev + product.productPrice);
     return Scaffold(
-      appBar: customAppBar(
+      appBar: CustomAppBar(
         titleText: "Cash on Delivery",
         titleStyle: TextStyle(color: Colors.white),
         backgroundColor: kTealColor,

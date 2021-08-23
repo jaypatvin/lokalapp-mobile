@@ -419,7 +419,7 @@ class _PostDetailsState extends State<PostDetails> {
     var height = MediaQuery.of(context).size.height;
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: customAppBar(
+      appBar: CustomAppBar(
         backgroundColor: kTealColor,
         onPressedLeading: () => Navigator.pop(context),
         actions: [

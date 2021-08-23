@@ -86,7 +86,7 @@ class _HomeState extends State<Home> {
     return Scaffold(
       backgroundColor: Color(0xffF1FAFF),
       resizeToAvoidBottomInset: true,
-      appBar: customAppBar(
+      appBar: CustomAppBar(
         titleText: "White Plains",
         backgroundColor: kTealColor,
         buildLeading: false,

@@ -200,7 +200,7 @@ class _DraftPostState extends State<DraftPost> with TickerProviderStateMixin {
     return Scaffold(
       key: _key,
       backgroundColor: Colors.white,
-      appBar: customAppBar(
+      appBar: CustomAppBar(
         backgroundColor: const Color(0xFFF1FAFF),
         leading: Builder(
           builder: (BuildContext context) {

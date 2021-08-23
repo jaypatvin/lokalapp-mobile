@@ -173,7 +173,7 @@ class _AddProductState extends State<AddProduct> {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Colors.white,
-        appBar: customAppBar(
+        appBar: CustomAppBar(
           titleText: "Add a New Product",
           onPressedLeading: () {
             Navigator.pop(context);

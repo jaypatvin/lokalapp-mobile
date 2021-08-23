@@ -26,7 +26,7 @@ class _AddShopState extends State<AddShop> {
     double height = MediaQuery.of(context).size.height;
     double padding = height * 0.05;
     return Scaffold(
-      appBar: customAppBar(
+      appBar: CustomAppBar(
         titleText: "Add Shop",
         onPressedLeading: () {
           Navigator.pop(context);

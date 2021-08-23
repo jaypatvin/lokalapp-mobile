@@ -73,7 +73,7 @@ class _BankDetailsState extends State<BankDetails> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: customAppBar(
+      appBar: CustomAppBar(
         titleText: "Bank Transfer/Deposit",
         titleStyle: TextStyle(color: Colors.white),
         backgroundColor: kTealColor,

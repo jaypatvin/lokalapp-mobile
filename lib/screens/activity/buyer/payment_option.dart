@@ -15,7 +15,7 @@ class PaymentOption extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       // backgroundColor: Color(0XFFE5E5E5),
-      appBar: customAppBar(
+      appBar: CustomAppBar(
         titleText: "Choose a Payment Option",
         titleStyle: TextStyle(color: Colors.black),
         backgroundColor: Colors.white,

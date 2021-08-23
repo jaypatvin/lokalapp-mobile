@@ -293,7 +293,7 @@ class _CustomizeAvailabilityState extends State<CustomizeAvailability> {
     return Scaffold(
       backgroundColor: Colors.white,
       resizeToAvoidBottomInset: false,
-      appBar: customAppBar(
+      appBar: CustomAppBar(
           titleText: "Shop Schedule",
           titleStyle: TextStyle(
             color: Colors.black,

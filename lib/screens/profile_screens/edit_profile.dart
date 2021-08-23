@@ -122,7 +122,7 @@ class _EditProfileState extends State<EditProfile> {
     return Scaffold(
       backgroundColor: Color(0xffF1FAFF),
       resizeToAvoidBottomInset: true,
-      appBar: customAppBar(
+      appBar: CustomAppBar(
         titleText: "Edit Profile",
         backgroundColor: kTealColor,
         onPressedLeading: () => Navigator.pop(context),

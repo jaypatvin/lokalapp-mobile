@@ -323,7 +323,7 @@ class _ProductScheduleState extends State<ProductSchedule> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: customAppBar(
+      appBar: CustomAppBar(
         titleText: "Product Schedule",
         onPressedLeading: () {
           Navigator.pop(context);
