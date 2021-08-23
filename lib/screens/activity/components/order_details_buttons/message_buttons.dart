@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../../../../models/order.dart';
 import '../../../../utils/themes.dart';
+import '../../../../widgets/app_button.dart';
 import '../../../chat/chat_view.dart';
-import 'order_button.dart';
 
 class MessageBuyerButton extends StatelessWidget {
   final Order order;
@@ -12,7 +12,7 @@ class MessageBuyerButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // TODO: ADD MESSAGE BUYER FUNCTION
-    return OrderButton("Message Buyer", kTealColor, false, () {
+    return AppButton("Message Buyer", kTealColor, false, () {
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -33,7 +33,7 @@ class MessageSellerButton extends StatelessWidget {
   const MessageSellerButton({Key key, @required this.order}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return OrderButton("Message Seller", kTealColor, false, () {
+    return AppButton("Message Seller", kTealColor, false, () {
       Navigator.push(
         context,
         MaterialPageRoute(

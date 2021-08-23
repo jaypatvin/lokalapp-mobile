@@ -3,8 +3,8 @@ import 'package:flutter/widgets.dart';
 
 import '../../../models/order.dart';
 import '../../../utils/themes.dart';
+import '../../../widgets/app_button.dart';
 import '../order_details.dart';
-import 'order_details_buttons/order_button.dart';
 import 'transaction_details.dart';
 
 class TransactionCard extends StatelessWidget {
@@ -102,7 +102,7 @@ class TransactionCard extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        OrderButton(
+        AppButton(
           "Details",
           kTealColor,
           false,
@@ -125,7 +125,7 @@ class TransactionCard extends StatelessWidget {
         ),
         Visibility(
           visible: enableSecondButton,
-          child: OrderButton(
+          child: AppButton(
             secondButtonText,
             secondButtonColor,
             isFilled,

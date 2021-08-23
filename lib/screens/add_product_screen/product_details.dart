@@ -226,7 +226,7 @@ class _ProductDetailsState extends State<ProductDetails> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: customAppBar(
+      appBar: CustomAppBar(
         titleText: "Product Details",
         onPressedLeading: () {
           Navigator.pop(context);

@@ -96,7 +96,7 @@ class _ProductAddOnState extends State<ProductAddOn> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: customAppBar(
+      appBar: CustomAppBar(
         titleText: "Product Add-ons",
         onPressedLeading: () {
           Navigator.pop(context);

@@ -34,7 +34,7 @@ class AddProductConfirmation extends StatelessWidget {
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
     return Scaffold(
-      appBar: customAppBar(
+      appBar: CustomAppBar(
         titleText: "Product Added!",
         backgroundColor: Colors.white,
         elevation: 0,

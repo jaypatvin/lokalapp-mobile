@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 
 import '../../../../../models/order.dart';
 import '../../../../../utils/themes.dart';
+import '../../../../../widgets/app_button.dart';
 import '../message_buttons.dart';
 import '../order_actions.dart';
-import '../order_button.dart';
 
 class Status200Buttons extends StatelessWidget {
   final bool isBuyer;
@@ -32,14 +32,14 @@ class Status200Buttons extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                OrderButton(
+                AppButton(
                   "Cancel Order",
                   kPinkColor,
                   false,
                   () => this.onPress(OrderAction.cancel),
                 ),
                 SizedBox(width: MediaQuery.of(context).size.width * 0.01),
-                OrderButton(
+                AppButton(
                   "Pay Now",
                   kOrangeColor,
                   true,

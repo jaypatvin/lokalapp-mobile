@@ -880,7 +880,7 @@ class _ShopScheduleState extends State<ShopSchedule> {
     return Scaffold(
       backgroundColor: Colors.white,
       resizeToAvoidBottomInset: false,
-      appBar: customAppBar(
+      appBar: CustomAppBar(
           titleText: "Shop Schedule",
           titleStyle: TextStyle(
             color: Colors.black,

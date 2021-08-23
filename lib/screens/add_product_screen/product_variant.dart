@@ -95,7 +95,7 @@ class _ProductVariantState extends State<ProductVariant> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: customAppBar(
+      appBar: CustomAppBar(
         titleText: "Product Variant",
         onPressedLeading: () {
           Navigator.pop(context);

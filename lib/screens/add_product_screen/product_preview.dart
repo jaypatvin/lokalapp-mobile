@@ -205,7 +205,7 @@ class _ProductPreviewState extends State<ProductPreview> {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
     return Scaffold(
-      appBar: customAppBar(
+      appBar: CustomAppBar(
           titleText: "Product Preview",
           onPressedLeading: () {
             Navigator.pop(context);

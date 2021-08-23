@@ -132,7 +132,7 @@ class _AddAVariantState extends State<AddAVariant> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: customAppBar(
+      appBar: CustomAppBar(
         titleText: "Add Variant",
         onPressedLeading: () {
           Navigator.pop(context);

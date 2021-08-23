@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:lokalapp/models/order.dart';
-import 'package:lokalapp/screens/activity/components/order_details_buttons/order_button.dart';
-import 'package:lokalapp/screens/activity/components/transaction_details.dart';
-import 'package:lokalapp/utils/themes.dart';
+
+import '../../../models/order.dart';
+import '../../../utils/themes.dart';
+import '../../../widgets/app_button.dart';
+import '../components/transaction_details.dart';
 
 class OrderReceived extends StatelessWidget {
   final Order order;
@@ -17,17 +18,17 @@ class OrderReceived extends StatelessWidget {
         children: [
           Row(
             children: [
-              OrderButton("Message Shop", kTealColor, false, null),
+              AppButton("Message Shop", kTealColor, false, null),
             ],
           ),
           Row(
             children: [
-              OrderButton("Rate your experience", kTealColor, true, null),
+              AppButton("Rate your experience", kTealColor, true, null),
             ],
           ),
           Row(
             children: [
-              OrderButton(
+              AppButton(
                 "Back to Activity",
                 kTealColor,
                 true,

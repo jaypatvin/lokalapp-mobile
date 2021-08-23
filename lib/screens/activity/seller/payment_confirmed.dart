@@ -3,7 +3,7 @@ import 'package:flutter_svg/svg.dart';
 
 import '../../../models/order.dart';
 import '../../../utils/themes.dart';
-import '../components/order_details_buttons/order_button.dart';
+import '../../../widgets/app_button.dart';
 import '../components/transaction_details.dart';
 
 class PaymentConfirmed extends StatelessWidget {
@@ -20,12 +20,12 @@ class PaymentConfirmed extends StatelessWidget {
         children: [
           Row(
             children: [
-              OrderButton("Message Seller", kTealColor, false, null),
+              AppButton("Message Seller", kTealColor, false, null),
             ],
           ),
           Row(
             children: [
-              OrderButton(
+              AppButton(
                 "Back to Activity",
                 kTealColor,
                 true,

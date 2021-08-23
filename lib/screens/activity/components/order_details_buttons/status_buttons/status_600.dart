@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 
 import '../../../../../models/order.dart';
 import '../../../../../utils/themes.dart';
+import '../../../../../widgets/app_button.dart';
 import '../message_buttons.dart';
 import '../order_actions.dart';
-import '../order_button.dart';
 import '../view_payment_button.dart';
 
 class Status600Buttons extends StatelessWidget {
@@ -27,7 +27,7 @@ class Status600Buttons extends StatelessWidget {
           children: [
             MessageSellerButton(order: this.order),
             SizedBox(width: MediaQuery.of(context).size.width * 0.01),
-            OrderButton(
+            AppButton(
               "Order Again",
               kTealColor,
               true,
