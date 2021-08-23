@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
-class OrderButton extends StatelessWidget {
+class AppButton extends StatelessWidget {
   final String text;
   final Color color;
   final bool isFilled;
   final void Function() onPressed;
   final TextStyle textStyle;
-  const OrderButton(
+  const AppButton(
     this.text,
     this.color,
     this.isFilled,

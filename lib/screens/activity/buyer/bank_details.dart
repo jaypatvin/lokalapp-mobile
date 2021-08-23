@@ -1,17 +1,17 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:lokalapp/providers/user.dart';
-import 'package:lokalapp/services/local_image_service.dart';
-import 'package:lokalapp/services/lokal_api_service.dart';
 import 'package:provider/provider.dart';
 
 import '../../../models/order.dart';
+import '../../../providers/user.dart';
+import '../../../services/local_image_service.dart';
+import '../../../services/lokal_api_service.dart';
 import '../../../utils/themes.dart';
 import '../../../utils/utility.dart';
+import '../../../widgets/app_button.dart';
 import '../../../widgets/custom_app_bar.dart';
 import '../../../widgets/photo_box.dart';
-import '../components/order_details_buttons/order_button.dart';
 import 'processing_payment.dart';
 
 class BankDetails extends StatefulWidget {
@@ -97,7 +97,7 @@ class _BankDetailsState extends State<BankDetails> {
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
             child: Row(
               children: [
-                OrderButton(
+                AppButton(
                   "${proofOfPayment != null ? 'Re-u' : 'U'}pload proof of payment",
                   kTealColor,
                   proofOfPayment != null ? false : true,
@@ -111,7 +111,7 @@ class _BankDetailsState extends State<BankDetails> {
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
             child: Row(
               children: [
-                OrderButton(
+                AppButton(
                   "Submit",
                   proofOfPayment != null ? kTealColor : Colors.grey,
                   true,

@@ -1,15 +1,15 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:lokalapp/providers/user.dart';
-import 'package:lokalapp/screens/activity/buyer/processing_payment.dart';
-import 'package:lokalapp/services/lokal_api_service.dart';
 import 'package:provider/provider.dart';
 
 import '../../../models/order.dart';
+import '../../../providers/user.dart';
+import '../../../services/lokal_api_service.dart';
 import '../../../utils/themes.dart';
+import '../../../widgets/app_button.dart';
 import '../../../widgets/custom_app_bar.dart';
-import '../components/order_details_buttons/order_button.dart';
+import 'processing_payment.dart';
 
 class CashOnDelivery extends StatelessWidget {
   final Order order;
@@ -117,7 +117,7 @@ class CashOnDelivery extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
             child: Row(
               children: [
-                OrderButton(
+                AppButton(
                   "Submit",
                   kTealColor,
                   true,

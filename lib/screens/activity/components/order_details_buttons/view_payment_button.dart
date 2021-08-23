@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../../../utils/themes.dart';
+import '../../../../widgets/app_button.dart';
 import 'order_actions.dart';
-import 'order_button.dart';
 
 class ViewPaymentButton extends StatelessWidget {
   final void Function(OrderAction) onPress;
@@ -11,7 +11,7 @@ class ViewPaymentButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // TODO: ADD VIEW PROOF OF PAYMENT FUNCTION
-    return OrderButton(
+    return AppButton(
       "View Proof of Payment",
       kTealColor,
       false,
