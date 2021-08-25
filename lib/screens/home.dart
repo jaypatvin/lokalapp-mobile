@@ -1,16 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-
 import 'package:provider/provider.dart';
 
 import '../providers/activities.dart';
-import '../providers/cart.dart';
-import '../providers/pull_up_cart_state.dart';
 import '../providers/user.dart';
 import '../utils/themes.dart';
 import '../widgets/custom_app_bar.dart';
-import 'cart/sliding_up_cart.dart';
+import 'cart/cart_container.dart';
 import 'home/draft_post.dart';
 import 'home/timeline.dart';
 
@@ -91,7 +88,7 @@ class _HomeState extends State<Home> {
         backgroundColor: kTealColor,
         buildLeading: false,
       ),
-      body: SlidingUpCart(
+      body: CartContainer(
         child: Column(
           children: [
             buildTextField(context),
@@ -106,16 +103,6 @@ class _HomeState extends State<Home> {
                         );
                 },
               ),
-            ),
-            Consumer2<ShoppingCart, PullUpCartState>(
-              builder: (context, cart, cartState, _) {
-                return SizedBox(
-                  height: MediaQuery.of(context).size.height *
-                      (cart.items.length > 0 && cartState.isPanelVisible
-                          ? 0.32
-                          : 0.2),
-                );
-              },
             ),
           ],
         ),

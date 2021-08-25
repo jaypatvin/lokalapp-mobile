@@ -3,8 +3,6 @@ import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/activities.dart';
-import '../../providers/cart.dart';
-import '../../providers/pull_up_cart_state.dart';
 import '../../providers/shops.dart';
 import '../../providers/user.dart';
 import '../../utils/themes.dart';
@@ -72,15 +70,6 @@ class _ProfileNoShopState extends State<ProfileNoShop> {
                     ),
                   ),
                 ),
-                Consumer2<ShoppingCart, PullUpCartState>(
-                    builder: (context, cart, cartState, _) {
-                  return SizedBox(
-                    height: MediaQuery.of(context).size.height *
-                        (cart.items.length > 0 && cartState.isPanelVisible
-                            ? 0.5
-                            : 0.4),
-                  );
-                })
               ],
             );
     });

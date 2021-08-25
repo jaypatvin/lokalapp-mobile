@@ -1,14 +1,14 @@
 import 'package:after_layout/after_layout.dart';
 import 'package:flutter/material.dart';
-import 'package:lokalapp/screens/profile_screens/settings/settings.dart';
-import 'package:lokalapp/utils/shared_preference.dart';
-import 'package:lokalapp/utils/themes.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/user.dart';
-import '../cart/sliding_up_cart.dart';
+import '../../utils/shared_preference.dart';
+import '../../utils/themes.dart';
+import '../cart/cart_container.dart';
 import 'edit_profile.dart';
 import 'profile_no_shop.dart';
+import 'settings/settings.dart';
 
 class ProfileShopMain extends StatefulWidget {
   @override
@@ -263,7 +263,7 @@ class _ProfileShopMainState extends State<ProfileShopMain>
             ),
           ),
         ),
-        body: SlidingUpCart(child: ProfileNoShop()),
+        body: CartContainer(child: ProfileNoShop()),
       ),
     );
   }
