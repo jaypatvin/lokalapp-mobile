@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 
 import 'providers/activities.dart';
@@ -104,6 +105,9 @@ class _MyAppState extends State<MyApp> {
         Provider<MediaUtility>(create: (_) => MediaUtility.instance),
         Provider<LocalImageService>(create: (_) => LocalImageService.instance),
         Provider<ChatHelpers>(create: (_) => ChatHelpers()),
+
+        // for bottom nav bar
+        ListenableProvider(create: (_) => PersistentTabController()),
       ],
       child: StreamBuilder<UserSharedPreferences>(
         stream: _userSharedPreferences.stream,
