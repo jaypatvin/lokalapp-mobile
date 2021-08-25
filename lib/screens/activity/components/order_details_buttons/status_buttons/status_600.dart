@@ -25,13 +25,17 @@ class Status600Buttons extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            MessageSellerButton(order: this.order),
+            Expanded(
+              child: MessageSellerButton(order: this.order),
+            ),
             SizedBox(width: MediaQuery.of(context).size.width * 0.01),
-            AppButton(
-              "Order Again",
-              kTealColor,
-              true,
-              () => this.onPress(OrderAction.orderAgain),
+            Expanded(
+              child: AppButton(
+                "Order Again",
+                kTealColor,
+                true,
+                () => this.onPress(OrderAction.orderAgain),
+              ),
             )
           ],
         ),
@@ -41,16 +45,14 @@ class Status600Buttons extends StatelessWidget {
     return Container(
       child: Column(
         children: [
-          Row(
-            children: [
-              ViewPaymentButton(onPress: this.onPress),
-            ],
+          Container(
+            width: double.infinity,
+            child: ViewPaymentButton(onPress: this.onPress),
           ),
           SizedBox(height: MediaQuery.of(context).size.height * 0.01),
-          Row(
-            children: [
-              MessageBuyerButton(order: this.order),
-            ],
+          Container(
+            width: double.infinity,
+            child: MessageBuyerButton(order: this.order),
           ),
         ],
       ),

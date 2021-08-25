@@ -16,27 +16,24 @@ class OrderReceived extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Row(
-            children: [
-              AppButton("Message Shop", kTealColor, false, null),
-            ],
+          Container(
+            width: double.infinity,
+            child: AppButton("Message Shop", kTealColor, false, null),
           ),
-          Row(
-            children: [
-              AppButton("Rate your experience", kTealColor, true, null),
-            ],
+          Container(
+            width: double.infinity,
+            child: AppButton("Rate your experience", kTealColor, true, null),
           ),
-          Row(
-            children: [
-              AppButton(
-                "Back to Activity",
-                kTealColor,
-                true,
-                () {
-                  Navigator.pop(context);
-                },
-              ),
-            ],
+          Container(
+            width: double.infinity,
+            child: AppButton(
+              "Back to Activity",
+              kTealColor,
+              true,
+              () {
+                Navigator.pop(context);
+              },
+            ),
           ),
         ],
       ),

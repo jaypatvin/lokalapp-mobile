@@ -22,20 +22,18 @@ class OrderConfirmed extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Row(
-            children: [
-              AppButton("Message Buyer", kTealColor, false, null),
-            ],
+          Container(
+            width: double.infinity,
+            child: AppButton("Message Buyer", kTealColor, false, null),
           ),
-          Row(
-            children: [
-              AppButton(
-                "Back to Activity",
-                kTealColor,
-                true,
-                () => Navigator.pop(context),
-              ),
-            ],
+          Container(
+            width: double.infinity,
+            child: AppButton(
+              "Back to Activity",
+              kTealColor,
+              true,
+              () => Navigator.pop(context),
+            ),
           ),
         ],
       ),
