@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:lokalapp/utils/themes.dart';
+
+import '../utils/themes.dart';
 
 class CustomAppBar extends PreferredSize {
   final double height;
 
   final String titleText;
+  final Widget title;
   final Widget leading;
   final bool buildLeading;
   final bool centerTitle;
@@ -21,6 +23,7 @@ class CustomAppBar extends PreferredSize {
   const CustomAppBar({
     this.height = kToolbarHeight,
     this.titleText = "",
+    this.title,
     this.leading,
     this.buildLeading = true,
     this.centerTitle = true,
@@ -36,7 +39,7 @@ class CustomAppBar extends PreferredSize {
   });
 
   @override
-  Size get preferredSize => super.preferredSize;
+  Size get preferredSize => Size.fromHeight(height);
 
   @override
   Widget build(BuildContext context) {
@@ -44,9 +47,11 @@ class CustomAppBar extends PreferredSize {
       leading: !buildLeading
           ? null
           : leading ?? _Leading(leadingPadding, leadingColor, onPressedLeading),
-      title: titleText.isNotEmpty
-          ? Padding(padding: titlePadding, child: _Title(titleText, titleStyle))
-          : null,
+      title: title ??
+          Padding(
+            padding: titlePadding,
+            child: _Title(titleText, titleStyle),
+          ),
       actions: actions,
       centerTitle: centerTitle,
       backgroundColor: backgroundColor,

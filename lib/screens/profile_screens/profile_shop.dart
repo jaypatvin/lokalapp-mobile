@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../providers/cart.dart';
-import '../../providers/pull_up_cart_state.dart';
-import '../cart/sliding_up_cart.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/products.dart';
@@ -9,12 +6,13 @@ import '../../providers/shops.dart';
 import '../../providers/user.dart';
 import '../../utils/themes.dart';
 import '../add_product_screen/add_product.dart';
+import '../cart/cart_container.dart';
 import '../edit_shop_screen/edit_shop.dart';
-import 'settings/settings.dart';
 import 'components/store_card.dart';
 import 'components/store_message.dart';
 import 'profile_search_bar.dart';
 import 'profile_store_name.dart';
+import 'settings/settings.dart';
 
 class ProfileShop extends StatefulWidget {
   @override
@@ -197,7 +195,7 @@ class _ProfileShopState extends State<ProfileShop> {
             ),
           ),
         ),
-        body: SlidingUpCart(
+        body: CartContainer(
           child: CustomScrollView(
             slivers: [
               Consumer3<CurrentUser, Shops, Products>(
@@ -289,16 +287,6 @@ class _ProfileShopState extends State<ProfileShop> {
                                     },
                                   ),
                                 ),
-                                Consumer2<ShoppingCart, PullUpCartState>(
-                                    builder: (context, cart, cartState, _) {
-                                  return SizedBox(
-                                    height: MediaQuery.of(context).size.height *
-                                        (cart.items.length > 0 &&
-                                                cartState.isPanelVisible
-                                            ? 0.5
-                                            : 0.4),
-                                  );
-                                })
                               ],
                             )
                           : Row(

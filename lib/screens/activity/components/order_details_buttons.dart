@@ -174,8 +174,14 @@ class OrderDetailsButtons extends StatelessWidget {
         );
       default:
         return this.isBuyer
-            ? Row(children: [MessageSellerButton(order: this.order)])
-            : Row(children: [MessageBuyerButton(order: this.order)]);
+            ? Container(
+                width: double.infinity,
+                child: MessageSellerButton(order: this.order),
+              )
+            : Container(
+                width: double.infinity,
+                child: MessageBuyerButton(order: this.order),
+              );
     }
   }
 }

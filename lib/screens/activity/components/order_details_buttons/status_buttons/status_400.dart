@@ -24,16 +24,14 @@ class Status400Buttons extends StatelessWidget {
       return Container(
         child: Column(
           children: [
-            Row(
-              children: [
-                ViewPaymentButton(onPress: this.onPress),
-              ],
+            Container(
+              width: double.infinity,
+              child: ViewPaymentButton(onPress: this.onPress),
             ),
             SizedBox(height: MediaQuery.of(context).size.height * 0.01),
-            Row(
-              children: [
-                MessageSellerButton(order: this.order),
-              ],
+            Container(
+              width: double.infinity,
+              child: MessageSellerButton(order: this.order),
             ),
           ],
         ),
@@ -43,22 +41,25 @@ class Status400Buttons extends StatelessWidget {
     return Container(
       child: Column(
         children: [
-          Row(
-            children: [
-              ViewPaymentButton(onPress: this.onPress),
-            ],
+          Container(
+            width: double.infinity,
+            child: ViewPaymentButton(onPress: this.onPress),
           ),
           SizedBox(height: MediaQuery.of(context).size.height * 0.01),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              MessageBuyerButton(order: this.order),
+              Expanded(
+                child: MessageBuyerButton(order: this.order),
+              ),
               SizedBox(width: MediaQuery.of(context).size.width * 0.01),
-              AppButton(
-                "Ship Out",
-                kOrangeColor,
-                true,
-                () => this.onPress(OrderAction.shipOut),
+              Expanded(
+                child: AppButton(
+                  "Ship Out",
+                  kOrangeColor,
+                  true,
+                  () => this.onPress(OrderAction.shipOut),
+                ),
               )
             ],
           ),

@@ -95,30 +95,28 @@ class _BankDetailsState extends State<BankDetails> {
           Spacer(),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: Row(
-              children: [
-                AppButton(
-                  "${proofOfPayment != null ? 'Re-u' : 'U'}pload proof of payment",
-                  kTealColor,
-                  proofOfPayment != null ? false : true,
-                  _imagePickerHandler,
-                  textStyle: TextStyle(fontSize: 13.0),
-                ),
-              ],
+            child: Container(
+              width: double.infinity,
+              child: AppButton(
+                "${proofOfPayment != null ? 'Re-u' : 'U'}pload proof of payment",
+                kTealColor,
+                proofOfPayment != null ? false : true,
+                _imagePickerHandler,
+                textStyle: TextStyle(fontSize: 13.0),
+              ),
             ),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: Row(
-              children: [
-                AppButton(
-                  "Submit",
-                  proofOfPayment != null ? kTealColor : Colors.grey,
-                  true,
-                  proofOfPayment != null ? _onSubmitHandler : null,
-                  textStyle: TextStyle(fontSize: 13.0),
-                ),
-              ],
+            child: Container(
+              width: double.infinity,
+              child: AppButton(
+                "Submit",
+                proofOfPayment != null ? kTealColor : Colors.grey,
+                true,
+                proofOfPayment != null ? _onSubmitHandler : null,
+                textStyle: TextStyle(fontSize: 13.0),
+              ),
             ),
           ),
           SizedBox(height: 24.0)

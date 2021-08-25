@@ -115,16 +115,15 @@ class CashOnDelivery extends StatelessWidget {
           Spacer(),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: Row(
-              children: [
-                AppButton(
-                  "Submit",
-                  kTealColor,
-                  true,
-                  () => _onSubmitHandler(context),
-                  textStyle: TextStyle(fontSize: 13.0),
-                ),
-              ],
+            child: Container(
+              width: double.infinity,
+              child: AppButton(
+                "Submit",
+                kTealColor,
+                true,
+                () => _onSubmitHandler(context),
+                textStyle: TextStyle(fontSize: 13.0),
+              ),
             ),
           ),
           SizedBox(height: 24.0)

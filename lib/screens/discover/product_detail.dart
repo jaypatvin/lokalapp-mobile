@@ -1,12 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '../../providers/cart.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/product.dart';
+import '../../providers/cart.dart';
+import '../../providers/shops.dart';
 import '../../utils/themes.dart';
+import '../../widgets/app_button.dart';
+import '../../widgets/custom_app_bar.dart';
+import '../chat/components/chat_avatar.dart';
 import '../profile_screens/components/store_rating.dart';
 
 class ProductDetail extends StatefulWidget {
@@ -17,33 +21,26 @@ class ProductDetail extends StatefulWidget {
 }
 
 class _ProductDetailState extends State<ProductDetail> {
-  PhotoViewController controller;
-  double scaleCopy;
-  String name;
-  double basePrice;
+  final TextEditingController _instructionsController = TextEditingController();
+  PhotoViewController _photoViewcontroller;
 
   int _current = 0;
-  TextEditingController _instructionsController = TextEditingController();
-  final maxLines = 10;
   int quantity = 1;
-  Product product;
-
-  void listener(PhotoViewControllerValue value) {
-    setState(() {
-      scaleCopy = value.scale;
-    });
-  }
+  String _appBarTitle;
+  String _buttonLabel;
 
   @override
   void initState() {
     super.initState();
-    this.product = widget.product;
-    controller = PhotoViewController()..outputStateStream.listen(listener);
+    final product = widget.product;
+    this._appBarTitle = context.read<Shops>().findById(product.shopId).name;
+    this._buttonLabel = "ADD TO CART";
+    _photoViewcontroller = PhotoViewController();
 
     // get order details from cart if it exists
-    var cart = Provider.of<ShoppingCart>(context, listen: false);
+    final cart = context.read<ShoppingCart>();
     if (cart.contains(product.id)) {
-      var order = cart.items[product.id];
+      final order = cart.getProductOrder(product.id);
       _instructionsController.value = TextEditingValue(
         text: order.notes,
         selection: TextSelection.fromPosition(
@@ -51,12 +48,15 @@ class _ProductDetailState extends State<ProductDetail> {
         ),
       );
       this.quantity = order.quantity;
+      this._appBarTitle = "Edit Order";
+      this._buttonLabel = "UPDATE CART";
     }
   }
 
   @override
   void dispose() {
-    controller.dispose();
+    _photoViewcontroller.dispose();
+    _instructionsController.dispose();
     super.dispose();
   }
 
@@ -68,168 +68,16 @@ class _ProductDetailState extends State<ProductDetail> {
 
   void minus() {
     setState(() {
-      if (quantity != 1) quantity--;
+      if (quantity != 0) quantity--;
     });
   }
 
-  buildAppBar() {
-    return PreferredSize(
-      preferredSize: Size(double.infinity, 83),
-      child: Container(
-        width: MediaQuery.of(context).size.width,
-        height: 200,
-        child: Container(
-          decoration: BoxDecoration(color: Colors.white),
-          child: Container(
-            margin: const EdgeInsets.fromLTRB(15, 55, 15, 0),
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.pop(context);
-                      },
-                      child: Icon(
-                        Icons.arrow_back_sharp,
-                        color: kTealColor,
-                        size: 28,
-                      ),
-                    ),
-                    // SizedBox(
-                    //   width: 60,r
-                    // ),
-                    Icon(Icons.more_horiz, color: kTealColor, size: 28)
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  buildDots() {
-    var gallery = product.gallery;
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: gallery.map((url) {
-        int index = gallery.indexOf(url);
-        return Container(
-          width: 9.0,
-          height: 10.0,
-          margin: EdgeInsets.symmetric(vertical: 20.0, horizontal: 5.0),
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            border: Border.all(width: 1, color: Colors.black),
-            color:
-                _current == index ? Color.fromRGBO(0, 0, 0, 0.9) : Colors.grey,
-          ),
-        );
-      }).toList(),
-    );
-  }
-
-  buildGallery() {
-    return PhotoViewGallery.builder(
-      itemCount: product.gallery.length,
-      onPageChanged: (index) {
-        if (this.mounted) {
-          setState(() {
-            _current = index;
-          });
-        }
-      },
-      builder: (context, index) {
-        var image = product.gallery[index];
-        if (image.url.isEmpty) return null;
-
-        return PhotoViewGalleryPageOptions(
-          imageProvider: NetworkImage(image.url),
-          minScale: PhotoViewComputedScale.contained * 0.8,
-          maxScale: PhotoViewComputedScale.covered * 2,
-          controller: controller,
-        );
-      },
-      scrollPhysics: BouncingScrollPhysics(),
-      backgroundDecoration: BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.circular(20)),
-        color: Theme.of(context).canvasColor,
-      ),
-      enableRotation: true,
-      loadingBuilder: (context, event) => Center(
-        child: Container(
-          width: 30.0,
-          height: 30.0,
-          child: CircularProgressIndicator(
-            backgroundColor: Colors.orange,
-            value: event == null
-                ? 0
-                : event.cumulativeBytesLoaded / event.expectedTotalBytes,
-          ),
-        ),
-      ),
-    );
-  }
-
-  buildImage() {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Row(
-        children: [
-          Expanded(
-            child: Container(
-              height: MediaQuery.of(context).size.height / 2,
-              child: Stack(
-                children: [
-                  buildGallery(),
-                  Align(
-                    alignment: Alignment.bottomCenter,
-                    child: buildDots(),
-                  )
-                ],
-              ),
-            ),
-          ),
-          //  SizedBox(height: 10,),
-        ],
-      ),
-    );
-  }
-
-  buildItemAndPrice() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Container(
-            padding: const EdgeInsets.only(left: 15),
-            child: Text(
-              product.name,
-              style: TextStyle(
-                  fontFamily: "Goldplay",
-                  fontWeight: FontWeight.w700,
-                  fontSize: 18),
-            )),
-        Row(
-          children: [
-            Container(
-              padding: const EdgeInsets.only(right: 15),
-              child: Text(
-                product.basePrice.toString(),
-                // user.userProducts[index].basePrice.toString(),
-                style: TextStyle(
-                    color: Color(0XFFFF7A00),
-                    fontSize: 18,
-                    fontWeight: FontWeight.w700),
-              ),
-            )
-          ],
-        )
-      ],
-    );
+  void onPageChanged(int index) {
+    if (this.mounted) {
+      setState(() {
+        _current = index;
+      });
+    }
   }
 
   buildReviews() {
@@ -237,204 +85,378 @@ class _ProductDetailState extends State<ProductDetail> {
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         Container(
-            padding: const EdgeInsets.only(top: 20),
-            child: TextButton(onPressed: () {}, child: Text("Read Reviews")))
+          padding: const EdgeInsets.only(top: 20),
+          child: TextButton(
+            onPressed: () {},
+            child: Text("Read Reviews"),
+          ),
+        ),
       ],
     );
   }
 
-  buildMessage() {
+  @override
+  Widget build(BuildContext context) {
+    final shop = context.read<Shops>().findById(widget.product.shopId);
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: CustomAppBar(
+        buildLeading: true,
+        leadingColor: kTealColor,
+        backgroundColor: Colors.white,
+        onPressedLeading: () => Navigator.pop(context),
+        title: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SizedBox(
+              height: kToolbarHeight * 0.80,
+              child: ChatAvatar(
+                displayName: shop.name,
+                displayPhoto: shop.profilePhoto,
+                radius: (kToolbarHeight * 0.80) / 2,
+              ),
+            ),
+            SizedBox(width: 8.0),
+            Text(
+              _appBarTitle,
+              style: TextStyle(
+                color: Colors.black,
+                fontFamily: "Goldplay",
+                fontWeight: FontWeight.w600,
+              ),
+            )
+          ],
+        ),
+        actions: [
+          IconButton(
+            icon: Icon(
+              Icons.more_horiz,
+              color: kTealColor,
+              size: 28.0,
+            ),
+            onPressed: null,
+          ),
+        ],
+      ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: Column(
+            children: [
+              _ProductGallery(
+                product: widget.product,
+                currentIndex: _current,
+                controller: _photoViewcontroller,
+                onPageChanged: onPageChanged,
+              ),
+              SizedBox(height: 10),
+              _ProductItemAndPrice(
+                productName: widget.product.name,
+                productPrice: widget.product.basePrice,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [StoreRating(), buildReviews()],
+              ),
+              SizedBox(height: 10),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Text(widget.product.description),
+              ),
+              Divider(thickness: 1, height: 2, color: Colors.grey.shade300),
+              SizedBox(height: 16),
+              _SpecialInstructionsLabel(),
+              _SpecialInstructionsTextField(
+                controller: this._instructionsController,
+              ),
+              SizedBox(height: 20),
+              Divider(thickness: 1, height: 2, color: Colors.grey.shade300),
+              SizedBox(height: 30),
+              //buildQuantity(),
+              RichText(
+                text: TextSpan(
+                  children: [
+                    TextSpan(text: "Quantity\t"),
+                    TextSpan(
+                      text: "$quantity",
+                      style: TextStyle(
+                        fontFamily: "Goldplay",
+                        fontSize: 20,
+                        fontWeight: FontWeight.w700,
+                        color: kTealColor,
+                      ),
+                    ),
+                  ],
+                  style: TextStyle(
+                    fontFamily: "Goldplay",
+                    fontSize: 20,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.black,
+                  ),
+                ),
+              ),
+              SizedBox(height: 20),
+              _QuantityController(
+                onAdd: add,
+                onSubtract: minus,
+              ),
+              SizedBox(height: 30),
+              Divider(thickness: 1, height: 2, color: Colors.grey.shade300),
+              SizedBox(height: 20),
+              Row(
+                children: [
+                  Expanded(
+                    child: AppButton(
+                      this._buttonLabel,
+                      kTealColor,
+                      true,
+                      () {
+                        Provider.of<ShoppingCart>(context, listen: false).add(
+                          shopId: widget.product.shopId,
+                          productId: widget.product.id,
+                          quantity: quantity,
+                          notes: _instructionsController.text,
+                        );
+                        Navigator.pop(context);
+                      },
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: 30,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _ProductGallery extends StatelessWidget {
+  final Product product;
+  final int currentIndex;
+  final PhotoViewController controller;
+  final void Function(int) onPageChanged;
+  const _ProductGallery({
+    Key key,
+    @required this.product,
+    @required this.currentIndex,
+    @required this.controller,
+    @required this.onPageChanged,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final gallery = product.gallery;
+    return Container(
+      height: MediaQuery.of(context).size.height / 2,
+      child: Stack(
+        children: [
+          PhotoViewGallery.builder(
+            itemCount: product.gallery.length,
+            onPageChanged: onPageChanged,
+            gaplessPlayback: true,
+            builder: (context, index) {
+              final image = product.gallery[index];
+              if (image.url.isEmpty) return null;
+              return PhotoViewGalleryPageOptions(
+                imageProvider: NetworkImage(image.url),
+                minScale: PhotoViewComputedScale.contained * 0.8,
+                maxScale: PhotoViewComputedScale.covered * 2,
+                disableGestures: true,
+                controller: controller,
+              );
+            },
+            scrollPhysics: BouncingScrollPhysics(),
+            backgroundDecoration: BoxDecoration(
+              borderRadius: BorderRadius.all(Radius.circular(20)),
+              color: Theme.of(context).canvasColor,
+            ),
+            //enableRotation: true,
+            loadingBuilder: (context, event) => Center(
+              child: Container(
+                width: 30.0,
+                height: 30.0,
+                child: CircularProgressIndicator(
+                  backgroundColor: Colors.orange,
+                  value: event == null
+                      ? 0
+                      : event.cumulativeBytesLoaded / event.expectedTotalBytes,
+                ),
+              ),
+            ),
+          ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: gallery.map((url) {
+                int index = gallery.indexOf(url);
+                return Container(
+                  width: 9.0,
+                  height: 10.0,
+                  margin: EdgeInsets.symmetric(vertical: 20.0, horizontal: 5.0),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(width: 1, color: Colors.black),
+                    color: currentIndex == index
+                        ? Color.fromRGBO(0, 0, 0, 0.9)
+                        : Colors.grey,
+                  ),
+                );
+              }).toList(),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ProductItemAndPrice extends StatelessWidget {
+  final String productName;
+  final double productPrice;
+  const _ProductItemAndPrice({
+    Key key,
+    @required this.productName,
+    @required this.productPrice,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
     return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         Container(
-          // padding: const EdgeInsets.all(2.0),
-          child: Expanded(
-            child: Padding(
-              padding: const EdgeInsets.only(
-                  left: 15, right: 15, top: 1, bottom: 10),
-              child: Text(product.description),
+          child: Text(
+            productName,
+            style: TextStyle(
+              fontFamily: "Goldplay",
+              fontWeight: FontWeight.w800,
+              fontSize: 26.0,
+              color: kNavyColor,
+            ),
+          ),
+        ),
+        Container(
+          child: Text(
+            productPrice.toString(),
+            style: TextStyle(
+              color: kOrangeColor,
+              fontSize: 32.0,
+              fontWeight: FontWeight.w800,
             ),
           ),
         )
       ],
     );
   }
+}
 
-  buildSpecialInstructions() {
+class _SpecialInstructionsLabel extends StatelessWidget {
+  const _SpecialInstructionsLabel({Key key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
     return Row(
       children: [
-        Container(
-          padding: const EdgeInsets.only(left: 15),
-          child: Text(
-            "Special Instructions",
-            style: TextStyle(
-                fontWeight: FontWeight.w700,
-                fontFamily: "Goldplay",
-                fontSize: 20),
+        Text(
+          "Special Instructions",
+          style: TextStyle(
+            fontWeight: FontWeight.w800,
+            fontFamily: "Goldplay",
+            fontSize: 24,
           ),
         ),
         SizedBox(
           width: 10,
         ),
-        Text("Optional",
-            style: TextStyle(
-              fontFamily: "Goldplay",
-              fontSize: 14,
-              fontWeight: FontWeight.w500,
-            ))
-      ],
-    );
-  }
-
-  buildSpecialInstructionsTextField() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Container(
-          margin: EdgeInsets.all(12),
-          height: maxLines * 15.0,
-          width: MediaQuery.of(context).size.width * 0.91,
-          color: Color(0xffE0E0E0),
-          child: TextField(
-            controller: _instructionsController,
-            onChanged: null,
-            cursorColor: Colors.black,
-            keyboardType: TextInputType.multiline,
-            maxLines: maxLines,
-            textInputAction: TextInputAction.newline,
-            decoration: InputDecoration(
-                fillColor: Colors.white,
-                filled: true,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  borderSide: BorderSide(
-                    width: 1,
-                    color: Colors.grey.shade500,
-                  ),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  borderSide: BorderSide(width: 1, color: Colors.grey.shade500),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  borderSide: BorderSide(width: 1, color: Colors.grey.shade500),
-                ),
-                // errorBorder: InputBorder.none,
-                // disabledBorder: InputBorder.none,
-                contentPadding:
-                    EdgeInsets.only(left: 18, bottom: 11, top: 30, right: 15),
-                hintText: "e.g no bell peppers, please.",
-                hintStyle: TextStyle(
-                  color: Color(0xFFBDBDBD),
-                  fontSize: 14,
-                  fontFamily: "GoldplayBold",
-                  // fontWeight: FontWeight.w500,
-                )),
-          ),
-        ),
-      ],
-    );
-  }
-
-  buildDivider() {
-    return Container(
-      width: MediaQuery.of(context).size.width * 0.9,
-      child: Divider(
-        thickness: 1,
-        height: 2,
-        color: Colors.grey.shade300,
-      ),
-    );
-  }
-
-  buildButtons() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      children: [
-        Container(
-          height: 43,
-          width: 180,
-          child: FlatButton(
-            // height: 50,
-            // minWidth: 100,
-            color: Colors.white,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20.0),
-              side: BorderSide(color: kTealColor),
-            ),
-            textColor: kTealColor,
-            child: Text(
-              "MESSAGE SELLER",
-              style: TextStyle(
-                  fontFamily: "Goldplay",
-                  fontSize: 14,
-                  fontWeight: FontWeight.w700),
-            ),
-            onPressed: () {},
-          ),
-        ),
-        Container(
-          height: 43,
-          width: 180,
-          child: FlatButton(
-            // height: 50,
-            // minWidth: 100,
-            color: kTealColor,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20.0),
-              side: BorderSide(color: kTealColor),
-            ),
-            textColor: Colors.black,
-            child: Text(
-              "ADD TO CART",
-              style: TextStyle(
-                  fontFamily: "Goldplay",
-                  fontSize: 14,
-                  fontWeight: FontWeight.w700),
-            ),
-            onPressed: () {
-              Provider.of<ShoppingCart>(context, listen: false).add(
-                productId: product.id,
-                quantity: quantity,
-                notes: _instructionsController.text,
-              );
-              Navigator.pop(context);
-            },
-          ),
-        ),
-      ],
-    );
-  }
-
-  buildQuantity() {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Container(
-          child: Text(
-            "Quantity",
-            style: TextStyle(
-                fontFamily: "Goldplay",
-                fontSize: 20,
-                fontWeight: FontWeight.w700),
-          ),
-        ),
-        SizedBox(
-          width: 20,
-        ),
         Text(
-          '$quantity',
+          "Optional",
           style: TextStyle(
-              fontWeight: FontWeight.w700, fontSize: 20, color: kTealColor),
+            fontFamily: "Goldplay",
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
+          ),
         )
       ],
     );
   }
+}
 
-  buildQuantityButtons() {
+class _SpecialInstructionsTextField extends StatelessWidget {
+  final maxLines = 10;
+  final TextEditingController controller;
+  const _SpecialInstructionsTextField({
+    Key key,
+    @required this.controller,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: maxLines * 15.0,
+      //width: MediaQuery.of(context).size.width * 0.91,
+      //color: Color(0xffE0E0E0),
+      child: TextField(
+        controller: controller,
+        onChanged: null,
+        cursorColor: Colors.black,
+        keyboardType: TextInputType.multiline,
+        maxLines: maxLines,
+        textInputAction: TextInputAction.newline,
+        decoration: InputDecoration(
+          fillColor: Colors.white,
+          filled: true,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: BorderSide(
+              width: 1,
+              color: Colors.grey.shade500,
+            ),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: BorderSide(width: 1, color: Colors.grey.shade500),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: BorderSide(width: 1, color: Colors.grey.shade500),
+          ),
+          // errorBorder: InputBorder.none,
+          // disabledBorder: InputBorder.none,
+          contentPadding: EdgeInsets.symmetric(
+            horizontal: 24.0,
+            vertical: 24.0,
+          ),
+          hintText: "e.g no bell peppers, please.",
+          hintStyle: TextStyle(
+            color: Color(0xFFBDBDBD),
+            fontSize: 16,
+            fontFamily: "Goldplay",
+            fontWeight: FontWeight.w500,
+            // fontWeight: FontWeight.w500,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _QuantityController extends StatelessWidget {
+  final void Function() onAdd;
+  final void Function() onSubtract;
+  const _QuantityController({
+    Key key,
+    this.onAdd,
+    this.onSubtract,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -443,7 +465,7 @@ class _ProductDetailState extends State<ProductDetail> {
           height: 60.0,
           width: 60.0,
           child: RawMaterialButton(
-            onPressed: minus,
+            onPressed: onSubtract,
             elevation: 5.0,
             fillColor: Colors.white,
             shape: CircleBorder(),
@@ -462,7 +484,7 @@ class _ProductDetailState extends State<ProductDetail> {
           height: 60.0,
           width: 60.0,
           child: RawMaterialButton(
-            onPressed: add,
+            onPressed: onAdd,
             elevation: 5.0,
             fillColor: Colors.white,
             shape: CircleBorder(),
@@ -476,71 +498,5 @@ class _ProductDetailState extends State<ProductDetail> {
         ),
       ],
     );
-  }
-
-  buildBody() {
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          buildImage(),
-          SizedBox(
-            height: 10,
-          ),
-          buildItemAndPrice(),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [StoreRating(), buildReviews()],
-          ),
-          SizedBox(
-            height: 10,
-          ),
-          buildMessage(),
-          buildDivider(),
-          SizedBox(
-            height: 10,
-          ),
-          buildSpecialInstructions(),
-          buildSpecialInstructionsTextField(),
-          SizedBox(
-            height: 20,
-          ),
-          buildDivider(),
-          SizedBox(
-            height: 30,
-          ),
-          buildQuantity(),
-          SizedBox(
-            height: 20,
-          ),
-          buildQuantityButtons(),
-          SizedBox(
-            height: 30,
-          ),
-          Container(
-            width: MediaQuery.of(context).size.width,
-            child: Divider(
-              thickness: 1,
-              height: 2,
-              color: Colors.grey.shade300,
-            ),
-          ),
-          SizedBox(
-            height: 20,
-          ),
-          buildButtons(),
-          SizedBox(
-            height: 30,
-          ),
-        ],
-      ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        backgroundColor: Colors.white,
-        appBar: buildAppBar(),
-        body: buildBody());
   }
 }

@@ -26,16 +26,13 @@ class Status300Buttons extends StatelessWidget {
       return Container(
         child: Column(
           children: [
-            Row(
-              children: [
-                ViewPaymentButton(onPress: this.onPress),
-              ],
+            Container(
+              width: double.infinity,
+              child: ViewPaymentButton(onPress: this.onPress),
             ),
             SizedBox(height: MediaQuery.of(context).size.height * 0.01),
-            Row(
-              children: [
-                MessageSellerButton(order: this.order),
-              ],
+            Container(
+              child: MessageSellerButton(order: this.order),
             ),
           ],
         ),
@@ -46,23 +43,25 @@ class Status300Buttons extends StatelessWidget {
       child: Column(
         children: [
           if (this.paymentMethod != "cod")
-            Row(
-              children: [
-                ViewPaymentButton(onPress: this.onPress),
-              ],
+            Container(
+              child: ViewPaymentButton(onPress: this.onPress),
             ),
           SizedBox(height: MediaQuery.of(context).size.height * 0.01),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              MessageBuyerButton(order: this.order),
+              Expanded(
+                child: MessageBuyerButton(order: this.order),
+              ),
               SizedBox(width: MediaQuery.of(context).size.width * 0.01),
-              AppButton(
-                "Confirm Payment",
-                kOrangeColor,
-                true,
-                () => this.onPress(OrderAction.confirmPayment),
-              )
+              Expanded(
+                child: AppButton(
+                  "Confirm Payment",
+                  kOrangeColor,
+                  true,
+                  () => this.onPress(OrderAction.confirmPayment),
+                ),
+              ),
             ],
           ),
         ],

@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 
 import 'providers/activities.dart';
@@ -11,7 +12,6 @@ import 'providers/post_requests/operating_hours_body.dart';
 import 'providers/post_requests/product_body.dart';
 import 'providers/post_requests/shop_body.dart';
 import 'providers/products.dart';
-import 'providers/pull_up_cart_state.dart';
 import 'providers/schedule.dart';
 import 'providers/shops.dart';
 import 'providers/user.dart';
@@ -88,8 +88,6 @@ class _MyAppState extends State<MyApp> {
         ),
 
         ChangeNotifierProvider<ShoppingCart>(create: (_) => ShoppingCart()),
-        ChangeNotifierProvider<PullUpCartState>(
-            create: (_) => PullUpCartState()),
         ChangeNotifierProvider<ChatProvider>(create: (_) => ChatProvider()),
         ChangeNotifierProvider<Schedule>(create: (_) => Schedule()),
         // post body requests:
@@ -104,6 +102,9 @@ class _MyAppState extends State<MyApp> {
         Provider<MediaUtility>(create: (_) => MediaUtility.instance),
         Provider<LocalImageService>(create: (_) => LocalImageService.instance),
         Provider<ChatHelpers>(create: (_) => ChatHelpers()),
+
+        // for bottom nav bar
+        ListenableProvider(create: (_) => PersistentTabController()),
       ],
       child: StreamBuilder<UserSharedPreferences>(
         stream: _userSharedPreferences.stream,
