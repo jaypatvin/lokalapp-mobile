@@ -7,6 +7,8 @@ import '../services/lokal_api_service.dart';
 
 class Products extends ChangeNotifier {
   String _communityId;
+  String _idToken;
+
   List<Product> _products = [];
   bool _isLoading;
 
@@ -21,6 +23,10 @@ class Products extends ChangeNotifier {
     _communityId = id;
   }
 
+  void setIdToken(String id) {
+    _idToken = id;
+  }
+
   Product findById(String id) {
     return _products.firstWhere((product) => product.id == id);
   }
@@ -33,10 +39,10 @@ class Products extends ChangeNotifier {
     return _products.where((product) => product.shopId == shopId).toList();
   }
 
-  Future<void> fetch(String authToken) async {
+  Future<void> fetch() async {
     _isLoading = true;
     var response = await LokalApiService.instance.product
-        .getCommunityProducts(communityId: communityId, idToken: authToken);
+        .getCommunityProducts(communityId: communityId, idToken: _idToken);
 
     if (response.statusCode != 200) {
       _isLoading = false;
@@ -58,10 +64,10 @@ class Products extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<bool> create(String authToken, Map data) async {
+  Future<bool> create(Map data) async {
     try {
       var response = await LokalApiService.instance.product
-          .create(data: data, idToken: authToken);
+          .create(data: data, idToken: _idToken);
 
       if (response.statusCode != 200) return false;
 
@@ -81,12 +87,11 @@ class Products extends ChangeNotifier {
 
   Future<bool> update({
     @required String id,
-    @required String authToken,
     @required Map data,
   }) async {
     try {
       var response = await LokalApiService.instance.product
-          .update(productId: id, data: data, idToken: authToken);
+          .update(productId: id, data: data, idToken: _idToken);
 
       if (response.statusCode != 200) return false;
 
@@ -105,12 +110,11 @@ class Products extends ChangeNotifier {
 
   Future<bool> setAvailability({
     @required String id,
-    @required String authToken,
     @required Map data,
   }) async {
     try {
       var response = await LokalApiService.instance.product
-          .setAvailability(productId: id, data: data, idToken: authToken);
+          .setAvailability(productId: id, data: data, idToken: _idToken);
 
       if (response.statusCode != 200) return false;
 

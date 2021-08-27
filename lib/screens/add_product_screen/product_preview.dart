@@ -151,7 +151,7 @@ class _ProductPreviewState extends State<ProductPreview> {
         gallery: gallery.map((image) => image.toMap()).toList(),
         shopId: shop.id,
       );
-      return await products.create(user.idToken, productBody.data);
+      return await products.create(productBody.data);
     } on Exception catch (e) {
       print(e);
       return false;
@@ -167,7 +167,6 @@ class _ProductPreviewState extends State<ProductPreview> {
     try {
       return await products.setAvailability(
         id: product.id,
-        authToken: user.idToken,
         data: hoursBody.data,
       );
     } catch (e) {

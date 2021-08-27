@@ -16,26 +16,23 @@ class Timeline extends StatelessWidget {
 
   void onLike(BuildContext context, ActivityFeed activity, CurrentUser user) {
     if (activity.liked) {
-      Provider.of<Activities>(context, listen: false).unlikePost(
-        authToken: user.idToken,
-        activityId: activity.id,
-        userId: user.id,
-      );
+      context.read<Activities>().unlikePost(
+            activityId: activity.id,
+            userId: user.id,
+          );
       debugPrint("Unliked ${activity.id}");
     } else {
-      Provider.of<Activities>(context, listen: false).likePost(
-        authToken: user.idToken,
-        activityId: activity.id,
-        userId: user.id,
-      );
+      context.read<Activities>().likePost(
+            activityId: activity.id,
+            userId: user.id,
+          );
       debugPrint("Liked ${activity.id}");
     }
   }
 
   void onCommentsPressed(ActivityFeed activity, BuildContext context) {
-    var user = Provider.of<CurrentUser>(context, listen: false);
-    Provider.of<Activities>(context, listen: false)
-        .fetchComments(authToken: user.idToken, activityId: activity.id);
+    final user = Provider.of<CurrentUser>(context, listen: false);
+    context.read<Activities>().fetchComments(activityId: activity.id);
     Navigator.push(
       context,
       MaterialPageRoute(

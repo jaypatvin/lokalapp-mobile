@@ -5,10 +5,14 @@ import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
 
+import '../../providers/activities.dart';
 import '../../providers/invite.dart';
 import '../../providers/post_requests/auth_body.dart';
+import '../../providers/products.dart';
+import '../../providers/shops.dart';
 import '../../providers/user.dart';
 import '../../providers/user_auth.dart';
+import '../../providers/users.dart';
 import '../../services/local_image_service.dart';
 import '../../utils/themes.dart';
 import '../../utils/utility.dart';
@@ -189,6 +193,10 @@ class _ProfileRegistrationState extends State<ProfileRegistration> {
       onPressed: () async {
         bool success = await registerUser();
         if (success) {
+          context.read<Activities>().fetch();
+          context.read<Shops>().fetch();
+          context.read<Products>().fetch();
+          context.read<Users>().fetch();
           Navigator.pushAndRemoveUntil(
               context,
               MaterialPageRoute(builder: (context) => VerifyScreen()),

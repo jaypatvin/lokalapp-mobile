@@ -57,6 +57,7 @@ class _MyAppState extends State<MyApp> {
       providers: [
         //shared preference
         Provider<UserSharedPreferences>.value(value: _userSharedPreferences),
+
         // auth:
         ChangeNotifierProvider<UserAuth>(create: (_) => UserAuth()),
         ChangeNotifierProvider<Invite>(create: (_) => Invite()),
@@ -65,31 +66,34 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider<CurrentUser>(create: (_) => CurrentUser()),
         ChangeNotifierProxyProvider<CurrentUser, Activities>(
           create: (_) => Activities(),
-          update: (_, user, activities) =>
-              activities..setCommunityId(user.communityId),
+          update: (_, user, activities) => activities
+            ..setCommunityId(user.communityId)
+            ..setIdToken(user.idToken),
         ),
         ChangeNotifierProxyProvider<CurrentUser, Shops>(
           create: (_) => Shops(),
           update: (_, user, shops) => shops
             ..setCommunityId(user.communityId)
-            ..fetch(user.idToken),
+            ..setIdToken(user.idToken),
         ),
         ChangeNotifierProxyProvider<CurrentUser, Products>(
           create: (_) => Products(),
           update: (_, user, products) => products
             ..setCommunityId(user.communityId)
-            ..fetch(user.idToken),
+            ..setIdToken(user.idToken),
         ),
 
         ChangeNotifierProxyProvider<CurrentUser, Users>(
           create: (_) => Users(),
-          update: (_, user, users) =>
-              users..fetch(user.communityId, user.idToken),
+          update: (_, user, users) => users
+            ..setCommunityId(user.communityId)
+            ..setIdToken(user.idToken),
         ),
 
         ChangeNotifierProvider<ShoppingCart>(create: (_) => ShoppingCart()),
         ChangeNotifierProvider<ChatProvider>(create: (_) => ChatProvider()),
         ChangeNotifierProvider<Schedule>(create: (_) => Schedule()),
+
         // post body requests:
         ChangeNotifierProvider<AuthBody>(create: (_) => AuthBody()),
         ChangeNotifierProvider<ProductBody>(create: (_) => ProductBody()),

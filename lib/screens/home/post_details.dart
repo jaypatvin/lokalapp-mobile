@@ -236,10 +236,9 @@ class _PostDetailsState extends State<PostDetails> {
   }
 
   Future<void> createComment() async {
-    debugPrint("Send a comment");
-    var cUser = Provider.of<CurrentUser>(context, listen: false);
-    var service = Provider.of<LocalImageService>(context, listen: false);
-    var gallery = <LokalImages>[];
+    final cUser = context.read<CurrentUser>();
+    final service = context.read<LocalImageService>();
+    final gallery = <LokalImages>[];
     for (var asset in provider.picked) {
       var file = await asset.file;
       var url = await service.uploadImage(file: file, name: 'post_photo');
@@ -252,12 +251,10 @@ class _PostDetailsState extends State<PostDetails> {
       "images": gallery.map((x) => x.toMap()).toList(),
     };
 
-    var success =
-        await Provider.of<Activities>(context, listen: false).createComment(
-      authToken: cUser.idToken,
-      activityId: widget.activity.id,
-      body: body,
-    );
+    final success = await context.read<Activities>().createComment(
+          activityId: widget.activity.id,
+          body: body,
+        );
 
     if (success) {
       commentInputController.clear();
@@ -265,7 +262,6 @@ class _PostDetailsState extends State<PostDetails> {
         provider.picked.clear();
       });
       Provider.of<Activities>(context, listen: false).fetchComments(
-        authToken: cUser.idToken,
         activityId: widget.activity.id,
       );
     } else {
@@ -412,11 +408,11 @@ class _PostDetailsState extends State<PostDetails> {
 
   @override
   Widget build(BuildContext context) {
-    var user = Provider.of<Users>(context).findById(widget.activity.userId);
-    var cUser = Provider.of<CurrentUser>(context, listen: false);
-    var activities = Provider.of<Activities>(context, listen: false);
-    var width = MediaQuery.of(context).size.width;
-    var height = MediaQuery.of(context).size.height;
+    final user = context.read<Users>().findById(widget.activity.userId);
+    final cUser = context.read<CurrentUser>();
+    final activities = context.read<Activities>();
+    final width = MediaQuery.of(context).size.width;
+    final height = MediaQuery.of(context).size.height;
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: CustomAppBar(
@@ -435,7 +431,6 @@ class _PostDetailsState extends State<PostDetails> {
       ),
       body: RefreshIndicator(
         onRefresh: () => activities.fetchComments(
-          authToken: cUser.idToken,
           activityId: widget.activity.id,
         ),
         child: SingleChildScrollView(
@@ -520,7 +515,6 @@ class _PostDetailsState extends State<PostDetails> {
                                         Provider.of<Activities>(context,
                                                 listen: false)
                                             .unlikeComment(
-                                          authToken: cUser.idToken,
                                           commentId: comment.id,
                                           activityId: widget.activity.id,
                                           userId: cUser.id,
@@ -531,7 +525,6 @@ class _PostDetailsState extends State<PostDetails> {
                                         Provider.of<Activities>(context,
                                                 listen: false)
                                             .likeComment(
-                                          authToken: cUser.idToken,
                                           commentId: comment.id,
                                           activityId: widget.activity.id,
                                           userId: cUser.id,

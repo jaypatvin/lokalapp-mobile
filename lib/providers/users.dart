@@ -8,6 +8,8 @@ import '../services/lokal_api_service.dart';
 class Users extends ChangeNotifier {
   List<LokalUser> _users;
   bool _isLoading;
+  String _idToken;
+  String _communityId;
 
   List<LokalUser> get users {
     return [..._users];
@@ -19,13 +21,22 @@ class Users extends ChangeNotifier {
     return _users.firstWhere((user) => user.id == id);
   }
 
-  void fetch(String communityId, String idToken) async {
+  void setCommunityId(String id) {
+    _communityId = id;
+  }
+
+  void setIdToken(String id) {
+    _idToken = id;
+  }
+
+  void fetch() async {
     _isLoading = true;
     var response = await LokalApiService.instance.user
-        .getCommunityUsers(communityId: communityId, idToken: idToken);
+        .getCommunityUsers(communityId: _communityId, idToken: _idToken);
 
     if (response.statusCode != 200) {
       _isLoading = false;
+      notifyListeners();
       return;
     }
 

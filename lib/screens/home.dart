@@ -4,7 +4,6 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:provider/provider.dart';
 
 import '../providers/activities.dart';
-import '../providers/user.dart';
 import '../utils/themes.dart';
 import '../widgets/custom_app_bar.dart';
 import 'cart/cart_container.dart';
@@ -12,7 +11,7 @@ import 'home/draft_post.dart';
 import 'home/timeline.dart';
 
 class Home extends StatefulWidget {
-  static const id = '/home';
+  static const routeName = "/home";
 
   @override
   _HomeState createState() => _HomeState();
@@ -70,16 +69,14 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
-    var activities = Provider.of<Activities>(context, listen: false);
+    final activities = context.read<Activities>();
     if (activities.feed.length == 0) {
-      var user = Provider.of<CurrentUser>(context, listen: false);
-      activities.fetch(user.idToken);
+      activities.fetch();
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    var user = Provider.of<CurrentUser>(context, listen: false);
     return Scaffold(
       backgroundColor: Color(0xffF1FAFF),
       resizeToAvoidBottomInset: true,
@@ -98,7 +95,7 @@ class _HomeState extends State<Home> {
                   return activities.isLoading
                       ? Center(child: CircularProgressIndicator())
                       : RefreshIndicator(
-                          onRefresh: () => activities.fetch(user.idToken),
+                          onRefresh: () => activities.fetch(),
                           child: Timeline(activities.feed),
                         );
                 },

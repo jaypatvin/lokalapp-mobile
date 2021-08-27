@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:lokalapp/screens/home.dart';
-import 'package:lokalapp/utils/shared_preference.dart';
-import 'package:lokalapp/widgets/onboarding.dart';
 import 'package:provider/provider.dart';
 
+import '../providers/activities.dart';
+import '../providers/products.dart';
+import '../providers/shops.dart';
 import '../providers/user.dart';
 import '../providers/user_auth.dart';
+import '../providers/users.dart';
 import '../screens/bottom_navigation.dart';
 import '../screens/welcome_screen.dart';
 import '../utils/context_keeper.dart';
@@ -38,7 +39,10 @@ class _RootState extends State<Root> {
     if (authStatus == AuthStatus.Success) {
       CurrentUser user = Provider.of<CurrentUser>(context, listen: false);
       await user.fetch(auth.user);
-
+      context.read<Activities>().fetch();
+      context.read<Shops>().fetch();
+      context.read<Products>().fetch();
+      context.read<Users>().fetch();
       setState(() => _userState = user.state);
     } else {
       setState(() => _userState = UserState.Error);

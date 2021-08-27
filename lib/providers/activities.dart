@@ -8,6 +8,7 @@ import '../services/lokal_api_service.dart';
 
 class Activities extends ChangeNotifier {
   String _communityId;
+  String _idToken;
   List<ActivityFeed> _feed = [];
   bool _isLoading = false;
   bool _isCommentLoading = false;
@@ -25,6 +26,10 @@ class Activities extends ChangeNotifier {
     _communityId = id;
   }
 
+  void setIdToken(String idToken) {
+    _idToken = idToken;
+  }
+
   ActivityFeed findById(String id) {
     return _feed.firstWhere((activity) => activity.id == id);
   }
@@ -34,7 +39,6 @@ class Activities extends ChangeNotifier {
   }
 
   Future<bool> likePost({
-    @required String authToken,
     @required String activityId,
     @required String userId,
   }) async {
@@ -44,7 +48,7 @@ class Activities extends ChangeNotifier {
     notifyListeners();
 
     var response = await LokalApiService.instance.activity.like(
-      idToken: authToken,
+      idToken: _idToken,
       activityId: activityId,
       userId: userId,
     );
@@ -63,7 +67,6 @@ class Activities extends ChangeNotifier {
   }
 
   Future<bool> unlikePost({
-    @required String authToken,
     @required String activityId,
     @required String userId,
   }) async {
@@ -73,7 +76,7 @@ class Activities extends ChangeNotifier {
     notifyListeners();
 
     var response = await LokalApiService.instance.activity.unlike(
-      idToken: authToken,
+      idToken: _idToken,
       activityId: activityId,
       userId: userId,
     );
@@ -92,7 +95,6 @@ class Activities extends ChangeNotifier {
   }
 
   Future<bool> likeComment({
-    @required String authToken,
     @required String commentId,
     @required String activityId,
     @required String userId,
@@ -104,7 +106,7 @@ class Activities extends ChangeNotifier {
     notifyListeners();
 
     var response = await LokalApiService.instance.comment.like(
-      idToken: authToken,
+      idToken: _idToken,
       activityId: activityId,
       userId: userId,
       commentId: commentId,
@@ -123,7 +125,6 @@ class Activities extends ChangeNotifier {
   }
 
   Future<bool> unlikeComment({
-    @required String authToken,
     @required String commentId,
     @required String activityId,
     @required String userId,
@@ -135,7 +136,7 @@ class Activities extends ChangeNotifier {
     notifyListeners();
 
     var response = await LokalApiService.instance.comment.unlike(
-      idToken: authToken,
+      idToken: _idToken,
       activityId: activityId,
       userId: userId,
       commentId: commentId,
@@ -154,14 +155,13 @@ class Activities extends ChangeNotifier {
   }
 
   Future<bool> createComment({
-    @required String authToken,
     @required String activityId,
     @required Map body,
   }) async {
     try {
       var response = await LokalApiService.instance.comment.create(
         activityId: activityId,
-        idToken: authToken,
+        idToken: _idToken,
         data: body,
       );
 
@@ -179,13 +179,12 @@ class Activities extends ChangeNotifier {
   }
 
   Future<void> fetchComments({
-    @required String authToken,
     @required String activityId,
   }) async {
     _isCommentLoading = true;
     try {
       var response = await LokalApiService.instance.comment
-          .getActivityComments(activityId: activityId, idToken: authToken);
+          .getActivityComments(activityId: activityId, idToken: _idToken);
 
       if (response.statusCode != 200) {
         _isCommentLoading = false;
@@ -211,11 +210,11 @@ class Activities extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> fetch(String authToken) async {
+  Future<void> fetch() async {
     _isLoading = true;
     try {
       var response = await LokalApiService.instance.activity
-          .getCommunityActivities(communityId: communityId, idToken: authToken);
+          .getCommunityActivities(communityId: communityId, idToken: _idToken);
 
       if (response.statusCode != 200) {
         _isLoading = false;
@@ -244,10 +243,10 @@ class Activities extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<bool> post(String authToken, Map data) async {
+  Future<bool> post(Map data) async {
     try {
       var response = await LokalApiService.instance.activity
-          .create(idToken: authToken, data: data);
+          .create(idToken: _idToken, data: data);
 
       if (response.statusCode != 200) {
         return false;

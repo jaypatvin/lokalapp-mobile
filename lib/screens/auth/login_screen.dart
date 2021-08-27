@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../providers/activities.dart';
+import '../../providers/products.dart';
+import '../../providers/shops.dart';
 import '../../providers/user.dart';
 import '../../providers/user_auth.dart';
+import '../../providers/users.dart';
 import '../../utils/themes.dart';
 import '../../widgets/rounded_button.dart';
 import '../../widgets/sso_block.dart';
@@ -42,11 +46,12 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: CircularProgressIndicator(),
                   ),
                   Container(
-                      margin: const EdgeInsets.only(top: 25.0),
-                      child: Text(
-                        "Signing in..",
-                        style: TextStyle(color: Colors.white),
-                      )),
+                    margin: const EdgeInsets.only(top: 25.0),
+                    child: Text(
+                      "Signing in..",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -79,6 +84,10 @@ class _LoginScreenState extends State<LoginScreen> {
       if (_authStatus == AuthStatus.Success) {
         await user.fetch(auth.user);
         if (user.state == UserState.LoggedIn) {
+          context.read<Activities>().fetch();
+          context.read<Shops>().fetch();
+          context.read<Products>().fetch();
+          context.read<Users>().fetch();
           Navigator.pushAndRemoveUntil(
               context,
               MaterialPageRoute(builder: (context) => BottomNavigation()),

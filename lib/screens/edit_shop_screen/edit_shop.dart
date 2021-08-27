@@ -108,7 +108,6 @@ class _EditShopState extends State<EditShop> {
 
     return await shops.update(
       id: shop.id,
-      authToken: user.idToken,
       data: shopBody.data,
     );
   }
@@ -225,7 +224,6 @@ class _EditShopState extends State<EditShop> {
     var userShop = shops.findByUser(user.id).first;
     return await shops.setOperatingHours(
       id: userShop.id,
-      authToken: user.idToken,
       data: operatingHoursBody.data,
     );
   }
@@ -384,12 +382,9 @@ class _EditShopState extends State<EditShop> {
 
                     if (editedShopSchedule) {
                       success = await _updateShopSchedule();
-
                       if (!success) throw "Update operating hours error";
                     }
-                    var user = Provider.of<CurrentUser>(context, listen: false);
-                    Provider.of<Shops>(context, listen: false)
-                        .fetch(user.idToken);
+                    Provider.of<Shops>(context, listen: false).fetch();
                     Navigator.pop(context);
                   } catch (e) {
                     ScaffoldMessenger.of(context).showSnackBar(
