@@ -5,13 +5,13 @@ import 'package:provider/provider.dart';
 import '../../providers/shops.dart';
 import '../../providers/user.dart';
 import '../../services/database.dart';
-import '../../utils/themes.dart';
 import 'components/grouped_orders.dart';
 
 class Transactions extends StatefulWidget {
   final Map<int, String> statuses;
   final bool isBuyer;
-  const Transactions(this.statuses, this.isBuyer);
+  final Animation<Color> colorAnimation;
+  const Transactions(this.statuses, this.isBuyer, this.colorAnimation);
 
   @override
   _TransactionsState createState() => _TransactionsState();
@@ -106,7 +106,7 @@ class _TransactionsState extends State<Transactions> {
         Container(
           padding: EdgeInsets.all(20.0),
           width: MediaQuery.of(context).size.width,
-          color: widget.isBuyer ? kTealColor : Color(0xFF57183F),
+          color: widget.colorAnimation.value,
           child: Text(
             widget.isBuyer
                 ? 'These are the products you ordered from other stores.'
