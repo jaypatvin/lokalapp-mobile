@@ -7,6 +7,7 @@ import 'checkout_cart.dart';
 
 /// Handles the FAB of the shopping cart found throughout the app
 class CartContainer extends StatelessWidget {
+  /// The underlying screen/widget behind the cart button
   final Widget child;
   const CartContainer({
     Key key,

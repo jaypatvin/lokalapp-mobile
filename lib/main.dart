@@ -5,7 +5,6 @@ import 'package:provider/provider.dart';
 
 import 'providers/activities.dart';
 import 'providers/cart.dart';
-import 'providers/chat.dart';
 import 'providers/invite.dart';
 import 'providers/post_requests/auth_body.dart';
 import 'providers/post_requests/operating_hours_body.dart';
@@ -91,7 +90,6 @@ class _MyAppState extends State<MyApp> {
         ),
 
         ChangeNotifierProvider<ShoppingCart>(create: (_) => ShoppingCart()),
-        ChangeNotifierProvider<ChatProvider>(create: (_) => ChatProvider()),
         ChangeNotifierProvider<Schedule>(create: (_) => Schedule()),
 
         // post body requests:
