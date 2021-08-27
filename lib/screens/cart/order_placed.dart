@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:lokalapp/screens/cart/checkout_cart.dart';
+import 'package:lokalapp/screens/discover/discover.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 
@@ -8,11 +10,13 @@ import '../../widgets/app_button.dart';
 import '../../widgets/custom_app_bar.dart';
 
 class OrderPlaced extends StatelessWidget {
+  static const routeName = "/cart/orderPlaced";
   const OrderPlaced({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
+
     return Scaffold(
       backgroundColor: Color(0XFFF1FAFF),
       appBar: CustomAppBar(
@@ -20,10 +24,10 @@ class OrderPlaced extends StatelessWidget {
         backgroundColor: Colors.transparent,
         actions: [
           TextButton(
-            onPressed: () {
-              int count = 0;
-              Navigator.of(context).popUntil((_) => count++ >= 5);
-            },
+            onPressed: () => Navigator.popUntil(
+              context,
+              ModalRoute.withName(Discover.routeName),
+            ),
             child: Text(
               "Done",
               style: TextStyle(
@@ -96,10 +100,13 @@ class OrderPlaced extends StatelessWidget {
                     "BACK TO MY CART",
                     kTealColor,
                     false,
-                    () {
-                      int count = 0;
-                      Navigator.of(context).popUntil((_) => count++ >= 4);
-                    },
+                    () => Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                        builder: (BuildContext context) => CheckoutCart(),
+                      ),
+                      ModalRoute.withName(Discover.routeName),
+                    ),
                   ),
                 ),
               ],
@@ -113,8 +120,10 @@ class OrderPlaced extends StatelessWidget {
                     kTealColor,
                     true,
                     () {
-                      int count = 0;
-                      Navigator.of(context).popUntil((_) => count++ >= 5);
+                      Navigator.popUntil(
+                        context,
+                        ModalRoute.withName(Discover.routeName),
+                      );
                       context.read<PersistentTabController>().jumpToTab(3);
                     },
                   ),

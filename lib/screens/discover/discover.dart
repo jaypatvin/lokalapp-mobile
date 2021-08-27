@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
-import '../../providers/cart.dart';
 import '../../providers/products.dart';
 import '../../providers/shops.dart';
 import '../../utils/shared_preference.dart';
@@ -20,6 +19,7 @@ import 'order_screen_grid.dart';
 import 'product_detail.dart';
 
 class Discover extends StatefulWidget {
+  static const routeName = "/discover";
   @override
   _DiscoverState createState() => _DiscoverState();
 }

@@ -35,6 +35,9 @@ class _BottomNavigationState extends State<BottomNavigation> {
         iconSize: 34,
         activeColorPrimary: Color(0xFFCC3752),
         inactiveColorPrimary: Color(0xFF103045),
+        routeAndNavigatorSettings: RouteAndNavigatorSettings(
+          initialRoute: Home.routeName,
+        ),
       ),
       PersistentBottomNavBarItem(
         icon: SvgPicture.asset('assets/bottomNavIcons/Discover.svg'),
@@ -42,6 +45,9 @@ class _BottomNavigationState extends State<BottomNavigation> {
         iconSize: 34,
         activeColorPrimary: Color(0xFFCC3752),
         inactiveColorPrimary: Color(0xFF103045),
+        routeAndNavigatorSettings: RouteAndNavigatorSettings(
+          initialRoute: Discover.routeName,
+        ),
       ),
       PersistentBottomNavBarItem(
         icon: SvgPicture.asset('assets/bottomNavIcons/Chats.svg'),
@@ -49,6 +55,9 @@ class _BottomNavigationState extends State<BottomNavigation> {
         iconSize: 34,
         activeColorPrimary: Color(0xFFCC3752),
         inactiveColorPrimary: Color(0xFF103045),
+        routeAndNavigatorSettings: RouteAndNavigatorSettings(
+          initialRoute: Chat.routeName,
+        ),
       ),
       PersistentBottomNavBarItem(
         icon: SvgPicture.asset('assets/bottomNavIcons/Activity.svg'),
@@ -56,6 +65,9 @@ class _BottomNavigationState extends State<BottomNavigation> {
         iconSize: 34,
         activeColorPrimary: Color(0xFFCC3752),
         inactiveColorPrimary: Color(0xFF103045),
+        routeAndNavigatorSettings: RouteAndNavigatorSettings(
+          initialRoute: Activity.routeName,
+        ),
       ),
       PersistentBottomNavBarItem(
         icon: SvgPicture.asset('assets/bottomNavIcons/Profile.svg'),
@@ -63,6 +75,9 @@ class _BottomNavigationState extends State<BottomNavigation> {
         iconSize: 34,
         activeColorPrimary: Color(0xFFCC3752),
         inactiveColorPrimary: Color(0xFF103045),
+        routeAndNavigatorSettings: RouteAndNavigatorSettings(
+          initialRoute: ProfileShopMain.routeName,
+        ),
       ),
     ];
   }

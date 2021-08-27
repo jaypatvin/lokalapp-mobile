@@ -11,6 +11,7 @@ import 'profile_no_shop.dart';
 import 'settings/settings.dart';
 
 class ProfileShopMain extends StatefulWidget {
+  static const routeName = "/profile";
   @override
   _ProfileShopMainState createState() => _ProfileShopMainState();
 }

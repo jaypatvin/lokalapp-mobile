@@ -17,6 +17,7 @@ import 'chat_view.dart';
 import 'components/chat_avatar.dart';
 
 class Chat extends StatefulWidget {
+  static const routeName = "/chat";
   const Chat({Key key}) : super(key: key);
 
   @override
@@ -26,7 +27,6 @@ class Chat extends StatefulWidget {
 class _ChatState extends State<Chat>
     with TickerProviderStateMixin, AfterLayoutMixin<Chat> {
   TabController _tabController;
-  Color _indicatorColor;
 
   AnimationController _animationController;
   Animation<Color> _colorAnimation;
@@ -43,7 +43,6 @@ class _ChatState extends State<Chat>
       duration: const Duration(milliseconds: 250),
     );
 
-    _indicatorColor = kTealColor;
     _tabController.addListener(_tabSelectionHandler);
     _colorAnimation = ColorTween(
       begin: kTealColor,
@@ -60,11 +59,9 @@ class _ChatState extends State<Chat>
     setState(() {
       switch (_tabController?.index) {
         case 0:
-          _indicatorColor = kTealColor;
           _animationController.reverse();
           break;
         case 1:
-          _indicatorColor = kPurpleColor;
           _animationController.forward();
           break;
       }
