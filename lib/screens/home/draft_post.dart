@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:persistent_bottom_nav_bar/models/nested_will_pop_scope.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:provider/provider.dart';
 
@@ -9,6 +10,7 @@ import '../../providers/activities.dart';
 import '../../providers/user.dart';
 import '../../services/local_image_service.dart';
 import '../../utils/themes.dart';
+import '../../widgets/app_button.dart';
 import '../../widgets/custom_app_bar.dart';
 import '../../widgets/photo_picker_gallery/image_gallery_picker.dart';
 import '../../widgets/photo_picker_gallery/provider/custom_photo_provider.dart';
@@ -113,10 +115,9 @@ class _DraftPostState extends State<DraftPost> with TickerProviderStateMixin {
         Spacer(),
         RoundedButton(
           onPressed: () async {
-            var service =
-                Provider.of<LocalImageService>(context, listen: false);
-            var activities = Provider.of<Activities>(context, listen: false);
-            var user = Provider.of<CurrentUser>(context, listen: false);
+            final service = context.read<LocalImageService>();
+            final activities = context.read<Activities>();
+            final user = context.read<CurrentUser>();
 
             var gallery = <LokalImages>[];
             for (var asset in provider.picked) {
@@ -128,7 +129,6 @@ class _DraftPostState extends State<DraftPost> with TickerProviderStateMixin {
             }
 
             bool postSuccess = await activities.post(
-              user.idToken,
               {
                 'community_id': user.communityId,
                 'user_id': user.id,
@@ -193,71 +193,152 @@ class _DraftPostState extends State<DraftPost> with TickerProviderStateMixin {
     );
   }
 
+  Future<bool> onWillPop() async {
+    if (_userController.text.isEmpty && provider.picked.isEmpty) {
+      return true;
+    }
+    final height = MediaQuery.of(context).size.height;
+    final width = MediaQuery.of(context).size.width;
+    return showModalBottomSheet<bool>(
+      context: context,
+      isDismissible: false,
+      isScrollControlled: true,
+      useRootNavigator: true,
+      builder: (ctx) {
+        return Wrap(
+          children: [
+            Container(
+              height: height * 0.2,
+              child: Container(
+                margin: EdgeInsets.fromLTRB(
+                  width * 0.05,
+                  height * 0.03,
+                  width * 0.05,
+                  0,
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "Leave post?",
+                      style: kTextStyle.copyWith(
+                        fontSize: 24.0,
+                        color: kNavyColor,
+                      ),
+                    ),
+                    Container(
+                      margin: EdgeInsets.symmetric(
+                        horizontal: width * 0.25,
+                      ),
+                      child: Text(
+                        "Any progress you made will not be saved.",
+                        style: kTextStyle.copyWith(
+                          fontWeight: FontWeight.w500,
+                          fontSize: 18.0,
+                          color: kNavyColor,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: AppButton(
+                            "Exit",
+                            kTealColor,
+                            false,
+                            () => Navigator.of(ctx).pop(true),
+                          ),
+                        ),
+                        SizedBox(width: width * 0.02),
+                        Expanded(
+                          child: AppButton(
+                            "Continue Editing",
+                            kTealColor,
+                            true,
+                            () => Navigator.of(ctx).pop(false),
+                          ),
+                        ),
+                      ],
+                    )
+                  ],
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
     var height = MediaQuery.of(context).size.height;
-    return Scaffold(
-      key: _key,
-      backgroundColor: Colors.white,
-      appBar: CustomAppBar(
-        backgroundColor: const Color(0xFFF1FAFF),
-        leading: Builder(
-          builder: (BuildContext context) {
-            return GestureDetector(
-              child: Container(
-                padding: EdgeInsets.only(left: width * 0.02),
-                child: Center(
-                  child: Text(
-                    "Cancel",
-                    style: kTextStyle.copyWith(
-                      color: kPinkColor,
+    return NestedWillPopScope(
+      onWillPop: onWillPop,
+      child: Scaffold(
+        key: _key,
+        backgroundColor: Colors.white,
+        appBar: CustomAppBar(
+          backgroundColor: const Color(0xFFF1FAFF),
+          leading: Builder(
+            builder: (BuildContext context) {
+              return GestureDetector(
+                child: Container(
+                  padding: EdgeInsets.only(left: width * 0.02),
+                  child: Center(
+                    child: Text(
+                      "Cancel",
+                      style: kTextStyle.copyWith(
+                        color: kPinkColor,
+                      ),
                     ),
                   ),
                 ),
-              ),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            );
-          },
+                onTap: () {
+                  Navigator.of(context).maybePop();
+                },
+              );
+            },
+          ),
+          titleText: "Write a Post",
+          titleStyle: kTextStyle.copyWith(color: Colors.black),
         ),
-        titleText: "Write a Post",
-        titleStyle: kTextStyle.copyWith(color: Colors.black),
-      ),
-      body: SingleChildScrollView(
-        physics: AlwaysScrollableScrollPhysics(),
-        child: Column(
-          children: [
-            Visibility(
-              visible: provider.picked.length > 0,
-              child: buildPostImages(context: context),
-            ),
-            Container(
-              height: height * 0.30,
-              child: buildCard(),
-            ),
-            Divider(),
-            Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: width * 0.02,
-                vertical: height * 0.02,
+        body: SingleChildScrollView(
+          physics: AlwaysScrollableScrollPhysics(),
+          child: Column(
+            children: [
+              Visibility(
+                visible: provider.picked.length > 0,
+                child: buildPostImages(context: context),
               ),
-              child: postButton(),
-            ),
-            AnimatedContainer(
-              duration: const Duration(milliseconds: 200),
-              height: this.showImagePicker ? 200 : 0.0,
-              child: ImageGalleryPicker(
-                provider,
-                pickerHeight: 200,
-                assetHeight: 200,
-                assetWidth: 200,
-                thumbSize: 200,
-                enableSpecialItemBuilder: true,
+              Container(
+                height: height * 0.30,
+                child: buildCard(),
               ),
-            ),
-          ],
+              Divider(),
+              Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: width * 0.02,
+                  vertical: height * 0.02,
+                ),
+                child: postButton(),
+              ),
+              AnimatedContainer(
+                duration: const Duration(milliseconds: 200),
+                height: this.showImagePicker ? 200 : 0.0,
+                child: ImageGalleryPicker(
+                  provider,
+                  pickerHeight: 200,
+                  assetHeight: 200,
+                  assetWidth: 200,
+                  thumbSize: 200,
+                  enableSpecialItemBuilder: true,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
