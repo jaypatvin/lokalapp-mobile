@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 
@@ -20,6 +21,7 @@ import 'root/root.dart';
 import 'screens/chat/chat_helpers.dart';
 import 'services/local_image_service.dart';
 import 'utils/shared_preference.dart';
+import 'utils/themes.dart';
 import 'utils/utility.dart';
 import 'widgets/photo_picker_gallery/provider/custom_photo_provider.dart';
 
@@ -111,14 +113,36 @@ class _MyAppState extends State<MyApp> {
       child: StreamBuilder<UserSharedPreferences>(
         stream: _userSharedPreferences.stream,
         builder: (context, snapshot) {
-          return MaterialApp(
-            debugShowCheckedModeBanner: false,
-            title: 'Flutter Demo',
-            theme: ThemeData(
-              fontFamily: "Goldplay",
-              scaffoldBackgroundColor: Colors.white,
-            ),
-            home: Root(),
+          return ScreenUtilInit(
+            builder: () {
+              return MaterialApp(
+                debugShowCheckedModeBanner: false,
+                title: 'Lokal',
+                theme: ThemeData(
+                  fontFamily: "Goldplay",
+                  textTheme: TextTheme(
+                    headline1: TextStyle(
+                      fontSize: 30.0.sp,
+                      color: kNavyColor,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    headline6: TextStyle(
+                      fontSize: 14.0.sp,
+                      fontFamily: "Goldplay",
+                      fontWeight: FontWeight.bold,
+                      color: kTealColor,
+                    ),
+                    bodyText1: TextStyle(
+                      fontSize: 16.0.sp,
+                      color: kNavyColor,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  scaffoldBackgroundColor: Colors.white,
+                ),
+                home: Root(),
+              );
+            },
           );
         },
       ),

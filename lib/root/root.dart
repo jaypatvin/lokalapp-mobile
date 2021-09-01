@@ -39,10 +39,6 @@ class _RootState extends State<Root> {
     if (authStatus == AuthStatus.Success) {
       CurrentUser user = Provider.of<CurrentUser>(context, listen: false);
       await user.fetch(auth.user);
-      context.read<Activities>().fetch();
-      context.read<Shops>().fetch();
-      context.read<Products>().fetch();
-      context.read<Users>().fetch();
       setState(() => _userState = user.state);
     } else {
       setState(() => _userState = UserState.Error);
@@ -53,8 +49,11 @@ class _RootState extends State<Root> {
   Widget build(BuildContext context) {
     switch (_userState) {
       case UserState.LoggedIn:
+        context.read<Activities>().fetch();
+        context.read<Shops>().fetch();
+        context.read<Products>().fetch();
+        context.read<Users>().fetch();
         return BottomNavigation();
-
       default:
         return WelcomeScreen();
     }
