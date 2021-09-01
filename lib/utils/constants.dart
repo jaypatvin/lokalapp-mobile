@@ -1,3 +1,5 @@
-const APIKEY = "9x4ysafkqkmz";
-const SECRETKEY =
-    "2me44gyndf3v8qw3gtzhn5x45qvcwmyetav9btnuk9xtevunpmf3chwtr5mkmkem";
+// rename file for strings?
+
+const kInviteCodeDescription =
+    "To create a Lokal account, you must obtain an Invite Code from someone in the community that you want to join in.";
+const kInviteCodeError = "The key code you entered does not exist.";

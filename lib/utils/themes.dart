@@ -13,3 +13,38 @@ const TextStyle kTextStyle = const TextStyle(
   fontFamily: "Goldplay",
   fontSize: 16.0,
 );
+const kInputDecoration = const InputDecoration(
+  filled: true,
+  isDense: true,
+  enabledBorder: const OutlineInputBorder(
+    borderRadius: const BorderRadius.all(
+      Radius.circular(30.0),
+    ),
+    borderSide: const BorderSide(color: Colors.transparent),
+  ),
+  contentPadding: const EdgeInsets.symmetric(
+    horizontal: 25,
+    vertical: 10,
+  ),
+  hintStyle: const TextStyle(
+    color: Color(0xFFBDBDBD),
+    fontFamily: "Goldplay",
+    fontWeight: FontWeight.normal,
+  ),
+  alignLabelWithHint: true,
+  border: const OutlineInputBorder(
+    borderRadius: const BorderRadius.all(
+      Radius.circular(
+        30.0,
+      ),
+    ),
+  ),
+  fillColor: Colors.white,
+  errorBorder: const OutlineInputBorder(
+    borderRadius: const BorderRadius.all(
+      Radius.circular(30.0),
+    ),
+    borderSide: const BorderSide(color: kPinkColor),
+  ),
+  errorStyle: TextStyle(color: kPinkColor, fontWeight: FontWeight.w500),
+);

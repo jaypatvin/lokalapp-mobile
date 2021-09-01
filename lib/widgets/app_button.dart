@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class AppButton extends StatelessWidget {
   /// Button Label
@@ -37,7 +38,7 @@ class AppButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return FlatButton(
       height: MediaQuery.of(context).size.height * 0.05,
-      color: isFilled ? this.color : Colors.white,
+      color: isFilled ? this.color : Colors.transparent,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20.0),
         side: BorderSide(color: this.color),
@@ -47,8 +48,8 @@ class AppButton extends StatelessWidget {
         text,
         style: TextStyle(
           fontFamily: "Goldplay",
-          fontSize: 14,
-          fontWeight: FontWeight.w700,
+          fontSize: 14.0.sp,
+          fontWeight: FontWeight.w600,
         ).merge(this.textStyle),
       ),
       onPressed: onPressed,

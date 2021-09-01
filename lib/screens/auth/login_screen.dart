@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lokalapp/screens/auth/components/auth_input_form.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/activities.dart';
@@ -10,6 +11,7 @@ import '../../providers/users.dart';
 import '../../utils/themes.dart';
 import '../../widgets/rounded_button.dart';
 import '../../widgets/sso_block.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../bottom_navigation.dart';
 import 'invite_page.dart';
 
@@ -27,6 +29,7 @@ class _LoginScreenState extends State<LoginScreen> {
   bool isAuth = false;
   final _formKey = GlobalKey<FormState>();
   Map<String, String> account;
+  bool _signInError = false;
 
   void _onLoading() {
     showDialog(
@@ -61,8 +64,11 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  void _logInUser(
-      {@required LoginType type, String email, String password}) async {
+  void _logInUser({
+    @required LoginType type,
+    String email,
+    String password,
+  }) async {
     CurrentUser user = Provider.of<CurrentUser>(context, listen: false);
     UserAuth auth = Provider.of<UserAuth>(context, listen: false);
     _onLoading();
@@ -89,16 +95,26 @@ class _LoginScreenState extends State<LoginScreen> {
           context.read<Products>().fetch();
           context.read<Users>().fetch();
           Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (context) => BottomNavigation()),
-              (route) => false);
+            context,
+            MaterialPageRoute(builder: (context) => BottomNavigation()),
+            (route) => false,
+          );
         } else {
-          Navigator.push(
-              context, MaterialPageRoute(builder: (context) => InvitePage()));
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => InvitePage()),
+          );
         }
       } else if (_authStatus == AuthStatus.UserNotFound) {
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => InvitePage()));
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => InvitePage()),
+        );
+      } else if (_authStatus == AuthStatus.InvalidPassword) {
+        setState(() {
+          _signInError = true;
+        });
+        Navigator.pop(context);
       }
     } catch (e) {
       // TODO: do something with error
@@ -106,148 +122,98 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  InputDecoration _kInputDecoration = const InputDecoration(
-    filled: true,
-    isDense: true,
-    enabledBorder: const OutlineInputBorder(
-      borderRadius: const BorderRadius.all(
-        Radius.circular(30.0),
-      ),
-      borderSide: const BorderSide(color: Colors.transparent),
-    ),
-    contentPadding: const EdgeInsets.symmetric(
-      horizontal: 25,
-      vertical: 10,
-    ),
-    hintStyle: TextStyle(
-      color: Color(0xFFBDBDBD),
-      fontFamily: "Goldplay",
-      fontWeight: FontWeight.normal,
-    ),
-    alignLabelWithHint: true,
-    border: const OutlineInputBorder(
-      borderRadius: const BorderRadius.all(
-        Radius.circular(
-          30.0,
-        ),
-      ),
-    ),
-  );
-
-  Widget buildEmail() {
-    return Form(
-      key: _formKey,
-      child: TextField(
-        controller: _emailController,
-        keyboardType: TextInputType.emailAddress,
-        style: TextStyle(
-          fontFamily: "Goldplay",
-          fontWeight: FontWeight.bold,
-        ),
-        decoration: _kInputDecoration.copyWith(
-          hintText: "Email",
-          fillColor: Color(0xFFF2F2F2),
-        ),
-      ),
-    );
-  }
-
-  Widget buildPasswordTextField() {
-    return TextField(
-      controller: _passwordController,
-      obscureText: true,
-      style: TextStyle(
-        fontFamily: "Goldplay",
-        fontWeight: FontWeight.bold,
-      ),
-      decoration: _kInputDecoration.copyWith(
-        hintText: "Password",
-        fillColor: Color(0xFFF2F2F2),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
+    final bottom = MediaQuery.of(context).viewInsets.bottom;
     return Scaffold(
-      // resizeToAvoidBottomPadding: false,
       resizeToAvoidBottomInset: false, // added as above is deprecated
-      body: SafeArea(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Flexible(
-              flex: 2,
-              child: Container(
-                color: _kMainColor,
-                width: MediaQuery.of(context).size.width,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Hero(
-                      tag: "home",
-                      child: Image.asset("assets/Lokalv2.png"),
-                    ),
-                    Hero(
-                      tag: "plaza",
-                      child: Text(
-                        "Your neighborhood plaza",
-                        style: TextStyle(
-                          color: kTealColor,
-                          fontFamily: "Goldplay",
-                          fontWeight: FontWeight.bold,
-                        ),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          AnimatedContainer(
+            color: kYellowColor,
+            height: bottom == 0 ? 330.0.h : 220.0.h,
+            duration: Duration(milliseconds: 100),
+            child: SafeArea(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Hero(
+                    tag: "home",
+                    child: Image.asset("assets/Lokalv2.png"),
+                  ),
+                  Hero(
+                    tag: "lokal",
+                    child: Text(
+                      "LOKAL",
+                      style: TextStyle(
+                        color: kOrangeColor,
+                        fontSize: 24.0.sp,
+                        fontWeight: FontWeight.w900,
                       ),
-                    )
-                  ],
-                ),
+                    ),
+                  ),
+                  Hero(
+                    tag: "plaza",
+                    child: Text(
+                      "Your neighborhood plaza",
+                      style: TextStyle(
+                        fontSize: 14.0.sp,
+                        color: kTealColor,
+                        fontFamily: "Goldplay",
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  )
+                ],
               ),
             ),
-            SingleChildScrollView(
-              child: Container(
-                padding: EdgeInsets.all(40.0),
-                width: double.infinity,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        buildEmail(),
-                        SizedBox(
-                          height: 20.0,
-                        ),
-                        buildPasswordTextField(),
-                        SizedBox(
-                          height: 30.0,
-                        ),
-                        RoundedButton(
-                          label: "LOG IN",
-                          onPressed: () async {
-                            _logInUser(
-                              type: LoginType.email,
-                              email: _emailController.text.trim(),
-                              password: _passwordController.text.trim(),
-                            );
-                          },
-                        ),
-                      ],
-                    ),
-                    //buildSocialBlock(),
-                    SizedBox(height: MediaQuery.of(context).size.height * 0.05),
-
-                    SocialBlock(
-                      fbLogin: () => _logInUser(type: LoginType.facebook),
-                      googleLogin: () => _logInUser(type: LoginType.google),
-                      buttonWidth: MediaQuery.of(context).size.width * 0.15,
-                    )
-                  ],
+          ),
+          SizedBox(height: 30.0.h),
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 30.0.w),
+            width: double.infinity,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                AuthInputForm(
+                  formKey: _formKey,
+                  emailController: _emailController,
+                  passwordController: _passwordController,
+                  submitButtonLabel: "SIGN IN",
+                  displaySignInError: _signInError,
+                  onFormChanged: () => setState(() {}),
+                  onFormSubmit: () {
+                    setState(() {
+                      _signInError = false;
+                    });
+                    if (!_formKey.currentState.validate()) return;
+                    _logInUser(
+                      type: LoginType.email,
+                      email: _emailController.text.trim(),
+                      password: _passwordController.text.trim(),
+                    );
+                  },
                 ),
-              ),
-            )
-          ],
-        ),
+                SizedBox(height: 10.0.h),
+                InkWell(
+                  child: Text(
+                    "FORGOT PASSWORD?",
+                    style: Theme.of(context).textTheme.headline6,
+                  ),
+                  onTap: () {},
+                ),
+                SizedBox(height: 20.0.h),
+                SocialBlock(
+                  fbLogin: () => _logInUser(type: LoginType.facebook),
+                  googleLogin: () => _logInUser(type: LoginType.google),
+                  buttonWidth: 50.0.w,
+                )
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

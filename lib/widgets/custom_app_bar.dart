@@ -19,6 +19,7 @@ class CustomAppBar extends PreferredSize {
   final TextStyle titleStyle;
   final void Function() onPressedLeading;
   final List<Widget> actions;
+  final double leadingWidth;
 
   const CustomAppBar({
     this.height = kToolbarHeight,
@@ -32,6 +33,7 @@ class CustomAppBar extends PreferredSize {
     this.elevation = 0.0,
     this.leadingPadding = EdgeInsets.zero,
     this.titlePadding = EdgeInsets.zero,
+    this.leadingWidth = 56.0,
     this.bottom,
     this.titleStyle,
     this.onPressedLeading,
@@ -47,6 +49,7 @@ class CustomAppBar extends PreferredSize {
       leading: !buildLeading
           ? null
           : leading ?? _Leading(leadingPadding, leadingColor, onPressedLeading),
+      leadingWidth: leadingWidth,
       title: title ??
           Padding(
             padding: titlePadding,
