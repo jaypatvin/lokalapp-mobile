@@ -278,7 +278,7 @@ class _PostDetailsState extends State<PostDetails> {
     }
   }
 
-  Widget buildCommentInputImages(BuildContext context) {
+  Widget buildCommentInputImages() {
     if (provider.picked.length <= 0) {
       return Container();
     }
@@ -312,10 +312,13 @@ class _PostDetailsState extends State<PostDetails> {
     );
   }
 
-  Widget buildCommentTextField(BuildContext context) {
+  Widget buildCommentTextField() {
     return TextField(
-      maxLines: null,
+      minLines: 1,
+      maxLines: 8,
       controller: commentInputController,
+      textAlignVertical: TextAlignVertical.center,
+      onTap: () => showImagePicker = false,
       decoration: InputDecoration(
         border: InputBorder.none,
         focusedBorder: InputBorder.none,
@@ -324,10 +327,8 @@ class _PostDetailsState extends State<PostDetails> {
         disabledBorder: InputBorder.none,
         fillColor: Colors.white,
         filled: true,
-        isDense: true,
         contentPadding: EdgeInsets.symmetric(
-          horizontal: 25,
-          vertical: 10,
+          horizontal: 15.0.w,
         ),
         hintText: "Add a comment...",
         hintStyle: kTextStyle.copyWith(
@@ -335,23 +336,16 @@ class _PostDetailsState extends State<PostDetails> {
           color: Colors.grey[400],
         ),
         alignLabelWithHint: true,
-        suffixIcon: Padding(
-          padding: EdgeInsets.all(5.0),
-          child: CircleAvatar(
-            radius: 20.0,
-            backgroundColor: kTealColor,
-            child: IconButton(
-              icon: Icon(Icons.arrow_forward),
-              onPressed: createComment,
-              color: Colors.white,
-            ),
-          ),
+        suffixIcon: IconButton(
+          icon: Icon(MdiIcons.sendOutline),
+          onPressed: createComment,
+          color: kTealColor,
         ),
       ),
     );
   }
 
-  Widget buildCommentInput({BuildContext context}) {
+  Widget buildCommentInput() {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
@@ -399,9 +393,9 @@ class _PostDetailsState extends State<PostDetails> {
                   AnimatedContainer(
                     height: provider.picked.length > 0 ? 100 : 0.0,
                     duration: const Duration(milliseconds: 200),
-                    child: buildCommentInputImages(context),
+                    child: buildCommentInputImages(),
                   ),
-                  buildCommentTextField(context),
+                  buildCommentTextField(),
                 ],
               ),
             ),
@@ -552,7 +546,7 @@ class _PostDetailsState extends State<PostDetails> {
                 horizontal: 10.0.w,
                 vertical: 10.0.h,
               ),
-              child: buildCommentInput(context: context),
+              child: buildCommentInput(),
             ),
             AnimatedContainer(
               duration: const Duration(milliseconds: 100),
