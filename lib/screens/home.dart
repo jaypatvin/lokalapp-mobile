@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/activities.dart';
@@ -18,48 +20,45 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  Padding buildTextField(BuildContext context) {
-    var height = MediaQuery.of(context).size.height;
-    var width = MediaQuery.of(context).size.width;
+  Widget _postField() {
     return Padding(
       padding: EdgeInsets.symmetric(
-        horizontal: width * 0.05,
-        vertical: height * 0.02,
+        horizontal: 20.0.w,
+        vertical: 15.h,
       ),
-      child: Container(
-        child: Theme(
-          data: ThemeData(primaryColor: Colors.grey.shade400),
-          child: GestureDetector(
-            onTap: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => DraftPost()));
-            },
-            child: TextField(
-              enabled: false,
-              textAlign: TextAlign.justify,
-              decoration: InputDecoration(
-                isDense: true, // Added this
-                filled: true,
-                contentPadding:
-                    EdgeInsets.only(left: 18, bottom: 11, top: 14, right: 15),
-                enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.grey.shade400),
-                  // borderSide: BorderSide(color: Color(0xFFE0E0E0)),
-                  borderRadius: const BorderRadius.all(
-                    const Radius.circular(20.0),
-                  ),
-                ),
-                fillColor: Colors.white,
-                suffixIcon: Icon(
-                  MdiIcons.squareEditOutline,
-                  color: Color(0xffE0E0E0),
-                ),
-                hintText: 'What\'s on your mind?',
+      child: GestureDetector(
 
-                alignLabelWithHint: true,
-                hintStyle: TextStyle(color: Colors.grey.shade400),
+        onTap: () => pushNewScreen(
+          context,
+          screen: DraftPost(),
+          withNavBar: false,
+          pageTransitionAnimation: PageTransitionAnimation.slideUp,
+        ),
+        child: Container(
+          height: 50.0.h,
+          width: double.infinity,
+          padding: EdgeInsets.symmetric(horizontal: 15.0.w),
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.grey.shade400),
+            borderRadius: BorderRadius.all(Radius.circular(15.0.r)),
+            color: Colors.white,
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                "What's on your mind?",
+                style: TextStyle(
+                  color: Colors.grey.shade400,
+                  fontSize: 14.0.sp,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
-            ),
+              Icon(
+                MdiIcons.squareEditOutline,
+                color: Color(0xffE0E0E0),
+              ),
+            ],
           ),
         ),
       ),
@@ -82,13 +81,14 @@ class _HomeState extends State<Home> {
       resizeToAvoidBottomInset: true,
       appBar: CustomAppBar(
         titleText: "White Plains",
+        titleStyle: TextStyle(color: Colors.white),
         backgroundColor: kTealColor,
         buildLeading: false,
       ),
       body: CartContainer(
         child: Column(
           children: [
-            buildTextField(context),
+            _postField(),
             Expanded(
               child: Consumer<Activities>(
                 builder: (context, activities, child) {

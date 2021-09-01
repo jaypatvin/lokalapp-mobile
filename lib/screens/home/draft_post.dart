@@ -3,6 +3,7 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:persistent_bottom_nav_bar/models/nested_will_pop_scope.dart';
 import 'package:photo_manager/photo_manager.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/lokal_images.dart';
@@ -80,8 +81,10 @@ class _DraftPostState extends State<DraftPost> with TickerProviderStateMixin {
           enabledBorder: InputBorder.none,
           errorBorder: InputBorder.none,
           disabledBorder: InputBorder.none,
-          contentPadding:
-              EdgeInsets.only(left: 15, bottom: 11, top: 11, right: 15),
+          contentPadding: EdgeInsets.symmetric(
+            horizontal: 15.0,
+            vertical: 11.0,
+          ),
           hintText: "What's on your mind?",
           hintStyle: kTextStyle.copyWith(
             fontWeight: FontWeight.normal,
@@ -94,58 +97,40 @@ class _DraftPostState extends State<DraftPost> with TickerProviderStateMixin {
     );
   }
 
-  Row postButton() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: [
-        GestureDetector(
-          child: Container(
-            padding: EdgeInsets.all(10),
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(100),
-                border: Border.all(width: 1, color: Colors.grey)),
-            child: Icon(
-              MdiIcons.fileImageOutline,
-              color: Colors.grey,
+  Widget postButton() {
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 10.0.h, horizontal: 15.0.w),
+      color: kInviteScreenColor,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          GestureDetector(
+            child: Container(
+              padding: EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(100.r),
+                border: Border.all(
+                  width: 1,
+                  color: kTealColor,
+                ),
+              ),
+              child: Icon(
+                MdiIcons.fileImageOutline,
+                color: kTealColor,
+              ),
+            ),
+            onTap: () => setState(
+              () => this.showImagePicker = !this.showImagePicker,
             ),
           ),
-          onTap: () =>
-              setState(() => this.showImagePicker = !this.showImagePicker),
-        ),
-        Spacer(),
-        RoundedButton(
-          onPressed: () async {
-            final service = context.read<LocalImageService>();
-            final activities = context.read<Activities>();
-            final user = context.read<CurrentUser>();
-
-            var gallery = <LokalImages>[];
-            for (var asset in provider.picked) {
-              var file = await asset.file;
-              var url =
-                  await service.uploadImage(file: file, name: 'post_photo');
-              gallery.add(
-                  LokalImages(url: url, order: provider.picked.indexOf(asset)));
-            }
-
-            bool postSuccess = await activities.post(
-              {
-                'community_id': user.communityId,
-                'user_id': user.id,
-                'message': _userController.text,
-                'images': gallery.map((x) => x.toMap()).toList(),
-              },
-            );
-            if (postSuccess) {
-              Navigator.pop(context, true);
-            }
-          },
-          label: "Post",
-          fontFamily: "Goldplay",
-          fontSize: 18,
-          fontWeight: FontWeight.w700,
-        ),
-      ],
+          Spacer(),
+          SizedBox(
+            height: 40.0.h,
+            width: 100.0.w,
+            child: AppButton("POST", kTealColor, true, _postHandler),
+          ),
+        ],
+      ),
     );
   }
 
@@ -166,6 +151,31 @@ class _DraftPostState extends State<DraftPost> with TickerProviderStateMixin {
         ),
       ),
     );
+  }
+
+  void _postHandler() async {
+    final service = context.read<LocalImageService>();
+    final activities = context.read<Activities>();
+    final user = context.read<CurrentUser>();
+
+    var gallery = <LokalImages>[];
+    for (var asset in provider.picked) {
+      var file = await asset.file;
+      var url = await service.uploadImage(file: file, name: 'post_photo');
+      gallery.add(LokalImages(url: url, order: provider.picked.indexOf(asset)));
+    }
+
+    bool postSuccess = await activities.post(
+      {
+        'community_id': user.communityId,
+        'user_id': user.id,
+        'message': _userController.text,
+        'images': gallery.map((x) => x.toMap()).toList(),
+      },
+    );
+    if (postSuccess) {
+      Navigator.pop(context, true);
+    }
   }
 
   Widget buildPostImages({
@@ -273,25 +283,26 @@ class _DraftPostState extends State<DraftPost> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    var width = MediaQuery.of(context).size.width;
-    var height = MediaQuery.of(context).size.height;
     return NestedWillPopScope(
       onWillPop: onWillPop,
       child: Scaffold(
         key: _key,
         backgroundColor: Colors.white,
         appBar: CustomAppBar(
+          leadingWidth: 62.0.w,
           backgroundColor: const Color(0xFFF1FAFF),
           leading: Builder(
             builder: (BuildContext context) {
               return GestureDetector(
                 child: Container(
-                  padding: EdgeInsets.only(left: width * 0.02),
+                  padding: EdgeInsets.only(left: 15.0.w),
                   child: Center(
                     child: Text(
                       "Cancel",
                       style: kTextStyle.copyWith(
                         color: kPinkColor,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 14.0.sp,
                       ),
                     ),
                   ),
@@ -303,42 +314,32 @@ class _DraftPostState extends State<DraftPost> with TickerProviderStateMixin {
             },
           ),
           titleText: "Write a Post",
-          titleStyle: kTextStyle.copyWith(color: Colors.black),
-        ),
-        body: SingleChildScrollView(
-          physics: AlwaysScrollableScrollPhysics(),
-          child: Column(
-            children: [
-              Visibility(
-                visible: provider.picked.length > 0,
-                child: buildPostImages(context: context),
-              ),
-              Container(
-                height: height * 0.30,
-                child: buildCard(),
-              ),
-              Divider(),
-              Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: width * 0.02,
-                  vertical: height * 0.02,
-                ),
-                child: postButton(),
-              ),
-              AnimatedContainer(
-                duration: const Duration(milliseconds: 200),
-                height: this.showImagePicker ? 200 : 0.0,
-                child: ImageGalleryPicker(
-                  provider,
-                  pickerHeight: 200,
-                  assetHeight: 200,
-                  assetWidth: 200,
-                  thumbSize: 200,
-                  enableSpecialItemBuilder: true,
-                ),
-              ),
-            ],
+          titleStyle: kTextStyle.copyWith(
+            color: Colors.black,
+            fontSize: 16.0.sp,
           ),
+        ),
+        body: Column(
+          children: [
+            Visibility(
+              visible: provider.picked.length > 0,
+              child: buildPostImages(context: context),
+            ),
+            Expanded(child: buildCard()),
+            postButton(),
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 100),
+              height: this.showImagePicker ? 150.0.h : 0.0.h,
+              child: ImageGalleryPicker(
+                provider,
+                pickerHeight: 150.h,
+                assetHeight: 150.h,
+                assetWidth: 150.h,
+                thumbSize: 200,
+                enableSpecialItemBuilder: true,
+              ),
+            ),
+          ],
         ),
       ),
     );
