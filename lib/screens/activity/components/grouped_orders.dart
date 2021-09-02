@@ -133,7 +133,12 @@ class GroupedOrders extends StatelessWidget {
             if (snapshot.hasError)
               return Text('Error: ${snapshot.error}');
             else if (!snapshot.hasData || snapshot.data.docs.length == 0)
-              return Text('No orders yet!');
+              return Text(
+                'No orders yet!',
+                style: TextStyle(
+                  fontWeight: FontWeight.w500,
+                ),
+              );
             else
               // Without using ListView.builder, I'm not sure about the performance
               // on large sets of data

@@ -71,9 +71,10 @@ class _ActivityState extends State<Activity>
         ),
         color: _colorAnimation.value,
       ),
+      labelStyle: Theme.of(context).textTheme.bodyText2,
       tabs: [
-        Tab(text: 'My Orders'),
-        Tab(text: 'My Shop'),
+        Tab(text: "My Orders"),
+        Tab(text: "My Shop"),
       ],
     );
   }

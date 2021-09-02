@@ -25,9 +25,9 @@ class _TransactionsState extends State<Transactions> {
   @override
   void initState() {
     super.initState();
-    this.initializeStatuses();
+    this._initializeStatuses();
     this.selectedIndex = this.statuses.keys.toList().first;
-    final currentUser = Provider.of<CurrentUser>(context, listen: false);
+    final currentUser = context.read<CurrentUser>();
 
     // We can probably get all the streams for all statuses here in initState
     // to avoid rebuilding and reconnecting to Firestore.
@@ -41,14 +41,15 @@ class _TransactionsState extends State<Transactions> {
     if (widget.isBuyer) {
       _stream = Database.instance.getUserOrders(currentUser.id);
     } else {
-      final shop = Provider.of<Shops>(context, listen: false)
-          .findByUser(currentUser.id)
-          .first;
-      _stream = Database.instance.getShopOrders(shop.id);
+      final shops = context.read<Shops>().findByUser(currentUser.id);
+      if (shops.isNotEmpty) {
+        final shop = shops.first;
+        _stream = Database.instance.getShopOrders(shop.id);
+      }
     }
   }
 
-  void initializeStatuses() {
+  void _initializeStatuses() {
     final _statusCodes = widget.statuses.keys.toList().map((key) {
       if (key == 10 || key == 20) {
         // We're multiplying statuses 10 and 20 (cancelled & declined orders)
@@ -70,7 +71,7 @@ class _TransactionsState extends State<Transactions> {
     });
   }
 
-  void changeIndex(int key) {
+  void _changeIndex(int key) {
     if (key == this.selectedIndex) return;
 
     final userId = Provider.of<CurrentUser>(context, listen: false).id;
@@ -111,50 +112,66 @@ class _TransactionsState extends State<Transactions> {
             widget.isBuyer
                 ? 'These are the products you ordered from other stores.'
                 : 'These are the products other people ordered from your stores.',
-            style: TextStyle(color: Colors.white),
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.w500,
+            ),
           ),
         ),
         SizedBox(
           height: 10.0,
         ),
-        Container(
-          height: MediaQuery.of(context).size.height * 0.04,
-          padding: EdgeInsets.symmetric(horizontal: 16.0),
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            shrinkWrap: true,
-            itemCount: this.statuses.length,
-            itemBuilder: (context, index) {
-              final key = this.statuses.keys.elementAt(index);
-              return GestureDetector(
-                onTap: () => changeIndex(key),
-                child: Container(
-                  margin: EdgeInsets.symmetric(horizontal: 5.0),
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 10.0, vertical: 5.0),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10.0),
-                    color: selectedIndex == key
-                        ? const Color(0xFFFFC700)
-                        : const Color(0xFFEFEFEF),
+        if (_stream != null)
+          Container(
+            height: MediaQuery.of(context).size.height * 0.04,
+            padding: EdgeInsets.symmetric(horizontal: 16.0),
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              shrinkWrap: true,
+              itemCount: this.statuses.length,
+              itemBuilder: (context, index) {
+                final key = this.statuses.keys.elementAt(index);
+                return GestureDetector(
+                  onTap: () => _changeIndex(key),
+                  child: Container(
+                    margin: EdgeInsets.symmetric(horizontal: 5.0),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 10.0, vertical: 5.0),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10.0),
+                      color: selectedIndex == key
+                          ? const Color(0xFFFFC700)
+                          : const Color(0xFFEFEFEF),
+                    ),
+                    child: Text(
+                      this.statuses[key],
+                      style: TextStyle(
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
                   ),
-                  child: Text(this.statuses[key]),
-                ),
-              );
-            },
-          ),
-        ),
-        SizedBox(height: 10.0),
-        Expanded(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: GroupedOrders(
-              this._stream,
-              widget.statuses,
-              widget.isBuyer,
+                );
+              },
             ),
           ),
-        ),
+        SizedBox(height: 10.0),
+        _stream != null
+            ? Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: GroupedOrders(
+                    this._stream,
+                    widget.statuses,
+                    widget.isBuyer,
+                  ),
+                ),
+              )
+            : Text(
+                "You have not created a shop yet!",
+                style: TextStyle(
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
       ],
     );
   }

@@ -1,20 +1,16 @@
 import 'package:after_layout/after_layout.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-import '../../models/chat_model.dart';
-import '../../providers/products.dart';
 import '../../providers/shops.dart';
 import '../../providers/user.dart';
-import '../../providers/users.dart';
 import '../../services/database.dart';
 import '../../utils/shared_preference.dart';
 import '../../utils/themes.dart';
 import 'chat_helpers.dart';
-import 'chat_view.dart';
 import 'components/chat_avatar.dart';
+import 'components/chat_stream.dart';
 
 class Chat extends StatefulWidget {
   static const routeName = "/chat";
@@ -31,8 +27,12 @@ class _ChatState extends State<Chat>
   AnimationController _animationController;
   Animation<Color> _colorAnimation;
 
-  final TextEditingController _searchController = TextEditingController();
+  final _userSearchController = TextEditingController();
+  final _shopSearchController = TextEditingController();
   final _userSharedPreferences = UserSharedPreferences();
+
+  Stream<QuerySnapshot> _userChatStream;
+  Stream<QuerySnapshot> _shopChatStream;
 
   @override
   void initState() {
@@ -52,6 +52,14 @@ class _ChatState extends State<Chat>
         setState(() {});
       });
 
+    final user = context.read<CurrentUser>();
+    final shops = context.read<Shops>().findByUser(user.id);
+
+    _userChatStream = Database.instance.getUserChats(user.id);
+    if (shops.isNotEmpty) {
+      _shopChatStream = Database.instance.getUserChats(shops.first.id);
+    }
+
     _userSharedPreferences.init();
   }
 
@@ -66,33 +74,6 @@ class _ChatState extends State<Chat>
           break;
       }
     });
-  }
-
-  Widget _tabChild({
-    @required String imgUrl,
-    @required String name,
-    @required int index,
-  }) {
-    final width = MediaQuery.of(context).size.width;
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Row(
-        children: [
-          ChatAvatar(
-            displayName: name,
-            displayPhoto: imgUrl,
-            radius: index == _tabController?.index ? 25.0 : 15.0,
-          ),
-          SizedBox(width: width * 0.03),
-          Text(
-            name,
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ],
-      ),
-    );
   }
 
   @override
@@ -111,237 +92,59 @@ class _ChatState extends State<Chat>
     super.dispose();
   }
 
-  Widget buildSearchTextField() {
-    return Container(
-      padding: const EdgeInsets.all(12),
-      height: 65,
-      child: TextField(
-        enabled: false,
-        controller: _searchController,
-        decoration: InputDecoration(
-          isDense: true, // Added this
-          filled: true,
-          border: OutlineInputBorder(
-            borderSide: BorderSide.none,
-            borderRadius: const BorderRadius.all(
-              const Radius.circular(25.0),
-            ),
-          ),
-          fillColor: Color(0xffF2F2F2),
-          prefixIcon: Icon(
-            Icons.search,
-            color: Color(0xffBDBDBD),
-            size: 23,
-          ),
-          hintText: 'Search Chats',
-          labelStyle: TextStyle(fontSize: 20),
-          contentPadding: const EdgeInsets.symmetric(vertical: 1),
-          hintStyle: TextStyle(color: Color(0xffBDBDBD)),
-        ),
-      ),
-    );
-  }
-
-  Widget buildCircleAvatar(List<ChatMember> members) {
-    final multUsers = members.length > 1;
-    return Container(
-      height: 50.0,
-      width: 50.0,
-      decoration: BoxDecoration(shape: BoxShape.circle),
-      clipBehavior: Clip.hardEdge,
-      child: Stack(
-        alignment: multUsers ? Alignment.bottomLeft : Alignment.center,
-        children: new List<Widget>.generate(members.length, (index) {
-          final member = members[index];
-          if (multUsers) {
-            return Positioned(
-              top: 15.0 * index - 2.5 * members.length,
-              right: 15.0 * index - 2.5 * members.length,
-              child: ChatAvatar(
-                displayName: member.displayName,
-                displayPhoto: member.displayPhoto,
-                radius: 45.0 / members.length,
-              ),
-            );
-          } else {
-            return Positioned.fill(
-              child: ChatAvatar(
-                displayName: member.displayName,
-                displayPhoto: member.displayPhoto,
-              ),
-            );
-          }
-        }),
-      ),
-    );
-  }
-
-  Widget buildChatList(AsyncSnapshot<QuerySnapshot> chatSnapshot) {
-    return ListView.builder(
-      padding: EdgeInsets.all(10.0),
-      itemCount: chatSnapshot.data.docs.length,
-      itemBuilder: (ctx, index) {
-        final cUserId = Provider.of<CurrentUser>(context, listen: false).id;
-        final document = {
-          ...chatSnapshot.data.docs[index].data(),
-          "id": chatSnapshot.data.docs[index].id,
-        };
-        final chat = ChatModel.fromMap(document);
-        final members = <ChatMember>[];
-
-        String title = chat.title;
-
-        if (chat.chatType == ChatType.shop) {
-          final shop =
-              Provider.of<Shops>(context, listen: false).findById(chat.shopId);
-          members.add(ChatMember(
-            displayName: shop.name,
-            displayPhoto: shop.profilePhoto,
-            type: chat.chatType,
-          ));
-        } else if (chat.chatType == ChatType.product) {
-          final product = Provider.of<Products>(context, listen: false)
-              .findById(chat.productId);
-          members.add(ChatMember(
-            displayName: product.name,
-            displayPhoto: product.gallery[0].url,
-            type: chat.chatType,
-          ));
-        } else {
-          final ids = [...chat.members];
-          ids.retainWhere((id) => cUserId != id);
-
-          members.addAll(ids.map((id) {
-            final user =
-                Provider.of<Users>(context, listen: false).findById(id);
-            return ChatMember(
-              displayName: user.displayName,
-              displayPhoto: user.profilePhoto,
-              type: chat.chatType,
-            );
-          }).toList());
-
-          final memberNames = members.map((user) => user.displayName).toList();
-          title = memberNames.join(", ");
-        }
-
-        return GestureDetector(
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => ChatView(
-                  false,
-                  chat: chat,
-                ),
-              ),
-            );
-          },
-          child: ListTile(
-            leading: buildCircleAvatar(members),
-            title: Text(title),
-            subtitle: Text(chat.lastMessage.content),
-            trailing: Text(DateFormat.jm().format(chat.lastMessage.createdAt)),
-          ),
-        );
-      },
-    );
-  }
-
-  Widget getChats(String id) {
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          SizedBox(
-            height: 20,
-          ),
-          buildSearchTextField(),
-          StreamBuilder<QuerySnapshot>(
-            stream: Database.instance.getUserChats(id),
-            builder: (context, snapshot) {
-              if (!snapshot.hasData) {
-                return Center(
-                  child: CircularProgressIndicator(),
-                );
-              }
-              return Container(
-                height: MediaQuery.of(context).size.height,
-                width: MediaQuery.of(context).size.width,
-                child: buildChatList(snapshot),
-              );
-            },
-          ),
-        ],
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final user = context.read<CurrentUser>();
-    final shop = context.read<Shops>().findByUser(user.id).first;
+    final shops = context.read<Shops>().findByUser(user.id);
     final size = MediaQuery.of(context).size;
+
+    if (shops.isEmpty) {
+      return Scaffold(
+        appBar: _ChatAppBar(
+          backgroundColor: kTealColor,
+        ),
+        body: ChatStream(
+          chatStream: _userChatStream,
+          searchController: _userSearchController,
+        ),
+      );
+    }
+
+    // .first throws an error if shops is empty,
+    // however, we already checked that on the prior if condition
     return Scaffold(
-      appBar: ChatAppBar(
-        height: size.height * 0.15,
+      appBar: _ChatAppBar(
+        height: size.height * 0.18,
         backgroundColor: _colorAnimation.value,
-        bottom: PreferredSize(
-          preferredSize: Size(size.width, size.height * 0.075),
-          child: Container(
-            padding: EdgeInsets.only(
-              bottom: 16.0,
-              left: 16.0,
-              right: 16.0,
-            ),
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(30.0),
-                color: Colors.white.withOpacity(0.5),
-              ),
-              child: TabBar(
-                controller: _tabController,
-                labelColor: Colors.black,
-                unselectedLabelColor: Colors.white,
-                //indicatorSize: TabBarIndicatorSize.label,
-                indicator: BoxDecoration(
-                  borderRadius: BorderRadius.circular(30.0),
-                  color: Colors.white,
-                ),
-                tabs: [
-                  _tabChild(
-                    imgUrl: user.profilePhoto,
-                    name: user.displayName,
-                    index: 0,
-                  ),
-                  _tabChild(
-                    imgUrl: shop.profilePhoto,
-                    name: shop.name,
-                    index: 1,
-                  )
-                ],
-              ),
-            ),
-          ),
+        bottom: _ChatAppBarBottom(
+          height: size.height * 0.01,
+          tabController: _tabController,
         ),
       ),
       body: TabBarView(
         physics: NeverScrollableScrollPhysics(),
         controller: _tabController,
         children: [
-          getChats(user.id),
-          getChats(shop.id),
+          ChatStream(
+            chatStream: _userChatStream,
+            searchController: _userSearchController,
+          ),
+          ChatStream(
+            chatStream: _shopChatStream,
+            searchController: _shopSearchController,
+          ),
         ],
       ),
     );
   }
 }
 
-class ChatAppBar extends PreferredSize {
+// needed for the custom height of the appbar
+class _ChatAppBar extends PreferredSize {
   final double height;
   final Color backgroundColor;
   final PreferredSizeWidget bottom;
-  const ChatAppBar({
-    Key key,
+  const _ChatAppBar({
     this.height = 50.0,
     this.backgroundColor,
     this.bottom,
@@ -353,21 +156,94 @@ class ChatAppBar extends PreferredSize {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      title: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8.0),
-        child: Text(
-          "Chats",
-          style: TextStyle(
-            color: Colors.white,
-            fontFamily: "Goldplay",
-            fontWeight: FontWeight.w600,
-            fontSize: 24.0,
-          ),
+      title: Text(
+        "Chats",
+        style: TextStyle(
+          color: Colors.white,
+          fontFamily: "Goldplay",
+          fontWeight: FontWeight.w600,
+          fontSize: 24.0,
         ),
       ),
       centerTitle: true,
       backgroundColor: this.backgroundColor,
       bottom: this.bottom,
+    );
+  }
+}
+
+// This is the tab controller for the user  & shop chats
+class _ChatAppBarBottom extends PreferredSize {
+  final double height;
+  final TabController tabController;
+  const _ChatAppBarBottom({this.height = 50, this.tabController});
+
+  @override
+  Size get preferredSize => Size.fromHeight(height);
+
+  Widget _tabChild({
+    @required String imgUrl,
+    @required String name,
+    @required int index,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Row(
+        children: [
+          ChatAvatar(
+            displayName: name,
+            displayPhoto: imgUrl,
+            radius: index == tabController?.index ? 25.0 : 15.0,
+          ),
+          SizedBox(width: 3.0),
+          Text(
+            name,
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final user = context.read<CurrentUser>();
+    final shop = context.read<Shops>().findByUser(user.id).first;
+    return Container(
+      padding: EdgeInsets.only(
+        bottom: 16.0,
+        left: 16.0,
+        right: 16.0,
+      ),
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(30.0),
+          color: Colors.white.withOpacity(0.5),
+        ),
+        child: TabBar(
+          controller: tabController,
+          labelColor: Colors.black,
+          unselectedLabelColor: Colors.white,
+          indicator: BoxDecoration(
+            borderRadius: BorderRadius.circular(30.0),
+            color: Colors.white,
+          ),
+          tabs: [
+            _tabChild(
+              imgUrl: user.profilePhoto,
+              name: user.displayName,
+              index: 0,
+            ),
+            _tabChild(
+              imgUrl: shop.profilePhoto,
+              name: shop.name,
+              index: 1,
+            )
+          ],
+        ),
+      ),
     );
   }
 }
