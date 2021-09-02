@@ -17,9 +17,10 @@ import '../../services/local_image_service.dart';
 import '../../utils/functions.utils.dart';
 import '../../utils/themes.dart';
 import '../../widgets/custom_app_bar.dart';
+import '../../widgets/input_images.dart';
+import '../../widgets/input_text_field.dart';
 import '../../widgets/photo_picker_gallery/image_gallery_picker.dart';
 import '../../widgets/photo_picker_gallery/provider/custom_photo_provider.dart';
-import '../../widgets/photo_view_gallery/thumbnails/asset_photo_thumbnail.dart';
 import '../../widgets/photo_view_gallery/thumbnails/network_photo_thumbnail.dart';
 import 'components/comment_card.dart';
 
@@ -278,73 +279,6 @@ class _PostDetailsState extends State<PostDetails> {
     }
   }
 
-  Widget buildCommentInputImages() {
-    if (provider.picked.length <= 0) {
-      return Container();
-    }
-    return ListView.builder(
-      shrinkWrap: true,
-      scrollDirection: Axis.horizontal,
-      addRepaintBoundaries: true,
-      itemCount: provider.picked.length,
-      itemBuilder: (ctx, index) {
-        return Container(
-          margin: EdgeInsets.symmetric(horizontal: 0.5),
-          height: 90.h,
-          width: 90.h,
-          child: AssetPhotoThumbnail(
-            galleryItem: provider.picked[index],
-            onTap: () => openInputGallery(
-              context,
-              index,
-              provider.picked,
-            ),
-            onRemove: () => setState(() => provider.picked.removeAt(index)),
-            fit: BoxFit.cover,
-            decoration: BoxDecoration(
-              border: Border.all(
-                color: Colors.black.withOpacity(0.3),
-              ),
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  Widget buildCommentTextField() {
-    return TextField(
-      minLines: 1,
-      maxLines: 8,
-      controller: commentInputController,
-      textAlignVertical: TextAlignVertical.center,
-      onTap: () => showImagePicker = false,
-      decoration: InputDecoration(
-        border: InputBorder.none,
-        focusedBorder: InputBorder.none,
-        enabledBorder: InputBorder.none,
-        errorBorder: InputBorder.none,
-        disabledBorder: InputBorder.none,
-        fillColor: Colors.white,
-        filled: true,
-        contentPadding: EdgeInsets.symmetric(
-          horizontal: 15.0.w,
-        ),
-        hintText: "Add a comment...",
-        hintStyle: kTextStyle.copyWith(
-          fontWeight: FontWeight.normal,
-          color: Colors.grey[400],
-        ),
-        alignLabelWithHint: true,
-        suffixIcon: IconButton(
-          icon: Icon(MdiIcons.sendOutline),
-          onPressed: createComment,
-          color: kTealColor,
-        ),
-      ),
-    );
-  }
-
   Widget buildCommentInput() {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.end,
@@ -393,9 +327,19 @@ class _PostDetailsState extends State<PostDetails> {
                   AnimatedContainer(
                     height: provider.picked.length > 0 ? 100 : 0.0,
                     duration: const Duration(milliseconds: 200),
-                    child: buildCommentInputImages(),
+                    child: InputImages(
+                      pickedImages: provider.picked,
+                      onImageRemove: (index) => setState(
+                        () => provider.picked.removeAt(index),
+                      ),
+                    ),
                   ),
-                  buildCommentTextField(),
+                  InputTextField(
+                    inputController: commentInputController,
+                    onSend: createComment,
+                    onTap: () => showImagePicker = false,
+                    hintText: "Add a comment...",
+                  ),
                 ],
               ),
             ),

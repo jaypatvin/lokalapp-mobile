@@ -1,6 +1,7 @@
 import 'package:after_layout/after_layout.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/shops.dart';
@@ -96,7 +97,6 @@ class _ChatState extends State<Chat>
   Widget build(BuildContext context) {
     final user = context.read<CurrentUser>();
     final shops = context.read<Shops>().findByUser(user.id);
-    final size = MediaQuery.of(context).size;
 
     if (shops.isEmpty) {
       return Scaffold(
@@ -114,10 +114,9 @@ class _ChatState extends State<Chat>
     // however, we already checked that on the prior if condition
     return Scaffold(
       appBar: _ChatAppBar(
-        height: size.height * 0.18,
+        height: 120.0.h,
         backgroundColor: _colorAnimation.value,
         bottom: _ChatAppBarBottom(
-          height: size.height * 0.01,
           tabController: _tabController,
         ),
       ),
@@ -162,7 +161,7 @@ class _ChatAppBar extends PreferredSize {
           color: Colors.white,
           fontFamily: "Goldplay",
           fontWeight: FontWeight.w600,
-          fontSize: 24.0,
+          fontSize: 22.0.sp,
         ),
       ),
       centerTitle: true,
@@ -187,19 +186,25 @@ class _ChatAppBarBottom extends PreferredSize {
     @required int index,
   }) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      padding: EdgeInsets.symmetric(vertical: 8.0.w),
       child: Row(
         children: [
           ChatAvatar(
             displayName: name,
             displayPhoto: imgUrl,
-            radius: index == tabController?.index ? 25.0 : 15.0,
+            radius: index == tabController?.index ? 22.0.r : 13.0.r,
           ),
-          SizedBox(width: 3.0),
-          Text(
-            name,
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
+          SizedBox(width: 5.0.w),
+          Flexible(
+            child: Text(
+              name,
+              softWrap: true,
+              maxLines: 3,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 13.0.sp,
+              ),
             ),
           ),
         ],
@@ -212,14 +217,10 @@ class _ChatAppBarBottom extends PreferredSize {
     final user = context.read<CurrentUser>();
     final shop = context.read<Shops>().findByUser(user.id).first;
     return Container(
-      padding: EdgeInsets.only(
-        bottom: 16.0,
-        left: 16.0,
-        right: 16.0,
-      ),
+      padding: EdgeInsets.only(bottom: 14.0.h, left: 14.0.w, right: 14.0.w),
       child: Container(
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(30.0),
+          borderRadius: BorderRadius.circular(30.0.r),
           color: Colors.white.withOpacity(0.5),
         ),
         child: TabBar(
@@ -227,7 +228,7 @@ class _ChatAppBarBottom extends PreferredSize {
           labelColor: Colors.black,
           unselectedLabelColor: Colors.white,
           indicator: BoxDecoration(
-            borderRadius: BorderRadius.circular(30.0),
+            borderRadius: BorderRadius.circular(30.0.r),
             color: Colors.white,
           ),
           tabs: [

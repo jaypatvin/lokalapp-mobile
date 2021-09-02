@@ -12,6 +12,7 @@ class ChatInput extends StatelessWidget {
   final void Function() onMessageSend;
   final void Function() onShowImagePicker;
   final void Function() onCancelReply;
+  final void Function() onTextFieldTap;
   final void Function(int) onImageRemove;
   final TextEditingController chatInputController;
   final Conversation replyMessage;
@@ -26,6 +27,7 @@ class ChatInput extends StatelessWidget {
     @required this.images,
     @required this.onImageRemove,
     @required this.chatInputController,
+    this.onTextFieldTap,
   }) : super(key: key);
 
   @override
@@ -80,9 +82,10 @@ class ChatInput extends StatelessWidget {
                         ),
                       ),
                       InputTextField(
-                        chatInputController: this.chatInputController,
+                        inputController: this.chatInputController,
                         onSend: this.onMessageSend,
                         hintText: "Type a Message",
+                        onTap: onTextFieldTap,
                       ),
                     ],
                   ),

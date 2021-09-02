@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../models/conversation.dart';
 import '../../../utils/themes.dart';
@@ -22,9 +23,9 @@ class ReplyMessageWidget extends StatelessWidget {
         children: [
           Container(
             color: isRepliedByUser ? kTealColor : Color(0xFFF1FAFF),
-            width: 4,
+            width: 2.0.w,
           ),
-          SizedBox(width: 8),
+          SizedBox(width: 6.0.w),
           Expanded(child: buildReplyMessage()),
         ],
       ),
@@ -51,16 +52,17 @@ class ReplyMessageWidget extends StatelessWidget {
               ),
               if (onCancelReply != null)
                 GestureDetector(
-                  child: Icon(Icons.close, size: 16),
+                  child: Icon(Icons.close, size: 16.0.r),
                   onTap: onCancelReply,
                 )
             ],
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: 5.0.h),
           Text(
             message.message,
             style: TextStyle(
-                color: isRepliedByUser ? Colors.black : Color(0xFFF1FAFF)),
+              color: isRepliedByUser ? Colors.black : Color(0xFFF1FAFF),
+            ),
           ),
         ],
       ),

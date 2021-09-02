@@ -1,17 +1,23 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:lokalapp/utils/themes.dart';
+import 'package:lokalapp/widgets/custom_app_bar.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:lokalapp/widgets/custom_expansion_tile.dart' as custom;
 
 import '../../models/chat_model.dart';
 import '../../providers/shops.dart';
 import '../../providers/user.dart';
 import '../../providers/users.dart';
 import 'components/chat_avatar.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'shared_media.dart';
 
 class ChatProfile extends StatefulWidget {
   final ChatModel chat;
-  ChatProfile(this.chat);
+  final List<QueryDocumentSnapshot> conversations;
+  ChatProfile(this.chat, this.conversations);
 
   @override
   _ChatProfileState createState() => _ChatProfileState();
@@ -80,37 +86,27 @@ class _ChatProfileState extends State<ChatProfile> {
     });
 
     final title = names.join(", ");
-    return Text(title);
+    return Text(
+      title,
+      style: Theme.of(context).textTheme.headline5.copyWith(color: kNavyColor),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
+      appBar: CustomAppBar(
+        backgroundColor: Colors.white,
+        leadingColor: Colors.black,
+        onPressedLeading: () => Navigator.pop(context),
+      ),
       body: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             SizedBox(
-              height: 30,
-            ),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                IconButton(
-                    icon: Icon(
-                      Icons.arrow_back,
-                      color: Colors.black,
-                      size: 28,
-                    ),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    }),
-              ],
-            ),
-            SizedBox(
-              height: 100.0,
+              height: 100.0.h,
               child: ListView.builder(
                 itemCount: _members.length,
                 physics: NeverScrollableScrollPhysics(),
@@ -122,21 +118,29 @@ class _ChatProfileState extends State<ChatProfile> {
                   return ChatAvatar(
                     displayName: displayName,
                     displayPhoto: imgUrl,
-                    radius: 50.0,
+                    radius: 120.0.r / _members.length,
                   );
                 },
               ),
             ),
-            SizedBox(
-              height: 10,
-            ),
+            SizedBox(height: 10.0.h),
             Center(
               child: buildTitle(),
             ),
             ListTileTheme(
               minVerticalPadding: 0,
-              child: ExpansionTile(
-                title: Text("Chat Members"),
+              textColor: Colors.black,
+              child: custom.ExpansionTile(
+                headerBackgroundColor: Colors.transparent,
+                backgroundColor: Colors.transparent,
+                iconColor: kTealColor,
+                title: Text(
+                  "Chat Members",
+                  style: TextStyle(
+                    fontWeight: FontWeight.w500,
+                    color: Colors.black,
+                  ),
+                ),
                 children: [
                   ListView.builder(
                     itemCount: _members.length,
@@ -160,17 +164,29 @@ class _ChatProfileState extends State<ChatProfile> {
                 ],
               ),
             ),
-            ListTile(
-              title: Text("Shared Media"),
-              trailing: IconButton(
-                icon: Icon(MdiIcons.chevronRight),
-                padding: EdgeInsets.zero,
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => SharedMedia()),
-                  );
-                },
+            ListTileTheme(
+              iconColor: kTealColor,
+              minVerticalPadding: 0,
+              child: ListTile(
+                title: Text(
+                  "Shared Media",
+                  style: TextStyle(fontWeight: FontWeight.w500),
+                ),
+                trailing: IconButton(
+                  constraints: BoxConstraints(),
+                  padding: EdgeInsets.zero,
+                  icon: Icon(MdiIcons.chevronRight),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => SharedMedia(
+                          conversations: widget.conversations,
+                        ),
+                      ),
+                    );
+                  },
+                ),
               ),
             )
           ],

@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:swipe_to/swipe_to.dart';
 
 import '../../../models/conversation.dart';
@@ -8,13 +9,18 @@ import '../chat_bubble.dart';
 class MessageStream extends StatelessWidget {
   final Stream<QuerySnapshot> messageStream;
   final Function(String, Conversation) onRightSwipe;
-  const MessageStream({@required this.messageStream, this.onRightSwipe});
+  final void Function(List<QueryDocumentSnapshot>) onMessagesLoad;
+  const MessageStream({
+    @required this.messageStream,
+    this.onRightSwipe,
+    this.onMessagesLoad,
+  });
 
   Widget buildText(String text) {
     return Center(
       child: Text(
         text,
-        style: TextStyle(fontSize: 24, color: Colors.black),
+        style: TextStyle(fontSize: 24.0.sp, color: Colors.black),
       ),
     );
   }
@@ -31,7 +37,7 @@ class MessageStream extends StatelessWidget {
         } else {
           final messages = snapshot.data.docs;
           if (messages.isEmpty) return buildText("Say Hi...");
-
+          this.onMessagesLoad(messages);
           return ListView.builder(
             physics: BouncingScrollPhysics(),
             reverse: true,

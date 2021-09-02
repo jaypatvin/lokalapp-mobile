@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
@@ -41,9 +42,8 @@ class ChatStream extends StatelessWidget {
                   ),
                 );
               }
-              return Container(
+              return SizedBox(
                 height: MediaQuery.of(context).size.height,
-                width: MediaQuery.of(context).size.width,
                 child: _ChatList(chatSnapshot: snapshot),
               );
             },
@@ -64,8 +64,8 @@ class _ChatList extends StatelessWidget {
   Widget _buildCircleAvatar(List<ChatMember> members) {
     final multUsers = members.length > 1;
     return Container(
-      height: 50.0,
-      width: 50.0,
+      height: 45.0.h,
+      width: 45.0.w,
       decoration: BoxDecoration(shape: BoxShape.circle),
       clipBehavior: Clip.hardEdge,
       child: Stack(
@@ -74,12 +74,12 @@ class _ChatList extends StatelessWidget {
           final member = members[index];
           if (multUsers) {
             return Positioned(
-              top: 15.0 * index - 2.5 * members.length,
-              right: 15.0 * index - 2.5 * members.length,
+              top: 13.0.h * index - 2.5 * members.length,
+              right: 13.0.w * index - 2.5 * members.length,
               child: ChatAvatar(
                 displayName: member.displayName,
                 displayPhoto: member.displayPhoto,
-                radius: 45.0 / members.length,
+                radius: 40.0.r / members.length,
               ),
             );
           } else {
@@ -98,7 +98,7 @@ class _ChatList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-      padding: EdgeInsets.all(10.0),
+      padding: EdgeInsets.all(5.0.r),
       itemCount: chatSnapshot.data.docs.length,
       itemBuilder: (ctx, index) {
         final cUserId = context.read<CurrentUser>().id;
@@ -158,8 +158,24 @@ class _ChatList extends StatelessWidget {
           },
           child: ListTile(
             leading: _buildCircleAvatar(members),
-            title: Text(title),
-            subtitle: Text(chat.lastMessage.content),
+            title: Text(
+              title,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontWeight: FontWeight.w600,
+                fontSize: 13.0.sp,
+              ),
+            ),
+            subtitle: Text(
+              chat.lastMessage.content,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontWeight: FontWeight.w500,
+                fontSize: 12.0.sp,
+              ),
+            ),
             trailing: Text(DateFormat.jm().format(chat.lastMessage.createdAt)),
           ),
         );

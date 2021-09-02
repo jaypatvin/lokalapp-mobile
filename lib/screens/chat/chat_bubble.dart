@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../models/conversation.dart';
 import '../../models/lokal_images.dart';
@@ -83,30 +84,41 @@ class ChatBubble extends StatelessWidget {
   Widget buildBubble(BuildContext context, bool isUser) {
     //dynamically add widgets to be returned
     final widgets = <Widget>[];
+    final space = SizedBox(height: 6.0.h);
 
     if (replyMessage != null) {
       widgets.add(buildReplyMessage(isUser));
-      widgets.add(SizedBox(height: 8.0));
+      widgets.add(space);
     }
 
     if (conversation.media != null && conversation.media.length > 0) {
       widgets.add(buildMessageImages(context, conversation.media));
-      widgets.add(SizedBox(height: 8.0));
+      widgets.add(space);
     }
 
     if (conversation.message != null && conversation.message.isNotEmpty) {
-      widgets.add(Text(conversation.message));
+      widgets.add(
+        Text(
+          conversation.message,
+          style: TextStyle(
+            color: isUser ? Colors.black : Colors.white,
+          ),
+        ),
+      );
     }
 
-    return Column(children: widgets);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: widgets,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    final cUser = Provider.of<CurrentUser>(context, listen: false);
+    final cUser = context.read<CurrentUser>();
     final isUser = conversation.senderId == cUser.id;
 
-    final radius = Radius.circular(12);
+    final radius = Radius.circular(12.0.r);
     final borderRadius = BorderRadius.all(radius);
     final width = MediaQuery.of(context).size.width;
 
@@ -115,8 +127,8 @@ class ChatBubble extends StatelessWidget {
           isUser ? MainAxisAlignment.end : MainAxisAlignment.start,
       children: <Widget>[
         Container(
-          padding: EdgeInsets.all(16),
-          margin: EdgeInsets.all(16),
+          padding: EdgeInsets.all(10.0.r),
+          margin: EdgeInsets.all(10.0.r),
           constraints: BoxConstraints(maxWidth: width * 3 / 4),
           decoration: BoxDecoration(
             color: isUser ? Color(0xFFF1FAFF) : kTealColor,

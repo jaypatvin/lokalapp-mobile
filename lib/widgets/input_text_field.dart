@@ -1,23 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 import '../utils/themes.dart';
 
 class InputTextField extends StatelessWidget {
-  final TextEditingController chatInputController;
+  final TextEditingController inputController;
   final void Function() onSend;
+  final void Function() onTap;
   final String hintText;
   const InputTextField({
     Key key,
-    @required this.chatInputController,
+    @required this.inputController,
     @required this.onSend,
     this.hintText,
+    this.onTap,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return TextField(
-      maxLines: null,
-      controller: chatInputController,
+      minLines: 1,
+      maxLines: 8,
+      controller: inputController,
+      textAlignVertical: TextAlignVertical.center,
+      onTap: this.onTap,
       decoration: InputDecoration(
         border: InputBorder.none,
         focusedBorder: InputBorder.none,
@@ -26,10 +33,8 @@ class InputTextField extends StatelessWidget {
         disabledBorder: InputBorder.none,
         fillColor: Colors.white,
         filled: true,
-        isDense: true,
         contentPadding: EdgeInsets.symmetric(
-          horizontal: 25,
-          vertical: 10,
+          horizontal: 15.0.w,
         ),
         hintText: this.hintText,
         hintStyle: kTextStyle.copyWith(
@@ -37,17 +42,10 @@ class InputTextField extends StatelessWidget {
           color: Colors.grey[400],
         ),
         alignLabelWithHint: true,
-        suffixIcon: Padding(
-          padding: EdgeInsets.all(5.0),
-          child: CircleAvatar(
-            radius: 20.0,
-            backgroundColor: kTealColor,
-            child: IconButton(
-              icon: Icon(Icons.send),
-              onPressed: onSend,
-              color: Colors.white,
-            ),
-          ),
+        suffixIcon: IconButton(
+          icon: Icon(MdiIcons.sendOutline),
+          onPressed: onSend,
+          color: kTealColor,
         ),
       ),
     );

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class SearchTextField extends StatelessWidget {
   final TextEditingController controller;
@@ -13,7 +14,7 @@ class SearchTextField extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(12),
-      height: 65,
+      height: 60.0.h,
       child: TextField(
         enabled: false,
         controller: this.controller,
@@ -23,18 +24,16 @@ class SearchTextField extends StatelessWidget {
           filled: true,
           border: OutlineInputBorder(
             borderSide: BorderSide.none,
-            borderRadius: const BorderRadius.all(
-              const Radius.circular(25.0),
-            ),
+            borderRadius: BorderRadius.all(Radius.circular(25.0.r)),
           ),
           fillColor: Color(0xffF2F2F2),
           prefixIcon: Icon(
             Icons.search,
             color: Color(0xffBDBDBD),
-            size: 23,
+            size: 23.0.sp,
           ),
           hintText: 'Search Chats',
-          labelStyle: TextStyle(fontSize: 20),
+          labelStyle: TextStyle(fontSize: 20.0.sp),
           contentPadding: const EdgeInsets.symmetric(vertical: 1),
           hintStyle: TextStyle(color: Color(0xffBDBDBD)),
         ),
