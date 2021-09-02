@@ -1,54 +1,96 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-class SharedMedia extends StatelessWidget {
+import '../../models/conversation.dart';
+import '../../models/lokal_images.dart';
+import '../../widgets/custom_app_bar.dart';
+import '../../widgets/photo_view_gallery/gallery/gallery_network_photo_view.dart';
+import '../../widgets/photo_view_gallery/thumbnails/network_photo_thumbnail.dart';
+
+class SharedMedia extends StatefulWidget {
+  //final ChatModel chat;
+  final List<QueryDocumentSnapshot> conversations;
+  const SharedMedia({Key key, @required this.conversations}) : super(key: key);
+
+  @override
+  _SharedMediaState createState() => _SharedMediaState();
+}
+
+class _SharedMediaState extends State<SharedMedia> {
+  List<LokalImages> _sharedMedia;
+
+  @override
+  initState() {
+    super.initState();
+
+    _sharedMedia = _getAllChatMedia();
+  }
+
+  List<LokalImages> _getAllChatMedia() {
+    final images = <LokalImages>[];
+    for (final c in widget.conversations) {
+      final _conversation = Conversation.fromMap(c.data());
+      if (_conversation.media.isNotEmpty) {
+        images.addAll(_conversation.media);
+      }
+    }
+    return images;
+  }
+
+  void openGallery(
+    BuildContext context,
+    final int index,
+    final List<LokalImages> galleryItems,
+  ) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => GalleryNetworkPhotoView(
+          galleryItems: galleryItems,
+          backgroundDecoration: const BoxDecoration(
+            color: Colors.black,
+          ),
+          initialIndex: index,
+          scrollDirection: Axis.horizontal,
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          toolbarHeight: 120,
-          backgroundColor: Colors.transparent,
-          bottomOpacity: 0.0,
-          elevation: 0.0,
-          centerTitle: true,
-          leading: IconButton(
-              icon: Icon(
-                Icons.arrow_back,
-                color: Colors.black,
-                size: 28,
+      appBar: CustomAppBar(
+        titleText: "Shared Media",
+        titleStyle: TextStyle(color: Colors.black),
+        leadingColor: Colors.black,
+        backgroundColor: Colors.white,
+        onPressedLeading: () => Navigator.pop(context),
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Container(
+              height: MediaQuery.of(context).size.height,
+              width: MediaQuery.of(context).size.width,
+              color: Colors.white30,
+              child: GridView.builder(
+                itemCount: _sharedMedia.length,
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 3,
+                  childAspectRatio: 1.0,
+                ),
+                itemBuilder: (ctx, index) {
+                  return NetworkPhotoThumbnail(
+                    galleryItem: _sharedMedia[index],
+                    onTap: () => openGallery(context, index, _sharedMedia),
+                  );
+                },
               ),
-              onPressed: () {
-                Navigator.pop(context);
-              }),
-          title: Text("Shared Media",
-              style: TextStyle(
-                color: Colors.black,
-              )),
+            ),
+          ],
         ),
-        body: SingleChildScrollView(
-            child: Column(children: [
-          SizedBox(
-            height: 30,
-          ),
-          Container(
-            height: MediaQuery.of(context).size.height,
-            width: MediaQuery.of(context).size.width,
-            color: Colors.white30,
-            child: GridView.count(
-                crossAxisCount: 3,
-                childAspectRatio: 1.0,
-                padding: const EdgeInsets.all(4.0),
-                mainAxisSpacing: 4.0,
-                crossAxisSpacing: 4.0,
-                children: <String>[
-                  //dummy data
-                  'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%3Fid%3DOIP.8JupcLPN_V7YSuIiPM58KwHaFK%26pid%3DApi&f=1',
-                  'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse1.mm.bing.net%2Fth%3Fid%3DOIP.3WZEfqTHJv3UAA9F0ZpfrwHaD5%26pid%3DApi&f=1',
-                  'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%3Fid%3DOIP.8JupcLPN_V7YSuIiPM58KwHaFK%26pid%3DApi&f=1',
-                  'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse1.mm.bing.net%2Fth%3Fid%3DOIP.3WZEfqTHJv3UAA9F0ZpfrwHaD5%26pid%3DApi&f=1'
-                ].map((String url) {
-                  return GridTile(child: Image.network(url, fit: BoxFit.cover));
-                }).toList()),
-          )
-        ])));
+      ),
+    );
   }
 }
