@@ -110,7 +110,7 @@ class GroupedOrders extends StatelessWidget {
                 MaterialPageRoute(
                   builder: (context) => ShippedOut(order: order),
                 ),
-              ).then((_) => Navigator.pop(context));
+              );
             }
           });
           break;

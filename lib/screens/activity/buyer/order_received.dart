@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:lokalapp/screens/activity/components/order_details_buttons/message_buttons.dart';
 
 import '../../../models/order.dart';
 import '../../../utils/themes.dart';
@@ -16,15 +17,15 @@ class OrderReceived extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Container(
+          SizedBox(
             width: double.infinity,
-            child: AppButton("Message Shop", kTealColor, false, null),
+            child: MessageSellerButton(order: order),
           ),
-          Container(
+          SizedBox(
             width: double.infinity,
             child: AppButton("Rate your experience", kTealColor, true, null),
           ),
-          Container(
+          SizedBox(
             width: double.infinity,
             child: AppButton(
               "Back to Activity",

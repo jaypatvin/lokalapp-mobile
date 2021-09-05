@@ -137,6 +137,10 @@ class _MyAppState extends State<MyApp> {
                       color: kNavyColor,
                       fontWeight: FontWeight.w500,
                     ),
+                    bodyText2: TextStyle(
+                      color: kNavyColor,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
                   scaffoldBackgroundColor: Colors.white,
                 ),

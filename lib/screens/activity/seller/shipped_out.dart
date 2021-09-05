@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:lokalapp/screens/activity/components/order_details_buttons/message_buttons.dart';
 
 import '../../../models/order.dart';
 import '../../../utils/themes.dart';
@@ -18,11 +19,11 @@ class ShippedOut extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Container(
+          SizedBox(
             width: double.infinity,
-            child: AppButton("Message Buyer", kTealColor, false, null),
+            child: MessageBuyerButton(order: order),
           ),
-          Container(
+          SizedBox(
             width: double.infinity,
             child: AppButton(
               "Back to Activity",
@@ -47,7 +48,7 @@ class ShippedOut extends StatelessWidget {
             children: [
               SizedBox(height: 20.0),
               Text(
-                "Payment Confirmed!",
+                "Order Shipped Out!",
                 style: TextStyle(
                   fontFamily: "Goldplay",
                   fontWeight: FontWeight.w600,

@@ -159,18 +159,21 @@ class OrderDetailsButtons extends StatelessWidget {
           isBuyer: this.isBuyer,
           order: this.order,
           onPress: (action) => this.onPress(context, action),
+          paymentMethod: this.order.paymentMethod,
         );
       case 500:
         return Status500Buttons(
           isBuyer: this.isBuyer,
           order: this.order,
           onPress: (action) => this.onPress(context, action),
+          paymentMethod: this.order.paymentMethod,
         );
       case 600:
         return Status600Buttons(
           isBuyer: this.isBuyer,
           order: this.order,
           onPress: (action) => this.onPress(context, action),
+          paymentMethod: this.order.paymentMethod,
         );
       default:
         return this.isBuyer

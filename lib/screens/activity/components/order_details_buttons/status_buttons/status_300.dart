@@ -26,12 +26,14 @@ class Status300Buttons extends StatelessWidget {
       return Container(
         child: Column(
           children: [
-            Container(
-              width: double.infinity,
-              child: ViewPaymentButton(onPress: this.onPress),
-            ),
+            if (this.paymentMethod != "cod")
+              Container(
+                width: double.infinity,
+                child: ViewPaymentButton(onPress: this.onPress),
+              ),
             SizedBox(height: MediaQuery.of(context).size.height * 0.01),
             Container(
+              width: double.infinity,
               child: MessageSellerButton(order: this.order),
             ),
           ],
