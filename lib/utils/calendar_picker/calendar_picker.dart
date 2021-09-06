@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart' show DateFormat;
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'src/calendar_header.dart';
 import 'src/default_styles.dart';
@@ -35,7 +36,7 @@ class CalendarCarousel extends StatefulWidget {
 
   CalendarCarousel({
     Key key,
-    this.height = double.infinity,
+    this.height, //= double.infinity,
     this.width = double.infinity,
     this.selectedDateTime,
     this.onDayPressed,
@@ -126,13 +127,15 @@ class _CalendarState extends State<CalendarCarousel> {
   @override
   Widget build(BuildContext context) {
     return Container(
+      padding: EdgeInsets.zero,
+      //constraints: BoxConstraints(),
       width: widget.width,
       height: widget.height,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           CalendarHeader(
-              headerMargin: const EdgeInsets.symmetric(vertical: 16.0),
+              headerMargin: EdgeInsets.symmetric(vertical: 14.0.h),
               headerTitle: '${_localeDate.format(this._dates[this._pageNum])}',
               showHeader: true,
               onLeftButtonPressed: () {
@@ -161,7 +164,7 @@ class _CalendarState extends State<CalendarCarousel> {
           WeekdayRow(
             firstDayOfWeek,
             weekdayFormat: WeekdayFormat.narrow,
-            weekdayMargin: const EdgeInsets.only(bottom: 4.0),
+            weekdayMargin: EdgeInsets.only(bottom: 4.0.h),
             weekdayPadding: const EdgeInsets.all(0.0),
             weekdayBackgroundColor: Colors.transparent,
             weekdayTextStyle: defaultWeekdayTextStyle,
@@ -194,9 +197,9 @@ class _CalendarState extends State<CalendarCarousel> {
     TextStyle style,
   ) {
     return Container(
-      margin: EdgeInsets.all(1.0),
+      margin: EdgeInsets.all(0.1.w),
       child: Container(
-        padding: const EdgeInsets.all(2.0),
+        padding: EdgeInsets.all(0.75.w),
         decoration: BoxDecoration(
             border: Border.all(
               color: isMarked
@@ -207,7 +210,7 @@ class _CalendarState extends State<CalendarCarousel> {
             ),
             shape: BoxShape.rectangle,
             borderRadius: BorderRadius.all(
-              Radius.circular(15.0),
+              Radius.circular(15.0.r),
             )),
         child: FlatButton(
           color: isMarked ? Colors.orange : Colors.transparent,
@@ -224,7 +227,7 @@ class _CalendarState extends State<CalendarCarousel> {
           shape: RoundedRectangleBorder(
             side:
                 BorderSide(color: Colors.transparent, style: BorderStyle.solid),
-            borderRadius: BorderRadius.circular(13.0),
+            borderRadius: BorderRadius.circular(15.0.r),
           ),
           child: Container(
             child: Container(
@@ -286,8 +289,8 @@ class _CalendarState extends State<CalendarCarousel> {
         children: <Widget>[
           Positioned(
             child: Container(
-              width: double.infinity,
-              height: double.infinity,
+              // width: double.infinity,
+              //height: double.infinity,
               child: GridView.count(
                 physics: NeverScrollableScrollPhysics(),
                 crossAxisCount: 7,

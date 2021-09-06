@@ -60,6 +60,7 @@ class CustomAppBar extends PreferredSize {
       backgroundColor: backgroundColor,
       elevation: elevation,
       bottom: bottom,
+      titleSpacing: 0,
     );
   }
 }

@@ -27,7 +27,10 @@ class ChatStream extends StatelessWidget {
     return SingleChildScrollView(
       child: Column(
         children: [
-          SearchTextField(controller: searchController),
+          SearchTextField(
+            controller: searchController,
+            hintText: "Search Chats",
+          ),
           StreamBuilder<QuerySnapshot>(
             stream: chatStream,
             builder: (context, snapshot) {

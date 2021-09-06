@@ -3,11 +3,17 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class SearchTextField extends StatelessWidget {
   final TextEditingController controller;
+  final String hintText;
+  final bool enabled;
   final void Function(String) onChanged;
+  final void Function() onTap;
   const SearchTextField({
     Key key,
     this.controller,
+    this.hintText = "Search",
+    this.enabled = true,
     this.onChanged,
+    this.onTap,
   }) : super(key: key);
 
   @override
@@ -16,9 +22,10 @@ class SearchTextField extends StatelessWidget {
       padding: const EdgeInsets.all(12),
       height: 60.0.h,
       child: TextField(
-        enabled: false,
+        enabled: this.enabled,
         controller: this.controller,
-        onChanged: onChanged,
+        onChanged: this.onChanged,
+        onTap: this.onTap,
         decoration: InputDecoration(
           isDense: true, // Added this
           filled: true,
@@ -32,7 +39,7 @@ class SearchTextField extends StatelessWidget {
             color: Color(0xffBDBDBD),
             size: 23.0.sp,
           ),
-          hintText: 'Search Chats',
+          hintText: this.hintText,
           labelStyle: TextStyle(fontSize: 20.0.sp),
           contentPadding: const EdgeInsets.symmetric(vertical: 1),
           hintStyle: TextStyle(color: Color(0xffBDBDBD)),

@@ -330,9 +330,10 @@ class _ProductItemAndPrice extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
-        Container(
+        Expanded(
           child: Text(
             productName,
+            maxLines: null,
             style: TextStyle(
               fontFamily: "Goldplay",
               fontWeight: FontWeight.w800,
@@ -341,14 +342,12 @@ class _ProductItemAndPrice extends StatelessWidget {
             ),
           ),
         ),
-        Container(
-          child: Text(
-            productPrice.toString(),
-            style: TextStyle(
-              color: kOrangeColor,
-              fontSize: 32.0,
-              fontWeight: FontWeight.w800,
-            ),
+        Text(
+          productPrice.toString(),
+          style: TextStyle(
+            color: kOrangeColor,
+            fontSize: 32.0,
+            fontWeight: FontWeight.w800,
           ),
         )
       ],
@@ -399,8 +398,6 @@ class _SpecialInstructionsTextField extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: maxLines * 15.0,
-      //width: MediaQuery.of(context).size.width * 0.91,
-      //color: Color(0xffE0E0E0),
       child: TextField(
         controller: controller,
         onChanged: null,

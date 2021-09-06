@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../providers/cart.dart';
 import '../../providers/products.dart';
@@ -191,7 +192,7 @@ class _DeliverySchedule extends StatelessWidget {
         },
         selectedDateTime: delivery,
         markedDatesMap: [delivery],
-        height: MediaQuery.of(context).size.height * 0.55,
+        height: 425.0.h,
         width: MediaQuery.of(context).size.width * 0.9,
         selectableDates: selectableDates,
       );
