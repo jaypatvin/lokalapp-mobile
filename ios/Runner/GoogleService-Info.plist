@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>196086167751-mubmf4nb0ss7hs93bb0vm4stb4u7uko6.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.196086167751-mubmf4nb0ss7hs93bb0vm4stb4u7uko6</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>196086167751-0gapm5gl1cck4n0qmr2r5qd4p2d1kmim.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyAB20Oo83s37PfgS4YbBi6CT4j68p8KdlU</string>
+	<key>GCM_SENDER_ID</key>
+	<string>196086167751</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>ph.lokalapp.lokal</string>
+	<key>PROJECT_ID</key>
+	<string>lokal-1baac</string>
+	<key>STORAGE_BUCKET</key>
+	<string>lokal-1baac.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:196086167751:ios:77f4d6d89acf2627e4e6e2</string>
+	<key>DATABASE_URL</key>
+	<string>https://lokal-1baac.firebaseio.com</string>
+</dict>
+</plist>
