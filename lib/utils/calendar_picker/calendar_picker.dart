@@ -36,7 +36,7 @@ class CalendarCarousel extends StatefulWidget {
 
   CalendarCarousel({
     Key key,
-    this.height, //= double.infinity,
+    @required this.height, //= double.infinity,
     this.width = double.infinity,
     this.selectedDateTime,
     this.onDayPressed,
@@ -197,9 +197,9 @@ class _CalendarState extends State<CalendarCarousel> {
     TextStyle style,
   ) {
     return Container(
-      margin: EdgeInsets.all(0.1.w),
+      margin: EdgeInsets.all(1.0.w),
       child: Container(
-        padding: EdgeInsets.all(0.75.w),
+        padding: EdgeInsets.all(1.0.w),
         decoration: BoxDecoration(
             border: Border.all(
               color: isMarked

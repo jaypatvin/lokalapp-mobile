@@ -23,7 +23,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
       Discover(),
       Chat(),
       Activity(),
-      ProfileShopMain(),
+      ProfileScreen(),
     ];
   }
 
@@ -76,7 +76,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
         activeColorPrimary: Color(0xFFCC3752),
         inactiveColorPrimary: Color(0xFF103045),
         routeAndNavigatorSettings: RouteAndNavigatorSettings(
-          initialRoute: ProfileShopMain.routeName,
+          initialRoute: ProfileScreen.routeName,
         ),
       ),
     ];
@@ -92,8 +92,8 @@ class _BottomNavigationState extends State<BottomNavigation> {
         items: _navBarsItems(),
         confineInSafeArea: true,
         backgroundColor: Colors.white,
-        padding: NavBarPadding.only(bottom: 3),
-        margin: EdgeInsets.all(2),
+        //padding: NavBarPadding.only(bottom: 3),
+        // margin: EdgeInsets.all(2),
         resizeToAvoidBottomInset: true,
         stateManagement: true,
         hideNavigationBarWhenKeyboardShows: true,

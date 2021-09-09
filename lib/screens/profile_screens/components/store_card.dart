@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 import '../../../providers/products.dart';
@@ -33,7 +32,8 @@ class StoreCard extends StatelessWidget {
                 physics: NeverScrollableScrollPhysics(),
                 itemCount: items.length,
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  childAspectRatio: 3 / 4,
+                  childAspectRatio: MediaQuery.of(context).size.width /
+                      (MediaQuery.of(context).size.height / 1.4),
                   crossAxisCount: this.crossAxisCount,
                 ),
                 itemBuilder: (BuildContext context, int index) {
@@ -53,7 +53,7 @@ class StoreCard extends StatelessWidget {
                       );
                     },
                     child: ProductCard(
-                      height: 250.0.h,
+                      height: MediaQuery.of(context).size.height * 0.4,
                       width: double.infinity,
                       productId: items[index].id,
                       name: items[index].name,
