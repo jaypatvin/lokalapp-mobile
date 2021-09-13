@@ -110,7 +110,7 @@ class GroupedOrders extends StatelessWidget {
                 MaterialPageRoute(
                   builder: (context) => ShippedOut(order: order),
                 ),
-              ).then((_) => Navigator.pop(context));
+              );
             }
           });
           break;
@@ -133,7 +133,12 @@ class GroupedOrders extends StatelessWidget {
             if (snapshot.hasError)
               return Text('Error: ${snapshot.error}');
             else if (!snapshot.hasData || snapshot.data.docs.length == 0)
-              return Text('No orders yet!');
+              return Text(
+                'No orders yet!',
+                style: TextStyle(
+                  fontWeight: FontWeight.w500,
+                ),
+              );
             else
               // Without using ListView.builder, I'm not sure about the performance
               // on large sets of data
@@ -142,7 +147,8 @@ class GroupedOrders extends StatelessWidget {
                 physics: AlwaysScrollableScrollPhysics(),
                 elements: snapshot.data.docs,
                 groupBy: (QueryDocumentSnapshot element) {
-                  return (element["created_at"] as Timestamp).toDate();
+                  final date = (element["created_at"] as Timestamp).toDate();
+                  return DateTime(date.year, date.month, date.day);
                 },
                 groupSeparatorBuilder: (DateTime value) {
                   return Text(
@@ -170,8 +176,8 @@ class GroupedOrders extends StatelessWidget {
                   QueryDocumentSnapshot a,
                   QueryDocumentSnapshot b,
                 ) {
-                  final _statusCodeA = int.parse(a.data()["status_code"]);
-                  final _statusCodeB = int.parse(b.data()["status_code"]);
+                  final _statusCodeA = a.data()["status_code"];
+                  final _statusCodeB = b.data()["status_code"];
                   final statusCodeA = (_statusCodeA == 10 || _statusCodeA == 20)
                       ? _statusCodeA * 100
                       : _statusCodeA;

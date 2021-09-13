@@ -32,7 +32,8 @@ class StoreCard extends StatelessWidget {
                 physics: NeverScrollableScrollPhysics(),
                 itemCount: items.length,
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  childAspectRatio: 16.2 / 25.5,
+                  childAspectRatio: MediaQuery.of(context).size.width /
+                      (MediaQuery.of(context).size.height / 1.4),
                   crossAxisCount: this.crossAxisCount,
                 ),
                 itemBuilder: (BuildContext context, int index) {
@@ -52,6 +53,8 @@ class StoreCard extends StatelessWidget {
                       );
                     },
                     child: ProductCard(
+                      height: MediaQuery.of(context).size.height * 0.4,
+                      width: double.infinity,
                       productId: items[index].id,
                       name: items[index].name,
                       imageUrl: isGalleryEmpty ? '' : productImage.url,

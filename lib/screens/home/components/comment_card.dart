@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../models/lokal_images.dart';
 import '../../../models/lokal_user.dart';
@@ -29,34 +30,17 @@ class CommentCard extends StatelessWidget {
   }) : super(key: key);
 
   Widget buildImages() {
-    // return StaggeredGridView.countBuilder(
-    //   shrinkWrap: true,
-    //   physics: NeverScrollableScrollPhysics(),
-    //   itemCount: images.length,
-    //   crossAxisCount: 2,
-    //   itemBuilder: (ctx, index) {
-    //     return GalleryNetworkPhotoThumbnail(
-    //       galleryItem: images[index],
-    //       onTap: () => openGallery(ctx, index, images),
-    //     );
-    //   },
-    //   staggeredTileBuilder: (index) {
-    //     if (images.length % 2 != 0 && index == 0) {
-    //       return new StaggeredTile.count(2, 0.5);
-    //     }
-    //     return new StaggeredTile.count(1, 0.5);
-    //   },
-    // );
     return Container(
-      height: images.length > 0 ? 100 : 0,
+      height: images.length > 0 ? 95.h : 0,
+      //padding: EdgeInsets.symmetric(horizontal: 20.0.w),
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         physics: NeverScrollableScrollPhysics(),
         itemCount: images.length,
         itemBuilder: (context, index) {
           return Container(
-            height: 100,
-            width: 100,
+            height: 95.h,
+            width: 95.h,
             child: NetworkPhotoThumbnail(
               galleryItem: images[index],
               onTap: () => openGallery(context, index, images),
@@ -74,10 +58,12 @@ class CommentCard extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         ListTile(
+          contentPadding: EdgeInsets.zero,
           onLongPress: this.onLongPress,
           leading: GestureDetector(
             onTap: () => this.onUserPressed(user.id),
             child: CircleAvatar(
+              radius: 18.0.r,
               backgroundImage: photo.isNotEmpty ? NetworkImage(photo) : null,
             ),
           ),
@@ -88,6 +74,7 @@ class CommentCard extends StatelessWidget {
                   text: "${user.firstName} ${user.lastName}",
                   style: kTextStyle.copyWith(
                     color: Colors.black,
+                    fontSize: 14.0.sp,
                   ),
                   recognizer: TapGestureRecognizer()
                     ..onTap = () => this.onUserPressed(user.id),
@@ -96,13 +83,16 @@ class CommentCard extends StatelessWidget {
                   text: " $message",
                   style: kTextStyle.copyWith(
                     color: Colors.black,
-                    fontWeight: FontWeight.normal,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 14.0.sp,
                   ),
                 ),
               ],
             ),
           ),
           trailing: IconButton(
+            padding: EdgeInsets.zero,
+            constraints: BoxConstraints(),
             icon: Icon(
               this.liked ? MdiIcons.heart : MdiIcons.heartOutline,
               color: this.liked ? Colors.red : Colors.black,

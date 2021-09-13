@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:lokalapp/screens/activity/components/order_details_buttons/message_buttons.dart';
 
 import '../../../models/order.dart';
 import '../../../utils/themes.dart';
@@ -22,11 +23,11 @@ class OrderConfirmed extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Container(
+          SizedBox(
             width: double.infinity,
-            child: AppButton("Message Buyer", kTealColor, false, null),
+            child: MessageBuyerButton(order: order),
           ),
-          Container(
+          SizedBox(
             width: double.infinity,
             child: AppButton(
               "Back to Activity",

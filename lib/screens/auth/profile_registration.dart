@@ -2,18 +2,25 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
 
+import '../../providers/activities.dart';
 import '../../providers/invite.dart';
 import '../../providers/post_requests/auth_body.dart';
+import '../../providers/products.dart';
+import '../../providers/shops.dart';
 import '../../providers/user.dart';
 import '../../providers/user_auth.dart';
+import '../../providers/users.dart';
 import '../../services/local_image_service.dart';
 import '../../utils/themes.dart';
 import '../../utils/utility.dart';
+import '../../widgets/app_button.dart';
+import '../../widgets/checkbox_form_field.dart';
+import '../../widgets/custom_app_bar.dart';
 import '../../widgets/photo_box.dart';
-import '../../widgets/rounded_button.dart';
 import '../verification_screens/verify_screen.dart';
 
 class ProfileRegistration extends StatefulWidget {
@@ -27,8 +34,10 @@ class _ProfileRegistrationState extends State<ProfileRegistration> {
   TextEditingController _lastNameController = TextEditingController();
   TextEditingController _streetAddressController = TextEditingController();
   TextEditingController _locationController = TextEditingController();
-  RoundedButton roundedButton = RoundedButton();
   File profilePhoto;
+  bool _hasEmptyField = false;
+
+  final _formKey = GlobalKey<FormState>();
 
   Future<bool> registerUser() async {
     setState(() {
@@ -47,7 +56,6 @@ class _ProfileRegistrationState extends State<ProfileRegistration> {
     CurrentUser user = Provider.of<CurrentUser>(context, listen: false);
     AuthBody authBody = Provider.of<AuthBody>(context, listen: false);
     Invite invite = Provider.of<Invite>(context, listen: false);
-    // TODO: add communityId (after API update)
     authBody.update(
       profilePhoto: mediaUrl,
       firstName: _firstNameController.text,
@@ -61,90 +69,12 @@ class _ProfileRegistrationState extends State<ProfileRegistration> {
     bool inviteCodeClaimed = false;
     if (user.state == UserState.LoggedIn) {
       inviteCodeClaimed = await invite.claim(
-          email: user.email, userId: user.id, authToken: user.idToken);
+        email: user.email,
+        userId: user.id,
+        authToken: user.idToken,
+      );
     }
     return inviteCodeClaimed;
-  }
-
-  Widget buildStreetAddress() {
-    return Column(
-      children: [
-        Padding(
-            padding: const EdgeInsets.only(left: 40.0, right: 40.0),
-            child: TextField(
-              keyboardType: TextInputType.name,
-              controller: _streetAddressController,
-              decoration: new InputDecoration(
-                  border: new OutlineInputBorder(
-                    borderRadius: const BorderRadius.all(
-                      const Radius.circular(40.0),
-                    ),
-                    borderSide: BorderSide(
-                      width: 0,
-                      style: BorderStyle.none,
-                    ),
-                  ),
-                  filled: true,
-                  fillColor: Colors.white70,
-                  hintText: "Street Address",
-                  contentPadding: EdgeInsets.all(20.0)),
-            )),
-      ],
-    );
-  }
-
-  Widget buildFirstName() {
-    return Column(
-      children: [
-        Padding(
-            padding: const EdgeInsets.only(left: 40.0, right: 40.0),
-            child: TextField(
-              keyboardType: TextInputType.name,
-              controller: _firstNameController,
-              decoration: new InputDecoration(
-                  border: new OutlineInputBorder(
-                    borderRadius: const BorderRadius.all(
-                      const Radius.circular(40.0),
-                    ),
-                    borderSide: BorderSide(
-                      width: 0,
-                      style: BorderStyle.none,
-                    ),
-                  ),
-                  filled: true,
-                  fillColor: Colors.white70,
-                  hintText: "First Name",
-                  contentPadding: EdgeInsets.all(20.0)),
-            )),
-      ],
-    );
-  }
-
-  Widget buildLastName() {
-    return Column(
-      children: [
-        Padding(
-            padding: const EdgeInsets.only(left: 40.0, right: 40.0),
-            child: TextField(
-              keyboardType: TextInputType.name,
-              controller: _lastNameController,
-              decoration: new InputDecoration(
-                  border: new OutlineInputBorder(
-                    borderRadius: const BorderRadius.all(
-                      const Radius.circular(40.0),
-                    ),
-                    borderSide: BorderSide(
-                      width: 0,
-                      style: BorderStyle.none,
-                    ),
-                  ),
-                  filled: true,
-                  fillColor: Colors.white70,
-                  hintText: "Last Name",
-                  contentPadding: EdgeInsets.all(20.0)),
-            )),
-      ],
-    );
   }
 
   void _getLocation() async {
@@ -176,123 +106,229 @@ class _ProfileRegistrationState extends State<ProfileRegistration> {
         Text(
           _locationController.text,
           style: TextStyle(
-              fontSize: 18.0,
-              fontWeight: FontWeight.w800,
-              fontFamily: "Goldplay"),
+            fontSize: 18.0,
+            fontWeight: FontWeight.w800,
+            fontFamily: "Goldplay",
+          ),
         )
       ],
     );
   }
 
-  Widget createProfile() {
-    return RoundedButton(
-      onPressed: () async {
-        bool success = await registerUser();
-        if (success) {
-          Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (context) => VerifyScreen()),
-              (route) => false);
-        }
-      },
-      label: "CREATE PROFILE",
-      fontSize: 20.0,
-      minWidth: 250,
-      fontFamily: "GoladplayBold",
-      fontWeight: FontWeight.bold,
-    );
+  void _registerHandler() async {
+    if (!_formKey.currentState.validate()) return;
+    if (_firstNameController.text.isEmpty ||
+        _lastNameController.text.isEmpty ||
+        _streetAddressController.text.isEmpty) {
+      setState(() {
+        _hasEmptyField = true;
+        return;
+      });
+    }
+    bool success = await registerUser();
+    if (success) {
+      context.read<Activities>().fetch();
+      context.read<Shops>().fetch();
+      context.read<Products>().fetch();
+      context.read<Users>().fetch();
+      Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => VerifyScreen(),),
+          (route) => false);
+    }
   }
 
-  Widget profileSetUpText() {
-    return Center(
-      child: Text(
-        "Let's set up your profile.",
-        style: TextStyle(fontFamily: "GoldplayBold", fontSize: 22.0),
-      ),
-    );
-  }
-
-  Scaffold buildPage(BuildContext context) {
-    return Scaffold(
-      backgroundColor: kInviteScreenColor,
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              Row(
-                children: [
-                  IconButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    icon: Icon(Icons.arrow_back),
-                    color: kTealColor,
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 28.0,
-              ),
-              Column(
-                children: [
-                  profileSetUpText(),
-                  SizedBox(
-                    height: 25.0,
-                  ),
-                  GestureDetector(
-                    onTap: () async {
-                      var photo = await Provider.of<MediaUtility>(context,
-                              listen: false)
-                          .showMediaDialog(context);
-                      setState(() {
-                        profilePhoto = photo;
-                      });
-                    },
-                    child: PhotoBox(
-                      file: profilePhoto,
-                      shape: BoxShape.circle,
-                      width: 180.0,
-                      height: 170.0,
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 30.0,
-              ),
-              Column(
-                children: [
-                  buildFirstName(),
-                  SizedBox(
-                    height: 20.0,
-                  ),
-                  buildLastName(),
-                  SizedBox(
-                    height: 60.0,
-                  ),
-                  buildStreetAddress(),
-                  SizedBox(
-                    height: 15.0,
-                  ),
-                  userLoc(),
-                  SizedBox(
-                    height: 50.0,
-                  ),
-                  createProfile(),
-                  SizedBox(
-                    height: 30.0,
-                  )
-                ],
-              )
-            ],
-          ),
-        ),
-      ),
-    );
+  void _picturePickerHandler() async {
+    final photo = await context.read<MediaUtility>().showMediaDialog(context);
+    setState(() {
+      profilePhoto = photo;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return buildPage(context);
+    return Scaffold(
+      backgroundColor: kInviteScreenColor,
+      appBar: CustomAppBar(
+        backgroundColor: kInviteScreenColor,
+        leadingColor: kTealColor,
+        onPressedLeading: () => Navigator.maybePop(context),
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Column(
+              children: [
+                Text(
+                  "Let's set up your profile",
+                  style: TextStyle(
+                    fontWeight: FontWeight.w500,
+                    fontSize: 16.0.sp,
+                  ),
+                ),
+                SizedBox(height: 25.0.h),
+                GestureDetector(
+                  onTap: _picturePickerHandler,
+                  child: PhotoBox(
+                    file: profilePhoto,
+                    shape: BoxShape.circle,
+                    width: 120.0.w,
+                    height: 120.0.h,
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(
+              height: 20.0.h,
+            ),
+            if (_hasEmptyField)
+              Text(
+                "You must fill out all field to proceed.",
+                style: TextStyle(
+                  color: kPinkColor,
+                  fontWeight: FontWeight.w500,
+                  fontSize: 12.0.sp,
+                ),
+              ),
+            SizedBox(height: 10.0.h),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 30.0.w),
+              child: _RegistrationForm(
+                formKey: _formKey,
+                firstNameController: _firstNameController,
+                lastNameController: _lastNameController,
+                streetAddressController: _streetAddressController,
+                onFormSubmit: _registerHandler,
+                formFieldDecoration: InputDecoration(
+                  filled: true,
+                  fillColor: Colors.white,
+                  alignLabelWithHint: true,
+                  contentPadding: EdgeInsets.symmetric(horizontal: 16.0.w),
+                  border: new OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(30.0.r)),
+                    borderSide: _hasEmptyField
+                        ? BorderSide(color: kPinkColor)
+                        : BorderSide.none,
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(30.0.r)),
+                    borderSide: _hasEmptyField
+                        ? BorderSide(color: kPinkColor)
+                        : BorderSide.none,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _RegistrationForm extends StatelessWidget {
+  final Key formKey;
+  final TextEditingController firstNameController;
+  final TextEditingController lastNameController;
+  final TextEditingController streetAddressController;
+  final InputDecoration formFieldDecoration;
+  final void Function() onChanged;
+  final void Function() onFormSubmit;
+
+  _RegistrationForm({
+    Key key,
+    this.formKey,
+    this.firstNameController,
+    this.lastNameController,
+    this.streetAddressController,
+    this.formFieldDecoration,
+    this.onChanged,
+    this.onFormSubmit,
+  }) : super(key: key);
+
+  final _checkBoxTextStyle = TextStyle(
+    color: Colors.black,
+    fontFamily: "Goldplay",
+    fontWeight: FontWeight.w600,
+    fontSize: 13.0.sp,
+  );
+
+  @override
+  Widget build(BuildContext context) {
+    return Form(
+      onChanged: onChanged,
+      key: formKey,
+      child: Column(
+        children: [
+          TextFormField(
+            autocorrect: false,
+            keyboardType: TextInputType.emailAddress,
+            controller: firstNameController,
+            style: TextStyle(fontWeight: FontWeight.w500),
+            decoration: formFieldDecoration.copyWith(hintText: "First Name"),
+          ),
+          SizedBox(height: 15.0.h),
+          TextFormField(
+            autocorrect: false,
+            controller: lastNameController,
+            style: TextStyle(fontWeight: FontWeight.w500),
+            decoration: formFieldDecoration.copyWith(hintText: "Last Name"),
+          ),
+          SizedBox(height: 15.0.h),
+          CheckboxFormField(
+            validator: (checked) => checked
+                ? null
+                : "You must accept the Terms & Conditions and Privacy Policy",
+            title: RichText(
+              text: TextSpan(
+                children: [
+                  TextSpan(text: "I have read the "),
+                  TextSpan(
+                    text: "Terms & Conditions",
+                    style: _checkBoxTextStyle.copyWith(
+                      color: kTealColor,
+                      decoration: TextDecoration.underline,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  TextSpan(text: " and "),
+                  TextSpan(
+                    text: "Privacy Policy",
+                    style: _checkBoxTextStyle.copyWith(
+                      color: kTealColor,
+                      decoration: TextDecoration.underline,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+                style: _checkBoxTextStyle,
+              ),
+            ),
+          ),
+          SizedBox(
+            height: 30.0.h,
+          ),
+          TextFormField(
+            autocorrect: false,
+            keyboardType: TextInputType.emailAddress,
+            controller: streetAddressController,
+            style: TextStyle(fontWeight: FontWeight.w500),
+            decoration:
+                formFieldDecoration.copyWith(hintText: "Street Address"),
+          ),
+          SizedBox(height: 30.0.h),
+          SizedBox(
+            width: 200.0.w,
+            child: AppButton(
+              "CREATE PROFILE",
+              kTealColor,
+              true,
+              onFormSubmit,
+              textStyle: TextStyle(color: kNavyColor),
+            ),
+          )
+        ],
+      ),
+    );
   }
 }

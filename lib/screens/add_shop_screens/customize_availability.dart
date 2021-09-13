@@ -250,7 +250,6 @@ class _CustomizeAvailabilityState extends State<CustomizeAvailability> {
         Provider.of<OperatingHoursBody>(context, listen: false);
     return await shops.setOperatingHours(
       id: userShop.id,
-      authToken: user.idToken,
       data: operatingHours.data,
     );
   }
@@ -274,9 +273,9 @@ class _CustomizeAvailabilityState extends State<CustomizeAvailability> {
     );
 
     try {
-      bool success = await shops.create(user.idToken, shopBody.data);
+      bool success = await shops.create(shopBody.data);
       if (success) {
-        await shops.fetch(user.idToken);
+        await shops.fetch();
         return true;
       }
     } on Exception catch (e) {
@@ -356,9 +355,7 @@ class _CustomizeAvailabilityState extends State<CustomizeAvailability> {
                 if (_shopCreated) {
                   bool updated = await updateShopSchedule();
                   if (updated) {
-                    var user = Provider.of<CurrentUser>(context, listen: false);
-                    Provider.of<Shops>(context, listen: false)
-                        .fetch(user.idToken);
+                    context.read<Shops>().fetch();
                     Navigator.push(
                       context,
                       MaterialPageRoute(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../providers/cart.dart';
 import '../../providers/products.dart';
@@ -18,6 +19,40 @@ import 'order_placed.dart';
 class CheckoutSchedule extends StatelessWidget {
   final String productId;
   const CheckoutSchedule({Key key, @required this.productId}) : super(key: key);
+
+  void _placeOrderHandler(BuildContext context, String shopId) async {
+    final user = context.read<CurrentUser>();
+    final order = context.read<ShoppingCart>().orders[shopId][productId];
+
+    // TODO: separate payload body into another class
+    final response = await LokalApiService.instance.orders.create(
+      idToken: user.idToken,
+      data: {
+        "products": [
+          {
+            "id": productId,
+            "quantity": order.quantity,
+          }
+        ],
+        "buyer_id": user.id,
+        "shop_id": shopId,
+        "delivery_option": order.deliveryOption.value,
+        "delivery_date": order.schedule.toIso8601String(),
+        "instruction": order.notes,
+      },
+    );
+
+    if (response.statusCode == 200) {
+      context.read<ShoppingCart>().remove(productId);
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (_) => OrderPlaced(),
+        ),
+      );
+    } else {
+      // TODO: show snackbar?
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -105,50 +140,17 @@ class CheckoutSchedule extends StatelessWidget {
                   ),
                   SizedBox(width: 16.0),
                   Expanded(
-                    child: AppButton(
-                      "Place Order",
-                      kTealColor,
-                      true,
-                      () async {
-                        // Navigator.of(context).push(
-                        //   MaterialPageRoute(
-                        //     builder: (_) => OrderPlaced(),
-                        //   ),
-                        // );
-                        final user = context.read<CurrentUser>();
-                        final order = context
-                            .read<ShoppingCart>()
-                            .orders[shop.id][productId];
-
-                        // TODO: separate payload body into another class
-                        final response =
-                            await LokalApiService.instance.orders.create(
-                          idToken: user.idToken,
-                          data: {
-                            "products": [
-                              {
-                                "id": productId,
-                                "quantity": order.quantity,
-                              }
-                            ],
-                            "buyer_id": user.id,
-                            "shop_id": shop.id,
-                            "delivery_option": order.deliveryOption.value,
-                            "delivery_date": order.schedule.toIso8601String(),
-                            "instruction": order.notes,
-                          },
+                    child: Consumer<ShoppingCart>(
+                      builder: (ctx, cart, child) {
+                        final order = cart.orders[shop.id][product.id];
+                        return AppButton(
+                          "Place Order",
+                          kTealColor,
+                          true,
+                          order.schedule != null
+                              ? () => _placeOrderHandler(context, shop.id)
+                              : null,
                         );
-
-                        if (response.statusCode == 200) {
-                          context.read<ShoppingCart>().remove(productId);
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (_) => OrderPlaced(),
-                            ),
-                          );
-                        } else {
-                          // TODO: show snackbar?
-                        }
                       },
                     ),
                   )
@@ -190,8 +192,8 @@ class _DeliverySchedule extends StatelessWidget {
         },
         selectedDateTime: delivery,
         markedDatesMap: [delivery],
-        height: MediaQuery.of(context).size.height * 0.55,
-        width: MediaQuery.of(context).size.width * 0.89,
+        height: 425.0.h,
+        width: MediaQuery.of(context).size.width * 0.9,
         selectableDates: selectableDates,
       );
     });

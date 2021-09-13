@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
@@ -69,18 +70,24 @@ class PostCard extends StatelessWidget {
           children: [
             Text(
               "${user.firstName} ${user.lastName}",
-              style: kTextStyle.copyWith(fontSize: 18.0),
+              style: kTextStyle.copyWith(
+                fontSize: 14.0.sp,
+                fontWeight: FontWeight.w600,
+              ),
             ),
             Text(
               createdSince,
               style: kTextStyle.copyWith(
-                  fontSize: 18.0, fontWeight: FontWeight.normal),
+                fontSize: 14.0.sp,
+                fontWeight: FontWeight.normal,
+              ),
+              overflow: TextOverflow.clip,
             ),
           ],
         ),
       ),
       trailing: IconButton(
-        icon: Icon(Icons.more_horiz),
+        icon: Icon(Icons.more_horiz, color: Colors.black),
         onPressed: this.onTripleDotsPressed,
       ),
     );
@@ -96,7 +103,11 @@ class PostCard extends StatelessWidget {
         padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
         child: Text(
           message,
-          style: TextStyle(fontFamily: "GoldplayBold", fontSize: 16),
+          style: TextStyle(
+            fontFamily: "Goldplay",
+            fontSize: 14.0.sp,
+            fontWeight: FontWeight.w500,
+          ),
           maxLines: 8,
           overflow: TextOverflow.ellipsis,
           softWrap: true,
@@ -154,19 +165,19 @@ class PostCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var height = MediaQuery.of(context).size.height;
-    var width = MediaQuery.of(context).size.width;
+    final height = MediaQuery.of(context).size.height;
+    final width = MediaQuery.of(context).size.width;
     return Consumer<Users>(builder: (context, users, child) {
       return Container(
         padding: EdgeInsets.symmetric(horizontal: width * 0.05),
         child: Card(
           margin: EdgeInsets.only(top: height * 0.02),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16.0),
+            borderRadius: BorderRadius.circular(16.0.r),
           ),
           child: users.isLoading
               ? Container(
-                  height: height * 0.20,
+                  height: 100.0.h,
                   child: Center(
                     child: CircularProgressIndicator(),
                   ),
@@ -174,27 +185,27 @@ class PostCard extends StatelessWidget {
               : Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    SizedBox(height: height * 0.01),
+                    SizedBox(height: 10.0.h),
                     buildHeader(context),
-                    SizedBox(height: height * 0.02),
+                    SizedBox(height: 5.0.h),
                     buildMessageBody(
                       message: activityFeed.message,
-                      horizontalPadding: width * 0.05,
+                      horizontalPadding: 20.0.w,
                     ),
-                    SizedBox(height: height * 0.02),
+                    SizedBox(height: 5.0.h),
                     Padding(
-                      padding: EdgeInsets.symmetric(horizontal: width * 0.05),
+                      padding: EdgeInsets.symmetric(horizontal: 20.0.w),
                       child: buildPostImages(context: context),
                     ),
                     Divider(
                       color: Colors.grey,
-                      indent: width * 0.05,
-                      endIndent: width * 0.05,
+                      indent: 20.0.w,
+                      endIndent: 20.0.w,
                     ),
                     Padding(
                       padding: EdgeInsets.only(
-                        left: width * 0.02,
-                        right: width * 0.05,
+                        left: 10.0.w,
+                        right: 20.0.w,
                       ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,

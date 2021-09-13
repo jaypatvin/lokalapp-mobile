@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import '../../../providers/cart.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
-import '../../../providers/products.dart';
-import '../../../providers/user.dart';
+import '../../../providers/cart.dart';
+import '../../../utils/themes.dart';
 
 class ProductCard extends StatelessWidget {
   final String productId;
@@ -12,6 +12,8 @@ class ProductCard extends StatelessWidget {
   final double price;
   final String shopImageUrl;
   final String shopName;
+  final double height;
+  final double width;
 
   const ProductCard({
     @required this.productId,
@@ -20,143 +22,114 @@ class ProductCard extends StatelessWidget {
     @required this.price,
     @required this.shopImageUrl,
     @required this.shopName,
+    @required this.width,
+    @required this.height,
   });
+
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.all(1),
-      child: Card(
-        color: Colors.white,
-        semanticContainer: true,
-        clipBehavior: Clip.antiAlias,
-        child: Consumer<ShoppingCart>(builder: (context, cart, child) {
+    return Card(
+      elevation: 0.0,
+      color: Colors.white,
+      semanticContainer: true,
+      clipBehavior: Clip.antiAlias,
+      child: Consumer<ShoppingCart>(
+        builder: (context, cart, child) {
           return Container(
+            height: this.height,
+            width: this.width,
             decoration: BoxDecoration(
               border: cart.contains(productId)
-                  ? Border.all(
-                      color: Colors.orange,
-                      width: 3,
-                    )
+                  ? Border.all(color: Colors.orange, width: 3)
                   : Border.all(color: Colors.transparent),
             ),
             child: Column(
-              children: <Widget>[
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  height: this.height * 0.55,
+                  width: this.width,
+                  decoration: BoxDecoration(
+                    image: imageUrl.isNotEmpty
+                        ? DecorationImage(
+                            image: NetworkImage(imageUrl),
+                            fit: BoxFit.cover,
+                          )
+                        : null,
+                  ),
+                ),
+                SizedBox(height: 10.0.h),
+                Text(
+                  name,
+                  softWrap: true,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontFamily: "Goldplay",
+                    fontSize: 16.0.sp,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                Spacer(),
+                Text(
+                  '$price',
+                  textAlign: TextAlign.start,
+                  style: TextStyle(
+                    color: kOrangeColor,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 13.0.sp,
+                  ),
+                ),
+                SizedBox(height: 2.0.h),
                 Row(
-                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
+                    Container(
+                      child: CircleAvatar(
+                        radius: 9.0.r,
+                        backgroundImage:
+                            shopImageUrl != null && shopImageUrl.isNotEmpty
+                                ? NetworkImage(shopImageUrl)
+                                : null,
+                      ),
+                    ),
+                    SizedBox(width: 5.0.w),
                     Expanded(
-                      child: Container(
-                        height: 180,
-                        width: 260,
-                        decoration: BoxDecoration(
-                          image: imageUrl.isNotEmpty
-                              ? DecorationImage(
-                                  image: NetworkImage(imageUrl),
-                                  fit: BoxFit.fitWidth)
-                              : null,
+                      child: Text(
+                        shopName,
+                        overflow: TextOverflow.ellipsis,
+                        textAlign: TextAlign.start,
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 12.0.sp,
                         ),
                       ),
                     ),
-                  ],
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                Column(
-                  children: [
+                    SizedBox(width: 5.0.w),
                     Row(
-                      mainAxisSize: MainAxisSize.min,
                       children: [
-                        Expanded(
-                          child: Text(
-                            name,
-                            softWrap: true,
-                            style: TextStyle(
-                              fontFamily: "GoldplayBold",
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
+                        Container(
+                          child: Icon(
+                            Icons.star,
+                            color: Colors.amber,
+                            size: 9.0.r,
+                          ),
+                        ),
+                        Text(
+                          "4.54",
+                          style: TextStyle(
+                            color: Colors.amber,
+                            fontSize: 12.0.sp,
                           ),
                         ),
                       ],
-                    ),
-                    SizedBox(
-                      height: 15,
-                    ),
-                    Align(
-                        alignment: Alignment.topLeft,
-                        child: Text(
-                          '$price',
-                          textAlign: TextAlign.start,
-                          style: TextStyle(
-                              color: Color(0xffFF7A00),
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16),
-                        )),
-                    SizedBox(
-                      height: 19,
-                    ),
-                    SingleChildScrollView(
-                      physics: NeverScrollableScrollPhysics(),
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        // crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            // margin: const EdgeInsets.only(right: 30),
-                            child: CircleAvatar(
-                              radius: 9,
-                              backgroundImage: shopImageUrl != null &&
-                                      shopImageUrl.isNotEmpty
-                                  ? NetworkImage(shopImageUrl)
-                                  : null,
-                            ),
-                          ),
-                          SizedBox(
-                            width: 3,
-                          ),
-                          Container(
-                            // margin: const EdgeInsets.only(right: 12),
-                            child: Text(
-                              shopName,
-                              textAlign: TextAlign.start,
-                              style: TextStyle(
-                                  color: Colors.black,
-                                  // fontWeight: FontWeight.bold,
-                                  fontSize: 12),
-                            ),
-                          ),
-                          SizedBox(
-                            width: 60,
-                          ),
-                          Row(
-                            children: [
-                              Container(
-                                child: Icon(
-                                  Icons.star,
-                                  color: Colors.amber,
-                                  size: 14,
-                                ),
-                              ),
-                              Text(
-                                "4.54",
-                                style: TextStyle(
-                                  color: Colors.amber,
-                                  fontSize: 14,
-                                ),
-                              ),
-                            ],
-                          )
-                        ],
-                      ),
                     )
                   ],
                 )
               ],
             ),
           );
-        }),
+        },
       ),
     );
   }

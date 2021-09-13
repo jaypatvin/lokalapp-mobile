@@ -126,29 +126,33 @@ class Checkout extends StatelessWidget {
             },
           ),
           Spacer(),
-          Row(
-            children: [
-              Expanded(
-                child: AppButton(
-                  "Cancel",
-                  kPinkColor,
-                  false,
-                  () => Navigator.pop(context),
-                ),
-              ),
-              Expanded(
-                child: AppButton(
-                  "Continue",
-                  kTealColor,
-                  true,
-                  () => Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (_) => CheckoutSchedule(productId: productId),
-                    ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: Row(
+              children: [
+                Expanded(
+                  child: AppButton(
+                    "Cancel",
+                    kPinkColor,
+                    false,
+                    () => Navigator.pop(context),
                   ),
                 ),
-              )
-            ],
+                SizedBox(width: 8.0),
+                Expanded(
+                  child: AppButton(
+                    "Continue",
+                    kTealColor,
+                    true,
+                    () => Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => CheckoutSchedule(productId: productId),
+                      ),
+                    ),
+                  ),
+                )
+              ],
+            ),
           ),
           SizedBox(height: 24.0)
         ],

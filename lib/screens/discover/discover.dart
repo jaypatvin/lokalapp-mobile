@@ -1,164 +1,70 @@
 import 'package:after_layout/after_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../providers/cart.dart';
-import '../../providers/products.dart';
-import '../../providers/shops.dart';
 import '../../utils/shared_preference.dart';
 import '../../utils/themes.dart';
 import '../../widgets/custom_app_bar.dart';
+import '../../widgets/search_text_field.dart';
 import '../cart/cart_container.dart';
-import '../profile_screens/components/product_card.dart';
 import '../profile_screens/components/store_card.dart';
 import '../search/search.dart';
-import 'checkout.dart';
+import 'components/recommended_products.dart';
 import 'explore_categories.dart';
-import 'order_placed.dart';
-import 'order_screen_grid.dart';
-import 'product_detail.dart';
 
 class Discover extends StatefulWidget {
+  static const routeName = "/discover";
   @override
   _DiscoverState createState() => _DiscoverState();
 }
 
 class _DiscoverState extends State<Discover> with AfterLayoutMixin<Discover> {
-  final TextEditingController _searchController = TextEditingController();
   var _userSharedPreferences = UserSharedPreferences();
 
-  Widget getTextWidgets(context) {
-    var iconText = [
+  Widget _buildCategories() {
+    final categories = [
       "Dessert & Pastries",
       "Meals & Snacks",
       "Drinks",
       "Fashion"
     ];
-    return Row(
-      children: [
-        for (var text in iconText)
-          Expanded(
-            child: Container(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                text,
-                style: TextStyle(
-                    fontWeight: FontWeight.w800,
-                    color: Colors.black,
-                    fontSize: 12,
-                    fontFamily: "Goldplay"),
+    return ListView.builder(
+      scrollDirection: Axis.horizontal,
+      shrinkWrap: true,
+      itemCount: categories.length,
+      itemBuilder: (ctx, index) {
+        return SizedBox(
+          width: 100.0.w,
+          child: Column(
+            children: [
+              CircleAvatar(
+                radius: 35.0.r,
+                backgroundColor: Color(0XFFF1FAFF),
+                child: Icon(
+                  Icons.food_bank,
+                  color: kTealColor,
+                  size: 35.0.sp,
+                ),
               ),
-            ),
+              SizedBox(height: 10.0.h),
+              Text(
+                categories[index],
+                maxLines: 2,
+                softWrap: true,
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
           ),
-      ],
+        );
+      },
     );
   }
 
-  Widget get consumerShopAndProduct =>
-      Consumer2<Products, Shops>(builder: (context, products, shops, __) {
-        return products.isLoading || shops.isLoading
-            ? Center(child: CircularProgressIndicator())
-            : Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Container(
-                    padding: const EdgeInsets.only(left: 12),
-                    height: MediaQuery.of(context).size.height * 0.4,
-                    width: MediaQuery.of(context).size.width,
-                    child: ListView.builder(
-                      shrinkWrap: true,
-                      scrollDirection: Axis.horizontal,
-                      itemCount: products.items.length,
-                      itemBuilder: (ctx, index) {
-                        var shop = shops.findById(products.items[index].shopId);
-                        var gallery = products.items[index].gallery;
-                        var isGalleryEmpty = gallery == null || gallery.isEmpty;
-                        var productImage = !isGalleryEmpty
-                            ? gallery.firstWhere((g) => g.url.isNotEmpty)
-                            : null;
-                        return Container(
-                          padding: const EdgeInsets.all(0.0),
-                          height: MediaQuery.of(context).size.height * 0.5,
-                          width: MediaQuery.of(context).size.width / 2,
-                          child: GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => ProductDetail(
-                                          products.items[index])));
-                            },
-                            child: ProductCard(
-                              productId: products.items[index].id,
-                              name: products.items[index].name,
-                              imageUrl: isGalleryEmpty ? '' : productImage.url,
-                              price: products.items[index].basePrice,
-                              shopName: shop.name,
-                              shopImageUrl: shop.profilePhoto,
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                ],
-              );
-      });
-
-  Widget get rowRecent => Row(
-        children: [
-          Container(
-            padding: const EdgeInsets.only(left: 20),
-            child: Text(
-              "Recent",
-              style: TextStyle(
-                  fontWeight: FontWeight.w700,
-                  fontFamily: "GoldplayBold",
-                  fontSize: 20),
-            ),
-          )
-        ],
-      );
-
-  Widget get recommended => Row(
-        children: [
-          Container(
-            padding: const EdgeInsets.only(left: 20),
-            child: Text(
-              "Recommended",
-              style: TextStyle(
-                  fontWeight: FontWeight.w700,
-                  fontFamily: "GoldplayBold",
-                  fontSize: 20),
-            ),
-          )
-        ],
-      );
-  Widget get buildSearchTextField => TextField(
-        enabled: false,
-        // controller: _searchController,
-
-        decoration: InputDecoration(
-          isDense: true, // Added this
-          filled: true,
-          border: OutlineInputBorder(
-            borderSide: BorderSide.none,
-            borderRadius: const BorderRadius.all(
-              const Radius.circular(25.0),
-            ),
-          ),
-          fillColor: Color(0xffF2F2F2),
-          prefixIcon: Icon(
-            Icons.search,
-            color: Color(0xffBDBDBD),
-            size: 30,
-          ),
-          hintText: 'Search',
-          labelStyle: TextStyle(fontSize: 20),
-          hintStyle: TextStyle(color: Color(0xffBDBDBD)),
-        ),
-      );
   @override
   void initState() {
     super.initState();
@@ -169,22 +75,6 @@ class _DiscoverState extends State<Discover> with AfterLayoutMixin<Discover> {
 
   @override
   Widget build(BuildContext context) {
-    List icon = List.generate(
-      4,
-      (i) => Container(
-        padding: const EdgeInsets.only(right: 3),
-        child: CircleAvatar(
-          radius: 41,
-          backgroundColor: Color(0XFFF1FAFF),
-          child: Icon(
-            Icons.food_bank,
-            color: kTealColor,
-            size: 38,
-          ),
-        ),
-      ),
-    ).toList();
-
     return Scaffold(
       appBar: CustomAppBar(
         titleText: "Discover",
@@ -193,175 +83,111 @@ class _DiscoverState extends State<Discover> with AfterLayoutMixin<Discover> {
       ),
       body: CartContainer(
         child: SingleChildScrollView(
-          scrollDirection: Axis.vertical,
           child: Column(
             mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(
-                height: 20,
-              ),
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    padding: const EdgeInsets.only(left: 20, right: 20),
-                    height: 45,
-                    width: MediaQuery.of(context).size.width,
-                    child: Theme(
-                      data: ThemeData(primaryColor: Color(0xffF2F2F2)),
-                      child: GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => Search()));
-                        },
-                        child: buildSearchTextField,
+              GestureDetector(
+                child: Hero(
+                  tag: "search_field",
+                  child: SearchTextField(
+                    enabled: false,
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (ctx) => Search(),
                       ),
                     ),
                   ),
-                ],
+                ),
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (ctx) => Search(),
+                  ),
+                ),
               ),
-              SizedBox(
-                height: 40,
+              SizedBox(height: 10.0.h),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16.0.w),
+                child: Text(
+                  "Recommended",
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontFamily: "Goldplay",
+                    fontSize: 20.sp,
+                  ),
+                ),
               ),
-              recommended,
-              SizedBox(
-                height: 12,
-              ),
-              consumerShopAndProduct,
-              SizedBox(
-                height: 20,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Container(
-                    padding: const EdgeInsets.only(left: 20),
-                    child: Text(
+              SizedBox(height: 5.0.h),
+              RecommendedProducts(),
+              SizedBox(height: 15.0.h),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16.0.w),
+                child: Row(
+                  children: [
+                    Text(
                       "Explore Categories",
                       style: TextStyle(
-                          fontWeight: FontWeight.w700,
-                          fontFamily: "GoldplayBold",
-                          fontSize: 20),
-                    ),
-                  ),
-                  Row(
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => ExploreCategories()));
-                        },
-                        child: Text(
-                          "View All",
-                          style: TextStyle(
-                              fontFamily: "Goldplay",
-                              color: kTealColor,
-                              fontWeight: FontWeight.w700),
-                        ),
+                        fontWeight: FontWeight.w600,
+                        fontFamily: "Goldplay",
+                        fontSize: 20.0.sp,
                       ),
-                      IconButton(
-                          icon: Icon(
+                    ),
+                    Spacer(),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => ExploreCategories()));
+                      },
+                      child: Row(
+                        children: [
+                          Text(
+                            "View All",
+                            style: TextStyle(
+                                fontFamily: "Goldplay",
+                                color: kTealColor,
+                                fontWeight: FontWeight.w700),
+                          ),
+                          Icon(
                             Icons.arrow_forward_outlined,
                             color: kTealColor,
-                            size: 16,
+                            size: 16.0.sp,
                           ),
-                          onPressed: () {})
-                    ],
-                  )
-                ],
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
-              Row(mainAxisSize: MainAxisSize.min, children: [
-                Expanded(
-                  child: Container(
-                    padding: const EdgeInsets.only(left: 3),
-                    height: MediaQuery.of(context).size.height / 6,
-                    width: MediaQuery.of(context).size.width,
-                    child: ListView(
-                        // shrinkWrap: true,
-                        scrollDirection: Axis.horizontal,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Container(
-                                height: MediaQuery.of(context).size.height / 2,
-                                width: MediaQuery.of(context).size.width,
-                                child: ListTile(
-                                  title: Container(
-                                    child: Row(
-                                      children: icon,
-                                    ),
-                                  ),
-                                  subtitle: getTextWidgets(context),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ]),
+              SizedBox(height: 10.0.h),
+              SizedBox(
+                height: 120.0.h,
+                child: _buildCategories(),
+              ),
+              SizedBox(height: 10.0.h),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16.0.w),
+                child: Text(
+                  "Recent",
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontFamily: "Goldplay",
+                    fontSize: 20.sp,
                   ),
-                )
-              ]),
-              SizedBox(
-                height: 25,
+                ),
               ),
-              rowRecent,
-              SizedBox(
-                height: 20,
-              ),
+              SizedBox(height: 10.0.h),
               Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  SizedBox(
-                    width: 8,
-                  ),
                   Expanded(
                     child: StoreCard(
                       crossAxisCount: 2,
                     ),
                   ),
-                ],
-              ),
-              Row(
-                children: [
-                  TextButton(
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => OrderPlaced()));
-                      },
-                      child: Text("Order placed"))
-                ],
-              ),
-              Row(
-                children: [
-                  TextButton(
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => Checkout()));
-                      },
-                      child: Text("Checkout"))
-                ],
-              ),
-              Row(
-                children: [
-                  TextButton(
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => OrderScreenGrid()));
-                      },
-                      child: Text("Order Grid"))
                 ],
               ),
             ],

@@ -1,11 +1,11 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 
 import 'providers/activities.dart';
 import 'providers/cart.dart';
-import 'providers/chat.dart';
 import 'providers/invite.dart';
 import 'providers/post_requests/auth_body.dart';
 import 'providers/post_requests/operating_hours_body.dart';
@@ -21,6 +21,7 @@ import 'root/root.dart';
 import 'screens/chat/chat_helpers.dart';
 import 'services/local_image_service.dart';
 import 'utils/shared_preference.dart';
+import 'utils/themes.dart';
 import 'utils/utility.dart';
 import 'widgets/photo_picker_gallery/provider/custom_photo_provider.dart';
 
@@ -57,6 +58,7 @@ class _MyAppState extends State<MyApp> {
       providers: [
         //shared preference
         Provider<UserSharedPreferences>.value(value: _userSharedPreferences),
+
         // auth:
         ChangeNotifierProvider<UserAuth>(create: (_) => UserAuth()),
         ChangeNotifierProvider<Invite>(create: (_) => Invite()),
@@ -65,31 +67,33 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider<CurrentUser>(create: (_) => CurrentUser()),
         ChangeNotifierProxyProvider<CurrentUser, Activities>(
           create: (_) => Activities(),
-          update: (_, user, activities) =>
-              activities..setCommunityId(user.communityId),
+          update: (_, user, activities) => activities
+            ..setCommunityId(user.communityId)
+            ..setIdToken(user.idToken),
         ),
         ChangeNotifierProxyProvider<CurrentUser, Shops>(
           create: (_) => Shops(),
           update: (_, user, shops) => shops
             ..setCommunityId(user.communityId)
-            ..fetch(user.idToken),
+            ..setIdToken(user.idToken),
         ),
         ChangeNotifierProxyProvider<CurrentUser, Products>(
           create: (_) => Products(),
           update: (_, user, products) => products
             ..setCommunityId(user.communityId)
-            ..fetch(user.idToken),
+            ..setIdToken(user.idToken),
         ),
 
         ChangeNotifierProxyProvider<CurrentUser, Users>(
           create: (_) => Users(),
-          update: (_, user, users) =>
-              users..fetch(user.communityId, user.idToken),
+          update: (_, user, users) => users
+            ..setCommunityId(user.communityId)
+            ..setIdToken(user.idToken),
         ),
 
         ChangeNotifierProvider<ShoppingCart>(create: (_) => ShoppingCart()),
-        ChangeNotifierProvider<ChatProvider>(create: (_) => ChatProvider()),
         ChangeNotifierProvider<Schedule>(create: (_) => Schedule()),
+
         // post body requests:
         ChangeNotifierProvider<AuthBody>(create: (_) => AuthBody()),
         ChangeNotifierProvider<ProductBody>(create: (_) => ProductBody()),
@@ -109,14 +113,40 @@ class _MyAppState extends State<MyApp> {
       child: StreamBuilder<UserSharedPreferences>(
         stream: _userSharedPreferences.stream,
         builder: (context, snapshot) {
-          return MaterialApp(
-            debugShowCheckedModeBanner: false,
-            title: 'Flutter Demo',
-            theme: ThemeData(
-              fontFamily: "Goldplay",
-              scaffoldBackgroundColor: Colors.white,
-            ),
-            home: Root(),
+          return ScreenUtilInit(
+            builder: () {
+              return MaterialApp(
+                debugShowCheckedModeBanner: false,
+                title: 'Lokal',
+                theme: ThemeData(
+                  fontFamily: "Goldplay",
+                  textTheme: TextTheme(
+                    headline1: TextStyle(
+                      fontSize: 30.0.sp,
+                      color: kNavyColor,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    headline6: TextStyle(
+                      fontSize: 14.0.sp,
+                      fontFamily: "Goldplay",
+                      fontWeight: FontWeight.bold,
+                      color: kTealColor,
+                    ),
+                    bodyText1: TextStyle(
+                      fontSize: 16.0.sp,
+                      color: kNavyColor,
+                      fontWeight: FontWeight.w500,
+                    ),
+                    bodyText2: TextStyle(
+                      color: kNavyColor,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  scaffoldBackgroundColor: Colors.white,
+                ),
+                home: Root(),
+              );
+            },
           );
         },
       ),

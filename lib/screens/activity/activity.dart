@@ -8,37 +8,54 @@ import '../../utils/themes.dart';
 import 'transactions.dart';
 
 class Activity extends StatefulWidget {
+  static const routeName = "/activity";
   @override
   _ActivityState createState() => _ActivityState();
 }
 
 class _ActivityState extends State<Activity>
-    with SingleTickerProviderStateMixin, AfterLayoutMixin<Activity> {
+    with TickerProviderStateMixin, AfterLayoutMixin<Activity> {
   var _userSharedPreferences = UserSharedPreferences();
   TabController _tabController;
-  Color _indicatorColor;
 
   final buyerStatuses = <int, String>{};
   final sellerStatuses = <int, String>{};
 
+  Future<QuerySnapshot> _statuses;
+
+  AnimationController _animationController;
+  Animation<Color> _colorAnimation;
+
   @override
   void initState() {
     super.initState();
-    _indicatorColor = Color(0xFF09A49A);
+    _statuses = Database.instance.getOrderStatuses().get();
     _tabController = TabController(length: 2, vsync: this);
     _tabController?.addListener(_handleTabSelection);
     _userSharedPreferences = UserSharedPreferences();
     _userSharedPreferences.init();
+
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 250),
+    );
+    _colorAnimation = ColorTween(
+      begin: kTealColor,
+      end: kPurpleColor,
+    ).animate(_animationController)
+      ..addListener(() {
+        setState(() {});
+      });
   }
 
   void _handleTabSelection() {
     setState(() {
       switch (_tabController?.index) {
         case 0:
-          _indicatorColor = Color(0xFF09A49A);
+          _animationController.reverse();
           break;
         case 1:
-          _indicatorColor = Color(0xFF57183F);
+          _animationController.forward();
           break;
       }
     });
@@ -52,11 +69,12 @@ class _ActivityState extends State<Activity>
         borderRadius: BorderRadius.vertical(
           top: Radius.circular(30.0),
         ),
-        color: _indicatorColor,
+        color: _colorAnimation.value,
       ),
+      labelStyle: Theme.of(context).textTheme.bodyText2,
       tabs: [
-        Tab(text: 'My Orders'),
-        Tab(text: 'My Shop'),
+        Tab(text: "My Orders"),
+        Tab(text: "My Shop"),
       ],
     );
   }
@@ -64,8 +82,7 @@ class _ActivityState extends State<Activity>
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      // could probably use Firebase.instance?
-      future: Database.instance.getOrderStatuses().get(),
+      future: _statuses,
       builder: (ctx, AsyncSnapshot<QuerySnapshot> snapshot) {
         if (snapshot != null &&
             (snapshot.connectionState != ConnectionState.done ||
@@ -106,8 +123,8 @@ class _ActivityState extends State<Activity>
               physics: NeverScrollableScrollPhysics(),
               controller: _tabController,
               children: [
-                Transactions(buyerStatuses, true),
-                Transactions(sellerStatuses, false),
+                Transactions(buyerStatuses, true, _colorAnimation),
+                Transactions(sellerStatuses, false, _colorAnimation),
               ],
             ),
           ),

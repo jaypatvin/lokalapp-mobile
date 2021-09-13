@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:photo_manager/photo_manager.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../utils/functions.utils.dart';
 import 'photo_view_gallery/thumbnails/asset_photo_thumbnail.dart';
@@ -26,8 +27,8 @@ class InputImages extends StatelessWidget {
       itemBuilder: (ctx, index) {
         return Container(
           margin: EdgeInsets.symmetric(horizontal: 0.5),
-          height: 100,
-          width: 100,
+          height: 90.h,
+          width: 90.h,
           child: AssetPhotoThumbnail(
             galleryItem: pickedImages[index],
             onTap: () => openInputGallery(

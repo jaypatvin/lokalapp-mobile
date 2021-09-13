@@ -1,286 +1,108 @@
-import 'package:after_layout/after_layout.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:persistent_bottom_nav_bar/models/nested_will_pop_scope.dart';
 import 'package:provider/provider.dart';
 
+import '../../providers/activities.dart';
 import '../../providers/user.dart';
-import '../../utils/shared_preference.dart';
 import '../../utils/themes.dart';
-import '../cart/cart_container.dart';
-import 'edit_profile.dart';
-import 'profile_no_shop.dart';
-import 'settings/settings.dart';
+import '../home/timeline.dart';
+import 'components/my_profile_list.dart';
+import 'components/profile_header.dart';
+import 'components/user_shop_banner.dart';
 
-class ProfileShopMain extends StatefulWidget {
+class ProfileScreen extends StatefulWidget {
+  static const routeName = "/profile";
+  const ProfileScreen({Key key}) : super(key: key);
+
   @override
-  _ProfileShopMainState createState() => _ProfileShopMainState();
+  _ProfileScreenState createState() => _ProfileScreenState();
 }
 
-class _ProfileShopMainState extends State<ProfileShopMain>
-    with AfterLayoutMixin<ProfileShopMain> {
-  var _userSharedPreferences = UserSharedPreferences();
-
-  @override
-  void initState() {
-    super.initState();
-
-    _userSharedPreferences = UserSharedPreferences();
-    _userSharedPreferences.init();
-  }
-
-  Padding buildIconSettings() {
-    return Padding(
-        padding: const EdgeInsets.only(left: 5),
-        child: IconButton(
-          icon: Icon(
-            Icons.settings,
-            size: 38,
-          ),
-          color: Colors.white,
-          onPressed: () {
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) => Settings()));
-          },
-        ));
-  }
-
-  buildIconMore(context) {
-    return Padding(
-        padding: const EdgeInsets.only(right: 5),
-        child: IconButton(
-          icon: Icon(
-            Icons.more_horiz,
-            size: 38,
-          ),
-          color: Colors.white,
-          onPressed: () {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => EditProfile()));
-          },
-        ));
-  }
-
-  Row buildCircleAvatar(String imgUrl) {
-    return Row(
-      children: [
-        Expanded(
-            child: Padding(
-          padding: const EdgeInsets.only(top: 0, bottom: 0),
-          child: CircleAvatar(
-            radius: 35,
-            backgroundColor: Colors.transparent,
-            child: ClipOval(
-              child: imgUrl.isNotEmpty ? Image.network(imgUrl) : null,
-            ),
-          ),
-        )),
-      ],
-    );
-  }
-
-  showAlert(BuildContext context) {
-    double width = MediaQuery.of(context).size.width;
-    double height = MediaQuery.of(context).size.height;
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        insetPadding: EdgeInsets.symmetric(horizontal: 22),
-        // contentPadding: EdgeInsets.zero,
-        clipBehavior: Clip.antiAliasWithSaveLayer,
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(32.0))),
-        contentPadding: EdgeInsets.only(top: 10.0),
-        content: Container(
-          height: height * 0.3,
-          width: width * 0.9,
-          decoration:
-              BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5))),
-          child: Container(
-            width: width * 0.9,
-            child: Row(
-              children: <Widget>[
-                ClipRRect(
-                  borderRadius: BorderRadius.all(Radius.circular(5)),
-                  child: Column(
-                    children: [
-                      SizedBox(
-                        height: 20,
-                      ),
-                      Container(
-                        padding: EdgeInsets.all(8),
-                        width: width * 0.25,
-                        child: Icon(
-                          Icons.person,
-                          size: 80,
-                          color: Color(0xffCC3752),
-                        ),
-                      ),
-                      Text(
-                        "Profile",
-                        style: TextStyle(color: Color(0xffCC3752)),
-                      )
-                    ],
-                  ),
-                ),
-                Expanded(
-                  child: Center(
-                    child: Container(
-                      padding: EdgeInsets.only(top: 5, right: 15, bottom: 5),
-                      width: MediaQuery.of(context).size.width * 0.9,
-                      child: Column(
-                        children: <Widget>[
-                          Container(
-                            padding:
-                                EdgeInsets.only(top: 30, right: 15, bottom: 5),
-                            child: Text(
-                              'This screen is where you can ',
-                              textAlign: TextAlign.left,
-                              style: TextStyle(fontSize: 14),
-                            ),
-                          ),
-                          Container(
-                            padding:
-                                EdgeInsets.only(right: 15, bottom: 5, top: 1),
-                            child: Text(
-                              'edit your profile and set up a',
-                              textAlign: TextAlign.left,
-                              style: TextStyle(fontSize: 14),
-                            ),
-                          ),
-                          Container(
-                              padding:
-                                  EdgeInsets.only(right: 30, bottom: 5, top: 1),
-                              child: Text(
-                                'store if you decide. ',
-                                textAlign: TextAlign.left,
-                                style: TextStyle(fontSize: 14),
-                              )),
-                          SizedBox(
-                            height: 30,
-                          ),
-                          Row(
-                            children: [
-                              Center(
-                                child: Container(
-                                  height: 43,
-                                  width: 180,
-                                  child: FlatButton(
-                                    color: kTealColor,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(20.0),
-                                      side: BorderSide(color: kTealColor),
-                                    ),
-                                    textColor: kTealColor,
-                                    child: Text(
-                                      "Okay!",
-                                      style: TextStyle(
-                                          fontFamily: "Goldplay",
-                                          fontSize: 14,
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.w700),
-                                    ),
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                    },
-                                  ),
-                                ),
-                              ),
-                            ],
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Row buildName(String firstName, String lastName) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Text(
-          firstName + " " + lastName,
-          style: TextStyle(
-              color: Colors.white,
-              fontFamily: "GoldplayBold",
-              fontSize: 24,
-              fontWeight: FontWeight.bold),
-        )
-      ],
-    );
-  }
+class _ProfileScreenState extends State<ProfileScreen> {
+  final _pageController = PageController(initialPage: 0);
 
   @override
   Widget build(BuildContext context) {
-    //Future.delayed(Duration.zero, () => showAlert(context));
-    var user = Provider.of<CurrentUser>(context);
-    return SafeArea(
+    final user = context.read<CurrentUser>();
+    return NestedWillPopScope(
+      onWillPop: () async {
+        if (_pageController.page == 0)
+          return true;
+        else {
+          _pageController.animateToPage(
+            0,
+            duration: const Duration(milliseconds: 250),
+            curve: Curves.easeIn,
+          );
+          return false;
+        }
+      },
       child: Scaffold(
-        backgroundColor: Colors.white,
-        appBar: PreferredSize(
-          preferredSize: Size(double.infinity, 220),
-          child: Container(
-            decoration: BoxDecoration(
-              boxShadow: [
-                BoxShadow(color: Colors.black12, spreadRadius: 5, blurRadius: 2)
-              ],
-            ),
-            width: MediaQuery.of(context).size.width,
-            height: 450,
-            child: Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [Color(0xffFFC700), Colors.black45]),
-              ),
-              child: Container(
-                margin: const EdgeInsets.fromLTRB(0, 8, 0, 0),
-                child: Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      // crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        buildIconSettings(),
-                        buildIconMore(context),
-                      ],
-                    ),
-                    buildCircleAvatar(user.profilePhoto ?? ""),
-                    SizedBox(
-                      height: 15,
-                    ),
-                    buildName(user.firstName, user.lastName)
-                  ],
+        backgroundColor: kInviteScreenColor,
+        body: SafeArea(
+          child: SizedBox(
+            child: Column(
+              children: [
+                ProfileHeader(),
+                UserShopBanner(),
+                SizedBox(height: 20.0.h),
+                Expanded(
+                  child: PageView(
+                    controller: _pageController,
+                    physics: NeverScrollableScrollPhysics(),
+                    children: [
+                      Column(
+                        children: [
+                          Container(
+                            padding: EdgeInsets.all(10.0.w),
+                            width: double.infinity,
+                            child: Text(
+                              "My Profile",
+                              style: TextStyle(
+                                color: kTealColor,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                          MyProfileList(
+                            onMyPostsTap: () => _pageController.animateToPage(
+                              1,
+                              duration: const Duration(milliseconds: 250),
+                              curve: Curves.easeIn,
+                            ),
+                            onInviteFriend: null,
+                            onNotificationsTap: null,
+                            onWishlistTap: null,
+                          ),
+                        ],
+                      ),
+                      SingleChildScrollView(
+                        child: Container(
+                          color: Color(0XFFF1FAFF),
+                          child: Consumer<Activities>(
+                            builder: (context, activities, child) {
+                              return activities.isLoading
+                                  ? Center(child: CircularProgressIndicator())
+                                  : RefreshIndicator(
+                                      onRefresh: () => activities.fetch(),
+                                      child: Timeline(
+                                        activities.findByUser(user.id),
+                                      ),
+                                    );
+                            },
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
+              ],
             ),
           ),
         ),
-        body: CartContainer(child: ProfileNoShop()),
       ),
     );
   }
-
-  @override
-  void afterFirstLayout(BuildContext context) {
-    // TODO: implement afterFirstLayout
-
-    _userSharedPreferences.isProfile ? Container() : showAlert(context);
-    setState(() {
-      _userSharedPreferences.isProfile = true;
-    });
-  }
-
-  @override
-  dispose() {
-    _userSharedPreferences?.dispose();
-    super.dispose();
-  }
 }
+

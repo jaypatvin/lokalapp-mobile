@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/activity_feed.dart';
@@ -16,37 +17,33 @@ class Timeline extends StatelessWidget {
 
   void onLike(BuildContext context, ActivityFeed activity, CurrentUser user) {
     if (activity.liked) {
-      Provider.of<Activities>(context, listen: false).unlikePost(
-        authToken: user.idToken,
-        activityId: activity.id,
-        userId: user.id,
-      );
+      context.read<Activities>().unlikePost(
+            activityId: activity.id,
+            userId: user.id,
+          );
       debugPrint("Unliked ${activity.id}");
     } else {
-      Provider.of<Activities>(context, listen: false).likePost(
-        authToken: user.idToken,
-        activityId: activity.id,
-        userId: user.id,
-      );
+      context.read<Activities>().likePost(
+            activityId: activity.id,
+            userId: user.id,
+          );
       debugPrint("Liked ${activity.id}");
     }
   }
 
   void onCommentsPressed(ActivityFeed activity, BuildContext context) {
-    var user = Provider.of<CurrentUser>(context, listen: false);
-    Provider.of<Activities>(context, listen: false)
-        .fetchComments(authToken: user.idToken, activityId: activity.id);
-    Navigator.push(
+    final user = Provider.of<CurrentUser>(context, listen: false);
+    context.read<Activities>().fetchComments(activityId: activity.id);
+    pushNewScreen(
       context,
-      MaterialPageRoute(
-        builder: (context) => PostDetails(
-          onUserPressed: (user) {
-            debugPrint("Go to $user");
-          },
-          onLike: () => onLike(context, activity, user),
-          activity: activity,
-        ),
+      screen: PostDetails(
+        onUserPressed: (user) {
+          debugPrint("Go to $user");
+        },
+        onLike: () => onLike(context, activity, user),
+        activity: activity,
       ),
+      withNavBar: false,
     );
   }
 

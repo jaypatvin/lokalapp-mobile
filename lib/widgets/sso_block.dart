@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../services/database.dart';
-import '../utils/themes.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import 'sso_button.dart';
 
 class SocialBlock extends StatelessWidget {
@@ -27,27 +27,29 @@ class SocialBlock extends StatelessWidget {
           Text(
             "Sign in with",
             style: TextStyle(
-              fontFamily: "Goldplay",
-              fontSize: buttonWidth * 0.30,
+              fontSize: 18.0.sp,
+              fontWeight: FontWeight.w500,
             ),
           ),
           SizedBox(
-            height: buttonWidth * 0.10,
+            height: 10.0.h,
           ),
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               SocialButton(
                 image: AssetImage("assets/sso/fb_logo.png"),
                 onTap: this.fbLogin,
                 width: this.buttonWidth,
               ),
+              SizedBox(width: 10.0.w),
               SocialButton(
                 image: AssetImage("assets/sso/apple_logo.png"),
                 onTap: this.appleLogin,
                 width: this.buttonWidth,
               ),
+              SizedBox(width: 10.0.w),
               SocialButton(
                 image: AssetImage("assets/sso/google_logo.png"),
                 onTap: this.googleLogin,

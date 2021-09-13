@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:provider/provider.dart';
 
@@ -64,6 +65,8 @@ class _ChatViewState extends State<ChatView> {
   bool _createNewMessage = false;
   String _chatTitle = "New message";
   ChatModel _chat;
+
+  List<QueryDocumentSnapshot> _conversations;
 
   @override
   void initState() {
@@ -160,12 +163,12 @@ class _ChatViewState extends State<ChatView> {
 
   void onSendMessage() async {
     final user = Provider.of<CurrentUser>(context, listen: false);
-    var service = Provider.of<LocalImageService>(context, listen: false);
-    var gallery = <Map<String, dynamic>>[];
+    final service = Provider.of<LocalImageService>(context, listen: false);
+    final gallery = <Map<String, dynamic>>[];
 
-    for (var asset in provider.picked) {
-      var file = await asset.file;
-      var url = await service.uploadImage(file: file, name: 'post_photo');
+    for (final asset in provider.picked) {
+      final file = await asset.file;
+      final url = await service.uploadImage(file: file, name: 'post_photo');
       gallery.add({
         "url": url,
         "type": "image",
@@ -221,7 +224,7 @@ class _ChatViewState extends State<ChatView> {
       return Center(
         child: Text(
           "Say Hi...",
-          style: TextStyle(fontSize: 24, color: Colors.black),
+          style: TextStyle(fontSize: 24.0.sp, color: Colors.black),
         ),
       );
     }
@@ -233,40 +236,40 @@ class _ChatViewState extends State<ChatView> {
           replyMessage = conversation;
         });
       },
+      onMessagesLoad: (snapshot) => _conversations = snapshot,
     );
   }
 
   Widget _buildChatInput() {
-    return Align(
-      alignment: Alignment.bottomCenter,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-        child: ChatInput(
-          onMessageSend: onSendMessage,
-          onShowImagePicker: () => setState(() {
-            this.showImagePicker = !this.showImagePicker;
-          }),
-          onCancelReply: () => setState(() => replyMessage = null),
-          onImageRemove: (index) => setState(() {
-            provider.picked.removeAt(index);
-          }),
-          chatInputController: this.chatInputController,
-          replyMessage: this.replyMessage,
-          images: this.provider.picked,
-        ),
+    return Container(
+      color: kInviteScreenColor,
+      padding: EdgeInsets.symmetric(horizontal: 10.0.w, vertical: 10.0.h),
+      child: ChatInput(
+        onMessageSend: onSendMessage,
+        onShowImagePicker: () => setState(() {
+          this.showImagePicker = !this.showImagePicker;
+        }),
+        onCancelReply: () => setState(() => replyMessage = null),
+        onImageRemove: (index) => setState(() {
+          provider.picked.removeAt(index);
+        }),
+        chatInputController: this.chatInputController,
+        replyMessage: this.replyMessage,
+        images: this.provider.picked,
+        onTextFieldTap: () => setState(() => showImagePicker = false),
       ),
     );
   }
 
   Widget _buildImagePicker() {
     return AnimatedContainer(
-      duration: const Duration(milliseconds: 200),
-      height: this.showImagePicker ? 200.0 : 0.0,
+      duration: const Duration(milliseconds: 100),
+      height: this.showImagePicker ? 150.0.h : 0.0.h,
       child: ImageGalleryPicker(
         provider,
-        pickerHeight: 200,
-        assetHeight: 200,
-        assetWidth: 200,
+        pickerHeight: 150.h,
+        assetHeight: 150.h,
+        assetWidth: 150.h,
         thumbSize: 200,
         enableSpecialItemBuilder: true,
       ),
@@ -278,13 +281,18 @@ class _ChatViewState extends State<ChatView> {
       icon: Icon(
         Icons.more_horiz,
         color: Colors.white,
-        size: 33,
+        size: 30.r,
       ),
       onPressed: () {
         if (this._chat != null)
           Navigator.push(
             context,
-            CupertinoPageRoute(builder: (ctx) => ChatProfile(this._chat)),
+            CupertinoPageRoute(
+              builder: (ctx) => ChatProfile(
+                this._chat,
+                this._conversations,
+              ),
+            ),
           );
       },
     );
@@ -306,8 +314,6 @@ class _ChatViewState extends State<ChatView> {
           children: [
             Expanded(
               child: Container(
-                height: MediaQuery.of(context).size.height,
-                width: MediaQuery.of(context).size.width,
                 decoration: BoxDecoration(
                   color: Colors.white,
                 ),
@@ -315,9 +321,6 @@ class _ChatViewState extends State<ChatView> {
               ),
             ),
             _buildChatInput(),
-            SizedBox(
-              height: 20.0,
-            ),
             _buildImagePicker(),
           ],
         ),

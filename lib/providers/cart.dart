@@ -33,7 +33,7 @@ class ProductOrderDetails {
   const ProductOrderDetails({
     @required this.quantity,
     @required this.notes,
-    this.deliveryOption,
+    this.deliveryOption = DeliveryOption.pickup,
     this.schedule,
   });
 }
@@ -60,14 +60,16 @@ class ShoppingCart extends ChangeNotifier {
 
   /// Adds a new entry to ShopOrders with a required quantity
   ///
-  /// If the quantity is set to 0, removes the product entry
+  /// If the quantity is set to 0, removes the product entry.
   /// Can also be used as a substitute to `updateOrder()` while being more optimized.
+  ///
+  /// The `deliveryOption` is set to `DeliveryOption.pickup` by default.
   void add({
     @required String shopId,
     @required String productId,
     @required int quantity,
     String notes,
-    DeliveryOption deliveryOption,
+    DeliveryOption deliveryOption = DeliveryOption.pickup,
     DateTime schedule,
   }) {
     if (_orders[shopId] == null) {

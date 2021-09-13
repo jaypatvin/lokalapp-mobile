@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:intl/intl.dart' show DateFormat;
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -16,9 +17,10 @@ import '../../services/local_image_service.dart';
 import '../../utils/functions.utils.dart';
 import '../../utils/themes.dart';
 import '../../widgets/custom_app_bar.dart';
+import '../../widgets/input_images.dart';
+import '../../widgets/input_text_field.dart';
 import '../../widgets/photo_picker_gallery/image_gallery_picker.dart';
 import '../../widgets/photo_picker_gallery/provider/custom_photo_provider.dart';
-import '../../widgets/photo_view_gallery/thumbnails/asset_photo_thumbnail.dart';
 import '../../widgets/photo_view_gallery/thumbnails/network_photo_thumbnail.dart';
 import 'components/comment_card.dart';
 
@@ -98,19 +100,20 @@ class _PostDetailsState extends State<PostDetails> {
       children: [
         CircleAvatar(
           backgroundImage: photo.isNotEmpty ? NetworkImage(photo) : null,
-          radius: 30.0,
+          radius: 24.0.r,
         ),
         SizedBox(width: spacing),
         Text(
           "$firstName $lastName",
-          style: kTextStyle.copyWith(fontSize: 24.0),
+          style: kTextStyle.copyWith(fontSize: 19.0.sp),
         ),
       ],
     );
   }
 
-  Widget buildLikeAndCommentRow({double spacing}) {
+  Widget buildLikeAndCommentRow() {
     return Container(
+      padding: EdgeInsets.symmetric(horizontal: 20.0.w, vertical: 10.0.h),
       decoration: BoxDecoration(
         border: Border.all(
           color: Color(0xffE0E0E0),
@@ -121,6 +124,8 @@ class _PostDetailsState extends State<PostDetails> {
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           IconButton(
+            constraints: BoxConstraints(),
+            padding: EdgeInsets.zero,
             icon: Icon(
               widget.activity.liked ? MdiIcons.heart : MdiIcons.heartOutline,
               color: widget.activity.liked ? Colors.red : Colors.black,
@@ -130,17 +135,20 @@ class _PostDetailsState extends State<PostDetails> {
               setState(() {});
             },
           ),
+          SizedBox(width: 8.0.w),
           Text(this.widget.activity.likedCount.toString(), style: kTextStyle),
           Spacer(),
           IconButton(
+            constraints: BoxConstraints(),
+            padding: EdgeInsets.zero,
             icon: Icon(MdiIcons.commentOutline),
             onPressed: () {
               //TODO: set focus on comment ?
               // should we do something about it ?
             },
           ),
+          SizedBox(width: 8.0.w),
           Text(this.widget.activity.commentCount.toString(), style: kTextStyle),
-          SizedBox(width: spacing),
         ],
       ),
     );
@@ -202,11 +210,9 @@ class _PostDetailsState extends State<PostDetails> {
     );
   }
 
-  Widget buildPostImages({
-    BuildContext context,
-  }) {
-    var images = this.widget.activity.images;
-    var count = images.length;
+  Widget buildPostImages() {
+    final images = this.widget.activity.images;
+    final count = images.length;
     return StaggeredGridView.countBuilder(
       shrinkWrap: true,
       physics: NeverScrollableScrollPhysics(),
@@ -224,8 +230,8 @@ class _PostDetailsState extends State<PostDetails> {
         }
         return new StaggeredTile.count(1, 1);
       },
-      mainAxisSpacing: 4.0,
-      crossAxisSpacing: 4.0,
+      mainAxisSpacing: 4.0.w,
+      crossAxisSpacing: 4.0.h,
     );
   }
 
@@ -236,10 +242,9 @@ class _PostDetailsState extends State<PostDetails> {
   }
 
   Future<void> createComment() async {
-    debugPrint("Send a comment");
-    var cUser = Provider.of<CurrentUser>(context, listen: false);
-    var service = Provider.of<LocalImageService>(context, listen: false);
-    var gallery = <LokalImages>[];
+    final cUser = context.read<CurrentUser>();
+    final service = context.read<LocalImageService>();
+    final gallery = <LokalImages>[];
     for (var asset in provider.picked) {
       var file = await asset.file;
       var url = await service.uploadImage(file: file, name: 'post_photo');
@@ -252,12 +257,10 @@ class _PostDetailsState extends State<PostDetails> {
       "images": gallery.map((x) => x.toMap()).toList(),
     };
 
-    var success =
-        await Provider.of<Activities>(context, listen: false).createComment(
-      authToken: cUser.idToken,
-      activityId: widget.activity.id,
-      body: body,
-    );
+    final success = await context.read<Activities>().createComment(
+          activityId: widget.activity.id,
+          body: body,
+        );
 
     if (success) {
       commentInputController.clear();
@@ -265,7 +268,6 @@ class _PostDetailsState extends State<PostDetails> {
         provider.picked.clear();
       });
       Provider.of<Activities>(context, listen: false).fetchComments(
-        authToken: cUser.idToken,
         activityId: widget.activity.id,
       );
     } else {
@@ -277,80 +279,7 @@ class _PostDetailsState extends State<PostDetails> {
     }
   }
 
-  Widget buildCommentInputImages(BuildContext context) {
-    if (provider.picked.length <= 0) {
-      return Container();
-    }
-    return ListView.builder(
-      shrinkWrap: true,
-      scrollDirection: Axis.horizontal,
-      addRepaintBoundaries: true,
-      itemCount: provider.picked.length,
-      itemBuilder: (ctx, index) {
-        return Container(
-          margin: EdgeInsets.symmetric(horizontal: 0.5),
-          height: 100,
-          width: 100,
-          child: AssetPhotoThumbnail(
-            galleryItem: provider.picked[index],
-            onTap: () => openInputGallery(
-              context,
-              index,
-              provider.picked,
-            ),
-            onRemove: () => setState(() => provider.picked.removeAt(index)),
-            fit: BoxFit.cover,
-            decoration: BoxDecoration(
-              border: Border.all(
-                color: Colors.black.withOpacity(0.3),
-              ),
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  Widget buildCommentTextField(BuildContext context) {
-    return TextField(
-      maxLines: null,
-      controller: commentInputController,
-      decoration: InputDecoration(
-        border: InputBorder.none,
-        focusedBorder: InputBorder.none,
-        enabledBorder: InputBorder.none,
-        errorBorder: InputBorder.none,
-        disabledBorder: InputBorder.none,
-        fillColor: Colors.white,
-        filled: true,
-        isDense: true,
-        contentPadding: EdgeInsets.symmetric(
-          horizontal: 25,
-          vertical: 10,
-        ),
-        hintText: "Add a comment...",
-        hintStyle: kTextStyle.copyWith(
-          fontWeight: FontWeight.normal,
-          color: Colors.grey[400],
-        ),
-        alignLabelWithHint: true,
-        suffixIcon: Padding(
-          padding: EdgeInsets.all(5.0),
-          child: CircleAvatar(
-            radius: 20.0,
-            backgroundColor: kTealColor,
-            child: IconButton(
-              icon: Icon(Icons.arrow_forward),
-              onPressed: createComment,
-              color: Colors.white,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget buildCommentInput({BuildContext context}) {
+  Widget buildCommentInput() {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
@@ -398,9 +327,19 @@ class _PostDetailsState extends State<PostDetails> {
                   AnimatedContainer(
                     height: provider.picked.length > 0 ? 100 : 0.0,
                     duration: const Duration(milliseconds: 200),
-                    child: buildCommentInputImages(context),
+                    child: InputImages(
+                      pickedImages: provider.picked,
+                      onImageRemove: (index) => setState(
+                        () => provider.picked.removeAt(index),
+                      ),
+                    ),
                   ),
-                  buildCommentTextField(context),
+                  InputTextField(
+                    inputController: commentInputController,
+                    onSend: createComment,
+                    onTap: () => showImagePicker = false,
+                    hintText: "Add a comment...",
+                  ),
                 ],
               ),
             ),
@@ -410,24 +349,75 @@ class _PostDetailsState extends State<PostDetails> {
     );
   }
 
+  Widget _buildComments() {
+    final cUser = context.read<CurrentUser>();
+    return Consumer<Activities>(
+      builder: (_, activities, __) {
+        return activities.isCommentLoading
+            ? Center(child: CircularProgressIndicator())
+            : ListView.builder(
+                physics: NeverScrollableScrollPhysics(),
+                itemCount: widget.activity.comments?.length,
+                shrinkWrap: true,
+                itemBuilder: (context, index) {
+                  final comment = widget.activity.comments[index];
+                  final commentUser =
+                      context.read<Users>().findById(comment.userId);
+                  return Column(
+                    children: [
+                      CommentCard(
+                        user: commentUser,
+                        message: comment.message,
+                        images: comment.images ?? [],
+                        onLongPress: this.onCommentLongPress,
+                        onUserPressed: widget.onUserPressed,
+                        onLike: () {
+                          if (comment.liked) {
+                            Provider.of<Activities>(context, listen: false)
+                                .unlikeComment(
+                              commentId: comment.id,
+                              activityId: widget.activity.id,
+                              userId: cUser.id,
+                            );
+                            debugPrint("Unliked comment ${comment.id}");
+                          } else {
+                            Provider.of<Activities>(context, listen: false)
+                                .likeComment(
+                              commentId: comment.id,
+                              activityId: widget.activity.id,
+                              userId: cUser.id,
+                            );
+                            debugPrint("Liked comment ${comment.id}");
+                          }
+                        },
+                        liked: comment.liked,
+                      ),
+                      Divider(),
+                    ],
+                  );
+                },
+              );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    var user = Provider.of<Users>(context).findById(widget.activity.userId);
-    var cUser = Provider.of<CurrentUser>(context, listen: false);
-    var activities = Provider.of<Activities>(context, listen: false);
-    var width = MediaQuery.of(context).size.width;
-    var height = MediaQuery.of(context).size.height;
+    final user = context.read<Users>().findById(widget.activity.userId);
+    final activities = context.read<Activities>();
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: CustomAppBar(
         backgroundColor: kTealColor,
+        titleText: "${user.firstName}'s Post",
+        titleStyle: TextStyle(color: Colors.white),
         onPressedLeading: () => Navigator.pop(context),
         actions: [
           IconButton(
             icon: Icon(
               Icons.more_horiz,
               color: Colors.white,
-              size: 33,
+              size: 30.sp,
             ),
             onPressed: () => Navigator.pop(context),
           ),
@@ -435,145 +425,86 @@ class _PostDetailsState extends State<PostDetails> {
       ),
       body: RefreshIndicator(
         onRefresh: () => activities.fetchComments(
-          authToken: cUser.idToken,
           activityId: widget.activity.id,
         ),
-        child: SingleChildScrollView(
-          controller: scrollController,
-          physics: AlwaysScrollableScrollPhysics(),
-          child: Container(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: width * 0.05,
-                    vertical: height * 0.03,
-                  ),
-                  child: buildHeader(
-                    firstName: user.firstName,
-                    lastName: user.lastName,
-                    photo: user.profilePhoto,
-                    spacing: width * 0.02,
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.fromLTRB(
-                    width * 0.03,
-                    0.0,
-                    width * 0.03,
-                    height * 0.03,
-                  ),
-                  child: Text(
-                    widget.activity.message,
-                    softWrap: true,
-                    style: TextStyle(fontSize: 20),
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: width * 0.03),
-                  child: buildPostImages(context: context),
-                ),
-                Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: width * 0.03,
-                    vertical: height * 0.02,
-                  ),
-                  child: Text(
-                    DateFormat("hh:mm a • dd MMMM yyyy")
-                        .format(widget.activity.createdAt),
-                    style: kTextStyle.copyWith(
-                      fontWeight: FontWeight.normal,
-                      fontSize: 18.0,
+        child: Column(
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                controller: scrollController,
+                physics: AlwaysScrollableScrollPhysics(),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 15.0.w),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.symmetric(vertical: 20.0.h),
+                            child: buildHeader(
+                              firstName: user.firstName,
+                              lastName: user.lastName,
+                              photo: user.profilePhoto,
+                              spacing: 10.0.w,
+                            ),
+                          ),
+                          Text(
+                            widget.activity.message,
+                            softWrap: true,
+                            style: TextStyle(
+                              fontSize: 16.0.sp,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          SizedBox(height: 20.0.h),
+                          buildPostImages(),
+                          SizedBox(height: 15.0.h),
+                          Text(
+                            DateFormat("hh:mm a • dd MMMM yyyy")
+                                .format(widget.activity.createdAt),
+                            style: kTextStyle.copyWith(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 14.0.sp,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
+                    SizedBox(height: 10.0.h),
+                    buildLikeAndCommentRow(),
+                    SizedBox(height: 10.0.h),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 15.0.w),
+                      child: _buildComments(),
+                    )
+                  ],
                 ),
-                buildLikeAndCommentRow(spacing: width * 0.03),
-                SizedBox(
-                  height: height * 0.02,
-                ),
-                Consumer<Activities>(
-                  builder: (context, activities, child) {
-                    return activities.isCommentLoading
-                        ? Center(child: CircularProgressIndicator())
-                        : ListView.builder(
-                            physics: NeverScrollableScrollPhysics(),
-                            itemCount: widget.activity.comments?.length,
-                            shrinkWrap: true,
-                            itemBuilder: (context, index) {
-                              var comment = widget.activity.comments[index];
-                              var commentUser =
-                                  Provider.of<Users>(context, listen: false)
-                                      .findById(comment.userId);
-
-                              return Column(
-                                children: [
-                                  CommentCard(
-                                    user: commentUser,
-                                    message: comment.message,
-                                    images: comment.images ?? [],
-                                    onLongPress: this.onCommentLongPress,
-                                    onUserPressed: widget.onUserPressed,
-                                    onLike: () {
-                                      if (comment.liked) {
-                                        Provider.of<Activities>(context,
-                                                listen: false)
-                                            .unlikeComment(
-                                          authToken: cUser.idToken,
-                                          commentId: comment.id,
-                                          activityId: widget.activity.id,
-                                          userId: cUser.id,
-                                        );
-                                        debugPrint(
-                                            "Unliked comment ${comment.id}");
-                                      } else {
-                                        Provider.of<Activities>(context,
-                                                listen: false)
-                                            .likeComment(
-                                          authToken: cUser.idToken,
-                                          commentId: comment.id,
-                                          activityId: widget.activity.id,
-                                          userId: cUser.id,
-                                        );
-                                        debugPrint(
-                                            "Liked comment ${comment.id}");
-                                      }
-                                    },
-                                    liked: comment.liked,
-                                  ),
-                                  Divider(),
-                                ],
-                              );
-                            },
-                          );
-                  },
-                ),
-                SizedBox(
-                  height: height * 0.03,
-                ),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: width * 0.03),
-                  child: buildCommentInput(context: context),
-                ),
-                SizedBox(
-                  height: height * 0.02,
-                ),
-                AnimatedContainer(
-                  duration: const Duration(milliseconds: 200),
-                  height: this.showImagePicker ? 200.0 : 0.0,
-                  child: ImageGalleryPicker(
-                    provider,
-                    pickerHeight: 200,
-                    assetHeight: 200,
-                    assetWidth: 200,
-                    thumbSize: 200,
-                    enableSpecialItemBuilder: true,
-                  ),
-                ),
-              ],
+              ),
             ),
-          ),
+            Container(
+              color: kInviteScreenColor,
+              padding: EdgeInsets.symmetric(
+                horizontal: 10.0.w,
+                vertical: 10.0.h,
+              ),
+              child: buildCommentInput(),
+            ),
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 100),
+              height: this.showImagePicker ? 150.0.h : 0.0.h,
+              child: ImageGalleryPicker(
+                provider,
+                pickerHeight: 150.h,
+                assetHeight: 150.h,
+                assetWidth: 150.h,
+                thumbSize: 200,
+                enableSpecialItemBuilder: true,
+              ),
+            ),
+          ],
         ),
       ),
     );

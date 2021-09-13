@@ -1,56 +1,57 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-const TextStyle defaultHeaderTextStyle = const TextStyle(
-  fontSize: 20.0,
+final TextStyle defaultHeaderTextStyle = TextStyle(
+  fontSize: 15.0.sp,
   color: Colors.black,
   fontFamily: "Goldplay",
   fontWeight: FontWeight.bold,
 );
-const TextStyle defaultPrevDaysTextStyle = const TextStyle(
+final TextStyle defaultPrevDaysTextStyle = TextStyle(
   color: Colors.black38,
-  fontSize: 13.0,
+  fontSize: 11.0.sp,
   fontFamily: "Goldplay",
-  fontWeight: FontWeight.bold,
+  fontWeight: FontWeight.w500,
 );
-const TextStyle defaultNextDaysTextStyle = const TextStyle(
+final TextStyle defaultNextDaysTextStyle = TextStyle(
   color: Colors.black,
-  fontSize: 13.0,
+  fontSize: 11.0.sp,
   fontFamily: "Goldplay",
-  fontWeight: FontWeight.bold,
+  fontWeight: FontWeight.w500,
 );
-const TextStyle defaultDaysTextStyle = const TextStyle(
+final TextStyle defaultDaysTextStyle = TextStyle(
   color: Colors.black,
-  fontSize: 13.0,
+  fontSize: 11.0.sp,
   fontFamily: "Goldplay",
-  fontWeight: FontWeight.bold,
+  fontWeight: FontWeight.w500,
 );
-const TextStyle defaultTodayTextStyle = const TextStyle(
+final TextStyle defaultTodayTextStyle = TextStyle(
   color: Colors.black,
-  fontSize: 13.0,
+  fontSize: 11.0.sp,
   fontFamily: "Goldplay",
-  fontWeight: FontWeight.bold,
+  fontWeight: FontWeight.w500,
 );
-const TextStyle defaultWeekdayTextStyle = const TextStyle(
+final TextStyle defaultWeekdayTextStyle = TextStyle(
   color: Colors.black,
-  fontSize: 13.0,
+  fontSize: 11.0.sp,
   fontFamily: "Goldplay",
-  fontWeight: FontWeight.bold,
+  fontWeight: FontWeight.w500,
 );
-const TextStyle defaultWeekendTextStyle = const TextStyle(
+final TextStyle defaultWeekendTextStyle = TextStyle(
   color: Colors.black,
-  fontSize: 13.0,
+  fontSize: 11.0.sp,
   fontFamily: "Goldplay",
-  fontWeight: FontWeight.bold,
+  fontWeight: FontWeight.w500,
 );
-const TextStyle defaultInactiveDaysTextStyle = const TextStyle(
+final TextStyle defaultInactiveDaysTextStyle = TextStyle(
   color: Colors.black38,
-  fontSize: 13.0,
+  fontSize: 11.0.sp,
   fontFamily: "Goldplay",
-  fontWeight: FontWeight.bold,
+  fontWeight: FontWeight.w500,
 );
 final TextStyle defaultInactiveWeekendTextStyle = TextStyle(
   color: Colors.black38,
-  fontSize: 13.0,
+  fontSize: 11.0.sp,
   fontFamily: "Goldplay",
-  fontWeight: FontWeight.bold,
+  fontWeight: FontWeight.w500,
 );

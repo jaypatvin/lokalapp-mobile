@@ -1,7 +1,10 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../utils/themes.dart';
+import '../widgets/app_button.dart';
 import '../widgets/rounded_button.dart';
 import 'auth/invite_page.dart';
 import 'auth/login_screen.dart';
@@ -161,7 +164,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                 style: TextStyle(fontSize: 18.0),
               ),
               SizedBox(height: 30.0),
-              buildDots()
+              buildDots(),
             ],
           ),
         ),
@@ -170,122 +173,106 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   }
 
   Widget buildScreen() {
-    return Column(children: [
-      Container(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SizedBox(
-              height: 110.0,
-              child: Image.asset(
-                "assets/Lokalv2.png",
-                fit: BoxFit.contain,
+    return Column(
+      children: [
+        Container(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SizedBox(
+                height: 100.0.h,
+                child: Image.asset(
+                  "assets/Lokalv2.png",
+                  fit: BoxFit.contain,
+                ),
               ),
-            ),
-            SizedBox(
-              height: 22.0,
-            ),
-            Text(
-              "Welcome to Lokal",
-              style: TextStyle(
-                  color: Color(0xFF103045),
+              SizedBox(height: 20.0.h),
+              Text(
+                "Welcome to Lokal",
+                style: TextStyle(
+                  color: kNavyColor,
                   fontWeight: FontWeight.bold,
-                  fontFamily: "GoldplayBold",
-                  fontSize: 30.0),
-            ),
-            SizedBox(
-              height: 20.0,
-            ),
-            Text(
-              "This is a subhead about the Lokal app.",
-              style: TextStyle(
+                  fontSize: 32.0.sp,
+                ),
+              ),
+              SizedBox(height: 18.0.h),
+              Text(
+                "Get to know more your neighborhood safely and securely.",
+                style: TextStyle(
                   fontSize: 18.0,
                   fontFamily: "Goldplay",
-                  fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 26.0),
-            buildDots()
-          ],
+                  color: kNavyColor,
+                  fontWeight: FontWeight.w500,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(height: 5.0.h),
+              buildDots()
+            ],
+          ),
         ),
-      ),
-    ]);
-  }
-
-  Widget signIn() {
-    return RoundedButton(
-        label: 'SIGN IN',
-        onPressed: () {
-          Navigator.push(
-              context, MaterialPageRoute(builder: (context) => LoginScreen()));
-        });
-  }
-
-  Widget register() {
-    return ButtonTheme(
-      minWidth: 190.0,
-      height: 45.0,
-      child: FlatButton(
-        child: Text(
-          "REGISTER",
-          style: TextStyle(
-              color: Color(0XFF09A49A),
-              fontFamily: "Goldplay",
-              fontWeight: FontWeight.bold,
-              fontSize: 20.0),
-        ),
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20.0),
-            side: BorderSide(color: Color(0XFF09A49A))),
-        onPressed: () {
-          Navigator.push(
-              context, MaterialPageRoute(builder: (context) => InvitePage()));
-        },
-      ),
+      ],
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-        child: Scaffold(
-      // resizeToAvoidBottomPadding: false,
+    return Scaffold(
       resizeToAvoidBottomInset: true,
-      backgroundColor: Color(0xFFFFC700),
+      backgroundColor: kYellowColor,
       body: SafeArea(
-        child: Column(
+        child: Container(
+          padding: EdgeInsets.symmetric(horizontal: 16.0.w),
+          child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Flexible(
-                flex: 4,
-                child: Container(
-                  width: MediaQuery.of(context).size.width,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      slider(),
-                      SingleChildScrollView(
-                        child: Container(
-                          padding: EdgeInsets.only(bottom: 50),
-                          alignment: Alignment.topCenter,
-                          child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                signIn(),
-                                SizedBox(
-                                  height: 10,
-                                ),
-                                register()
-                              ]),
-                        ),
-                      )
-                    ],
+              buildScreen(),
+              SizedBox(height: 36.0.h),
+              SizedBox(
+                width: 172.w,
+                height: 40.h,
+                child: AppButton(
+                  "SIGN IN",
+                  kTealColor,
+                  true,
+                  () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => LoginScreen(),
+                    ),
+                  ),
+                  textStyle: TextStyle(
+                    color: kNavyColor,
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
               ),
-            ]),
+              SizedBox(height: 10.0.h),
+              SizedBox(
+                width: 172.w,
+                height: 40.h,
+                child: AppButton(
+                  "REGISTER",
+                  kTealColor,
+                  false,
+                  () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => InvitePage(),
+                    ),
+                  ),
+                  textStyle: TextStyle(
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              )
+            ],
+          ),
+        ),
       ),
-    ));
+    );
   }
 }
