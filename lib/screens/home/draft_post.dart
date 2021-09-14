@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:persistent_bottom_nav_bar/models/nested_will_pop_scope.dart';
 import 'package:photo_manager/photo_manager.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/lokal_images.dart';
@@ -17,7 +17,6 @@ import '../../widgets/photo_picker_gallery/image_gallery_picker.dart';
 import '../../widgets/photo_picker_gallery/provider/custom_photo_provider.dart';
 import '../../widgets/photo_view_gallery/gallery/gallery_asset_photo_view.dart';
 import '../../widgets/photo_view_gallery/thumbnails/asset_photo_thumbnail.dart';
-import '../../widgets/rounded_button.dart';
 
 class DraftPost extends StatefulWidget {
   @override
@@ -218,21 +217,16 @@ class _DraftPostState extends State<DraftPost> with TickerProviderStateMixin {
         return Wrap(
           children: [
             Container(
-              height: height * 0.2,
+              height: 200.0.h,
               child: Container(
-                margin: EdgeInsets.fromLTRB(
-                  width * 0.05,
-                  height * 0.03,
-                  width * 0.05,
-                  0,
-                ),
+                margin: EdgeInsets.fromLTRB(20.0.w, 30.0.h, 20.0.w, 0),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
                       "Leave post?",
                       style: kTextStyle.copyWith(
-                        fontSize: 24.0,
+                        fontSize: 24.0.sp,
                         color: kNavyColor,
                       ),
                     ),
@@ -244,7 +238,7 @@ class _DraftPostState extends State<DraftPost> with TickerProviderStateMixin {
                         "Any progress you made will not be saved.",
                         style: kTextStyle.copyWith(
                           fontWeight: FontWeight.w500,
-                          fontSize: 18.0,
+                          fontSize: 18.0.sp,
                           color: kNavyColor,
                         ),
                         textAlign: TextAlign.center,

@@ -19,13 +19,14 @@ class SearchTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(12),
-      height: 60.0.h,
+      padding: EdgeInsets.symmetric(horizontal: 12.w),
+      height: 40.0.h,
       child: TextField(
         enabled: this.enabled,
         controller: this.controller,
         onChanged: this.onChanged,
         onTap: this.onTap,
+        style: TextStyle(fontSize: 16.0.sp),
         decoration: InputDecoration(
           isDense: true, // Added this
           filled: true,
