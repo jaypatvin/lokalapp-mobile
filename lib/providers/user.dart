@@ -36,9 +36,11 @@ class CurrentUser extends ChangeNotifier {
 
   Future<void> register(Map postBody) async {
     _state = UserState.Loading;
+
     try {
       http.Response response = await LokalApiService.instance.user
           .create(data: postBody, idToken: _idToken);
+      print(response.body);
       if (response.statusCode != 200) {
         _state = UserState.Error;
         notifyListeners();
@@ -62,12 +64,6 @@ class CurrentUser extends ChangeNotifier {
 
   Future<void> fetch(User user) async {
     _state = UserState.Loading;
-
-    if (_idToken == null || _idToken.isEmpty) {
-      _idToken = await user.getIdToken();
-      FirebaseAuth.instance.idTokenChanges().listen(
-          (user) => user.getIdToken().then((token) => _idToken = token));
-    }
 
     String docId = await Database.instance.getUserDocId(user.uid);
     if (docId != null && docId.isNotEmpty) {
@@ -137,5 +133,19 @@ class CurrentUser extends ChangeNotifier {
     _idToken = null;
     _state = UserState.LoggedOut;
     notifyListeners();
+  }
+
+  Future<void> initializeToken(User user) async {
+    if (_idToken == null || _idToken.isEmpty) {
+      _idToken = await user.getIdToken();
+      FirebaseAuth.instance
+          .idTokenChanges()
+          .listen((user) => user.getIdToken().then(
+                (token) {
+                  _idToken = token;
+                  notifyListeners();
+                },
+              ));
+    }
   }
 }

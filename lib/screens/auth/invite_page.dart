@@ -1,14 +1,16 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:lokalapp/providers/post_requests/auth_body.dart';
-import 'package:lokalapp/utils/constants.dart';
-import 'package:lokalapp/widgets/app_button.dart';
-import 'package:provider/provider.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 
 import '../../providers/invite.dart';
+import '../../providers/post_requests/auth_body.dart';
 import '../../providers/user.dart';
+import '../../utils/constants.dart';
 import '../../utils/themes.dart';
+import '../../widgets/app_button.dart';
 import 'community.dart';
+import 'profile_registration.dart';
 
 class InvitePage extends StatefulWidget {
   @override
@@ -22,15 +24,29 @@ class _InvitePageState extends State<InvitePage> {
   void _validateInviteCode(BuildContext context, String code) async {
     final invite = context.read<Invite>();
     final user = context.read<CurrentUser>();
+
     String communityId = await invite.check(code, user.idToken);
     if (communityId.isNotEmpty) {
+      final fireUser = FirebaseAuth.instance.currentUser;
       context.read<AuthBody>().update(communityId: communityId);
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => Community()
-        ),
-      );
+      if (_displayError) {
+        setState(() {
+          _displayError = false;
+        });
+      }
+      if (fireUser != null) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ProfileRegistration(),
+          ),
+        );
+      } else {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => Community()),
+        );
+      }
     } else {
       setState(() {
         _displayError = true;
@@ -119,6 +135,7 @@ class _InvitePageState extends State<InvitePage> {
               decoration: kInputDecoration.copyWith(
                 hintText: "Invite Code",
                 errorText: _displayError ? kInviteCodeError : null,
+                errorMaxLines: 2,
               ),
             ),
             SizedBox(height: 24.0.h),

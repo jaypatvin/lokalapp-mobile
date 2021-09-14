@@ -12,14 +12,13 @@ import '../../providers/shops.dart';
 import '../../providers/user.dart';
 import '../../services/local_image_service.dart';
 import '../../utils/calendar_picker/calendar_picker.dart';
+import "../../utils/functions.utils.dart";
 import '../../utils/repeated_days_generator/repeated_days_generator.dart';
 import '../../utils/themes.dart';
 import '../../widgets/custom_app_bar.dart';
 import '../../widgets/rounded_button.dart';
 import 'shop_confirmation.dart';
 import 'shop_schedule/repeat_choices.dart';
-
-import "../../utils/functions.utils.dart";
 
 class CustomizeAvailability extends StatefulWidget {
   final RepeatChoices repeatChoice;
@@ -161,6 +160,7 @@ class _CustomizeAvailabilityState extends State<CustomizeAvailability> {
                     height: MediaQuery.of(context).size.height * 0.56,
                     padding: EdgeInsets.all(5.0),
                     child: CalendarCarousel(
+                      height: MediaQuery.of(context).size.height * 0.45,
                       width: MediaQuery.of(context).size.width * 0.95,
                       startDate:
                           widget.startDate.difference(DateTime.now()).inDays >=

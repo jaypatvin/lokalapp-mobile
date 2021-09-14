@@ -455,6 +455,7 @@ class _ShopScheduleState extends State<ShopSchedule> {
                     height: MediaQuery.of(context).size.height * 0.56,
                     padding: EdgeInsets.all(5.0),
                     child: CalendarCarousel(
+                      height: MediaQuery.of(context).size.height * 0.45,
                       width: MediaQuery.of(context).size.width * 0.95,
                       onDayPressed: (day) {
                         setState(() {
@@ -500,6 +501,8 @@ class _ShopScheduleState extends State<ShopSchedule> {
                                 _startDate = _markedStartDate.first;
                               else
                                 _startDate = null;
+
+                              _usedDatePicker = true;
                             });
                             Navigator.pop(context, _startDate);
                           },

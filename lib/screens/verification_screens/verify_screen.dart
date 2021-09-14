@@ -3,19 +3,22 @@ import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:lokalapp/widgets/app_button.dart';
-import 'package:lokalapp/widgets/custom_app_bar.dart';
-import 'package:provider/provider.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:persistent_bottom_nav_bar/models/nested_will_pop_scope.dart';
+import 'package:provider/provider.dart';
 
 import '../../providers/user.dart';
 import '../../services/local_image_service.dart';
 import '../../utils/themes.dart';
 import '../../utils/utility.dart';
+import '../../widgets/app_button.dart';
+import '../../widgets/custom_app_bar.dart';
 import '../bottom_navigation.dart';
 import 'verify_confirmation_screen.dart';
 
 class VerifyScreen extends StatefulWidget {
+  final bool skippable;
+  const VerifyScreen({Key key, this.skippable = true}) : super(key: key);
   @override
   _VerifyScreenState createState() => _VerifyScreenState();
 }
@@ -122,11 +125,26 @@ class _VerifyScreenState extends State<VerifyScreen> {
           }).then(
             (bool verified) {
               if (verified) {
-                Navigator.pushAndRemoveUntil(
+                if (widget.skippable) {
+                  Navigator.pushAndRemoveUntil(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => VerifyConfirmationScreen()),
-                    (route) => false);
+                      builder: (context) => VerifyConfirmationScreen(
+                        skippable: widget.skippable,
+                      ),
+                    ),
+                    (route) => false,
+                  );
+                } else {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => VerifyConfirmationScreen(
+                        skippable: widget.skippable,
+                      ),
+                    ),
+                  );
+                }
               } else {
                 // failed, do nothing
               }
@@ -136,99 +154,118 @@ class _VerifyScreenState extends State<VerifyScreen> {
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: kInviteScreenColor,
-      appBar: CustomAppBar(
-        leadingColor: kTealColor,
-        backgroundColor: kInviteScreenColor,
-        onPressedLeading: () => Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(builder: (context) => BottomNavigation()),
-          (route) => false,
-        ),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(builder: (context) => BottomNavigation()),
-                (route) => false,
-              );
-            },
-            child: Text(
-              "Skip",
-              style: TextStyle(
-                color: kTealColor,
-                fontSize: 18.0.sp,
-                fontWeight: FontWeight.w600,
-              ),
+  List<Widget> _appBarActions() {
+    if (widget.skippable) {
+      return [
+        TextButton(
+          onPressed: () {
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => BottomNavigation()),
+              (route) => false,
+            );
+          },
+          child: Text(
+            "Skip",
+            style: TextStyle(
+              color: kTealColor,
+              fontSize: 18.0.sp,
+              fontWeight: FontWeight.w600,
             ),
           ),
-        ],
-      ),
-      body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 24.0.w),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              "Verify Your Account",
-              style: TextStyle(
-                fontSize: 30.0.sp,
-                color: kNavyColor,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            SizedBox(height: 10.0.h),
-            Text(
-              "In order to access all of Lokal's features, we need to verify your identity",
-              style: TextStyle(
-                fontSize: 16.0,
-                color: kNavyColor,
-                fontWeight: FontWeight.w500,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            SizedBox(height: 75.0.h),
-            Container(
-              width: double.infinity,
-              decoration: ShapeDecoration(
-                color: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(30.0)),
+        ),
+      ];
+    }
+
+    return null;
+  }
+
+  Future<bool> _onWillPop() async {
+    if (widget.skippable) {
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => BottomNavigation()),
+        (route) => false,
+      );
+    }
+    return true;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return NestedWillPopScope(
+      onWillPop: _onWillPop,
+      child: Scaffold(
+        backgroundColor: kInviteScreenColor,
+        appBar: CustomAppBar(
+          leadingColor: kTealColor,
+          backgroundColor: kInviteScreenColor,
+          onPressedLeading: () => Navigator.maybePop(context),
+          actions: _appBarActions(),
+        ),
+        body: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 24.0.w),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                "Verify Your Account",
+                style: TextStyle(
+                  fontSize: 30.0.sp,
+                  color: kNavyColor,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
-              child: Platform.isIOS ? iOSPicker() : androidDropDown(),
-            ),
-            SizedBox(height: 20.0.h),
-            SizedBox(
-              width: double.infinity,
-              child: AppButton(
-                "UPLOAD PHOTO OF ID",
-                kTealColor,
-                false,
-                () async => this._file =
-                    await context.read<MediaUtility>().showMediaDialog(context),
+              SizedBox(height: 10.0.h),
+              Text(
+                "In order to access all of Lokal's features, we need to verify your identity",
+                style: TextStyle(
+                  fontSize: 16.0,
+                  color: kNavyColor,
+                  fontWeight: FontWeight.w500,
+                ),
+                textAlign: TextAlign.center,
               ),
-            ),
-            SizedBox(height: 150.0.h),
-            SizedBox(
-              width: 120.0.w,
-              child: AppButton(
-                "SUBMIT",
-                kTealColor,
-                true,
-                _file != null ? _onSubmitHandler : null,
-                textStyle: _file != null
-                    ? TextStyle(
-                        color: kNavyColor,
-                      )
-                    : null,
+              SizedBox(height: 75.0.h),
+              Container(
+                width: double.infinity,
+                decoration: ShapeDecoration(
+                  color: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(30.0)),
+                  ),
+                ),
+                child: Platform.isIOS ? iOSPicker() : androidDropDown(),
               ),
-            ),
-          ],
+              SizedBox(height: 20.0.h),
+              SizedBox(
+                width: double.infinity,
+                child: AppButton(
+                  "UPLOAD PHOTO OF ID",
+                  kTealColor,
+                  false,
+                  () async => this._file = await context
+                      .read<MediaUtility>()
+                      .showMediaDialog(context),
+                ),
+              ),
+              SizedBox(height: 150.0.h),
+              SizedBox(
+                width: 120.0.w,
+                child: AppButton(
+                  "SUBMIT",
+                  kTealColor,
+                  true,
+                  _file != null ? _onSubmitHandler : null,
+                  textStyle: _file != null
+                      ? TextStyle(
+                          color: kNavyColor,
+                        )
+                      : null,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

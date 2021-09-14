@@ -56,6 +56,7 @@ class _ProfileRegistrationState extends State<ProfileRegistration> {
     CurrentUser user = Provider.of<CurrentUser>(context, listen: false);
     AuthBody authBody = Provider.of<AuthBody>(context, listen: false);
     Invite invite = Provider.of<Invite>(context, listen: false);
+    print(auth.user.uid);
     authBody.update(
       profilePhoto: mediaUrl,
       firstName: _firstNameController.text,
@@ -126,6 +127,7 @@ class _ProfileRegistrationState extends State<ProfileRegistration> {
       });
     }
     bool success = await registerUser();
+    print(success);
     if (success) {
       context.read<Activities>().fetch();
       context.read<Shops>().fetch();
@@ -133,7 +135,9 @@ class _ProfileRegistrationState extends State<ProfileRegistration> {
       context.read<Users>().fetch();
       Navigator.pushAndRemoveUntil(
           context,
-          MaterialPageRoute(builder: (context) => VerifyScreen(),),
+          MaterialPageRoute(
+            builder: (context) => VerifyScreen(),
+          ),
           (route) => false);
     }
   }
@@ -260,19 +264,31 @@ class _RegistrationForm extends StatelessWidget {
       key: formKey,
       child: Column(
         children: [
-          TextFormField(
-            autocorrect: false,
-            keyboardType: TextInputType.emailAddress,
-            controller: firstNameController,
-            style: TextStyle(fontWeight: FontWeight.w500),
-            decoration: formFieldDecoration.copyWith(hintText: "First Name"),
+          SizedBox(
+            height: 40.0.h,
+            child: TextFormField(
+              autocorrect: false,
+              keyboardType: TextInputType.emailAddress,
+              controller: firstNameController,
+              style: TextStyle(
+                fontWeight: FontWeight.w500,
+                fontSize: 16.0.sp,
+              ),
+              decoration: formFieldDecoration.copyWith(hintText: "First Name"),
+            ),
           ),
           SizedBox(height: 15.0.h),
-          TextFormField(
-            autocorrect: false,
-            controller: lastNameController,
-            style: TextStyle(fontWeight: FontWeight.w500),
-            decoration: formFieldDecoration.copyWith(hintText: "Last Name"),
+          SizedBox(
+            height: 40.0.h,
+            child: TextFormField(
+              autocorrect: false,
+              controller: lastNameController,
+              style: TextStyle(
+                fontWeight: FontWeight.w500,
+                fontSize: 16.0.sp,
+              ),
+              decoration: formFieldDecoration.copyWith(hintText: "Last Name"),
+            ),
           ),
           SizedBox(height: 15.0.h),
           CheckboxFormField(
@@ -308,13 +324,19 @@ class _RegistrationForm extends StatelessWidget {
           SizedBox(
             height: 30.0.h,
           ),
-          TextFormField(
-            autocorrect: false,
-            keyboardType: TextInputType.emailAddress,
-            controller: streetAddressController,
-            style: TextStyle(fontWeight: FontWeight.w500),
-            decoration:
-                formFieldDecoration.copyWith(hintText: "Street Address"),
+          SizedBox(
+            height: 40.0.h,
+            child: TextFormField(
+              autocorrect: false,
+              keyboardType: TextInputType.emailAddress,
+              controller: streetAddressController,
+              style: TextStyle(
+                fontWeight: FontWeight.w500,
+                fontSize: 16.0.sp,
+              ),
+              decoration:
+                  formFieldDecoration.copyWith(hintText: "Street Address"),
+            ),
           ),
           SizedBox(height: 30.0.h),
           SizedBox(

@@ -56,6 +56,7 @@ class _DiscoverState extends State<Discover> with AfterLayoutMixin<Discover> {
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
+                  fontSize: 16.0.sp,
                 ),
               ),
             ],
@@ -87,6 +88,7 @@ class _DiscoverState extends State<Discover> with AfterLayoutMixin<Discover> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              SizedBox(height: 10.0.h),
               GestureDetector(
                 child: Hero(
                   tag: "search_field",
@@ -164,7 +166,7 @@ class _DiscoverState extends State<Discover> with AfterLayoutMixin<Discover> {
               ),
               SizedBox(height: 10.0.h),
               SizedBox(
-                height: 120.0.h,
+                height: 125.0.h,
                 child: _buildCategories(),
               ),
               SizedBox(height: 10.0.h),

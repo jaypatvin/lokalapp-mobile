@@ -33,7 +33,7 @@ class _CommunityState extends State<Community> {
           _authStatus = await auth.signUp(email, password);
           break;
         case LoginType.google:
-          _authStatus = await auth.loginrWithGoogle();
+          _authStatus = await auth.loginWithGoogle();
           break;
         case LoginType.facebook:
           _authStatus = await auth.loginWithFacebook();
