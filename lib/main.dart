@@ -64,7 +64,10 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider<Invite>(create: (_) => Invite()),
 
         // states:
-        ChangeNotifierProvider<CurrentUser>(create: (_) => CurrentUser()),
+        ChangeNotifierProxyProvider<UserAuth, CurrentUser>(
+          create: (_) => CurrentUser(),
+          update: (_, auth, user) => user..initializeToken(auth.user),
+        ),
         ChangeNotifierProxyProvider<CurrentUser, Activities>(
           create: (_) => Activities(),
           update: (_, user, activities) => activities

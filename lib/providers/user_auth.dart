@@ -17,6 +17,15 @@ class UserAuth extends ChangeNotifier {
   User _user;
   User get user => _user;
 
+  void _onUserChanges() {
+    _auth.userChanges().listen((user) {
+      if (user != null) {
+        _user = user;
+        notifyListeners();
+      }
+    });
+  }
+
   Future<AuthStatus> signUp(String email, String password) async {
     AuthStatus retVal = AuthStatus.Error;
     try {
@@ -59,7 +68,7 @@ class UserAuth extends ChangeNotifier {
     }
   }
 
-  Future<AuthStatus> loginrWithGoogle() async {
+  Future<AuthStatus> loginWithGoogle() async {
     try {
       GoogleSignIn _googleSignIn = GoogleSignIn(
         scopes: [
@@ -80,6 +89,7 @@ class UserAuth extends ChangeNotifier {
       }
       return AuthStatus.Success;
     } catch (e) {
+      print(e);
       return AuthStatus.Error;
     }
   }
@@ -114,8 +124,11 @@ class UserAuth extends ChangeNotifier {
   Future<AuthStatus> onStartUp() async {
     try {
       final User _firebaseUser = _auth.currentUser;
+      await _firebaseUser.reload();
+
       if (_firebaseUser != null) {
         this._user = _firebaseUser;
+        _onUserChanges();
         notifyListeners();
         return AuthStatus.Success;
       }

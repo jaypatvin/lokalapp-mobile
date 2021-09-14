@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lokalapp/screens/auth/components/auth_input_form.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/activities.dart';
@@ -9,10 +9,9 @@ import '../../providers/user.dart';
 import '../../providers/user_auth.dart';
 import '../../providers/users.dart';
 import '../../utils/themes.dart';
-import '../../widgets/rounded_button.dart';
 import '../../widgets/sso_block.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../bottom_navigation.dart';
+import 'components/auth_input_form.dart';
 import 'invite_page.dart';
 
 enum LoginType { email, google, facebook }
@@ -80,7 +79,7 @@ class _LoginScreenState extends State<LoginScreen> {
           _authStatus = await auth.loginWithEmail(email, password);
           break;
         case LoginType.google:
-          _authStatus = await auth.loginrWithGoogle();
+          _authStatus = await auth.loginWithGoogle();
           break;
         case LoginType.facebook:
           _authStatus = await auth.loginWithFacebook();
@@ -118,6 +117,7 @@ class _LoginScreenState extends State<LoginScreen> {
       }
     } catch (e) {
       // TODO: do something with error
+      Navigator.pop(context);
       print(e);
     }
   }
@@ -133,40 +133,45 @@ class _LoginScreenState extends State<LoginScreen> {
         children: [
           AnimatedContainer(
             color: kYellowColor,
-            height: bottom == 0 ? 330.0.h : 220.0.h,
+            height: 330.0.h - bottom, //bottom == 0 ? 330.0.h : 220.0.h,
             duration: Duration(milliseconds: 100),
             child: SafeArea(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Hero(
-                    tag: "home",
-                    child: Image.asset("assets/Lokalv2.png"),
-                  ),
-                  Hero(
-                    tag: "lokal",
-                    child: Text(
-                      "LOKAL",
-                      style: TextStyle(
-                        color: kOrangeColor,
-                        fontSize: 24.0.sp,
-                        fontWeight: FontWeight.w900,
+              child: Center(
+                child: SingleChildScrollView(
+                  physics: NeverScrollableScrollPhysics(),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Hero(
+                        tag: "home",
+                        child: Image.asset("assets/Lokalv2.png"),
                       ),
-                    ),
-                  ),
-                  Hero(
-                    tag: "plaza",
-                    child: Text(
-                      "Your neighborhood plaza",
-                      style: TextStyle(
-                        fontSize: 14.0.sp,
-                        color: kTealColor,
-                        fontFamily: "Goldplay",
-                        fontWeight: FontWeight.bold,
+                      Hero(
+                        tag: "lokal",
+                        child: Text(
+                          "LOKAL",
+                          style: TextStyle(
+                            color: kOrangeColor,
+                            fontSize: 24.0.sp,
+                            fontWeight: FontWeight.w900,
+                          ),
+                        ),
                       ),
-                    ),
-                  )
-                ],
+                      Hero(
+                        tag: "plaza",
+                        child: Text(
+                          "Your neighborhood plaza",
+                          style: TextStyle(
+                            fontSize: 14.0.sp,
+                            color: kTealColor,
+                            fontFamily: "Goldplay",
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
               ),
             ),
           ),
