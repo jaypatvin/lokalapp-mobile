@@ -12,8 +12,6 @@ class ProductCard extends StatelessWidget {
   final double price;
   final String shopImageUrl;
   final String shopName;
-  final double height;
-  final double width;
 
   const ProductCard({
     @required this.productId,
@@ -22,47 +20,34 @@ class ProductCard extends StatelessWidget {
     @required this.price,
     @required this.shopImageUrl,
     @required this.shopName,
-    @required this.width,
-    @required this.height,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 0.0,
-      color: Colors.white,
-      semanticContainer: true,
-      clipBehavior: Clip.antiAlias,
-      child: Consumer<ShoppingCart>(
-        builder: (context, cart, child) {
-          return Container(
-            height: this.height,
-            width: this.width,
-            decoration: BoxDecoration(
-              border: cart.contains(productId)
-                  ? Border.all(color: Colors.orange, width: 3)
-                  : Border.all(color: Colors.transparent),
+    return Consumer<ShoppingCart>(builder: (ctx, cart, child) {
+      return Container(
+        decoration: BoxDecoration(
+          border: cart.contains(productId)
+              ? Border.all(color: Colors.orange, width: 3)
+              : Border.all(color: Colors.transparent),
+        ),
+        child: GridTile(
+          child: Image.network(
+            imageUrl,
+            fit: BoxFit.cover,
+            errorBuilder: (ctx, _, __) => SizedBox(
+              child: Text("No Image"),
             ),
+          ),
+          footer: Container(
+            color: Colors.white,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  height: this.height * 0.55,
-                  width: this.width,
-                  decoration: BoxDecoration(
-                    image: imageUrl.isNotEmpty
-                        ? DecorationImage(
-                            image: NetworkImage(imageUrl),
-                            fit: BoxFit.cover,
-                          )
-                        : null,
-                  ),
-                ),
-                SizedBox(height: 10.0.h),
                 Text(
                   name,
                   softWrap: true,
-                  maxLines: 2,
+                  maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                     fontFamily: "Goldplay",
@@ -70,7 +55,6 @@ class ProductCard extends StatelessWidget {
                     fontWeight: FontWeight.w700,
                   ),
                 ),
-                Spacer(),
                 Text(
                   '$price',
                   textAlign: TextAlign.start,
@@ -125,12 +109,12 @@ class ProductCard extends StatelessWidget {
                       ],
                     )
                   ],
-                )
+                ),
               ],
             ),
-          );
-        },
-      ),
-    );
+          ),
+        ),
+      );
+    });
   }
 }

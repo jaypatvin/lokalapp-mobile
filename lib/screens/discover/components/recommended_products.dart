@@ -19,10 +19,14 @@ class RecommendedProducts extends StatelessWidget {
             : Container(
                 height: 250.0.h,
                 width: MediaQuery.of(context).size.width,
-                child: ListView.builder(
+                child: GridView.builder(
                   shrinkWrap: true,
                   scrollDirection: Axis.horizontal,
                   itemCount: products.items.length,
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    childAspectRatio: 3 / 2,
+                    crossAxisCount: 1,
+                  ),
                   itemBuilder: (ctx, index) {
                     final shop = shops.findById(products.items[index].shopId);
                     final gallery = products.items[index].gallery;
@@ -43,8 +47,6 @@ class RecommendedProducts extends StatelessWidget {
                           );
                         },
                         child: ProductCard(
-                          height: 250.0.h,
-                          width: 150.0.w,
                           productId: products.items[index].id,
                           name: products.items[index].name,
                           imageUrl: isGalleryEmpty ? '' : productImage.url,
