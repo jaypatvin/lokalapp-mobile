@@ -52,23 +52,27 @@ TimeOfDay stringToTimeOfDay(String tod) {
   return TimeOfDay.fromDateTime(format.parse(tod));
 }
 
-String getTimeOfDayString(BuildContext context, TimeOfDay time) {
-  String timeOfDay = TimeOfDay(
-    hour: time.hour,
-    minute: time.minute,
-  ).replacing(hour: time.hourOfPeriod).format(context);
-  String period = time.period == DayPeriod.am ? "AM" : "PM";
+String getTimeOfDayString(TimeOfDay time) {
+  final now = DateTime.now();
+  final date = DateTime(
+    now.year,
+    now.month,
+    now.day,
+    time.hour,
+    time.minute,
+  );
+  final timeOfDay = DateFormat("hh:mm a").format(date);
 
-  return "$timeOfDay $period";
+  return timeOfDay;
 }
 
 bool isValidOperatingHours(OperatingHours operatingHours) {
   return operatingHours != null &&
-      operatingHours.startTime.isNotEmpty &&
-      operatingHours.endTime.isNotEmpty &&
       operatingHours.repeatUnit > 0 &&
-      operatingHours.repeatType.isNotEmpty &&
-      operatingHours.startDates.isNotEmpty;
+      (operatingHours.startTime?.isNotEmpty ?? false) &&
+      (operatingHours.endTime?.isNotEmpty ?? false) &&
+      (operatingHours.repeatType?.isNotEmpty ?? false) &&
+      (operatingHours.startDates?.isNotEmpty ?? false);
 }
 
 extension StringExtension on String {

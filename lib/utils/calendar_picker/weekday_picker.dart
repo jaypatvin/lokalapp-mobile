@@ -14,7 +14,7 @@ class WeekdayPicker extends StatefulWidget {
   final Color weekdayBackgroundColor;
   final TextStyle weekdayTextStyle;
   final bool daysHaveCircularBorder;
-  final Function(int) onDayPressed;
+  final void Function(int) onDayPressed;
   final List<int> markedDaysMap;
 
   WeekdayPicker({
@@ -69,6 +69,7 @@ class _WeekdayPickerState extends State<WeekdayPicker> {
                   ),
           ),
           child: FlatButton(
+            padding: EdgeInsets.zero,
             color: isMarked ? Colors.orange : Colors.transparent,
             onPressed: () {
               // the calling method should handle the logic of the day press
