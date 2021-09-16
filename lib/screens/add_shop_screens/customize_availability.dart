@@ -17,8 +17,8 @@ import '../../utils/repeated_days_generator/repeated_days_generator.dart';
 import '../../utils/themes.dart';
 import '../../widgets/custom_app_bar.dart';
 import '../../widgets/rounded_button.dart';
+import '../../widgets/schedule_picker.dart';
 import 'shop_confirmation.dart';
-import 'shop_schedule/repeat_choices.dart';
 
 class CustomizeAvailability extends StatefulWidget {
   final RepeatChoices repeatChoice;
@@ -243,11 +243,10 @@ class _CustomizeAvailabilityState extends State<CustomizeAvailability> {
   }
 
   Future<bool> updateShopSchedule() async {
-    var user = Provider.of<CurrentUser>(context, listen: false);
-    var shops = Provider.of<Shops>(context, listen: false);
+    final user = context.read<CurrentUser>();
+    var shops = context.read<Shops>();
     var userShop = shops.findByUser(user.id).first;
-    var operatingHours =
-        Provider.of<OperatingHoursBody>(context, listen: false);
+    var operatingHours = context.read<OperatingHoursBody>();
     return await shops.setOperatingHours(
       id: userShop.id,
       data: operatingHours.data,

@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbols.dart';
 import 'package:intl/intl.dart' show DateFormat;
-import 'package:lokalapp/providers/post_requests/operating_hours_body.dart';
-import '../../utils/repeated_days_generator/repeated_days_generator.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/operating_hours.dart';
+import '../../providers/post_requests/operating_hours_body.dart';
 import '../../providers/post_requests/product_body.dart';
 import '../../providers/shops.dart';
 import '../../providers/user.dart';
 import '../../utils/calendar_picker/calendar_picker.dart';
 import '../../utils/functions.utils.dart';
+import '../../utils/repeated_days_generator/repeated_days_generator.dart';
 import '../../utils/themes.dart';
 import '../../widgets/custom_app_bar.dart';
 import '../../widgets/rounded_button.dart';
-import '../add_shop_screens/shop_schedule/repeat_choices.dart';
+import '../../widgets/schedule_picker.dart';
 import 'components/add_product_gallery.dart';
 import 'components/product_header.dart';
 import 'product_preview.dart';

@@ -12,7 +12,6 @@ import 'providers/post_requests/operating_hours_body.dart';
 import 'providers/post_requests/product_body.dart';
 import 'providers/post_requests/shop_body.dart';
 import 'providers/products.dart';
-import 'providers/schedule.dart';
 import 'providers/shops.dart';
 import 'providers/user.dart';
 import 'providers/user_auth.dart';
@@ -95,7 +94,6 @@ class _MyAppState extends State<MyApp> {
         ),
 
         ChangeNotifierProvider<ShoppingCart>(create: (_) => ShoppingCart()),
-        ChangeNotifierProvider<Schedule>(create: (_) => Schedule()),
 
         // post body requests:
         ChangeNotifierProvider<AuthBody>(create: (_) => AuthBody()),
