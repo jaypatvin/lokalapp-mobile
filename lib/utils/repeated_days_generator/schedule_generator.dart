@@ -90,6 +90,46 @@ class Schedule {
 class ScheduleGenerator {
   final _generator = RepeatedDaysGenerator();
 
+  List<DateTime> generateInitialDates({
+    @required RepeatChoices repeatChoice,
+    @required DateTime startDate,
+    @required int repeatEveryNUnit,
+    List<int> selectableDays,
+    String repeatType,
+  }) {
+    switch (repeatChoice) {
+      case RepeatChoices.day:
+        return _generator.getRepeatedDays(
+          startDate: startDate,
+          everyNDays: repeatEveryNUnit,
+        );
+      case RepeatChoices.week:
+        return _generator.getRepeatedWeekDays(
+          startDate: startDate,
+          everyNWeeks: repeatEveryNUnit,
+          selectedDays: selectableDays,
+        );
+      case RepeatChoices.month:
+        final type = repeatType.split("-");
+        // The user used the ordinal picker
+        if (type.length > 1) {
+          final _ordinal = int.tryParse(type[0]);
+          return _generator.getRepeatedMonthDaysByNthDay(
+            everyNMonths: repeatEveryNUnit,
+            ordinal: _ordinal,
+            weekday: en_USSymbols.SHORTWEEKDAYS.indexOf(type[1].capitalize()),
+            month: startDate.month,
+          );
+        }
+        return _generator.getRepeatedMonthDaysByStartDate(
+          startDate: startDate,
+          everyNMonths: repeatEveryNUnit,
+        );
+      default:
+        return [];
+    }
+  }
+
   /// Returns a generated list of dates from existing operating-hours.
   ///
   /// This function already filters out unavailable dates and adds custome ones.

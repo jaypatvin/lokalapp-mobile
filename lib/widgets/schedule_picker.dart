@@ -4,6 +4,7 @@ import 'package:intl/date_symbols.dart';
 import 'package:intl/intl.dart';
 import 'package:lokalapp/utils/repeated_days_generator/repeated_days_generator.dart';
 import 'package:lokalapp/widgets/app_button.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../models/operating_hours.dart';
 import '../utils/calendar_picker/calendar_picker.dart';
@@ -181,7 +182,7 @@ class _SchedulePickerState extends State<SchedulePicker> {
     _repeatChoice = RepeatChoices.day;
     _ordinalChoice = Schedule.ordinalNumbers[0];
     var day = DateTime.now().weekday;
-    if (day == 0) day = 7;
+    if (day == 7) day = 0;
     _monthDayChoice = en_USSymbols.WEEKDAYS[day];
     _monthChoice = en_USSymbols.MONTHS[DateTime.now().month - 1];
   }
@@ -361,27 +362,23 @@ class _SchedulePickerState extends State<SchedulePicker> {
   }
 
   Widget _weekdayPicker() {
-    final height = MediaQuery.of(context).size.height;
     return Column(
       children: [
         WeekdayPicker(
           onDayPressed: _onWeekDayPickerDayPressedHandler,
           markedDaysMap: _selectableDays,
         ),
-        SizedBox(
-          height: height * 0.02,
-        ),
+        SizedBox(height: 10.0.h),
         if (_selectableDays.isEmpty)
           Text(
             "Select a day or days to repeat every week",
             style: kTextStyle.copyWith(
               color: Colors.red,
               fontWeight: FontWeight.normal,
+              fontSize: 16.0.sp,
             ),
           ),
-        SizedBox(
-          height: height * 0.02,
-        ),
+        SizedBox(height: 10.0.h),
       ],
     );
   }
@@ -478,15 +475,17 @@ class _SchedulePickerState extends State<SchedulePicker> {
       children: [
         Text(
           widget.header,
-          style: kTextStyle.copyWith(fontSize: 24.0),
+          style: kTextStyle.copyWith(fontSize: 24.0.sp),
         ),
+        SizedBox(height: 10.0.h),
         Text(
           widget.description,
-          style: kTextStyle.copyWith(fontWeight: FontWeight.w500),
+          //style: kTextStyle.copyWith(fontWeight: FontWeight.w500),
+          style: Theme.of(context).textTheme.bodyText1.copyWith(
+                color: Colors.black,
+              ),
         ),
-        SizedBox(
-          height: height * 0.02,
-        ),
+        SizedBox(height: 15.0.h),
         _RepeatabilityPicker(
           onRepeatUnitChanged: _onRepeatUnitChanged,
           onRepeatChoiceChanged: _onRepeatChoiceChanged,
@@ -702,15 +701,18 @@ class _DayOfMonth extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-        RoundedButton(
-          textAlign: TextAlign.start,
-          minWidth: double.infinity,
-          label: this.startDayOfMonth == 0
-              ? 'Select Start Day'
-              : '${getOrdinal(this.startDayOfMonth)} of the month',
-          onPressed: onShowDayOfMonthPicker,
-          fontColor: Colors.white,
-          fontSize: 20.0,
+        SizedBox(
+          height: 50.0.h,
+          width: double.infinity,
+          child: AppButton(
+            this.startDayOfMonth == 0
+                ? 'Select Start Day'
+                : '${getOrdinal(this.startDayOfMonth)} of the month',
+            kTealColor,
+            true,
+            this.onShowDayOfMonthPicker,
+            textStyle: TextStyle(fontSize: 20.0.sp),
+          ),
         ),
         Align(
           alignment: Alignment.center,
@@ -720,7 +722,7 @@ class _DayOfMonth extends StatelessWidget {
               'or',
               style: kTextStyle.copyWith(
                 fontWeight: FontWeight.normal,
-                fontSize: 20.0,
+                fontSize: 20.0.sp,
               ),
             ),
           ),
@@ -729,10 +731,9 @@ class _DayOfMonth extends StatelessWidget {
           children: [
             Expanded(
               child: Container(
-                padding: EdgeInsets.symmetric(
-                    horizontal: MediaQuery.of(context).size.width * 0.05),
+                padding: EdgeInsets.symmetric(horizontal: 20.0.w),
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(30.0),
+                  borderRadius: BorderRadius.circular(30.0.r),
                   border: Border.all(
                     color: Colors.transparent,
                   ),
@@ -748,10 +749,11 @@ class _DayOfMonth extends StatelessWidget {
                     }).toList(),
                     value: this.ordinalChoice,
                     onChanged: this.onOrdinalChoiceChanged,
-                    style: kTextStyle.copyWith(
-                      color: Colors.black,
-                      fontWeight: FontWeight.normal,
-                    ),
+                    style: Theme.of(context).textTheme.bodyText1.copyWith(
+                          color: Colors.black,
+                          fontWeight: FontWeight.normal,
+                          fontSize: 20.0.sp,
+                        ),
                   ),
                 ),
               ),
@@ -761,10 +763,9 @@ class _DayOfMonth extends StatelessWidget {
             ),
             Expanded(
               child: Container(
-                padding: EdgeInsets.symmetric(
-                    horizontal: MediaQuery.of(context).size.width * 0.05),
+                padding: EdgeInsets.symmetric(horizontal: 20.0.w),
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(30.0),
+                  borderRadius: BorderRadius.circular(30.0.r),
                   border: Border.all(
                     color: Colors.transparent,
                   ),
@@ -780,10 +781,11 @@ class _DayOfMonth extends StatelessWidget {
                     }).toList(),
                     value: this.monthDayChoice,
                     onChanged: this.onMonthDayChoiceChanged,
-                    style: kTextStyle.copyWith(
-                      color: Colors.black,
-                      fontWeight: FontWeight.normal,
-                    ),
+                    style: Theme.of(context).textTheme.bodyText1.copyWith(
+                          color: Colors.black,
+                          fontWeight: FontWeight.normal,
+                          fontSize: 20.0.sp,
+                        ),
                   ),
                 ),
               ),
@@ -799,18 +801,15 @@ class _DayOfMonth extends StatelessWidget {
               'Start Month',
               style: kTextStyle.copyWith(
                 fontWeight: FontWeight.normal,
-                fontSize: 20.0,
+                fontSize: 20.0.sp,
               ),
             ),
-            SizedBox(
-              width: MediaQuery.of(context).size.width * 0.02,
-            ),
+            SizedBox(width: 10.0.w),
             Expanded(
               child: Container(
-                padding: EdgeInsets.symmetric(
-                    horizontal: MediaQuery.of(context).size.width * 0.05),
+                padding: EdgeInsets.symmetric(horizontal: 20.0.w),
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(30.0),
+                  borderRadius: BorderRadius.circular(30.0.r),
                   border: Border.all(
                     color: Colors.transparent,
                   ),
@@ -826,10 +825,11 @@ class _DayOfMonth extends StatelessWidget {
                     }).toList(),
                     value: this.monthChoice,
                     onChanged: this.onMonthChoiceChanged,
-                    style: kTextStyle.copyWith(
-                      color: Colors.black,
-                      fontWeight: FontWeight.normal,
-                    ),
+                    style: Theme.of(context).textTheme.bodyText1.copyWith(
+                          color: Colors.black,
+                          fontWeight: FontWeight.normal,
+                          fontSize: 20.0.sp,
+                        ),
                   ),
                 ),
               ),
@@ -857,25 +857,23 @@ class _StartDatePicker extends StatelessWidget {
         Text(
           "Start date",
           style: kTextStyle.copyWith(
-              fontWeight: FontWeight.normal, fontSize: 18.0),
+              fontWeight: FontWeight.normal, fontSize: 18.0.sp),
         ),
-        SizedBox(
-          width: MediaQuery.of(context).size.width * 0.05,
-        ),
+        SizedBox(width: 15.0.w),
         Expanded(
-          child: RoundedButton(
-            textAlign: TextAlign.start,
-            minWidth: double.infinity,
-            label: this.startDate != null
-                ? DateFormat.MMMMd().format(this.startDate)
-                : "Select Start Date",
-            onPressed: this.onSelectStartDate,
-            // _repeatChoice != RepeatChoices.week ||
-            //         _selectableDays.isNotEmpty
-            //     ? showCalendarPicker
-            //     : null,
-            fontColor: Colors.white,
-            fontSize: 20.0,
+          child: SizedBox(
+            height: 50.0.h,
+            child: AppButton(
+              this.startDate != null
+                  ? DateFormat.MMMMd().format(this.startDate)
+                  : "Select Start Date",
+              kTealColor,
+              true,
+              this.onSelectStartDate,
+              textStyle: TextStyle(
+                fontSize: 20.0.sp,
+              ),
+            ),
           ),
         ),
       ],
@@ -904,14 +902,12 @@ class _RepeatabilityPicker extends StatelessWidget {
           "Every",
           style: kTextStyle.copyWith(
             fontWeight: FontWeight.normal,
-            fontSize: 20.0,
+            fontSize: 20.0.sp,
           ),
         ),
-        SizedBox(
-          width: MediaQuery.of(context).size.width * 0.05,
-        ),
+        SizedBox(width: 30.0.w),
         Container(
-          width: MediaQuery.of(context).size.width * 0.2,
+          width: 60.0.w,
           child: TextField(
             onChanged: this.onRepeatUnitChanged,
             keyboardType: TextInputType.number,
@@ -930,19 +926,16 @@ class _RepeatabilityPicker extends StatelessWidget {
             textAlign: TextAlign.center,
             style: kTextStyle.copyWith(
               color: kTealColor,
-              fontSize: 32.0,
+              fontSize: 32.0.sp,
             ),
           ),
         ),
-        SizedBox(
-          width: MediaQuery.of(context).size.width * 0.05,
-        ),
+        SizedBox(width: 30.0.w),
         Expanded(
           child: Container(
-            padding: EdgeInsets.symmetric(
-                horizontal: MediaQuery.of(context).size.width * 0.05),
+            padding: EdgeInsets.symmetric(horizontal: 20.w),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(30.0),
+              borderRadius: BorderRadius.circular(30.0.r),
               border: Border.all(
                 color: Colors.transparent,
               ),
@@ -962,10 +955,11 @@ class _RepeatabilityPicker extends StatelessWidget {
                 }).toList(),
                 value: this.repeatChoice,
                 onChanged: this.onRepeatChoiceChanged,
-                style: kTextStyle.copyWith(
-                  color: Colors.black,
-                  fontWeight: FontWeight.normal,
-                ),
+                style: Theme.of(context).textTheme.bodyText1.copyWith(
+                      color: Colors.black,
+                      fontWeight: FontWeight.normal,
+                      fontSize: 20.0.sp,
+                    ),
               ),
             ),
           ),

@@ -75,38 +75,34 @@ class OrderDetails extends StatelessWidget {
             ],
           ),
         ),
-        Row(
+        const SizedBox(width: 8.0),
+        Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(height: 60.0),
-            Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'x$quantity',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontFamily: "GoldplayBold",
-                    fontWeight: FontWeight.w700,
-                  ),
+            Text(
+              'x$quantity',
+              style: TextStyle(
+                fontSize: 16,
+                fontFamily: "GoldplayBold",
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+            SizedBox(
+              height: 5.0,
+            ),
+            Container(
+              // padding: const EdgeInsets.all(0.0),
+              child: Text(
+                product.basePrice.toString(),
+                // textAlign: TextAlign.end,
+                style: TextStyle(
+                  fontSize: 16.0,
+                  fontFamily: "GoldplayBold",
+                  fontWeight: FontWeight.w300,
                 ),
-                SizedBox(
-                  height: 5.0,
-                ),
-                Container(
-                  // padding: const EdgeInsets.all(0.0),
-                  child: Text(
-                    product.basePrice.toString(),
-                    // textAlign: TextAlign.end,
-                    style: TextStyle(
-                      fontSize: 16.0,
-                      fontFamily: "GoldplayBold",
-                      fontWeight: FontWeight.w300,
-                    ),
-                  ),
-                ),
-              ],
+              ),
             ),
           ],
         ),

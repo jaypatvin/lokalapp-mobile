@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lokalapp/screens/cart/subscription_schedule.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/user_shop.dart';
@@ -95,7 +96,19 @@ class _OrdersCard extends StatelessWidget {
               // TODO: ADD ON PRESS FUNCTIONS
               children: [
                 Expanded(
-                  child: AppButton("Subscribe", kTealColor, false, () {}),
+                  child: AppButton(
+                    "Subscribe",
+                    kTealColor,
+                    false,
+                    () => Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => SubscriptionSchedule(
+                          productId: productId,
+                          order: order,
+                        ),
+                      ),
+                    ),
+                  ),
                 ),
                 SizedBox(width: 8.0),
                 Expanded(
