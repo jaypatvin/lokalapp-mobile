@@ -13,7 +13,6 @@ import '../../../utils/themes.dart';
 import '../../../widgets/app_button.dart';
 import '../../add_shop_screens/add_shop.dart';
 import '../../chat/components/chat_avatar.dart';
-import '../profile_shop.dart';
 
 class UserShopBanner extends StatefulWidget {
   const UserShopBanner({Key key}) : super(key: key);
@@ -61,9 +60,6 @@ class _UserShopBannerState extends State<UserShopBanner> {
 
   @override
   Widget build(BuildContext context) {
-    final user = context.read<CurrentUser>();
-    final shops = context.read<Shops>().findByUser(user.id);
-
     if (!_verified) {
       return ListView(
         shrinkWrap: true,
@@ -108,38 +104,41 @@ class _UserShopBannerState extends State<UserShopBanner> {
       );
     }
 
-    if (shops.isEmpty) {
-      return Container(
-        color: Colors.white,
-        width: double.infinity,
-        padding: EdgeInsets.symmetric(vertical: 10.0.h, horizontal: 5.0.w),
-        child: Align(
-          alignment: Alignment.center,
-          child: SizedBox(
-            child: AppButton(
-              "+ ADD SHOP",
-              kTealColor,
-              false,
-              () {
-                pushNewScreen(
-                  context,
-                  screen: AddShop(),
-                  withNavBar: true,
-                  pageTransitionAnimation: PageTransitionAnimation.cupertino,
-                );
-              },
+    return Consumer<Shops>(
+      builder: (ctx, shopProvider, child) {
+        final user = context.read<CurrentUser>();
+        final shops = shopProvider.findByUser(user.id);
+        if (shops.isEmpty) {
+          return Container(
+            color: Colors.white,
+            width: double.infinity,
+            padding: EdgeInsets.symmetric(vertical: 10.0.h, horizontal: 5.0.w),
+            child: Align(
+              alignment: Alignment.center,
+              child: SizedBox(
+                child: AppButton(
+                  "+ ADD SHOP",
+                  kTealColor,
+                  false,
+                  () {
+                    pushNewScreen(
+                      context,
+                      screen: AddShop(),
+                      withNavBar: true,
+                      pageTransitionAnimation:
+                          PageTransitionAnimation.cupertino,
+                    );
+                  },
+                ),
+              ),
             ),
-          ),
-        ),
-      );
-    } else {
-      return Container(
-        padding: EdgeInsets.symmetric(vertical: 10.0.h, horizontal: 5.0.w),
-        color: Colors.white,
-        child: Consumer<Shops>(
-          builder: (ctx, shops, child) {
-            final shop = shops.findByUser(user.id).first;
-            return ListTile(
+          );
+        } else {
+          final shop = shops.first;
+          return Container(
+            padding: EdgeInsets.symmetric(vertical: 10.0.h, horizontal: 5.0.w),
+            color: Colors.white,
+            child: ListTile(
               leading: ChatAvatar(
                 displayName: shop.name,
                 displayPhoto: shop.profilePhoto,
@@ -185,10 +184,10 @@ class _UserShopBannerState extends State<UserShopBanner> {
                   ),
                 ],
               ),
-            );
-          },
-        ),
-      );
-    }
+            ),
+          );
+        }
+      },
+    );
   }
 }

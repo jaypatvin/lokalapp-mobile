@@ -2,20 +2,35 @@ import 'package:flutter/material.dart';
 
 import 'src/default_styles.dart';
 
-class DayOfMonthPicker extends StatelessWidget {
+class DayOfMonthPicker extends StatefulWidget {
   final double height;
   final double width;
   final Function(int) onDayPressed;
   final int markedDay;
   final EdgeInsets padding;
 
-  DayOfMonthPicker({
+  const DayOfMonthPicker({
+    Key key,
     this.height,
     this.width,
     @required this.onDayPressed,
     this.markedDay,
     this.padding = EdgeInsets.zero,
-  });
+  }) : super(key: key);
+
+  @override
+  _DayOfMonthPickerState createState() => _DayOfMonthPickerState();
+}
+
+class _DayOfMonthPickerState extends State<DayOfMonthPicker> {
+  int _markedDay;
+
+  @override
+  void initState() {
+    super.initState();
+
+    this._markedDay = widget.markedDay;
+  }
 
   Widget _dayContainer(int day) {
     return Container(
@@ -26,18 +41,26 @@ class DayOfMonthPicker extends StatelessWidget {
           decoration: BoxDecoration(
             border: Border.all(
                 color:
-                    this.markedDay == day ? Colors.orange : Colors.grey[300]),
+                    this._markedDay == day ? Colors.orange : Colors.grey[300]),
             shape: BoxShape.rectangle,
             borderRadius: BorderRadius.all(
               Radius.circular(15.0),
             ),
           ),
           child: FlatButton(
-            color: this.markedDay == day ? Colors.orange : Colors.transparent,
+            padding: EdgeInsets.zero,
+            color: this._markedDay == day ? Colors.orange : Colors.transparent,
             onPressed: () {
               // the calling method should handle the logic of the day press
-              if (this.onDayPressed != null) {
-                this.onDayPressed(day);
+              setState(() {
+                if (_markedDay == day) {
+                  _markedDay = 0;
+                } else {
+                  _markedDay = day;
+                }
+              });
+              if (widget.onDayPressed != null) {
+                widget.onDayPressed(day);
               }
             },
             shape: RoundedRectangleBorder(
@@ -71,7 +94,7 @@ class DayOfMonthPicker extends StatelessWidget {
   }
 
   List<Widget> _renderDays() {
-    var weekDays = _renderWeekDays();
+    final weekDays = _renderWeekDays();
     List<Widget> list = [...weekDays];
 
     /// because of number of days in a week is 7, so it would be easier to count it til 7.
@@ -113,9 +136,9 @@ class DayOfMonthPicker extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: this.height,
-      width: this.width,
-      padding: this.padding,
+      height: widget.height,
+      width: widget.width,
+      padding: widget.padding,
       child: GridView.count(
         physics: NeverScrollableScrollPhysics(),
         crossAxisCount: 7,

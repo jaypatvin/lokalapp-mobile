@@ -52,7 +52,8 @@ class RepeatedDaysGenerator {
   }) {
     startDate ??= DateTime.now();
     // we need to make sure that the selectedDays are sorted from 0-6 (Sunday to Saturday)
-    selectedDays.sort();
+    final _selectedDays = [...selectedDays]..sort();
+
     final repeatedDays = <DateTime>[];
 
     // if the selected startDate.day is not equal to the first selected weekday,
@@ -65,7 +66,7 @@ class RepeatedDaysGenerator {
     var weekDay = startDate.weekday;
     if (weekDay == 7) weekDay = 0;
     startDate = startDate.subtract(
-      Duration(days: (selectedDays.first - weekDay).abs()),
+      Duration(days: (_selectedDays.first - weekDay).abs()),
     );
 
     // we'll need to iterate through everyweek from the startDate (by adding 7 days every iteration)
@@ -87,10 +88,10 @@ class RepeatedDaysGenerator {
         // since DateTime starts at Monday (1) and ends in Sunday (7),
         // we need to convert the Sunday to 0 as our starting weekday
         if (day == 7) day = 0;
-        if (selectedDays.contains(day)) repeatedDays.add(indexDay);
+        if (_selectedDays.contains(day)) repeatedDays.add(indexDay);
 
         // check if the final selected day (i.e, saturday) is already reached
-        if (selectedDays.last == day) {
+        if (_selectedDays.last == day) {
           break;
         }
       }

@@ -18,8 +18,8 @@ typedef Widget DayBuilder(
     DateTime day);
 
 class CalendarCarousel extends StatefulWidget {
-  final double height;
   final double width;
+  final double height;
   final DateTime selectedDateTime;
   final Function(DateTime) onDayPressed;
   final List<DateTime> markedDatesMap;
@@ -36,7 +36,7 @@ class CalendarCarousel extends StatefulWidget {
 
   CalendarCarousel({
     Key key,
-    @required this.height, //= double.infinity,
+    this.height = double.infinity,
     this.width = double.infinity,
     this.selectedDateTime,
     this.onDayPressed,
@@ -135,7 +135,7 @@ class _CalendarState extends State<CalendarCarousel> {
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           CalendarHeader(
-              headerMargin: EdgeInsets.symmetric(vertical: 14.0.h),
+              headerMargin: EdgeInsets.symmetric(vertical: 5.0.h),
               headerTitle: '${_localeDate.format(this._dates[this._pageNum])}',
               showHeader: true,
               onLeftButtonPressed: () {
@@ -213,6 +213,8 @@ class _CalendarState extends State<CalendarCarousel> {
               Radius.circular(15.0.r),
             )),
         child: FlatButton(
+          padding: EdgeInsets.zero,
+          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
           color: isMarked ? Colors.orange : Colors.transparent,
           onPressed: () {
             if (!isSelectable) return;
@@ -230,16 +232,14 @@ class _CalendarState extends State<CalendarCarousel> {
             borderRadius: BorderRadius.circular(15.0.r),
           ),
           child: Container(
-            child: Container(
-              width: double.infinity,
-              height: double.infinity,
-              child: Center(
-                child: Text(
-                  '${now.day}',
-                  semanticsLabel: now.day.toString(),
-                  style: style,
-                  maxLines: 1,
-                ),
+            width: double.infinity,
+            height: double.infinity,
+            child: Center(
+              child: Text(
+                '${now.day}',
+                semanticsLabel: now.day.toString(),
+                style: style,
+                maxLines: 1,
               ),
             ),
           ),
@@ -289,8 +289,6 @@ class _CalendarState extends State<CalendarCarousel> {
         children: <Widget>[
           Positioned(
             child: Container(
-              // width: double.infinity,
-              //height: double.infinity,
               child: GridView.count(
                 physics: NeverScrollableScrollPhysics(),
                 crossAxisCount: 7,
