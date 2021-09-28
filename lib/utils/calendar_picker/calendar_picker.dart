@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart' show DateFormat;
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'src/calendar_header.dart';
 import 'src/default_styles.dart';
@@ -22,6 +22,7 @@ class CalendarCarousel extends StatefulWidget {
   final double height;
   final DateTime selectedDateTime;
   final Function(DateTime) onDayPressed;
+  final Function(DateTime) onNonSelectableDayPressed;
   final List<DateTime> markedDatesMap;
   final DateTime startDate;
 
@@ -40,6 +41,7 @@ class CalendarCarousel extends StatefulWidget {
     this.width = double.infinity,
     this.selectedDateTime,
     this.onDayPressed,
+    this.onNonSelectableDayPressed,
     this.markedDatesMap,
     this.headerTitleTouchable = false,
     this.onHeaderTitlePressed,
@@ -196,31 +198,56 @@ class _CalendarState extends State<CalendarCarousel> {
     DateTime now,
     TextStyle style,
   ) {
+    Color borderColor = Colors.transparent;
+    Color buttonColor = Colors.transparent;
+    if (isMarked) {
+      borderColor = buttonColor = Colors.orange;
+      if (!isSelectable) {
+        borderColor = buttonColor = Colors.pink;
+      }
+    } else if (isSelectable) {
+      borderColor = Colors.grey[300];
+    }
+
+    EdgeInsets margin = EdgeInsets.all(1.0.w);
+    EdgeInsets padding = EdgeInsets.all(2.0.w);
+    TextStyle _style = style;
+
+    if (_selectedDate == now) {
+      margin = EdgeInsets.zero;
+      padding = EdgeInsets.all(1.5.w);
+      _style = style.copyWith(fontSize: 14.0.sp, fontWeight: FontWeight.bold);
+    }
+
     return Container(
-      margin: EdgeInsets.all(1.0.w),
+      margin: margin,
       child: Container(
-        padding: EdgeInsets.all(1.0.w),
+        padding: padding,
         decoration: BoxDecoration(
             border: Border.all(
-              color: isMarked
-                  ? Colors.orange
-                  : isSelectable
-                      ? Colors.grey[300]
-                      : Colors.transparent,
+              color: borderColor,
             ),
             shape: BoxShape.rectangle,
             borderRadius: BorderRadius.all(
-              Radius.circular(15.0.r),
+              Radius.circular(20.0.r),
             )),
         child: FlatButton(
           padding: EdgeInsets.zero,
           materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-          color: isMarked ? Colors.orange : Colors.transparent,
+          color: buttonColor,
           onPressed: () {
-            if (!isSelectable) return;
+            if (widget.onNonSelectableDayPressed != null && !isSelectable)
+              widget.onNonSelectableDayPressed(now);
+
             setState(() {
-              _selectedDate = now;
+              if (_selectedDate == now) {
+                _selectedDate = null;
+              } else {
+                _selectedDate = now;
+              }
             });
+
+            if (!isSelectable) return;
 
             // the calling method should handle the logic of the press
             // this is to avoid bloating the calendar picker
@@ -229,7 +256,7 @@ class _CalendarState extends State<CalendarCarousel> {
           shape: RoundedRectangleBorder(
             side:
                 BorderSide(color: Colors.transparent, style: BorderStyle.solid),
-            borderRadius: BorderRadius.circular(15.0.r),
+            borderRadius: BorderRadius.circular(18.0.r),
           ),
           child: Container(
             width: double.infinity,
@@ -238,7 +265,9 @@ class _CalendarState extends State<CalendarCarousel> {
               child: Text(
                 '${now.day}',
                 semanticsLabel: now.day.toString(),
-                style: style,
+                style: buttonColor != Colors.pink
+                    ? style
+                    : _style.copyWith(color: Colors.white),
                 maxLines: 1,
               ),
             ),

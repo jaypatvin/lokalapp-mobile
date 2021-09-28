@@ -2,14 +2,12 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbols.dart';
 import 'package:intl/intl.dart';
-import 'package:lokalapp/widgets/schedule_picker.dart';
 
 import '../../models/operating_hours.dart';
-
+import '../../widgets/schedule_picker.dart';
 import '../functions.utils.dart';
 import 'repeated_days_generator.dart';
 
-// TODO: return a class/interface
 class Schedule {
   static const List<String> ordinalNumbers = [
     "First",
@@ -90,6 +88,26 @@ class Schedule {
 class ScheduleGenerator {
   final _generator = RepeatedDaysGenerator();
 
+  /// Returns the `RepeatChoices` from the `String repeatType` from the API
+  ///
+  /// The string values should only include: `month`, `day`, `week`, and
+  /// `"unit"-"type"`
+  RepeatChoices getRepeatChoicesFromString(String repeatType) {
+    var repeatChoice = RepeatChoices.month;
+    if (repeatType.split("-").length <= 1) {
+      RepeatChoices.values.forEach((choice) {
+        if (choice.value.toLowerCase() == repeatType) {
+          repeatChoice = choice;
+        }
+      });
+    }
+    return repeatChoice;
+  }
+
+  /// Generates the initialDates for generating schedules.
+  /// 
+  /// When repeatChoice is `week`, selectableDays is defaulted to all days.
+  /// `repeatType` is only needed when repeat choice is `month`.
   List<DateTime> generateInitialDates({
     @required RepeatChoices repeatChoice,
     @required DateTime startDate,
@@ -132,7 +150,7 @@ class ScheduleGenerator {
 
   /// Returns a generated list of dates from existing operating-hours.
   ///
-  /// This function already filters out unavailable dates and adds custome ones.
+  /// This function already filters out unavailable dates and adds custom ones.
   List<DateTime> getSelectableDates(OperatingHours operatingHours) {
     var selectableDates = <DateTime>[];
     RepeatChoices repeatChoice;
