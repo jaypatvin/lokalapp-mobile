@@ -11,6 +11,8 @@ final inviteRef = FirebaseFirestore.instance.collection("invites");
 final shopRef = FirebaseFirestore.instance.collection("shops");
 final chatsRef = FirebaseFirestore.instance.collection("chats");
 final ordersRef = FirebaseFirestore.instance.collection("orders");
+final subscriptionPlansRef =
+    FirebaseFirestore.instance.collection("product_subscription_plans");
 final Reference storageRef = FirebaseStorage.instance.ref();
 
 // this class should be refactored for each collection
@@ -25,6 +27,20 @@ class Database {
 
   CollectionReference getOrderStatuses() {
     return FirebaseFirestore.instance.collection("order_status");
+  }
+
+  Stream<QuerySnapshot> getUserSubscriptions(String userId) {
+    return subscriptionPlansRef
+        .where("buyer_id", isEqualTo: userId)
+        // .orderBy("created_at", descending: true)
+        .snapshots();
+  }
+
+  Stream<QuerySnapshot> getShopSubscribers(String shopId) {
+    return subscriptionPlansRef
+        .where("shop_id", isEqualTo: shopId)
+        // .orderBy("created_at", descending: true)
+        .snapshots();
   }
 
   Future<Map<String, dynamic>> getChatById(id) async {
@@ -198,8 +214,6 @@ class Database {
 
     return retVal;
   }
-
-  // no function overloading for Dart
 
   Future<String> updateUser(LokalUser user, String key, dynamic value) async {
     String retVal = "error";
