@@ -5,6 +5,8 @@ import 'package:provider/provider.dart';
 import '../../providers/shops.dart';
 import '../../providers/user.dart';
 import '../../services/database.dart';
+import '../../utils/themes.dart';
+import '../subscriptions/subscriptions.dart';
 import 'components/grouped_orders.dart';
 
 class Transactions extends StatefulWidget {
@@ -105,22 +107,42 @@ class _TransactionsState extends State<Transactions> {
       mainAxisSize: MainAxisSize.min,
       children: [
         Container(
-          padding: EdgeInsets.all(20.0),
+          padding: const EdgeInsets.all(20.0),
           width: MediaQuery.of(context).size.width,
           color: widget.colorAnimation.value,
           child: Text(
             widget.isBuyer
-                ? 'These are the products you ordered from other stores.'
-                : 'These are the products other people ordered from your stores.',
-            style: TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.w500,
-            ),
+                ? "These are the products you ordered from other stores."
+                : "These are the products other people ordered from your stores.",
+            style: Theme.of(context).textTheme.bodyText2.copyWith(
+                  color: Colors.white,
+                ),
           ),
         ),
-        SizedBox(
-          height: 10.0,
+        ListTile(
+          dense: true,
+          tileColor: const Color(0xFFEFEFEF),
+          title: Text(
+            widget.isBuyer ? "Subscriptions" : "Subscriber Orders",
+            style: Theme.of(context).textTheme.headline6,
+          ),
+          trailing: Icon(
+            Icons.arrow_forward_ios,
+            color: kTealColor,
+            size: 14.0,
+          ),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => Subscriptions(
+                  isBuyer: widget.isBuyer,
+                ),
+              ),
+            );
+          },
         ),
+        SizedBox(height: 10.0),
         if (_stream != null)
           Container(
             height: MediaQuery.of(context).size.height * 0.04,
@@ -167,7 +189,9 @@ class _TransactionsState extends State<Transactions> {
                 ),
               )
             : Text(
-                "You have not created a shop yet!",
+                widget.isBuyer
+                    ? "You have no orders yet!"
+                    : "You have not created a shop yet!",
                 style: TextStyle(
                   fontWeight: FontWeight.w500,
                 ),

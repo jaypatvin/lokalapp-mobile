@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:lokalapp/screens/cart/subscription_schedule.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/user_shop.dart';
@@ -9,6 +8,7 @@ import '../../utils/themes.dart';
 import '../../widgets/app_button.dart';
 import '../../widgets/custom_app_bar.dart';
 import '../discover/product_detail.dart';
+import '../subscriptions/subscription_schedule.dart';
 import 'checkout.dart';
 import 'components/order_details.dart';
 
@@ -104,7 +104,6 @@ class _OrdersCard extends StatelessWidget {
                       MaterialPageRoute(
                         builder: (_) => SubscriptionSchedule(
                           productId: productId,
-                          order: order,
                         ),
                       ),
                     ),
