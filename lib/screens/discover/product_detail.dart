@@ -250,7 +250,12 @@ class _ProductGallery extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final gallery = product.gallery;
-    return Container(
+    if (gallery == null || gallery.length <= 0)
+      return SizedBox(
+        height: MediaQuery.of(context).size.height / 2,
+        child: Center(child: Text("No Images")),
+      );
+    return SizedBox(
       height: MediaQuery.of(context).size.height / 2,
       child: Stack(
         children: [

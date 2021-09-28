@@ -54,7 +54,7 @@ class TransactionDetails extends StatelessWidget {
     final price = this
         .transaction
         .products
-        .fold(0.0, (double prev, product) => prev + product.productPrice);
+        .fold(0.0, (double prev, product) => prev + product.price);
 
     final isStatus = status != null && status.isNotEmpty;
 
@@ -79,7 +79,6 @@ class TransactionDetails extends StatelessWidget {
                       ),
                     )
                   : _buildAvatar(context, name, displayPhoto),
-              // Text('For ${DateFormat.MMMd().format(transaction.deliveryDate)}')
               RichText(
                 maxLines: 1,
                 text: TextSpan(
@@ -117,7 +116,7 @@ class TransactionDetails extends StatelessWidget {
             itemBuilder: (ctx, index) {
               final item = this.transaction.products[index];
               final product = Provider.of<Products>(context, listen: false)
-                  .findById(item.productId);
+                  .findById(item.id);
 
               return Container(
                 padding: EdgeInsets.symmetric(vertical: 5.0),
@@ -136,14 +135,14 @@ class TransactionDetails extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      item.productName,
+                      item.name,
                       style: TextStyle(
                         fontWeight: FontWeight.w600,
                       ),
                     ),
                     Text('x${item.quantity}'),
                     Text(
-                      'P ${item.quantity * item.productPrice}',
+                      'P ${item.quantity * item.price}',
                       style: TextStyle(
                         fontWeight: FontWeight.w500,
                       ),

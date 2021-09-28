@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 
 import '../../providers/cart.dart';
 import '../../providers/products.dart';
@@ -13,8 +13,8 @@ import '../../utils/themes.dart';
 import '../../widgets/app_button.dart';
 import '../../widgets/custom_app_bar.dart';
 import '../discover/product_detail.dart';
+import 'cart_confirmation.dart';
 import 'components/order_details.dart';
-import 'order_placed.dart';
 
 class CheckoutSchedule extends StatelessWidget {
   final String productId;
@@ -46,7 +46,7 @@ class CheckoutSchedule extends StatelessWidget {
       context.read<ShoppingCart>().remove(productId);
       Navigator.of(context).push(
         MaterialPageRoute(
-          builder: (_) => OrderPlaced(),
+          builder: (_) => CartConfirmation(),
         ),
       );
     } else {

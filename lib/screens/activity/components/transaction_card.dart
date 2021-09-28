@@ -74,7 +74,7 @@ class TransactionCard extends StatelessWidget {
 
     double price = 0;
     order.products.forEach((product) {
-      price += (product.productPrice * product.quantity);
+      price += (product.price * product.quantity);
     });
 
     return TransactionCard._(

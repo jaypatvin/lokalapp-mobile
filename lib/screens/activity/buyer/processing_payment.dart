@@ -1,13 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:lokalapp/screens/activity/components/order_details_buttons/message_buttons.dart';
 
 import '../../../models/order.dart';
 import '../../../utils/themes.dart';
 import '../../../widgets/app_button.dart';
+import '../components/order_details_buttons/message_buttons.dart';
 import '../components/transaction_details.dart';
 
 enum PaymentMode { cash, bank, gCash }
+
+extension PaymentModeExtension on PaymentMode {
+  String get value {
+    switch (this) {
+      case PaymentMode.cash:
+        return "cod";
+      case PaymentMode.bank:
+        return "bank";
+      case PaymentMode.gCash:
+        return "gcash";
+      default:
+        return "";
+    }
+  }
+}
 
 class ProcessingPayment extends StatelessWidget {
   final Order order;
