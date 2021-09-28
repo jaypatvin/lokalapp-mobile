@@ -71,7 +71,7 @@ class _ActivityState extends State<Activity>
         ),
         color: _colorAnimation.value,
       ),
-      labelStyle: Theme.of(context).textTheme.bodyText2,
+      labelStyle: Theme.of(context).textTheme.headline6,
       tabs: [
         Tab(text: "My Orders"),
         Tab(text: "My Shop"),
@@ -113,9 +113,7 @@ class _ActivityState extends State<Activity>
               title: Center(
                 child: Text(
                   'Activity',
-                  style: TextStyle(
-                    color: Colors.black,
-                  ),
+                  style: Theme.of(context).textTheme.headline5,
                 ),
               ),
             ),

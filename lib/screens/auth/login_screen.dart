@@ -205,7 +205,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 InkWell(
                   child: Text(
                     "FORGOT PASSWORD?",
-                    style: Theme.of(context).textTheme.headline6,
+                    style: Theme.of(context).textTheme.subtitle2,
                   ),
                   onTap: () {},
                 ),

@@ -117,7 +117,7 @@ class _InvitePageState extends State<InvitePage> {
           children: [
             Text(
               "Enter invite code",
-              style: Theme.of(context).textTheme.headline1,
+              style: Theme.of(context).textTheme.headline4,
             ),
             SizedBox(height: 10.0.h),
             Padding(
@@ -153,7 +153,7 @@ class _InvitePageState extends State<InvitePage> {
             InkWell(
               child: Text(
                 "WHAT'S AN INVITE CODE?",
-                style: Theme.of(context).textTheme.headline6,
+                style: Theme.of(context).textTheme.subtitle2,
               ),
               onTap: _showInviteCodeDescription,
             ),
