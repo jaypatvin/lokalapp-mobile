@@ -120,6 +120,7 @@ class _MyAppState extends State<MyApp> {
           return ScreenUtilInit(
             builder: () {
               return ScreenLoaderApp(
+                globalLoadingBgBlur: 0,
                 globalLoader: SizedBox(
                   width: double.infinity,
                   height: double.infinity,

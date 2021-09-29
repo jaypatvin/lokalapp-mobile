@@ -22,8 +22,7 @@ class LoginScreen extends StatefulWidget {
   _LoginScreenState createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> with ScreenLoader {
-  Color _kMainColor = const Color(0xFFFFC700);
+class _LoginScreenState extends State<LoginScreen> with ScreenLoader<LoginScreen> {
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
   bool isAuth = false;
@@ -80,12 +79,10 @@ class _LoginScreenState extends State<LoginScreen> with ScreenLoader {
         setState(() {
           _signInError = true;
         });
-        Navigator.pop(context);
       }
     } catch (e) {
-      // TODO: do something with error
-      Navigator.pop(context);
-      print(e);
+      final snackBar = SnackBar(content: Text('Error Logging In'));
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
     }
   }
 

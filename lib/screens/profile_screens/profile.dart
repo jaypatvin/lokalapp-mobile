@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:lottie/lottie.dart';
 import 'package:persistent_bottom_nav_bar/models/nested_will_pop_scope.dart';
 import 'package:provider/provider.dart';
-import 'package:screen_loader/screen_loader.dart';
 
 import '../../providers/activities.dart';
 import '../../providers/user.dart';
+import '../../utils/constants.dart';
 import '../../utils/themes.dart';
 import '../home/timeline.dart';
 import 'components/my_profile_list.dart';
@@ -20,23 +21,17 @@ class ProfileScreen extends StatefulWidget {
   _ProfileScreenState createState() => _ProfileScreenState();
 }
 
-class _ProfileScreenState extends State<ProfileScreen> with ScreenLoader {
+class _ProfileScreenState extends State<ProfileScreen> {
   final _pageController = PageController(initialPage: 0);
 
   @override
-  Widget screen(BuildContext context) {
+  Widget build(BuildContext context) {
     final user = context.read<CurrentUser>();
     return NestedWillPopScope(
       onWillPop: () async {
         if (_pageController.page == 0)
           return true;
         else {
-          performFuture(() async {
-            await Future.delayed(
-              const Duration(seconds: 5),
-              () => 'Large Latte',
-            );
-          });
           _pageController.animateToPage(
             0,
             duration: const Duration(milliseconds: 250),
@@ -96,7 +91,17 @@ class _ProfileScreenState extends State<ProfileScreen> with ScreenLoader {
                             child: Consumer<Activities>(
                               builder: (context, activities, child) {
                                 return activities.isLoading
-                                    ? Center(child: CircularProgressIndicator())
+                                    ? SizedBox(
+                                        width: double.infinity,
+                                        height: double.infinity,
+                                        child: DecoratedBox(
+                                          decoration: const BoxDecoration(
+                                            color: Colors.white,
+                                          ),
+                                          child:
+                                              Lottie.asset(kAnimationLoading),
+                                        ),
+                                      )
                                     : RefreshIndicator(
                                         onRefresh: () => activities.fetch(),
                                         child: Timeline(
