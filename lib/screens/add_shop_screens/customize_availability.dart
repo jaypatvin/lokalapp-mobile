@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/date_symbols.dart';
 import 'package:intl/intl.dart' show DateFormat;
 import 'package:provider/provider.dart';
+import 'package:screen_loader/screen_loader.dart';
 
 import '../../models/operating_hours.dart';
 import '../../providers/post_requests/operating_hours_body.dart';
@@ -44,7 +45,8 @@ class CustomizeAvailability extends StatefulWidget {
   _CustomizeAvailabilityState createState() => _CustomizeAvailabilityState();
 }
 
-class _CustomizeAvailabilityState extends State<CustomizeAvailability> {
+class _CustomizeAvailabilityState extends State<CustomizeAvailability>
+    with ScreenLoader {
   List<DateTime> initialDates;
   List<DateTime> markedDates;
   bool _shopCreated = false;
@@ -285,7 +287,7 @@ class _CustomizeAvailabilityState extends State<CustomizeAvailability> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget screen(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
     return Scaffold(
@@ -350,9 +352,11 @@ class _CustomizeAvailabilityState extends State<CustomizeAvailability> {
                   Navigator.of(context).popUntil((_) => count++ >= 2);
                   return;
                 }
-                _shopCreated = await createShop();
+                _shopCreated =
+                    await performFuture<bool>(() async => await createShop());
                 if (_shopCreated) {
-                  bool updated = await updateShopSchedule();
+                  bool updated = await performFuture<bool>(
+                      () async => await updateShopSchedule());
                   if (updated) {
                     context.read<Shops>().fetch();
                     Navigator.push(

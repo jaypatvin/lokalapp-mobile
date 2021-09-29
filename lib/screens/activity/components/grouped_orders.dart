@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:grouped_list/grouped_list.dart';
 import 'package:intl/intl.dart';
+import '../../../utils/constants.dart';
+import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 
 import '../../../models/order.dart';
@@ -128,7 +130,16 @@ class GroupedOrders extends StatelessWidget {
       builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
         switch (snapshot.connectionState) {
           case ConnectionState.waiting:
-            return Center(child: CircularProgressIndicator());
+            return SizedBox(
+              width: double.infinity,
+              height: double.infinity,
+              child: DecoratedBox(
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                ),
+                child: Lottie.asset(kAnimationLoading),
+              ),
+            );
           default:
             if (snapshot.hasError)
               return Text('Error: ${snapshot.error}');

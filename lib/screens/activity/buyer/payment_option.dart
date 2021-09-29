@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:lokalapp/screens/activity/buyer/cash_on_delivery.dart';
 
 import '../../../models/order.dart';
+import '../../../utils/constants.dart';
 import '../../../utils/themes.dart';
 import '../../../widgets/custom_app_bar.dart';
 import 'bank_details.dart';
+import 'cash_on_delivery.dart';
 
 class PaymentOption extends StatelessWidget {
   final Order order;
@@ -44,7 +45,7 @@ class PaymentOption extends StatelessWidget {
               leading: CircleAvatar(
                 backgroundColor: Colors.white,
                 child: SvgPicture.asset(
-                  "assets/payment/cash.svg",
+                  kSvgCashPayment,
                   fit: BoxFit.cover,
                 ),
               ),
@@ -85,7 +86,7 @@ class PaymentOption extends StatelessWidget {
               leading: CircleAvatar(
                 backgroundColor: Colors.white,
                 child: SvgPicture.asset(
-                  "assets/payment/bank.svg",
+                  kSvgBankPayment,
                   fit: BoxFit.cover,
                 ),
               ),
@@ -127,9 +128,13 @@ class PaymentOption extends StatelessWidget {
               leading: CircleAvatar(
                 backgroundColor: Colors.white,
                 //TODO: fix GCash Asset
-                child: SvgPicture.asset(
-                  "assets/payment/gcash.svg",
-                  fit: BoxFit.cover,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: SvgPicture.asset(
+                    kSvgGCashPayment,
+                    fit: BoxFit.contain,
+                    colorBlendMode: BlendMode.color,
+                  ),
                 ),
               ),
               title: Text(

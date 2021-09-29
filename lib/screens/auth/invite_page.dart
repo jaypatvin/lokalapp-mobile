@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
+import 'package:screen_loader/screen_loader.dart';
 
 import '../../providers/invite.dart';
 import '../../providers/post_requests/auth_body.dart';
@@ -17,11 +18,11 @@ class InvitePage extends StatefulWidget {
   _InvitePageState createState() => _InvitePageState();
 }
 
-class _InvitePageState extends State<InvitePage> {
+class _InvitePageState extends State<InvitePage> with ScreenLoader {
   final TextEditingController _codeController = TextEditingController();
   bool _displayError = false;
 
-  void _validateInviteCode(BuildContext context, String code) async {
+  Future<void> _validateInviteCode(BuildContext context, String code) async {
     final invite = context.read<Invite>();
     final user = context.read<CurrentUser>();
 
@@ -104,7 +105,7 @@ class _InvitePageState extends State<InvitePage> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget screen(BuildContext context) {
     return Scaffold(
       backgroundColor: kInviteScreenColor,
       body: Padding(
@@ -145,7 +146,8 @@ class _InvitePageState extends State<InvitePage> {
                 "JOIN",
                 kTealColor,
                 true,
-                () => _validateInviteCode(context, _codeController.text),
+                () async => await performFuture<void>(() async =>
+                    await _validateInviteCode(context, _codeController.text)),
                 textStyle: TextStyle(color: kNavyColor),
               ),
             ),

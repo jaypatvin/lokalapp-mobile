@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:lokalapp/screens/activity/components/order_details_buttons/message_buttons.dart';
+import 'package:lottie/lottie.dart';
 
 import '../../../models/order.dart';
+import '../../../utils/constants.dart';
 import '../../../utils/themes.dart';
 import '../../../widgets/app_button.dart';
+import '../components/order_details_buttons/message_buttons.dart';
 import '../components/transaction_details.dart';
 
 class PaymentConfirmed extends StatelessWidget {
@@ -63,14 +65,14 @@ class PaymentConfirmed extends StatelessWidget {
                   children: [
                     Positioned.fill(
                       child: SvgPicture.asset(
-                        "assets/houses_background.svg",
+                        kSvgBackgroundHouses,
                         fit: BoxFit.cover,
                       ),
                     ),
                     Positioned.fill(
-                      child: SvgPicture.asset(
-                        "assets/processing.svg",
-                        fit: BoxFit.scaleDown,
+                      child: Lottie.asset(
+                        kAnimationPaymentReceived,
+                        fit: BoxFit.contain,
                       ),
                     ),
                   ],

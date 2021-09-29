@@ -1,8 +1,10 @@
 import 'package:after_layout/after_layout.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 
 import '../../services/database.dart';
+import '../../utils/constants.dart';
 import '../../utils/shared_preference.dart';
 import '../../utils/themes.dart';
 import 'transactions.dart';
@@ -87,8 +89,15 @@ class _ActivityState extends State<Activity>
         if (snapshot != null &&
             (snapshot.connectionState != ConnectionState.done ||
                 snapshot.hasError)) {
-          return Center(
-            child: CircularProgressIndicator(),
+          return SizedBox(
+            width: double.infinity,
+            height: double.infinity,
+            child: DecoratedBox(
+              decoration: const BoxDecoration(
+                color: Colors.white,
+              ),
+              child: Lottie.asset(kAnimationLoading),
+            ),
           );
         }
         snapshot.data.docs.forEach((doc) {

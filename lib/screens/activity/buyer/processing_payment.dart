@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:lokalapp/screens/activity/components/order_details_buttons/message_buttons.dart';
+import 'package:lottie/lottie.dart';
 
 import '../../../models/order.dart';
+import '../../../utils/constants.dart';
 import '../../../utils/themes.dart';
 import '../../../widgets/app_button.dart';
+import '../components/order_details_buttons/message_buttons.dart';
 import '../components/transaction_details.dart';
 
 enum PaymentMode { cash, bank, gCash }
@@ -83,13 +85,13 @@ class ProcessingPayment extends StatelessWidget {
                   children: [
                     Positioned.fill(
                       child: SvgPicture.asset(
-                        "assets/houses_background.svg",
+                        kSvgBackgroundHouses,
                         fit: BoxFit.cover,
                       ),
                     ),
                     Positioned.fill(
-                      child: SvgPicture.asset(
-                        "assets/processing.svg",
+                      child: Lottie.asset(
+                        kAnimationPaymentReceived,
                         fit: BoxFit.scaleDown,
                       ),
                     ),
@@ -100,7 +102,8 @@ class ProcessingPayment extends StatelessWidget {
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 32.0),
                 child: Text(
-                  "Please wait for the Shop to confirm your payment. We will notify you once the payment has been confirmed.",
+                  "Please wait for the Shop to confirm your payment. "
+                  "We will notify you once the payment has been confirmed.",
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 16.0,
@@ -116,7 +119,6 @@ class ProcessingPayment extends StatelessWidget {
                   isBuyer: true,
                 ),
               ),
-              // Spacer(),
               SizedBox(height: 24.0),
               _buildButtons(context),
               SizedBox(height: 24.0)

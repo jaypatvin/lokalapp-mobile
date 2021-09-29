@@ -1,44 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:lottie/lottie.dart';
 
+import '../../utils/constants.dart';
 import '../../utils/themes.dart';
+import '../../widgets/app_button.dart';
 import '../../widgets/custom_app_bar.dart';
-import '../../widgets/rounded_button.dart';
 import '../add_product_screen/add_product.dart';
+import '../profile_screens/profile.dart';
+import '../profile_screens/user_shop.dart';
 
 class AddShopConfirmation extends StatelessWidget {
-  Widget listingButton(BuildContext context) {
-    return FlatButton(
-      minWidth: double.infinity,
-      height: MediaQuery.of(context).size.height * 0.058,
-      child: Text(
-        "+ Add a New Product",
-        style: TextStyle(
-          color: Color(0XFF09A49A),
-          fontFamily: "Goldplay",
-          fontWeight: FontWeight.bold,
-          fontSize: 16.0,
-        ),
-      ),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(30.0),
-        side: BorderSide(
-          color: kTealColor,
-        ),
-      ),
-      onPressed: () {
-        // TODO: where to go from here
-        int count = 0;
-        Navigator.of(context).popUntil((_) => count++ >= 4);
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (BuildContext context) => AddProduct(),
-          ),
-        );
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
@@ -52,58 +24,69 @@ class AddShopConfirmation extends StatelessWidget {
         buildLeading: false,
       ),
       body: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 5.0),
         width: width,
         height: height * 0.8,
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Spacer(),
             Container(
               height: height * 0.3,
+              constraints: BoxConstraints(),
               child: Stack(
                 alignment: Alignment.center,
                 children: [
-                  Image(
-                    image: AssetImage("assets/product_added.png"),
-                    fit: BoxFit.cover,
+                  Lottie.asset(
+                    kAnimationShopOpen,
+                    fit: BoxFit.contain,
                   ),
-                  Image(
-                    image: AssetImage("assets/product_added_2.png"),
-                    fit: BoxFit.cover,
-                  ),
-                  Positioned.fill(
-                    child: Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Text(
-                        "Your Shop is now open for business!\nGet ready to add products to your shop.",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontFamily: "Goldplay",
-                          fontSize: height * 0.023,
-                        ),
-                      ),
-                    ),
+                  SvgPicture.asset(
+                    kSvgBackgroundHouses,
+                    fit: BoxFit.fill,
                   ),
                 ],
               ),
             ),
+            Text(
+              "Your Shop is now open for business!\n"
+              "Get ready to add products to your shop.",
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.bodyText1,
+            ),
             Spacer(),
-            listingButton(context),
-            SizedBox(height: height * 0.02),
-            RoundedButton(
-              label: "Back to My Shop",
-              height: 10,
-              minWidth: double.infinity,
-              fontSize: 16,
-              fontWeight: FontWeight.w700,
-              fontFamily: "GoldplayBold",
-              fontColor: Colors.white,
-              onPressed: () {
-                // TODO: define route names for easier navigation
-                int count = 0;
-                Navigator.of(context).popUntil((_) => count++ >= 4);
-              },
+            SizedBox(
+              width: double.infinity,
+              child: AppButton(
+                "+ Add a New Product",
+                kTealColor,
+                false,
+                () {
+                  Navigator.popUntil(
+                    context,
+                    ModalRoute.withName(ProfileScreen.routeName),
+                  );
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (BuildContext context) => AddProduct(),
+                    ),
+                  );
+                },
+              ),
+            ),
+            SizedBox(
+              width: double.infinity,
+              child: AppButton(
+                "Back to My Shop",
+                kTealColor,
+                true,
+                () {
+                  Navigator.popUntil(
+                    context,
+                    ModalRoute.withName(UserShop.routeName),
+                  );
+                },
+              ),
             ),
           ],
         ),
