@@ -1,11 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:lottie/lottie.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/activities.dart';
+import '../utils/constants.dart';
 import '../utils/themes.dart';
 import '../widgets/custom_app_bar.dart';
 import 'cart/cart_container.dart';
@@ -27,7 +29,6 @@ class _HomeState extends State<Home> {
         vertical: 15.h,
       ),
       child: GestureDetector(
-
         onTap: () => pushNewScreen(
           context,
           screen: DraftPost(),
@@ -93,7 +94,16 @@ class _HomeState extends State<Home> {
               child: Consumer<Activities>(
                 builder: (context, activities, child) {
                   return activities.isLoading
-                      ? Center(child: CircularProgressIndicator())
+                      ? SizedBox(
+                          width: double.infinity,
+                          height: double.infinity,
+                          child: DecoratedBox(
+                            decoration: const BoxDecoration(
+                              color: Colors.white,
+                            ),
+                            child: Lottie.asset(kAnimationLoading),
+                          ),
+                        )
                       : RefreshIndicator(
                           onRefresh: () => activities.fetch(),
                           child: Timeline(activities.feed),

@@ -2,8 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:lokalapp/screens/profile_screens/user_shop.dart';
-import '../../verification_screens/verify_screen.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 
@@ -13,6 +11,8 @@ import '../../../utils/themes.dart';
 import '../../../widgets/app_button.dart';
 import '../../add_shop_screens/add_shop.dart';
 import '../../chat/components/chat_avatar.dart';
+import '../../verification_screens/verify_screen.dart';
+import '../user_shop.dart';
 
 class UserShopBanner extends StatefulWidget {
   const UserShopBanner({Key key}) : super(key: key);
@@ -168,12 +168,10 @@ class _UserShopBannerState extends State<UserShopBanner> {
                   ),
                   GestureDetector(
                     onTap: () {
-                      pushNewScreen(
+                      pushNewScreenWithRouteSettings(
                         context,
                         screen: UserShop(),
-                        withNavBar: true, // OPTIONAL VALUE. True by default.
-                        pageTransitionAnimation:
-                            PageTransitionAnimation.cupertino,
+                        settings: RouteSettings(name: UserShop.routeName),
                       );
                     },
                     child: Icon(

@@ -1,8 +1,10 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:lottie/lottie.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
+import 'package:screen_loader/screen_loader.dart';
 
 import 'providers/activities.dart';
 import 'providers/cart.dart';
@@ -19,6 +21,7 @@ import 'providers/users.dart';
 import 'root/root.dart';
 import 'screens/chat/chat_helpers.dart';
 import 'services/local_image_service.dart';
+import 'utils/constants.dart';
 import 'utils/shared_preference.dart';
 import 'utils/themes.dart';
 import 'utils/utility.dart';
@@ -116,36 +119,48 @@ class _MyAppState extends State<MyApp> {
         builder: (context, snapshot) {
           return ScreenUtilInit(
             builder: () {
-              return MaterialApp(
-                debugShowCheckedModeBanner: false,
-                title: 'Lokal',
-                theme: ThemeData(
-                  fontFamily: "Goldplay",
-                  textTheme: TextTheme(
-                    headline1: TextStyle(
-                      fontSize: 30.0.sp,
-                      color: kNavyColor,
-                      fontWeight: FontWeight.bold,
+              return ScreenLoaderApp(
+                globalLoader: SizedBox(
+                  width: double.infinity,
+                  height: double.infinity,
+                  child: DecoratedBox(
+                    decoration: const BoxDecoration(
+                      color: Colors.white,
                     ),
-                    headline6: TextStyle(
-                      fontSize: 14.0.sp,
-                      fontFamily: "Goldplay",
-                      fontWeight: FontWeight.bold,
-                      color: kTealColor,
-                    ),
-                    bodyText1: TextStyle(
-                      fontSize: 16.0.sp,
-                      color: kNavyColor,
-                      fontWeight: FontWeight.w500,
-                    ),
-                    bodyText2: TextStyle(
-                      color: kNavyColor,
-                      fontWeight: FontWeight.w500,
-                    ),
+                    child: Lottie.asset(kAnimationLoading),
                   ),
-                  scaffoldBackgroundColor: Colors.white,
                 ),
-                home: Root(),
+                app: MaterialApp(
+                  debugShowCheckedModeBanner: false,
+                  title: 'Lokal',
+                  theme: ThemeData(
+                    fontFamily: "Goldplay",
+                    textTheme: TextTheme(
+                      headline1: TextStyle(
+                        fontSize: 30.0.sp,
+                        color: kNavyColor,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      headline6: TextStyle(
+                        fontSize: 14.0.sp,
+                        fontFamily: "Goldplay",
+                        fontWeight: FontWeight.bold,
+                        color: kTealColor,
+                      ),
+                      bodyText1: TextStyle(
+                        fontSize: 16.0.sp,
+                        color: kNavyColor,
+                        fontWeight: FontWeight.w500,
+                      ),
+                      bodyText2: TextStyle(
+                        color: kNavyColor,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    scaffoldBackgroundColor: Colors.white,
+                  ),
+                  home: Root(),
+                ),
               );
             },
           );

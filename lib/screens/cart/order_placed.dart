@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:lokalapp/screens/cart/checkout_cart.dart';
-import 'package:lokalapp/screens/discover/discover.dart';
+import 'package:lottie/lottie.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 
+import '../../utils/constants.dart';
 import '../../utils/themes.dart';
 import '../../widgets/app_button.dart';
 import '../../widgets/custom_app_bar.dart';
+import '../discover/discover.dart';
+import 'checkout_cart.dart';
 
 class OrderPlaced extends StatelessWidget {
   static const routeName = "/cart/orderPlaced";
@@ -48,8 +49,8 @@ class OrderPlaced extends StatelessWidget {
             Container(
               height: 140.0,
               width: double.infinity,
-              child: SvgPicture.asset(
-                "assets/success.svg",
+              child: Lottie.asset(
+                kAnimationOk,
               ),
             ),
             SizedBox(height: 32),

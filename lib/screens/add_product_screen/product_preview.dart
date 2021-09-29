@@ -1,23 +1,24 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:lokalapp/models/lokal_images.dart';
-import 'package:lokalapp/providers/post_requests/operating_hours_body.dart';
-import 'package:lokalapp/providers/products.dart';
-import 'package:lokalapp/providers/shops.dart';
-import 'package:lokalapp/providers/user.dart';
-import 'package:lokalapp/screens/add_product_screen/confirmation.dart';
-import 'package:lokalapp/screens/add_product_screen/product_schedule.dart';
-import 'package:lokalapp/services/local_image_service.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 import 'package:provider/provider.dart';
+import 'package:screen_loader/screen_loader.dart';
 
+import '../../models/lokal_images.dart';
+import '../../providers/post_requests/operating_hours_body.dart';
 import '../../providers/post_requests/product_body.dart';
+import '../../providers/products.dart';
+import '../../providers/shops.dart';
+import '../../providers/user.dart';
+import '../../services/local_image_service.dart';
 import '../../utils/themes.dart';
 import '../../widgets/custom_app_bar.dart';
 import '../../widgets/rounded_button.dart';
 import 'components/add_product_gallery.dart';
+import 'confirmation.dart';
+import 'product_schedule.dart';
 
 class ProductPreview extends StatefulWidget {
   final AddProductGallery gallery;
@@ -31,7 +32,7 @@ class ProductPreview extends StatefulWidget {
   _ProductPreviewState createState() => _ProductPreviewState();
 }
 
-class _ProductPreviewState extends State<ProductPreview> {
+class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
   PhotoViewController controller;
   int _current = 0;
   List<File> images;
@@ -159,7 +160,6 @@ class _ProductPreviewState extends State<ProductPreview> {
   }
 
   Future<bool> setAvailability() async {
-    var user = Provider.of<CurrentUser>(context, listen: false);
     var products = Provider.of<Products>(context, listen: false);
     var product = products.items.last; // this should get the latest item added
     var hoursBody = Provider.of<OperatingHoursBody>(context, listen: false);
@@ -200,7 +200,7 @@ class _ProductPreviewState extends State<ProductPreview> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget screen(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
     return Scaffold(
@@ -240,30 +240,9 @@ class _ProductPreviewState extends State<ProductPreview> {
                   fontWeight: FontWeight.w700,
                   fontFamily: "GoldplayBold",
                   fontColor: Colors.white,
-                  onPressed: onConfirm,
-                  // onPressed: () async {
-                  //   // if (success) {
-                  //   //   Navigator.push(
-                  //   //     context,
-                  //   //     MaterialPageRoute(
-                  //   //       builder: (BuildContext context) =>
-                  //   //           AddProductConfirmation(),
-                  //   //     ),
-                  //   //   );
-                  //   // } else if (!success) {
-                  //   //   final snackBar = SnackBar(
-                  //   //     content: Text('Error loading image'),
-                  //   //     action: SnackBarAction(
-                  //   //       label: 'Undo',
-                  //   //       onPressed: () {
-                  //   //         // Some code to undo the change.
-                  //   //       },
-                  //   //     ),
-                  //   //   );
-
-                  //   //   ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                  //   // }
-                  // },
+                  onPressed: () async => await performFuture<void>(
+                    () async => await onConfirm(),
+                  ),
                 ),
                 SizedBox(
                   height: height * 0.02,

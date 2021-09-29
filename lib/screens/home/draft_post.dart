@@ -5,6 +5,7 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:persistent_bottom_nav_bar/models/nested_will_pop_scope.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:provider/provider.dart';
+import 'package:screen_loader/screen_loader.dart';
 
 import '../../models/lokal_images.dart';
 import '../../providers/activities.dart';
@@ -23,7 +24,8 @@ class DraftPost extends StatefulWidget {
   _DraftPostState createState() => _DraftPostState();
 }
 
-class _DraftPostState extends State<DraftPost> with TickerProviderStateMixin {
+class _DraftPostState extends State<DraftPost>
+    with TickerProviderStateMixin, ScreenLoader {
   final TextEditingController _userController = TextEditingController();
   final GlobalKey<ScaffoldState> _key = GlobalKey<ScaffoldState>();
   CustomPickerDataProvider provider;
@@ -126,7 +128,12 @@ class _DraftPostState extends State<DraftPost> with TickerProviderStateMixin {
           SizedBox(
             height: 40.0.h,
             width: 100.0.w,
-            child: AppButton("POST", kTealColor, true, _postHandler),
+            child: AppButton(
+              "POST",
+              kTealColor,
+              true,
+              () async => await performFuture(() async => await _postHandler()),
+            ),
           ),
         ],
       ),
@@ -152,7 +159,7 @@ class _DraftPostState extends State<DraftPost> with TickerProviderStateMixin {
     );
   }
 
-  void _postHandler() async {
+  Future<void> _postHandler() async {
     final service = context.read<LocalImageService>();
     final activities = context.read<Activities>();
     final user = context.read<CurrentUser>();
@@ -206,7 +213,6 @@ class _DraftPostState extends State<DraftPost> with TickerProviderStateMixin {
     if (_userController.text.isEmpty && provider.picked.isEmpty) {
       return true;
     }
-    final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
     return showModalBottomSheet<bool>(
       context: context,
@@ -276,7 +282,7 @@ class _DraftPostState extends State<DraftPost> with TickerProviderStateMixin {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget screen(BuildContext context) {
     return NestedWillPopScope(
       onWillPop: onWillPop,
       child: Scaffold(

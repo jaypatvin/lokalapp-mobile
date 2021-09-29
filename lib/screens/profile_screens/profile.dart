@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:persistent_bottom_nav_bar/models/nested_will_pop_scope.dart';
 import 'package:provider/provider.dart';
+import 'package:screen_loader/screen_loader.dart';
 
 import '../../providers/activities.dart';
 import '../../providers/user.dart';
@@ -19,17 +20,23 @@ class ProfileScreen extends StatefulWidget {
   _ProfileScreenState createState() => _ProfileScreenState();
 }
 
-class _ProfileScreenState extends State<ProfileScreen> {
+class _ProfileScreenState extends State<ProfileScreen> with ScreenLoader {
   final _pageController = PageController(initialPage: 0);
 
   @override
-  Widget build(BuildContext context) {
+  Widget screen(BuildContext context) {
     final user = context.read<CurrentUser>();
     return NestedWillPopScope(
       onWillPop: () async {
         if (_pageController.page == 0)
           return true;
         else {
+          performFuture(() async {
+            await Future.delayed(
+              const Duration(seconds: 5),
+              () => 'Large Latte',
+            );
+          });
           _pageController.animateToPage(
             0,
             duration: const Duration(milliseconds: 250),
@@ -77,20 +84,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ),
                         ],
                       ),
-                      SingleChildScrollView(
-                        child: Container(
-                          color: Color(0XFFF1FAFF),
-                          child: Consumer<Activities>(
-                            builder: (context, activities, child) {
-                              return activities.isLoading
-                                  ? Center(child: CircularProgressIndicator())
-                                  : RefreshIndicator(
-                                      onRefresh: () => activities.fetch(),
-                                      child: Timeline(
-                                        activities.findByUser(user.id),
-                                      ),
-                                    );
-                            },
+                      GestureDetector(
+                        onPanUpdate: (data) {
+                          if (data.delta.dx > 0) {
+                            Navigator.maybePop(context);
+                          }
+                        },
+                        child: SingleChildScrollView(
+                          child: Container(
+                            color: Color(0XFFF1FAFF),
+                            child: Consumer<Activities>(
+                              builder: (context, activities, child) {
+                                return activities.isLoading
+                                    ? Center(child: CircularProgressIndicator())
+                                    : RefreshIndicator(
+                                        onRefresh: () => activities.fetch(),
+                                        child: Timeline(
+                                          activities.findByUser(user.id),
+                                        ),
+                                      );
+                              },
+                            ),
                           ),
                         ),
                       ),
@@ -105,4 +119,3 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 }
-

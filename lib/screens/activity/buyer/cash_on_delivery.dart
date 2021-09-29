@@ -2,6 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:screen_loader/screen_loader.dart';
 
 import '../../../models/order.dart';
 import '../../../providers/user.dart';
@@ -11,20 +12,25 @@ import '../../../widgets/app_button.dart';
 import '../../../widgets/custom_app_bar.dart';
 import 'processing_payment.dart';
 
-class CashOnDelivery extends StatelessWidget {
+class CashOnDelivery extends StatefulWidget {
   final Order order;
   CashOnDelivery({Key key, @required this.order}) : super(key: key);
 
+  @override
+  _CashOnDeliveryState createState() => _CashOnDeliveryState();
+}
+
+class _CashOnDeliveryState extends State<CashOnDelivery> with ScreenLoader {
   final _termsConditionHandler = TapGestureRecognizer()
     ..onTap = () {
       print("Terms & Conditions tapped");
     };
 
-  void _onSubmitHandler(BuildContext context) {
+  Future<void> _onSubmitHandler(BuildContext context) {
     final idToken = Provider.of<CurrentUser>(context, listen: false).idToken;
     LokalApiService.instance.orders.pay(
       idToken: idToken,
-      orderId: this.order.id,
+      orderId: this.widget.order.id,
       data: <String, String>{
         "payment_method": "cod",
       },
@@ -36,7 +42,7 @@ class CashOnDelivery extends StatelessWidget {
           context,
           MaterialPageRoute(
             builder: (context) => ProcessingPayment(
-              order: this.order,
+              order: this.widget.order,
               paymentMode: PaymentMode.bank,
             ),
           ),
@@ -46,9 +52,10 @@ class CashOnDelivery extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget screen(BuildContext context) {
     final numberFormat = NumberFormat("#,###.0#", "en_US");
     final price = this
+        .widget
         .order
         .products
         .fold(0.0, (double prev, product) => prev + product.productPrice);
@@ -121,7 +128,8 @@ class CashOnDelivery extends StatelessWidget {
                 "Submit",
                 kTealColor,
                 true,
-                () => _onSubmitHandler(context),
+                () async => await performFuture<void>(
+                    () async => await _onSubmitHandler(context)),
                 textStyle: TextStyle(fontSize: 13.0),
               ),
             ),

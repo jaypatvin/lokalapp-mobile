@@ -37,7 +37,7 @@ class AppButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FlatButton(
-      height: MediaQuery.of(context).size.height * 0.05,
+      //height: MediaQuery.of(context).size.height * 0.05,
       color: isFilled ? this.color : Colors.transparent,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20.0),

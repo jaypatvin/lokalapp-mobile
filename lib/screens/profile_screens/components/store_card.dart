@@ -28,7 +28,6 @@ class StoreCard extends StatelessWidget {
             ? Center(child: CircularProgressIndicator())
             : GridView.builder(
                 shrinkWrap: true,
-                // primary: true,
                 physics: NeverScrollableScrollPhysics(),
                 itemCount: items.length,
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -52,8 +51,6 @@ class StoreCard extends StatelessWidget {
                       );
                     },
                     child: ProductCard(
-                      // height: MediaQuery.of(context).size.height * 0.4,
-                      // width: double.infinity,
                       productId: items[index].id,
                       name: items[index].name,
                       imageUrl: isGalleryEmpty ? '' : productImage.url,

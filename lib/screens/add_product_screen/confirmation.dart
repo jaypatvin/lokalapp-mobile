@@ -1,34 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:lokalapp/utils/themes.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:lottie/lottie.dart';
+
+import '../../utils/constants.dart';
+import '../../utils/themes.dart';
+import '../../widgets/app_button.dart';
 import '../../widgets/custom_app_bar.dart';
-import '../../widgets/rounded_button.dart';
+import '../profile_screens/user_shop.dart';
 
 class AddProductConfirmation extends StatelessWidget {
-  Widget listingButton(BuildContext context) {
-    return FlatButton(
-      minWidth: double.infinity,
-      height: MediaQuery.of(context).size.height * 0.058,
-      child: Text(
-        "Go to Listing",
-        style: TextStyle(
-          color: Color(0XFF09A49A),
-          fontFamily: "Goldplay",
-          fontWeight: FontWeight.bold,
-          fontSize: 16.0,
-        ),
-      ),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(30.0),
-        side: BorderSide(
-          color: kTealColor,
-        ),
-      ),
-      onPressed: () {
-        // TODO: where to go from here
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
@@ -54,12 +34,9 @@ class AddProductConfirmation extends StatelessWidget {
               child: Stack(
                 alignment: Alignment.center,
                 children: [
-                  Image(
-                    image: AssetImage("assets/product_added.png"),
-                    fit: BoxFit.cover,
-                  ),
-                  Image(
-                    image: AssetImage("assets/product_added_2.png"),
+                  Lottie.asset(kAnimationProductAdded, fit: BoxFit.contain),
+                  SvgPicture.asset(
+                    kSvgBackgroundHouses,
                     fit: BoxFit.cover,
                   ),
                   Positioned.fill(
@@ -79,21 +56,30 @@ class AddProductConfirmation extends StatelessWidget {
               ),
             ),
             Spacer(),
-            listingButton(context),
-            SizedBox(height: height * 0.02),
-            RoundedButton(
-              label: "Back to My Shop",
-              height: 10,
-              minWidth: double.infinity,
-              fontSize: 16,
-              fontWeight: FontWeight.w700,
-              fontFamily: "GoldplayBold",
-              fontColor: Colors.white,
-              onPressed: () {
-                // TODO: define route names for easier navigation
-                int count = 0;
-                Navigator.of(context).popUntil((_) => count++ >= 5);
-              },
+            SizedBox(
+              width: double.infinity,
+              child: AppButton(
+                "Go to Listing",
+                kTealColor,
+                false,
+                () {
+                  // TODO: what to do from here
+                },
+              ),
+            ),
+            SizedBox(
+              width: double.infinity,
+              child: AppButton(
+                "Back to my Shop",
+                kTealColor,
+                true,
+                () {
+                  Navigator.popUntil(
+                    context,
+                    ModalRoute.withName(UserShop.routeName),
+                  );
+                },
+              ),
             ),
           ],
         ),
