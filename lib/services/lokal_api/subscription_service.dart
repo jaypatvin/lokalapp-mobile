@@ -71,7 +71,7 @@ class SubscriptionService {
     final body = json.encode(data);
 
     final response = await http.put(
-      "$subscriptionPlansUrl/$planId/overrideDate",
+      "$subscriptionPlansUrl/$planId/overrideDates",
       headers: {
         "Content-Type": "application/json",
         "Authorization": "Bearer $idToken"

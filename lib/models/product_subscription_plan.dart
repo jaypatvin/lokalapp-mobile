@@ -6,10 +6,10 @@ import 'package:intl/intl.dart';
 import 'operating_hours.dart';
 import 'order.dart';
 
-class OverridenDates {
+class OverrideDate {
   final DateTime originalDate;
   final DateTime newDate;
-  const OverridenDates({
+  const OverrideDate({
     @required this.originalDate,
     @required this.newDate,
   });
@@ -21,8 +21,8 @@ class OverridenDates {
     };
   }
 
-  factory OverridenDates.fromMap(Map<String, dynamic> map) {
-    return OverridenDates(
+  factory OverrideDate.fromMap(Map<String, dynamic> map) {
+    return OverrideDate(
       originalDate: DateFormat("yyyy-MM-dd").parse(map['original_date']),
       newDate: DateFormat("yyyy-MM-dd").parse(map['new_date']),
     );
@@ -30,8 +30,8 @@ class OverridenDates {
 
   String toJson() => json.encode(toMap());
 
-  factory OverridenDates.fromJson(String source) =>
-      OverridenDates.fromMap(json.decode(source));
+  factory OverrideDate.fromJson(String source) =>
+      OverrideDate.fromMap(json.decode(source));
 
   @override
   String toString() =>
@@ -41,7 +41,7 @@ class OverridenDates {
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
 
-    return other is OverridenDates &&
+    return other is OverrideDate &&
         other.originalDate == originalDate &&
         other.newDate == newDate;
   }
@@ -195,6 +195,7 @@ class ProductSubscriptionSchedule {
   final List<CustomDates> schedule;
   final List<DateTime> customDates;
   final List<DateTime> unavailableDates;
+  final List<OverrideDate> overrideDates;
 
   const ProductSubscriptionSchedule({
     @required this.startDates,
@@ -205,6 +206,7 @@ class ProductSubscriptionSchedule {
     @required this.customDates,
     @required this.unavailableDates,
     @required this.autoReschedule,
+    @required this.overrideDates,
   });
 
   ProductSubscriptionSchedule copyWith({
@@ -216,6 +218,7 @@ class ProductSubscriptionSchedule {
     List<DateTime> customDates,
     List<DateTime> unavailableDates,
     bool autoReschedule,
+    List<OverrideDate> overrideDates,
   }) {
     return ProductSubscriptionSchedule(
       startDates: startDates ?? this.startDates,
@@ -226,6 +229,7 @@ class ProductSubscriptionSchedule {
       customDates: customDates ?? this.customDates,
       unavailableDates: unavailableDates ?? this.unavailableDates,
       autoReschedule: autoReschedule ?? this.autoReschedule,
+      overrideDates: overrideDates ?? this.overrideDates,
     );
   }
 
@@ -233,22 +237,32 @@ class ProductSubscriptionSchedule {
     var _customDates = <DateTime>[];
     var _unavailableDates = <DateTime>[];
     var _startDates = <DateTime>[];
+    var _overrideDates = <OverrideDate>[];
 
-    if (map['plan'] != null) {
-      if (map['plan']['custom_dates'] != null) {
-        List<String> customDates =
-            List<String>.from(map['plan']['custom_dates']);
-        customDates.forEach((element) {
-          _customDates.add(DateFormat("yyyy-MM-dd").parse(element));
-        });
-      }
-      if (map['plan']['unavailable_dates'] != null) {
-        List<String> unavailableDates =
-            List<String>.from(map['plan']['unavailable_dates']);
-        unavailableDates.forEach((element) {
-          _unavailableDates.add(DateFormat("yyyy-MM-dd").parse(element));
-        });
-      }
+    if (map['custom_dates'] != null) {
+      List<String> customDates = List<String>.from(map['custom_dates']);
+      customDates.forEach((element) {
+        _customDates.add(DateFormat("yyyy-MM-dd").parse(element));
+      });
+    }
+    if (map['unavailable_dates'] != null) {
+      List<String> unavailableDates =
+          List<String>.from(map['unavailable_dates']);
+      unavailableDates.forEach((element) {
+        _unavailableDates.add(DateFormat("yyyy-MM-dd").parse(element));
+      });
+    }
+
+    if (map['override_dates'] != null) {
+      Map<String, String> overrideDates = Map.from(map['override_dates']);
+      overrideDates.forEach((key, value) {
+        _overrideDates.add(
+          OverrideDate(
+            originalDate: DateFormat("yyyy-MM-dd").parse(key),
+            newDate: DateFormat("yyyy-MM-dd").parse(value),
+          ),
+        );
+      });
     }
 
     if (map['start_dates'] != null) {
@@ -269,6 +283,7 @@ class ProductSubscriptionSchedule {
       schedule: [],
       customDates: _customDates,
       unavailableDates: _unavailableDates,
+      overrideDates: _overrideDates,
     );
   }
 
@@ -279,7 +294,8 @@ class ProductSubscriptionSchedule {
   String toString() {
     return 'ProductSubscriptionSchedule(startDates: $startDates, '
         'lastDate: $lastDate, repeatUnit: $repeatUnit, repeatType: $repeatType, '
-        'autoReschedule: $autoReschedule, schedule: $schedule)';
+        'autoReschedule: $autoReschedule, schedule: $schedule, '
+        'overrideDates: $overrideDates)';
   }
 
   @override
@@ -292,7 +308,8 @@ class ProductSubscriptionSchedule {
         other.repeatUnit == repeatUnit &&
         other.repeatType == repeatType &&
         other.autoReschedule == autoReschedule &&
-        listEquals(other.schedule, schedule);
+        listEquals(other.schedule, schedule) &&
+        listEquals(other.overrideDates, overrideDates);
   }
 
   @override
@@ -302,7 +319,8 @@ class ProductSubscriptionSchedule {
         repeatUnit.hashCode ^
         repeatType.hashCode ^
         schedule.hashCode ^
-        autoReschedule.hashCode;
+        autoReschedule.hashCode ^
+        overrideDates.hashCode;
   }
 }
 

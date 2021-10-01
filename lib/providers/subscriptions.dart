@@ -64,6 +64,7 @@ class SubscriptionPlanBody {
   String buyerId;
   String shopId;
   int quantity;
+  String instruction;
   String paymentMethod;
   SubscriptionPlanBodySchedule plan;
   SubscriptionPlanBody({
@@ -71,6 +72,7 @@ class SubscriptionPlanBody {
     this.buyerId,
     this.shopId,
     this.quantity,
+    this.instruction,
     this.paymentMethod,
     this.plan,
   });
@@ -83,6 +85,7 @@ class SubscriptionPlanBody {
       'quantity': quantity,
       'payment_method': paymentMethod,
       'plan': plan.toMap(),
+      'instruction': instruction,
     };
   }
 
@@ -91,7 +94,7 @@ class SubscriptionPlanBody {
   @override
   String toString() {
     return 'SubscriptionPlanBody(productId: $productId, buyerId: $buyerId, '
-        'shopId: $shopId, quantity: $quantity, '
+        'shopId: $shopId, quantity: $quantity, instruction: $instruction, '
         'paymentMethod: $paymentMethod, plan: $plan)';
   }
 
@@ -104,6 +107,7 @@ class SubscriptionPlanBody {
         other.buyerId == buyerId &&
         other.shopId == shopId &&
         other.quantity == quantity &&
+        other.instruction == instruction &&
         other.paymentMethod == paymentMethod &&
         other.plan == plan;
   }
@@ -114,6 +118,7 @@ class SubscriptionPlanBody {
         buyerId.hashCode ^
         shopId.hashCode ^
         quantity.hashCode ^
+        instruction.hashCode ^
         paymentMethod.hashCode ^
         plan.hashCode;
   }
@@ -168,7 +173,6 @@ class SubscriptionProvider {
     String planId,
     Map<String, dynamic> data,
   ) async {
- 
     final response = await _service.manualReschedulePlan(
       idToken: _idToken,
       planId: planId,
@@ -176,6 +180,7 @@ class SubscriptionProvider {
     );
 
     if (response.statusCode != 200) {
+      print(response.body);
       return false;
     }
 
