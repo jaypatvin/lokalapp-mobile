@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:screen_loader/screen_loader.dart';
 
 import '../../models/operating_hours.dart';
 import '../../models/product.dart';
@@ -48,7 +49,8 @@ class SubscriptionSchedule extends StatefulWidget {
   _SubscriptionScheduleState createState() => _SubscriptionScheduleState();
 }
 
-class _SubscriptionScheduleState extends State<SubscriptionSchedule> {
+class _SubscriptionScheduleState extends State<SubscriptionSchedule>
+    with ScreenLoader {
   final _generator = ScheduleGenerator();
 
   // --Order details variables - should only be changed/initialized in initState
@@ -138,8 +140,6 @@ class _SubscriptionScheduleState extends State<SubscriptionSchedule> {
           )
           .toList()
             ..sort();
-
-      print(_productSelectableDates);
 
       // Subscription Schedule. Same as above where we will get the available
       // dates 45 days in the future.
@@ -289,8 +289,6 @@ class _SubscriptionScheduleState extends State<SubscriptionSchedule> {
       overridenDates.add(OverrideDate(originalDate: key, newDate: value));
     });
 
-    print({"dates": overridenDates.map((data) => data.toMap()).toList()});
-
     return await context.read<SubscriptionProvider>().manualReschedulePlan(
       widget.subscriptionPlan.id,
       {"override_dates": overridenDates.map((data) => data.toMap()).toList()},
@@ -351,7 +349,6 @@ class _SubscriptionScheduleState extends State<SubscriptionSchedule> {
   }
 
   Future<void> _displayCalendar() async {
-    print(_productSelectableDates);
     return await showDialog<void>(
       context: context,
       barrierDismissible: false,
@@ -389,7 +386,7 @@ class _SubscriptionScheduleState extends State<SubscriptionSchedule> {
     if (widget.subscriptionPlan != null) {
       final success = await _onOverrideSchedule();
       if (!success) {
-        final snackBar = SnackBar(content: Text("Failed to updated schedule"));
+        final snackBar = SnackBar(content: Text("Failed to update schedule"));
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
       }
 
@@ -422,8 +419,6 @@ class _SubscriptionScheduleState extends State<SubscriptionSchedule> {
       ),
     );
 
-    print(subscriptionPlanBody.toMap());
-
     // Pass the subscription plan body since we also need the mode of payment.
     Navigator.of(context).push(
       MaterialPageRoute(
@@ -436,7 +431,7 @@ class _SubscriptionScheduleState extends State<SubscriptionSchedule> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget screen(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(
         titleText: 'Subscription Schedule',
@@ -533,7 +528,9 @@ class _SubscriptionScheduleState extends State<SubscriptionSchedule> {
                   widget.subscriptionPlan == null ? "Next" : "Apply",
                   kTealColor,
                   true,
-                  _onSubmitHandler,
+                  () async => await performFuture<void>(
+                    () async => await _onSubmitHandler(),
+                  ),
                   textStyle: TextStyle(fontSize: 20.0.sp),
                 ),
               ),
