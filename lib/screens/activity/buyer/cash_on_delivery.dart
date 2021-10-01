@@ -58,7 +58,7 @@ class _CashOnDeliveryState extends State<CashOnDelivery> with ScreenLoader {
         .widget
         .order
         .products
-        .fold(0.0, (double prev, product) => prev + product.productPrice);
+        .fold(0.0, (double prev, product) => prev + product.price);
     return Scaffold(
       appBar: CustomAppBar(
         titleText: "Cash on Delivery",

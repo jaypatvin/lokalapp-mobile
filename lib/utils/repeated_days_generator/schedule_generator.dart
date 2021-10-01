@@ -2,14 +2,12 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbols.dart';
 import 'package:intl/intl.dart';
-import 'package:lokalapp/widgets/schedule_picker.dart';
 
 import '../../models/operating_hours.dart';
-
+import '../../widgets/schedule_picker.dart';
 import '../functions.utils.dart';
 import 'repeated_days_generator.dart';
 
-// TODO: return a class/interface
 class Schedule {
   static const List<String> ordinalNumbers = [
     "First",
@@ -45,8 +43,6 @@ class Schedule {
     DateTime startDate,
     List<DateTime> startDates,
     int startDayOfMonth,
-    TimeOfDay opening,
-    TimeOfDay closing,
   }) {
     return Schedule(
       repeatType: repeatType ?? this.repeatType,
@@ -57,6 +53,14 @@ class Schedule {
       startDates: startDates ?? this.startDates,
       startDayOfMonth: startDayOfMonth ?? this.startDayOfMonth,
     );
+  }
+
+  @override
+  String toString() {
+    return 'repeatType: $repeatType, repeatUnit: $repeatUnit, '
+        'selectableDays: $selectableDays, selectableDates: $selectableDates '
+        'startDate: $startDate, startDates: $startDates, startDayOfMonth: '
+        '$startDayOfMonth';
   }
 
   @override
@@ -90,9 +94,73 @@ class Schedule {
 class ScheduleGenerator {
   final _generator = RepeatedDaysGenerator();
 
+  /// Returns the `RepeatChoices` from the `String repeatType` from the API
+  ///
+  /// The string values should only include: `month`, `day`, `week`, and
+  /// `"unit"-"type"`
+  RepeatChoices getRepeatChoicesFromString(String repeatType) {
+    var repeatChoice = RepeatChoices.month;
+    if (repeatType.split("-").length <= 1) {
+      RepeatChoices.values.forEach((choice) {
+        if (choice.value.toLowerCase() == repeatType) {
+          repeatChoice = choice;
+        }
+      });
+    }
+    return repeatChoice;
+  }
+
+  /// Generates the initialDates for generating schedules.
+  ///
+  /// When repeatChoice is `week`, selectableDays is defaulted to all days.
+  /// `repeatType` is only needed when repeat choice is `month`.
+  List<DateTime> generateInitialDates({
+    @required RepeatChoices repeatChoice,
+    @required DateTime startDate,
+    @required int repeatEveryNUnit,
+    List<int> selectableDays,
+    String repeatType,
+  }) {
+    switch (repeatChoice) {
+      case RepeatChoices.day:
+        return _generator.getRepeatedDays(
+          startDate: startDate,
+          everyNDays: repeatEveryNUnit,
+        );
+      case RepeatChoices.week:
+        return _generator
+            .getRepeatedWeekDays(
+              startDate: startDate,
+              everyNWeeks: repeatEveryNUnit,
+              selectedDays: selectableDays,
+            )
+            .toSet()
+            .toList()
+              ..sort();
+      case RepeatChoices.month:
+        final type = repeatType.split("-");
+        // The user used the ordinal picker
+        if (type.length > 1) {
+          final _ordinal = int.tryParse(type[0]);
+          return _generator.getRepeatedMonthDaysByNthDay(
+            everyNMonths: repeatEveryNUnit,
+            ordinal: _ordinal,
+            weekday: en_USSymbols.SHORTWEEKDAYS.indexOf(type[1].capitalize()),
+            month: startDate.month,
+          );
+        }
+        return _generator.getRepeatedMonthDaysByStartDate(
+          startDate: startDate,
+          everyNMonths: repeatEveryNUnit,
+        );
+      default:
+        return [];
+    }
+  }
+
   /// Returns a generated list of dates from existing operating-hours.
   ///
-  /// This function already filters out unavailable dates and adds custome ones.
+  /// This function already filters out unavailable dates and adds custom ones.
   List<DateTime> getSelectableDates(OperatingHours operatingHours) {
     var selectableDates = <DateTime>[];
     RepeatChoices repeatChoice;
@@ -199,18 +267,19 @@ class ScheduleGenerator {
     );
 
     // Month:
-    var _startDayOfMonth = _startDate.day;
+    int _startDayOfMonth = 0;
+
     final repeatType = operatingHours.repeatType;
     var _repeatChoice = RepeatChoices.day;
     if (repeatType.split("-").length > 1) {
       _repeatChoice = RepeatChoices.month;
-      _startDayOfMonth = 0;
     } else {
       RepeatChoices.values.forEach((element) {
         if (element.value?.toLowerCase() == operatingHours.repeatType) {
           _repeatChoice = element;
         }
       });
+      _startDayOfMonth = _startDate.day;
     }
 
     return Schedule(
@@ -221,6 +290,20 @@ class ScheduleGenerator {
       startDates: _startDates,
       startDayOfMonth: _startDayOfMonth,
       selectableDates: getSelectableDates(operatingHours),
+    );
+  }
+
+  List<DateTime> getWeekDayStartDates(
+    DateTime startDate,
+    List<int> selectedDays, {
+    int everyNWeeks = 1,
+    bool validate = false,
+  }) {
+    return _generator.getRepeatedWeekDays(
+      startDate: startDate,
+      selectedDays: selectedDays,
+      everyNWeeks: everyNWeeks,
+      maxLength: selectedDays.length,
     );
   }
 }

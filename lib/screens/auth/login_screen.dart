@@ -22,7 +22,8 @@ class LoginScreen extends StatefulWidget {
   _LoginScreenState createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> with ScreenLoader<LoginScreen> {
+class _LoginScreenState extends State<LoginScreen>
+    with ScreenLoader<LoginScreen> {
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
   bool isAuth = false;
@@ -35,6 +36,7 @@ class _LoginScreenState extends State<LoginScreen> with ScreenLoader<LoginScreen
     String email,
     String password,
   }) async {
+    FocusScope.of(context).unfocus();
     CurrentUser user = Provider.of<CurrentUser>(context, listen: false);
     UserAuth auth = Provider.of<UserAuth>(context, listen: false);
     try {
@@ -172,7 +174,7 @@ class _LoginScreenState extends State<LoginScreen> with ScreenLoader<LoginScreen
                 InkWell(
                   child: Text(
                     "FORGOT PASSWORD?",
-                    style: Theme.of(context).textTheme.headline6,
+                    style: Theme.of(context).textTheme.subtitle2,
                   ),
                   onTap: () {},
                 ),

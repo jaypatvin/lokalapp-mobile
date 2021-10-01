@@ -21,6 +21,7 @@ class RepeatedDaysGenerator {
     int everyNDays = 1,
     bool validate = true,
   }) {
+    assert(everyNDays > 0);
     startDate ??= DateTime.now();
     // this logic generation is pretty straightforward
     //  we add everyNDays to the startDate until next month
@@ -41,7 +42,9 @@ class RepeatedDaysGenerator {
           startDate.year + 1 == indexDay.year) break;
     }
 
-    return repeatedDays;
+    return [
+      ...{...repeatedDays}
+    ];
   }
 
   List<DateTime> getRepeatedWeekDays({
@@ -49,10 +52,14 @@ class RepeatedDaysGenerator {
     int everyNWeeks = 1,
     List<int> selectedDays = const [0, 1, 2, 3, 4, 5, 6],
     bool validate = true,
+    int maxLength,
   }) {
+    assert(everyNWeeks > 0);
     startDate ??= DateTime.now();
     // we need to make sure that the selectedDays are sorted from 0-6 (Sunday to Saturday)
-    final _selectedDays = [...selectedDays]..sort();
+    final _selectedDays = [
+      ...{...selectedDays}
+    ]..sort();
 
     final repeatedDays = <DateTime>[];
 
@@ -91,17 +98,21 @@ class RepeatedDaysGenerator {
         if (_selectedDays.contains(day)) repeatedDays.add(indexDay);
 
         // check if the final selected day (i.e, saturday) is already reached
-        if (_selectedDays.last == day) {
+        if (_selectedDays.last == day ||
+            (maxLength != null && repeatedDays.length == maxLength)) {
           break;
         }
       }
 
       // for exactly 1 year from startDate
-      if (startDate.month == indexWeekDay.month &&
-          startDate.year + 1 == indexWeekDay.year) break;
+      if ((startDate.month == indexWeekDay.month &&
+              startDate.year + 1 == indexWeekDay.year) ||
+          (maxLength != null && repeatedDays.length == maxLength)) break;
     }
 
-    return repeatedDays;
+    return [
+      ...{...repeatedDays}
+    ];
   }
 
   List<DateTime> getRepeatedMonthDaysByStartDate({
@@ -109,6 +120,7 @@ class RepeatedDaysGenerator {
     int everyNMonths = 1,
     bool validate = true,
   }) {
+    assert(everyNMonths > 0);
     startDate ??= DateTime.now();
     final repeatedDays = <DateTime>[];
 
@@ -141,7 +153,9 @@ class RepeatedDaysGenerator {
       }
     }
 
-    return repeatedDays;
+    return [
+      ...{...repeatedDays}
+    ];
   }
 
   List<DateTime> getRepeatedMonthDaysByNthDay({
@@ -150,6 +164,7 @@ class RepeatedDaysGenerator {
     int weekday = 1, // Monday
     int month = 1, // January
   }) {
+    assert(everyNMonths > 0);
     final repeatedDays = <DateTime>[];
 
     if (weekday == 0) weekday = 7;
@@ -197,6 +212,8 @@ class RepeatedDaysGenerator {
       }
     }
 
-    return repeatedDays;
+    return [
+      ...{...repeatedDays}
+    ];
   }
 }

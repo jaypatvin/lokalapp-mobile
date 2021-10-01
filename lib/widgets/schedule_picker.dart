@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/date_symbols.dart';
 import 'package:intl/intl.dart';
-import 'package:lokalapp/utils/repeated_days_generator/repeated_days_generator.dart';
-import 'package:lokalapp/widgets/app_button.dart';
 
 import '../models/operating_hours.dart';
 import '../utils/calendar_picker/calendar_picker.dart';
 import '../utils/calendar_picker/day_of_month_picker.dart';
 import '../utils/calendar_picker/weekday_picker.dart';
 import '../utils/functions.utils.dart';
+import '../utils/repeated_days_generator/repeated_days_generator.dart';
 import '../utils/repeated_days_generator/schedule_generator.dart';
 import '../utils/themes.dart';
-import 'rounded_button.dart';
+import 'app_button.dart';
 
 /// The user can choose to repeat the schedule/subscription by day, week, or months
 enum RepeatChoices {
@@ -55,13 +55,7 @@ class SchedulePicker extends StatefulWidget {
   final String description;
 
   /// Used for multiple start dates (weekday schedule picker)
-  final void Function(List<DateTime>) onStartdatesChanged;
-
-  /// Start date for the schedule generation
-  final void Function(
-    DateTime, {
-    String repeatType,
-  }) onStartDateChanged;
+  final void Function(List<DateTime>, String repeatType) onStartDatesChanged;
 
   /// Function to be called when repeat type (day, week, month) is changed.
   ///
@@ -80,17 +74,36 @@ class SchedulePicker extends StatefulWidget {
   /// schedule generation is non-limited.
   final OperatingHours operatingHours;
 
+  /// Overrides the `RepeatChoices` enumerated on the repeatability picker.
+  /// If null, defaults to `day`, `week`, and `month` respectively.
+  ///
+  /// Repeated choices are automatically filtered using the spread operator
+  /// `[...{...elements}]`.
+  final List<RepeatChoices> repeatabilityChoices;
+
+  /// Whether the user can edit the schedule or not. Defaults to true.
+  final bool editable;
+
+  /// Whether to follow operating hours selectableDates or not. Defaults to false.
+  final bool limitSelectableDates;
+
   /// A reusable widget used for picking schedules for shops and subscriptions.
   const SchedulePicker({
     Key key,
     @required this.header,
     @required this.description,
-    @required this.onStartdatesChanged,
-    @required this.onStartDateChanged,
+    @required this.onStartDatesChanged,
     @required this.onRepeatTypeChanged,
     @required this.onRepeatUnitChanged,
     @required this.onSelectableDaysChanged,
     this.operatingHours,
+    this.repeatabilityChoices = const [
+      RepeatChoices.day,
+      RepeatChoices.week,
+      RepeatChoices.month,
+    ],
+    this.editable = true,
+    this.limitSelectableDates = false,
   }) : super(key: key);
 
   @override
@@ -99,12 +112,14 @@ class SchedulePicker extends StatefulWidget {
 
 class _SchedulePickerState extends State<SchedulePicker> {
   final _scheduleGenerator = ScheduleGenerator();
+  final _repeatUnitController = TextEditingController();
 
   List<int> _selectableDays = [];
   List<DateTime> _selectableDates = [];
 
   DateTime _startDate;
   List<DateTime> _startDates = [];
+  List<DateTime> _markedStartDates = [];
 
   int _markedStartDayOfMonth = 0;
   int _startDayOfMonth = 0;
@@ -118,15 +133,28 @@ class _SchedulePickerState extends State<SchedulePicker> {
 
   bool _usedDatePicker = true;
 
+  List<RepeatChoices> _repeatabilityChoices;
+
   @override
   void initState() {
     super.initState();
+
+    // efficient way of removing repeated choices
+    this._repeatabilityChoices = [
+      ...{...widget.repeatabilityChoices}
+    ];
 
     if (widget.operatingHours != null &&
         isValidOperatingHours(widget.operatingHours)) {
       _onOperatingHoursInit();
     } else {
       _onNonOperatingHoursInit();
+      if (!this._repeatabilityChoices.contains(RepeatChoices.day)) {
+        this._repeatChoice =
+            this._repeatabilityChoices.contains(RepeatChoices.week)
+                ? RepeatChoices.week
+                : RepeatChoices.month;
+      }
     }
   }
 
@@ -134,16 +162,44 @@ class _SchedulePickerState extends State<SchedulePicker> {
   // Used on subscription schedule and edit-shop schedule.
   void _onOperatingHoursInit() {
     final _operatingHours = widget.operatingHours;
-
     final _schedule = _scheduleGenerator.generateSchedule(_operatingHours);
 
+    if (widget.limitSelectableDates) {
+      final now = DateTime.now();
+      for (var indexDay = DateTime(now.year, now.month, now.day);
+          true;
+          indexDay = indexDay.add(
+        const Duration(days: 1),
+      ),) {
+        this._startDate = indexDay;
+        if (_schedule.repeatType == RepeatChoices.week) {
+          if (_schedule.selectableDays.contains(_startDate.day)) {
+            break;
+          }
+        } else {
+          if (_schedule.selectableDates.any((date) =>
+              date.year == _startDate.year &&
+              date.month == _startDate.month &&
+              date.day == _startDate.day)) {
+            break;
+          }
+        }
+      }
+
+      this._startDates = [_startDate];
+    }
+
     this._repeatUnit = _schedule.repeatUnit.toString();
+    this._repeatUnitController.text = this._repeatUnit;
     this._repeatChoice = _schedule.repeatType;
-    this._startDates = _schedule.startDates;
+    this._markedStartDates ??= _schedule.startDates;
     this._selectableDays = _schedule.selectableDays;
-    this._startDate = _schedule.startDate;
+    this._startDate ??= _schedule.startDate;
     this._startDayOfMonth = _schedule.startDayOfMonth;
     this._selectableDates = _schedule.selectableDates;
+
+    print(_schedule.startDayOfMonth);
+    print(_schedule.repeatType);
 
     // Month:
     var _ordinal = 0;
@@ -161,10 +217,8 @@ class _SchedulePickerState extends State<SchedulePicker> {
     if (_weekday == 7) _weekday = 7;
     _monthDayChoice = en_USSymbols.WEEKDAYS[_weekday];
 
-    _usedDatePicker = _startDayOfMonth == 0;
+    _usedDatePicker = _startDayOfMonth != 0;
 
-    // startDates have changed!
-    widget.onStartdatesChanged(_startDates);
     // repeatType has changed!
     _onRepeatChoiceChanged(_repeatChoice);
     // repeatUnit has changed!
@@ -179,11 +233,15 @@ class _SchedulePickerState extends State<SchedulePicker> {
   // opening and closing time picker are displayed.
   void _onNonOperatingHoursInit() {
     _repeatChoice = RepeatChoices.day;
+    _repeatUnitController.text = _repeatUnit = "1";
     _ordinalChoice = Schedule.ordinalNumbers[0];
     var day = DateTime.now().weekday;
-    if (day == 0) day = 7;
+    if (day == 7) day = 0;
     _monthDayChoice = en_USSymbols.WEEKDAYS[day];
     _monthChoice = en_USSymbols.MONTHS[DateTime.now().month - 1];
+
+    _onRepeatChoiceChanged(_repeatChoice);
+    _onRepeatUnitChanged(_repeatUnit);
   }
 
   void _onWeekDayPickerDayPressedHandler(int index) {
@@ -191,11 +249,11 @@ class _SchedulePickerState extends State<SchedulePicker> {
       if (this._selectableDays.contains(index)) {
         this._selectableDays.remove(index);
         widget.onSelectableDaysChanged(this._selectableDays);
-        if (this._startDates.isEmpty) return;
-        final markedStart = this._startDates.first;
+        if (this._markedStartDates.isEmpty) return;
+        final markedStart = this._markedStartDates.first;
         var startDay = markedStart.weekday;
         if (startDay == 7) startDay = 0;
-        if (startDay == index) this._startDates.clear();
+        if (startDay == index) this._markedStartDates.clear();
 
         var day = this._startDate.weekday;
         if (day == 7) day = 0;
@@ -207,11 +265,9 @@ class _SchedulePickerState extends State<SchedulePicker> {
             var day = indexDay.weekday;
             if (day == 7) day = 0;
             if (this._selectableDays.contains(day)) {
-              widget.onStartdatesChanged(_startDates);
               this._startDate = indexDay;
               return;
             } else {
-              widget.onStartdatesChanged(_startDates);
               this._startDate = null;
             }
           }
@@ -219,7 +275,7 @@ class _SchedulePickerState extends State<SchedulePicker> {
       } else {
         this._selectableDays.add(index);
         widget.onSelectableDaysChanged(this._selectableDays);
-        if (this._startDates.isNotEmpty) return;
+        if (this._markedStartDates.isNotEmpty) return;
         final now = DateTime.now();
         for (DateTime indexDay = DateTime(now.year, now.month, now.day);
             indexDay.month <= DateTime.now().month + 1;
@@ -228,10 +284,9 @@ class _SchedulePickerState extends State<SchedulePicker> {
           if (day == 7) day = 0;
           if (day == index) {
             this._startDate = indexDay;
-            this._startDates.add(indexDay);
+            this._markedStartDates.add(indexDay);
             // widget.onStartDateChanged(_startDate);
             _onStartDateChanged();
-            widget.onStartdatesChanged(_startDates);
             return;
           }
         }
@@ -266,7 +321,6 @@ class _SchedulePickerState extends State<SchedulePicker> {
               _startDayOfMonth = _markedStartDayOfMonth;
             });
             _usedDatePicker = true;
-            //repeatChoice = RepeatChoices.month;
             setMonthStartDate(day: _startDayOfMonth);
             Navigator.pop(context, this._startDayOfMonth);
           },
@@ -286,7 +340,6 @@ class _SchedulePickerState extends State<SchedulePicker> {
       );
     });
     // startDate has changed!
-    // widget.onStartDateChanged(_startDate);
     _onStartDateChanged();
   }
 
@@ -320,33 +373,30 @@ class _SchedulePickerState extends State<SchedulePicker> {
         return _CalendarPickerBody(
           height: MediaQuery.of(context).size.height,
           repeatChoice: _repeatChoice,
-          startDates: _startDates,
+          startDates: _markedStartDates,
           selectableDays: _selectableDays,
-          selectableDates: this._selectableDates,
+          selectableDates:
+              widget.limitSelectableDates ? this._selectableDates : [],
           onDayPressed: (day) {
             setState(() {
-              if (_startDates.contains(day)) {
-                _startDates.clear();
-              } else {
-                _startDates
+              if (_markedStartDates.contains(day))
+                _markedStartDates.clear();
+              else
+                _markedStartDates
                   ..clear()
                   ..add(day);
-              }
-              // startDates have changed!
-              widget.onStartdatesChanged(_startDates);
             });
           },
           onCancel: () {
-            _startDates
+            _markedStartDates
               ..clear()
               ..add(_startDate);
-            widget.onStartdatesChanged(_startDates);
             Navigator.pop(context, _startDate);
           },
           onConfirm: () {
             setState(() {
-              if (_startDates.isNotEmpty)
-                _startDate = _startDates.first;
+              if (_markedStartDates.isNotEmpty)
+                _startDate = _markedStartDates.first;
               else
                 _startDate = null;
             });
@@ -361,27 +411,24 @@ class _SchedulePickerState extends State<SchedulePicker> {
   }
 
   Widget _weekdayPicker() {
-    final height = MediaQuery.of(context).size.height;
     return Column(
       children: [
         WeekdayPicker(
-          onDayPressed: _onWeekDayPickerDayPressedHandler,
+          onDayPressed:
+              widget.editable ? _onWeekDayPickerDayPressedHandler : null,
           markedDaysMap: _selectableDays,
         ),
-        SizedBox(
-          height: height * 0.02,
-        ),
+        SizedBox(height: 10.0.h),
         if (_selectableDays.isEmpty)
           Text(
             "Select a day or days to repeat every week",
             style: kTextStyle.copyWith(
               color: Colors.red,
               fontWeight: FontWeight.normal,
+              fontSize: 16.0.sp,
             ),
           ),
-        SizedBox(
-          height: height * 0.02,
-        ),
+        SizedBox(height: 10.0.h),
       ],
     );
   }
@@ -392,24 +439,28 @@ class _SchedulePickerState extends State<SchedulePicker> {
       final weekday = en_USSymbols.SHORTWEEKDAYS[weekdayIndex].toLowerCase();
       final ordinalNumber = Schedule.ordinalNumbers.indexOf(_ordinalChoice) + 1;
       final _repeatType = "$ordinalNumber-$weekday";
-      // setState(() {
-      //   _startDate = _getStartDateByNthDay(
-      //     ordinalNumber: ordinalNumber,
-      //     weekdayIndex: weekdayIndex,
-      //   );
-      // });
-      print(_repeatType);
       return _repeatType;
     } else {
       final _repeatType = _repeatChoice.value?.toLowerCase();
-      print(_repeatType);
       return _repeatType;
     }
   }
 
   void _onStartDateChanged() {
+    if (_repeatChoice == RepeatChoices.week) {
+      int everyNWeeks = int.tryParse(_repeatUnit) ?? 0;
+      if (everyNWeeks <= 0) return;
+      _startDates = _scheduleGenerator.getWeekDayStartDates(
+        _startDate,
+        _selectableDays,
+        everyNWeeks: int.parse(_repeatUnit),
+      );
+    } else {
+      _startDates = _startDate != null ? [_startDate] : [];
+    }
+
     final _repeatType = _getRepeatType();
-    widget.onStartDateChanged(this._startDate, repeatType: _repeatType);
+    widget.onStartDatesChanged(_startDates, _repeatType);
   }
 
   void _onRepeatUnitChanged(String _repeatUnit) {
@@ -417,6 +468,9 @@ class _SchedulePickerState extends State<SchedulePicker> {
       this._repeatUnit = _repeatUnit;
     });
     widget.onRepeatUnitChanged(int.tryParse(_repeatUnit));
+    if (_repeatChoice == RepeatChoices.week) {
+      _onStartDateChanged();
+    }
   }
 
   void _onRepeatChoiceChanged(RepeatChoices choice) {
@@ -429,6 +483,10 @@ class _SchedulePickerState extends State<SchedulePicker> {
     _usedDatePicker = choice == RepeatChoices.month ? false : true;
     final repeatType = _getRepeatType();
     widget.onRepeatTypeChanged(repeatType);
+
+    if (choice == RepeatChoices.week) {
+      _onStartDateChanged();
+    }
   }
 
   void Function() _selectStartDateHandler() {
@@ -478,20 +536,24 @@ class _SchedulePickerState extends State<SchedulePicker> {
       children: [
         Text(
           widget.header,
-          style: kTextStyle.copyWith(fontSize: 24.0),
+          style: kTextStyle.copyWith(fontSize: 24.0.sp),
         ),
+        SizedBox(height: 10.0.h),
         Text(
           widget.description,
-          style: kTextStyle.copyWith(fontWeight: FontWeight.w500),
+          style: Theme.of(context).textTheme.bodyText1.copyWith(
+                color: Colors.black,
+              ),
         ),
-        SizedBox(
-          height: height * 0.02,
-        ),
+        SizedBox(height: 15.0.h),
         _RepeatabilityPicker(
           onRepeatUnitChanged: _onRepeatUnitChanged,
           onRepeatChoiceChanged: _onRepeatChoiceChanged,
           repeatChoice: _repeatChoice,
           repeatUnit: _repeatUnit,
+          repeatabilityChoices: _repeatabilityChoices,
+          repeatUnitController: _repeatUnitController,
+          editable: widget.editable,
         ),
         SizedBox(height: height * 0.02),
         if (_repeatChoice == RepeatChoices.week) _weekdayPicker(),
@@ -499,6 +561,7 @@ class _SchedulePickerState extends State<SchedulePicker> {
           _StartDatePicker(
             startDate: this._startDate,
             onSelectStartDate: _selectStartDateHandler(),
+            editable: widget.editable,
           ),
         if (_repeatChoice == RepeatChoices.month)
           _DayOfMonth(
@@ -511,6 +574,7 @@ class _SchedulePickerState extends State<SchedulePicker> {
             onOrdinalChoiceChanged: _onOrdinalChoiceChanged,
             onMonthDayChoiceChanged: _onMonthDayChoiceChanged,
             onMonthChoiceChanged: _onMonthChoiceChanged,
+            editable: widget.editable,
           ),
       ],
     );
@@ -661,6 +725,7 @@ class _DayOfMonth extends StatelessWidget {
   final void Function(String) onOrdinalChoiceChanged;
   final void Function(String) onMonthDayChoiceChanged;
   final void Function(String) onMonthChoiceChanged;
+  final bool editable;
   const _DayOfMonth({
     Key key,
     @required this.startDayOfMonth,
@@ -672,6 +737,7 @@ class _DayOfMonth extends StatelessWidget {
     @required this.onOrdinalChoiceChanged,
     @required this.onMonthDayChoiceChanged,
     @required this.onMonthChoiceChanged,
+    @required this.editable,
   }) : super(key: key);
 
   // change state functions
@@ -702,15 +768,18 @@ class _DayOfMonth extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-        RoundedButton(
-          textAlign: TextAlign.start,
-          minWidth: double.infinity,
-          label: this.startDayOfMonth == 0
-              ? 'Select Start Day'
-              : '${getOrdinal(this.startDayOfMonth)} of the month',
-          onPressed: onShowDayOfMonthPicker,
-          fontColor: Colors.white,
-          fontSize: 20.0,
+        SizedBox(
+          height: 50.0.h,
+          width: double.infinity,
+          child: AppButton(
+            this.startDayOfMonth == 0
+                ? 'Select Start Day'
+                : '${getOrdinal(this.startDayOfMonth)} of the month',
+            kTealColor,
+            true,
+            this.editable ? this.onShowDayOfMonthPicker : null,
+            textStyle: TextStyle(fontSize: 20.0.sp),
+          ),
         ),
         Align(
           alignment: Alignment.center,
@@ -720,7 +789,7 @@ class _DayOfMonth extends StatelessWidget {
               'or',
               style: kTextStyle.copyWith(
                 fontWeight: FontWeight.normal,
-                fontSize: 20.0,
+                fontSize: 20.0.sp,
               ),
             ),
           ),
@@ -729,10 +798,9 @@ class _DayOfMonth extends StatelessWidget {
           children: [
             Expanded(
               child: Container(
-                padding: EdgeInsets.symmetric(
-                    horizontal: MediaQuery.of(context).size.width * 0.05),
+                padding: EdgeInsets.symmetric(horizontal: 20.0.w),
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(30.0),
+                  borderRadius: BorderRadius.circular(30.0.r),
                   border: Border.all(
                     color: Colors.transparent,
                   ),
@@ -747,11 +815,13 @@ class _DayOfMonth extends StatelessWidget {
                       );
                     }).toList(),
                     value: this.ordinalChoice,
-                    onChanged: this.onOrdinalChoiceChanged,
-                    style: kTextStyle.copyWith(
-                      color: Colors.black,
-                      fontWeight: FontWeight.normal,
-                    ),
+                    onChanged:
+                        this.editable ? this.onOrdinalChoiceChanged : null,
+                    style: Theme.of(context).textTheme.bodyText1.copyWith(
+                          color: Colors.black,
+                          fontWeight: FontWeight.normal,
+                          fontSize: 20.0.sp,
+                        ),
                   ),
                 ),
               ),
@@ -761,10 +831,9 @@ class _DayOfMonth extends StatelessWidget {
             ),
             Expanded(
               child: Container(
-                padding: EdgeInsets.symmetric(
-                    horizontal: MediaQuery.of(context).size.width * 0.05),
+                padding: EdgeInsets.symmetric(horizontal: 20.0.w),
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(30.0),
+                  borderRadius: BorderRadius.circular(30.0.r),
                   border: Border.all(
                     color: Colors.transparent,
                   ),
@@ -779,11 +848,13 @@ class _DayOfMonth extends StatelessWidget {
                       );
                     }).toList(),
                     value: this.monthDayChoice,
-                    onChanged: this.onMonthDayChoiceChanged,
-                    style: kTextStyle.copyWith(
-                      color: Colors.black,
-                      fontWeight: FontWeight.normal,
-                    ),
+                    onChanged:
+                        this.editable ? this.onMonthDayChoiceChanged : null,
+                    style: Theme.of(context).textTheme.bodyText1.copyWith(
+                          color: Colors.black,
+                          fontWeight: FontWeight.normal,
+                          fontSize: 20.0.sp,
+                        ),
                   ),
                 ),
               ),
@@ -799,18 +870,15 @@ class _DayOfMonth extends StatelessWidget {
               'Start Month',
               style: kTextStyle.copyWith(
                 fontWeight: FontWeight.normal,
-                fontSize: 20.0,
+                fontSize: 20.0.sp,
               ),
             ),
-            SizedBox(
-              width: MediaQuery.of(context).size.width * 0.02,
-            ),
+            SizedBox(width: 10.0.w),
             Expanded(
               child: Container(
-                padding: EdgeInsets.symmetric(
-                    horizontal: MediaQuery.of(context).size.width * 0.05),
+                padding: EdgeInsets.symmetric(horizontal: 20.0.w),
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(30.0),
+                  borderRadius: BorderRadius.circular(30.0.r),
                   border: Border.all(
                     color: Colors.transparent,
                   ),
@@ -825,11 +893,12 @@ class _DayOfMonth extends StatelessWidget {
                       );
                     }).toList(),
                     value: this.monthChoice,
-                    onChanged: this.onMonthChoiceChanged,
-                    style: kTextStyle.copyWith(
-                      color: Colors.black,
-                      fontWeight: FontWeight.normal,
-                    ),
+                    onChanged: this.editable ? this.onMonthChoiceChanged : null,
+                    style: Theme.of(context).textTheme.bodyText1.copyWith(
+                          color: Colors.black,
+                          fontWeight: FontWeight.normal,
+                          fontSize: 20.0.sp,
+                        ),
                   ),
                 ),
               ),
@@ -844,10 +913,12 @@ class _DayOfMonth extends StatelessWidget {
 class _StartDatePicker extends StatelessWidget {
   final DateTime startDate;
   final void Function() onSelectStartDate;
+  final bool editable;
   const _StartDatePicker({
     Key key,
     @required this.startDate,
     @required this.onSelectStartDate,
+    @required this.editable,
   }) : super(key: key);
 
   @override
@@ -857,25 +928,23 @@ class _StartDatePicker extends StatelessWidget {
         Text(
           "Start date",
           style: kTextStyle.copyWith(
-              fontWeight: FontWeight.normal, fontSize: 18.0),
+              fontWeight: FontWeight.normal, fontSize: 18.0.sp),
         ),
-        SizedBox(
-          width: MediaQuery.of(context).size.width * 0.05,
-        ),
+        SizedBox(width: 15.0.w),
         Expanded(
-          child: RoundedButton(
-            textAlign: TextAlign.start,
-            minWidth: double.infinity,
-            label: this.startDate != null
-                ? DateFormat.MMMMd().format(this.startDate)
-                : "Select Start Date",
-            onPressed: this.onSelectStartDate,
-            // _repeatChoice != RepeatChoices.week ||
-            //         _selectableDays.isNotEmpty
-            //     ? showCalendarPicker
-            //     : null,
-            fontColor: Colors.white,
-            fontSize: 20.0,
+          child: SizedBox(
+            height: 50.0.h,
+            child: AppButton(
+              this.startDate != null
+                  ? DateFormat.MMMMd().format(this.startDate)
+                  : "Select Start Date",
+              kTealColor,
+              true,
+              this.editable ? this.onSelectStartDate : null,
+              textStyle: TextStyle(
+                fontSize: 20.0.sp,
+              ),
+            ),
           ),
         ),
       ],
@@ -888,88 +957,106 @@ class _RepeatabilityPicker extends StatelessWidget {
   final void Function(RepeatChoices) onRepeatChoiceChanged;
   final RepeatChoices repeatChoice;
   final String repeatUnit;
+  final List<RepeatChoices> repeatabilityChoices;
+  final TextEditingController repeatUnitController;
+  final bool editable;
   const _RepeatabilityPicker({
     Key key,
     @required this.onRepeatUnitChanged,
     @required this.onRepeatChoiceChanged,
     @required this.repeatChoice,
     @required this.repeatUnit,
+    @required this.repeatabilityChoices,
+    @required this.repeatUnitController,
+    @required this.editable,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return Column(
       children: [
-        Text(
-          "Every",
-          style: kTextStyle.copyWith(
-            fontWeight: FontWeight.normal,
-            fontSize: 20.0,
-          ),
-        ),
-        SizedBox(
-          width: MediaQuery.of(context).size.width * 0.05,
-        ),
-        Container(
-          width: MediaQuery.of(context).size.width * 0.2,
-          child: TextField(
-            onChanged: this.onRepeatUnitChanged,
-            keyboardType: TextInputType.number,
-            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-            decoration: InputDecoration(
-              enabledBorder: UnderlineInputBorder(
-                borderSide: BorderSide(color: Colors.black),
-              ),
-              focusedBorder: UnderlineInputBorder(
-                borderSide: BorderSide(color: Colors.black),
-              ),
-              border: UnderlineInputBorder(
-                borderSide: BorderSide(color: Colors.black),
+        Row(
+          children: [
+            Text(
+              "Every",
+              style: kTextStyle.copyWith(
+                fontWeight: FontWeight.normal,
+                fontSize: 20.0.sp,
               ),
             ),
-            textAlign: TextAlign.center,
-            style: kTextStyle.copyWith(
-              color: kTealColor,
-              fontSize: 32.0,
-            ),
-          ),
-        ),
-        SizedBox(
-          width: MediaQuery.of(context).size.width * 0.05,
-        ),
-        Expanded(
-          child: Container(
-            padding: EdgeInsets.symmetric(
-                horizontal: MediaQuery.of(context).size.width * 0.05),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(30.0),
-              border: Border.all(
-                color: Colors.transparent,
-              ),
-              color: Colors.grey[200],
-            ),
-            child: DropdownButtonHideUnderline(
-              child: DropdownButton<RepeatChoices>(
-                items: RepeatChoices.values.map((RepeatChoices choice) {
-                  return DropdownMenuItem<RepeatChoices>(
-                    value: choice,
-                    child: Text(
-                      int.tryParse(this.repeatUnit) == 1
-                          ? choice.value
-                          : choice.value + "s",
-                    ),
-                  );
-                }).toList(),
-                value: this.repeatChoice,
-                onChanged: this.onRepeatChoiceChanged,
+            SizedBox(width: 30.0.w),
+            Container(
+              width: 60.0.w,
+              child: TextField(
+                enabled: this.editable,
+                onChanged: this.onRepeatUnitChanged,
+                controller: this.repeatUnitController,
+                keyboardType: TextInputType.number,
+                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                decoration: InputDecoration(
+                  enabledBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black),
+                  ),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black),
+                  ),
+                  border: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black),
+                  ),
+                ),
+                textAlign: TextAlign.center,
                 style: kTextStyle.copyWith(
-                  color: Colors.black,
-                  fontWeight: FontWeight.normal,
+                  color: kTealColor,
+                  fontSize: 32.0.sp,
                 ),
               ),
             ),
-          ),
+            SizedBox(width: 30.0.w),
+            Expanded(
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 20.w),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(30.0.r),
+                  border: Border.all(
+                    color: Colors.transparent,
+                  ),
+                  color: Colors.grey[200],
+                ),
+                child: DropdownButtonHideUnderline(
+                  child: DropdownButton<RepeatChoices>(
+                    items:
+                        this.repeatabilityChoices.map((RepeatChoices choice) {
+                      return DropdownMenuItem<RepeatChoices>(
+                        value: choice,
+                        child: Text(
+                          int.tryParse(this.repeatUnit) == 1
+                              ? choice.value
+                              : choice.value + "s",
+                        ),
+                      );
+                    }).toList(),
+                    value: this.repeatChoice,
+                    onChanged:
+                        this.editable ? this.onRepeatChoiceChanged : null,
+                    style: Theme.of(context).textTheme.bodyText1.copyWith(
+                          color: Colors.black,
+                          fontWeight: FontWeight.normal,
+                          fontSize: 20.0.sp,
+                        ),
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
+        SizedBox(height: 5.0.h),
+        if ((int.tryParse(repeatUnit) ?? 0) <= 0)
+          Text(
+            "Please enter a valid repeat value.",
+            style: TextStyle(
+              color: Colors.red,
+            ),
+          ),
       ],
     );
   }

@@ -61,12 +61,22 @@ class _ShopScheduleState extends State<ShopSchedule> {
         );
   }
 
-  void _onStartDatesChangedHandler(List<DateTime> dates) {
-    if (dates.isEmpty) return;
+  void _onStartDatesChangedHandler(List<DateTime> dates, String repeatType) {
+    if (dates.isEmpty) {
+      this._startDate = null;
+    } else {
+      this._startDate = dates.first;
+    }
+
     context.read<OperatingHoursBody>().update(
-          startDates: dates.map<String>((date) {
-            return DateFormat("yyyy-MM-dd").format(date ?? DateTime.now());
-          }).toList(),
+          startDates: dates
+              .map<String>(
+                (date) => DateFormat("yyyy-MM-dd").format(
+                  date ?? DateTime.now(),
+                ),
+              )
+              .toList(),
+          repeatType: repeatType,
         );
   }
 
@@ -89,22 +99,6 @@ class _ShopScheduleState extends State<ShopSchedule> {
 
   void _onSelectableDaysChanged(List<int> selectableDays) {
     this._selectableDays = selectableDays;
-  }
-
-  void _onStartDateChanged(DateTime startDate, {String repeatType}) {
-    this._startDate = startDate;
-
-    if (startDate != null) {
-      context.read<OperatingHoursBody>().update(
-        startDates: [DateFormat("yyyy-MM-dd").format(startDate)],
-        repeatType: repeatType,
-      );
-    } else {
-      context.read<OperatingHoursBody>().update(
-        startDates: [],
-        repeatType: repeatType,
-      );
-    }
   }
 
   RepeatChoices _getRepeatChoice() {
@@ -158,8 +152,8 @@ class _ShopScheduleState extends State<ShopSchedule> {
                 description: "Set your shop's availability",
                 operatingHours:
                     shops.isNotEmpty ? shops.first.operatingHours : null,
-                onStartdatesChanged: _onStartDatesChangedHandler,
-                onStartDateChanged: _onStartDateChanged,
+                onStartDatesChanged: _onStartDatesChangedHandler,
+                // onStartDateChanged: _onStartDateChanged,
                 onRepeatTypeChanged: (repeatType) => context
                     .read<OperatingHoursBody>()
                     .update(repeatType: repeatType),
@@ -212,6 +206,26 @@ class _ShopScheduleState extends State<ShopSchedule> {
                 fontFamily: "GoldplayBold",
                 fontColor: Colors.white,
                 onPressed: () {
+                  final operatingHours =
+                      context.read<OperatingHoursBody>().operatingHours;
+                  final startDates = operatingHours.startDates;
+                  final repeatUnit = operatingHours.repeatUnit;
+                  if (startDates == null || startDates.isEmpty) {
+                    final snackBar = SnackBar(
+                      content: Text("Select a start date"),
+                    );
+                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                    return;
+                  }
+
+                  if (repeatUnit == null || repeatUnit <= 0) {
+                    final snackBar = SnackBar(
+                      content: Text("Enter a valid repeat number."),
+                    );
+                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                    return;
+                  }
+
                   Navigator.push(
                     context,
                     MaterialPageRoute(

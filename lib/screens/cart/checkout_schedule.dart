@@ -14,8 +14,8 @@ import '../../utils/themes.dart';
 import '../../widgets/app_button.dart';
 import '../../widgets/custom_app_bar.dart';
 import '../discover/product_detail.dart';
+import 'cart_confirmation.dart';
 import 'components/order_details.dart';
-import 'order_placed.dart';
 
 class CheckoutSchedule extends StatefulWidget {
   final String productId;
@@ -52,7 +52,7 @@ class _CheckoutScheduleState extends State<CheckoutSchedule> with ScreenLoader {
       context.read<ShoppingCart>().remove(widget.productId);
       Navigator.of(context).push(
         MaterialPageRoute(
-          builder: (_) => OrderPlaced(),
+          builder: (_) => CartConfirmation(),
         ),
       );
     } else {

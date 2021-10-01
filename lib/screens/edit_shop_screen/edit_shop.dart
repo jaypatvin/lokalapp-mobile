@@ -188,6 +188,7 @@ class _EditShopState extends State<EditShop> with ScreenLoader {
               width: width,
               height: height * 0.25,
               url: shopBody.coverPhoto,
+              displayBorder: false,
             ),
           ),
           Center(
@@ -282,8 +283,6 @@ class _EditShopState extends State<EditShop> with ScreenLoader {
               ),
               InkWell(
                   child: Text(
-                    //"+ Add a Cover Photo",
-
                     "+ Edit Cover Photo",
                     style: kTextStyle.copyWith(
                       decoration: TextDecoration.underline,

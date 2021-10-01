@@ -35,7 +35,7 @@ class PhotoBox extends StatelessWidget {
               ),
         shape: shape,
         border: displayBorder ? Border.all(width: 1, color: kTealColor) : null,
-        color: Colors.grey[50],
+        color: Colors.transparent,
       ),
       child: file == null && this.url.isEmpty
           ? Icon(

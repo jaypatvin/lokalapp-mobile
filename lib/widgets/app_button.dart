@@ -37,7 +37,7 @@ class AppButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FlatButton(
-      //height: MediaQuery.of(context).size.height * 0.05,
+      padding: EdgeInsets.zero,
       color: isFilled ? this.color : Colors.transparent,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20.0),
@@ -48,7 +48,7 @@ class AppButton extends StatelessWidget {
         text,
         style: TextStyle(
           fontFamily: "Goldplay",
-          fontSize: 14.0.sp,
+          fontSize: 16.0.sp,
           fontWeight: FontWeight.w600,
         ).merge(this.textStyle),
       ),

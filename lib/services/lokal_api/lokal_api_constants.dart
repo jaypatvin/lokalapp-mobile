@@ -8,3 +8,4 @@ const communityUrl = '$baseUrl/community';
 const productsUrl = '$baseUrl/products';
 const chatsUrl = '$baseUrl/chats';
 const ordersUrl = '$baseUrl/orders';
+const subscriptionPlansUrl = '$baseUrl/productSubscriptionPlans';

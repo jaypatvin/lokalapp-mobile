@@ -8,6 +8,7 @@ import '../../utils/themes.dart';
 import '../../widgets/app_button.dart';
 import '../../widgets/custom_app_bar.dart';
 import '../discover/product_detail.dart';
+import '../subscriptions/subscription_schedule.dart';
 import 'checkout.dart';
 import 'components/order_details.dart';
 
@@ -95,7 +96,18 @@ class _OrdersCard extends StatelessWidget {
               // TODO: ADD ON PRESS FUNCTIONS
               children: [
                 Expanded(
-                  child: AppButton("Subscribe", kTealColor, false, () {}),
+                  child: AppButton(
+                    "Subscribe",
+                    kTealColor,
+                    false,
+                    () => Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => SubscriptionSchedule(
+                          productId: productId,
+                        ),
+                      ),
+                    ),
+                  ),
                 ),
                 SizedBox(width: 8.0),
                 Expanded(

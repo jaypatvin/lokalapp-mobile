@@ -103,17 +103,17 @@ class DeliveryAddress {
 
 class ProductOrder {
   String instruction;
-  String productDescription;
-  String productId;
-  String productName;
-  double productPrice;
+  String description;
+  String id;
+  String name;
+  double price;
   int quantity;
   ProductOrder({
     @required this.instruction,
-    @required this.productDescription,
-    @required this.productId,
-    @required this.productName,
-    @required this.productPrice,
+    @required this.description,
+    @required this.id,
+    @required this.name,
+    @required this.price,
     @required this.quantity,
   });
 
@@ -127,10 +127,10 @@ class ProductOrder {
   }) {
     return ProductOrder(
       instruction: instruction ?? this.instruction,
-      productDescription: productDescription ?? this.productDescription,
-      productId: productId ?? this.productId,
-      productName: productName ?? this.productName,
-      productPrice: productPrice ?? this.productPrice,
+      description: productDescription ?? this.description,
+      id: productId ?? this.id,
+      name: productName ?? this.name,
+      price: productPrice ?? this.price,
       quantity: quantity ?? this.quantity,
     );
   }
@@ -138,10 +138,10 @@ class ProductOrder {
   Map<String, dynamic> toMap() {
     return {
       'instruction': instruction,
-      'product_description': productDescription,
-      'product_id': productId,
-      'product_name': productName,
-      'product_price': productPrice,
+      'product_description': description,
+      'product_id': id,
+      'product_name': name,
+      'product_price': price,
       'quantity': quantity,
     };
   }
@@ -149,10 +149,10 @@ class ProductOrder {
   factory ProductOrder.fromMap(Map<String, dynamic> map) {
     return ProductOrder(
       instruction: map['instruction'],
-      productDescription: map['product_description'],
-      productId: map['product_id'],
-      productName: map['product_name'],
-      productPrice: map['product_price'] + .0,
+      description: map['product_description'],
+      id: map['product_id'],
+      name: map['product_name'],
+      price: map['product_price'] + .0,
       quantity: map['quantity'],
     );
   }
@@ -164,7 +164,9 @@ class ProductOrder {
 
   @override
   String toString() {
-    return 'ProductOrder(instruction: $instruction, productDescription: $productDescription, productId: $productId, productName: $productName, productPrice: $productPrice, quantity: $quantity)';
+    return 'ProductOrder(instruction: $instruction, '
+        'productDescription: $description, productId: $id, productName: $name, '
+        'productPrice: $price, quantity: $quantity)';
   }
 
   @override
@@ -173,20 +175,20 @@ class ProductOrder {
 
     return other is ProductOrder &&
         other.instruction == instruction &&
-        other.productDescription == productDescription &&
-        other.productId == productId &&
-        other.productName == productName &&
-        other.productPrice == productPrice &&
+        other.description == description &&
+        other.id == id &&
+        other.name == name &&
+        other.price == price &&
         other.quantity == quantity;
   }
 
   @override
   int get hashCode {
     return instruction.hashCode ^
-        productDescription.hashCode ^
-        productId.hashCode ^
-        productName.hashCode ^
-        productPrice.hashCode ^
+        description.hashCode ^
+        id.hashCode ^
+        name.hashCode ^
+        price.hashCode ^
         quantity.hashCode;
   }
 }

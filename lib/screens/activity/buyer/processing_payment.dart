@@ -11,6 +11,21 @@ import '../components/transaction_details.dart';
 
 enum PaymentMode { cash, bank, gCash }
 
+extension PaymentModeExtension on PaymentMode {
+  String get value {
+    switch (this) {
+      case PaymentMode.cash:
+        return "cod";
+      case PaymentMode.bank:
+        return "bank";
+      case PaymentMode.gCash:
+        return "gcash";
+      default:
+        return "";
+    }
+  }
+}
+
 class ProcessingPayment extends StatelessWidget {
   final Order order;
   final PaymentMode paymentMode;
