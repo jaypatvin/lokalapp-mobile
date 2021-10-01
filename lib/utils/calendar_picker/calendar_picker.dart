@@ -363,9 +363,11 @@ class _CalendarState extends State<CalendarCarousel> {
                           maxDate.millisecondsSinceEpoch)
                     isSelectable = false;
                   else if (!widget.selectableDaysMap.contains(day) &&
-                      !widget.selectableDates
-                          .contains(DateTime(now.year, now.month, now.day)))
-                    isSelectable = false;
+                      (widget.selectableDates.isNotEmpty &&
+                          !(widget.selectableDates.any((date) =>
+                              date.year == now.year &&
+                              date.month == now.month &&
+                              date.day == now.day)))) isSelectable = false;
 
                   TextStyle textStyle = getDefaultDayStyle(
                       isSelectable,
