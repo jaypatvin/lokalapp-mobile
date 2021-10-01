@@ -31,7 +31,6 @@ class SubscriptionPlanDetails extends StatelessWidget {
           if (displayHeader)
             Row(
               crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
                   "Subscription",
@@ -55,7 +54,7 @@ class SubscriptionPlanDetails extends StatelessWidget {
           Container(
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 SizedBox(
                   width: 40.0.w,
@@ -68,13 +67,21 @@ class SubscriptionPlanDetails extends StatelessWidget {
                     },
                   ),
                 ),
-                Text(
-                  item.name,
-                  style: Theme.of(context).textTheme.subtitle1,
+                SizedBox(width: 10.0.w),
+                Expanded(
+                  child: Text(
+                    item.name,
+                    style: Theme.of(context).textTheme.subtitle1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
-                Text(
-                  'x${subscriptionPlan.quantity}',
-                  style: Theme.of(context).textTheme.bodyText2,
+                SizedBox(width: 10.0.w),
+                SizedBox(
+                  width: 50.0.w,
+                  child: Text(
+                    'x${subscriptionPlan.quantity}',
+                    style: Theme.of(context).textTheme.bodyText2,
+                  ),
                 ),
                 Text(
                   'P ${item.price}',

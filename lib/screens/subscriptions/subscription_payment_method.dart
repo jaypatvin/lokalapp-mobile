@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
+import '../../providers/cart.dart';
 import '../../providers/products.dart';
 import '../../providers/subscriptions.dart';
 import '../../utils/themes.dart';
@@ -36,6 +37,7 @@ class SubscriptionPaymentMethod extends StatelessWidget {
     }
 
     if (subscriptionPlan != null) {
+      context.read<ShoppingCart>().remove(subscriptionPlanBody.productId);
       Navigator.of(context).push(
         MaterialPageRoute(
           builder: (ctx) {
