@@ -212,6 +212,7 @@ class Activities extends ChangeNotifier {
 
   Future<void> fetch() async {
     _isLoading = true;
+    notifyListeners();
     try {
       var response = await LokalApiService.instance.activity
           .getCommunityActivities(communityId: communityId, idToken: _idToken);

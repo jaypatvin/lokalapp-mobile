@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
+import 'package:screen_loader/screen_loader.dart';
 
 import '../../providers/activities.dart';
 import '../../providers/invite.dart';
@@ -28,7 +29,8 @@ class ProfileRegistration extends StatefulWidget {
   _ProfileRegistrationState createState() => _ProfileRegistrationState();
 }
 
-class _ProfileRegistrationState extends State<ProfileRegistration> {
+class _ProfileRegistrationState extends State<ProfileRegistration>
+    with ScreenLoader {
   bool isUploading = false;
   TextEditingController _firstNameController = TextEditingController();
   TextEditingController _lastNameController = TextEditingController();
@@ -116,7 +118,7 @@ class _ProfileRegistrationState extends State<ProfileRegistration> {
     );
   }
 
-  void _registerHandler() async {
+  Future<void> _registerHandler() async {
     if (!_formKey.currentState.validate()) return;
     if (_firstNameController.text.isEmpty ||
         _lastNameController.text.isEmpty ||
@@ -150,7 +152,7 @@ class _ProfileRegistrationState extends State<ProfileRegistration> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget screen(BuildContext context) {
     return Scaffold(
       backgroundColor: kInviteScreenColor,
       appBar: CustomAppBar(
@@ -202,7 +204,9 @@ class _ProfileRegistrationState extends State<ProfileRegistration> {
                 firstNameController: _firstNameController,
                 lastNameController: _lastNameController,
                 streetAddressController: _streetAddressController,
-                onFormSubmit: _registerHandler,
+                onFormSubmit: () async => await performFuture<void>(
+                  () async => await _registerHandler(),
+                ),
                 formFieldDecoration: InputDecoration(
                   filled: true,
                   fillColor: Colors.white,

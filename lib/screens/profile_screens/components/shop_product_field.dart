@@ -1,34 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:lokalapp/providers/products.dart';
-import 'package:lokalapp/providers/shops.dart';
-import 'package:lokalapp/providers/user.dart';
-import 'package:lokalapp/screens/add_product_screen/add_product.dart';
-import 'package:lokalapp/screens/chat/components/chat_avatar.dart';
-import 'package:lokalapp/screens/profile_screens/components/shop_header.dart';
-import 'package:lokalapp/screens/profile_screens/components/store_card.dart';
-import 'package:lokalapp/utils/themes.dart';
-import 'package:lokalapp/widgets/app_button.dart';
-import 'package:lokalapp/widgets/search_text_field.dart';
-import 'package:persistent_bottom_nav_bar/models/nested_will_pop_scope.dart';
 import 'package:provider/provider.dart';
+
+import '../../../providers/products.dart';
+import '../../../providers/shops.dart';
+import '../../../providers/user.dart';
+import '../../../utils/themes.dart';
+import '../../../widgets/app_button.dart';
+import '../../add_product_screen/add_product.dart';
+import 'store_card.dart';
 
 class ShopProductField extends StatelessWidget {
   const ShopProductField({Key key}) : super(key: key);
+
+  void _addProductHandler(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => AddProduct(),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     final user = context.read<CurrentUser>();
     final shop = context.read<Shops>().findByUser(user.id).first;
-
-    void _addProductHandler(BuildContext context) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => AddProduct(),
-        ),
-      );
-    }
 
     return Consumer<Products>(
       builder: (ctx, products, child) {

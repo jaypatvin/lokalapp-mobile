@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
+import 'package:screen_loader/screen_loader.dart';
 
 import '../../providers/activities.dart';
 import '../../providers/products.dart';
@@ -21,8 +22,8 @@ class LoginScreen extends StatefulWidget {
   _LoginScreenState createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
-  Color _kMainColor = const Color(0xFFFFC700);
+class _LoginScreenState extends State<LoginScreen>
+    with ScreenLoader<LoginScreen> {
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
   bool isAuth = false;
@@ -30,47 +31,14 @@ class _LoginScreenState extends State<LoginScreen> {
   Map<String, String> account;
   bool _signInError = false;
 
-  void _onLoading() {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return Center(
-          child: Card(
-            color: _kMainColor,
-            child: Container(
-              height: MediaQuery.of(context).size.height * 0.3,
-              width: MediaQuery.of(context).size.height * 0.3,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SizedBox(
-                    child: CircularProgressIndicator(),
-                  ),
-                  Container(
-                    margin: const EdgeInsets.only(top: 25.0),
-                    child: Text(
-                      "Signing in..",
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  void _logInUser({
+  Future<void> _logInUser({
     @required LoginType type,
     String email,
     String password,
   }) async {
+    FocusScope.of(context).unfocus();
     CurrentUser user = Provider.of<CurrentUser>(context, listen: false);
     UserAuth auth = Provider.of<UserAuth>(context, listen: false);
-    _onLoading();
     try {
       AuthStatus _authStatus;
 
@@ -113,17 +81,15 @@ class _LoginScreenState extends State<LoginScreen> {
         setState(() {
           _signInError = true;
         });
-        Navigator.pop(context);
       }
     } catch (e) {
-      // TODO: do something with error
-      Navigator.pop(context);
-      print(e);
+      final snackBar = SnackBar(content: Text('Error Logging In'));
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
     }
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget screen(BuildContext context) {
     final bottom = MediaQuery.of(context).viewInsets.bottom;
     return Scaffold(
       resizeToAvoidBottomInset: false, // added as above is deprecated
@@ -189,15 +155,18 @@ class _LoginScreenState extends State<LoginScreen> {
                   submitButtonLabel: "SIGN IN",
                   displaySignInError: _signInError,
                   onFormChanged: () => setState(() {}),
-                  onFormSubmit: () {
+                  onFormSubmit: () async {
                     setState(() {
                       _signInError = false;
                     });
                     if (!_formKey.currentState.validate()) return;
-                    _logInUser(
-                      type: LoginType.email,
-                      email: _emailController.text.trim(),
-                      password: _passwordController.text.trim(),
+
+                    await performFuture<void>(
+                      () async => await _logInUser(
+                        type: LoginType.email,
+                        email: _emailController.text.trim(),
+                        password: _passwordController.text.trim(),
+                      ),
                     );
                   },
                 ),

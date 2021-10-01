@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
+import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 
 import '../../../models/chat_model.dart';
@@ -9,6 +10,7 @@ import '../../../providers/products.dart';
 import '../../../providers/shops.dart';
 import '../../../providers/user.dart';
 import '../../../providers/users.dart';
+import '../../../utils/constants.dart';
 import '../../../widgets/search_text_field.dart';
 import '../chat_view.dart';
 import 'chat_avatar.dart';
@@ -35,7 +37,7 @@ class ChatStream extends StatelessWidget {
             stream: chatStream,
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return Center(child: CircularProgressIndicator());
+                return Center(child: Lottie.asset(kAnimationLoading));
               }
               if (!snapshot.hasData || snapshot.data.docs.length == 0) {
                 return Text(

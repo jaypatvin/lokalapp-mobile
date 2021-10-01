@@ -2,9 +2,10 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:lokalapp/providers/post_requests/operating_hours_body.dart';
 import 'package:provider/provider.dart';
+import 'package:screen_loader/screen_loader.dart';
 
+import '../../providers/post_requests/operating_hours_body.dart';
 import '../../providers/post_requests/shop_body.dart';
 import '../../providers/shops.dart';
 import '../../providers/user.dart';
@@ -25,7 +26,7 @@ class EditShop extends StatefulWidget {
   _EditShopState createState() => _EditShopState();
 }
 
-class _EditShopState extends State<EditShop> {
+class _EditShopState extends State<EditShop> with ScreenLoader {
   final TextEditingController shopNameController = TextEditingController();
   final TextEditingController shopDescController = TextEditingController();
   File shopPhoto;
@@ -153,10 +154,6 @@ class _EditShopState extends State<EditShop> {
               right: toggleValue ? 0.0 : width * 0.6,
               child: AnimatedSwitcher(
                 duration: Duration(milliseconds: 500),
-                // transitionBuilder: (Widget child, Animation<double> animation) {
-                //return RotationTransition(turns: animation, child: child);
-                //return ScaleTransition(child: child, scale: animation);
-                // },
                 child: toggleValue
                     ? Icon(
                         Icons.check_circle,
@@ -191,6 +188,7 @@ class _EditShopState extends State<EditShop> {
               width: width,
               height: height * 0.25,
               url: shopBody.coverPhoto,
+              displayBorder: false,
             ),
           ),
           Center(
@@ -229,7 +227,7 @@ class _EditShopState extends State<EditShop> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget screen(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
     double padding = height * 0.05;
@@ -285,8 +283,6 @@ class _EditShopState extends State<EditShop> {
               ),
               InkWell(
                   child: Text(
-                    //"+ Add a Cover Photo",
-
                     "+ Edit Cover Photo",
                     style: kTextStyle.copyWith(
                       decoration: TextDecoration.underline,
@@ -377,13 +373,15 @@ class _EditShopState extends State<EditShop> {
                 fontColor: Colors.white,
                 onPressed: () async {
                   try {
-                    bool success = await updateShop();
-                    if (!success) throw "Update shop error";
+                    await performFuture<void>(() async {
+                      bool success = await updateShop();
+                      if (!success) throw "Update shop error";
 
-                    if (editedShopSchedule) {
-                      success = await _updateShopSchedule();
-                      if (!success) throw "Update operating hours error";
-                    }
+                      if (editedShopSchedule) {
+                        success = await _updateShopSchedule();
+                        if (!success) throw "Update operating hours error";
+                      }
+                    });
                     Provider.of<Shops>(context, listen: false).fetch();
                     Navigator.pop(context);
                   } catch (e) {

@@ -1,21 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:lokalapp/screens/chat/components/chat_avatar.dart';
-import 'package:lokalapp/screens/profile_screens/components/shop_header.dart';
-import 'package:lokalapp/screens/profile_screens/components/shop_product_field.dart';
-import 'package:lokalapp/widgets/search_text_field.dart';
-import 'package:persistent_bottom_nav_bar/models/nested_will_pop_scope.dart';
 import 'package:provider/provider.dart';
 
-import '../../providers/activities.dart';
 import '../../providers/user.dart';
 import '../../utils/themes.dart';
-import '../home/timeline.dart';
-import 'components/my_profile_list.dart';
-import 'components/profile_header.dart';
-import 'components/user_shop_banner.dart';
+import '../../widgets/search_text_field.dart';
+import '../chat/components/chat_avatar.dart';
+import 'components/shop_header.dart';
+import 'components/shop_product_field.dart';
 
 class UserShop extends StatefulWidget {
+  static const String routeName = "/profile/shop";
   const UserShop({Key key}) : super(key: key);
 
   @override

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
+import 'package:screen_loader/screen_loader.dart';
 
 import '../../providers/cart.dart';
 import '../../providers/products.dart';
@@ -16,13 +17,18 @@ import '../discover/product_detail.dart';
 import 'cart_confirmation.dart';
 import 'components/order_details.dart';
 
-class CheckoutSchedule extends StatelessWidget {
+class CheckoutSchedule extends StatefulWidget {
   final String productId;
   const CheckoutSchedule({Key key, @required this.productId}) : super(key: key);
 
-  void _placeOrderHandler(BuildContext context, String shopId) async {
+  @override
+  _CheckoutScheduleState createState() => _CheckoutScheduleState();
+}
+
+class _CheckoutScheduleState extends State<CheckoutSchedule> with ScreenLoader {
+  Future<void> _placeOrderHandler(BuildContext context, String shopId) async {
     final user = context.read<CurrentUser>();
-    final order = context.read<ShoppingCart>().orders[shopId][productId];
+    final order = context.read<ShoppingCart>().orders[shopId][widget.productId];
 
     // TODO: separate payload body into another class
     final response = await LokalApiService.instance.orders.create(
@@ -30,7 +36,7 @@ class CheckoutSchedule extends StatelessWidget {
       data: {
         "products": [
           {
-            "id": productId,
+            "id": widget.productId,
             "quantity": order.quantity,
           }
         ],
@@ -43,7 +49,7 @@ class CheckoutSchedule extends StatelessWidget {
     );
 
     if (response.statusCode == 200) {
-      context.read<ShoppingCart>().remove(productId);
+      context.read<ShoppingCart>().remove(widget.productId);
       Navigator.of(context).push(
         MaterialPageRoute(
           builder: (_) => CartConfirmation(),
@@ -55,8 +61,8 @@ class CheckoutSchedule extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
-    final product = context.read<Products>().findById(productId);
+  Widget screen(BuildContext context) {
+    final product = context.read<Products>().findById(widget.productId);
     final shop = context.read<Shops>().findById(product.shopId);
     return Scaffold(
       appBar: CustomAppBar(
@@ -84,7 +90,7 @@ class CheckoutSchedule extends StatelessWidget {
               margin: EdgeInsets.all(16.0),
               child: Consumer<ShoppingCart>(
                 builder: (_, cart, __) {
-                  final order = cart.orders[shop.id][productId];
+                  final order = cart.orders[shop.id][widget.productId];
                   return Card(
                     elevation: 0.0,
                     shape: RoundedRectangleBorder(
@@ -124,7 +130,7 @@ class CheckoutSchedule extends StatelessWidget {
             ),
             _DeliverySchedule(
               shopId: shop.id,
-              productId: productId,
+              productId: widget.productId,
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -148,7 +154,9 @@ class CheckoutSchedule extends StatelessWidget {
                           kTealColor,
                           true,
                           order.schedule != null
-                              ? () => _placeOrderHandler(context, shop.id)
+                              ? () async => await performFuture<void>(
+                                  () async => await _placeOrderHandler(
+                                      context, shop.id))
                               : null,
                         );
                       },

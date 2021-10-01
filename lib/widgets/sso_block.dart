@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../utils/constants.dart';
 import 'sso_button.dart';
 
 class SocialBlock extends StatelessWidget {
@@ -39,19 +40,19 @@ class SocialBlock extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               SocialButton(
-                image: AssetImage("assets/sso/fb_logo.png"),
+                image: AssetImage(kPngFbLogo),
                 onTap: this.fbLogin,
                 width: this.buttonWidth,
               ),
               SizedBox(width: 10.0.w),
               SocialButton(
-                image: AssetImage("assets/sso/apple_logo.png"),
+                image: AssetImage(kPngAppleLogo),
                 onTap: this.appleLogin,
                 width: this.buttonWidth,
               ),
               SizedBox(width: 10.0.w),
               SocialButton(
-                image: AssetImage("assets/sso/google_logo.png"),
+                image: AssetImage(kPngGoogleLogo),
                 onTap: this.googleLogin,
                 width: this.buttonWidth,
               ),

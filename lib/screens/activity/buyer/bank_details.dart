@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:screen_loader/screen_loader.dart';
 
 import '../../../models/order.dart';
 import '../../../providers/user.dart';
@@ -25,7 +26,7 @@ class BankDetails extends StatefulWidget {
   _BankDetailsState createState() => _BankDetailsState();
 }
 
-class _BankDetailsState extends State<BankDetails> {
+class _BankDetailsState extends State<BankDetails> with ScreenLoader {
   File proofOfPayment;
 
   void _imagePickerHandler() async {
@@ -38,7 +39,7 @@ class _BankDetailsState extends State<BankDetails> {
     }
   }
 
-  void _onSubmitHandler() async {
+  Future<void> _onSubmitHandler() async {
     final idToken = Provider.of<CurrentUser>(context, listen: false).idToken;
     final service = LocalImageService.instance;
     final url = await service.uploadImage(
@@ -71,7 +72,7 @@ class _BankDetailsState extends State<BankDetails> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget screen(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(
         titleText: "Bank Transfer/Deposit",
@@ -114,7 +115,10 @@ class _BankDetailsState extends State<BankDetails> {
                 "Submit",
                 proofOfPayment != null ? kTealColor : Colors.grey,
                 true,
-                proofOfPayment != null ? _onSubmitHandler : null,
+                proofOfPayment != null
+                    ? () async => await performFuture<void>(
+                        () async => await _onSubmitHandler())
+                    : null,
                 textStyle: TextStyle(fontSize: 13.0),
               ),
             ),

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:lottie/lottie.dart';
 import 'package:persistent_bottom_nav_bar/models/nested_will_pop_scope.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/activities.dart';
 import '../../providers/user.dart';
+import '../../utils/constants.dart';
 import '../../utils/themes.dart';
 import '../home/timeline.dart';
 import 'components/my_profile_list.dart';
@@ -77,20 +79,37 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ),
                         ],
                       ),
-                      SingleChildScrollView(
-                        child: Container(
-                          color: Color(0XFFF1FAFF),
-                          child: Consumer<Activities>(
-                            builder: (context, activities, child) {
-                              return activities.isLoading
-                                  ? Center(child: CircularProgressIndicator())
-                                  : RefreshIndicator(
-                                      onRefresh: () => activities.fetch(),
-                                      child: Timeline(
-                                        activities.findByUser(user.id),
-                                      ),
-                                    );
-                            },
+                      GestureDetector(
+                        onPanUpdate: (data) {
+                          if (data.delta.dx > 0) {
+                            Navigator.maybePop(context);
+                          }
+                        },
+                        child: SingleChildScrollView(
+                          child: Container(
+                            color: Color(0XFFF1FAFF),
+                            child: Consumer<Activities>(
+                              builder: (context, activities, child) {
+                                return activities.isLoading
+                                    ? SizedBox(
+                                        width: double.infinity,
+                                        height: double.infinity,
+                                        child: DecoratedBox(
+                                          decoration: const BoxDecoration(
+                                            color: Colors.white,
+                                          ),
+                                          child:
+                                              Lottie.asset(kAnimationLoading),
+                                        ),
+                                      )
+                                    : RefreshIndicator(
+                                        onRefresh: () => activities.fetch(),
+                                        child: Timeline(
+                                          activities.findByUser(user.id),
+                                        ),
+                                      );
+                              },
+                            ),
                           ),
                         ),
                       ),
@@ -105,4 +124,3 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 }
-
