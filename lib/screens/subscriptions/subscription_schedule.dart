@@ -18,6 +18,7 @@ import '../../utils/themes.dart';
 import '../../widgets/app_button.dart';
 import '../../widgets/custom_app_bar.dart';
 import '../../widgets/schedule_picker.dart';
+import '../activity/activity.dart';
 import '../discover/product_detail.dart';
 import 'subscription_payment_method.dart';
 
@@ -32,7 +33,7 @@ class SubscriptionSchedule extends StatefulWidget {
   /// details will be fetched from the `ShoppingCart Provider`.
   ///
   /// However, if the `subscriptionPlan` is given, the subscription has already
-  /// been placed. The app will check for conflicts with the shop's schedule
+  /// been placed. The app will check for conflicts with the product's schedule
   /// and will let the user modify the subscription's schedule.
   const SubscriptionSchedule({
     Key key,
@@ -50,29 +51,43 @@ class SubscriptionSchedule extends StatefulWidget {
 class _SubscriptionScheduleState extends State<SubscriptionSchedule> {
   final _generator = ScheduleGenerator();
 
-  // Order details variables - should only be changed/initialized in initState
+  // --Order details variables - should only be changed/initialized in initState
+  // --Needed for display. Since this screen can have 2 different sources, we
+  // --need a common variable to set it with.
   int _quantity;
   Product _product;
+  // This variable is only used when editing the subscription schedule.
+  // Needed for the schedule generation.
   OperatingHours _operatingHours;
 
-  // schedule variables
+  // --schedule variables
+  // Selectable days from the week picker (Mon, Tue, Wed, etc.)
   List<int> _selectableDays = [];
+  // used on week picker
+  List<DateTime> _startDates = [];
   DateTime _startDate;
   String _repeatType;
   int _repeatUnit;
 
-  // --editing schedule manually
+  //#region editing schedule manually
 
-  // this will hold the initial dates from the shop schedule
-  List<DateTime> _shopSelectableDates = [];
+  // This will hold the initial dates from the product schedule: the only days
+  // selectable when manual set of the schedule is chosen.
+  List<DateTime> _productSelectableDates = [];
+  // The chosen dates of the user. Used for the Calendar Picker.
   List<DateTime> _markedDates = [];
+  // The chosen dates of the user, however, will hold the values when the user
+  // confirms or cancels the picking of dates.
   List<DateTime> _selectedDates = [];
+  // Will hold the `original_date` and `new_date` for the manual schedul set.
   Map<DateTime, DateTime> _overridenDates = {};
 
+  // Since the calendar picker will give the DateTime of the date pressed,
+  // we will hold the value the user wants to change.
   DateTime _originalDate;
   bool _displayWarning = true;
 
-  // --
+  //#endregion
 
   @override
   void initState() {
@@ -82,8 +97,13 @@ class _SubscriptionScheduleState extends State<SubscriptionSchedule> {
       throw "The parameter subscriptionPlan or productId must not be null.";
     }
 
+    //#region Manually Resolve Conflicts
     if (widget.subscriptionPlan != null) {
       final subscriptionPlan = widget.subscriptionPlan;
+      final product =
+          context.read<Products>().findById(subscriptionPlan.productId);
+
+      // only needed for operating hours
       final shop = context.read<Shops>().findById(subscriptionPlan.shopId);
 
       this._quantity = subscriptionPlan.quantity;
@@ -103,16 +123,26 @@ class _SubscriptionScheduleState extends State<SubscriptionSchedule> {
         startTime: shop.operatingHours.startTime,
         endTime: shop.operatingHours.endTime,
       );
+
       this._startDate =
           DateFormat("yyyy-MM-dd").parse(this._operatingHours.startDates.first);
 
-      // shop initialization
-      this._shopSelectableDates = _generator
-          .getSelectableDates(shop.operatingHours)
-          .where((date) => date.difference(DateTime.now()).inDays <= 45)
+      // Product initialization. We get the available dates the of the product's
+      // schedule. Will look into 45 days in the future.
+      this._productSelectableDates = _generator
+          .getSelectableDates(product.availability)
+          .where(
+            (date) =>
+                date.difference(DateTime.now()).inDays <= 45 &&
+                date.difference(DateTime.now()).inDays >= 0,
+          )
           .toList()
             ..sort();
 
+      print(_productSelectableDates);
+
+      // Subscription Schedule. Same as above where we will get the available
+      // dates 45 days in the future.
       _markedDates = _generator
           .getSelectableDates(this._operatingHours)
           .where(
@@ -122,14 +152,24 @@ class _SubscriptionScheduleState extends State<SubscriptionSchedule> {
           )
           .toList()
             ..sort();
+
+      subscriptionPlan.plan.overrideDates.forEach((overrideDate) {
+        final index = _markedDates.indexWhere(
+            (date) => date.compareTo(overrideDate.originalDate) == 0);
+        if (index > -1) {
+          _markedDates[index] = overrideDate.newDate;
+        }
+      });
       _selectedDates = [..._markedDates];
 
       this._displayWarning = !subscriptionPlan.plan.autoReschedule &&
-          _isConflict(_markedDates, _shopSelectableDates);
+          _isConflict(_markedDates, _productSelectableDates);
 
       return;
     }
+    //#endregion
 
+    //#region New subscription creation
     if (widget.productId != null && widget.productId.isNotEmpty) {
       final String productId = widget.productId;
 
@@ -142,22 +182,38 @@ class _SubscriptionScheduleState extends State<SubscriptionSchedule> {
 
       this._quantity = orderDetails.quantity;
       this._product = context.read<Products>().findById(productId);
+      this._operatingHours = _product.availability;
+
+      // no need to display the warning since we won't be checking for conflicts
       this._displayWarning = false;
     }
+    //#endregion
   }
 
+  //#region Schedule Creation
+
+  // only used when weekday picker is used
   void _onSelectableDaysChanged(List<int> selectableDays) {
     this._selectableDays = selectableDays;
   }
 
-  void _onStartDateChanged(DateTime startDate, {String repeatType}) {
-    this._startDate = startDate;
+  void _onStartDatesChanged(List<DateTime> startDates, String repeatType) {
+    if (startDates.isNotEmpty)
+      this._startDate = startDates.first;
+    else
+      this._startDate = null;
+
     this._repeatType = repeatType;
+    this._startDates = startDates;
   }
 
+  // We only want to have subscriptions when the product is available.
+  // When the product is available daily, we can set the subscription schedule
+  // to days, weeks, and months. If the product is only available weekly,
+  // we can only choose a schedule of weekly and monthly. Finally, when the
+  // product is available monthly, we can also only set the sub sched to monthly.
   List<RepeatChoices> _getRepeatabilityChoices() {
-    final shop = context.read<Shops>().findById(_product.shopId);
-    final repeatType = shop.operatingHours.repeatType;
+    final repeatType = _product.availability.repeatType;
     final repeatChoice = _generator.getRepeatChoicesFromString(repeatType);
 
     switch (repeatChoice) {
@@ -168,36 +224,6 @@ class _SubscriptionScheduleState extends State<SubscriptionSchedule> {
       default:
         return [RepeatChoices.day, RepeatChoices.week, RepeatChoices.month];
     }
-  }
-
-  Future<void> _onSubmitHandler() async {
-    if (widget.subscriptionPlan != null) {
-      await _onOverrideSchedule();
-      return;
-    }
-
-    final reschedule = await _onCreateSubscriptionPlan();
-
-    final subscriptionPlanBody = SubscriptionPlanBody(
-      productId: _product.id,
-      buyerId: context.read<CurrentUser>().id,
-      shopId: _product.shopId,
-      quantity: _quantity,
-      plan: SubscriptionPlanBodySchedule(
-        repeatType: _repeatType,
-        repeatUnit: _repeatUnit,
-        startDates: [_startDate],
-      ),
-    );
-
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (_) => SubscriptionPaymentMethod(
-          subscriptionPlanBody: subscriptionPlanBody,
-          reschedule: reschedule,
-        ),
-      ),
-    );
   }
 
   Future<bool> _onCreateSubscriptionPlan() async {
@@ -216,79 +242,30 @@ class _SubscriptionScheduleState extends State<SubscriptionSchedule> {
           ..sort();
 
     final availability =
-        context.read<Shops>().findById(_product.shopId).operatingHours;
-    final shopSchedule = _generator
+        context.read<Products>().findById(_product.id).availability;
+    final productSchedule = _generator
         .getSelectableDates(availability)
         .toSet()
         .where((date) => date.difference(_startDate).inDays <= 45)
         .toList()
           ..sort();
 
-    final difference = dates.toSet().difference(shopSchedule.toSet()).toList();
-
+    // We need to check if there are conflicts to determine if we will display
+    // the conflict warning to the user.
+    final difference =
+        dates.toSet().difference(productSchedule.toSet()).toList();
     if (difference.isNotEmpty) {
       final setAutomatically = await this._displayNotification();
-      if (setAutomatically == null) {
-        // do nothing
-        return false;
-      }
 
-      return setAutomatically;
+      // We then return what the user chose, to set manually or automatically.
+      return setAutomatically != null && setAutomatically;
     }
 
+    // If there are no conflicts, no need to setAutomatically.
     return false;
   }
 
-  Future<void> _onOverrideSchedule() async {
-    final overridenDates = <OverridenDates>[];
-
-    _overridenDates.forEach((key, value) {
-      overridenDates.add(OverridenDates(originalDate: key, newDate: value));
-    });
-
-    print({"dates": overridenDates.map((data) => data.toMap()).toList()});
-
-    // final success =
-    //     await context.read<SubscriptionProvider>().manualReschedulePlan(
-    //   widget.subscriptionPlan.id,
-    //   {"dates": overridenDates.map((data) => data.toMap()).toList()},
-    // );
-  }
-
-  bool _isConflict(List<DateTime> a, List<DateTime> b) {
-    return a.toSet().difference(b.toSet()).isNotEmpty;
-  }
-
-  void _checkForConflicts() {
-    setState(() {
-      _displayWarning = _isConflict(_markedDates, _shopSelectableDates);
-    });
-  }
-
-  void _onDayPressedHandler(DateTime date) {
-    if (_originalDate == null) return;
-
-    _overridenDates[_originalDate] = date;
-
-    _markedDates.remove(_originalDate);
-    _markedDates.add(date);
-
-    if (_displayWarning != _isConflict(_markedDates, _shopSelectableDates)) {
-      setState(() {
-        _displayWarning = !_displayWarning;
-      });
-    }
-    _originalDate = null;
-  }
-
-  void _onNonSelectableDayPressedHandler(DateTime date) {
-    if (this._originalDate == date) {
-      _originalDate = null;
-    } else {
-      _originalDate = date;
-    }
-  }
-
+  // The notification to display when there are conflicts.
   Future<bool> _displayNotification() async {
     return await showDialog<bool>(
       context: context,
@@ -302,7 +279,79 @@ class _SubscriptionScheduleState extends State<SubscriptionSchedule> {
     );
   }
 
+  //#endregion
+
+  //#region Manual Resolve of Conflicts
+  Future<bool> _onOverrideSchedule() async {
+    final overridenDates = <OverrideDate>[];
+
+    _overridenDates.forEach((key, value) {
+      overridenDates.add(OverrideDate(originalDate: key, newDate: value));
+    });
+
+    print({"dates": overridenDates.map((data) => data.toMap()).toList()});
+
+    return await context.read<SubscriptionProvider>().manualReschedulePlan(
+      widget.subscriptionPlan.id,
+      {"override_dates": overridenDates.map((data) => data.toMap()).toList()},
+    );
+  }
+
+  // Check for conflicts from two List<DateTime>
+  bool _isConflict(List<DateTime> a, List<DateTime> b) {
+    return a.toSet().difference(b.toSet()).isNotEmpty;
+  }
+
+  void _checkForConflicts() {
+    setState(() {
+      _displayWarning = _isConflict(_markedDates, _productSelectableDates);
+    });
+  }
+
+  void _onDayPressedHandler(DateTime date) {
+    // When the `_originalDate` is null, it means the user has not selected
+    // a date to replace.
+    if (_originalDate == null) return;
+    _overridenDates[_originalDate] = date;
+
+    _markedDates.remove(_originalDate);
+    _markedDates.add(date);
+
+    // We should only rebuild if _displayWarning changed.
+    if (_displayWarning != _isConflict(_markedDates, _productSelectableDates)) {
+      setState(() {
+        _displayWarning = !_displayWarning;
+      });
+    }
+
+    // Don't forget to reset the `_originalDate` indicating that there is no
+    // date to be replaced (since we have already replaced it).
+    _originalDate = null;
+  }
+
+  // The user chose a date to replace.
+  void _onNonSelectableDayPressedHandler(DateTime date) {
+    if (this._originalDate == date) {
+      _originalDate = null;
+    } else {
+      _originalDate = date;
+    }
+  }
+
+  // The user chose cancel on the CalendarPicker.
+  // We reset the `_markDates` to it's original or on last `confirm`.
+  void _onConflictCancel(BuildContext ctx) {
+    _markedDates.toSet().difference(_selectedDates.toSet()).forEach((date) {
+      _overridenDates.removeWhere((key, value) => value == date);
+    });
+
+    _markedDates = [..._selectedDates];
+    _checkForConflicts();
+    Navigator.pop(ctx, false);
+  }
+
   Future<void> _displayCalendar() async {
+    print(_productSelectableDates);
     return await showDialog<void>(
       context: context,
       barrierDismissible: false,
@@ -311,7 +360,7 @@ class _SubscriptionScheduleState extends State<SubscriptionSchedule> {
           builder: (_ctx, setState) {
             bool _displayWarning = this._displayWarning;
             return _CalendarPicker(
-              selectableDates: _shopSelectableDates,
+              selectableDates: _productSelectableDates,
               onDayPressed: (date) {
                 _onDayPressedHandler(date);
                 if (_displayWarning != this._displayWarning) {
@@ -321,21 +370,9 @@ class _SubscriptionScheduleState extends State<SubscriptionSchedule> {
               onNonSelectableDayPressed: _onNonSelectableDayPressedHandler,
               markedDates: _markedDates,
               displayWarning: _displayWarning,
-              onCancel: () {
-                _markedDates
-                    .toSet()
-                    .difference(_selectedDates.toSet())
-                    .forEach((date) {
-                  _overridenDates.removeWhere((key, value) => value == date);
-                });
-
-                print(_overridenDates);
-
-                _markedDates = [..._selectedDates];
-                _checkForConflicts();
-                Navigator.pop(ctx, false);
-              },
+              onCancel: () => _onConflictCancel(ctx),
               onConfirm: () {
+                // The user chose to accept their changes.
                 _selectedDates = [..._markedDates];
                 Navigator.pop(ctx, true);
               },
@@ -343,6 +380,58 @@ class _SubscriptionScheduleState extends State<SubscriptionSchedule> {
           },
         );
       },
+    );
+  }
+
+  //#endregion
+
+  Future<void> _onSubmitHandler() async {
+    if (widget.subscriptionPlan != null) {
+      final success = await _onOverrideSchedule();
+      if (!success) {
+        final snackBar = SnackBar(content: Text("Failed to updated schedule"));
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      }
+
+      Navigator.popUntil(context, ModalRoute.withName(Activity.routeName));
+      return;
+    }
+
+    if (_repeatUnit <= 0) {
+      final snackBar = SnackBar(
+        content: Text("Please enter a valid repeat value."),
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      return;
+    }
+
+    final reschedule = await _onCreateSubscriptionPlan();
+
+    // create subscription plan body for API endpoint
+    final subscriptionPlanBody = SubscriptionPlanBody(
+      productId: _product.id,
+      buyerId: context.read<CurrentUser>().id,
+      shopId: _product.shopId,
+      quantity: _quantity,
+      instruction:
+          context.read<ShoppingCart>().getProductOrder(_product.id).notes,
+      plan: SubscriptionPlanBodySchedule(
+        repeatType: _repeatType,
+        repeatUnit: _repeatUnit,
+        startDates: _startDates,
+      ),
+    );
+
+    print(subscriptionPlanBody.toMap());
+
+    // Pass the subscription plan body since we also need the mode of payment.
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => SubscriptionPaymentMethod(
+          subscriptionPlanBody: subscriptionPlanBody,
+          reschedule: reschedule,
+        ),
+      ),
     );
   }
 
@@ -379,13 +468,13 @@ class _SubscriptionScheduleState extends State<SubscriptionSchedule> {
                 description: "Which dates do you want this product "
                     "to be delivered?",
                 onRepeatTypeChanged: (choice) => _repeatType = choice,
-                onStartdatesChanged: null,
+                onStartDatesChanged: _onStartDatesChanged,
                 onRepeatUnitChanged: (repeatUnit) => _repeatUnit = repeatUnit,
-                onStartDateChanged: _onStartDateChanged,
                 onSelectableDaysChanged: _onSelectableDaysChanged,
                 repeatabilityChoices: _getRepeatabilityChoices(),
                 operatingHours: _operatingHours,
                 editable: widget.subscriptionPlan == null,
+                limitSelectableDates: widget.subscriptionPlan == null,
               ),
               SizedBox(height: 10.0.h),
               if (this._displayWarning)
@@ -456,6 +545,7 @@ class _SubscriptionScheduleState extends State<SubscriptionSchedule> {
   }
 }
 
+// We can't use the transaction card since we are not using transactions
 class _ProductCard extends StatelessWidget {
   const _ProductCard({
     Key key,
@@ -563,6 +653,7 @@ class _ProductCard extends StatelessWidget {
   }
 }
 
+// The dialog to be displayed when conflicts are present.
 class _ScheduleConflictsNotification extends StatelessWidget {
   final void Function() onAutomatic;
   final void Function() onManual;
@@ -652,6 +743,7 @@ class _ScheduleConflictsNotification extends StatelessWidget {
   }
 }
 
+// The calendar picker to be displayed to manually resolve the conflicts.
 class _CalendarPicker extends StatelessWidget {
   final void Function(DateTime) onDayPressed;
   final void Function(DateTime) onNonSelectableDayPressed;

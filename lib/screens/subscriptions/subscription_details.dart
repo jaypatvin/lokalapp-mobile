@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 
 import '../../models/operating_hours.dart';
 import '../../models/product_subscription_plan.dart';
+import '../../providers/products.dart';
 import '../../providers/shops.dart';
 import '../../providers/user.dart';
 import '../../utils/repeated_days_generator/schedule_generator.dart';
@@ -65,6 +66,10 @@ class SubscriptionDetails extends StatelessWidget {
 
   bool _checkForConflicts(BuildContext context) {
     final _generator = ScheduleGenerator();
+    final product =
+        context.read<Products>().findById(subscriptionPlan.productId);
+
+    // only needed for operatingHours
     final shop = context.read<Shops>().findById(subscriptionPlan.shopId);
 
     final operatingHours = OperatingHours(
@@ -81,10 +86,14 @@ class SubscriptionDetails extends StatelessWidget {
       endTime: shop.operatingHours.endTime,
     );
 
-    // shop initialization
-    final shopSelectableDates = _generator
-        .getSelectableDates(shop.operatingHours)
-        .where((date) => date.difference(DateTime.now()).inDays <= 45)
+    // product schedule initialization
+    final productSelectableDates = _generator
+        .getSelectableDates(product.availability)
+        .where(
+          (date) =>
+              date.difference(DateTime.now()).inDays <= 45 &&
+              date.difference(DateTime.now()).inDays >= 0,
+        )
         .toList()
           ..sort();
 
@@ -98,8 +107,19 @@ class SubscriptionDetails extends StatelessWidget {
         .toList()
           ..sort();
 
+    subscriptionPlan.plan.overrideDates.forEach((overrideDate) {
+      final index = markedDates
+          .indexWhere((date) => date.compareTo(overrideDate.originalDate) == 0);
+      if (index > -1) {
+        markedDates[index] = overrideDate.newDate;
+      }
+    });
+
     return !subscriptionPlan.plan.autoReschedule &&
-        markedDates.toSet().difference(shopSelectableDates.toSet()).isNotEmpty;
+        markedDates
+            .toSet()
+            .difference(productSelectableDates.toSet())
+            .isNotEmpty;
   }
 
   @override
