@@ -1,6 +1,7 @@
 # LOKAL APP:
 
 ## Folder Structure
+
 1. ASSETS - LOGOS/ IMAGES,...
 2. FONTS
 3. FUNCTIONS - CLOUD FUNCTIONS FOR FIREBASE
@@ -20,18 +21,17 @@
 - [x] Edit shop
 - [x] Add Product
 - [ ] Edit Product
-- [ ] Chat
+- [x] Chat
 - [x] Discovery
 - [ ] Search
-- [ ] Purchasing/Ordering
-- [ ] Product Details
+- [x] Purchasing/Ordering
+- [x] Product Details
 - [x] Cart
-- [ ] Checkout
-- [ ] Community Feed
+- [x] Checkout
+- [x] Community Feed
 
 # Requirements
 
-Flutter SDK for build: `>=2.7.0 <3.0.0` <br>
+Environment SDK for build: `>=2.7.0 <3.0.0` <br>
+Flutter SDK for build: `2.0.5` <br>
 Android SDK for build: `>=16.0 <=30.0`
-
-
