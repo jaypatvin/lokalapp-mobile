@@ -160,10 +160,11 @@ class _ProfileRegistrationState extends State<ProfileRegistration>
         leadingColor: kTealColor,
         onPressedLeading: () => Navigator.maybePop(context),
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Column(
+      body: Column(
+        children: [
+          Expanded(
+            child: ListView(
+              shrinkWrap: true,
               children: [
                 Text(
                   "Let's set up your profile",
@@ -171,6 +172,7 @@ class _ProfileRegistrationState extends State<ProfileRegistration>
                     fontWeight: FontWeight.w500,
                     fontSize: 16.0.sp,
                   ),
+                  textAlign: TextAlign.center,
                 ),
                 SizedBox(height: 25.0.h),
                 GestureDetector(
@@ -182,53 +184,66 @@ class _ProfileRegistrationState extends State<ProfileRegistration>
                     height: 120.0.h,
                   ),
                 ),
+                SizedBox(
+                  height: 20.0.h,
+                ),
+                if (_hasEmptyField)
+                  Text(
+                    "You must fill out all field to proceed.",
+                    style: TextStyle(
+                      color: kPinkColor,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 12.0.sp,
+                    ),
+                  ),
+                SizedBox(height: 10.0.h),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 30.0.w),
+                  child: _RegistrationForm(
+                    formKey: _formKey,
+                    firstNameController: _firstNameController,
+                    lastNameController: _lastNameController,
+                    streetAddressController: _streetAddressController,
+                    onFormSubmit: () async => await performFuture<void>(
+                      () async => await _registerHandler(),
+                    ),
+                    formFieldDecoration: InputDecoration(
+                      filled: true,
+                      fillColor: Colors.white,
+                      alignLabelWithHint: true,
+                      contentPadding: EdgeInsets.symmetric(horizontal: 16.0.w),
+                      border: new OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(30.0.r)),
+                        borderSide: _hasEmptyField
+                            ? BorderSide(color: kPinkColor)
+                            : BorderSide.none,
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(30.0.r)),
+                        borderSide: _hasEmptyField
+                            ? BorderSide(color: kPinkColor)
+                            : BorderSide.none,
+                      ),
+                    ),
+                  ),
+                ),
               ],
             ),
-            SizedBox(
-              height: 20.0.h,
-            ),
-            if (_hasEmptyField)
-              Text(
-                "You must fill out all field to proceed.",
-                style: TextStyle(
-                  color: kPinkColor,
-                  fontWeight: FontWeight.w500,
-                  fontSize: 12.0.sp,
-                ),
+          ),
+          SizedBox(height: 30.0.h),
+          SizedBox(
+            width: 200.0.w,
+            child: AppButton(
+              "CREATE PROFILE",
+              kTealColor,
+              true,
+              () async => await performFuture<void>(
+                () async => await _registerHandler(),
               ),
-            SizedBox(height: 10.0.h),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 30.0.w),
-              child: _RegistrationForm(
-                formKey: _formKey,
-                firstNameController: _firstNameController,
-                lastNameController: _lastNameController,
-                streetAddressController: _streetAddressController,
-                onFormSubmit: () async => await performFuture<void>(
-                  () async => await _registerHandler(),
-                ),
-                formFieldDecoration: InputDecoration(
-                  filled: true,
-                  fillColor: Colors.white,
-                  alignLabelWithHint: true,
-                  contentPadding: EdgeInsets.symmetric(horizontal: 16.0.w),
-                  border: new OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(30.0.r)),
-                    borderSide: _hasEmptyField
-                        ? BorderSide(color: kPinkColor)
-                        : BorderSide.none,
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(30.0.r)),
-                    borderSide: _hasEmptyField
-                        ? BorderSide(color: kPinkColor)
-                        : BorderSide.none,
-                  ),
-                ),
-              ),
+              textStyle: TextStyle(color: kNavyColor),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -342,17 +357,6 @@ class _RegistrationForm extends StatelessWidget {
                   formFieldDecoration.copyWith(hintText: "Street Address"),
             ),
           ),
-          SizedBox(height: 30.0.h),
-          SizedBox(
-            width: 200.0.w,
-            child: AppButton(
-              "CREATE PROFILE",
-              kTealColor,
-              true,
-              onFormSubmit,
-              textStyle: TextStyle(color: kNavyColor),
-            ),
-          )
         ],
       ),
     );
