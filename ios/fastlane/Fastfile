@@ -11,12 +11,12 @@ platform :ios do
     version_string = "#{version}.#{build_number}"
 
     # Commit changes
-    puts "Updated iOS  version to #{version_string}"
-    echo "Updated iOS  version to #{version_string}"
+    # puts "Updated iOS  version to #{version_string}"
+    # echo "Updated iOS  version to #{version_string}"
 
-    sh "git commit -a -m \"Updated iOS version to #{version_string}\""
-    add_git_tag(tag: "#{version_string}")
-    push_to_git_remote
+    # sh "git commit -a -m \"Updated iOS version to #{version_string}\""
+    # add_git_tag(tag: "#{version_string}")
+    # push_to_git_remote
   end
 
   desc "Make iOS Build"
