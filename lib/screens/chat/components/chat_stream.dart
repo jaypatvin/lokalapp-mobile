@@ -28,7 +28,9 @@ class ChatStream extends StatelessWidget {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
+          SizedBox(height: 10.0.h),
           SearchTextField(
             controller: searchController,
             hintText: "Search Chats",
@@ -47,10 +49,7 @@ class ChatStream extends StatelessWidget {
                   ),
                 );
               }
-              return SizedBox(
-                height: MediaQuery.of(context).size.height,
-                child: _ChatList(chatSnapshot: snapshot),
-              );
+              return _ChatList(chatSnapshot: snapshot);
             },
           ),
         ],
@@ -103,7 +102,9 @@ class _ChatList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
+      physics: NeverScrollableScrollPhysics(),
       padding: EdgeInsets.all(5.0.r),
+      shrinkWrap: true,
       itemCount: chatSnapshot.data.docs.length,
       itemBuilder: (ctx, index) {
         final cUserId = context.read<CurrentUser>().id;

@@ -5,7 +5,7 @@ import 'package:validators/validators.dart';
 import '../../../utils/themes.dart';
 import '../../../widgets/app_button.dart';
 
-class AuthInputForm extends StatelessWidget {
+class AuthInputForm extends StatefulWidget {
   final Key formKey;
   final TextEditingController emailController;
   final TextEditingController passwordController;
@@ -25,35 +25,43 @@ class AuthInputForm extends StatelessWidget {
   }) : super(key: key);
 
   @override
+  _AuthInputFormState createState() => _AuthInputFormState();
+}
+
+class _AuthInputFormState extends State<AuthInputForm> {
+  bool _passwordVisible;
+
+  @override
+  void initState() {
+    _passwordVisible = false;
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Form(
-      onChanged: onFormChanged,
-      key: formKey,
+      onChanged: widget.onFormChanged,
+      key: widget.formKey,
       child: Column(
         children: [
           SizedBox(
-            height: 40.0.h,
             child: TextFormField(
               autocorrect: false,
               keyboardType: TextInputType.emailAddress,
-              controller: emailController,
+              controller: widget.emailController,
               style: TextStyle(
                 fontWeight: FontWeight.w500,
                 fontSize: 16.0.sp,
               ),
-              decoration: new InputDecoration(
-                border: new OutlineInputBorder(
+              decoration: InputDecoration(
+                border: OutlineInputBorder(
                   borderRadius: BorderRadius.all(Radius.circular(30.0.r)),
                   borderSide: BorderSide.none,
                 ),
+                isDense: false,
                 filled: true,
                 alignLabelWithHint: true,
                 hintText: "Email",
                 contentPadding: EdgeInsets.symmetric(horizontal: 16.0.w),
-                errorStyle: TextStyle(
-                  color: kPinkColor,
-                  fontWeight: FontWeight.w500,
-                ),
               ),
               validator: (email) =>
                   isEmail(email) ? null : "Enter a valid email",
@@ -61,11 +69,10 @@ class AuthInputForm extends StatelessWidget {
           ),
           SizedBox(height: 15.0.h),
           SizedBox(
-            height: 40.0.h,
             child: TextFormField(
               autocorrect: false,
-              obscureText: true,
-              controller: passwordController,
+              obscureText: _passwordVisible,
+              controller: widget.passwordController,
               style: TextStyle(
                 fontWeight: FontWeight.w500,
                 fontSize: 16.0.sp,
@@ -75,15 +82,21 @@ class AuthInputForm extends StatelessWidget {
                   borderRadius: BorderRadius.all(Radius.circular(30.0.r)),
                   borderSide: BorderSide.none,
                 ),
+                suffixIcon: IconButton(
+                  icon: Icon(
+                    _passwordVisible ? Icons.visibility : Icons.visibility_off,
+                    color: kOrangeColor,
+                  ),
+                  onPressed: () {
+                    setState(() => _passwordVisible = !_passwordVisible);
+                  },
+                ),
+                isDense: false,
                 filled: true,
                 alignLabelWithHint: true,
                 hintText: "Password",
                 contentPadding: EdgeInsets.symmetric(horizontal: 16.0.w),
-                errorStyle: TextStyle(
-                  color: kPinkColor,
-                  fontWeight: FontWeight.w500,
-                ),
-                errorText: displaySignInError
+                errorText: widget.displaySignInError
                     ? "The email and password combination is incorrect."
                     : null,
               ),
@@ -93,12 +106,13 @@ class AuthInputForm extends StatelessWidget {
           SizedBox(
             width: 130.0.w,
             child: AppButton(
-              submitButtonLabel,
-              emailController.text.isEmpty || passwordController.text.isEmpty
+              widget.submitButtonLabel,
+              widget.emailController.text.isEmpty ||
+                      widget.passwordController.text.isEmpty
                   ? kTealColor
                   : kOrangeColor,
               true,
-              onFormSubmit,
+              widget.onFormSubmit,
               textStyle: TextStyle(color: kNavyColor),
             ),
           )

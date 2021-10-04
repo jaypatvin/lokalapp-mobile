@@ -12,8 +12,9 @@ import 'post_details.dart';
 
 class Timeline extends StatelessWidget {
   final List<ActivityFeed> activities;
+  final ScrollController scrollController;
 
-  Timeline(this.activities);
+  Timeline(this.activities, this.scrollController);
 
   void onLike(BuildContext context, ActivityFeed activity, CurrentUser user) {
     if (activity.liked) {
@@ -164,6 +165,7 @@ class Timeline extends StatelessWidget {
     var user = Provider.of<CurrentUser>(context, listen: false);
     return ListView.builder(
       physics: ScrollPhysics(),
+      controller: this.scrollController,
       shrinkWrap: true,
       itemCount: activities.length,
       itemBuilder: (context, index) {

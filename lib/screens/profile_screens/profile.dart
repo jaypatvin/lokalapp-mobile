@@ -105,8 +105,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     : RefreshIndicator(
                                         onRefresh: () => activities.fetch(),
                                         child: Timeline(
-                                          activities.findByUser(user.id),
-                                        ),
+                                            activities.findByUser(user.id),
+                                            null),
                                       );
                               },
                             ),

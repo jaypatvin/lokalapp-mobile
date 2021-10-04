@@ -355,19 +355,24 @@ class _CalendarState extends State<CalendarCarousel> {
                   bool isSelectable = true;
                   // TODO: set limit for selectable
                   // currently, users can select until the next year of the same date
-                  if (now.millisecondsSinceEpoch <
-                      startDate.millisecondsSinceEpoch)
-                    isSelectable = false;
-                  else if (maxDate != null &&
+                  final bool isEarlier = now.millisecondsSinceEpoch <
+                      startDate.millisecondsSinceEpoch;
+                  final bool isLater = maxDate != null &&
                       now.millisecondsSinceEpoch >
-                          maxDate.millisecondsSinceEpoch)
+                          maxDate.millisecondsSinceEpoch;
+                  final bool isInSelectableDays =
+                      widget.selectableDaysMap.contains(day);
+                  final bool isInSelectableDates = widget.selectableDates.any(
+                      (date) =>
+                          date.year == now.year &&
+                          date.month == now.month &&
+                          date.day == now.day);
+
+                  if (isEarlier ||
+                      isLater ||
+                      (!isInSelectableDays && !isInSelectableDates)) {
                     isSelectable = false;
-                  else if (!widget.selectableDaysMap.contains(day) &&
-                      (widget.selectableDates.isNotEmpty &&
-                          !(widget.selectableDates.any((date) =>
-                              date.year == now.year &&
-                              date.month == now.month &&
-                              date.day == now.day)))) isSelectable = false;
+                  }
 
                   TextStyle textStyle = getDefaultDayStyle(
                       isSelectable,

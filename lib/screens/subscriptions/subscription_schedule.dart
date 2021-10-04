@@ -388,6 +388,7 @@ class _SubscriptionScheduleState extends State<SubscriptionSchedule>
       if (!success) {
         final snackBar = SnackBar(content: Text("Failed to update schedule"));
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        return;
       }
 
       Navigator.popUntil(context, ModalRoute.withName(Activity.routeName));

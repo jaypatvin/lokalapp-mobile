@@ -82,7 +82,7 @@ class _CommunityState extends State<Community> {
         children: [
           AnimatedContainer(
             width: double.infinity,
-            height: bottom == 0 ? 300.h : 100.h,
+            height: bottom == 0 ? 280.0.h : 150.h,
             color: kYellowColor,
             duration: Duration(milliseconds: 100),
             child: SafeArea(

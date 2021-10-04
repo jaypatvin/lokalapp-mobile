@@ -99,7 +99,7 @@ class _LoginScreenState extends State<LoginScreen>
         children: [
           AnimatedContainer(
             color: kYellowColor,
-            height: 330.0.h - bottom, //bottom == 0 ? 330.0.h : 220.0.h,
+            height: bottom == 0 ? 280.0.h : 150.h,
             duration: Duration(milliseconds: 100),
             child: SafeArea(
               child: Center(
