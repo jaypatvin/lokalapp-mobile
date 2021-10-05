@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import '../../../utils/themes.dart';
 import '../../../widgets/photo_box.dart';
@@ -29,9 +30,7 @@ class ProductHeader extends StatelessWidget {
                   child: Text("No Image"),
                 ),
               ),
-        SizedBox(
-          width: MediaQuery.of(context).size.width * 0.10,
-        ),
+        const SizedBox(width: 10.0),
         // TODO: use Consumer<ProductBody>()
         Expanded(
           child: Column(
@@ -39,19 +38,16 @@ class ProductHeader extends StatelessWidget {
             children: [
               Text(
                 productName,
-                style: kTextStyle.copyWith(
-                  fontSize: MediaQuery.of(context).size.width * 0.065,
-                ),
+                overflow: TextOverflow.ellipsis,
+                style: Theme.of(context).textTheme.headline6,
+                maxLines: 2,
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    "PHP $productPrice".padRight(10, '0'),
-                    style: kTextStyle.copyWith(
-                      fontSize: MediaQuery.of(context).size.width * 0.04,
-                      fontWeight: FontWeight.w400,
-                    ),
+                    "PHP ${NumberFormat("#,##0.00").format(productPrice)}",
+                    style: Theme.of(context).textTheme.bodyText1,
                   ),
                   Visibility(
                     visible: productStock != null,

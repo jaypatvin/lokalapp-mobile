@@ -457,6 +457,7 @@ class _SchedulePickerState extends State<SchedulePicker> {
       );
     } else {
       _startDates = _startDate != null ? [_startDate] : [];
+      _markedStartDates = _startDates;
     }
 
     final _repeatType = _getRepeatType();
@@ -822,6 +823,7 @@ class _DayOfMonth extends StatelessWidget {
                           fontWeight: FontWeight.normal,
                           fontSize: 20.0.sp,
                         ),
+                    iconSize: 24.0.sp,
                   ),
                 ),
               ),
@@ -855,6 +857,7 @@ class _DayOfMonth extends StatelessWidget {
                           fontWeight: FontWeight.normal,
                           fontSize: 20.0.sp,
                         ),
+                    iconSize: 24.0.sp,
                   ),
                 ),
               ),
@@ -899,6 +902,7 @@ class _DayOfMonth extends StatelessWidget {
                           fontWeight: FontWeight.normal,
                           fontSize: 20.0.sp,
                         ),
+                    iconSize: 24.0.sp,
                   ),
                 ),
               ),
@@ -1043,6 +1047,7 @@ class _RepeatabilityPicker extends StatelessWidget {
                           fontWeight: FontWeight.normal,
                           fontSize: 20.0.sp,
                         ),
+                    iconSize: 24.0.sp,
                   ),
                 ),
               ),

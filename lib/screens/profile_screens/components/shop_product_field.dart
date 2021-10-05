@@ -70,6 +70,7 @@ class ShopProductField extends StatelessWidget {
               ),
               StoreCard(
                 crossAxisCount: 2,
+                isUserProducts: true,
               ),
             ],
           ),

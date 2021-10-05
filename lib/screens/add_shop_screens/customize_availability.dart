@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:intl/date_symbols.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart' show DateFormat;
 import 'package:provider/provider.dart';
 import 'package:screen_loader/screen_loader.dart';
@@ -13,12 +13,12 @@ import '../../providers/shops.dart';
 import '../../providers/user.dart';
 import '../../services/local_image_service.dart';
 import '../../utils/calendar_picker/calendar_picker.dart';
-import "../../utils/functions.utils.dart";
-import '../../utils/repeated_days_generator/repeated_days_generator.dart';
+import '../../utils/repeated_days_generator/schedule_generator.dart';
 import '../../utils/themes.dart';
+import '../../widgets/app_button.dart';
 import '../../widgets/custom_app_bar.dart';
-import '../../widgets/rounded_button.dart';
 import '../../widgets/schedule_picker.dart';
+import 'payment_options/payment_options.dart';
 import 'shop_confirmation.dart';
 
 class CustomizeAvailability extends StatefulWidget {
@@ -50,173 +50,64 @@ class _CustomizeAvailabilityState extends State<CustomizeAvailability>
   List<DateTime> initialDates;
   List<DateTime> markedDates;
   bool _shopCreated = false;
+  bool _customized = false;
 
   @override
   initState() {
     super.initState();
+    final _generator = ScheduleGenerator();
+
+    if (!widget.forEditing) {
+      initialDates = _generator.generateInitialDates(
+        repeatChoice: widget.repeatChoice,
+        startDate: widget.startDate,
+        repeatEveryNUnit: widget.repeatEvery,
+        selectableDays: widget.selectableDays,
+        repeatType:
+            context.read<OperatingHoursBody>().operatingHours.repeatType,
+      );
+      markedDates = [...initialDates];
+      return;
+    }
 
     OperatingHours _operatingHours;
     var user = Provider.of<CurrentUser>(context, listen: false);
     var shops = Provider.of<Shops>(context, listen: false).findByUser(user.id);
     if (shops.isNotEmpty) _operatingHours = shops.first.operatingHours;
 
-    var dayGenerator = RepeatedDaysGenerator.instance;
-    switch (widget.repeatChoice) {
-      case RepeatChoices.day:
-        initialDates = dayGenerator.getRepeatedDays(
-          startDate: widget.startDate,
-          everyNDays: widget.repeatEvery,
-          validate: _operatingHours == null,
-        );
-        break;
-      case RepeatChoices.week:
-        initialDates = dayGenerator.getRepeatedWeekDays(
-          startDate: widget.startDate,
-          everyNWeeks: widget.repeatEvery,
-          selectedDays: widget.selectableDays,
-          validate: _operatingHours == null,
-        );
-        var startDates = <String>[];
-        for (int i = 0; i < widget.selectableDays.length; i++) {
-          startDates.add(DateFormat("yyyy-MM-dd").format(initialDates[i]));
-        }
-        Provider.of<OperatingHoursBody>(context, listen: false)
-            .update(startDates: [...startDates]);
-        break;
-      case RepeatChoices.month:
-        if (widget.usedDatePicker) {
-          initialDates = dayGenerator.getRepeatedMonthDaysByStartDate(
-            startDate: widget.startDate,
-            everyNMonths: widget.repeatEvery,
-            validate: _operatingHours == null,
-          );
-        } else {
-          var provider =
-              Provider.of<OperatingHoursBody>(context, listen: false);
-          var type = provider.operatingHours.repeatType.split("-");
-          initialDates = dayGenerator.getRepeatedMonthDaysByNthDay(
-            everyNMonths: widget.repeatEvery,
-            ordinal: int.parse(type[0]),
-            weekday: en_USSymbols.SHORTWEEKDAYS.indexOf(type[1].capitalize()),
-            month: DateTime.now().month,
-          );
-        }
-
-        break;
-      default:
-        // do nothing
-        break;
-    }
+    initialDates = _generator.getSelectableDates(_operatingHours);
     markedDates = [...initialDates];
-
-    bool validOperatingHours = _operatingHours != null &&
-        _operatingHours.startTime.isNotEmpty &&
-        _operatingHours.endTime.isNotEmpty &&
-        _operatingHours.repeatUnit > 0 &&
-        _operatingHours.repeatType.isNotEmpty &&
-        _operatingHours.startDates.isNotEmpty;
-
-    if (validOperatingHours) {
-      var unavailableDates = <DateTime>[];
-      _operatingHours.unavailableDates.forEach((element) {
-        unavailableDates.add(DateFormat("yyyy-MM-dd").parse(element));
-      });
-      markedDates.removeWhere((element) => unavailableDates.contains(element));
-
-      _operatingHours.customDates.forEach((element) {
-        var date = DateFormat("yyyy-MM-dd").parse(element.date);
-        if (!markedDates.contains(date)) {
-          markedDates.add(date);
-        }
-      });
-    }
   }
 
-  Future<List<DateTime>> showCalendarPicker() async {
+  Future<List<DateTime>> _showCalendarPicker() async {
     List<DateTime> selectedDates = [...markedDates];
     return await showDialog<List<DateTime>>(
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
-        return Center(
-          child: Dialog(
-            insetPadding: EdgeInsets.zero,
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(30.0)),
-            child: SingleChildScrollView(
-              physics: NeverScrollableScrollPhysics(),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.02,
-                  ),
-                  Text(
-                    "Start Date",
-                    style: kTextStyle.copyWith(
-                      fontSize: 24.0,
-                    ),
-                  ),
-                  Container(
-                    width: MediaQuery.of(context).size.width * 0.95,
-                    height: MediaQuery.of(context).size.height * 0.56,
-                    padding: EdgeInsets.all(5.0),
-                    child: CalendarCarousel(
-                      height: MediaQuery.of(context).size.height * 0.45,
-                      width: MediaQuery.of(context).size.width * 0.95,
-                      startDate:
-                          widget.startDate.difference(DateTime.now()).inDays >=
-                                  0
-                              ? widget.startDate
-                              : DateTime.now(),
-                      onDayPressed: (day) {
-                        setState(() {
-                          if (selectedDates.contains(day))
-                            selectedDates.remove(day);
-                          else
-                            selectedDates.add(day);
-                        });
-                      },
-                      markedDatesMap: selectedDates,
-                      selectableDaysMap:
-                          widget.repeatChoice == RepeatChoices.week
-                              ? widget.selectableDays
-                              : [1, 2, 3, 4, 5, 6, 0],
-                    ),
-                  ),
-                  Container(
-                    padding: EdgeInsets.all(
-                        MediaQuery.of(context).size.width * 0.05),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        RoundedButton(
-                          label: "Cancel",
-                          color: Color(
-                            0xFFF1FAFF,
-                          ),
-                          onPressed: () {
-                            Navigator.pop(context, markedDates);
-                          },
-                        ),
-                        RoundedButton(
-                          label: "Confirm",
-                          fontColor: Colors.white,
-                          onPressed: () {
-                            setState(() {
-                              markedDates = selectedDates;
-                            });
+        return _CalendarPicker(
+          onDayPressed: (day) {
+            setState(() {
+              if (selectedDates.contains(day))
+                selectedDates.remove(day);
+              else
+                selectedDates.add(day);
+            });
+          },
+          onCancel: () => Navigator.pop(context, markedDates),
+          onConfirm: () {
+            setState(() {
+              markedDates = selectedDates;
+              _customized = true;
+            });
 
-                            Navigator.pop(context, markedDates);
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
+            Navigator.pop(context, markedDates);
+          },
+          markedDates: selectedDates,
+          startDate: widget.startDate.difference(DateTime.now()).inDays >= 0
+              ? widget.startDate
+              : DateTime.now(),
+          selectableDays: const [1, 2, 3, 4, 5, 6, 0],
         );
       },
     );
@@ -286,6 +177,51 @@ class _CustomizeAvailabilityState extends State<CustomizeAvailability>
     return false;
   }
 
+  Future<void> _onSubmit() async {
+    _shopCreated = await createShop();
+    if (_shopCreated) {
+      bool updated = await updateShopSchedule();
+      if (updated) {
+        context.read<Shops>().fetch();
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (BuildContext context) => AddShopConfirmation(),
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("Failed to upload shop schedule. Try again"),
+          ),
+        );
+      }
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Failed to create shop. Try again"),
+        ),
+      );
+    }
+  }
+
+  Future<void> _onConfirm() async {
+    setUpShotSchedule();
+
+    if (widget.forEditing) {
+      if (widget.onShopEdit != null) widget.onShopEdit();
+      return;
+    }
+
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => SetUpPaymentOptions(
+          onSubmit: _onSubmit,
+        ),
+      ),
+    );
+  }
+
   @override
   Widget screen(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
@@ -316,74 +252,119 @@ class _CustomizeAvailabilityState extends State<CustomizeAvailability>
           children: [
             Text(
               "Customize Availability",
-              style: kTextStyle.copyWith(fontSize: 24.0),
+              style: Theme.of(context).textTheme.headline5,
             ),
             Text(
               "Customize which days your shop will be available",
-              style: kTextStyle.copyWith(
-                fontWeight: FontWeight.normal,
-                fontSize: 18.0,
-              ),
+              style: Theme.of(context).textTheme.bodyText1,
             ),
             SizedBox(
               height: height * 0.05,
             ),
-            RoundedButton(
-              textAlign: TextAlign.start,
-              minWidth: double.infinity,
-              label: "Customize Availability",
-              onPressed: showCalendarPicker,
-              color: Color(0xFFF1FAFF),
+            SizedBox(
+              width: double.infinity,
+              child: AppButton(
+                "Customize Availability",
+                kTealColor,
+                false,
+                _showCalendarPicker,
+              ),
             ),
             Spacer(),
-            RoundedButton(
-              label: "Confirm",
-              height: 10,
-              minWidth: double.infinity,
-              fontSize: 16,
-              fontWeight: FontWeight.w700,
-              fontFamily: "GoldplayBold",
-              fontColor: Colors.white,
-              onPressed: () async {
-                setUpShotSchedule();
-                if (widget.forEditing) {
-                  if (widget.onShopEdit != null) widget.onShopEdit();
-                  int count = 0;
-                  Navigator.of(context).popUntil((_) => count++ >= 2);
-                  return;
-                }
-                _shopCreated =
-                    await performFuture<bool>(() async => await createShop());
-                if (_shopCreated) {
-                  bool updated = await performFuture<bool>(
-                      () async => await updateShopSchedule());
-                  if (updated) {
-                    context.read<Shops>().fetch();
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (BuildContext context) =>
-                            AddShopConfirmation(),
-                      ),
-                    );
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content:
-                            Text("Failed to upload shop schedule. Try again"),
-                      ),
-                    );
-                  }
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text("Failed to create shop. Try again"),
-                    ),
-                  );
-                }
-              },
-            ),
+            SizedBox(
+              width: double.infinity,
+              child: AppButton(
+                _customized ? "Confirm" : "Next",
+                kTealColor,
+                true,
+                _onConfirm,
+              ),
+            )
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class _CalendarPicker extends StatelessWidget {
+  final void Function(DateTime) onDayPressed;
+  final void Function() onConfirm;
+  final void Function() onCancel;
+  final List<DateTime> markedDates;
+  final DateTime startDate;
+  final List<int> selectableDays;
+  const _CalendarPicker({
+    Key key,
+    @required this.onDayPressed,
+    @required this.onCancel,
+    @required this.onConfirm,
+    @required this.markedDates,
+    @required this.startDate,
+    @required this.selectableDays,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Dialog(
+        insetPadding: EdgeInsets.zero,
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0)),
+        child: SingleChildScrollView(
+          physics: NeverScrollableScrollPhysics(),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.02,
+              ),
+              Text(
+                "Set Availability Exceptions",
+                style: Theme.of(context).textTheme.headline5,
+              ),
+              Container(
+                width: MediaQuery.of(context).size.width * 0.95,
+                height: MediaQuery.of(context).size.height * 0.63,
+                padding: EdgeInsets.all(5.0),
+                child: CalendarCarousel(
+                  width: MediaQuery.of(context).size.width * 0.95,
+                  startDate: this.startDate,
+                  onDayPressed: this.onDayPressed,
+                  markedDatesMap: this.markedDates,
+                  selectableDaysMap: this.selectableDays,
+                ),
+              ),
+              Flexible(
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 10.0.w),
+                  margin: EdgeInsets.symmetric(vertical: 5.0.h),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Expanded(
+                        child: AppButton(
+                          "Cancel",
+                          kTealColor,
+                          false,
+                          onCancel,
+                        ),
+                      ),
+                      SizedBox(width: 5.0.w),
+                      Expanded(
+                        child: AppButton(
+                          "Confirm",
+                          kTealColor,
+                          true,
+                          onConfirm,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

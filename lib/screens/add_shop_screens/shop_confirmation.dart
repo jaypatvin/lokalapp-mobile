@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lottie/lottie.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 
 import '../../utils/constants.dart';
 import '../../utils/themes.dart';
@@ -83,7 +84,12 @@ class AddShopConfirmation extends StatelessWidget {
                 () {
                   Navigator.popUntil(
                     context,
-                    ModalRoute.withName(UserShop.routeName),
+                    ModalRoute.withName(ProfileScreen.routeName),
+                  );
+                  pushNewScreenWithRouteSettings(
+                    context,
+                    screen: UserShop(),
+                    settings: RouteSettings(name: UserShop.routeName),
                   );
                 },
               ),

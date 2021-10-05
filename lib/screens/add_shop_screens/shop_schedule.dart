@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart' show DateFormat;
 import 'package:provider/provider.dart';
 
@@ -9,8 +10,8 @@ import '../../providers/shops.dart';
 import '../../providers/user.dart';
 import '../../utils/functions.utils.dart';
 import '../../utils/themes.dart';
+import '../../widgets/app_button.dart';
 import '../../widgets/custom_app_bar.dart';
-import '../../widgets/rounded_button.dart';
 import '../../widgets/schedule_picker.dart';
 import 'customize_availability.dart';
 
@@ -196,62 +197,62 @@ class _ShopScheduleState extends State<ShopSchedule> {
                   });
                 },
               ),
-              SizedBox(height: height * 0.05),
-              RoundedButton(
-                label: "Confirm",
-                height: 10,
-                minWidth: double.infinity,
-                fontSize: 16,
-                fontWeight: FontWeight.w700,
-                fontFamily: "GoldplayBold",
-                fontColor: Colors.white,
-                onPressed: () {
-                  final operatingHours =
-                      context.read<OperatingHoursBody>().operatingHours;
-                  final startDates = operatingHours.startDates;
-                  final repeatUnit = operatingHours.repeatUnit;
-                  if (startDates == null || startDates.isEmpty) {
-                    final snackBar = SnackBar(
-                      content: Text("Select a start date"),
-                    );
-                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                    return;
-                  }
+              const SizedBox(height: 5),
+              SizedBox(
+                width: double.infinity,
+                child: AppButton(
+                  "Confirm",
+                  kTealColor,
+                  true,
+                  () {
+                    final operatingHours =
+                        context.read<OperatingHoursBody>().operatingHours;
+                    final startDates = operatingHours.startDates;
+                    final repeatUnit = operatingHours.repeatUnit;
+                    if (startDates == null || startDates.isEmpty) {
+                      final snackBar = SnackBar(
+                        content: Text("Select a start date"),
+                      );
+                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                      return;
+                    }
 
-                  if (repeatUnit == null || repeatUnit <= 0) {
-                    final snackBar = SnackBar(
-                      content: Text("Enter a valid repeat number."),
-                    );
-                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                    return;
-                  }
+                    if (repeatUnit == null || repeatUnit <= 0) {
+                      final snackBar = SnackBar(
+                        content: Text("Enter a valid repeat number."),
+                      );
+                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                      return;
+                    }
 
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (BuildContext context) => CustomizeAvailability(
-                        repeatChoice: this._getRepeatChoice(),
-                        repeatEvery: context
-                            .read<OperatingHoursBody>()
-                            .operatingHours
-                            .repeatUnit,
-                        selectableDays: this._selectableDays,
-                        startDate: this._startDate ?? DateTime.now(),
-                        shopPhoto: widget.shopPhoto,
-                        usedDatePicker: context
-                                .read<OperatingHoursBody>()
-                                .operatingHours
-                                .repeatType
-                                .split("-")
-                                .length <=
-                            1,
-                        forEditing: widget.forEditing,
-                        onShopEdit: widget.onShopEdit,
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (BuildContext context) =>
+                            CustomizeAvailability(
+                          repeatChoice: this._getRepeatChoice(),
+                          repeatEvery: context
+                              .read<OperatingHoursBody>()
+                              .operatingHours
+                              .repeatUnit,
+                          selectableDays: this._selectableDays,
+                          startDate: this._startDate ?? DateTime.now(),
+                          shopPhoto: widget.shopPhoto,
+                          usedDatePicker: context
+                                  .read<OperatingHoursBody>()
+                                  .operatingHours
+                                  .repeatType
+                                  .split("-")
+                                  .length <=
+                              1,
+                          forEditing: widget.forEditing,
+                          onShopEdit: widget.onShopEdit,
+                        ),
                       ),
-                    ),
-                  );
-                },
-              ),
+                    );
+                  },
+                ),
+              )
             ],
           ),
         ),
@@ -283,10 +284,9 @@ class _HoursPicker extends StatelessWidget {
       children: [
         Text(
           "Every",
-          style: kTextStyle.copyWith(
-            fontWeight: FontWeight.normal,
-            fontSize: 20.0,
-          ),
+          style: Theme.of(context).textTheme.headline6.copyWith(
+                fontWeight: FontWeight.normal,
+              ),
         ),
         spacerBox,
         Expanded(
@@ -307,15 +307,13 @@ class _HoursPicker extends StatelessWidget {
                   Expanded(
                     child: Text(
                       getTimeOfDayString(this.opening),
-                      style: kTextStyle.copyWith(
-                        fontWeight: FontWeight.normal,
-                        //fontSize: 18.0,
-                      ),
+                      style: Theme.of(context).textTheme.bodyText1,
                     ),
                   ),
                   Icon(
                     Icons.arrow_drop_down_sharp,
                     color: kTealColor,
+                    size: 16.0.sp,
                   ),
                 ],
               ),
@@ -328,10 +326,9 @@ class _HoursPicker extends StatelessWidget {
         spacerBox,
         Text(
           "To",
-          style: kTextStyle.copyWith(
-            fontWeight: FontWeight.normal,
-            fontSize: 20.0,
-          ),
+          style: Theme.of(context).textTheme.headline6.copyWith(
+                fontWeight: FontWeight.normal,
+              ),
         ),
         spacerBox,
         Expanded(
@@ -352,15 +349,13 @@ class _HoursPicker extends StatelessWidget {
                   Expanded(
                     child: Text(
                       getTimeOfDayString(this.closing),
-                      style: kTextStyle.copyWith(
-                        fontWeight: FontWeight.normal,
-                        //fontSize: 18.0,
-                      ),
+                      style: Theme.of(context).textTheme.bodyText1,
                     ),
                   ),
                   Icon(
                     Icons.arrow_drop_down_sharp,
                     color: kTealColor,
+                    size: 16.0.sp,
                   ),
                 ],
               ),

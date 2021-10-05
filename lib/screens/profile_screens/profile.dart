@@ -43,81 +43,81 @@ class _ProfileScreenState extends State<ProfileScreen> {
       child: Scaffold(
         backgroundColor: kInviteScreenColor,
         body: SafeArea(
-          child: SizedBox(
-            child: Column(
-              children: [
-                ProfileHeader(),
-                UserShopBanner(),
-                SizedBox(height: 20.0.h),
-                Expanded(
-                  child: PageView(
-                    controller: _pageController,
-                    physics: NeverScrollableScrollPhysics(),
-                    children: [
-                      Column(
-                        children: [
-                          Container(
-                            padding: EdgeInsets.all(10.0.w),
-                            width: double.infinity,
-                            child: Text(
-                              "My Profile",
-                              style: TextStyle(
-                                color: kTealColor,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ),
-                          MyProfileList(
-                            onMyPostsTap: () => _pageController.animateToPage(
-                              1,
-                              duration: const Duration(milliseconds: 250),
-                              curve: Curves.easeIn,
-                            ),
-                            onInviteFriend: null,
-                            onNotificationsTap: null,
-                            onWishlistTap: null,
-                          ),
-                        ],
-                      ),
-                      GestureDetector(
-                        onPanUpdate: (data) {
-                          if (data.delta.dx > 0) {
-                            Navigator.maybePop(context);
-                          }
-                        },
-                        child: SingleChildScrollView(
-                          child: Container(
-                            color: Color(0XFFF1FAFF),
-                            child: Consumer<Activities>(
-                              builder: (context, activities, child) {
-                                return activities.isLoading
-                                    ? SizedBox(
-                                        width: double.infinity,
-                                        height: double.infinity,
-                                        child: DecoratedBox(
-                                          decoration: const BoxDecoration(
-                                            color: Colors.white,
-                                          ),
-                                          child:
-                                              Lottie.asset(kAnimationLoading),
-                                        ),
-                                      )
-                                    : RefreshIndicator(
-                                        onRefresh: () => activities.fetch(),
-                                        child: Timeline(
-                                            activities.findByUser(user.id),
-                                            null),
-                                      );
-                              },
+          child: Column(
+            children: [
+              ProfileHeader(),
+              UserShopBanner(),
+              SizedBox(height: 20.0.h),
+              Expanded(
+                child: PageView(
+                  controller: _pageController,
+                  physics: NeverScrollableScrollPhysics(),
+                  children: [
+                    Column(
+                      children: [
+                        Container(
+                          padding: EdgeInsets.all(10.0.w),
+                          width: double.infinity,
+                          child: Text(
+                            "My Profile",
+                            style: TextStyle(
+                              color: kTealColor,
+                              fontWeight: FontWeight.w600,
                             ),
                           ),
                         ),
+                        Expanded(
+                          child: SingleChildScrollView(
+                            child: MyProfileList(
+                              onMyPostsTap: () => _pageController.animateToPage(
+                                1,
+                                duration: const Duration(milliseconds: 250),
+                                curve: Curves.easeIn,
+                              ),
+                              onInviteFriend: null,
+                              onNotificationsTap: null,
+                              onWishlistTap: null,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    GestureDetector(
+                      onPanUpdate: (data) {
+                        if (data.delta.dx > 0) {
+                          Navigator.maybePop(context);
+                        }
+                      },
+                      child: SingleChildScrollView(
+                        child: Container(
+                          color: Color(0XFFF1FAFF),
+                          child: Consumer<Activities>(
+                            builder: (context, activities, child) {
+                              return activities.isLoading
+                                  ? SizedBox(
+                                      width: double.infinity,
+                                      height: double.infinity,
+                                      child: DecoratedBox(
+                                        decoration: const BoxDecoration(
+                                          color: Colors.white,
+                                        ),
+                                        child: Lottie.asset(kAnimationLoading),
+                                      ),
+                                    )
+                                  : RefreshIndicator(
+                                      onRefresh: () => activities.fetch(),
+                                      child: Timeline(
+                                          activities.findByUser(user.id), null),
+                                    );
+                            },
+                          ),
+                        ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),

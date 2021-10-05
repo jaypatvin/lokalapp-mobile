@@ -143,6 +143,14 @@ class _UserShopBannerState extends State<UserShopBanner> {
                 displayName: shop.name,
                 displayPhoto: shop.profilePhoto,
               ),
+              onTap: () {
+                pushNewScreenWithRouteSettings(
+                  context,
+                  screen: UserShop(),
+                  settings: RouteSettings(name: UserShop.routeName),
+                  pageTransitionAnimation: PageTransitionAnimation.cupertino,
+                );
+              },
               title: Text(
                 shop.name,
                 style: TextStyle(
@@ -166,19 +174,10 @@ class _UserShopBannerState extends State<UserShopBanner> {
                   SizedBox(
                     width: 15,
                   ),
-                  GestureDetector(
-                    onTap: () {
-                      pushNewScreenWithRouteSettings(
-                        context,
-                        screen: UserShop(),
-                        settings: RouteSettings(name: UserShop.routeName),
-                      );
-                    },
-                    child: Icon(
-                      Icons.arrow_forward_ios,
-                      color: kTealColor,
-                      size: 16,
-                    ),
+                  Icon(
+                    Icons.arrow_forward_ios,
+                    color: kTealColor,
+                    size: 16,
                   ),
                 ],
               ),

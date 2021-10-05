@@ -22,9 +22,9 @@ class _AddShopState extends State<AddShop> {
   File shopPhoto;
   @override
   Widget build(BuildContext context) {
-    double width = MediaQuery.of(context).size.width;
-    double height = MediaQuery.of(context).size.height;
-    double padding = height * 0.05;
+    final width = MediaQuery.of(context).size.width;
+    final height = MediaQuery.of(context).size.height;
+    final padding = height * 0.05;
     return Scaffold(
       appBar: CustomAppBar(
         titleText: "Add Shop",
@@ -32,83 +32,78 @@ class _AddShopState extends State<AddShop> {
           Navigator.pop(context);
         },
       ),
-      body: Container(
-        padding: EdgeInsets.fromLTRB(padding, padding, padding, 0.0),
-        child: Center(
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  "Basic Information",
-                  style: kTextStyle.copyWith(fontSize: 24.0),
-                ),
-                SizedBox(
-                  height: height * 0.05,
-                ),
-                GestureDetector(
-                  onTap: () async {
-                    var photo =
-                        await Provider.of<MediaUtility>(context, listen: false)
-                            .showMediaDialog(context);
-                    setState(() {
-                      shopPhoto = photo;
-                    });
-                  },
-                  child: PhotoBox(file: shopPhoto, shape: BoxShape.circle),
-                ),
-                SizedBox(
-                  height: height * 0.05,
-                ),
-                InputName(
-                  hintText: "Shop Name",
-                  onChanged: (value) {
-                    Provider.of<ShopBody>(context, listen: false)
-                        .update(name: value);
-                  },
-                ),
-                SizedBox(
-                  height: height * 0.02,
-                ),
-                InputDescription(
-                  hintText: "Shop Description",
-                  onChanged: (value) {
-                    Provider.of<ShopBody>(context, listen: false)
-                        .update(description: value);
-                  },
-                ),
-                SizedBox(
-                  height: height * 0.1,
-                ),
-                Consumer<ShopBody>(builder: (context, shop, child) {
-                  bool isNotEmpty =
-                      shop.name.isNotEmpty && shop.description.isNotEmpty;
-                  return SizedBox(
-                    width: double.infinity,
-                    child: AppButton(
-                        "Set Shop Schedule",
-                        kTealColor,
-                        true,
-                        isNotEmpty
-                            ? () => Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (ctx) => ShopSchedule(
-                                      this.shopPhoto,
-                                    ),
-                                  ),
-                                )
-                            : null),
-                  );
-                }),
-                SizedBox(
-                  height: height * 0.02,
-                ),
-              ],
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const SizedBox(height: 10),
+            Text(
+              "Basic Information",
+              style: Theme.of(context).textTheme.headline5,
             ),
-          ),
+            SizedBox(
+              height: height * 0.02,
+            ),
+            GestureDetector(
+              onTap: () async {
+                var photo =
+                    await Provider.of<MediaUtility>(context, listen: false)
+                        .showMediaDialog(context);
+                setState(() {
+                  shopPhoto = photo;
+                });
+              },
+              child: PhotoBox(file: shopPhoto, shape: BoxShape.circle),
+            ),
+            SizedBox(
+              height: height * 0.02,
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: padding),
+              child: InputName(
+                hintText: "Shop Name",
+                onChanged: (value) =>
+                    context.read<ShopBody>().update(name: value),
+              ),
+            ),
+            SizedBox(
+              height: height * 0.02,
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: padding),
+              child: InputDescription(
+                hintText: "Shop Description",
+                onChanged: (value) {
+                  Provider.of<ShopBody>(context, listen: false)
+                      .update(description: value);
+                },
+              ),
+            ),
+            Consumer<ShopBody>(builder: (context, shop, child) {
+              bool isNotEmpty =
+                  shop.name.isNotEmpty && shop.description.isNotEmpty;
+              return SizedBox(
+                width: width * 0.8,
+                child: AppButton(
+                  "Set Shop Schedule",
+                  kTealColor,
+                  true,
+                  isNotEmpty
+                      ? () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (ctx) => ShopSchedule(
+                                this.shopPhoto,
+                              ),
+                            ),
+                          )
+                      : null,
+                ),
+              );
+            }),
+          ],
         ),
       ),
     );
