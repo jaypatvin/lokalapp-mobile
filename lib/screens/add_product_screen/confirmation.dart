@@ -21,9 +21,8 @@ class AddProductConfirmation extends StatelessWidget {
         titleStyle: TextStyle(color: Colors.black),
         buildLeading: false,
       ),
-      body: Container(
-        width: width,
-        height: height * 0.8,
+      body: Padding(
+        padding: const EdgeInsets.all(10.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
@@ -45,10 +44,7 @@ class AddProductConfirmation extends StatelessWidget {
                       child: Text(
                         "Your new product has now been added to your store!",
                         textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontFamily: "Goldplay",
-                          fontSize: height * 0.023,
-                        ),
+                        style: Theme.of(context).textTheme.bodyText1,
                       ),
                     ),
                   ),

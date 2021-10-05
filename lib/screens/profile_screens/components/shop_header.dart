@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:lokalapp/providers/shops.dart';
-import 'package:lokalapp/screens/edit_shop_screen/edit_shop.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 
+import '../../../providers/shops.dart';
 import '../../../providers/user.dart';
+import '../../add_shop_screens/edit_shop.dart';
 import '../../chat/components/chat_avatar.dart';
-import '../edit_profile.dart';
 import '../settings/settings.dart';
 
 class ShopHeader extends StatelessWidget {
@@ -75,12 +75,13 @@ class ShopHeader extends StatelessWidget {
             ),
             color: Colors.white,
             onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => EditShop(),
-                ),
-              );
+              pushNewScreenWithRouteSettings(
+                        context,
+                        screen: EditShop(),
+                        settings: RouteSettings(name: EditShop.routeName),
+                        pageTransitionAnimation:
+                            PageTransitionAnimation.cupertino,
+                      );
             },
           ),
         ],

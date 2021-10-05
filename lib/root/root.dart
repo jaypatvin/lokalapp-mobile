@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/activities.dart';
@@ -9,7 +10,8 @@ import '../providers/user_auth.dart';
 import '../providers/users.dart';
 import '../screens/bottom_navigation.dart';
 import '../screens/welcome_screen.dart';
-import '../utils/context_keeper.dart';
+import '../utils/constants.dart';
+import '../utils/themes.dart';
 
 class Root extends StatefulWidget {
   final Map<String, String> account;
@@ -21,41 +23,53 @@ class Root extends StatefulWidget {
 }
 
 class _RootState extends State<Root> {
-  UserState _userState;
-
   @override
   initState() {
     super.initState();
-    ContextKeeper().init(context);
+    _onStartUp();
   }
 
-  @override
-  void didChangeDependencies() async {
-    super.didChangeDependencies();
-    UserAuth auth = Provider.of<UserAuth>(context, listen: false);
+  Future<void> _onStartUp() async {
+    final auth = Provider.of<UserAuth>(context, listen: false);
 
-    AuthStatus authStatus = await auth.onStartUp();
+    final authStatus = await auth.onStartUp();
 
     if (authStatus == AuthStatus.Success) {
       CurrentUser user = Provider.of<CurrentUser>(context, listen: false);
       await user.fetch(auth.user);
-      setState(() => _userState = user.state);
+      if (user.state == UserState.LoggedIn) {
+        context.read<Activities>().fetch();
+        context.read<Shops>().fetch();
+        context.read<Products>().fetch();
+        context.read<Users>().fetch();
+        Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(
+              builder: (_) => BottomNavigation(),
+              settings: RouteSettings(name: BottomNavigation.routeName),
+            ),
+            (route) => false);
+      }
     } else {
-      setState(() => _userState = UserState.Error);
+      Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(
+            builder: (_) => WelcomeScreen(),
+          ),
+          (route) => false);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    switch (_userState) {
-      case UserState.LoggedIn:
-        context.read<Activities>().fetch();
-        context.read<Shops>().fetch();
-        context.read<Products>().fetch();
-        context.read<Users>().fetch();
-        return BottomNavigation();
-      default:
-        return WelcomeScreen();
-    }
+    return Container(
+      color: kOrangeColor,
+      width: double.infinity,
+      height: double.infinity,
+      child: Center(
+        child: SvgPicture.asset(
+          kSvgLokalLogo,
+          fit: BoxFit.contain,
+        ),
+      ),
+    );
   }
 }

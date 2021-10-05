@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class InputDescription extends StatelessWidget {
   final int maxLines;
@@ -18,8 +19,8 @@ class InputDescription extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.all(12),
-      height: maxLines * 15.0,
+      margin: EdgeInsets.all(12.w),
+      height: maxLines * 12.0.sp,
       color: Colors.transparent,
       child: TextField(
         controller: this.controller,
@@ -36,32 +37,25 @@ class InputDescription extends StatelessWidget {
             borderRadius: BorderRadius.circular(10),
             borderSide: BorderSide(
               width: 1,
-              color: Colors.grey.shade500,
+              color: Colors.grey.shade400,
             ),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
-            borderSide: BorderSide(width: 1, color: Colors.grey.shade500),
+            borderSide: BorderSide(width: 1, color: Colors.grey.shade400),
           ),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
-            borderSide: BorderSide(width: 1, color: Colors.grey.shade500),
+            borderSide: BorderSide(width: 1, color: Colors.grey.shade400),
           ),
-          // errorBorder: InputBorder.none,
-          // disabledBorder: InputBorder.none,
-          contentPadding:
-              EdgeInsets.only(left: 18, bottom: 11, top: 30, right: 15),
+          contentPadding: EdgeInsets.symmetric(
+            horizontal: 20.0.w,
+            vertical: 20.0.h,
+          ),
           hintText: this.hintText,
-          hintStyle: TextStyle(
-            color: Color(0xFFBDBDBD),
-            fontSize: 14,
-            fontFamily: "GoldplayBold",
-            // fontWeight: FontWeight.w500,
-          ),
+          hintStyle: Theme.of(context).textTheme.bodyText2,
         ),
-        style: TextStyle(
-          fontFamily: "GoldplayBold",
-        ),
+        style: Theme.of(context).textTheme.bodyText1,
       ),
     );
   }

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 import 'package:provider/provider.dart';
@@ -14,8 +15,8 @@ import '../../providers/shops.dart';
 import '../../providers/user.dart';
 import '../../services/local_image_service.dart';
 import '../../utils/themes.dart';
+import '../../widgets/app_button.dart';
 import '../../widgets/custom_app_bar.dart';
-import '../../widgets/rounded_button.dart';
 import 'components/add_product_gallery.dart';
 import 'confirmation.dart';
 import 'product_schedule.dart';
@@ -46,7 +47,7 @@ class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
     super.initState();
   }
 
-  buildDots() {
+  Widget _buildDots() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: images.map((file) {
@@ -57,16 +58,16 @@ class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
           margin: EdgeInsets.symmetric(vertical: 20.0, horizontal: 5.0),
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            border: Border.all(width: 1, color: Colors.black),
+            border: Border.all(width: 1.sp, color: Colors.black),
             color:
-                _current == index ? Color.fromRGBO(0, 0, 0, 0.9) : Colors.grey,
+                _current == index ? Colors.black.withOpacity(0.5) : Colors.grey,
           ),
         );
       }).toList(),
     );
   }
 
-  buildGallery() {
+  Widget _buildGallery() {
     return PhotoViewGallery.builder(
       itemCount: images.length,
       onPageChanged: (index) {
@@ -81,16 +82,18 @@ class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
         if (image == null) return null;
 
         return PhotoViewGalleryPageOptions(
+          basePosition: Alignment.center,
           imageProvider: FileImage(image), //NetworkImage(url),
-          minScale: PhotoViewComputedScale.contained * 0.8,
-          maxScale: PhotoViewComputedScale.covered * 2,
+          minScale: PhotoViewComputedScale.contained,
+          maxScale: PhotoViewComputedScale.covered,
           controller: controller,
+          tightMode: true,
         );
       },
       scrollPhysics: BouncingScrollPhysics(),
       backgroundDecoration: BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(20)),
-        color: Theme.of(context).canvasColor,
+        color: Colors.transparent,
       ),
       enableRotation: true,
       loadingBuilder: (context, event) => Center(
@@ -108,7 +111,7 @@ class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
     );
   }
 
-  buildImage(ProductBody product) {
+  Widget _buildImage(ProductBody product) {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Row(
@@ -118,10 +121,10 @@ class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
               height: MediaQuery.of(context).size.height / 2,
               child: Stack(
                 children: [
-                  buildGallery(),
+                  _buildGallery(),
                   Align(
                     alignment: Alignment.bottomCenter,
-                    child: buildDots(),
+                    child: _buildDots(),
                   )
                 ],
               ),
@@ -133,7 +136,7 @@ class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
     );
   }
 
-  Future<bool> createProduct() async {
+  Future<bool> _createProduct() async {
     List<LokalImages> gallery = [];
     for (var image in images) {
       var mediaUrl =
@@ -159,7 +162,7 @@ class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
     }
   }
 
-  Future<bool> setAvailability() async {
+  Future<bool> _setAvailability() async {
     var products = Provider.of<Products>(context, listen: false);
     var product = products.items.last; // this should get the latest item added
     var hoursBody = Provider.of<OperatingHoursBody>(context, listen: false);
@@ -175,11 +178,11 @@ class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
     }
   }
 
-  Future<void> onConfirm() async {
-    final shopCreated = await createProduct();
+  Future<void> _onConfirm() async {
+    final shopCreated = await _createProduct();
     if (shopCreated) {
       if (widget.scheduleState == ProductScheduleState.custom) {
-        final availabilitySet = await setAvailability();
+        final availabilitySet = await _setAvailability();
         if (!availabilitySet) {
           final snackBar = SnackBar(
             content: Text('Failed to set product availability'),
@@ -202,50 +205,46 @@ class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
   @override
   Widget screen(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
-    double height = MediaQuery.of(context).size.height;
+    final height = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: CustomAppBar(
-          titleText: "Product Preview",
-          onPressedLeading: () {
-            Navigator.pop(context);
-          }),
-      body: Container(
-        padding: EdgeInsets.all(width * 0.01),
+        titleText: "Product Preview",
+        onPressedLeading: () {
+          Navigator.pop(context);
+        },
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
         child: Consumer<ProductBody>(
           builder: (context, product, child) {
             return Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                buildImage(product),
+                SizedBox(
+                  height: height * 0.45,
+                  child: _buildImage(product),
+                ),
                 Text(
                   product.name,
-                  style: kTextStyle.copyWith(
-                    fontSize: MediaQuery.of(context).size.width * 0.065,
-                  ),
+                  style: Theme.of(context).textTheme.headline5,
+                  overflow: TextOverflow.ellipsis,
                 ),
-                SizedBox(
-                  height: height * 0.02,
-                ),
+                const SizedBox(height: 10),
                 Text(
                   product.description,
-                  style: kTextStyle,
+                  style: Theme.of(context).textTheme.subtitle1,
                 ),
                 Spacer(),
-                RoundedButton(
-                  label: "Confirm",
-                  height: 10,
-                  minWidth: double.infinity,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w700,
-                  fontFamily: "GoldplayBold",
-                  fontColor: Colors.white,
-                  onPressed: () async => await performFuture<void>(
-                    () async => await onConfirm(),
-                  ),
-                ),
                 SizedBox(
-                  height: height * 0.02,
+                  width: double.infinity,
+                  child: AppButton(
+                    "Confirm",
+                    kTealColor,
+                    true,
+                    () async => await performFuture<void>(
+                      () async => await _onConfirm(),
+                    ),
+                  ),
                 ),
               ],
             );

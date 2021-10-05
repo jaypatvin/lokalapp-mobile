@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/post_requests/product_body.dart';
 import '../../utils/themes.dart';
+import '../../widgets/app_button.dart';
 import '../../widgets/custom_app_bar.dart';
-import '../../widgets/rounded_button.dart';
+import '../../widgets/input_name.dart';
 import 'components/add_product_gallery.dart';
 import 'components/product_header.dart';
 import 'product_schedule.dart';
 
 class ProductDetails extends StatefulWidget {
   final AddProductGallery gallery;
+
   ProductDetails({@required this.gallery});
   @override
   _ProductDetailsState createState() => _ProductDetailsState();
@@ -19,22 +23,22 @@ class ProductDetails extends StatefulWidget {
 class _ProductDetailsState extends State<ProductDetails> {
   bool forDelivery = false;
   bool forPickup = false;
+  final _stockController = TextEditingController();
 
-  Widget buildCategories() {
-    var productBody = Provider.of<ProductBody>(context, listen: false);
+  Widget _buildCategories() {
+    final productBody = context.read<ProductBody>();
     return Row(
       children: [
         Text(
           "Product Category",
-          style: kTextStyle,
+          style: Theme.of(context).textTheme.headline6,
         ),
-        Spacer(),
+        const SizedBox(width: 15.0),
         Expanded(
           child: Container(
-            width: MediaQuery.of(context).size.width * 0.55,
             decoration: BoxDecoration(
                 color: Colors.grey.shade200,
-                borderRadius: BorderRadius.circular(20.0),
+                borderRadius: BorderRadius.circular(30.0.r),
                 border: Border.all(color: Colors.grey.shade200)),
             child: ButtonTheme(
               alignedDropdown: true,
@@ -42,13 +46,14 @@ class _ProductDetailsState extends State<ProductDetails> {
                 isExpanded: true,
                 iconEnabledColor: kTealColor,
                 iconDisabledColor: kTealColor,
+                iconSize: 24.0.sp,
+                icon: Icon(MdiIcons.chevronDown),
                 underline: SizedBox(),
                 value: productBody
                     .productCategory, //user.postProduct.productCategory,
                 hint: Text(
                   "Select",
-                  style: TextStyle(
-                      color: Colors.grey.shade400, fontFamily: "Goldplay"),
+                  style: Theme.of(context).textTheme.bodyText1,
                 ),
                 items: <String>['A', 'B', 'C', 'D'].map((String value) {
                   return DropdownMenuItem<String>(
@@ -66,54 +71,46 @@ class _ProductDetailsState extends State<ProductDetails> {
     );
   }
 
-  Widget buildCurrentStock() {
+  Widget _buildCurrentStock() {
     return Row(
       children: [
         Text(
           "Current Stock",
           style: kTextStyle,
         ),
-        Spacer(),
-        Container(
-          width: MediaQuery.of(context).size.width * 0.55,
-          decoration: BoxDecoration(
-              color: Colors.grey.shade200,
-              borderRadius: BorderRadius.circular(20.0),
-              border: Border.all(color: Colors.grey.shade200)),
-          child: TextField(
-            cursorColor: Colors.black,
-            keyboardType: TextInputType.number,
-            decoration: InputDecoration(
-              border: InputBorder.none,
-              focusedBorder: InputBorder.none,
-              enabledBorder: InputBorder.none,
-              errorBorder: InputBorder.none,
-              disabledBorder: InputBorder.none,
-              contentPadding: EdgeInsets.symmetric(
-                horizontal: MediaQuery.of(context).size.width * 0.03,
-                vertical: MediaQuery.of(context).size.height * 0.01,
-              ),
-              hintStyle: TextStyle(
-                color: Colors.grey.shade400,
-                fontSize: 14,
-              ),
-              hintText: "Quantity",
-            ),
-            onChanged: (value) {
-              Provider.of<ProductBody>(context, listen: false)
-                  .update(quantity: int.tryParse(value) ?? 0);
+        const SizedBox(width: 15.0),
+        Expanded(
+          child: Consumer<ProductBody>(
+            builder: (context, productBody, child) {
+              return InputName(
+                keyboardType: TextInputType.number,
+                controller: _stockController,
+                hintText: "Quantity",
+                onChanged: (value) {
+                  context
+                      .read<ProductBody>()
+                      .update(quantity: int.tryParse(value) ?? 0);
+                },
+                errorText:
+                    productBody.quantity < 0 ? "Enter a valid number." : null,
+              );
             },
-            style: kTextStyle,
           ),
         )
       ],
     );
   }
 
-  Widget buildBody() {
-    var horizontalPadding = MediaQuery.of(context).size.width * 0.05;
-    var topPadding = MediaQuery.of(context).size.height * 0.03;
-    var image = widget.gallery.photoBoxes.first;
+  Widget _buildBody() {
+    final horizontalPadding = MediaQuery.of(context).size.width * 0.05;
+    final topPadding = MediaQuery.of(context).size.height * 0.03;
+    final image = widget.gallery.photoBoxes.first;
+
+    final bool valid = (forDelivery | forPickup) &&
+        context.read<ProductBody>().productCategory != null &&
+        context.read<ProductBody>().productCategory.isNotEmpty &&
+        context.read<ProductBody>().quantity != null &&
+        context.read<ProductBody>().quantity >= 0;
 
     return Container(
       padding: EdgeInsets.fromLTRB(
@@ -123,41 +120,43 @@ class _ProductDetailsState extends State<ProductDetails> {
         0,
       ),
       child: SingleChildScrollView(
-        physics: NeverScrollableScrollPhysics(),
-        scrollDirection: Axis.vertical,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Consumer<ProductBody>(builder: (context, product, child) {
-              return ProductHeader(
-                photoBox: image,
-                productName: product.name,
-                productPrice: product.basePrice,
-                productStock: product.quantity,
-              );
-            }),
+            Consumer<ProductBody>(
+              builder: (context, product, child) {
+                return ProductHeader(
+                  photoBox: image,
+                  productName: product.name,
+                  productPrice: product.basePrice,
+                  //productStock: product.quantity,
+                );
+              },
+            ),
             SizedBox(
               height: MediaQuery.of(context).size.height * 0.05,
             ),
-            buildCategories(),
+            _buildCategories(),
             SizedBox(
               height: MediaQuery.of(context).size.height * 0.025,
             ),
-            buildCurrentStock(),
+            _buildCurrentStock(),
             SizedBox(
               height: MediaQuery.of(context).size.height * 0.05,
             ),
             Text(
               "Delivery Options",
-              style: kTextStyle,
+              style: Theme.of(context).textTheme.headline6,
             ),
             Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Container(
-                  width: MediaQuery.of(context).size.width * 0.48,
+                Expanded(
                   child: CheckboxListTile(
+                    checkColor: Colors.black,
+                    contentPadding: EdgeInsets.zero,
+                    dense: true,
                     value: forPickup,
                     onChanged: (value) {
                       setState(() {
@@ -166,16 +165,16 @@ class _ProductDetailsState extends State<ProductDetails> {
                     },
                     title: Text(
                       "Customer Pick-up",
-                      style: kTextStyle.copyWith(
-                        fontWeight: FontWeight.normal,
-                      ),
+                      style: Theme.of(context).textTheme.bodyText1,
                     ),
                     controlAffinity: ListTileControlAffinity.leading,
                   ),
                 ),
-                Container(
-                  width: MediaQuery.of(context).size.width * 0.42,
+                Expanded(
                   child: CheckboxListTile(
+                    checkColor: Colors.black,
+                    contentPadding: EdgeInsets.zero,
+                    dense: true,
                     value: forDelivery,
                     onChanged: (value) {
                       setState(() {
@@ -184,38 +183,34 @@ class _ProductDetailsState extends State<ProductDetails> {
                     },
                     title: Text(
                       "Delivery",
-                      style: kTextStyle.copyWith(
-                        fontWeight: FontWeight.normal,
-                      ),
+                      style: Theme.of(context).textTheme.bodyText1,
                     ),
                     controlAffinity: ListTileControlAffinity.leading,
                   ),
                 ),
               ],
             ),
+            const SizedBox(height: 10),
             SizedBox(
-              // TODO: modify to accomodate bottom navbar
-              height: MediaQuery.of(context).size.height * 0.25,
-            ),
-            RoundedButton(
-              label: "Next",
-              height: 10,
-              minWidth: double.infinity,
-              fontSize: 16,
-              fontWeight: FontWeight.w700,
-              fontFamily: "GoldplayBold",
-              fontColor: Colors.white,
-              onPressed: () {
-                // TODO: go to Product Schedule Screen
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (BuildContext context) =>
-                        ProductSchedule(gallery: widget.gallery),
-                  ),
-                );
-              },
-            ),
+              width: double.infinity,
+              child: AppButton(
+                "Next",
+                kTealColor,
+                true,
+                valid
+                    ? () {
+                        // TODO: go to Product Schedule Screen
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (BuildContext context) =>
+                                ProductSchedule(gallery: widget.gallery),
+                          ),
+                        );
+                      }
+                    : null,
+              ),
+            )
           ],
         ),
       ),
@@ -232,7 +227,7 @@ class _ProductDetailsState extends State<ProductDetails> {
           Navigator.pop(context);
         },
       ),
-      body: buildBody(),
+      body: _buildBody(),
     );
   }
 }

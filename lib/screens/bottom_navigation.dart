@@ -10,7 +10,7 @@ import 'home.dart';
 import 'profile_screens/profile.dart';
 
 class BottomNavigation extends StatefulWidget {
-  static const id = 'bottomNav';
+  static const routeName = 'bottomNav';
   @override
   _BottomNavigationState createState() => _BottomNavigationState();
 }
@@ -92,9 +92,6 @@ class _BottomNavigationState extends State<BottomNavigation> {
         items: _navBarsItems(),
         confineInSafeArea: true,
         backgroundColor: Colors.white,
-        //padding: NavBarPadding.only(bottom: 3),
-        // margin: EdgeInsets.all(2),
-        bottomScreenMargin: kBottomNavigationBarHeight,
         resizeToAvoidBottomInset: true,
         stateManagement: true,
         hideNavigationBarWhenKeyboardShows: true,

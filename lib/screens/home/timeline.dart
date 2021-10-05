@@ -163,6 +163,12 @@ class Timeline extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var user = Provider.of<CurrentUser>(context, listen: false);
+    if (activities.length <= 0) {
+      return Center(
+        child: Text("No posts yet! Be the first one to post."),
+      );
+    }
+
     return ListView.builder(
       physics: ScrollPhysics(),
       controller: this.scrollController,

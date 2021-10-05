@@ -27,3 +27,4 @@ const kPngGoogleLogo = "assets/sso/google_logo.png";
 
 // others
 const kSvgBackgroundHouses = "assets/houses_background.svg";
+const kSvgLokalLogo = "assets/lokal_logo.svg";

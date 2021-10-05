@@ -3,7 +3,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/user.dart';
-import '../../utils/themes.dart';
 import '../../widgets/search_text_field.dart';
 import '../chat/components/chat_avatar.dart';
 import 'components/shop_header.dart';
@@ -48,7 +47,7 @@ class _UserShopState extends State<UserShop> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: kInviteScreenColor,
+      backgroundColor: Colors.white,
       body: SafeArea(
         child: Column(
           children: [

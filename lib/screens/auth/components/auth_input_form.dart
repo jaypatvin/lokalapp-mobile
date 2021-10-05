@@ -33,6 +33,7 @@ class _AuthInputFormState extends State<AuthInputForm> {
 
   @override
   void initState() {
+    super.initState();
     _passwordVisible = false;
   }
 
@@ -71,7 +72,7 @@ class _AuthInputFormState extends State<AuthInputForm> {
           SizedBox(
             child: TextFormField(
               autocorrect: false,
-              obscureText: _passwordVisible,
+              obscureText: !_passwordVisible,
               controller: widget.passwordController,
               style: TextStyle(
                 fontWeight: FontWeight.w500,

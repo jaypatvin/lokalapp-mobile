@@ -3,10 +3,11 @@ import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/post_requests/product_body.dart';
+import '../../utils/themes.dart';
+import '../../widgets/app_button.dart';
 import '../../widgets/custom_app_bar.dart';
 import '../../widgets/input_description.dart';
 import '../../widgets/input_name.dart';
-import '../../widgets/rounded_button.dart';
 import 'components/add_product_gallery.dart';
 import 'product_details.dart';
 
@@ -16,23 +17,16 @@ class AddProduct extends StatefulWidget {
 }
 
 class _AddProductState extends State<AddProduct> {
-  final TextStyle productTextStyle = TextStyle(
-    fontWeight: FontWeight.w700,
-    fontFamily: "Goldplay",
-    fontSize: 16.0,
-  );
   final AddProductGallery _gallery = AddProductGallery();
 
-  Widget buildProductPrice() {
+  Widget _buildProductPrice() {
     return Row(
       children: [
         Text(
           "Product Price",
-          style: productTextStyle,
+          style: Theme.of(context).textTheme.headline6,
         ),
-        SizedBox(
-          width: MediaQuery.of(context).size.width * 0.05,
-        ),
+        const SizedBox(width: 10),
         Expanded(
           child: Container(
             decoration: BoxDecoration(
@@ -49,46 +43,24 @@ class _AddProductState extends State<AddProduct> {
                 errorBorder: InputBorder.none,
                 disabledBorder: InputBorder.none,
                 contentPadding: EdgeInsets.symmetric(
-                    horizontal: MediaQuery.of(context).size.width * 0.03,
-                    vertical: MediaQuery.of(context).size.height * 0.01),
-                hintStyle: TextStyle(
-                  color: Colors.grey.shade400,
-                  fontSize: 14,
+                  horizontal: MediaQuery.of(context).size.width * 0.03,
+                  vertical: MediaQuery.of(context).size.height * 0.01,
                 ),
+                hintStyle: Theme.of(context).textTheme.subtitle2.copyWith(
+                      color: Colors.grey,
+                    ),
                 hintText: "PHP",
               ),
               onChanged: (value) {
-                Provider.of<ProductBody>(context, listen: false)
+                context
+                    .read<ProductBody>()
                     .update(basePrice: double.tryParse(value) ?? 0);
               },
-              style: productTextStyle.copyWith(
-                fontSize: 20.0,
-              ),
+              style: Theme.of(context).textTheme.headline6,
             ),
           ),
         )
       ],
-    );
-  }
-
-  Widget buildSubmitButton() {
-    return RoundedButton(
-      label: "Next",
-      height: 10,
-      minWidth: double.infinity,
-      fontSize: 16,
-      fontWeight: FontWeight.w700,
-      fontFamily: "Goldplay",
-      fontColor: Colors.white,
-      onPressed: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (BuildContext context) =>
-                ProductDetails(gallery: _gallery),
-          ),
-        );
-      },
     );
   }
 
@@ -103,13 +75,12 @@ class _AddProductState extends State<AddProduct> {
         0,
       ),
       child: SingleChildScrollView(
-        //physics: NeverScrollableScrollPhysics(),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               "Product Photos",
-              style: productTextStyle,
+              style: Theme.of(context).textTheme.headline6,
             ),
             SizedBox(
               height: MediaQuery.of(context).size.height * 0.02,
@@ -120,7 +91,7 @@ class _AddProductState extends State<AddProduct> {
             ),
             Text(
               "Product Name",
-              style: productTextStyle,
+              style: Theme.of(context).textTheme.headline6,
             ),
             SizedBox(
               height: MediaQuery.of(context).size.height * 0.005,
@@ -137,7 +108,7 @@ class _AddProductState extends State<AddProduct> {
             ),
             Text(
               "Description",
-              style: productTextStyle,
+              style: Theme.of(context).textTheme.headline6,
             ),
             InputDescription(
               onChanged: (value) {
@@ -149,11 +120,22 @@ class _AddProductState extends State<AddProduct> {
             SizedBox(
               height: 20,
             ),
-            buildProductPrice(),
+            _buildProductPrice(),
             SizedBox(
               height: MediaQuery.of(context).size.height * 0.05,
             ),
-            buildSubmitButton(),
+            SizedBox(
+              width: double.infinity,
+              child: AppButton("Next", kTealColor, true, () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (BuildContext context) =>
+                        ProductDetails(gallery: _gallery),
+                  ),
+                );
+              }),
+            ),
             SizedBox(
               height: MediaQuery.of(context).size.height * 0.02,
             ),
