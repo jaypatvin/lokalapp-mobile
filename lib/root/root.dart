@@ -38,10 +38,10 @@ class _RootState extends State<Root> {
       CurrentUser user = Provider.of<CurrentUser>(context, listen: false);
       await user.fetch(auth.user);
       if (user.state == UserState.LoggedIn) {
-        context.read<Activities>().fetch();
-        context.read<Shops>().fetch();
-        context.read<Products>().fetch();
-        context.read<Users>().fetch();
+        await context.read<Activities>().fetch();
+        await context.read<Shops>().fetch();
+        await context.read<Products>().fetch();
+        await context.read<Users>().fetch();
         Navigator.of(context).pushAndRemoveUntil(
             MaterialPageRoute(
               builder: (_) => BottomNavigation(),

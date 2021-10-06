@@ -57,10 +57,12 @@ class _LoginScreenState extends State<LoginScreen>
       if (_authStatus == AuthStatus.Success) {
         await user.fetch(auth.user);
         if (user.state == UserState.LoggedIn) {
-          context.read<Activities>().fetch();
-          context.read<Shops>().fetch();
-          context.read<Products>().fetch();
-          context.read<Users>().fetch();
+          await performFuture(() async {
+            await context.read<Activities>().fetch();
+            await context.read<Shops>().fetch();
+            await context.read<Products>().fetch();
+            await context.read<Users>().fetch();
+          });
           Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(builder: (context) => BottomNavigation()),
@@ -81,6 +83,9 @@ class _LoginScreenState extends State<LoginScreen>
         setState(() {
           _signInError = true;
         });
+      } else {
+        final snackBar = SnackBar(content: Text('Error Logging In'));
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
       }
     } catch (e) {
       final snackBar = SnackBar(content: Text('Error Logging In'));
@@ -180,8 +185,10 @@ class _LoginScreenState extends State<LoginScreen>
                 ),
                 SizedBox(height: 20.0.h),
                 SocialBlock(
-                  fbLogin: () => _logInUser(type: LoginType.facebook),
-                  googleLogin: () => _logInUser(type: LoginType.google),
+                  fbLogin: () async => await performFuture(
+                      () async => await _logInUser(type: LoginType.facebook)),
+                  googleLogin: () async => await performFuture(
+                      () async => await _logInUser(type: LoginType.google)),
                   buttonWidth: 50.0.w,
                 )
               ],

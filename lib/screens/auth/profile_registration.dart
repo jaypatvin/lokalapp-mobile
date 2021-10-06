@@ -58,7 +58,6 @@ class _ProfileRegistrationState extends State<ProfileRegistration>
     CurrentUser user = Provider.of<CurrentUser>(context, listen: false);
     AuthBody authBody = Provider.of<AuthBody>(context, listen: false);
     Invite invite = Provider.of<Invite>(context, listen: false);
-    print(auth.user.uid);
     authBody.update(
       profilePhoto: mediaUrl,
       firstName: _firstNameController.text,
@@ -88,7 +87,6 @@ class _ProfileRegistrationState extends State<ProfileRegistration>
     Placemark placemark = placemarks[0];
     String completeAddress =
         '${placemark.country}, ${placemark.postalCode}, ${placemark.locality}, ${placemark.name}, ${placemark.position}, ${placemark.subLocality}';
-    print(completeAddress);
     String formattedAddress =
         "${placemark.country}, ${placemark.locality}, ${placemark.postalCode}";
     _locationController.text = formattedAddress;
@@ -129,7 +127,6 @@ class _ProfileRegistrationState extends State<ProfileRegistration>
       });
     }
     bool success = await registerUser();
-    print(success);
     if (success) {
       context.read<Activities>().fetch();
       context.read<Shops>().fetch();
