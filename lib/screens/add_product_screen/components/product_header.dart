@@ -20,7 +20,7 @@ class ProductHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        photoBox.file != null
+        photoBox.file != null || photoBox.url != null
             ? photoBox
             : Container(
                 height: 75.0,
@@ -31,7 +31,6 @@ class ProductHeader extends StatelessWidget {
                 ),
               ),
         const SizedBox(width: 10.0),
-        // TODO: use Consumer<ProductBody>()
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,

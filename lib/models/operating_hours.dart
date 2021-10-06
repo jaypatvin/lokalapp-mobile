@@ -154,7 +154,10 @@ class OperatingHours {
 
   @override
   String toString() {
-    return 'OperatingHours(startTime: $startTime, endTime: $endTime, repeat: $repeatType, repeatEvery: $repeatUnit, startDates: $startDates, unavailableDates: $unavailableDates, customDates: $customDates)';
+    return 'OperatingHours(startTime: $startTime, endTime: $endTime, '
+        'repeat: $repeatType, repeatEvery: $repeatUnit, '
+        'startDates: $startDates, unavailableDates: $unavailableDates, '
+        'customDates: $customDates)';
   }
 
   @override

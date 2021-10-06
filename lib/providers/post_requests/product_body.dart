@@ -8,6 +8,8 @@ class ProductBody extends ChangeNotifier {
     "base_price": 0.0,
     "quantity": 0,
     "gallery": [],
+    "product_category": "A",
+    "status": "enabled,"
   };
   Map get data => _productBody;
 
@@ -44,12 +46,13 @@ class ProductBody extends ChangeNotifier {
   }
 
   void clear() => update(
-      name: "",
-      description: "",
-      shopId: "",
-      basePrice: 0.0,
-      quantity: 0,
-      productCategory: "A",
-      status: "enabled",
-      gallery: []);
+        name: "",
+        description: "",
+        shopId: "",
+        basePrice: 0.0,
+        quantity: 0,
+        productCategory: "A",
+        status: "enabled",
+        gallery: [],
+      );
 }

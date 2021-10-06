@@ -64,24 +64,25 @@ class Products extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<bool> create(Map data) async {
+  Future<String> create(Map data) async {
     try {
       var response = await LokalApiService.instance.product
           .create(data: data, idToken: _idToken);
 
-      if (response.statusCode != 200) return false;
+      if (response.statusCode != 200) return null;
 
       Map body = json.decode(response.body);
 
       if (body['status'] == 'ok') {
         // await fetch(authToken);
-        _products.add(Product.fromMap(body['data']));
+        final product = Product.fromMap(body['data']);
+        _products.add(product);
         notifyListeners();
-        return true;
+        return product.id;
       }
-      return false;
+      return null;
     } catch (e) {
-      return false;
+      return null;
     }
   }
 
@@ -98,8 +99,7 @@ class Products extends ChangeNotifier {
       Map body = json.decode(response.body);
 
       if (body['status'] == 'ok') {
-        //await fetch(authToken);
-        // the app should fetch manually
+        fetchProductById(id: id);
         return true;
       }
       return false;
@@ -113,9 +113,11 @@ class Products extends ChangeNotifier {
     @required Map data,
   }) async {
     try {
-      var response = await LokalApiService.instance.product
-          .setAvailability(productId: id, data: data, idToken: _idToken);
-
+      final response = await LokalApiService.instance.product.setAvailability(
+        productId: id,
+        data: data,
+        idToken: _idToken,
+      );
       if (response.statusCode != 200) return false;
 
       Map body = json.decode(response.body);
@@ -123,11 +125,56 @@ class Products extends ChangeNotifier {
       if (body['status'] == 'ok') {
         // await fetch(authToken);
         // manually fetch data
+        fetchProductById(id: id);
         return true;
       }
       return false;
     } catch (e) {
       return false;
+    }
+  }
+
+  Future<void> deleteProduct({@required String id}) async {
+    final response = await LokalApiService.instance.product
+        .deleteProduct(id: id, idToken: _idToken);
+
+    if (response.statusCode != 200) throw (response.reasonPhrase);
+
+    Map body = json.decode(response.body);
+
+    if (body['status'] == 'ok') {
+      _products.removeWhere((product) => product.id == id);
+      notifyListeners();
+    } else {
+      throw (body['status']);
+    }
+  }
+
+  Future<void> fetchProductById({@required String id}) async {
+    try {
+      final response = await LokalApiService.instance.product.getById(
+        productId: id,
+        idToken: _idToken,
+      );
+      if (response.statusCode != 200) throw (response.reasonPhrase);
+
+      Map body = json.decode(response.body);
+
+      if (body['status'] == 'ok') {
+        final product = Product.fromMap(body['data']);
+        final index = _products.indexWhere((product) => product.id == id);
+        if (index < 0) {
+          _products.add(product);
+          notifyListeners();
+        } else {
+          _products[index] = product;
+          notifyListeners();
+        }
+      }
+      throw (response.body);
+    } catch (e) {
+      print(e);
+      return null;
     }
   }
 }

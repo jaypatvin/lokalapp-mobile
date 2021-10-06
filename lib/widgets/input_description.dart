@@ -10,7 +10,7 @@ class InputDescription extends StatelessWidget {
 
   InputDescription({
     this.maxLines = 10,
-    @required this.onChanged,
+    this.onChanged,
     this.errorText,
     this.hintText,
     this.controller,

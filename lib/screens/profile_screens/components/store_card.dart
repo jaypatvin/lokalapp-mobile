@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 
 import '../../../providers/products.dart';
 import '../../../providers/shops.dart';
 import '../../../providers/user.dart';
+import '../../add_product_screen/add_product.dart';
 import '../../discover/product_detail.dart';
 import 'product_card.dart';
 
@@ -43,6 +45,16 @@ class StoreCard extends StatelessWidget {
 
                   return GestureDetector(
                     onTap: () {
+                      if (this.isUserProducts) {
+                        pushNewScreen(
+                          context,
+                          screen: AddProduct(
+                            productId: items[index].id,
+                          ),
+                        );
+                        return;
+                      }
+
                       Navigator.push(
                         context,
                         MaterialPageRoute(

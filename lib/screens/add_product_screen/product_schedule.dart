@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart' show DateFormat;
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/operating_hours.dart';
 import '../../providers/post_requests/operating_hours_body.dart';
 import '../../providers/post_requests/product_body.dart';
+import '../../providers/products.dart';
 import '../../providers/shops.dart';
 import '../../providers/user.dart';
 import '../../utils/calendar_picker/calendar_picker.dart';
@@ -19,7 +21,8 @@ import 'product_preview.dart';
 
 class ProductSchedule extends StatefulWidget {
   final AddProductGallery gallery;
-  ProductSchedule({@required this.gallery});
+  final String productId;
+  ProductSchedule({@required this.gallery, this.productId});
   @override
   _ProductScheduleState createState() => _ProductScheduleState();
 }
@@ -29,7 +32,6 @@ enum ProductScheduleState { shop, custom }
 class _ProductScheduleState extends State<ProductSchedule> {
   ProductScheduleState _productSchedule;
   List<DateTime> _markedDatesMap = [];
-
   List<DateTime> _selectableDates = [];
 
   Widget _buildRadioTile() {
@@ -173,13 +175,13 @@ class _ProductScheduleState extends State<ProductSchedule> {
                 kTealColor,
                 true,
                 () {
-                  Navigator.push(
+                  setupProductAvailability();
+                  pushNewScreen(
                     context,
-                    MaterialPageRoute(
-                      builder: (BuildContext context) => ProductPreview(
-                        gallery: widget.gallery,
-                        scheduleState: _productSchedule,
-                      ),
+                    screen: ProductPreview(
+                      gallery: widget.gallery,
+                      scheduleState: _productSchedule,
+                      productId: widget.productId,
                     ),
                   );
                 },
@@ -195,32 +197,34 @@ class _ProductScheduleState extends State<ProductSchedule> {
   }
 
   void setupProductAvailability() {
-    var operatingHours =
-        Provider.of<OperatingHoursBody>(context, listen: false);
-    var user = Provider.of<CurrentUser>(context, listen: false);
-    var shops = Provider.of<Shops>(context, listen: false).findByUser(user.id);
-    var shopSchedule = shops.first.operatingHours;
-    var customDates = _markedDatesMap
+    final operatingHours = context.read<OperatingHoursBody>();
+    final user = context.read<CurrentUser>();
+    final shops = context.read<Shops>().findByUser(user.id);
+    final shopSchedule = shops.first.operatingHours;
+    final customDates = _markedDatesMap
         .where((date) => !_selectableDates.contains(date))
         .toList();
-    var unavailableDates = _selectableDates
+    final unavailableDates = _selectableDates
         .where((date) => !_markedDatesMap.contains(date))
         .toList();
     operatingHours.clear();
     operatingHours.update(
-      startTime: shopSchedule.startTime,
-      endTime: shopSchedule.endTime,
-      repeatType: shopSchedule.repeatType,
-      repeatUnit: shopSchedule.repeatUnit,
-      startDates: shopSchedule.startDates,
-      customDates: customDates
-          .map((date) =>
-              CustomDates(date: DateFormat("yyyy-MM-dd").format(date)))
-          .toList(),
-      unavailableDates: unavailableDates
-          .map((date) => DateFormat("yyyy-MM-dd").format(date))
-          .toList(),
-    );
+        startTime: shopSchedule.startTime,
+        endTime: shopSchedule.endTime,
+        repeatType: shopSchedule.repeatType,
+        repeatUnit: shopSchedule.repeatUnit,
+        startDates: shopSchedule.startDates,
+        customDates: [
+          ...shopSchedule.customDates
+        ],
+        unavailableDates: [
+          ...{
+            ...shopSchedule.unavailableDates,
+            ...unavailableDates
+                .map((date) => DateFormat("yyyy-MM-dd").format(date))
+                .toList(),
+          }
+        ]);
   }
 
   @override
@@ -228,14 +232,33 @@ class _ProductScheduleState extends State<ProductSchedule> {
     super.initState();
     final _generator = ScheduleGenerator();
     OperatingHours _operatingHours;
-    var user = Provider.of<CurrentUser>(context, listen: false);
-    var shops = Provider.of<Shops>(context, listen: false).findByUser(user.id);
+    final user = context.read<CurrentUser>();
+    final shops = context.read<Shops>().findByUser(user.id);
     if (shops.isNotEmpty) _operatingHours = shops.first.operatingHours;
 
     final _selectableDates = _generator.getSelectableDates(_operatingHours);
 
     this._selectableDates = _selectableDates;
     this._markedDatesMap = [..._selectableDates];
+
+    if (widget.productId != null && widget.productId.isNotEmpty) {
+      final product = context.read<Products>().findById(widget.productId);
+      if (product != null) {
+        final _productSched = product.availability;
+        final _productSelectableDates =
+            _generator.getSelectableDates(_productSched);
+
+        this._markedDatesMap = [..._productSelectableDates];
+        if (_selectableDates
+            .toSet()
+            .difference(_productSelectableDates.toSet())
+            .isEmpty) {
+          this._productSchedule = ProductScheduleState.shop;
+        } else {
+          this._productSchedule = ProductScheduleState.custom;
+        }
+      }
+    }
   }
 
   @override

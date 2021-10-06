@@ -36,13 +36,13 @@ class ProductsService {
       @required Map data,
       @required String idToken}) async {
     var body = json.encode(data);
-    return await http.post(
+    return await http.put(
       "$productsUrl/$productId",
       headers: {
         "Content-Type": "application/json",
         "Authorization": "Bearer $idToken",
-        body: body,
       },
+      body: body,
     );
   }
 
@@ -56,8 +56,8 @@ class ProductsService {
       headers: {
         "Content-Type": "application/json",
         "Authorization": "Bearer $idToken",
-        body: body,
       },
+      body: body,
     );
   }
 
@@ -84,5 +84,18 @@ class ProductsService {
       {@required String productId, @required String idToken}) async {
     return await (http.get("$productsUrl/$productId/availability",
         headers: {"Authorization": "Bearer $idToken"}));
+  }
+
+  // -- DELETE
+  Future<http.Response> deleteProduct({
+    @required String id,
+    @required String idToken,
+  }) async {
+    return await http.delete(
+      "$productsUrl/$id",
+      headers: {
+        "Authorization": "Bearer $idToken",
+      },
+    );
   }
 }

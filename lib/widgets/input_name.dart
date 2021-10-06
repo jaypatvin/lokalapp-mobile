@@ -8,6 +8,7 @@ class InputName extends StatelessWidget {
   final TextEditingController controller;
   final Color fillColor;
   final TextInputType keyboardType;
+  final TextStyle style;
 
   InputName({
     this.onChanged,
@@ -16,6 +17,7 @@ class InputName extends StatelessWidget {
     this.controller,
     this.fillColor = const Color(0xFFF2F2F2),
     this.keyboardType,
+    this.style,
   });
 
   @override
@@ -47,7 +49,7 @@ class InputName extends StatelessWidget {
           ),
           errorText: this.errorText,
         ),
-        style: Theme.of(context).textTheme.headline6,
+        style: Theme.of(context).textTheme.headline6.merge(this.style),
       ),
     );
   }
