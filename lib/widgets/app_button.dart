@@ -20,10 +20,11 @@ class AppButton extends StatelessWidget {
   /// The style to be applied to the Button Label.
   ///
   /// Will be merged with:
-  /// ``` TextStyle(
+  /// ```
+  /// TextStyle(
   /// fontFamily: "Goldplay",
-  /// fontSize: 14,
-  /// fontWeight: FontWeight.w700,
+  /// fontSize: 16,
+  /// fontWeight: FontWeight.w600,
   /// ) ```
   final TextStyle textStyle;
   const AppButton(

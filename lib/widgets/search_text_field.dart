@@ -11,7 +11,7 @@ class SearchTextField extends StatelessWidget {
     Key key,
     this.controller,
     this.hintText = "Search",
-    this.enabled = true,
+    this.enabled = false,
     this.onChanged,
     this.onTap,
   }) : super(key: key);

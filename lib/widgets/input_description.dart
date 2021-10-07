@@ -7,13 +7,15 @@ class InputDescription extends StatelessWidget {
   final String errorText;
   final String hintText;
   final TextEditingController controller;
+  final FocusNode focusNode;
 
   InputDescription({
     this.maxLines = 10,
-    @required this.onChanged,
+    this.onChanged,
     this.errorText,
     this.hintText,
     this.controller,
+    this.focusNode,
   });
 
   @override
@@ -23,6 +25,7 @@ class InputDescription extends StatelessWidget {
       height: maxLines * 12.0.sp,
       color: Colors.transparent,
       child: TextField(
+        focusNode: this.focusNode,
         controller: this.controller,
         onChanged: this.onChanged,
         cursorColor: Colors.black,

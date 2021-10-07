@@ -29,7 +29,7 @@ class Users extends ChangeNotifier {
     _idToken = id;
   }
 
-  void fetch() async {
+  Future<void> fetch() async {
     _isLoading = true;
     var response = await LokalApiService.instance.user
         .getCommunityUsers(communityId: _communityId, idToken: _idToken);
@@ -57,7 +57,6 @@ class Users extends ChangeNotifier {
 
   void clear() {
     _users = [];
-
     notifyListeners();
   }
 }

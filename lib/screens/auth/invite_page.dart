@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:keyboard_actions/keyboard_actions.dart';
 import 'package:provider/provider.dart';
 import 'package:screen_loader/screen_loader.dart';
 
@@ -19,8 +20,35 @@ class InvitePage extends StatefulWidget {
 }
 
 class _InvitePageState extends State<InvitePage> with ScreenLoader {
+  final FocusNode _inviteTextNode = FocusNode();
   final TextEditingController _codeController = TextEditingController();
   bool _displayError = false;
+
+  KeyboardActionsConfig _buildConfig(BuildContext context) {
+    return KeyboardActionsConfig(
+      keyboardActionsPlatform: KeyboardActionsPlatform.ALL,
+      keyboardBarColor: Colors.grey.shade200,
+      nextFocus: false,
+      actions: [
+        KeyboardActionsItem(
+          focusNode: _inviteTextNode,
+          toolbarButtons: [
+            (node) {
+              return TextButton(
+                onPressed: () => node.unfocus(),
+                child: Text(
+                  "Done",
+                  style: Theme.of(context).textTheme.bodyText1.copyWith(
+                        color: Colors.black,
+                      ),
+                ),
+              );
+            },
+          ],
+        ),
+      ],
+    );
+  }
 
   Future<void> _validateInviteCode(BuildContext context, String code) async {
     final invite = context.read<Invite>();
@@ -130,13 +158,19 @@ class _InvitePageState extends State<InvitePage> with ScreenLoader {
               ),
             ),
             SizedBox(height: 45.0.h),
-            TextField(
-              controller: _codeController,
-              style: TextStyle(fontWeight: FontWeight.w500),
-              decoration: kInputDecoration.copyWith(
-                hintText: "Invite Code",
-                errorText: _displayError ? kInviteCodeError : null,
-                errorMaxLines: 2,
+            KeyboardActions(
+              disableScroll: true,
+              config: _buildConfig(context),
+              tapOutsideBehavior: TapOutsideBehavior.translucentDismiss,
+              child: TextField(
+                focusNode: _inviteTextNode,
+                controller: _codeController,
+                style: TextStyle(fontWeight: FontWeight.w500),
+                decoration: kInputDecoration.copyWith(
+                  hintText: "Invite Code",
+                  errorText: _displayError ? kInviteCodeError : null,
+                  errorMaxLines: 2,
+                ),
               ),
             ),
             SizedBox(height: 24.0.h),

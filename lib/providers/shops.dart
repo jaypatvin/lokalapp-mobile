@@ -27,7 +27,7 @@ class Shops extends ChangeNotifier {
   }
 
   ShopModel findById(String id) {
-    return _shops.firstWhere((shop) => shop.id == id);
+    return _shops.firstWhere((shop) => shop.id == id, orElse: () => null);
   }
 
   List<ShopModel> findByUser(String userId) {

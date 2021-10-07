@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:keyboard_actions/keyboard_actions.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 import 'package:provider/provider.dart';
@@ -22,6 +23,7 @@ class ProductDetail extends StatefulWidget {
 
 class _ProductDetailState extends State<ProductDetail> {
   final TextEditingController _instructionsController = TextEditingController();
+  final FocusNode _nodeInstructions = FocusNode();
   PhotoViewController _photoViewcontroller;
 
   int _current = 0;
@@ -138,7 +140,30 @@ class _ProductDetailState extends State<ProductDetail> {
           ),
         ],
       ),
-      body: SingleChildScrollView(
+      body: KeyboardActions(
+        config: KeyboardActionsConfig(
+          keyboardBarColor: Colors.transparent,
+          actions: [
+            KeyboardActionsItem(
+              focusNode: _nodeInstructions,
+              displayActionBar: false,
+              toolbarButtons: [
+                (node) {
+                  return TextButton(
+                    onPressed: () => node.unfocus(),
+                    child: Text(
+                      "Done",
+                      style: Theme.of(context).textTheme.bodyText1.copyWith(
+                            color: Colors.black,
+                          ),
+                    ),
+                  );
+                },
+              ],
+            ),
+          ],
+        ),
+        tapOutsideBehavior: TapOutsideBehavior.translucentDismiss,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: Column(
@@ -168,6 +193,7 @@ class _ProductDetailState extends State<ProductDetail> {
               _SpecialInstructionsLabel(),
               _SpecialInstructionsTextField(
                 controller: this._instructionsController,
+                focusNode: this._nodeInstructions,
               ),
               SizedBox(height: 20),
               Divider(thickness: 1, height: 2, color: Colors.grey.shade300),
@@ -362,7 +388,6 @@ class _ProductItemAndPrice extends StatelessWidget {
 
 class _SpecialInstructionsLabel extends StatelessWidget {
   const _SpecialInstructionsLabel({Key key}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -394,16 +419,17 @@ class _SpecialInstructionsLabel extends StatelessWidget {
 class _SpecialInstructionsTextField extends StatelessWidget {
   final maxLines = 10;
   final TextEditingController controller;
-  const _SpecialInstructionsTextField({
-    Key key,
-    @required this.controller,
-  }) : super(key: key);
+  final FocusNode focusNode;
+  const _SpecialInstructionsTextField(
+      {Key key, @required this.controller, this.focusNode})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
       height: maxLines * 15.0,
       child: TextField(
+        focusNode: this.focusNode,
         controller: controller,
         onChanged: null,
         cursorColor: Colors.black,

@@ -29,7 +29,7 @@ class CommentCard extends StatelessWidget {
     this.liked = false,
   }) : super(key: key);
 
-  Widget buildImages() {
+  Widget _buildImages() {
     return Container(
       height: images.length > 0 ? 95.h : 0,
       //padding: EdgeInsets.symmetric(horizontal: 20.0.w),
@@ -54,54 +54,57 @@ class CommentCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var photo = user.profilePhoto ?? "";
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        ListTile(
-          contentPadding: EdgeInsets.zero,
-          onLongPress: this.onLongPress,
-          leading: GestureDetector(
-            onTap: () => this.onUserPressed(user.id),
-            child: CircleAvatar(
-              radius: 18.0.r,
-              backgroundImage: photo.isNotEmpty ? NetworkImage(photo) : null,
+    return InkWell(
+      onLongPress: this.onLongPress,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            //onLongPress: this.onLongPress,
+            leading: GestureDetector(
+              onTap: () => this.onUserPressed(user.id),
+              child: CircleAvatar(
+                radius: 18.0.r,
+                backgroundImage: photo.isNotEmpty ? NetworkImage(photo) : null,
+              ),
             ),
-          ),
-          title: RichText(
-            text: TextSpan(
-              children: [
-                TextSpan(
-                  text: "${user.firstName} ${user.lastName}",
-                  style: kTextStyle.copyWith(
-                    color: Colors.black,
-                    fontSize: 14.0.sp,
+            title: RichText(
+              text: TextSpan(
+                children: [
+                  TextSpan(
+                    text: "${user.firstName} ${user.lastName}",
+                    style: kTextStyle.copyWith(
+                      color: Colors.black,
+                      fontSize: 14.0.sp,
+                    ),
+                    recognizer: TapGestureRecognizer()
+                      ..onTap = () => this.onUserPressed(user.id),
                   ),
-                  recognizer: TapGestureRecognizer()
-                    ..onTap = () => this.onUserPressed(user.id),
-                ),
-                TextSpan(
-                  text: " $message",
-                  style: kTextStyle.copyWith(
-                    color: Colors.black,
-                    fontWeight: FontWeight.w500,
-                    fontSize: 14.0.sp,
+                  TextSpan(
+                    text: " $message",
+                    style: kTextStyle.copyWith(
+                      color: Colors.black,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 14.0.sp,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
+            ),
+            trailing: IconButton(
+              padding: EdgeInsets.zero,
+              constraints: BoxConstraints(),
+              icon: Icon(
+                this.liked ? MdiIcons.heart : MdiIcons.heartOutline,
+                color: this.liked ? Colors.red : Colors.black,
+              ),
+              onPressed: onLike,
             ),
           ),
-          trailing: IconButton(
-            padding: EdgeInsets.zero,
-            constraints: BoxConstraints(),
-            icon: Icon(
-              this.liked ? MdiIcons.heart : MdiIcons.heartOutline,
-              color: this.liked ? Colors.red : Colors.black,
-            ),
-            onPressed: onLike,
-          ),
-        ),
-        buildImages(),
-      ],
+          _buildImages(),
+        ],
+      ),
     );
   }
 }

@@ -46,6 +46,13 @@
             {
               "client_id": "196086167751-1nvrmvjgau9jlbof9isqu4tp236o0u8a.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "196086167751-mubmf4nb0ss7hs93bb0vm4stb4u7uko6.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "ph.lokalapp.lokal"
+              }
             }
           ]
         }
@@ -76,6 +83,14 @@
           }
         },
         {
+          "client_id": "196086167751-jdtpuqur8o6krmhdttniic9nksolor1i.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "ph.lokalapp.lokal",
+            "certificate_hash": "29aec8f409562c50bdfb59b0c53abf98c920f0ad"
+          }
+        },
+        {
           "client_id": "196086167751-oabatdl63fn9vgglf37ijg5tbp16458t.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -91,6 +106,13 @@
             {
               "client_id": "196086167751-1nvrmvjgau9jlbof9isqu4tp236o0u8a.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "196086167751-mubmf4nb0ss7hs93bb0vm4stb4u7uko6.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "ph.lokalapp.lokal"
+              }
             }
           ]
         }

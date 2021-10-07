@@ -6,8 +6,10 @@ class InputName extends StatelessWidget {
   final String hintText;
   final String errorText;
   final TextEditingController controller;
+  final FocusNode focusNode;
   final Color fillColor;
   final TextInputType keyboardType;
+  final TextStyle style;
 
   InputName({
     this.onChanged,
@@ -16,6 +18,8 @@ class InputName extends StatelessWidget {
     this.controller,
     this.fillColor = const Color(0xFFF2F2F2),
     this.keyboardType,
+    this.style,
+    this.focusNode,
   });
 
   @override
@@ -23,6 +27,7 @@ class InputName extends StatelessWidget {
     return Container(
       margin: EdgeInsets.all(5.0.w),
       child: TextField(
+        focusNode: this.focusNode,
         controller: this.controller,
         onChanged: this.onChanged,
         keyboardType: this.keyboardType,
@@ -47,7 +52,7 @@ class InputName extends StatelessWidget {
           ),
           errorText: this.errorText,
         ),
-        style: Theme.of(context).textTheme.headline6,
+        style: Theme.of(context).textTheme.headline6.merge(this.style),
       ),
     );
   }

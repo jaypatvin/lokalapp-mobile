@@ -6,6 +6,7 @@ import '../utils/themes.dart';
 
 class InputTextField extends StatelessWidget {
   final TextEditingController inputController;
+  final FocusNode inputFocusNode;
   final void Function() onSend;
   final void Function() onTap;
   final String hintText;
@@ -13,6 +14,7 @@ class InputTextField extends StatelessWidget {
     Key key,
     @required this.inputController,
     @required this.onSend,
+    @required this.inputFocusNode,
     this.hintText,
     this.onTap,
   }) : super(key: key);
@@ -23,6 +25,7 @@ class InputTextField extends StatelessWidget {
       minLines: 1,
       maxLines: 8,
       controller: inputController,
+      focusNode: inputFocusNode,
       textAlignVertical: TextAlignVertical.center,
       onTap: this.onTap,
       decoration: InputDecoration(

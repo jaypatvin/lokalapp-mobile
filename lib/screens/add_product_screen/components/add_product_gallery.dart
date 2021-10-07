@@ -2,11 +2,16 @@ import 'dart:collection';
 
 import 'package:flutter/material.dart';
 
+import '../../../models/lokal_images.dart';
 import '../../../utils/utility.dart';
 import '../../../widgets/photo_box.dart';
 
 class AddProductGallery extends StatefulWidget {
   final List<PhotoBox> _photoBoxes = [];
+  final List<LokalImages> images;
+
+  AddProductGallery({this.images = const []});
+
   List<PhotoBox> get photoBoxes => UnmodifiableListView(_photoBoxes);
   @override
   _AddProductGalleryState createState() => _AddProductGalleryState();
@@ -15,11 +20,24 @@ class AddProductGallery extends StatefulWidget {
 class _AddProductGalleryState extends State<AddProductGallery> {
   final boxShape = BoxShape.rectangle;
   final double height = 75.0;
-  final double width = 72.0;
+  final double width = 75.0;
 
   @override
   void initState() {
     super.initState();
+
+    if (widget.images != null && widget.images.isNotEmpty) {
+      widget.images.forEach((image) {
+        widget._photoBoxes.add(
+          PhotoBox(
+            shape: boxShape,
+            url: image.url,
+            width: width,
+            height: height,
+          ),
+        );
+      });
+    }
 
     widget._photoBoxes.add(
       PhotoBox(
@@ -31,7 +49,7 @@ class _AddProductGalleryState extends State<AddProductGallery> {
     );
   }
 
-  Future<void> selectImage(int index) async {
+  Future<void> _selectImage(int index) async {
     var file = await MediaUtility.instance.showMediaDialog(context);
     if (file != null) {
       setState(() {
@@ -74,7 +92,7 @@ class _AddProductGalleryState extends State<AddProductGallery> {
       ),
       itemBuilder: (BuildContext context, int index) {
         return GestureDetector(
-          onTap: () async => await selectImage(index),
+          onTap: () async => await _selectImage(index),
           child: Card(
               margin: EdgeInsets.all(5.0), child: widget._photoBoxes[index]),
         );

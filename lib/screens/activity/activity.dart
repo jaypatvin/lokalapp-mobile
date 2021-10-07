@@ -143,9 +143,11 @@ class _ActivityState extends State<Activity>
   @override
   void afterFirstLayout(BuildContext context) {
     _userSharedPreferences.isActivity ? Container() : showAlert(context);
-    setState(() {
-      _userSharedPreferences.isActivity = true;
-    });
+    if (this.mounted) {
+      setState(() {
+        _userSharedPreferences.isActivity = true;
+      });
+    }
   }
 
   showAlert(BuildContext context) {

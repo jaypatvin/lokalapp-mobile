@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
+import 'package:keyboard_actions/keyboard_actions.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:screen_loader/screen_loader.dart';
@@ -52,6 +53,7 @@ class SubscriptionSchedule extends StatefulWidget {
 class _SubscriptionScheduleState extends State<SubscriptionSchedule>
     with ScreenLoader {
   final _generator = ScheduleGenerator();
+  final FocusNode _repeatUnitFocusNode = FocusNode();
 
   // --Order details variables - should only be changed/initialized in initState
   // --Needed for display. Since this screen can have 2 different sources, we
@@ -441,7 +443,28 @@ class _SubscriptionScheduleState extends State<SubscriptionSchedule>
         leadingColor: Colors.black,
         backgroundColor: Colors.transparent,
       ),
-      body: SingleChildScrollView(
+      body: KeyboardActions(
+        config: KeyboardActionsConfig(
+          nextFocus: false,
+          actions: [
+            KeyboardActionsItem(
+              focusNode: _repeatUnitFocusNode,
+              toolbarButtons: [
+                (node) {
+                  return TextButton(
+                    onPressed: () => node.unfocus(),
+                    child: Text(
+                      "Done",
+                      style: Theme.of(context).textTheme.bodyText1.copyWith(
+                            color: Colors.black,
+                          ),
+                    ),
+                  );
+                },
+              ],
+            ),
+          ],
+        ),
         child: Padding(
           padding: EdgeInsets.all(8.0.w),
           child: Column(
@@ -463,6 +486,7 @@ class _SubscriptionScheduleState extends State<SubscriptionSchedule>
                 header: "Schedule",
                 description: "Which dates do you want this product "
                     "to be delivered?",
+                repeatUnitFocusNode: _repeatUnitFocusNode,
                 onRepeatTypeChanged: (choice) => _repeatType = choice,
                 onStartDatesChanged: _onStartDatesChanged,
                 onRepeatUnitChanged: (repeatUnit) => _repeatUnit = repeatUnit,
