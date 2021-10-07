@@ -103,7 +103,7 @@ class OrderDetails extends StatelessWidget {
           children: [
             Text(
               "Order Details",
-              style: kTextStyle.copyWith(
+              style: Theme.of(context).textTheme.subtitle1.copyWith(
                 color: Colors.white,
               ),
             ),
@@ -111,8 +111,7 @@ class OrderDetails extends StatelessWidget {
               visible: subheader.isNotEmpty,
               child: Text(
                 subheader,
-                style: kTextStyle.copyWith(
-                  fontSize: 14.0,
+                style: Theme.of(context).textTheme.subtitle2.copyWith(
                   color:
                       this.order.statusCode == 10 || this.order.statusCode == 20
                           ? kOrangeColor

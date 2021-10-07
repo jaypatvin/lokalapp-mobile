@@ -37,41 +37,45 @@ class StoreCard extends StatelessWidget {
                   crossAxisCount: this.crossAxisCount,
                 ),
                 itemBuilder: (BuildContext context, int index) {
-                  var gallery = items[index].gallery;
-                  var isGalleryEmpty = gallery == null || gallery.isEmpty;
-                  var productImage = !isGalleryEmpty
-                      ? gallery.firstWhere((g) => g.url != null)
-                      : null;
+                  try {
+                    var gallery = items[index].gallery;
+                    var isGalleryEmpty = gallery == null || gallery.isEmpty;
+                    var productImage = !isGalleryEmpty
+                        ? gallery.firstWhere((g) => g.url != null)
+                        : null;
 
-                  return GestureDetector(
-                    onTap: () {
-                      if (this.isUserProducts) {
-                        pushNewScreen(
+                    return GestureDetector(
+                      onTap: () {
+                        if (this.isUserProducts) {
+                          pushNewScreen(
+                            context,
+                            screen: AddProduct(
+                              productId: items[index].id,
+                            ),
+                          );
+                          return;
+                        }
+
+                        Navigator.push(
                           context,
-                          screen: AddProduct(
-                            productId: items[index].id,
+                          MaterialPageRoute(
+                            builder: (context) => ProductDetail(items[index]),
                           ),
                         );
-                        return;
-                      }
-
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => ProductDetail(items[index]),
-                        ),
-                      );
-                    },
-                    child: ProductCard(
-                      productId: items[index].id,
-                      name: items[index].name,
-                      imageUrl: isGalleryEmpty ? '' : productImage.url,
-                      price: items[index].basePrice,
-                      shopName: shops.findById(items[index].shopId).name,
-                      shopImageUrl:
-                          shops.findById(items[index].shopId).profilePhoto,
-                    ),
-                  );
+                      },
+                      child: ProductCard(
+                        productId: items[index].id,
+                        name: items[index].name,
+                        imageUrl: isGalleryEmpty ? '' : productImage.url,
+                        price: items[index].basePrice,
+                        shopName: shops.findById(items[index].shopId).name,
+                        shopImageUrl:
+                            shops.findById(items[index].shopId).profilePhoto,
+                      ),
+                    );
+                  } catch (e) {
+                    return Container();
+                  }
                 },
               );
       },

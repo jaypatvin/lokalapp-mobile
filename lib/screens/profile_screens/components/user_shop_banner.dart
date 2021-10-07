@@ -116,6 +116,7 @@ class _UserShopBannerState extends State<UserShopBanner> {
             child: Align(
               alignment: Alignment.center,
               child: SizedBox(
+                width: 100.0.w,
                 child: AppButton(
                   "+ ADD SHOP",
                   kTealColor,
