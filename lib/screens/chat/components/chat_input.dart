@@ -15,6 +15,7 @@ class ChatInput extends StatelessWidget {
   final void Function() onTextFieldTap;
   final void Function(int) onImageRemove;
   final TextEditingController chatInputController;
+  final FocusNode chatFocusNode;
   final Conversation replyMessage;
   final List<AssetEntity> images;
 
@@ -27,6 +28,7 @@ class ChatInput extends StatelessWidget {
     @required this.images,
     @required this.onImageRemove,
     @required this.chatInputController,
+    this.chatFocusNode,
     this.onTextFieldTap,
   }) : super(key: key);
 
@@ -86,6 +88,7 @@ class ChatInput extends StatelessWidget {
                         onSend: this.onMessageSend,
                         hintText: "Type a Message",
                         onTap: onTextFieldTap,
+                        inputFocusNode: this.chatFocusNode,
                       ),
                     ],
                   ),

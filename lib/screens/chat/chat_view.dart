@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:keyboard_actions/keyboard_actions.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:provider/provider.dart';
 
@@ -49,6 +50,7 @@ class _ChatViewState extends State<ChatView> {
   // these repeated codes are from post_details.dart
 
   final TextEditingController chatInputController = TextEditingController();
+  final FocusNode _chatInputNode = FocusNode();
   final ScrollController scrollController = ScrollController();
 
   String replyId = "";
@@ -257,6 +259,7 @@ class _ChatViewState extends State<ChatView> {
         replyMessage: this.replyMessage,
         images: this.provider.picked,
         onTextFieldTap: () => setState(() => showImagePicker = false),
+        chatFocusNode: _chatInputNode,
       ),
     );
   }
@@ -309,7 +312,31 @@ class _ChatViewState extends State<ChatView> {
         onPressedLeading: () => Navigator.pop(context),
         actions: [_buildDetailsButton()],
       ),
-      body: SafeArea(
+      body: KeyboardActions(
+        config: KeyboardActionsConfig(
+          keyboardBarColor: Colors.transparent,
+          actions: [
+            KeyboardActionsItem(
+              focusNode: _chatInputNode,
+              displayActionBar: false,
+              toolbarButtons: [
+                (node) {
+                  return TextButton(
+                    onPressed: () => node.unfocus(),
+                    child: Text(
+                      "Done",
+                      style: Theme.of(context).textTheme.bodyText1.copyWith(
+                            color: Colors.black,
+                          ),
+                    ),
+                  );
+                },
+              ],
+            ),
+          ],
+        ),
+        disableScroll: true,
+        tapOutsideBehavior: TapOutsideBehavior.translucentDismiss,
         child: Column(
           children: [
             Expanded(

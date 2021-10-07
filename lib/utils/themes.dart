@@ -8,6 +8,8 @@ const kOrangeColor = const Color(0xFFFF7A00);
 const kInviteScreenColor = const Color(0xFFF1FAFF);
 const kTextFieldBorderColor = const Color(0xFFF2F2F2);
 const kYellowColor = const Color(0xffFFC700);
+const kKeyboardActionHeight = 45.0;
+
 const TextStyle kTextStyle = const TextStyle(
   fontWeight: FontWeight.w700,
   fontFamily: "Goldplay",

@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/date_symbols.dart';
 import 'package:intl/intl.dart';
+import 'package:keyboard_actions/keyboard_actions.dart';
 
 import '../models/operating_hours.dart';
 import '../utils/calendar_picker/calendar_picker.dart';
@@ -87,6 +88,8 @@ class SchedulePicker extends StatefulWidget {
   /// Whether to follow operating hours selectableDates or not. Defaults to false.
   final bool limitSelectableDates;
 
+  final FocusNode repeatUnitFocusNode;
+
   /// A reusable widget used for picking schedules for shops and subscriptions.
   const SchedulePicker({
     Key key,
@@ -104,6 +107,7 @@ class SchedulePicker extends StatefulWidget {
     ],
     this.editable = true,
     this.limitSelectableDates = false,
+    @required this.repeatUnitFocusNode,
   }) : super(key: key);
 
   @override
@@ -197,9 +201,6 @@ class _SchedulePickerState extends State<SchedulePicker> {
     this._startDate ??= _schedule.startDate;
     this._startDayOfMonth = _schedule.startDayOfMonth;
     this._selectableDates = _schedule.selectableDates;
-
-    print(_schedule.startDayOfMonth);
-    print(_schedule.repeatType);
 
     // Month:
     var _ordinal = 0;
@@ -554,9 +555,10 @@ class _SchedulePickerState extends State<SchedulePicker> {
           repeatUnit: _repeatUnit,
           repeatabilityChoices: _repeatabilityChoices,
           repeatUnitController: _repeatUnitController,
+          repeatUnitFocusNode: widget.repeatUnitFocusNode,
           editable: widget.editable,
         ),
-        SizedBox(height: height * 0.02),
+        const SizedBox(height: 10),
         if (_repeatChoice == RepeatChoices.week) _weekdayPicker(),
         if (_repeatChoice != RepeatChoices.month)
           _StartDatePicker(
@@ -963,6 +965,7 @@ class _RepeatabilityPicker extends StatelessWidget {
   final String repeatUnit;
   final List<RepeatChoices> repeatabilityChoices;
   final TextEditingController repeatUnitController;
+  final FocusNode repeatUnitFocusNode;
   final bool editable;
   const _RepeatabilityPicker({
     Key key,
@@ -973,6 +976,7 @@ class _RepeatabilityPicker extends StatelessWidget {
     @required this.repeatabilityChoices,
     @required this.repeatUnitController,
     @required this.editable,
+    @required this.repeatUnitFocusNode,
   }) : super(key: key);
 
   @override
@@ -995,6 +999,7 @@ class _RepeatabilityPicker extends StatelessWidget {
                 enabled: this.editable,
                 onChanged: this.onRepeatUnitChanged,
                 controller: this.repeatUnitController,
+                focusNode: this.repeatUnitFocusNode,
                 keyboardType: TextInputType.number,
                 inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                 decoration: InputDecoration(

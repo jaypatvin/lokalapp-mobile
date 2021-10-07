@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:keyboard_actions/keyboard_actions.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
@@ -26,6 +27,7 @@ class _ProductDetailsState extends State<ProductDetails> {
   bool forDelivery = true;
   bool forPickup = true;
   final _stockController = TextEditingController();
+  final FocusNode _stockFocusNode = FocusNode();
 
   @override
   void initState() {
@@ -109,6 +111,7 @@ class _ProductDetailsState extends State<ProductDetails> {
             builder: (context, productBody, child) {
               return InputName(
                 keyboardType: TextInputType.number,
+                focusNode: this._stockFocusNode,
                 controller: _stockController,
                 hintText: "Quantity",
                 style: Theme.of(context).textTheme.bodyText1,
@@ -240,7 +243,31 @@ class _ProductDetailsState extends State<ProductDetails> {
           horizontalPadding,
           0,
         ),
-        child: SingleChildScrollView(
+        child: KeyboardActions(
+          config: KeyboardActionsConfig(
+            keyboardBarColor: Colors.grey[200],
+            actions: [
+              KeyboardActionsItem(
+                focusNode: _stockFocusNode,
+                displayArrows: false,
+                toolbarButtons: [
+                  (node) {
+                    return TextButton(
+                      onPressed: () => node.unfocus(),
+                      child: Text(
+                        "Done",
+                        style: Theme.of(context).textTheme.bodyText1.copyWith(
+                              color: Colors.black,
+                            ),
+                      ),
+                    );
+                  },
+                ],
+              ),
+            ],
+          ),
+          disableScroll: true,
+          tapOutsideBehavior: TapOutsideBehavior.translucentDismiss,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

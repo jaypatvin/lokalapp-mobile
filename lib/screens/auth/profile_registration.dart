@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:geolocator/geolocator.dart';
+import 'package:keyboard_actions/keyboard_actions.dart';
 import 'package:provider/provider.dart';
 import 'package:screen_loader/screen_loader.dart';
 
@@ -31,19 +31,81 @@ class ProfileRegistration extends StatefulWidget {
 
 class _ProfileRegistrationState extends State<ProfileRegistration>
     with ScreenLoader {
-  bool isUploading = false;
-  TextEditingController _firstNameController = TextEditingController();
-  TextEditingController _lastNameController = TextEditingController();
-  TextEditingController _streetAddressController = TextEditingController();
-  TextEditingController _locationController = TextEditingController();
+  final TextEditingController _firstNameController = TextEditingController();
+  final TextEditingController _lastNameController = TextEditingController();
+  final TextEditingController _streetController = TextEditingController();
+
+  final FocusNode _nodeFirstName = FocusNode();
+  final FocusNode _nodeLastName = FocusNode();
+  final FocusNode _nodeStreet = FocusNode();
+
   File profilePhoto;
   bool _hasEmptyField = false;
+  bool _isUploading = false;
 
   final _formKey = GlobalKey<FormState>();
 
-  Future<bool> registerUser() async {
+  KeyboardActionsConfig _buildConfig(BuildContext context) {
+    return KeyboardActionsConfig(
+      keyboardActionsPlatform: KeyboardActionsPlatform.ALL,
+      keyboardBarColor: Colors.grey.shade200,
+      nextFocus: true,
+      actions: [
+        KeyboardActionsItem(
+          focusNode: _nodeFirstName,
+          toolbarButtons: [
+            (node) {
+              return TextButton(
+                onPressed: () => node.unfocus(),
+                child: Text(
+                  "Done",
+                  style: Theme.of(context).textTheme.bodyText1.copyWith(
+                        color: Colors.black,
+                      ),
+                ),
+              );
+            },
+          ],
+        ),
+        KeyboardActionsItem(
+          focusNode: _nodeLastName,
+          toolbarButtons: [
+            (node) {
+              return TextButton(
+                onPressed: () => node.unfocus(),
+                child: Text(
+                  "Done",
+                  style: Theme.of(context).textTheme.bodyText1.copyWith(
+                        color: Colors.black,
+                      ),
+                ),
+              );
+            },
+          ],
+        ),
+        KeyboardActionsItem(
+          focusNode: _nodeStreet,
+          toolbarButtons: [
+            (node) {
+              return TextButton(
+                onPressed: () => node.unfocus(),
+                child: Text(
+                  "Done",
+                  style: Theme.of(context).textTheme.bodyText1.copyWith(
+                        color: Colors.black,
+                      ),
+                ),
+              );
+            },
+          ],
+        ),
+      ],
+    );
+  }
+
+  Future<bool> _registerUser() async {
     setState(() {
-      isUploading = true;
+      _isUploading = true;
     });
 
     LocalImageService _imageService =
@@ -62,7 +124,7 @@ class _ProfileRegistrationState extends State<ProfileRegistration>
       profilePhoto: mediaUrl,
       firstName: _firstNameController.text,
       lastName: _lastNameController.text,
-      address: _streetAddressController.text,
+      address: _streetController.text,
       userUid: auth.user.uid,
       email: auth.user.email,
     );
@@ -79,54 +141,17 @@ class _ProfileRegistrationState extends State<ProfileRegistration>
     return inviteCodeClaimed;
   }
 
-  void _getLocation() async {
-    Position position = await Geolocator()
-        .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
-    List<Placemark> placemarks = await Geolocator()
-        .placemarkFromCoordinates(position.latitude, position.longitude);
-    Placemark placemark = placemarks[0];
-    String completeAddress =
-        '${placemark.country}, ${placemark.postalCode}, ${placemark.locality}, ${placemark.name}, ${placemark.position}, ${placemark.subLocality}';
-    String formattedAddress =
-        "${placemark.country}, ${placemark.locality}, ${placemark.postalCode}";
-    _locationController.text = formattedAddress;
-  }
-
-  Widget userLoc() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        IconButton(
-          onPressed: _getLocation,
-          icon: Icon(
-            Icons.my_location,
-            color: kNavyColor,
-          ),
-        ),
-        Text(
-          _locationController.text,
-          style: TextStyle(
-            fontSize: 18.0,
-            fontWeight: FontWeight.w800,
-            fontFamily: "Goldplay",
-          ),
-        )
-      ],
-    );
-  }
-
   Future<void> _registerHandler() async {
     if (!_formKey.currentState.validate()) return;
     if (_firstNameController.text.isEmpty ||
         _lastNameController.text.isEmpty ||
-        _streetAddressController.text.isEmpty) {
+        _streetController.text.isEmpty) {
       setState(() {
         _hasEmptyField = true;
         return;
       });
     }
-    bool success = await registerUser();
+    bool success = await _registerUser();
     if (success) {
       context.read<Activities>().fetch();
       context.read<Shops>().fetch();
@@ -157,90 +182,89 @@ class _ProfileRegistrationState extends State<ProfileRegistration>
         leadingColor: kTealColor,
         onPressedLeading: () => Navigator.maybePop(context),
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: ListView(
-              shrinkWrap: true,
-              children: [
-                Text(
-                  "Let's set up your profile",
-                  style: TextStyle(
-                    fontWeight: FontWeight.w500,
-                    fontSize: 16.0.sp,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                SizedBox(height: 25.0.h),
-                GestureDetector(
-                  onTap: _picturePickerHandler,
-                  child: PhotoBox(
-                    file: profilePhoto,
-                    shape: BoxShape.circle,
-                    width: 120.0.w,
-                    height: 120.0.h,
-                  ),
-                ),
-                SizedBox(
-                  height: 20.0.h,
-                ),
-                if (_hasEmptyField)
-                  Text(
-                    "You must fill out all field to proceed.",
-                    style: TextStyle(
-                      color: kPinkColor,
-                      fontWeight: FontWeight.w500,
-                      fontSize: 12.0.sp,
-                    ),
-                  ),
-                SizedBox(height: 10.0.h),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 30.0.w),
-                  child: _RegistrationForm(
-                    formKey: _formKey,
-                    firstNameController: _firstNameController,
-                    lastNameController: _lastNameController,
-                    streetAddressController: _streetAddressController,
-                    onFormSubmit: () async => await performFuture<void>(
-                      () async => await _registerHandler(),
-                    ),
-                    formFieldDecoration: InputDecoration(
-                      filled: true,
-                      fillColor: Colors.white,
-                      alignLabelWithHint: true,
-                      contentPadding: EdgeInsets.symmetric(horizontal: 16.0.w),
-                      border: new OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(30.0.r)),
-                        borderSide: _hasEmptyField
-                            ? BorderSide(color: kPinkColor)
-                            : BorderSide.none,
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(30.0.r)),
-                        borderSide: _hasEmptyField
-                            ? BorderSide(color: kPinkColor)
-                            : BorderSide.none,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          SizedBox(height: 30.0.h),
-          SizedBox(
-            width: 200.0.w,
-            child: AppButton(
-              "CREATE PROFILE",
-              kTealColor,
-              true,
-              () async => await performFuture<void>(
-                () async => await _registerHandler(),
+      body: KeyboardActions(
+        config: _buildConfig(context),
+        child: Column(
+          children: [
+            Text(
+              "Let's set up your profile",
+              style: TextStyle(
+                fontWeight: FontWeight.w500,
+                fontSize: 16.0.sp,
               ),
-              textStyle: TextStyle(color: kNavyColor),
+              textAlign: TextAlign.center,
             ),
-          ),
-        ],
+            SizedBox(height: 25.0.h),
+            GestureDetector(
+              onTap: _picturePickerHandler,
+              child: PhotoBox(
+                file: profilePhoto,
+                shape: BoxShape.circle,
+                width: 120.0.w,
+                height: 120.0.h,
+              ),
+            ),
+            SizedBox(
+              height: 20.0.h,
+            ),
+            if (_hasEmptyField)
+              Text(
+                "You must fill out all field to proceed.",
+                style: TextStyle(
+                  color: kPinkColor,
+                  fontWeight: FontWeight.w500,
+                  fontSize: 12.0.sp,
+                ),
+              ),
+            SizedBox(height: 10.0.h),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 30.0.w),
+              child: _RegistrationForm(
+                formKey: _formKey,
+                firstNameController: _firstNameController,
+                firstNameNode: _nodeFirstName,
+                lastNameController: _lastNameController,
+                lastNameNode: _nodeLastName,
+                streetAddressController: _streetController,
+                streetAdddressNode: _nodeStreet,
+                onFormSubmit: () async => await performFuture<void>(
+                  () async => await _registerHandler(),
+                ),
+                formFieldDecoration: InputDecoration(
+                  filled: true,
+                  fillColor: Colors.white,
+                  alignLabelWithHint: true,
+                  contentPadding: EdgeInsets.symmetric(horizontal: 16.0.w),
+                  border: new OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(30.0.r)),
+                    borderSide: _hasEmptyField
+                        ? BorderSide(color: kPinkColor)
+                        : BorderSide.none,
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(30.0.r)),
+                    borderSide: _hasEmptyField
+                        ? BorderSide(color: kPinkColor)
+                        : BorderSide.none,
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(height: 30.0.h),
+            SizedBox(
+              width: 200.0.w,
+              child: AppButton(
+                "CREATE PROFILE",
+                kTealColor,
+                true,
+                () async => await performFuture<void>(
+                  () async => await _registerHandler(),
+                ),
+                textStyle: TextStyle(color: kNavyColor),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -251,6 +275,9 @@ class _RegistrationForm extends StatelessWidget {
   final TextEditingController firstNameController;
   final TextEditingController lastNameController;
   final TextEditingController streetAddressController;
+  final FocusNode firstNameNode;
+  final FocusNode lastNameNode;
+  final FocusNode streetAdddressNode;
   final InputDecoration formFieldDecoration;
   final void Function() onChanged;
   final void Function() onFormSubmit;
@@ -264,6 +291,9 @@ class _RegistrationForm extends StatelessWidget {
     this.formFieldDecoration,
     this.onChanged,
     this.onFormSubmit,
+    this.firstNameNode,
+    this.lastNameNode,
+    this.streetAdddressNode,
   }) : super(key: key);
 
   final _checkBoxTextStyle = TextStyle(
@@ -283,6 +313,7 @@ class _RegistrationForm extends StatelessWidget {
           SizedBox(
             height: 40.0.h,
             child: TextFormField(
+              focusNode: firstNameNode,
               autocorrect: false,
               keyboardType: TextInputType.emailAddress,
               controller: firstNameController,
@@ -297,6 +328,7 @@ class _RegistrationForm extends StatelessWidget {
           SizedBox(
             height: 40.0.h,
             child: TextFormField(
+              focusNode: lastNameNode,
               autocorrect: false,
               controller: lastNameController,
               style: TextStyle(
@@ -343,6 +375,7 @@ class _RegistrationForm extends StatelessWidget {
           SizedBox(
             height: 40.0.h,
             child: TextFormField(
+              focusNode: streetAdddressNode,
               autocorrect: false,
               keyboardType: TextInputType.emailAddress,
               controller: streetAddressController,

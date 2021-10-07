@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:intl/intl.dart' show DateFormat;
+import 'package:keyboard_actions/keyboard_actions.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:provider/provider.dart';
@@ -41,6 +42,7 @@ class PostDetails extends StatefulWidget {
 
 class _PostDetailsState extends State<PostDetails> {
   final TextEditingController commentInputController = TextEditingController();
+  final FocusNode _commentInputFocusNode = FocusNode();
   final ScrollController scrollController = ScrollController();
   bool showImagePicker = false;
   CustomPickerDataProvider provider;
@@ -336,6 +338,7 @@ class _PostDetailsState extends State<PostDetails> {
                   ),
                   InputTextField(
                     inputController: commentInputController,
+                    inputFocusNode: _commentInputFocusNode,
                     onSend: createComment,
                     onTap: () => showImagePicker = false,
                     hintText: "Add a comment...",
@@ -427,84 +430,116 @@ class _PostDetailsState extends State<PostDetails> {
         onRefresh: () => activities.fetchComments(
           activityId: widget.activity.id,
         ),
-        child: Column(
-          children: [
-            Expanded(
-              child: SingleChildScrollView(
-                controller: scrollController,
-                physics: AlwaysScrollableScrollPhysics(),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 15.0.w),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.symmetric(vertical: 20.0.h),
-                            child: buildHeader(
-                              firstName: user.firstName,
-                              lastName: user.lastName,
-                              photo: user.profilePhoto,
-                              spacing: 10.0.w,
+        child: KeyboardActions(
+          disableScroll: true,
+          tapOutsideBehavior: TapOutsideBehavior.translucentDismiss,
+          config: KeyboardActionsConfig(
+            keyboardBarColor: Colors.grey.shade200,
+            nextFocus: false,
+            actions: [
+              KeyboardActionsItem(
+                focusNode: _commentInputFocusNode,
+                toolbarButtons: [
+                  (node) {
+                    return TextButton(
+                      onPressed: () => node.unfocus(),
+                      child: Text(
+                        "Done",
+                        style: Theme.of(context).textTheme.bodyText1.copyWith(
+                              color: Colors.black,
                             ),
-                          ),
-                          Text(
-                            widget.activity.message,
-                            softWrap: true,
-                            style: TextStyle(
-                              fontSize: 16.0.sp,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                          SizedBox(height: 20.0.h),
-                          buildPostImages(),
-                          SizedBox(height: 15.0.h),
-                          Text(
-                            DateFormat("hh:mm a • dd MMMM yyyy")
-                                .format(widget.activity.createdAt),
-                            style: kTextStyle.copyWith(
-                              fontWeight: FontWeight.w500,
-                              fontSize: 14.0.sp,
-                            ),
-                          ),
-                        ],
                       ),
-                    ),
-                    SizedBox(height: 10.0.h),
-                    buildLikeAndCommentRow(),
-                    SizedBox(height: 10.0.h),
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 15.0.w),
-                      child: _buildComments(),
-                    )
-                  ],
+                    );
+                  },
+                ],
+              ),
+            ],
+          ),
+          child: Column(
+            children: [
+              Expanded(
+                child: SingleChildScrollView(
+                  controller: scrollController,
+                  physics: AlwaysScrollableScrollPhysics(),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 15.0.w),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.symmetric(vertical: 20.0.h),
+                              child: buildHeader(
+                                firstName: user.firstName,
+                                lastName: user.lastName,
+                                photo: user.profilePhoto,
+                                spacing: 10.0.w,
+                              ),
+                            ),
+                            Text(
+                              widget.activity.message,
+                              softWrap: true,
+                              style: TextStyle(
+                                fontSize: 16.0.sp,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            SizedBox(height: 20.0.h),
+                            buildPostImages(),
+                            SizedBox(height: 15.0.h),
+                            Text(
+                              DateFormat("hh:mm a • dd MMMM yyyy")
+                                  .format(widget.activity.createdAt),
+                              style: kTextStyle.copyWith(
+                                fontWeight: FontWeight.w500,
+                                fontSize: 14.0.sp,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: 10.0.h),
+                      buildLikeAndCommentRow(),
+                      SizedBox(height: 10.0.h),
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 15.0.w),
+                        child: _buildComments(),
+                      )
+                    ],
+                  ),
                 ),
               ),
-            ),
-            Container(
-              color: kInviteScreenColor,
-              padding: EdgeInsets.symmetric(
-                horizontal: 10.0.w,
-                vertical: 10.0.h,
+              Container(
+                color: kInviteScreenColor,
+                padding: EdgeInsets.symmetric(
+                  horizontal: 10.0.w,
+                  vertical: 10.0.h,
+                ),
+                child: buildCommentInput(),
               ),
-              child: buildCommentInput(),
-            ),
-            AnimatedContainer(
-              duration: const Duration(milliseconds: 100),
-              height: this.showImagePicker ? 150.0.h : 0.0.h,
-              child: ImageGalleryPicker(
-                provider,
-                pickerHeight: 150.h,
-                assetHeight: 150.h,
-                assetWidth: 150.h,
-                thumbSize: 200,
-                enableSpecialItemBuilder: true,
+              AnimatedContainer(
+                duration: const Duration(milliseconds: 100),
+                height: this.showImagePicker ? 150.0.h : 0.0.h,
+                child: ImageGalleryPicker(
+                  provider,
+                  pickerHeight: 150.h,
+                  assetHeight: 150.h,
+                  assetWidth: 150.h,
+                  thumbSize: 200,
+                  enableSpecialItemBuilder: true,
+                ),
               ),
-            ),
-          ],
+              AnimatedContainer(
+                duration: const Duration(milliseconds: 100),
+                height: MediaQuery.of(context).viewInsets.bottom > 0
+                    ? kKeyboardActionHeight
+                    : 0,
+              ),
+            ],
+          ),
         ),
       ),
     );

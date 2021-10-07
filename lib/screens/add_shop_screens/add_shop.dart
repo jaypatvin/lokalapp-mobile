@@ -1,6 +1,8 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:keyboard_actions/keyboard_actions.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/post_requests/shop_body.dart';
@@ -19,6 +21,51 @@ class AddShop extends StatefulWidget {
 }
 
 class _AddShopState extends State<AddShop> {
+  final FocusNode _nameFocusNode = FocusNode();
+  final FocusNode _descriptionFocusNode = FocusNode();
+
+  KeyboardActionsConfig _buildConfig() {
+    return KeyboardActionsConfig(
+      keyboardActionsPlatform: KeyboardActionsPlatform.ALL,
+      keyboardBarColor: Colors.grey.shade200,
+      nextFocus: true,
+      actions: [
+        KeyboardActionsItem(
+          focusNode: _nameFocusNode,
+          toolbarButtons: [
+            (node) {
+              return TextButton(
+                onPressed: () => node.unfocus(),
+                child: Text(
+                  "Done",
+                  style: Theme.of(context).textTheme.bodyText1.copyWith(
+                        color: Colors.black,
+                      ),
+                ),
+              );
+            },
+          ],
+        ),
+        KeyboardActionsItem(
+          focusNode: _descriptionFocusNode,
+          toolbarButtons: [
+            (node) {
+              return TextButton(
+                onPressed: () => node.unfocus(),
+                child: Text(
+                  "Done",
+                  style: Theme.of(context).textTheme.bodyText1.copyWith(
+                        color: Colors.black,
+                      ),
+                ),
+              );
+            },
+          ],
+        ),
+      ],
+    );
+  }
+
   File shopPhoto;
   @override
   Widget build(BuildContext context) {
@@ -32,7 +79,8 @@ class _AddShopState extends State<AddShop> {
           Navigator.pop(context);
         },
       ),
-      body: SingleChildScrollView(
+      body: KeyboardActions(
+        config: _buildConfig(),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.start,
@@ -64,6 +112,7 @@ class _AddShopState extends State<AddShop> {
               padding: EdgeInsets.symmetric(horizontal: padding),
               child: InputName(
                 hintText: "Shop Name",
+                focusNode: this._nameFocusNode,
                 onChanged: (value) =>
                     context.read<ShopBody>().update(name: value),
               ),
@@ -75,12 +124,14 @@ class _AddShopState extends State<AddShop> {
               padding: EdgeInsets.symmetric(horizontal: padding),
               child: InputDescription(
                 hintText: "Shop Description",
+                focusNode: this._descriptionFocusNode,
                 onChanged: (value) {
                   Provider.of<ShopBody>(context, listen: false)
                       .update(description: value);
                 },
               ),
             ),
+            SizedBox(height: 10.0.h),
             Consumer<ShopBody>(builder: (context, shop, child) {
               bool isNotEmpty =
                   shop.name.isNotEmpty && shop.description.isNotEmpty;

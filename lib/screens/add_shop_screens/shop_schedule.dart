@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart' show DateFormat;
+import 'package:keyboard_actions/keyboard_actions.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/post_requests/operating_hours_body.dart';
@@ -31,6 +32,8 @@ class ShopSchedule extends StatefulWidget {
 }
 
 class _ShopScheduleState extends State<ShopSchedule> {
+  final FocusNode _repeatUnitFocusNode = FocusNode();
+
   TimeOfDay _opening = TimeOfDay(hour: 8, minute: 0);
   TimeOfDay _closing = TimeOfDay(hour: 17, minute: 0);
   DateTime _startDate;
@@ -142,7 +145,28 @@ class _ShopScheduleState extends State<ShopSchedule> {
           horizontal: width * 0.05,
           vertical: height * 0.02,
         ),
-        child: SingleChildScrollView(
+        child: KeyboardActions(
+          config: KeyboardActionsConfig(
+            nextFocus: false,
+            actions: [
+              KeyboardActionsItem(
+                focusNode: _repeatUnitFocusNode,
+                toolbarButtons: [
+                  (node) {
+                    return TextButton(
+                      onPressed: () => node.unfocus(),
+                      child: Text(
+                        "Done",
+                        style: Theme.of(context).textTheme.bodyText1.copyWith(
+                              color: Colors.black,
+                            ),
+                      ),
+                    );
+                  },
+                ],
+              ),
+            ],
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.start,
@@ -151,6 +175,7 @@ class _ShopScheduleState extends State<ShopSchedule> {
               SchedulePicker(
                 header: "Days Available",
                 description: "Set your shop's availability",
+                repeatUnitFocusNode: _repeatUnitFocusNode,
                 operatingHours:
                     shops.isNotEmpty ? shops.first.operatingHours : null,
                 onStartDatesChanged: _onStartDatesChangedHandler,
@@ -163,14 +188,12 @@ class _ShopScheduleState extends State<ShopSchedule> {
                     .update(repeatUnit: repeatUnit),
                 onSelectableDaysChanged: _onSelectableDaysChanged,
               ),
-              SizedBox(
-                height: height * 0.05,
-              ),
+              const SizedBox(height: 15),
               Text(
                 "Hours",
                 style: kTextStyle.copyWith(fontSize: 24.0),
               ),
-              SizedBox(height: height * 0.02),
+              const SizedBox(height: 10),
               _HoursPicker(
                 opening: this._opening,
                 closing: this._closing,
@@ -197,7 +220,7 @@ class _ShopScheduleState extends State<ShopSchedule> {
                   });
                 },
               ),
-              const SizedBox(height: 5),
+              const SizedBox(height: 15),
               SizedBox(
                 width: double.infinity,
                 child: AppButton(

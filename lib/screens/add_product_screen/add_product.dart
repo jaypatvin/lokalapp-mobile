@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:keyboard_actions/keyboard_actions.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
@@ -32,6 +33,9 @@ class _AddProductState extends State<AddProduct> with ScreenLoader {
   final _nameController = TextEditingController();
   final _priceController = TextEditingController();
   final _descriptionController = TextEditingController();
+  final FocusNode _nameFocusNode = FocusNode();
+  final FocusNode _priceFocusNode = FocusNode();
+  final FocusNode _descriptionFocusNode = FocusNode();
 
   String _errorTextName;
   String _errorTextPrice;
@@ -72,6 +76,64 @@ class _AddProductState extends State<AddProduct> with ScreenLoader {
     _title = "Add a New Product";
   }
 
+  KeyboardActionsConfig _buildConfig() {
+    return KeyboardActionsConfig(
+      keyboardActionsPlatform: KeyboardActionsPlatform.ALL,
+      keyboardBarColor: Colors.grey.shade200,
+      nextFocus: true,
+      actions: [
+        KeyboardActionsItem(
+          focusNode: _nameFocusNode,
+          toolbarButtons: [
+            (node) {
+              return TextButton(
+                onPressed: () => node.unfocus(),
+                child: Text(
+                  "Done",
+                  style: Theme.of(context).textTheme.bodyText1.copyWith(
+                        color: Colors.black,
+                      ),
+                ),
+              );
+            },
+          ],
+        ),
+        KeyboardActionsItem(
+          focusNode: _descriptionFocusNode,
+          toolbarButtons: [
+            (node) {
+              return TextButton(
+                onPressed: () => node.unfocus(),
+                child: Text(
+                  "Done",
+                  style: Theme.of(context).textTheme.bodyText1.copyWith(
+                        color: Colors.black,
+                      ),
+                ),
+              );
+            },
+          ],
+        ),
+        KeyboardActionsItem(
+          focusNode: _priceFocusNode,
+          toolbarButtons: [
+            (node) {
+              return TextButton(
+                onPressed: () => node.unfocus(),
+                child: Text(
+                  "Done",
+                  style: Theme.of(context).textTheme.bodyText1.copyWith(
+                        color: Colors.black,
+                      ),
+                ),
+              );
+            },
+          ],
+        ),
+      ],
+    );
+  }
+
   Widget _buildProductPrice() {
     return Row(
       children: [
@@ -83,6 +145,7 @@ class _AddProductState extends State<AddProduct> with ScreenLoader {
         Expanded(
           child: InputName(
             controller: this._priceController,
+            focusNode: this._priceFocusNode,
             errorText: this._errorTextPrice,
             keyboardType: TextInputType.number,
             hintText: "PHP",
@@ -259,7 +322,8 @@ class _AddProductState extends State<AddProduct> with ScreenLoader {
           horizontalPadding,
           0,
         ),
-        child: SingleChildScrollView(
+        child: KeyboardActions(
+          config: _buildConfig(),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -283,6 +347,7 @@ class _AddProductState extends State<AddProduct> with ScreenLoader {
               ),
               InputName(
                 controller: this._nameController,
+                focusNode: this._nameFocusNode,
                 hintText: "Item Name",
                 errorText: this._errorTextName,
                 onChanged: (value) {
@@ -302,6 +367,7 @@ class _AddProductState extends State<AddProduct> with ScreenLoader {
               ),
               InputDescription(
                 controller: this._descriptionController,
+                focusNode: this._descriptionFocusNode,
                 hintText: "Product Description",
               ),
               const SizedBox(height: 20),
