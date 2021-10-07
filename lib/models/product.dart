@@ -17,6 +17,7 @@ class Product {
   String productCategory;
   String productPhoto;
   String status;
+  bool archived;
   OperatingHours availability;
   List<LokalImages> gallery;
   Product({
@@ -33,23 +34,24 @@ class Product {
     this.status,
     this.gallery,
     this.availability,
+    this.archived,
   });
 
-  Product copyWith({
-    String id,
-    String name,
-    String description,
-    String shopId,
-    String userId,
-    String communityId,
-    double basePrice,
-    int quantity,
-    String productCategory,
-    String productPhoto,
-    String status,
-    List<LokalImages> gallery,
-    OperatingHours availability,
-  }) {
+  Product copyWith(
+      {String id,
+      String name,
+      String description,
+      String shopId,
+      String userId,
+      String communityId,
+      double basePrice,
+      int quantity,
+      String productCategory,
+      String productPhoto,
+      String status,
+      List<LokalImages> gallery,
+      OperatingHours availability,
+      bool archived}) {
     return Product(
       id: id ?? this.id,
       name: name ?? this.name,
@@ -64,6 +66,7 @@ class Product {
       status: status ?? this.status,
       gallery: gallery ?? this.gallery,
       availability: availability ?? this.availability,
+      archived: archived ?? this.archived,
     );
   }
 
@@ -82,6 +85,7 @@ class Product {
       'status': status,
       'gallery': gallery?.map((x) => x?.toMap())?.toList(),
       'availability': availability?.toMap(),
+      'archived': archived,
     };
   }
 
@@ -100,6 +104,7 @@ class Product {
       productCategory: map['product_category'],
       productPhoto: map['product_photo'],
       status: map['status'],
+      archived: map['archived'],
       gallery: map['gallery'] == null
           ? null
           : List<LokalImages>.from(
@@ -117,7 +122,11 @@ class Product {
 
   @override
   String toString() {
-    return 'UserProduct(id: $id, name: $name, description: $description, shopId: $shopId, userId: $userId, communityId: $communityId, basePrice: $basePrice, quantity: $quantity, productCategory: $productCategory, productPhoto: $productPhoto, status: $status, gallery: $gallery, availability: $availability)';
+    return 'UserProduct(id: $id, name: $name, description: $description, '
+        'shopId: $shopId, userId: $userId, communityId: $communityId, '
+        'basePrice: $basePrice, quantity: $quantity, productCategory: '
+        '$productCategory, productPhoto: $productPhoto, status: $status, '
+        'gallery: $gallery, availability: $availability, archived: $archived)';
   }
 
   @override
@@ -136,6 +145,7 @@ class Product {
         o.productCategory == productCategory &&
         o.productPhoto == productPhoto &&
         o.status == status &&
+        o.archived == archived &&
         listEquals(o.gallery, gallery) &&
         o.availability == availability;
   }
@@ -153,6 +163,7 @@ class Product {
         productCategory.hashCode ^
         productPhoto.hashCode ^
         status.hashCode ^
+        archived.hashCode ^
         gallery.hashCode ^
         availability.hashCode;
   }

@@ -1,3 +1,4 @@
+import 'dart:collection';
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
@@ -13,8 +14,15 @@ class Products extends ChangeNotifier {
   bool _isLoading;
 
   bool get isLoading => _isLoading;
-  List<Product> get items {
-    return [..._products];
+  // List<Product> get items {
+  //   return [..._products];
+  // }
+  // UnmodifiableListView<Product> get items => UnmodifiableListView(_products);
+
+  UnmodifiableListView<Product> get items {
+    return UnmodifiableListView(
+      _products.where((product) => !product.archived),
+    );
   }
 
   String get communityId => _communityId;
@@ -28,15 +36,15 @@ class Products extends ChangeNotifier {
   }
 
   Product findById(String id) {
-    return _products.firstWhere((product) => product.id == id);
+    return items.firstWhere((product) => product.id == id);
   }
 
   List<Product> findByUser(String userId) {
-    return _products.where((product) => product.userId == userId).toList();
+    return items.where((product) => product.userId == userId).toList();
   }
 
   List<Product> findByShop(String shopId) {
-    return _products.where((product) => product.shopId == shopId).toList();
+    return items.where((product) => product.shopId == shopId).toList();
   }
 
   Future<void> fetch() async {
@@ -55,6 +63,7 @@ class Products extends ChangeNotifier {
       List<Product> products = [];
       for (var product in data['data']) {
         var _product = Product.fromMap(product);
+        print(_product.archived);
         products.add(_product);
       }
       _products = products;
