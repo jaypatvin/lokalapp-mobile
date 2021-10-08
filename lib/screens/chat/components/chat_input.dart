@@ -41,7 +41,7 @@ class ChatInput extends StatelessWidget {
                 message: replyMessage,
                 onCancelReply: onCancelReply,
               )
-            : Container(),
+            : const SizedBox(),
         Row(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [

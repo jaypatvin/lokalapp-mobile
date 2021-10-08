@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../models/conversation.dart';
 import '../../models/lokal_images.dart';
@@ -15,7 +15,10 @@ import 'components/reply_message.dart';
 class ChatBubble extends StatelessWidget {
   final Conversation conversation;
   final DocumentReference replyMessage;
-  const ChatBubble({@required this.conversation, this.replyMessage});
+  const ChatBubble({
+    @required this.conversation,
+    this.replyMessage,
+  });
 
   void openGallery(
     BuildContext context,
@@ -41,6 +44,7 @@ class ChatBubble extends StatelessWidget {
   Widget buildMessageImages(BuildContext context, List<LokalImages> images) {
     var count = images.length;
     return StaggeredGridView.countBuilder(
+      padding: EdgeInsets.zero,
       shrinkWrap: true,
       physics: NeverScrollableScrollPhysics(),
       itemCount: count,
@@ -69,8 +73,7 @@ class ChatBubble extends StatelessWidget {
       builder: (ctx, snapshot) {
         if (snapshot.hasError) return Text("Error, cannot retrieve message");
         if (snapshot.hasData && snapshot.data.data() != null) {
-          final convo = snapshot.data.data();
-          final conversation = Conversation.fromMap(convo);
+          final conversation = Conversation.fromDocument(snapshot.data);
           return ReplyMessageWidget(
             message: conversation,
             isRepliedByUser: isUser,

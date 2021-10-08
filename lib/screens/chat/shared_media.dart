@@ -29,7 +29,7 @@ class _SharedMediaState extends State<SharedMedia> {
   List<LokalImages> _getAllChatMedia() {
     final images = <LokalImages>[];
     for (final c in widget.conversations) {
-      final _conversation = Conversation.fromMap(c.data());
+      final _conversation = Conversation.fromDocument(c);
       if (_conversation.media.isNotEmpty) {
         images.addAll(_conversation.media);
       }

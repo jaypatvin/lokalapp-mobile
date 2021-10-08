@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'timestamp_time_object.dart';
 
 import 'lokal_images.dart';
 
@@ -57,21 +58,23 @@ class Conversation {
     };
   }
 
-  factory Conversation.fromMap(Map<String, dynamic> map) {
-    final media = map['media'] == null
-        ? <LokalImages>[]
+  static List<LokalImages> _getMediaFromMap(data) {
+    return data == null
+        ? []
         : List<LokalImages>.from(
-            map['media']?.map((x) => LokalImages.fromMap(x)),
+            data?.map((x) => LokalImages.fromMap(x)),
           );
+  }
 
+  factory Conversation.fromMap(Map<String, dynamic> map) {
     return Conversation(
       archived: map['archived'],
       message: map['message'],
       senderId: map['sender_id'],
-      sentAt: (map['sent_at'] as Timestamp)?.toDate(),
-      createdAt: (map['created_at'] as Timestamp)?.toDate(),
+      sentAt: TimestampObject.fromMap(map['sent_at']).toDateTime(),
+      createdAt: TimestampObject.fromMap(map['created_at']).toDateTime(),
       replyTo: map['reply_to'],
-      media: media ?? [],
+      media: _getMediaFromMap(map['media']),
     );
   }
 
@@ -84,11 +87,11 @@ class Conversation {
     return Conversation(
       archived: doc.data()['archived'],
       message: doc.data()['message'],
-      sentAt: doc.data()['sent_at'],
+      sentAt: (doc.data()['sent_at'] as Timestamp)?.toDate(),
       senderId: doc.data()['sender_id'],
-      createdAt: doc.data()['created_at'],
+      createdAt: (doc.data()['created_at'] as Timestamp)?.toDate(),
       replyTo: doc.data()['reply_to'],
-      media: doc.data()['media'],
+      media: _getMediaFromMap(doc.data()['media']),
     );
   }
 
