@@ -8,6 +8,7 @@ import 'package:screen_loader/screen_loader.dart';
 
 import 'providers/activities.dart';
 import 'providers/cart.dart';
+import 'providers/chat_provider.dart';
 import 'providers/invite.dart';
 import 'providers/post_requests/auth_body.dart';
 import 'providers/post_requests/operating_hours_body.dart';
@@ -111,11 +112,15 @@ class _MyAppState extends State<MyApp> {
         Provider<MediaUtility>(create: (_) => MediaUtility.instance),
         Provider<LocalImageService>(create: (_) => LocalImageService.instance),
         Provider<ChatHelpers>(create: (_) => ChatHelpers()),
-        // Provider<SubscriptionProvider>(create: (_) => SubscriptionProvider()),
         ProxyProvider<CurrentUser, SubscriptionProvider>(
-            create: (_) => SubscriptionProvider(),
-            update: (_, user, subscription) =>
-                subscription..setIdToken(user.idToken)),
+          create: (_) => SubscriptionProvider(),
+          update: (_, user, subscription) =>
+              subscription..setIdToken(user.idToken),
+        ),
+        ProxyProvider<CurrentUser, ChatProvider>(
+          create: (_) => ChatProvider(),
+          update: (_, user, chat) => chat..setIdToken(user.idToken),
+        ),
 
         // for bottom nav bar
         ListenableProvider(create: (_) => PersistentTabController()),

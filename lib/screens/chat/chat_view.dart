@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
@@ -11,15 +10,15 @@ import 'package:provider/provider.dart';
 
 import '../../models/chat_model.dart';
 import '../../models/conversation.dart';
+import '../../providers/chat_provider.dart';
 import '../../providers/user.dart';
 import '../../services/database.dart';
 import '../../services/firestore.utils.dart';
-import '../../services/local_image_service.dart';
-import '../../services/lokal_api_service.dart';
 import '../../utils/themes.dart';
 import '../../widgets/custom_app_bar.dart';
 import '../../widgets/photo_picker_gallery/image_gallery_picker.dart';
 import '../../widgets/photo_picker_gallery/provider/custom_photo_provider.dart';
+import 'chat_bubble.dart';
 import 'chat_profile.dart';
 import 'components/chat_input.dart';
 import 'components/message_stream.dart';
@@ -59,9 +58,14 @@ class _ChatViewState extends State<ChatView> {
   CustomPickerDataProvider provider;
   Color _indicatorColor;
 
+  Conversation _currentlySendingMessage;
+  bool _sendingMessage = false;
+  bool _userSentLastMessage = false;
+
   // this is placed outside of the build function to
   // avoid rebuilds on the StreamBuilder
   Stream<QuerySnapshot> _messageStream;
+  StreamSubscription _messageSubscription;
 
   // needed to keep track if creating a new message
   bool _createNewMessage = false;
@@ -87,6 +91,8 @@ class _ChatViewState extends State<ChatView> {
       this._chatTitle = widget.chat.title;
       this._chat = widget.chat;
       _messageStream = Database.instance.getConversations(this._chat.id);
+      this._messageSubscription =
+          this._messageStream.listen(_messageStreamListener);
 
       _indicatorColor =
           widget.chat.members.contains(userId) ? kTealColor : kPurpleColor;
@@ -103,6 +109,8 @@ class _ChatViewState extends State<ChatView> {
           this._messageStream = Database.instance.getConversations(chat.id);
           _createNewMessage = false;
         });
+        this._messageSubscription =
+            this._messageStream.listen(_messageStreamListener);
       });
     }
     _createNewMessage = widget?.createMessage ?? false;
@@ -114,8 +122,29 @@ class _ChatViewState extends State<ChatView> {
     // so that we can use it in its initial state on other screens
     provider.picked.clear();
     provider.removeListener(showMaxAssetsText);
+    this._messageSubscription.cancel();
 
     super.dispose();
+  }
+
+  void _messageStreamListener(QuerySnapshot snapshot) {
+    final conversation = Conversation.fromDocument(snapshot.docs.first);
+    final user = context.read<CurrentUser>();
+    this._conversations = snapshot.docs;
+    debugPrint("$conversation");
+    if (this.mounted) {
+      if (conversation.senderId == user.id) {
+        setState(() {
+          this._sendingMessage = false;
+          this._currentlySendingMessage = null;
+          this._userSentLastMessage = true;
+        });
+      } else {
+        setState(() {
+          this._userSentLastMessage = false;
+        });
+      }
+    }
   }
 
   Future<void> providerInit() async {
@@ -163,65 +192,94 @@ class _ChatViewState extends State<ChatView> {
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
-  void onSendMessage() async {
-    final user = Provider.of<CurrentUser>(context, listen: false);
-    final service = Provider.of<LocalImageService>(context, listen: false);
-    final gallery = <Map<String, dynamic>>[];
-
-    for (final asset in provider.picked) {
-      final file = await asset.file;
-      final url = await service.uploadImage(file: file, name: 'post_photo');
-      gallery.add({
-        "url": url,
-        "type": "image",
-        "order": provider.pickIndex(asset),
-      });
-    }
-
-    // TODO: clean this up, we're still creating a body directly
-    final Map<String, dynamic> body = {
-      "user_id": user.id,
-      "reply_to": replyId,
-      "message": chatInputController.text,
-      "media": gallery,
-    };
-
-    if (this._createNewMessage) {
-      body.addAll({
-        "members": widget.members,
-        "shop_id": widget.shopId,
-        "product_id": widget.productId,
-      });
-      final response = await LokalApiService.instance.chat
-          .create(data: body, idToken: user.idToken);
-
-      if (response.statusCode != 200) {
-        return;
-      }
-      final Map<String, dynamic> _body = jsonDecode(response.body);
-      final _chat = await Database.instance.getChatById(_body["data"]["id"]);
+  void _onSendMessage() async {
+    try {
+      final user = context.read<CurrentUser>();
       setState(() {
-        this._chat = ChatModel.fromMap(_chat);
-        this._chatTitle = this._chat.title;
-        this._createNewMessage = false;
-        this._messageStream = Database.instance.getConversations(this._chat.id);
+        this._sendingMessage = true;
+        this._currentlySendingMessage = Conversation(
+          archived: false,
+          createdAt: DateTime.now(),
+          message: chatInputController.text,
+          senderId: user.id,
+          sentAt: DateTime.now(),
+          media: [],
+          replyTo: null,
+        );
       });
-    } else {
-      LokalApiService.instance.chat.createConversation(
-        chatId: this._chat.id,
-        data: body,
-        idToken: user.idToken,
+      if (this._createNewMessage) {
+        final chat = await context.read<ChatProvider>().createNewChat(
+          userId: user.id,
+          shopId: widget.shopId,
+          productId: widget.productId,
+          replyId: replyId,
+          message: chatInputController.text,
+          assets: provider.picked,
+          members: [...widget.members],
+        );
+
+        setState(() {
+          this._chat = chat;
+          this._chatTitle = chat.title;
+          this._createNewMessage = false;
+          this._messageStream = Database.instance.getConversations(chat.id);
+        });
+        this._messageSubscription =
+            this._messageStream.listen(_messageStreamListener);
+      } else {
+        context.read<ChatProvider>().sendMessage(
+              chatId: this._chat.id,
+              userId: user.id,
+              replyId: replyId,
+              message: chatInputController.text,
+              assets: provider.picked,
+            );
+      }
+      chatInputController.clear();
+      setState(() {
+        provider.picked.clear();
+        replyId = "";
+        showImagePicker = false;
+        this.replyMessage = null;
+        this.replyId = "";
+      });
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            e.toString(),
+          ),
+        ),
       );
     }
-    chatInputController.clear();
-    setState(() {
-      provider.picked.clear();
-      replyId = "";
-      showImagePicker = false;
-    });
+  }
+
+  void _onDeleteMessage(String id) async {
+    SnackBar snackBar;
+    try {
+      await context.read<ChatProvider>().deleteMessage(
+            chatId: this._chat.id,
+            messageId: id,
+          );
+      snackBar = SnackBar(content: Text("Message deleted succesfully."));
+    } catch (e) {
+      snackBar = SnackBar(content: Text(e.toString()));
+    } finally {
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }
   }
 
   Widget _buildMessages() {
+    if (_messageStream == null && _sendingMessage) {
+      return ListView.builder(
+        physics: BouncingScrollPhysics(),
+        reverse: true,
+        itemCount: 1,
+        itemBuilder: (ctx, index) {
+          return ChatBubble(conversation: this._currentlySendingMessage);
+        },
+      );
+    }
     if (_messageStream == null) {
       return Center(
         child: Text(
@@ -232,13 +290,13 @@ class _ChatViewState extends State<ChatView> {
     }
     return MessageStream(
       messageStream: this._messageStream,
-      onRightSwipe: (id, conversation) {
+      onReply: (id, conversation) {
         this.replyId = id;
         setState(() {
           replyMessage = conversation;
         });
       },
-      onMessagesLoad: (snapshot) => _conversations = snapshot,
+      onDelete: (id) => _onDeleteMessage(id),
     );
   }
 
@@ -247,7 +305,7 @@ class _ChatViewState extends State<ChatView> {
       color: kInviteScreenColor,
       padding: EdgeInsets.symmetric(horizontal: 10.0.w, vertical: 10.0.h),
       child: ChatInput(
-        onMessageSend: onSendMessage,
+        onMessageSend: _onSendMessage,
         onShowImagePicker: () => setState(() {
           this.showImagePicker = !this.showImagePicker;
         }),
@@ -301,6 +359,30 @@ class _ChatViewState extends State<ChatView> {
     );
   }
 
+  Widget _buildAdditionalStates() {
+    Widget child = SizedBox();
+    if (this._sendingMessage) {
+      child = ChatBubble(conversation: this._currentlySendingMessage);
+    } else if (_userSentLastMessage) {
+      child = SizedBox(
+        width: double.infinity,
+        child: Padding(
+          padding: const EdgeInsets.only(right: 10, bottom: 5),
+          child: Text(
+            "Delivered",
+            style: TextStyle(color: Colors.grey),
+            textAlign: TextAlign.right,
+          ),
+        ),
+      );
+    }
+
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 100),
+      child: child,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -347,6 +429,7 @@ class _ChatViewState extends State<ChatView> {
                 child: _buildMessages(),
               ),
             ),
+            _buildAdditionalStates(),
             _buildChatInput(),
             _buildImagePicker(),
           ],

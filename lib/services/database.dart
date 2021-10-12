@@ -105,7 +105,7 @@ class Database {
   Stream<QuerySnapshot> getUserChats(String userId) {
     return chatsRef
         .where("members", arrayContains: userId)
-        .orderBy("created_at", descending: true)
+        .orderBy("updated_at", descending: true)
         .snapshots();
   }
 
@@ -113,6 +113,8 @@ class Database {
     return chatsRef
         .doc(chatId)
         .collection("conversation")
+        .orderBy("archived")
+        .where("archived", isNotEqualTo: true)
         .orderBy("created_at", descending: true)
         .snapshots();
   }
