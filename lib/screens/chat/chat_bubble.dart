@@ -13,10 +13,10 @@ import '../../widgets/photo_view_gallery/thumbnails/network_photo_thumbnail.dart
 import 'components/reply_message.dart';
 
 class ChatBubble extends StatelessWidget {
-  final Conversation conversation;
-  final DocumentReference replyMessage;
+  final Conversation? conversation;
+  final DocumentReference? replyMessage;
   const ChatBubble({
-    @required this.conversation,
+    required this.conversation,
     this.replyMessage,
   });
 
@@ -69,11 +69,11 @@ class ChatBubble extends StatelessWidget {
   Widget buildReplyMessage(bool isUser) {
     // TODO: change design according to FIGMA
     return FutureBuilder<DocumentSnapshot>(
-      future: this.replyMessage.get(),
+      future: this.replyMessage!.get(),
       builder: (ctx, snapshot) {
         if (snapshot.hasError) return Text("Error, cannot retrieve message");
-        if (snapshot.hasData && snapshot.data.data() != null) {
-          final conversation = Conversation.fromDocument(snapshot.data);
+        if (snapshot.hasData && snapshot.data!.data() != null) {
+          final conversation = Conversation.fromDocument(snapshot.data!);
           return ReplyMessageWidget(
             message: conversation,
             isRepliedByUser: isUser,
@@ -94,15 +94,15 @@ class ChatBubble extends StatelessWidget {
       widgets.add(space);
     }
 
-    if (conversation.media != null && conversation.media.length > 0) {
-      widgets.add(buildMessageImages(context, conversation.media));
+    if (conversation!.media != null && conversation!.media!.length > 0) {
+      widgets.add(buildMessageImages(context, conversation!.media!));
       widgets.add(space);
     }
 
-    if (conversation.message != null && conversation.message.isNotEmpty) {
+    if (conversation!.message != null && conversation!.message!.isNotEmpty) {
       widgets.add(
         Text(
-          conversation.message,
+          conversation!.message!,
           style: TextStyle(
             color: isUser ? Colors.black : Colors.white,
           ),
@@ -119,7 +119,7 @@ class ChatBubble extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cUser = context.read<CurrentUser>();
-    final isUser = conversation.senderId == cUser.id;
+    final isUser = conversation!.senderId == cUser.id;
 
     final radius = Radius.circular(12.0.r);
     final borderRadius = BorderRadius.all(radius);

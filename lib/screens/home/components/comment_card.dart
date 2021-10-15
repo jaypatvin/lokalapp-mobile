@@ -11,16 +11,16 @@ import '../../../widgets/photo_view_gallery/thumbnails/network_photo_thumbnail.d
 
 class CommentCard extends StatelessWidget {
   final LokalUser user;
-  final String message;
-  final Function onLongPress;
-  final Function(String) onUserPressed;
-  final Function onLike;
-  final List<LokalImages> images;
-  final bool liked;
+  final String? message;
+  final Function? onLongPress;
+  final Function(String?)? onUserPressed;
+  final Function? onLike;
+  final List<LokalImages>? images;
+  final bool? liked;
 
   const CommentCard({
-    Key key,
-    @required this.user,
+    Key? key,
+    required this.user,
     this.message,
     this.onLongPress,
     this.onUserPressed,
@@ -31,18 +31,18 @@ class CommentCard extends StatelessWidget {
 
   Widget _buildImages() {
     return Container(
-      height: images.length > 0 ? 95.h : 0,
+      height: images!.length > 0 ? 95.h : 0,
       //padding: EdgeInsets.symmetric(horizontal: 20.0.w),
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         physics: NeverScrollableScrollPhysics(),
-        itemCount: images.length,
+        itemCount: images!.length,
         itemBuilder: (context, index) {
           return Container(
             height: 95.h,
             width: 95.h,
             child: NetworkPhotoThumbnail(
-              galleryItem: images[index],
+              galleryItem: images![index],
               onTap: () => openGallery(context, index, images),
             ),
           );
@@ -55,7 +55,7 @@ class CommentCard extends StatelessWidget {
   Widget build(BuildContext context) {
     var photo = user.profilePhoto ?? "";
     return InkWell(
-      onLongPress: this.onLongPress,
+      onLongPress: this.onLongPress as void Function()?,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -63,7 +63,7 @@ class CommentCard extends StatelessWidget {
             contentPadding: EdgeInsets.zero,
             //onLongPress: this.onLongPress,
             leading: GestureDetector(
-              onTap: () => this.onUserPressed(user.id),
+              onTap: () => this.onUserPressed!(user.id),
               child: CircleAvatar(
                 radius: 18.0.r,
                 backgroundImage: photo.isNotEmpty ? NetworkImage(photo) : null,
@@ -79,7 +79,7 @@ class CommentCard extends StatelessWidget {
                       fontSize: 14.0.sp,
                     ),
                     recognizer: TapGestureRecognizer()
-                      ..onTap = () => this.onUserPressed(user.id),
+                      ..onTap = () => this.onUserPressed!(user.id),
                   ),
                   TextSpan(
                     text: " $message",
@@ -96,10 +96,10 @@ class CommentCard extends StatelessWidget {
               padding: EdgeInsets.zero,
               constraints: BoxConstraints(),
               icon: Icon(
-                this.liked ? MdiIcons.heart : MdiIcons.heartOutline,
-                color: this.liked ? Colors.red : Colors.black,
+                this.liked! ? MdiIcons.heart : MdiIcons.heartOutline,
+                color: this.liked! ? Colors.red : Colors.black,
               ),
-              onPressed: onLike,
+              onPressed: onLike as void Function()?,
             ),
           ),
           _buildImages(),

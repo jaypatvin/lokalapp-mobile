@@ -9,17 +9,17 @@ import '../../../providers/users.dart';
 import '../../chat/components/chat_avatar.dart';
 
 class TransactionDetails extends StatelessWidget {
-  final Order transaction;
-  final String status;
+  final Order? transaction;
+  final String? status;
   final bool isBuyer;
 
   const TransactionDetails({
     this.status = "",
-    @required this.transaction,
-    @required this.isBuyer,
+    required this.transaction,
+    required this.isBuyer,
   });
 
-  Widget _buildAvatar(BuildContext context, String name, String displayPhoto) {
+  Widget _buildAvatar(BuildContext context, String name, String? displayPhoto) {
     return Row(
       children: [
         ChatAvatar(
@@ -38,28 +38,28 @@ class TransactionDetails extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final name = isBuyer
-        ? transaction.shopName
+        ? transaction!.shopName
         : Provider.of<Users>(context, listen: false)
-            .findById(transaction.buyerId)
+            .findById(transaction!.buyerId)
             .displayName;
 
     final displayPhoto = isBuyer
         ? Provider.of<Shops>(context, listen: false)
-            .findById(transaction.shopId)
+            .findById(transaction!.shopId)!
             .profilePhoto
         : Provider.of<Users>(context, listen: false)
-            .findById(transaction.buyerId)
+            .findById(transaction!.buyerId)
             .profilePhoto;
 
     final price = this
-        .transaction
+        .transaction!
         .products
-        .fold(0.0, (double prev, product) => prev + product.price);
+        .fold(0.0, (double prev, product) => prev + product.price!);
 
-    final isStatus = status != null && status.isNotEmpty;
+    final isStatus = status != null && status!.isNotEmpty;
 
     final displayStatus =
-        (transaction.statusCode == 300 && transaction.paymentMethod == "cod")
+        (transaction!.statusCode == 300 && transaction!.paymentMethod == "cod")
             ? "Cash on Delivery"
             : this.status;
 
@@ -72,20 +72,20 @@ class TransactionDetails extends StatelessWidget {
             children: [
               isStatus
                   ? Text(
-                      displayStatus,
+                      displayStatus!,
                       style: TextStyle(
                         fontWeight: FontWeight.w600,
                         fontSize: 16.0,
                       ),
                     )
-                  : _buildAvatar(context, name, displayPhoto),
+                  : _buildAvatar(context, name!, displayPhoto),
               RichText(
                 maxLines: 1,
                 text: TextSpan(
                   text: "For ",
                   children: [
                     TextSpan(
-                      text: DateFormat.MMMd().format(transaction.deliveryDate),
+                      text: DateFormat.MMMd().format(transaction!.deliveryDate),
                       style: TextStyle(
                         fontWeight: FontWeight.w600,
                       ),
@@ -104,7 +104,7 @@ class TransactionDetails extends StatelessWidget {
           SizedBox(height: MediaQuery.of(context).size.height * 0.01),
 
           // ------ dirty code, for cleanup
-          if (isStatus) _buildAvatar(context, name, displayPhoto),
+          if (isStatus) _buildAvatar(context, name!, displayPhoto),
           if (isStatus)
             SizedBox(height: MediaQuery.of(context).size.height * 0.02),
           // ------
@@ -112,9 +112,9 @@ class TransactionDetails extends StatelessWidget {
           ListView.builder(
             shrinkWrap: true,
             physics: NeverScrollableScrollPhysics(),
-            itemCount: this.transaction.products.length,
+            itemCount: this.transaction!.products.length,
             itemBuilder: (ctx, index) {
-              final item = this.transaction.products[index];
+              final item = this.transaction!.products[index];
               final product = Provider.of<Products>(context, listen: false)
                   .findById(item.id);
 
@@ -129,20 +129,20 @@ class TransactionDetails extends StatelessWidget {
                       height: MediaQuery.of(context).size.width * 0.12,
                       decoration: BoxDecoration(
                         image: DecorationImage(
-                          image: NetworkImage(product.gallery.first.url),
+                          image: NetworkImage(product!.gallery!.first.url),
                           fit: BoxFit.cover,
                         ),
                       ),
                     ),
                     Text(
-                      item.name,
+                      item.name!,
                       style: TextStyle(
                         fontWeight: FontWeight.w600,
                       ),
                     ),
                     Text('x${item.quantity}'),
                     Text(
-                      'P ${item.quantity * item.price}',
+                      'P ${item.quantity! * item.price!}',
                       style: TextStyle(
                         fontWeight: FontWeight.w500,
                       ),

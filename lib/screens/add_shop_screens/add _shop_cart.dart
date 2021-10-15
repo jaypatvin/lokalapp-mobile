@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:lokalapp/screens/profile_screens/components/store_rating.dart';
-import 'package:lokalapp/utils/themes.dart';
+import '../profile_screens/components/store_rating.dart';
+import '../../utils/themes.dart';
 import 'package:photo_view/photo_view.dart';
 
 import 'package:photo_view/photo_view_gallery.dart';
@@ -12,8 +12,8 @@ class AddShopCart extends StatefulWidget {
 }
 
 class _AddShopCartState extends State<AddShopCart> {
-  PhotoViewController controller;
-  double scaleCopy;
+  PhotoViewController? controller;
+  double? scaleCopy;
 
   int _current = 0;
   TextEditingController _instructionsController = TextEditingController();
@@ -35,7 +35,7 @@ class _AddShopCartState extends State<AddShopCart> {
 
   @override
   void dispose() {
-    controller.dispose();
+    controller!.dispose();
     super.dispose();
   }
 
@@ -152,7 +152,7 @@ class _AddShopCartState extends State<AddShopCart> {
             backgroundColor: Colors.orange,
             value: event == null
                 ? 0
-                : event.cumulativeBytesLoaded / event.expectedTotalBytes,
+                : event.cumulativeBytesLoaded / event.expectedTotalBytes!,
           ),
         ),
       ),

@@ -24,13 +24,13 @@ import 'components/chat_input.dart';
 import 'components/message_stream.dart';
 
 class ChatView extends StatefulWidget {
-  final ChatModel chat;
+  final ChatModel? chat;
 
   // There may be better ways to implement this
   final bool createMessage;
-  final List<String> members; // should include shopId or productId
-  final String shopId;
-  final String productId;
+  final List<String?>? members; // should include shopId or productId
+  final String? shopId;
+  final String? productId;
 
   const ChatView(
     this.createMessage, {
@@ -53,26 +53,26 @@ class _ChatViewState extends State<ChatView> {
   final ScrollController scrollController = ScrollController();
 
   String replyId = "";
-  Conversation replyMessage;
+  Conversation? replyMessage;
   bool showImagePicker = false;
-  CustomPickerDataProvider provider;
-  Color _indicatorColor;
+  CustomPickerDataProvider? provider;
+  Color? _indicatorColor;
 
-  Conversation _currentlySendingMessage;
+  Conversation? _currentlySendingMessage;
   bool _sendingMessage = false;
   bool _userSentLastMessage = false;
 
   // this is placed outside of the build function to
   // avoid rebuilds on the StreamBuilder
-  Stream<QuerySnapshot> _messageStream;
-  StreamSubscription _messageSubscription;
+  Stream<QuerySnapshot>? _messageStream;
+  late StreamSubscription _messageSubscription;
 
   // needed to keep track if creating a new message
   bool _createNewMessage = false;
-  String _chatTitle = "New message";
-  ChatModel _chat;
+  String? _chatTitle = "New message";
+  ChatModel? _chat;
 
-  List<QueryDocumentSnapshot> _conversations;
+  List<QueryDocumentSnapshot>? _conversations;
 
   @override
   void initState() {
@@ -80,25 +80,25 @@ class _ChatViewState extends State<ChatView> {
 
     // we're reusing the image picker used in the post and comments section
     provider = Provider.of<CustomPickerDataProvider>(context, listen: false);
-    provider.onPickMax.addListener(showMaxAssetsText);
+    provider!.onPickMax.addListener(showMaxAssetsText);
     // no need to add onPickListener (like in post_details) since we are not
     // using SingleChildScrollView to build the screen
-    provider.pickedNotifier.addListener(() => setState(() {}));
+    provider!.pickedNotifier.addListener(() => setState(() {}));
 
     providerInit();
     final userId = context.read<CurrentUser>().id;
-    if (!widget.createMessage ?? true) {
-      this._chatTitle = widget.chat.title;
+    if (!widget.createMessage) {
+      this._chatTitle = widget.chat!.title;
       this._chat = widget.chat;
-      _messageStream = Database.instance.getConversations(this._chat.id);
+      _messageStream = Database.instance.getConversations(this._chat!.id);
       this._messageSubscription =
-          this._messageStream.listen(_messageStreamListener);
+          this._messageStream!.listen(_messageStreamListener);
 
       _indicatorColor =
-          widget.chat.members.contains(userId) ? kTealColor : kPurpleColor;
+          widget.chat!.members.contains(userId) ? kTealColor : kPurpleColor;
     } else {
       _indicatorColor =
-          widget.members.contains(userId) ? kTealColor : kPurpleColor;
+          widget.members!.contains(userId) ? kTealColor : kPurpleColor;
       checkExistingChat().then((chat) {
         if (chat == null) {
           return;
@@ -110,18 +110,18 @@ class _ChatViewState extends State<ChatView> {
           _createNewMessage = false;
         });
         this._messageSubscription =
-            this._messageStream.listen(_messageStreamListener);
+            this._messageStream!.listen(_messageStreamListener);
       });
     }
-    _createNewMessage = widget?.createMessage ?? false;
+    _createNewMessage = widget.createMessage;
   }
 
   @override
   void dispose() {
     // we need to clear and remove the picked images and listeners
     // so that we can use it in its initial state on other screens
-    provider.picked.clear();
-    provider.removeListener(showMaxAssetsText);
+    provider!.picked.clear();
+    provider!.removeListener(showMaxAssetsText);
     this._messageSubscription.cancel();
 
     super.dispose();
@@ -152,11 +152,11 @@ class _ChatViewState extends State<ChatView> {
       onlyAll: true,
       type: RequestType.image,
     );
-    provider.resetPathList(pathList);
+    provider!.resetPathList(pathList);
   }
 
-  Future<ChatModel> checkExistingChat() async {
-    final hashId = hashArrayOfStrings([...widget.members]);
+  Future<ChatModel?> checkExistingChat() async {
+    final hashId = hashArrayOfStrings([...widget.members!]);
     var chat = await Database.instance.getGroupChatByHash(hashId);
     if (chat == null) {
       chat = await Database.instance.getChatById(hashId);
@@ -201,10 +201,10 @@ class _ChatViewState extends State<ChatView> {
           archived: false,
           createdAt: DateTime.now(),
           message: chatInputController.text,
-          senderId: user.id,
+          senderId: user.id!,
           sentAt: DateTime.now(),
           media: [],
-          replyTo: null,
+
         );
       });
       if (this._createNewMessage) {
@@ -214,8 +214,8 @@ class _ChatViewState extends State<ChatView> {
           productId: widget.productId,
           replyId: replyId,
           message: chatInputController.text,
-          assets: provider.picked,
-          members: [...widget.members],
+          assets: provider!.picked,
+          members: [...widget.members!],
         );
 
         setState(() {
@@ -225,19 +225,19 @@ class _ChatViewState extends State<ChatView> {
           this._messageStream = Database.instance.getConversations(chat.id);
         });
         this._messageSubscription =
-            this._messageStream.listen(_messageStreamListener);
+            this._messageStream!.listen(_messageStreamListener);
       } else {
         context.read<ChatProvider>().sendMessage(
-              chatId: this._chat.id,
+              chatId: this._chat!.id,
               userId: user.id,
               replyId: replyId,
               message: chatInputController.text,
-              assets: provider.picked,
+              assets: provider!.picked,
             );
       }
       chatInputController.clear();
       setState(() {
-        provider.picked.clear();
+        provider!.picked.clear();
         replyId = "";
         showImagePicker = false;
         this.replyMessage = null;
@@ -255,10 +255,10 @@ class _ChatViewState extends State<ChatView> {
   }
 
   void _onDeleteMessage(String id) async {
-    SnackBar snackBar;
+    late SnackBar snackBar;
     try {
       await context.read<ChatProvider>().deleteMessage(
-            chatId: this._chat.id,
+            chatId: this._chat!.id,
             messageId: id,
           );
       snackBar = SnackBar(content: Text("Message deleted succesfully."));
@@ -311,11 +311,11 @@ class _ChatViewState extends State<ChatView> {
         }),
         onCancelReply: () => setState(() => replyMessage = null),
         onImageRemove: (index) => setState(() {
-          provider.picked.removeAt(index);
+          provider!.picked.removeAt(index);
         }),
         chatInputController: this.chatInputController,
         replyMessage: this.replyMessage,
-        images: this.provider.picked,
+        images: this.provider!.picked,
         onTextFieldTap: () => setState(() => showImagePicker = false),
         chatFocusNode: _chatInputNode,
       ),
@@ -407,7 +407,7 @@ class _ChatViewState extends State<ChatView> {
                     onPressed: () => node.unfocus(),
                     child: Text(
                       "Done",
-                      style: Theme.of(context).textTheme.bodyText1.copyWith(
+                      style: Theme.of(context).textTheme.bodyText1!.copyWith(
                             color: Colors.black,
                           ),
                     ),

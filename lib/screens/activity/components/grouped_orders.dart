@@ -18,8 +18,8 @@ import '../seller/shipped_out.dart';
 import 'transaction_card.dart';
 
 class GroupedOrders extends StatelessWidget {
-  final Stream<QuerySnapshot> stream;
-  final Map<int, String> statuses;
+  final Stream<QuerySnapshot>? stream;
+  final Map<int, String?> statuses;
   final bool isBuyer;
   const GroupedOrders(this.stream, this.statuses, this.isBuyer);
 
@@ -39,7 +39,7 @@ class GroupedOrders extends StatelessWidget {
         case 500:
           final idToken =
               Provider.of<CurrentUser>(context, listen: false).idToken;
-          LokalApiService.instance.orders
+          LokalApiService.instance!.orders!
               .receive(idToken: idToken, orderId: order.id)
               .then((response) {
             if (response.statusCode == 200) {
@@ -72,7 +72,7 @@ class GroupedOrders extends StatelessWidget {
           if (order.paymentMethod == "cod") {
             final idToken =
                 Provider.of<CurrentUser>(context, listen: false).idToken;
-            LokalApiService.instance.orders
+            LokalApiService.instance!.orders!
                 .confirmPayment(idToken: idToken, orderId: order.id)
                 .then((response) {
               if (response.statusCode == 200) {
@@ -100,7 +100,7 @@ class GroupedOrders extends StatelessWidget {
         case 400:
           final idToken =
               Provider.of<CurrentUser>(context, listen: false).idToken;
-          LokalApiService.instance.orders
+          LokalApiService.instance!.orders!
               .shipOut(
             idToken: idToken,
             orderId: order.id,
@@ -143,7 +143,7 @@ class GroupedOrders extends StatelessWidget {
           default:
             if (snapshot.hasError)
               return Text('Error: ${snapshot.error}');
-            else if (!snapshot.hasData || snapshot.data.docs.length == 0)
+            else if (!snapshot.hasData || snapshot.data!.docs.length == 0)
               return Text(
                 'No orders yet!',
                 style: TextStyle(
@@ -156,7 +156,7 @@ class GroupedOrders extends StatelessWidget {
               return GroupedListView(
                 shrinkWrap: true,
                 physics: AlwaysScrollableScrollPhysics(),
-                elements: snapshot.data.docs,
+                elements: snapshot.data!.docs,
                 groupBy: (QueryDocumentSnapshot element) {
                   final date = (element["created_at"] as Timestamp).toDate();
                   return DateTime(date.year, date.month, date.day);
@@ -172,13 +172,14 @@ class GroupedOrders extends StatelessWidget {
                 },
                 order: GroupedListOrder.DESC,
                 itemBuilder: (context, QueryDocumentSnapshot snapshot) {
-                  final int code = snapshot.data()["status_code"];
-                  final data = {...snapshot.data(), "id": snapshot.id};
+                  final snapshotData = snapshot.data() as Map<String, dynamic>;
+                  final int? code = snapshotData["status_code"];
+                  final data = {...snapshotData, "id": snapshot.id};
                   final order = Order.fromMap(data);
                   return TransactionCard(
                     order: order,
                     isBuyer: this.isBuyer,
-                    status: this.statuses[code],
+                    status: this.statuses[code!],
                     onSecondButtonPress: () =>
                         onSecondButtonPress(context, order),
                   );
@@ -187,8 +188,8 @@ class GroupedOrders extends StatelessWidget {
                   QueryDocumentSnapshot a,
                   QueryDocumentSnapshot b,
                 ) {
-                  final _statusCodeA = a.data()["status_code"];
-                  final _statusCodeB = b.data()["status_code"];
+                  final _statusCodeA = a.get("status_code");
+                  final _statusCodeB = b.get("status_code");
                   final statusCodeA = (_statusCodeA == 10 || _statusCodeA == 20)
                       ? _statusCodeA * 100
                       : _statusCodeA;

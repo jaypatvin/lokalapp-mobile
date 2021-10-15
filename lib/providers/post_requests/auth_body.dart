@@ -5,20 +5,20 @@ class AuthBody extends ChangeNotifier {
 
   Map get data => _authBody;
 
-  String get firstName => _authBody["first_name"];
-  String get lastName => _authBody["last_name"];
-  String get profilePhoto => _authBody["profile_photo"];
-  String get email => _authBody["email"];
-  String get street => _authBody["street"];
+  String? get firstName => _authBody["first_name"];
+  String? get lastName => _authBody["last_name"];
+  String? get profilePhoto => _authBody["profile_photo"];
+  String? get email => _authBody["email"];
+  String? get street => _authBody["street"];
 
   void update({
-    String firstName,
-    String lastName,
-    String userUid,
-    String address,
-    String communityId,
-    String profilePhoto,
-    String email,
+    String? firstName,
+    String? lastName,
+    String? userUid,
+    String? address,
+    String? communityId,
+    String? profilePhoto,
+    String? email,
   }) {
     _authBody["first_name"] = firstName ?? _authBody["first_name"];
     _authBody["last_name"] = lastName ?? _authBody["last_name"];

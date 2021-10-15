@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:lokalapp/screens/profile_screens/settings/components/appbar.dart';
-import 'package:lokalapp/screens/profile_screens/settings/privacy%20setting/account_deleted.dart';
-import 'package:lokalapp/utils/themes.dart';
+import '../components/appbar.dart';
+import '../privacy%20setting/account_deleted.dart';
+import '../../../../utils/themes.dart';
 
 class DeleteAccount extends StatefulWidget {
   @override
@@ -9,7 +9,7 @@ class DeleteAccount extends StatefulWidget {
 }
 
 class _DeleteAccountState extends State<DeleteAccount> {
-  buildButton(context, text, {bool isTeal = false, Function onPressed}) =>
+  buildButton(context, text, {bool isTeal = false, Function? onPressed}) =>
       Container(
         height: 43,
         width: 300,
@@ -29,7 +29,7 @@ class _DeleteAccountState extends State<DeleteAccount> {
                 color: Colors.white,
                 fontWeight: FontWeight.w600),
           ),
-          onPressed: onPressed,
+          onPressed: onPressed as void Function()?,
         ),
       );
   @override

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
-import 'package:screen_loader/screen_loader.dart';
+import '../../widgets/screen_loader.dart';
 
 import '../../providers/cart.dart';
 import '../../providers/products.dart';
@@ -18,9 +18,9 @@ class SubscriptionPaymentMethod extends StatefulWidget {
   final bool reschedule;
 
   const SubscriptionPaymentMethod({
-    Key key,
-    @required this.subscriptionPlanBody,
-    @required this.reschedule,
+    Key? key,
+    required this.subscriptionPlanBody,
+    required this.reschedule,
   }) : super(key: key);
 
   @override
@@ -73,9 +73,9 @@ class _SubscriptionPaymentMethodState extends State<SubscriptionPaymentMethod>
   @override
   Widget screen(BuildContext context) {
     final _productId = widget.subscriptionPlanBody.productId;
-    final _quantity = widget.subscriptionPlanBody.quantity;
+    final _quantity = widget.subscriptionPlanBody.quantity!;
     final _product = context.read<Products>().findById(_productId);
-    final double _totalPrice = _quantity * _product.basePrice;
+    final double _totalPrice = _quantity * _product!.basePrice!;
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -107,9 +107,10 @@ class _SubscriptionPaymentMethodState extends State<SubscriptionPaymentMethod>
                       children: [
                         Text(
                           "P$_totalPrice",
-                          style: Theme.of(context).textTheme.headline3.copyWith(
-                                color: kOrangeColor,
-                              ),
+                          style:
+                              Theme.of(context).textTheme.headline3!.copyWith(
+                                    color: kOrangeColor,
+                                  ),
                         ),
                         Text(
                           "Total Payment",

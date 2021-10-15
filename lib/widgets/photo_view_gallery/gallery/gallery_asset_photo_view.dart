@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
-import 'package:photo_widget/photo_widget.dart';
+
+import '../../photo_picker_gallery/custom_asset_widget.dart';
 
 class GalleryAssetPhotoView extends StatefulWidget {
   GalleryAssetPhotoView({
@@ -11,12 +12,12 @@ class GalleryAssetPhotoView extends StatefulWidget {
     this.minScale,
     this.maxScale,
     this.initialIndex = 0,
-    @required this.galleryItems,
+    required this.galleryItems,
     this.scrollDirection = Axis.horizontal,
   }) : pageController = PageController(initialPage: initialIndex);
 
-  final LoadingBuilder loadingBuilder;
-  final BoxDecoration backgroundDecoration;
+  final LoadingBuilder? loadingBuilder;
+  final BoxDecoration? backgroundDecoration;
   final dynamic minScale;
   final dynamic maxScale;
   final int initialIndex;
@@ -29,7 +30,7 @@ class GalleryAssetPhotoView extends StatefulWidget {
 }
 
 class _GalleryFilePhotoView extends State<GalleryAssetPhotoView> {
-  int currentIndex;
+  late int currentIndex;
 
   @override
   void initState() {
@@ -89,7 +90,7 @@ class _GalleryFilePhotoView extends State<GalleryAssetPhotoView> {
       initialScale: PhotoViewComputedScale.contained,
       minScale: PhotoViewComputedScale.contained * (0.5 + index / 10),
       maxScale: PhotoViewComputedScale.covered * 4.1,
-      heroAttributes: PhotoViewHeroAttributes(tag: entity.title),
+      heroAttributes: PhotoViewHeroAttributes(tag: entity.title!),
     );
   }
 }

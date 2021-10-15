@@ -1,14 +1,13 @@
 import 'dart:convert';
 
-import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
 import 'lokal_api_constants.dart';
 
 class OrdersService {
-  static OrdersService _instance;
+  static OrdersService? _instance;
 
-  static OrdersService get instance {
+  static OrdersService? get instance {
     if (_instance == null) {
       _instance = OrdersService();
     }
@@ -19,12 +18,12 @@ class OrdersService {
 
   // --POST
   Future<http.Response> create({
-    @required String idToken,
-    @required Map data,
+    required String? idToken,
+    required Map data,
   }) async {
     final body = json.encode(data);
     return await http.post(
-      ordersUrl,
+      Uri.parse(ordersUrl),
       headers: {
         "Content-Type": "application/json",
         "Authorization": "Bearer $idToken"
@@ -38,11 +37,11 @@ class OrdersService {
   // --PUT
 
   Future<http.Response> cancel({
-    @required String idToken,
-    @required String orderId,
+    required String? idToken,
+    required String? orderId,
   }) async {
     return await http.put(
-      "$ordersUrl/$orderId/cancel",
+      Uri.parse("$ordersUrl/$orderId/cancel"),
       headers: {
         "Content-Type": "application/json",
         "Authorization": "Bearer $idToken"
@@ -51,11 +50,11 @@ class OrdersService {
   }
 
   Future<http.Response> confirm({
-    @required String idToken,
-    @required String orderId,
+    required String? idToken,
+    required String? orderId,
   }) async {
     return await http.put(
-      "$ordersUrl/$orderId/confirm",
+      Uri.parse("$ordersUrl/$orderId/confirm"),
       headers: {
         "Content-Type": "application/json",
         "Authorization": "Bearer $idToken"
@@ -64,11 +63,11 @@ class OrdersService {
   }
 
   Future<http.Response> confirmPayment({
-    @required String idToken,
-    @required String orderId,
+    required String? idToken,
+    required String? orderId,
   }) async {
     return await http.put(
-      "$ordersUrl/$orderId/confirmPayment",
+      Uri.parse("$ordersUrl/$orderId/confirmPayment"),
       headers: {
         "Content-Type": "application/json",
         "Authorization": "Bearer $idToken"
@@ -77,11 +76,11 @@ class OrdersService {
   }
 
   Future<http.Response> decline({
-    @required String idToken,
-    @required String orderId,
+    required String? idToken,
+    required String? orderId,
   }) async {
     return await http.put(
-      "$ordersUrl/$orderId/decline",
+      Uri.parse("$ordersUrl/$orderId/decline"),
       headers: {
         "Content-Type": "application/json",
         "Authorization": "Bearer $idToken"
@@ -90,13 +89,13 @@ class OrdersService {
   }
 
   Future<http.Response> pay({
-    @required String idToken,
-    @required String orderId,
-    @required Map data,
+    required String? idToken,
+    required String? orderId,
+    required Map data,
   }) async {
     final body = json.encode(data);
     return await http.put(
-      "$ordersUrl/$orderId/pay",
+      Uri.parse("$ordersUrl/$orderId/pay"),
       headers: {
         "Content-Type": "application/json",
         "Authorization": "Bearer $idToken"
@@ -106,11 +105,11 @@ class OrdersService {
   }
 
   Future<http.Response> receive({
-    @required String idToken,
-    @required String orderId,
+    required String? idToken,
+    required String? orderId,
   }) async {
     return await http.put(
-      "$ordersUrl/$orderId/receive",
+      Uri.parse("$ordersUrl/$orderId/receive"),
       headers: {
         "Content-Type": "application/json",
         "Authorization": "Bearer $idToken"
@@ -119,11 +118,11 @@ class OrdersService {
   }
 
   Future<http.Response> shipOut({
-    @required String idToken,
-    @required String orderId,
+    required String? idToken,
+    required String? orderId,
   }) async {
     return await http.put(
-      "$ordersUrl/$orderId/shipOut",
+      Uri.parse("$ordersUrl/$orderId/shipOut"),
       headers: {
         "Content-Type": "application/json",
         "Authorization": "Bearer $idToken"

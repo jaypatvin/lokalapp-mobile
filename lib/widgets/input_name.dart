@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class InputName extends StatelessWidget {
-  final Function(String) onChanged;
-  final String hintText;
-  final String errorText;
-  final TextEditingController controller;
-  final FocusNode focusNode;
+  final Function(String)? onChanged;
+  final String? hintText;
+  final String? errorText;
+  final TextEditingController? controller;
+  final FocusNode? focusNode;
   final Color fillColor;
-  final TextInputType keyboardType;
-  final TextStyle style;
+  final TextInputType? keyboardType;
+  final TextStyle? style;
 
   InputName({
     this.onChanged,
@@ -40,7 +40,7 @@ class InputName extends StatelessWidget {
             vertical: 13.h,
           ),
           hintText: this.hintText,
-          hintStyle: Theme.of(context).textTheme.subtitle2.copyWith(
+          hintStyle: Theme.of(context).textTheme.subtitle2!.copyWith(
                 color: const Color(0xFFBDBDBD),
               ),
           alignLabelWithHint: true,
@@ -52,7 +52,7 @@ class InputName extends StatelessWidget {
           ),
           errorText: this.errorText,
         ),
-        style: Theme.of(context).textTheme.headline6.merge(this.style),
+        style: Theme.of(context).textTheme.headline6!.merge(this.style),
       ),
     );
   }

@@ -1,19 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:lokalapp/providers/post_requests/auth_body.dart';
-import 'package:lokalapp/providers/user.dart';
 
-import 'package:lokalapp/screens/profile_screens/settings/email/email_changed.dart';
-import 'package:lokalapp/screens/profile_screens/settings/password/password_changed.dart';
-import 'package:lokalapp/services/database.dart';
-import 'package:lokalapp/utils/themes.dart';
-import 'package:provider/provider.dart';
+import '../../../../utils/themes.dart';
+import 'password_changed.dart';
 
 class ChangePassword extends StatelessWidget {
-  TextEditingController oldPwController = TextEditingController();
-  TextEditingController confirmPwController = TextEditingController();
-  TextEditingController newPwController = TextEditingController();
+  final TextEditingController oldPwController = TextEditingController();
+  final TextEditingController confirmPwController = TextEditingController();
+  final TextEditingController newPwController = TextEditingController();
 
-  bool confirmed = false;
+  final bool confirmed = false;
 
   // Future updatePassword() async {
   //   CurrentUser currentUser = Provider.of<CurrentUser>(context, listen: false);

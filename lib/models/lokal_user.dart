@@ -3,13 +3,13 @@ import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class UserAddress {
-  String barangay;
-  String country;
-  String state;
-  String city;
-  String subdivision;
-  String zipCode;
-  String street;
+  String? barangay;
+  String? country;
+  String? state;
+  String? city;
+  String? subdivision;
+  String? zipCode;
+  String? street;
   UserAddress({
     this.barangay,
     this.country,
@@ -32,17 +32,15 @@ class UserAddress {
     };
   }
 
-  factory UserAddress.fromMap(Map<String, dynamic> map) {
-    if (map == null) return null;
-
+  factory UserAddress.fromMap(Map<String, dynamic>? map) {
     return UserAddress(
-      barangay: map['barangay'],
-      country: map['country'],
-      state: map['state'],
-      city: map['city'],
-      subdivision: map['subdivision'],
-      zipCode: map['zip_code'],
-      street: map['street'],
+      barangay: map?['barangay'],
+      country: map?['country'],
+      state: map?['state'],
+      city: map?['city'],
+      subdivision: map?['subdivision'],
+      zipCode: map?['zip_code'],
+      street: map?['street'],
     );
   }
 
@@ -53,11 +51,11 @@ class UserAddress {
 }
 
 class UserRegistrationStatus {
-  int step;
-  String idPhoto;
-  bool verified;
-  String notes;
-  String idType;
+  int? step;
+  String? idPhoto;
+  bool? verified;
+  String? notes;
+  String? idType;
   UserRegistrationStatus({
     this.step,
     this.idPhoto,
@@ -77,8 +75,6 @@ class UserRegistrationStatus {
   }
 
   factory UserRegistrationStatus.fromMap(Map<String, dynamic> map) {
-    if (map == null) return null;
-
     return UserRegistrationStatus(
       step: map['step'],
       idPhoto: map['id_photo'],
@@ -98,8 +94,8 @@ class UserRoles {
   bool member;
   bool admin;
   UserRoles({
-    this.member,
-    this.admin,
+    required this.member,
+    required this.admin,
   });
 
   Map<String, dynamic> toMap() {
@@ -110,8 +106,6 @@ class UserRoles {
   }
 
   factory UserRoles.fromMap(Map<String, dynamic> map) {
-    if (map == null) return null;
-
     return UserRoles(
       member: map['member'],
       admin: map['admin'],
@@ -125,20 +119,20 @@ class UserRoles {
 }
 
 class LokalUser {
-  List<String> userUids;
-  String id;
-  String firstName;
-  String lastName;
-  String profilePhoto;
-  String email;
-  String displayName;
-  String communityId;
-  String birthDate;
-  String status;
-  UserAddress address;
-  UserRegistrationStatus registration;
-  UserRoles roles;
-  Timestamp createdAt;
+  List<String>? userUids;
+  String? id;
+  String? firstName;
+  String? lastName;
+  String? profilePhoto;
+  String? email;
+  String? displayName;
+  String? communityId;
+  String? birthDate;
+  String? status;
+  UserAddress? address;
+  UserRegistrationStatus? registration;
+  UserRoles? roles;
+  Timestamp? createdAt;
 
   LokalUser({
     this.userUids,
@@ -169,16 +163,19 @@ class LokalUser {
       'community_id': communityId,
       'birth_date': birthDate,
       'status': status,
-      'address': address.toMap(),
-      'registration': registration.toMap(),
-      'roles': roles.toMap(),
+      'address': address!.toMap(),
+      'registration': registration!.toMap(),
+      'roles': roles!.toMap(),
       'created_at': createdAt,
     };
   }
 
-  factory LokalUser.fromMap(Map<String, dynamic> map) {
-    if (map == null) return null;
-    Timestamp _createdAt;
+  factory LokalUser.fromMap(Map<String, dynamic>? map) {
+    if (map == null) {
+      return LokalUser();
+    }
+
+    late final Timestamp _createdAt;
     if (map['created_at'] is Timestamp) {
       _createdAt = map['created_at'];
     } else if (map['created_at'] is Map) {
@@ -197,9 +194,10 @@ class LokalUser {
       communityId: map['community_id'],
       birthDate: map['birth_date'],
       status: map['status'],
-      address: UserAddress.fromMap(map['address']),
-      registration: UserRegistrationStatus.fromMap(map['registration']),
-      roles: UserRoles.fromMap(map['roles']),
+      address: UserAddress.fromMap(map['address'] ?? Map()),
+      registration:
+          UserRegistrationStatus.fromMap(map['registration'] ?? Map()),
+      roles: UserRoles.fromMap(map['roles'] ?? Map()),
       createdAt: _createdAt,
     );
   }

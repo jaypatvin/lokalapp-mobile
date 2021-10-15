@@ -6,7 +6,7 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:persistent_bottom_nav_bar/models/nested_will_pop_scope.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:provider/provider.dart';
-import 'package:screen_loader/screen_loader.dart';
+import '../../widgets/screen_loader.dart';
 
 import '../../models/lokal_images.dart';
 import '../../providers/activities.dart';
@@ -30,23 +30,23 @@ class _DraftPostState extends State<DraftPost>
   final TextEditingController _userController = TextEditingController();
   final GlobalKey<ScaffoldState> _key = GlobalKey<ScaffoldState>();
   final FocusNode _nodePostText = FocusNode();
-  CustomPickerDataProvider _provider;
+  CustomPickerDataProvider? _provider;
   bool _showImagePicker = false;
 
   @override
   void initState() {
     super.initState();
     _provider = Provider.of<CustomPickerDataProvider>(context, listen: false);
-    _provider.onPickMax.addListener(_showMaxAssetsText);
-    _provider.pickedNotifier.addListener(_onPick);
+    _provider!.onPickMax.addListener(_showMaxAssetsText);
+    _provider!.pickedNotifier.addListener(_onPick);
     _providerInit();
   }
 
   @override
   void dispose() {
-    _provider.picked.clear();
-    _provider.removeListener(_showMaxAssetsText);
-    _provider.pickedNotifier.removeListener(_onPick);
+    _provider!.picked.clear();
+    _provider!.removeListener(_showMaxAssetsText);
+    _provider!.pickedNotifier.removeListener(_onPick);
     super.dispose();
   }
 
@@ -64,7 +64,7 @@ class _DraftPostState extends State<DraftPost>
                 onPressed: () => node.unfocus(),
                 child: Text(
                   "Done",
-                  style: Theme.of(context).textTheme.bodyText1.copyWith(
+                  style: Theme.of(context).textTheme.bodyText1!.copyWith(
                         color: Colors.black,
                       ),
                 ),
@@ -85,7 +85,7 @@ class _DraftPostState extends State<DraftPost>
       onlyAll: true,
       type: RequestType.image,
     );
-    _provider.resetPathList(pathList);
+    _provider!.resetPathList(pathList);
   }
 
   void _showMaxAssetsText() {
@@ -177,7 +177,7 @@ class _DraftPostState extends State<DraftPost>
       context,
       MaterialPageRoute(
         builder: (context) => GalleryAssetPhotoView(
-          galleryItems: this._provider.picked,
+          galleryItems: this._provider!.picked,
           backgroundDecoration: const BoxDecoration(
             color: Colors.black,
           ),
@@ -194,11 +194,11 @@ class _DraftPostState extends State<DraftPost>
     final user = context.read<CurrentUser>();
 
     var gallery = <LokalImages>[];
-    for (var asset in _provider.picked) {
+    for (var asset in _provider!.picked) {
       var file = await asset.file;
-      var url = await service.uploadImage(file: file, name: 'post_photo');
+      var url = await service.uploadImage(file: file!, name: 'post_photo');
       gallery
-          .add(LokalImages(url: url, order: _provider.picked.indexOf(asset)));
+          .add(LokalImages(url: url, order: _provider!.picked.indexOf(asset)));
     }
 
     bool postSuccess = await activities.post(
@@ -215,9 +215,9 @@ class _DraftPostState extends State<DraftPost>
   }
 
   Widget _buildPostImages({
-    BuildContext context,
+    BuildContext? context,
   }) {
-    var count = _provider.picked.length;
+    var count = _provider!.picked.length;
     return StaggeredGridView.countBuilder(
       shrinkWrap: true,
       physics: NeverScrollableScrollPhysics(),
@@ -225,9 +225,10 @@ class _DraftPostState extends State<DraftPost>
       crossAxisCount: 2,
       itemBuilder: (ctx, index) {
         return AssetPhotoThumbnail(
-          galleryItem: this._provider.picked[index],
-          onTap: () => _openGallery(context, index),
-          onRemove: () => setState(() => this._provider.picked.removeAt(index)),
+          galleryItem: this._provider!.picked[index],
+          onTap: () => _openGallery(context!, index),
+          onRemove: () =>
+              setState(() => this._provider!.picked.removeAt(index)),
         );
       },
       staggeredTileBuilder: (index) {
@@ -239,8 +240,8 @@ class _DraftPostState extends State<DraftPost>
     );
   }
 
-  Future<bool> _onWillPop() async {
-    if (_userController.text.isEmpty && _provider.picked.isEmpty) {
+  Future<bool?> _onWillPop() async {
+    if (_userController.text.isEmpty && _provider!.picked.isEmpty) {
       return true;
     }
     return showModalBottomSheet<bool>(
@@ -255,7 +256,7 @@ class _DraftPostState extends State<DraftPost>
   @override
   Widget screen(BuildContext context) {
     return NestedWillPopScope(
-      onWillPop: _onWillPop,
+      onWillPop: _onWillPop as Future<bool> Function(),
       child: Scaffold(
         key: _key,
         backgroundColor: Colors.white,
@@ -296,7 +297,7 @@ class _DraftPostState extends State<DraftPost>
           child: Column(
             children: [
               Visibility(
-                visible: _provider.picked.length > 0,
+                visible: _provider!.picked.length > 0,
                 child: _buildPostImages(context: context),
               ),
               Expanded(child: _buildCard()),
@@ -328,7 +329,7 @@ class _DraftPostState extends State<DraftPost>
 }
 
 class _ExitNotification extends StatelessWidget {
-  const _ExitNotification({Key key}) : super(key: key);
+  const _ExitNotification({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

@@ -9,13 +9,13 @@ class OperatingHoursBody extends ChangeNotifier {
   Map get data => _operatingHours.toMap();
 
   void update({
-    String startTime,
-    String endTime,
-    String repeatType,
-    int repeatUnit,
-    List<String> startDates,
-    List<String> unavailableDates,
-    List<CustomDates> customDates,
+    String? startTime,
+    String? endTime,
+    String? repeatType,
+    int? repeatUnit,
+    List<String>? startDates,
+    List<String>? unavailableDates,
+    List<CustomDates>? customDates,
   }) {
     _operatingHours = _operatingHours.copyWith(
       startTime: startTime,

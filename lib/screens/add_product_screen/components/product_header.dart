@@ -6,13 +6,13 @@ import '../../../widgets/photo_box.dart';
 
 class ProductHeader extends StatelessWidget {
   final PhotoBox photoBox;
-  final String productName;
-  final double productPrice;
-  final int productStock;
+  final String? productName;
+  final double? productPrice;
+  final int? productStock;
   ProductHeader({
-    @required this.photoBox,
-    @required this.productName,
-    @required this.productPrice,
+    required this.photoBox,
+    required this.productName,
+    required this.productPrice,
     this.productStock,
   });
 
@@ -36,7 +36,7 @@ class ProductHeader extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                productName,
+                productName!,
                 overflow: TextOverflow.ellipsis,
                 style: Theme.of(context).textTheme.headline6,
                 maxLines: 2,

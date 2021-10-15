@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
-import 'package:screen_loader/screen_loader.dart';
+import '../../widgets/screen_loader.dart';
 
 import '../../providers/activities.dart';
 import '../../providers/products.dart';
@@ -28,23 +28,23 @@ class _LoginScreenState extends State<LoginScreen>
   TextEditingController _passwordController = TextEditingController();
   bool isAuth = false;
   final _formKey = GlobalKey<FormState>();
-  Map<String, String> account;
+  Map<String, String>? account;
   bool _signInError = false;
 
   Future<void> _logInUser({
-    @required LoginType type,
-    String email,
-    String password,
+    required LoginType type,
+    String? email,
+    String? password,
   }) async {
     FocusScope.of(context).unfocus();
     CurrentUser user = Provider.of<CurrentUser>(context, listen: false);
     UserAuth auth = Provider.of<UserAuth>(context, listen: false);
     try {
-      AuthStatus _authStatus;
+      AuthStatus? _authStatus;
 
       switch (type) {
         case LoginType.email:
-          _authStatus = await auth.loginWithEmail(email, password);
+          _authStatus = await auth.loginWithEmail(email!, password!);
           break;
         case LoginType.google:
           _authStatus = await auth.loginWithGoogle();
@@ -55,7 +55,7 @@ class _LoginScreenState extends State<LoginScreen>
         default:
       }
       if (_authStatus == AuthStatus.Success) {
-        await user.fetch(auth.user);
+        await user.fetch(auth.user!);
         if (user.state == UserState.LoggedIn) {
           await performFuture(() async {
             await context.read<Activities>().fetch();
@@ -164,7 +164,7 @@ class _LoginScreenState extends State<LoginScreen>
                     setState(() {
                       _signInError = false;
                     });
-                    if (!_formKey.currentState.validate()) return;
+                    if (!_formKey.currentState!.validate()) return;
 
                     await performFuture<void>(
                       () async => await _logInUser(

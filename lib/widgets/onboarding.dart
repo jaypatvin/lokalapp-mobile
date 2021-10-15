@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:lokalapp/screens/home.dart';
-import 'package:lokalapp/utils/themes.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+
+import '../utils/themes.dart';
 
 class Onboarding extends StatefulWidget {
-  final IconData icon;
-  final String iconText;
-  final String firstSentence;
-  final String secondSentence;
-  final String thirdSentence;
-  final String fourthSentence;
-  final String buttonText;
+  final IconData? icon;
+  final String? iconText;
+  final String? firstSentence;
+  final String? secondSentence;
+  final String? thirdSentence;
+  final String? fourthSentence;
+  final String? buttonText;
   Onboarding(
       {this.icon,
       this.iconText,
@@ -62,7 +61,7 @@ class _OnboardingState extends State<Onboarding> {
                         ),
                       ),
                       Text(
-                        widget.iconText,
+                        widget.iconText!,
                         style: TextStyle(color: Color(0xffCC3752)),
                       )
                     ],
@@ -80,7 +79,7 @@ class _OnboardingState extends State<Onboarding> {
                             padding: EdgeInsets.only(
                                 left: 10, top: 30, right: 15, bottom: 5),
                             child: Text(
-                              widget.firstSentence,
+                              widget.firstSentence!,
                               textAlign: TextAlign.left,
                               style: TextStyle(fontSize: 14),
                             ),
@@ -89,7 +88,7 @@ class _OnboardingState extends State<Onboarding> {
                             padding: EdgeInsets.only(
                                 left: 8, right: 15, bottom: 5, top: 1),
                             child: Text(
-                              widget.secondSentence,
+                              widget.secondSentence!,
                               textAlign: TextAlign.left,
                               style: TextStyle(fontSize: 14),
                             ),
@@ -98,7 +97,7 @@ class _OnboardingState extends State<Onboarding> {
                               padding:
                                   EdgeInsets.only(right: 30, bottom: 5, top: 1),
                               child: Text(
-                                widget.thirdSentence,
+                                widget.thirdSentence!,
                                 textAlign: TextAlign.left,
                                 style: TextStyle(fontSize: 14),
                               )),
@@ -106,7 +105,7 @@ class _OnboardingState extends State<Onboarding> {
                               padding: EdgeInsets.only(
                                   left: 10, right: 15, bottom: 5, top: 1),
                               child: Text(
-                                widget.fourthSentence,
+                                widget.fourthSentence!,
                                 textAlign: TextAlign.left,
                                 style: TextStyle(fontSize: 14),
                               )),
@@ -127,7 +126,7 @@ class _OnboardingState extends State<Onboarding> {
                                     ),
                                     textColor: kTealColor,
                                     child: Text(
-                                      widget.buttonText,
+                                      widget.buttonText!,
                                       style: TextStyle(
                                           fontFamily: "Goldplay",
                                           fontSize: 14,

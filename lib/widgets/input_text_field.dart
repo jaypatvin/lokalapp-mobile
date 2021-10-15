@@ -6,15 +6,15 @@ import '../utils/themes.dart';
 
 class InputTextField extends StatelessWidget {
   final TextEditingController inputController;
-  final FocusNode inputFocusNode;
+  final FocusNode? inputFocusNode;
   final void Function() onSend;
-  final void Function() onTap;
-  final String hintText;
+  final void Function()? onTap;
+  final String? hintText;
   const InputTextField({
-    Key key,
-    @required this.inputController,
-    @required this.onSend,
-    @required this.inputFocusNode,
+    Key? key,
+    required this.inputController,
+    required this.onSend,
+    required this.inputFocusNode,
     this.hintText,
     this.onTap,
   }) : super(key: key);

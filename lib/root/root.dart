@@ -14,7 +14,7 @@ import '../utils/constants.dart';
 import '../utils/themes.dart';
 
 class Root extends StatefulWidget {
-  final Map<String, String> account;
+  final Map<String, String>? account;
   Root({
     this.account,
   });
@@ -36,7 +36,7 @@ class _RootState extends State<Root> {
 
     if (authStatus == AuthStatus.Success) {
       CurrentUser user = Provider.of<CurrentUser>(context, listen: false);
-      await user.fetch(auth.user);
+      await user.fetch(auth.user!);
       if (user.state == UserState.LoggedIn) {
         await context.read<Activities>().fetch();
         await context.read<Shops>().fetch();

@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 
 class FilePhotoThumbnail extends StatelessWidget {
   const FilePhotoThumbnail({
-    Key key,
-    @required this.galleryItem,
-    @required this.onTap,
+    Key? key,
+    required this.galleryItem,
+    required this.onTap,
   }) : super(key: key);
 
   final File galleryItem;

@@ -1,16 +1,16 @@
 import 'dart:convert';
 
 class TimestampObject {
-  int seconds;
-  int nanoseconds;
+  int? seconds;
+  int? nanoseconds;
   TimestampObject({
     this.seconds,
     this.nanoseconds,
   });
 
   TimestampObject copyWith({
-    int seconds,
-    int nanoseconds,
+    int? seconds,
+    int? nanoseconds,
   }) {
     return TimestampObject(
       seconds: seconds ?? this.seconds,
@@ -56,5 +56,5 @@ class TimestampObject {
 
 extension TimestampObjectExtension on TimestampObject {
   DateTime toDateTime() => DateTime.fromMicrosecondsSinceEpoch(
-      this.seconds * 1000000 + this.nanoseconds ~/ 1000);
+      this.seconds! * 1000000 + this.nanoseconds! ~/ 1000);
 }

@@ -30,7 +30,7 @@ void openInputGallery(
 void openGallery(
   BuildContext context,
   final int index,
-  final List<LokalImages> galleryItems,
+  final List<LokalImages>? galleryItems,
 ) {
   Navigator.push(
     context,
@@ -66,9 +66,9 @@ String getTimeOfDayString(TimeOfDay time) {
   return timeOfDay;
 }
 
-bool isValidOperatingHours(OperatingHours operatingHours) {
+bool isValidOperatingHours(OperatingHours? operatingHours) {
   return operatingHours != null &&
-      operatingHours.repeatUnit > 0 &&
+      operatingHours.repeatUnit! > 0 &&
       (operatingHours.startTime?.isNotEmpty ?? false) &&
       (operatingHours.endTime?.isNotEmpty ?? false) &&
       (operatingHours.repeatType?.isNotEmpty ?? false) &&

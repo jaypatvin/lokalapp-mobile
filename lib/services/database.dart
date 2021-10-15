@@ -17,33 +17,33 @@ final Reference storageRef = FirebaseStorage.instance.ref();
 
 // this class should be refactored for each collection
 class Database {
-  static Database _database;
+  static Database? _database;
   static Database get instance {
     if (_database == null) {
       _database = Database();
     }
-    return _database;
+    return _database!;
   }
 
   CollectionReference getOrderStatuses() {
     return FirebaseFirestore.instance.collection("order_status");
   }
 
-  Stream<QuerySnapshot> getUserSubscriptions(String userId) {
+  Stream<QuerySnapshot> getUserSubscriptions(String? userId) {
     return subscriptionPlansRef
         .where("buyer_id", isEqualTo: userId)
         // .orderBy("created_at", descending: true)
         .snapshots();
   }
 
-  Stream<QuerySnapshot> getShopSubscribers(String shopId) {
+  Stream<QuerySnapshot> getShopSubscribers(String? shopId) {
     return subscriptionPlansRef
         .where("shop_id", isEqualTo: shopId)
         // .orderBy("created_at", descending: true)
         .snapshots();
   }
 
-  Future<Map<String, dynamic>> getChatById(id) async {
+  Future<Map<String, dynamic>?> getChatById(id) async {
     final chat =
         await FirebaseFirestore.instance.collection("chats").doc(id).get();
 
@@ -55,14 +55,14 @@ class Database {
     return data;
   }
 
-  Future<Map<String, dynamic>> getGroupChatByHash(String groupHash) async {
+  Future<Map<String, dynamic>?> getGroupChatByHash(String groupHash) async {
     final chat = await FirebaseFirestore.instance
         .collection("chats")
         .where("group_hash", isEqualTo: groupHash)
         .limit(1)
         .get();
 
-    Map<String, dynamic> data = chat != null && chat.docs.length > 0
+    Map<String, dynamic>? data = chat != null && chat.docs.length > 0
         ? {"id": chat.docs[0].id, ...chat.docs[0].data()}
         : null;
 
@@ -73,7 +73,7 @@ class Database {
     return "";
   }
 
-  Stream<QuerySnapshot> getUserOrders(String userId, {int statusCode}) {
+  Stream<QuerySnapshot> getUserOrders(String? userId, {int? statusCode}) {
     if (statusCode != null) {
       return ordersRef
           .where("buyer_id", isEqualTo: userId)
@@ -88,7 +88,7 @@ class Database {
         .snapshots();
   }
 
-  Stream<QuerySnapshot> getShopOrders(String shopId, {int statusCode}) {
+  Stream<QuerySnapshot> getShopOrders(String? shopId, {int? statusCode}) {
     if (statusCode != null) {
       return ordersRef
           .where("shop_id", isEqualTo: shopId)
@@ -102,14 +102,14 @@ class Database {
         .snapshots();
   }
 
-  Stream<QuerySnapshot> getUserChats(String userId) {
+  Stream<QuerySnapshot> getUserChats(String? userId) {
     return chatsRef
         .where("members", arrayContains: userId)
         .orderBy("updated_at", descending: true)
         .snapshots();
   }
 
-  Stream<QuerySnapshot> getConversations(String chatId) {
+  Stream<QuerySnapshot> getConversations(String? chatId) {
     return chatsRef
         .doc(chatId)
         .collection("conversation")
@@ -148,24 +148,24 @@ class Database {
     return chatsRef.doc(chatId).get();
   }
 
-  Future<Map> getUserInfo(String uid) async {
-    Map data;
+  Future<Map?> getUserInfo(String uid) async {
+    Map? data;
     try {
       final String documentId = await getUserDocId(uid);
       if (documentId != null && documentId.isNotEmpty) {
         DocumentSnapshot _docSnapshot = await usersRef.doc(documentId).get();
         if (_docSnapshot.exists) {
-          data = _docSnapshot.data();
+          data = _docSnapshot.data() as Map<dynamic, dynamic>?;
         }
       }
     } catch (e) {
-      debugPrint(e);
+      debugPrint(e.toString());
     }
     return data;
   }
 
   Future getShopInfo(String uid) async {
-    List data;
+    List? data;
     try {
       final String documentId = await getUserDocId(uid);
       if (documentId != null && documentId.isNotEmpty) {
@@ -176,7 +176,7 @@ class Database {
         }
       }
     } catch (e) {
-      debugPrint(e);
+      debugPrint(e.toString());
     }
     return data;
   }
@@ -185,7 +185,7 @@ class Database {
       LokalUser user, String key, dynamic value) async {
     String retVal = "error";
     try {
-      final String docId = await getUserDocId(user.userUids.first);
+      final String docId = await getUserDocId(user.userUids!.first);
       await shopRef.doc(docId).update({});
       retVal = "success";
     } catch (e) {
@@ -220,7 +220,7 @@ class Database {
   Future<String> updateUser(LokalUser user, String key, dynamic value) async {
     String retVal = "error";
     try {
-      final String docId = await getUserDocId(user.userUids.first);
+      final String docId = await getUserDocId(user.userUids!.first);
       await usersRef.doc(docId).update({key: value});
       retVal = "success";
     } catch (e) {

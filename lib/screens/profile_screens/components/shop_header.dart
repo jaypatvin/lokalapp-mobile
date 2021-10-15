@@ -11,7 +11,7 @@ import '../../chat/components/chat_avatar.dart';
 import '../settings/settings.dart';
 
 class ShopHeader extends StatelessWidget {
-  const ShopHeader({Key key}) : super(key: key);
+  const ShopHeader({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +35,7 @@ class ShopHeader extends StatelessWidget {
         Positioned.fill(
           child: Image(
             image: NetworkImage(
-              shop.coverPhoto,
+              shop.coverPhoto!,
             ),
             fit: BoxFit.cover,
             errorBuilder: (ctx, obj, trace) => const SizedBox(),
@@ -82,7 +82,7 @@ class ShopHeader extends StatelessWidget {
                       radius: 40.0.r,
                     ),
                     Text(
-                      shop.name,
+                      shop.name!,
                       style: TextStyle(
                         fontSize: 18.0.sp,
                         color: Colors.white,

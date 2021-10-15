@@ -6,14 +6,14 @@ import '../../../utils/themes.dart';
 
 class ReplyMessageWidget extends StatelessWidget {
   final bool isRepliedByUser;
-  final Conversation message;
-  final VoidCallback onCancelReply;
+  final Conversation? message;
+  final VoidCallback? onCancelReply;
 
   const ReplyMessageWidget({
-    @required this.message,
+    required this.message,
     this.isRepliedByUser = true,
     this.onCancelReply,
-    Key key,
+    Key? key,
   }) : super(key: key);
 
   @override
@@ -58,8 +58,9 @@ class ReplyMessageWidget extends StatelessWidget {
             ],
           ),
           SizedBox(height: 5.0.h),
+          if(message!.message != null)
           Text(
-            message.message,
+            message!.message!,
             style: TextStyle(
               color: isRepliedByUser ? Colors.black : Color(0xFFF1FAFF),
             ),

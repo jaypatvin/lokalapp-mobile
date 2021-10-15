@@ -19,12 +19,12 @@ class PostCard extends StatelessWidget {
   final Function() onUserPressed;
   final Function() onMessagePressed;
   PostCard({
-    @required this.activityFeed,
-    @required this.onCommentsPressed,
-    @required this.onLike,
-    @required this.onTripleDotsPressed,
-    @required this.onUserPressed,
-    @required this.onMessagePressed,
+    required this.activityFeed,
+    required this.onCommentsPressed,
+    required this.onLike,
+    required this.onTripleDotsPressed,
+    required this.onUserPressed,
+    required this.onMessagePressed,
   });
 
   Widget buildComments() {
@@ -94,7 +94,7 @@ class PostCard extends StatelessWidget {
   }
 
   Widget buildMessageBody({
-    @required String message,
+    required String message,
     double horizontalPadding = 8.0,
   }) {
     return GestureDetector(
@@ -137,7 +137,7 @@ class PostCard extends StatelessWidget {
   }
 
   Widget buildPostImages({
-    BuildContext context,
+    BuildContext? context,
   }) {
     var images = this.activityFeed.images;
     var count = images.length;
@@ -149,7 +149,7 @@ class PostCard extends StatelessWidget {
       itemBuilder: (ctx, index) {
         return NetworkPhotoThumbnail(
           galleryItem: images[index],
-          onTap: () => openGallery(context, index, images),
+          onTap: () => openGallery(context!, index, images),
         );
       },
       staggeredTileBuilder: (index) {
@@ -175,7 +175,7 @@ class PostCard extends StatelessWidget {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16.0.r),
           ),
-          child: users.isLoading
+          child: users.isLoading!
               ? Container(
                   height: 100.0.h,
                   child: Center(

@@ -12,7 +12,7 @@ import 'post_details.dart';
 
 class Timeline extends StatelessWidget {
   final List<ActivityFeed> activities;
-  final ScrollController scrollController;
+  final ScrollController? scrollController;
 
   Timeline(this.activities, this.scrollController);
 

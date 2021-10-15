@@ -11,12 +11,12 @@ class GalleryFilePhotoView extends StatefulWidget {
     this.minScale,
     this.maxScale,
     this.initialIndex = 0,
-    @required this.galleryItems,
+    required this.galleryItems,
     this.scrollDirection = Axis.horizontal,
   }) : pageController = PageController(initialPage: initialIndex);
 
-  final LoadingBuilder loadingBuilder;
-  final BoxDecoration backgroundDecoration;
+  final LoadingBuilder? loadingBuilder;
+  final BoxDecoration? backgroundDecoration;
   final dynamic minScale;
   final dynamic maxScale;
   final int initialIndex;
@@ -29,7 +29,7 @@ class GalleryFilePhotoView extends StatefulWidget {
 }
 
 class _GalleryFilePhotoView extends State<GalleryFilePhotoView> {
-  int currentIndex;
+  late int currentIndex;
 
   @override
   void initState() {

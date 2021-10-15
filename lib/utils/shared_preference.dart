@@ -1,15 +1,13 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
-import 'package:lokalapp/widgets/onboarding.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class UserSharedPreferences {
-  SharedPreferences _preference;
+  SharedPreferences? _preference;
   final _streamController = StreamController<UserSharedPreferences>.broadcast();
   Stream<UserSharedPreferences> get stream => _streamController.stream;
   void dispose() {
-    _streamController?.close();
+    _streamController.close();
   }
 
   bool get isReady => _preference != null;
@@ -27,7 +25,7 @@ class UserSharedPreferences {
 
   Future updateIsHome(bool value) async {
     if (!isReady) await init();
-    _preference.setBool(_isHomeKey, value);
+    _preference!.setBool(_isHomeKey, value);
     _streamController.add(this);
   }
 
@@ -37,7 +35,7 @@ class UserSharedPreferences {
 
   Future updateIsDiscover(bool value) async {
     if (!isReady) await init();
-    _preference.setBool(_isDiscoverKey, value);
+    _preference!.setBool(_isDiscoverKey, value);
     _streamController.add(this);
   }
 
@@ -47,7 +45,7 @@ class UserSharedPreferences {
 
   Future updateIsChat(bool value) async {
     if (!isReady) await init();
-    _preference.setBool(_isChatKey, value);
+    _preference!.setBool(_isChatKey, value);
     _streamController.add(this);
   }
 
@@ -57,7 +55,7 @@ class UserSharedPreferences {
 
   Future updateIsActivity(bool value) async {
     if (!isReady) await init();
-    _preference.setBool(_isActivityKey, value);
+    _preference!.setBool(_isActivityKey, value);
     _streamController.add(this);
   }
 
@@ -67,7 +65,7 @@ class UserSharedPreferences {
 
   Future updateIsProfile(bool value) async {
     if (!isReady) await init();
-    _preference.setBool(_isProfileKey, value);
+    _preference!.setBool(_isProfileKey, value);
     _streamController.add(this);
   }
 }

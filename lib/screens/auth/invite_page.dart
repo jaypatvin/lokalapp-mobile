@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:keyboard_actions/keyboard_actions.dart';
 import 'package:provider/provider.dart';
-import 'package:screen_loader/screen_loader.dart';
+import '../../widgets/screen_loader.dart';
 
 import '../../providers/invite.dart';
 import '../../providers/post_requests/auth_body.dart';
@@ -38,7 +38,7 @@ class _InvitePageState extends State<InvitePage> with ScreenLoader {
                 onPressed: () => node.unfocus(),
                 child: Text(
                   "Done",
-                  style: Theme.of(context).textTheme.bodyText1.copyWith(
+                  style: Theme.of(context).textTheme.bodyText1!.copyWith(
                         color: Colors.black,
                       ),
                 ),
@@ -54,7 +54,7 @@ class _InvitePageState extends State<InvitePage> with ScreenLoader {
     final invite = context.read<Invite>();
     final user = context.read<CurrentUser>();
 
-    String communityId = await invite.check(code, user.idToken);
+    String communityId = await invite.check(code, user.idToken) ?? "";
     if (communityId.isNotEmpty) {
       final fireUser = FirebaseAuth.instance.currentUser;
       context.read<AuthBody>().update(communityId: communityId);
@@ -111,7 +111,7 @@ class _InvitePageState extends State<InvitePage> with ScreenLoader {
                   kInviteCodeDescription,
                   style: Theme.of(context)
                       .textTheme
-                      .bodyText1
+                      .bodyText1!
                       .copyWith(fontSize: 14.0.sp),
                   textAlign: TextAlign.center,
                 ),

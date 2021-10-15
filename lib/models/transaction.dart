@@ -1,22 +1,20 @@
 import 'dart:convert';
 
-import 'package:flutter/foundation.dart';
-
 // this is a mock model of the transactions for build purposes
 class Transaction {
-  String productName;
-  int quantity;
-  double price;
+  String? productName;
+  int? quantity;
+  double? price;
   Transaction({
-    @required this.quantity,
-    @required this.productName,
-    @required this.price,
+    required this.quantity,
+    required this.productName,
+    required this.price,
   });
 
   Transaction copyWith({
-    String productName,
-    int quantity,
-    double price,
+    String? productName,
+    int? quantity,
+    double? price,
   }) {
     return Transaction(
       productName: productName ?? this.productName,

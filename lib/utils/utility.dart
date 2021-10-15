@@ -4,25 +4,25 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 class MediaUtility {
-  static MediaUtility _utility;
+  static MediaUtility? _utility;
   final _picker = ImagePicker();
 
-  static MediaUtility get instance {
+  static MediaUtility? get instance {
     if (_utility == null) {
       _utility = MediaUtility();
     }
     return _utility;
   }
 
-  Future<File> _pickFile(ImageSource source) async {
-    final pickedImage = await _picker.getImage(source: source);
+  Future<File?> _pickFile(ImageSource source) async {
+    final pickedImage = await _picker.pickImage(source: source);
     if (pickedImage != null) {
       return File(pickedImage.path);
     }
     return null;
   }
 
-  Future<File> showMediaDialog(BuildContext parentContext) async {
+  Future<File?> showMediaDialog(BuildContext parentContext) async {
     return await showDialog<File>(
       context: parentContext,
       builder: (context) {

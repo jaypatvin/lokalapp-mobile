@@ -5,16 +5,16 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'operating_hours.dart';
 
 class ShopModel {
-  String id;
-  String name;
-  String userId;
-  String communityId;
-  String description;
-  String profilePhoto;
-  String coverPhoto;
-  bool isClosed;
-  String status;
-  OperatingHours operatingHours;
+  String? id;
+  String? name;
+  String? userId;
+  String? communityId;
+  String? description;
+  String? profilePhoto;
+  String? coverPhoto;
+  bool? isClosed;
+  String? status;
+  OperatingHours? operatingHours;
   ShopModel({
     this.id,
     this.name,
@@ -44,8 +44,6 @@ class ShopModel {
   }
 
   factory ShopModel.fromMap(Map<String, dynamic> map) {
-    if (map == null) return null;
-
     return ShopModel(
       id: map['id'],
       name: map['name'],
@@ -62,17 +60,18 @@ class ShopModel {
     );
   }
   factory ShopModel.fromDocument(DocumentSnapshot doc) {
+    final map = doc.data() as Map<String, dynamic>;
     return ShopModel(
-        id: doc.data()['id'],
-        name: doc.data()['name'],
-        userId: doc.data()['user_id'],
-        communityId: doc.data()['community_id'],
-        description: doc.data()['description'],
-        profilePhoto: doc.data()['profile_photo'],
-        coverPhoto: doc.data()['cover_photo'],
-        isClosed: doc.data()['is_closed'],
-        status: doc.data()['status'],
-        operatingHours: doc.data()['operating_hours']);
+        id: map['id'],
+        name: map['name'],
+        userId: map['user_id'],
+        communityId: map['community_id'],
+        description: map['description'],
+        profilePhoto: map['profile_photo'],
+        coverPhoto: map['cover_photo'],
+        isClosed: map['is_closed'],
+        status: map['status'],
+        operatingHours: map['operating_hours']);
   }
   String toJson() => json.encode(toMap());
 

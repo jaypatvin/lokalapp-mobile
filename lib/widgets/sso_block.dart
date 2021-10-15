@@ -5,12 +5,12 @@ import '../utils/constants.dart';
 import 'sso_button.dart';
 
 class SocialBlock extends StatelessWidget {
-  final String label;
-  final double buttonWidth;
+  final String? label;
+  final double? buttonWidth;
 
-  final Function fbLogin;
-  final Function appleLogin;
-  final Function googleLogin;
+  final Function? fbLogin;
+  final Function? appleLogin;
+  final Function? googleLogin;
 
   const SocialBlock(
       {this.label,
@@ -22,7 +22,7 @@ class SocialBlock extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: buttonWidth * 0.5),
+      padding: EdgeInsets.symmetric(horizontal: buttonWidth! * 0.5),
       child: Column(
         children: [
           Text(

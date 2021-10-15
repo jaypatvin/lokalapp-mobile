@@ -6,20 +6,20 @@ import '../../../providers/cart.dart';
 import '../../../utils/themes.dart';
 
 class ProductCard extends StatelessWidget {
-  final String productId;
-  final String imageUrl;
-  final String name;
-  final double price;
-  final String shopImageUrl;
-  final String shopName;
+  final String? productId;
+  final String? imageUrl;
+  final String? name;
+  final double? price;
+  final String? shopImageUrl;
+  final String? shopName;
 
   const ProductCard({
-    @required this.productId,
-    @required this.imageUrl,
-    @required this.name,
-    @required this.price,
-    @required this.shopImageUrl,
-    @required this.shopName,
+    required this.productId,
+    required this.imageUrl,
+    required this.name,
+    required this.price,
+    required this.shopImageUrl,
+    required this.shopName,
   });
 
   @override
@@ -34,7 +34,7 @@ class ProductCard extends StatelessWidget {
           ),
           child: GridTile(
             child: Image.network(
-              imageUrl,
+              imageUrl!,
               fit: BoxFit.cover,
               errorBuilder: (ctx, _, __) => SizedBox(
                 child: Text("No Image"),
@@ -51,7 +51,7 @@ class ProductCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    name,
+                    name!,
                     softWrap: true,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -78,15 +78,15 @@ class ProductCard extends StatelessWidget {
                         child: CircleAvatar(
                           radius: 9.0.r,
                           backgroundImage:
-                              shopImageUrl != null && shopImageUrl.isNotEmpty
-                                  ? NetworkImage(shopImageUrl)
+                              shopImageUrl != null && shopImageUrl!.isNotEmpty
+                                  ? NetworkImage(shopImageUrl!)
                                   : null,
                         ),
                       ),
                       SizedBox(width: 5.0.w),
                       Expanded(
                         child: Text(
-                          shopName,
+                          shopName!,
                           overflow: TextOverflow.ellipsis,
                           textAlign: TextAlign.start,
                           style: TextStyle(

@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'package:lokalapp/utils/themes.dart';
+import '../../../../utils/themes.dart';
 
 class NotificationSetting extends StatefulWidget {
   @override

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:lokalapp/screens/profile_screens/components/invite_sent.dart';
-import 'package:lokalapp/utils/themes.dart';
+import 'invite_sent.dart';
+import '../../../utils/themes.dart';
 
 class InviteAFriend extends StatelessWidget {
-  TextEditingController _emailController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(

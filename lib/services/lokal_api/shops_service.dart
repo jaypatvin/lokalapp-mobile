@@ -1,13 +1,12 @@
 import 'dart:convert';
 
-import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
 import 'lokal_api_constants.dart';
 
 class ShopsService {
-  static ShopsService _instance;
-  static ShopsService get instance {
+  static ShopsService? _instance;
+  static ShopsService? get instance {
     if (_instance == null) {
       _instance = ShopsService();
     }
@@ -16,24 +15,26 @@ class ShopsService {
 
   // --POST
   Future<http.Response> create(
-      {@required Map data, @required String idToken}) async {
+      {required Map data, required String? idToken}) async {
     var body = json.encode(data);
-    var response = await http.post("$shopsUrl",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": "Bearer $idToken"
-        },
-        body: body);
+    var response = await http.post(
+      Uri.parse(shopsUrl),
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer $idToken"
+      },
+      body: body,
+    );
 
     return response;
   }
 
   // --PUT
   Future<http.Response> update(
-      {@required Map data, @required String idToken, String id}) async {
+      {required Map data, required String? idToken, String? id}) async {
     var body = json.encode(data);
     http.Response response = await http.put(
-      "$shopsUrl/$id",
+      Uri.parse("$shopsUrl/$id"),
       headers: {
         "Content-Type": "application/json",
         "Authorization": "Bearer $idToken"
@@ -45,13 +46,13 @@ class ShopsService {
   }
 
   Future<http.Response> setOperatingHours({
-    @required Map data,
-    @required String idToken,
-    @required String id,
+    required Map data,
+    required String? idToken,
+    required String? id,
   }) async {
     var body = json.encode(data);
     http.Response response = await http.put(
-      "$shopsUrl/$id/operatingHours",
+      Uri.parse("$shopsUrl/$id/operatingHours"),
       headers: {
         "Content-Type": "application/json",
         "Authorization": "Bearer $idToken"
@@ -65,26 +66,34 @@ class ShopsService {
   // --GET
 
   Future<http.Response> getById(
-      {@required String shopId, @required String idToken}) async {
-    return await http.get("$shopsUrl/$shopId",
-        headers: {"Authorization": "Bearer $idToken"});
+      {required String shopId, required String idToken}) async {
+    return await http.get(
+      Uri.parse("$shopsUrl/$shopId"),
+      headers: {"Authorization": "Bearer $idToken"},
+    );
   }
 
   Future<http.Response> getShopsByCommunity(
-      {@required String communityId, @required String idToken}) async {
-    return await http.get("$communityUrl/$communityId/shops",
-        headers: {"Authorization": "Bearer $idToken"});
+      {required String? communityId, required String? idToken}) async {
+    return await http.get(
+      Uri.parse("$communityUrl/$communityId/shops"),
+      headers: {"Authorization": "Bearer $idToken"},
+    );
   }
 
   Future<http.Response> getByUserId(
-      {@required String userId, @required String idToken}) async {
-    return await http.get("$usersUrl/$userId/shops",
-        headers: {"Authorization": "Bearer $idToken"});
+      {required String userId, required String idToken}) async {
+    return await http.get(
+      Uri.parse("$usersUrl/$userId/shops"),
+      headers: {"Authorization": "Bearer $idToken"},
+    );
   }
 
   Future<http.Response> getOperatingHours(
-      {@required String shopId, @required String idToken}) async {
-    return await http.get("$shopsUrl/$shopId/operatingHours",
-        headers: {"Authorization": "Bearer $idToken"});
+      {required String shopId, required String idToken}) async {
+    return await http.get(
+      Uri.parse("$shopsUrl/$shopId/operatingHours"),
+      headers: {"Authorization": "Bearer $idToken"},
+    );
   }
 }

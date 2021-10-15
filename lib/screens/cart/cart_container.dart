@@ -10,8 +10,8 @@ class CartContainer extends StatelessWidget {
   /// The underlying screen/widget behind the cart button
   final Widget child;
   const CartContainer({
-    Key key,
-    @required this.child,
+    Key? key,
+    required this.child,
   }) : super(key: key);
 
   @override

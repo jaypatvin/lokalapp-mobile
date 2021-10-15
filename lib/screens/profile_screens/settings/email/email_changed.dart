@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:lokalapp/utils/themes.dart';
 
+import '../../../../utils/themes.dart';
 import '../../../bottom_navigation.dart';
-import '../settings.dart';
 
 class EmailChanged extends StatelessWidget {
   buildButton(context) => Container(

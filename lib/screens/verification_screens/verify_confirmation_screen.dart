@@ -11,7 +11,7 @@ import '../bottom_navigation.dart';
 
 class VerifyConfirmationScreen extends StatelessWidget {
   final bool skippable;
-  const VerifyConfirmationScreen({Key key, this.skippable = true})
+  const VerifyConfirmationScreen({Key? key, this.skippable = true})
       : super(key: key);
 
   Future<bool> _onWillPop(BuildContext context) async {

@@ -16,12 +16,12 @@ import '../chat_view.dart';
 import 'chat_avatar.dart';
 
 class ChatStream extends StatelessWidget {
-  final Stream<QuerySnapshot> chatStream;
+  final Stream<QuerySnapshot>? chatStream;
   final TextEditingController searchController;
   const ChatStream({
-    Key key,
-    @required this.chatStream,
-    @required this.searchController,
+    Key? key,
+    required this.chatStream,
+    required this.searchController,
   }) : super(key: key);
 
   @override
@@ -41,7 +41,7 @@ class ChatStream extends StatelessWidget {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return Center(child: Lottie.asset(kAnimationLoading));
               }
-              if (!snapshot.hasData || snapshot.data.docs.length == 0) {
+              if (!snapshot.hasData || snapshot.data!.docs.length == 0) {
                 return Text(
                   "It's lonely here. No Chats yet!",
                   style: TextStyle(
@@ -59,9 +59,9 @@ class ChatStream extends StatelessWidget {
 }
 
 class _ChatList extends StatelessWidget {
-  final AsyncSnapshot<QuerySnapshot> chatSnapshot;
+  final AsyncSnapshot<QuerySnapshot>? chatSnapshot;
   const _ChatList({
-    Key key,
+    Key? key,
     this.chatSnapshot,
   }) : super(key: key);
 
@@ -105,20 +105,22 @@ class _ChatList extends StatelessWidget {
       physics: NeverScrollableScrollPhysics(),
       padding: EdgeInsets.all(5.0.r),
       shrinkWrap: true,
-      itemCount: chatSnapshot.data.docs.length,
+      itemCount: chatSnapshot!.data!.docs.length,
       itemBuilder: (ctx, index) {
         final cUserId = context.read<CurrentUser>().id;
+        final snapshotData =
+            chatSnapshot!.data!.docs[index].data() as Map<String, dynamic>;
         final document = {
-          ...chatSnapshot.data.docs[index].data(),
-          "id": chatSnapshot.data.docs[index].id,
+          ...snapshotData,
+          "id": chatSnapshot!.data!.docs[index].id,
         };
         final chat = ChatModel.fromMap(document);
         final members = <ChatMember>[];
 
-        String title = chat.title;
+        String? title = chat.title;
 
         if (chat.chatType == ChatType.shop) {
-          final shop = context.read<Shops>().findById(chat.shopId);
+          final shop = context.read<Shops>().findById(chat.shopId)!;
           members.add(ChatMember(
             displayName: shop.name,
             displayPhoto: shop.profilePhoto,
@@ -128,8 +130,8 @@ class _ChatList extends StatelessWidget {
           final product = context.read<Products>().findById(chat.productId);
           members.add(
             ChatMember(
-              displayName: product.name,
-              displayPhoto: product.gallery[0].url,
+              displayName: product!.name,
+              displayPhoto: product.gallery![0].url,
               type: chat.chatType,
             ),
           );

@@ -7,13 +7,13 @@ import '../models/product.dart';
 import '../services/lokal_api_service.dart';
 
 class Products extends ChangeNotifier {
-  String _communityId;
-  String _idToken;
+  String? _communityId;
+  String? _idToken;
 
   List<Product> _products = [];
-  bool _isLoading;
+  bool? _isLoading;
 
-  bool get isLoading => _isLoading;
+  bool? get isLoading => _isLoading;
   // List<Product> get items {
   //   return [..._products];
   // }
@@ -21,22 +21,28 @@ class Products extends ChangeNotifier {
 
   UnmodifiableListView<Product> get items {
     return UnmodifiableListView(
-      _products.where((product) => !product.archived),
+      _products.where((product) => !product.archived!),
     );
   }
 
-  String get communityId => _communityId;
+  String? get communityId => _communityId;
 
-  void setCommunityId(String id) {
+  void setCommunityId(String? id) {
     _communityId = id;
   }
 
-  void setIdToken(String id) {
+  void setIdToken(String? id) {
     _idToken = id;
   }
 
-  Product findById(String id) {
-    return items.firstWhere((product) => product.id == id);
+  Product? findById(String? id) {
+    try {
+      return items.firstWhere(
+        (product) => product.id == id,
+      );
+    } catch (e) {
+      return null;
+    }
   }
 
   List<Product> findByUser(String userId) {
@@ -49,7 +55,7 @@ class Products extends ChangeNotifier {
 
   Future<void> fetch() async {
     _isLoading = true;
-    var response = await LokalApiService.instance.product
+    var response = await LokalApiService.instance!.product!
         .getCommunityProducts(communityId: communityId, idToken: _idToken);
 
     if (response.statusCode != 200) {
@@ -73,9 +79,9 @@ class Products extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<String> create(Map data) async {
+  Future<String?> create(Map data) async {
     try {
-      var response = await LokalApiService.instance.product
+      var response = await LokalApiService.instance!.product!
           .create(data: data, idToken: _idToken);
 
       if (response.statusCode != 200) return null;
@@ -96,11 +102,11 @@ class Products extends ChangeNotifier {
   }
 
   Future<bool> update({
-    @required String id,
-    @required Map data,
+    required String? id,
+    required Map data,
   }) async {
     try {
-      var response = await LokalApiService.instance.product
+      var response = await LokalApiService.instance!.product!
           .update(productId: id, data: data, idToken: _idToken);
 
       if (response.statusCode != 200) return false;
@@ -118,11 +124,11 @@ class Products extends ChangeNotifier {
   }
 
   Future<bool> setAvailability({
-    @required String id,
-    @required Map data,
+    required String? id,
+    required Map data,
   }) async {
     try {
-      final response = await LokalApiService.instance.product.setAvailability(
+      final response = await LokalApiService.instance!.product!.setAvailability(
         productId: id,
         data: data,
         idToken: _idToken,
@@ -143,11 +149,11 @@ class Products extends ChangeNotifier {
     }
   }
 
-  Future<void> deleteProduct({@required String id}) async {
-    final response = await LokalApiService.instance.product
+  Future<void> deleteProduct({required String? id}) async {
+    final response = await LokalApiService.instance!.product!
         .deleteProduct(id: id, idToken: _idToken);
 
-    if (response.statusCode != 200) throw (response.reasonPhrase);
+    if (response.statusCode != 200) throw response.reasonPhrase!;
 
     Map body = json.decode(response.body);
 
@@ -159,13 +165,13 @@ class Products extends ChangeNotifier {
     }
   }
 
-  Future<void> fetchProductById({@required String id}) async {
+  Future<void> fetchProductById({required String? id}) async {
     try {
-      final response = await LokalApiService.instance.product.getById(
+      final response = await LokalApiService.instance!.product!.getById(
         productId: id,
         idToken: _idToken,
       );
-      if (response.statusCode != 200) throw (response.reasonPhrase);
+      if (response.statusCode != 200) throw response.reasonPhrase!;
 
       Map body = json.decode(response.body);
 

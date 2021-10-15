@@ -15,7 +15,7 @@ import 'components/chat_stream.dart';
 
 class Chat extends StatefulWidget {
   static const routeName = "/chat";
-  const Chat({Key key}) : super(key: key);
+  const Chat({Key? key}) : super(key: key);
 
   @override
   _ChatState createState() => _ChatState();
@@ -23,17 +23,17 @@ class Chat extends StatefulWidget {
 
 class _ChatState extends State<Chat>
     with TickerProviderStateMixin, AfterLayoutMixin<Chat> {
-  TabController _tabController;
+  TabController? _tabController;
 
-  AnimationController _animationController;
-  Animation<Color> _colorAnimation;
+  late AnimationController _animationController;
+  late Animation<Color?> _colorAnimation;
 
   final _userSearchController = TextEditingController();
   final _shopSearchController = TextEditingController();
   final _userSharedPreferences = UserSharedPreferences();
 
-  Stream<QuerySnapshot> _userChatStream;
-  Stream<QuerySnapshot> _shopChatStream;
+  Stream<QuerySnapshot>? _userChatStream;
+  Stream<QuerySnapshot>? _shopChatStream;
 
   @override
   void initState() {
@@ -44,7 +44,7 @@ class _ChatState extends State<Chat>
       duration: const Duration(milliseconds: 250),
     );
 
-    _tabController.addListener(_tabSelectionHandler);
+    _tabController!.addListener(_tabSelectionHandler);
     _colorAnimation = ColorTween(
       begin: kTealColor,
       end: kPurpleColor,
@@ -89,7 +89,7 @@ class _ChatState extends State<Chat>
 
   @override
   dispose() {
-    _userSharedPreferences?.dispose();
+    _userSharedPreferences.dispose();
     super.dispose();
   }
 
@@ -100,8 +100,13 @@ class _ChatState extends State<Chat>
 
     if (shops.isEmpty) {
       return Scaffold(
-        appBar: _ChatAppBar(
-          backgroundColor: kTealColor,
+        appBar: PreferredSize(
+          child: _ChatAppBar(
+            backgroundColor: kTealColor,
+          ),
+          preferredSize: Size.fromHeight(
+            50.0,
+          ),
         ),
         body: ChatStream(
           chatStream: _userChatStream,
@@ -139,10 +144,10 @@ class _ChatState extends State<Chat>
 }
 
 // needed for the custom height of the appbar
-class _ChatAppBar extends PreferredSize {
+class _ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
   final double height;
-  final Color backgroundColor;
-  final PreferredSizeWidget bottom;
+  final Color? backgroundColor;
+  final PreferredSizeWidget? bottom;
   const _ChatAppBar({
     this.height = 50.0,
     this.backgroundColor,
@@ -172,18 +177,18 @@ class _ChatAppBar extends PreferredSize {
 }
 
 // This is the tab controller for the user  & shop chats
-class _ChatAppBarBottom extends PreferredSize {
+class _ChatAppBarBottom extends StatelessWidget implements PreferredSizeWidget {
   final double height;
-  final TabController tabController;
-  const _ChatAppBarBottom({this.height = 50, this.tabController});
+  final TabController? tabController;
+  const _ChatAppBarBottom({this.height = 50.0, this.tabController});
 
   @override
   Size get preferredSize => Size.fromHeight(height);
 
   Widget _tabChild({
-    @required String imgUrl,
-    @required String name,
-    @required int index,
+    required String? imgUrl,
+    required String name,
+    required int index,
   }) {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 8.0.w),
@@ -234,12 +239,12 @@ class _ChatAppBarBottom extends PreferredSize {
           tabs: [
             _tabChild(
               imgUrl: user.profilePhoto,
-              name: user.displayName,
+              name: user.displayName!,
               index: 0,
             ),
             _tabChild(
               imgUrl: shop.profilePhoto,
-              name: shop.name,
+              name: shop.name!,
               index: 1,
             )
           ],

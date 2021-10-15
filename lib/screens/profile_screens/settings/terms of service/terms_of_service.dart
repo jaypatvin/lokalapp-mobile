@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lokalapp/screens/profile_screens/settings/components/appbar.dart';
+import '../components/appbar.dart';
 
 class TermsOfService extends StatelessWidget {
   @override

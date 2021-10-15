@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 
 import '../utils/themes.dart';
 
-class CustomAppBar extends PreferredSize {
+class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final double height;
 
-  final String titleText;
-  final Widget title;
-  final Widget leading;
+  final String? titleText;
+  final Widget? title;
+  final Widget? leading;
   final bool buildLeading;
   final bool centerTitle;
   final Color backgroundColor;
@@ -15,10 +15,10 @@ class CustomAppBar extends PreferredSize {
   final double elevation;
   final EdgeInsetsGeometry leadingPadding;
   final EdgeInsetsGeometry titlePadding;
-  final PreferredSizeWidget bottom;
-  final TextStyle titleStyle;
-  final void Function() onPressedLeading;
-  final List<Widget> actions;
+  final PreferredSizeWidget? bottom;
+  final TextStyle? titleStyle;
+  final void Function()? onPressedLeading;
+  final List<Widget>? actions;
   final double leadingWidth;
 
   const CustomAppBar({
@@ -68,12 +68,12 @@ class CustomAppBar extends PreferredSize {
 class _Leading extends StatelessWidget {
   final EdgeInsetsGeometry leadingPadding;
   final Color leadingColor;
-  final void Function() onPressedLeading;
+  final void Function()? onPressedLeading;
   const _Leading(
     this.leadingPadding,
     this.leadingColor,
     this.onPressedLeading, {
-    Key key,
+    Key? key,
   }) : super(key: key);
 
   @override
@@ -92,18 +92,18 @@ class _Leading extends StatelessWidget {
 }
 
 class _Title extends StatelessWidget {
-  final String titleText;
-  final TextStyle titleStyle;
+  final String? titleText;
+  final TextStyle? titleStyle;
   const _Title(
     this.titleText,
     this.titleStyle, {
-    Key key,
+    Key? key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Text(
-      titleText,
+      titleText!,
       style: TextStyle(
         color: Color(0xFFFFC700),
         fontFamily: "Goldplay",

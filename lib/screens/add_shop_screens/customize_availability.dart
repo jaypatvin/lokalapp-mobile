@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart' show DateFormat;
 import 'package:provider/provider.dart';
-import 'package:screen_loader/screen_loader.dart';
+import '../../widgets/screen_loader.dart';
 
 import '../../models/operating_hours.dart';
 import '../../providers/post_requests/operating_hours_body.dart';
@@ -23,20 +23,20 @@ import 'shop_confirmation.dart';
 
 class CustomizeAvailability extends StatefulWidget {
   final RepeatChoices repeatChoice;
-  final int repeatEvery;
+  final int? repeatEvery;
   final List selectableDays;
   final DateTime startDate;
-  final File shopPhoto;
+  final File? shopPhoto;
   final bool usedDatePicker;
   final bool forEditing;
-  final Function onShopEdit;
+  final Function? onShopEdit;
 
   const CustomizeAvailability({
-    @required this.repeatChoice,
-    @required this.selectableDays,
-    @required this.startDate,
-    @required this.repeatEvery,
-    @required this.usedDatePicker,
+    required this.repeatChoice,
+    required this.selectableDays,
+    required this.startDate,
+    required this.repeatEvery,
+    required this.usedDatePicker,
     this.shopPhoto,
     this.forEditing = false,
     this.onShopEdit,
@@ -47,8 +47,8 @@ class CustomizeAvailability extends StatefulWidget {
 
 class _CustomizeAvailabilityState extends State<CustomizeAvailability>
     with ScreenLoader {
-  List<DateTime> initialDates;
-  List<DateTime> markedDates;
+  List<DateTime?>? initialDates;
+  List<DateTime?>? markedDates;
   bool _shopCreated = false;
   bool _customized = false;
 
@@ -62,25 +62,25 @@ class _CustomizeAvailabilityState extends State<CustomizeAvailability>
         repeatChoice: widget.repeatChoice,
         startDate: widget.startDate,
         repeatEveryNUnit: widget.repeatEvery,
-        selectableDays: widget.selectableDays,
+        selectableDays: widget.selectableDays as List<int>?,
         repeatType:
             context.read<OperatingHoursBody>().operatingHours.repeatType,
       );
-      markedDates = [...initialDates];
+      markedDates = [...initialDates!];
       return;
     }
 
-    OperatingHours _operatingHours;
+    OperatingHours? _operatingHours;
     var user = Provider.of<CurrentUser>(context, listen: false);
     var shops = Provider.of<Shops>(context, listen: false).findByUser(user.id);
     if (shops.isNotEmpty) _operatingHours = shops.first.operatingHours;
 
-    initialDates = _generator.getSelectableDates(_operatingHours);
-    markedDates = [...initialDates];
+    initialDates = _generator.getSelectableDates(_operatingHours!);
+    markedDates = [...initialDates!];
   }
 
-  Future<List<DateTime>> _showCalendarPicker() async {
-    List<DateTime> selectedDates = [...markedDates];
+  Future<List<DateTime>?> _showCalendarPicker() async {
+    List<DateTime?> selectedDates = [...markedDates!];
     return await showDialog<List<DateTime>>(
       context: context,
       barrierDismissible: false,
@@ -114,23 +114,23 @@ class _CustomizeAvailabilityState extends State<CustomizeAvailability>
   }
 
   void setUpShotSchedule() {
-    markedDates.sort();
-    initialDates.sort();
+    markedDates!.sort();
+    initialDates!.sort();
     var operatingHours =
         Provider.of<OperatingHoursBody>(context, listen: false);
 
     var customDates =
-        markedDates.where((date) => !initialDates.contains(date)).toList();
+        markedDates!.where((date) => !initialDates!.contains(date)).toList();
     var unavailableDates =
-        initialDates.where((date) => !markedDates.contains(date)).toList();
+        initialDates!.where((date) => !markedDates!.contains(date)).toList();
 
     operatingHours.update(
       customDates: customDates
           .map((date) =>
-              CustomDates(date: DateFormat("yyyy-MM-dd").format(date)))
+              CustomDates(date: DateFormat("yyyy-MM-dd").format(date!)))
           .toList(),
       unavailableDates: unavailableDates
-          .map((date) => DateFormat("yyyy-MM-dd").format(date))
+          .map((date) => DateFormat("yyyy-MM-dd").format(date!))
           .toList(),
     );
   }
@@ -209,7 +209,7 @@ class _CustomizeAvailabilityState extends State<CustomizeAvailability>
     setUpShotSchedule();
 
     if (widget.forEditing) {
-      if (widget.onShopEdit != null) widget.onShopEdit();
+      if (widget.onShopEdit != null) widget.onShopEdit!();
       return;
     }
 
@@ -291,17 +291,17 @@ class _CalendarPicker extends StatelessWidget {
   final void Function(DateTime) onDayPressed;
   final void Function() onConfirm;
   final void Function() onCancel;
-  final List<DateTime> markedDates;
+  final List<DateTime?> markedDates;
   final DateTime startDate;
   final List<int> selectableDays;
   const _CalendarPicker({
-    Key key,
-    @required this.onDayPressed,
-    @required this.onCancel,
-    @required this.onConfirm,
-    @required this.markedDates,
-    @required this.startDate,
-    @required this.selectableDays,
+    Key? key,
+    required this.onDayPressed,
+    required this.onCancel,
+    required this.onConfirm,
+    required this.markedDates,
+    required this.startDate,
+    required this.selectableDays,
   }) : super(key: key);
 
   @override

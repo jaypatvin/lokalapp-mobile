@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:flutter/foundation.dart';
 import 'package:photo_manager/photo_manager.dart';
 
 import '../models/chat_model.dart';
@@ -10,9 +9,9 @@ import '../services/lokal_api/chat_service.dart';
 
 class ChatProvider {
   final _service = ChatService();
-  String _idToken;
+  String? _idToken;
 
-  void setIdToken(String id) {
+  void setIdToken(String? id) {
     _idToken = id;
   }
 
@@ -22,7 +21,7 @@ class ChatProvider {
       members: members,
     );
 
-    if (response.statusCode != 200) throw response.reasonPhrase;
+    if (response.statusCode != 200) throw response.reasonPhrase!;
 
     final Map<String, dynamic> body = json.decode(response.body);
 
@@ -32,10 +31,10 @@ class ChatProvider {
   }
 
   Future<Conversation> sendMessage({
-    @required String chatId,
-    @required String userId,
-    String replyId,
-    String message,
+    required String? chatId,
+    required String? userId,
+    String? replyId,
+    String? message,
     List<AssetEntity> assets = const [],
   }) async {
     final media = await _getMedia(assets);
@@ -52,7 +51,7 @@ class ChatProvider {
       idToken: _idToken,
     );
 
-    if (response.statusCode != 200) throw (response.reasonPhrase);
+    if (response.statusCode != 200) throw response.reasonPhrase!;
     final Map<String, dynamic> _body = jsonDecode(response.body);
     if (_body["status"] != "ok") throw (_body["data"]);
 
@@ -60,12 +59,12 @@ class ChatProvider {
   }
 
   Future<ChatModel> createNewChat({
-    @required String userId,
-    @required List<String> members,
-    String shopId,
-    String productId,
-    String replyId,
-    String message,
+    required String? userId,
+    required List<String?> members,
+    String? shopId,
+    String? productId,
+    String? replyId,
+    String? message,
     List<AssetEntity> assets = const [],
   }) async {
     final media = await _getMedia(assets);
@@ -80,7 +79,7 @@ class ChatProvider {
     };
 
     final response = await _service.create(data: data, idToken: _idToken);
-    if (response.statusCode != 200) throw response.reasonPhrase;
+    if (response.statusCode != 200) throw response.reasonPhrase!;
 
     final Map<String, dynamic> _body = jsonDecode(response.body);
     if (_body["status"] != "ok") throw (_body["data"]);
@@ -89,8 +88,8 @@ class ChatProvider {
   }
 
   Future<void> deleteMessage({
-    @required String chatId,
-    @required String messageId,
+    required String? chatId,
+    required String messageId,
   }) async {
     final response = await _service.deleteMessage(
       chatId: chatId,
@@ -112,8 +111,8 @@ class ChatProvider {
     for (int index = 0; index < assets.length; index++) {
       final asset = assets[index];
       final file = await asset.file;
-      final url = await _imageService.uploadImage(
-        file: file,
+      final url = await _imageService!.uploadImage(
+        file: file!,
         name: 'post_photo',
       );
       media.add({

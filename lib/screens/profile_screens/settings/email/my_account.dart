@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:lokalapp/screens/profile_screens/settings/email/change_email.dart';
-import 'package:lokalapp/screens/profile_screens/settings/password/change_password.dart';
-import 'package:lokalapp/utils/themes.dart';
+import 'change_email.dart';
+import '../password/change_password.dart';
+import '../../../../utils/themes.dart';
 
 class MyAccount extends StatelessWidget {
   @override

@@ -11,17 +11,17 @@ class GalleryNetworkPhotoView extends StatefulWidget {
     this.minScale,
     this.maxScale,
     this.initialIndex = 0,
-    @required this.galleryItems,
+    required this.galleryItems,
     this.scrollDirection = Axis.horizontal,
   }) : pageController = PageController(initialPage: initialIndex);
 
-  final LoadingBuilder loadingBuilder;
-  final BoxDecoration backgroundDecoration;
+  final LoadingBuilder? loadingBuilder;
+  final BoxDecoration? backgroundDecoration;
   final dynamic minScale;
   final dynamic maxScale;
   final int initialIndex;
   final PageController pageController;
-  final List<LokalImages> galleryItems;
+  final List<LokalImages>? galleryItems;
   final Axis scrollDirection;
 
   @override
@@ -30,7 +30,7 @@ class GalleryNetworkPhotoView extends StatefulWidget {
 }
 
 class _GalleryNetworkPhotoViewState extends State<GalleryNetworkPhotoView> {
-  int currentIndex;
+  late int currentIndex;
 
   @override
   void initState() {
@@ -58,7 +58,7 @@ class _GalleryNetworkPhotoViewState extends State<GalleryNetworkPhotoView> {
             PhotoViewGallery.builder(
               scrollPhysics: const BouncingScrollPhysics(),
               builder: _buildItem,
-              itemCount: widget.galleryItems.length,
+              itemCount: widget.galleryItems!.length,
               loadingBuilder: widget.loadingBuilder,
               backgroundDecoration: widget.backgroundDecoration,
               pageController: widget.pageController,
@@ -83,7 +83,7 @@ class _GalleryNetworkPhotoViewState extends State<GalleryNetworkPhotoView> {
   }
 
   PhotoViewGalleryPageOptions _buildItem(BuildContext context, int index) {
-    final LokalImages item = widget.galleryItems[index];
+    final LokalImages item = widget.galleryItems![index];
     return PhotoViewGalleryPageOptions(
       imageProvider: NetworkImage(item.url),
       initialScale: PhotoViewComputedScale.contained,

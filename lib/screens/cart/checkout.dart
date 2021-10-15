@@ -12,16 +12,16 @@ import 'checkout_schedule.dart';
 import 'components/order_details.dart';
 
 class Checkout extends StatelessWidget {
-  final String productId;
+  final String? productId;
   const Checkout({
-    Key key,
-    @required this.productId,
+    Key? key,
+    required this.productId,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final product = context.read<Products>().findById(productId);
-    final shop = context.read<Shops>().findById(product.shopId);
+    final shop = context.read<Shops>().findById(product!.shopId)!;
     return Scaffold(
       appBar: CustomAppBar(
         titleText: "Checkout",
@@ -34,7 +34,7 @@ class Checkout extends StatelessWidget {
         children: [
           SizedBox(height: 24.0),
           Text(
-            shop.name,
+            shop.name!,
             style: TextStyle(
               color: kNavyColor,
               fontFamily: "Goldplay",
@@ -46,11 +46,11 @@ class Checkout extends StatelessWidget {
             margin: EdgeInsets.all(16.0),
             child: Consumer<ShoppingCart>(
               builder: (_, cart, __) {
-                final order = cart.orders[shop.id][productId];
+                final order = cart.orders[shop.id]![productId]!;
                 return Card(
                   elevation: 0.0,
                   shape: RoundedRectangleBorder(
-                    side: BorderSide(color: Colors.grey[300]),
+                    side: BorderSide(color: Colors.grey[300]!),
                     borderRadius: BorderRadius.circular(16.0),
                   ),
                   child: Padding(
@@ -98,7 +98,7 @@ class Checkout extends StatelessWidget {
           ),
           Consumer<ShoppingCart>(
             builder: (_, cart, __) {
-              final order = cart.orders[shop.id][productId];
+              final order = cart.orders[shop.id]![productId]!;
               return Column(
                 children: [
                   RadioListTile<DeliveryOption>(

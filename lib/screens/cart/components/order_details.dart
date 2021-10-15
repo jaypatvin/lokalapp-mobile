@@ -8,10 +8,10 @@ class OrderDetails extends StatelessWidget {
   final int quantity;
   final void Function() onEditTap;
   const OrderDetails({
-    Key key,
-    @required this.product,
-    @required this.quantity,
-    @required this.onEditTap,
+    Key? key,
+    required this.product,
+    required this.quantity,
+    required this.onEditTap,
   }) : super(key: key);
 
   @override
@@ -23,17 +23,17 @@ class OrderDetails extends StatelessWidget {
         Expanded(
           child: Row(
             children: [
-              if (product.gallery != null && product.gallery.isNotEmpty)
+              if (product.gallery != null && product.gallery!.isNotEmpty)
                 SizedBox(
                   width: 60.0,
                   height: 60.0,
                   child: Image(
-                    image: NetworkImage(product.gallery.first.url),
+                    image: NetworkImage(product.gallery!.first.url),
                     fit: BoxFit.cover,
                     errorBuilder: (ctx, obj, stk) => SizedBox(),
                   ),
                 ),
-              if (product.gallery == null || product.gallery.isEmpty)
+              if (product.gallery == null || product.gallery!.isEmpty)
                 SizedBox(
                   width: 60.0,
                   height: 60.0,
@@ -61,7 +61,7 @@ class OrderDetails extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      product.name,
+                      product.name!,
                       overflow: TextOverflow.ellipsis,
                       maxLines: 1,
                       softWrap: false,

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
-import 'package:screen_loader/screen_loader.dart';
+import '../../widgets/screen_loader.dart';
 
 import '../../providers/cart.dart';
 import '../../providers/products.dart';
@@ -18,20 +18,21 @@ import 'cart_confirmation.dart';
 import 'components/order_details.dart';
 
 class CheckoutSchedule extends StatefulWidget {
-  final String productId;
-  const CheckoutSchedule({Key key, @required this.productId}) : super(key: key);
+  final String? productId;
+  const CheckoutSchedule({Key? key, required this.productId}) : super(key: key);
 
   @override
   _CheckoutScheduleState createState() => _CheckoutScheduleState();
 }
 
 class _CheckoutScheduleState extends State<CheckoutSchedule> with ScreenLoader {
-  Future<void> _placeOrderHandler(BuildContext context, String shopId) async {
+  Future<void> _placeOrderHandler(BuildContext context, String? shopId) async {
     final user = context.read<CurrentUser>();
-    final order = context.read<ShoppingCart>().orders[shopId][widget.productId];
+    final order =
+        context.read<ShoppingCart>().orders[shopId]![widget.productId]!;
 
     // TODO: separate payload body into another class
-    final response = await LokalApiService.instance.orders.create(
+    final response = await LokalApiService.instance!.orders!.create(
       idToken: user.idToken,
       data: {
         "products": [
@@ -43,7 +44,7 @@ class _CheckoutScheduleState extends State<CheckoutSchedule> with ScreenLoader {
         "buyer_id": user.id,
         "shop_id": shopId,
         "delivery_option": order.deliveryOption.value,
-        "delivery_date": order.schedule.toIso8601String(),
+        "delivery_date": order.schedule!.toIso8601String(),
         "instruction": order.notes,
       },
     );
@@ -63,7 +64,7 @@ class _CheckoutScheduleState extends State<CheckoutSchedule> with ScreenLoader {
   @override
   Widget screen(BuildContext context) {
     final product = context.read<Products>().findById(widget.productId);
-    final shop = context.read<Shops>().findById(product.shopId);
+    final shop = context.read<Shops>().findById(product!.shopId)!;
     return Scaffold(
       appBar: CustomAppBar(
         titleText: "Checkout",
@@ -78,7 +79,7 @@ class _CheckoutScheduleState extends State<CheckoutSchedule> with ScreenLoader {
           children: [
             SizedBox(height: 24.0),
             Text(
-              shop.name,
+              shop.name!,
               style: TextStyle(
                 color: kNavyColor,
                 fontFamily: "Goldplay",
@@ -90,11 +91,11 @@ class _CheckoutScheduleState extends State<CheckoutSchedule> with ScreenLoader {
               margin: EdgeInsets.all(16.0),
               child: Consumer<ShoppingCart>(
                 builder: (_, cart, __) {
-                  final order = cart.orders[shop.id][widget.productId];
+                  final order = cart.orders[shop.id]![widget.productId]!;
                   return Card(
                     elevation: 0.0,
                     shape: RoundedRectangleBorder(
-                      side: BorderSide(color: Colors.grey[300]),
+                      side: BorderSide(color: Colors.grey[300]!),
                       borderRadius: BorderRadius.circular(16.0),
                     ),
                     child: Padding(
@@ -148,7 +149,7 @@ class _CheckoutScheduleState extends State<CheckoutSchedule> with ScreenLoader {
                   Expanded(
                     child: Consumer<ShoppingCart>(
                       builder: (ctx, cart, child) {
-                        final order = cart.orders[shop.id][product.id];
+                        final order = cart.orders[shop.id]![product.id]!;
                         return AppButton(
                           "Place Order",
                           kTealColor,
@@ -174,24 +175,24 @@ class _CheckoutScheduleState extends State<CheckoutSchedule> with ScreenLoader {
 }
 
 class _DeliverySchedule extends StatelessWidget {
-  final String shopId;
-  final String productId;
+  final String? shopId;
+  final String? productId;
   const _DeliverySchedule({
-    Key key,
-    @required this.shopId,
-    @required this.productId,
+    Key? key,
+    required this.shopId,
+    required this.productId,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final shop = context.read<Shops>().findById(shopId);
-    final operatingHours = shop.operatingHours;
+    final shop = context.read<Shops>().findById(shopId)!;
+    final operatingHours = shop.operatingHours!;
     final selectableDates =
         ScheduleGenerator().getSelectableDates(operatingHours);
 
     // copied from product_schedule (hey, it's repeated code -.-)
     return Consumer<ShoppingCart>(builder: (_, cart, __) {
-      final delivery = cart.orders[shopId][productId].schedule;
+      final delivery = cart.orders[shopId]![productId]!.schedule;
       return CalendarCarousel(
         onDayPressed: (date) {
           final now = DateTime.now().subtract(Duration(days: 1));

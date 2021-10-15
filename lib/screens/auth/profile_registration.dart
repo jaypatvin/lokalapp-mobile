@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:keyboard_actions/keyboard_actions.dart';
 import 'package:provider/provider.dart';
-import 'package:screen_loader/screen_loader.dart';
+import '../../widgets/screen_loader.dart';
 
 import '../../providers/activities.dart';
 import '../../providers/invite.dart';
@@ -39,9 +39,8 @@ class _ProfileRegistrationState extends State<ProfileRegistration>
   final FocusNode _nodeLastName = FocusNode();
   final FocusNode _nodeStreet = FocusNode();
 
-  File profilePhoto;
+  File? profilePhoto;
   bool _hasEmptyField = false;
-  bool _isUploading = false;
 
   final _formKey = GlobalKey<FormState>();
 
@@ -59,7 +58,7 @@ class _ProfileRegistrationState extends State<ProfileRegistration>
                 onPressed: () => node.unfocus(),
                 child: Text(
                   "Done",
-                  style: Theme.of(context).textTheme.bodyText1.copyWith(
+                  style: Theme.of(context).textTheme.bodyText1!.copyWith(
                         color: Colors.black,
                       ),
                 ),
@@ -75,7 +74,7 @@ class _ProfileRegistrationState extends State<ProfileRegistration>
                 onPressed: () => node.unfocus(),
                 child: Text(
                   "Done",
-                  style: Theme.of(context).textTheme.bodyText1.copyWith(
+                  style: Theme.of(context).textTheme.bodyText1!.copyWith(
                         color: Colors.black,
                       ),
                 ),
@@ -91,7 +90,7 @@ class _ProfileRegistrationState extends State<ProfileRegistration>
                 onPressed: () => node.unfocus(),
                 child: Text(
                   "Done",
-                  style: Theme.of(context).textTheme.bodyText1.copyWith(
+                  style: Theme.of(context).textTheme.bodyText1!.copyWith(
                         color: Colors.black,
                       ),
                 ),
@@ -104,16 +103,12 @@ class _ProfileRegistrationState extends State<ProfileRegistration>
   }
 
   Future<bool> _registerUser() async {
-    setState(() {
-      _isUploading = true;
-    });
-
     LocalImageService _imageService =
         Provider.of<LocalImageService>(context, listen: false);
     String mediaUrl = "";
     if (profilePhoto != null) {
       mediaUrl = await _imageService.uploadImage(
-          file: profilePhoto, name: 'profile_photo');
+          file: profilePhoto!, name: 'profile_photo');
     }
 
     UserAuth auth = Provider.of<UserAuth>(context, listen: false);
@@ -125,8 +120,8 @@ class _ProfileRegistrationState extends State<ProfileRegistration>
       firstName: _firstNameController.text,
       lastName: _lastNameController.text,
       address: _streetController.text,
-      userUid: auth.user.uid,
-      email: auth.user.email,
+      userUid: auth.user!.uid,
+      email: auth.user!.email,
     );
 
     await user.register(authBody.data);
@@ -142,7 +137,7 @@ class _ProfileRegistrationState extends State<ProfileRegistration>
   }
 
   Future<void> _registerHandler() async {
-    if (!_formKey.currentState.validate()) return;
+    if (!_formKey.currentState!.validate()) return;
     if (_firstNameController.text.isEmpty ||
         _lastNameController.text.isEmpty ||
         _streetController.text.isEmpty) {
@@ -271,19 +266,19 @@ class _ProfileRegistrationState extends State<ProfileRegistration>
 }
 
 class _RegistrationForm extends StatelessWidget {
-  final Key formKey;
-  final TextEditingController firstNameController;
-  final TextEditingController lastNameController;
-  final TextEditingController streetAddressController;
-  final FocusNode firstNameNode;
-  final FocusNode lastNameNode;
-  final FocusNode streetAdddressNode;
-  final InputDecoration formFieldDecoration;
-  final void Function() onChanged;
-  final void Function() onFormSubmit;
+  final Key? formKey;
+  final TextEditingController? firstNameController;
+  final TextEditingController? lastNameController;
+  final TextEditingController? streetAddressController;
+  final FocusNode? firstNameNode;
+  final FocusNode? lastNameNode;
+  final FocusNode? streetAdddressNode;
+  final InputDecoration? formFieldDecoration;
+  final void Function()? onChanged;
+  final void Function()? onFormSubmit;
 
   _RegistrationForm({
-    Key key,
+    Key? key,
     this.formKey,
     this.firstNameController,
     this.lastNameController,
@@ -321,7 +316,7 @@ class _RegistrationForm extends StatelessWidget {
                 fontWeight: FontWeight.w500,
                 fontSize: 16.0.sp,
               ),
-              decoration: formFieldDecoration.copyWith(hintText: "First Name"),
+              decoration: formFieldDecoration!.copyWith(hintText: "First Name"),
             ),
           ),
           SizedBox(height: 15.0.h),
@@ -335,12 +330,12 @@ class _RegistrationForm extends StatelessWidget {
                 fontWeight: FontWeight.w500,
                 fontSize: 16.0.sp,
               ),
-              decoration: formFieldDecoration.copyWith(hintText: "Last Name"),
+              decoration: formFieldDecoration!.copyWith(hintText: "Last Name"),
             ),
           ),
           SizedBox(height: 15.0.h),
           CheckboxFormField(
-            validator: (checked) => checked
+            validator: (checked) => checked!
                 ? null
                 : "You must accept the Terms & Conditions and Privacy Policy",
             title: RichText(
@@ -384,7 +379,7 @@ class _RegistrationForm extends StatelessWidget {
                 fontSize: 16.0.sp,
               ),
               decoration:
-                  formFieldDecoration.copyWith(hintText: "Street Address"),
+                  formFieldDecoration!.copyWith(hintText: "Street Address"),
             ),
           ),
         ],

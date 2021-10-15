@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class SearchTextField extends StatelessWidget {
-  final TextEditingController controller;
+  final TextEditingController? controller;
   final String hintText;
   final bool enabled;
-  final void Function(String) onChanged;
-  final void Function() onTap;
+  final void Function(String)? onChanged;
+  final void Function()? onTap;
   const SearchTextField({
-    Key key,
+    Key? key,
     this.controller,
     this.hintText = "Search",
     this.enabled = false,

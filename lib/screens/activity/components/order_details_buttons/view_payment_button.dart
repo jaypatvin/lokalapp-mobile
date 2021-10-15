@@ -6,7 +6,7 @@ import 'order_actions.dart';
 
 class ViewPaymentButton extends StatelessWidget {
   final void Function(OrderAction) onPress;
-  const ViewPaymentButton({Key key, @required this.onPress}) : super(key: key);
+  const ViewPaymentButton({Key? key, required this.onPress}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

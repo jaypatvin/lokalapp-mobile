@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:screen_loader/screen_loader.dart';
+import '../../widgets/screen_loader.dart';
 
 import '../../providers/post_requests/operating_hours_body.dart';
 import '../../providers/post_requests/shop_body.dart';
@@ -23,7 +23,7 @@ import 'shop_schedule.dart';
 
 class EditShop extends StatefulWidget {
   static const routeName = "/profile/shop/edit";
-  final bool isEdit;
+  final bool? isEdit;
   EditShop({this.isEdit});
   @override
   _EditShopState createState() => _EditShopState();
@@ -32,8 +32,8 @@ class EditShop extends StatefulWidget {
 class _EditShopState extends State<EditShop> with ScreenLoader {
   final TextEditingController shopNameController = TextEditingController();
   final TextEditingController shopDescController = TextEditingController();
-  File shopPhoto;
-  File shopCoverPhoto;
+  File? shopPhoto;
+  File? shopCoverPhoto;
   bool toggleValue = false;
   bool animating = false;
   bool editedShopSchedule = false;
@@ -44,8 +44,8 @@ class _EditShopState extends State<EditShop> with ScreenLoader {
 
     final user = context.read<CurrentUser>();
     final shop = context.read<Shops>().findByUser(user.id).first;
-    shopNameController.text = shop.name;
-    shopDescController.text = shop.description;
+    shopNameController.text = shop.name!;
+    shopDescController.text = shop.description!;
 
     context.read<ShopBody>()
       ..clear()
@@ -81,7 +81,7 @@ class _EditShopState extends State<EditShop> with ScreenLoader {
     if (shopPhoto != null) {
       try {
         shopPhotoUrl = await imageService.uploadImage(
-          file: shopPhoto,
+          file: shopPhoto!,
           name: "shop-photo",
         );
       } catch (e) {
@@ -93,7 +93,7 @@ class _EditShopState extends State<EditShop> with ScreenLoader {
     if (shopCoverPhoto != null) {
       try {
         shopCoverPhotoUrl = await imageService.uploadImage(
-          file: shopCoverPhoto,
+          file: shopCoverPhoto!,
           name: "shop-cover-photo",
         );
       } catch (e) {
@@ -140,7 +140,7 @@ class _EditShopState extends State<EditShop> with ScreenLoader {
                       : Alignment.centerRight,
                   child: Text(
                     toggleValue ? "Open" : "Closed",
-                    style: Theme.of(context).textTheme.subtitle1.copyWith(
+                    style: Theme.of(context).textTheme.subtitle1!.copyWith(
                           color: Colors.white,
                         ),
                   ),
@@ -254,7 +254,7 @@ class _EditShopState extends State<EditShop> with ScreenLoader {
                         ),
                         Text(
                           "Edit Cover Photo",
-                          style: Theme.of(context).textTheme.subtitle1.copyWith(
+                          style: Theme.of(context).textTheme.subtitle1!.copyWith(
                                 decoration: TextDecoration.underline,
                                 color: kTealColor,
                               ),
@@ -378,11 +378,11 @@ class _EditShopState extends State<EditShop> with ScreenLoader {
 }
 
 class _ShopPhotoSection extends StatelessWidget {
-  final File shopCoverPhoto;
-  final File shopPhoto;
-  final void Function() onShopPhotoPick;
+  final File? shopCoverPhoto;
+  final File? shopPhoto;
+  final void Function()? onShopPhotoPick;
   const _ShopPhotoSection({
-    Key key,
+    Key? key,
     this.shopCoverPhoto,
     this.shopPhoto,
     this.onShopPhotoPick,
@@ -437,7 +437,7 @@ class _ShopPhotoSection extends StatelessWidget {
                           Text(
                             "Edit Photo",
                             style:
-                                Theme.of(context).textTheme.subtitle1.copyWith(
+                                Theme.of(context).textTheme.subtitle1!.copyWith(
                                       decoration: TextDecoration.underline,
                                       color: Colors.white,
                                     ),

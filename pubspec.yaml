@@ -4,55 +4,54 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.7.0 <3.0.0"
-  flutter: "2.0.5"
+  sdk: '>=2.12.0 <3.0.0'
+  flutter: "2.5.2"
 
 sdks:
-  flutter: "2.0.5"
+  flutter: "2.5.2"
 
 dependencies:
   after_layout: ^1.1.0
-  carousel_slider: ^2.3.1
-  cloud_firestore: ^0.16.0
-  cupertino_icons: ^1.0.0
-  firebase_auth: ^0.20.0+1
-  firebase_core: ^0.7.0
-  firebase_storage: ^7.0.0
+  carousel_slider: ^4.0.0
+  cloud_firestore: ^2.5.3
+  cupertino_icons: ^1.0.3
+  firebase_auth: ^3.1.3
+  firebase_core: ^1.7.0
+  firebase_storage: ^10.0.5
   flutter:
     sdk: flutter
-  flutter_facebook_auth: ^1.0.0
+  flutter_facebook_auth: ^3.5.2
   flutter_rating_bar: ^4.0.0
   flutter_screenutil: ^5.0.0+2
-  flutter_staggered_grid_view: ^0.4.0
-  flutter_svg: ^0.19.3
+  flutter_staggered_grid_view: ^0.4.1
+  flutter_svg: ^0.23.0+1
   focused_menu: ^1.0.5
-  google_sign_in: ^4.5.9
-  grouped_list: ^4.0.0
-  http: ^0.12.2
-  image: ^2.1.19
-  image_picker: ^0.6.7+14
-  intl: ^0.16.1
-  jiffy: ^3.0.1
+  google_sign_in: ^5.1.1
+  grouped_list: ^4.1.0
+  http: ^0.13.4
+  image: ^3.0.8
+  image_picker: ^0.8.4+2
+  intl: ^0.17.0
+  jiffy: ^4.1.0
   keyboard_actions: ^3.4.4
-  lottie: ^0.7.0+1
-  material_design_icons_flutter: ^4.0.5955
-  path_provider: ^1.6.24
+  lottie: ^1.2.1
+  material_design_icons_flutter: ^5.0.6295
+  path_provider: ^2.0.5
   # this is a modified persistent-bottom-nav-bar that uses NestedWillPopScope
   persistent_bottom_nav_bar:
-    git:
-      url: https://github.com/jaypatvin/persistent-bottom-nav-bar
-      ref: svg-item-widget
-  photo_manager: ^0.5.8
-  photo_view: ^0.11.1
-  photo_widget: ^0.0.3
-  provider: ^4.3.2+2
-  rflutter_alert: ^2.0.2
-  screen_loader: ^2.0.1
-  shared_preferences: ^0.5.12+4
-  swipe_to: ^0.0.1+8
-  uuid: ^2.2.2
+    git: https://github.com/jaypatvin/PersistentBottomNavBar
+  photo_manager: ^1.3.7
+  photo_view: ^0.13.0
+  provider: ^6.0.1
+  rflutter_alert: ^2.0.4
+  # screen_loader:
+  #   git: https://github.com/BringTheChill/screen_loader
+  shared_preferences: ^2.0.8
+  swipe_to: ^0.1.0-nullsafety.1
+  uuid: ^3.0.5
   validators: ^3.0.0
-  wechat_camera_picker: ^1.3.1
+  wechat_camera_picker: ^2.5.0
+  collection: ^1.15.0-nullsafety.4
 dev_dependencies:
   flutter_test:
     sdk: flutter

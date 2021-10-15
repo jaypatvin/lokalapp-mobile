@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:keyboard_actions/keyboard_actions.dart';
-import 'package:lokalapp/models/lokal_images.dart';
+import '../../models/lokal_images.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
-import 'package:screen_loader/screen_loader.dart';
+import '../../widgets/screen_loader.dart';
 
 import '../../providers/post_requests/product_body.dart';
 import '../../providers/products.dart';
@@ -20,7 +20,7 @@ import 'components/add_product_gallery.dart';
 import 'product_details.dart';
 
 class AddProduct extends StatefulWidget {
-  final String productId;
+  final String? productId;
 
   const AddProduct({this.productId});
   @override
@@ -28,8 +28,8 @@ class AddProduct extends StatefulWidget {
 }
 
 class _AddProductState extends State<AddProduct> with ScreenLoader {
-  AddProductGallery _gallery;
-  String _title;
+  AddProductGallery? _gallery;
+  String? _title;
 
   final _nameController = TextEditingController();
   final _priceController = TextEditingController();
@@ -38,26 +38,26 @@ class _AddProductState extends State<AddProduct> with ScreenLoader {
   final FocusNode _priceFocusNode = FocusNode();
   final FocusNode _descriptionFocusNode = FocusNode();
 
-  String _errorTextName;
-  String _errorTextPrice;
+  String? _errorTextName;
+  String? _errorTextPrice;
 
   @override
   void initState() {
     super.initState();
 
-    if (widget.productId != null && widget.productId.isNotEmpty) {
+    if (widget.productId != null && widget.productId!.isNotEmpty) {
       final product = context.read<Products>().findById(widget.productId);
 
       if (product != null) {
         _gallery = AddProductGallery(
           images: product.gallery,
         );
-        _nameController.text = product.name;
+        _nameController.text = product.name!;
         _priceController.text = product.basePrice.toString();
-        _descriptionController.text = product.description;
+        _descriptionController.text = product.description!;
         _title = "Edit Product";
 
-        var _productGallery = <LokalImages>[];
+        List<LokalImages>? _productGallery = <LokalImages>[];
         if (product.gallery != null) {
           _productGallery = product.gallery;
         }
@@ -72,7 +72,7 @@ class _AddProductState extends State<AddProduct> with ScreenLoader {
             quantity: product.quantity,
             productCategory: product.productCategory,
             status: product.status,
-            gallery: _productGallery.map((e) => e.toMap()).toList(),
+            gallery: _productGallery!.map((e) => e.toMap()).toList(),
           );
         return;
       }
@@ -96,7 +96,7 @@ class _AddProductState extends State<AddProduct> with ScreenLoader {
                 onPressed: () => node.unfocus(),
                 child: Text(
                   "Done",
-                  style: Theme.of(context).textTheme.bodyText1.copyWith(
+                  style: Theme.of(context).textTheme.bodyText1!.copyWith(
                         color: Colors.black,
                       ),
                 ),
@@ -112,7 +112,7 @@ class _AddProductState extends State<AddProduct> with ScreenLoader {
                 onPressed: () => node.unfocus(),
                 child: Text(
                   "Done",
-                  style: Theme.of(context).textTheme.bodyText1.copyWith(
+                  style: Theme.of(context).textTheme.bodyText1!.copyWith(
                         color: Colors.black,
                       ),
                 ),
@@ -128,7 +128,7 @@ class _AddProductState extends State<AddProduct> with ScreenLoader {
                 onPressed: () => node.unfocus(),
                 child: Text(
                   "Done",
-                  style: Theme.of(context).textTheme.bodyText1.copyWith(
+                  style: Theme.of(context).textTheme.bodyText1!.copyWith(
                         color: Colors.black,
                       ),
                 ),
@@ -169,17 +169,15 @@ class _AddProductState extends State<AddProduct> with ScreenLoader {
   }
 
   void _onSubmitHandler() {
-    if (this._nameController.text == null ||
-        this._nameController.text.isEmpty) {
+    if (this._nameController.text.isEmpty) {
       setState(() {
         _errorTextName = "Enter a valid name.";
       });
       return;
     }
 
-    if (this._priceController.text == null ||
-        this._priceController.text.isEmpty ||
-        double.tryParse(this._priceController.text) <= 0) {
+    if (this._priceController.text.isEmpty ||
+        double.tryParse(this._priceController.text)! <= 0) {
       setState(() {
         _errorTextPrice = "Enter a valid price.";
       });
@@ -201,7 +199,7 @@ class _AddProductState extends State<AddProduct> with ScreenLoader {
     );
   }
 
-  Future<bool> _onDeleteNotify() async {
+  Future<bool?> _onDeleteNotify() async {
     return await showDialog<bool>(
       context: context,
       builder: (ctx) {
@@ -340,7 +338,7 @@ class _AddProductState extends State<AddProduct> with ScreenLoader {
               SizedBox(
                 height: MediaQuery.of(context).size.height * 0.02,
               ),
-              _gallery,
+              _gallery!,
               SizedBox(
                 height: MediaQuery.of(context).size.height * 0.02,
               ),

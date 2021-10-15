@@ -1,22 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:photo_manager/photo_manager.dart';
-import 'package:photo_widget/photo_widget.dart';
 
 import 'custom_asset_widget.dart';
+import 'pick/pick_checkbox.dart';
+import 'pick/pick_color_mask.dart';
 import 'provider/custom_photo_provider.dart';
 
 class CustomPickAssetWidget extends StatelessWidget {
   final AssetEntity asset;
   final int thumbSize;
-  final CustomPickerDataProvider provider;
-  final Function onTap;
-  final PickColorMaskBuilder pickColorMaskBuilder;
-  final PickedCheckboxBuilder pickedCheckboxBuilder;
+  final CustomPickerDataProvider? provider;
+  final Function? onTap;
+  final PickColorMaskBuilder? pickColorMaskBuilder;
+  final PickedCheckboxBuilder? pickedCheckboxBuilder;
 
   const CustomPickAssetWidget({
-    Key key,
-    @required this.asset,
-    @required this.provider,
+    Key? key,
+    required this.asset,
+    required this.provider,
     this.thumbSize = 100,
     this.onTap,
     this.pickColorMaskBuilder = PickColorMask.buildWidget,
@@ -26,9 +27,9 @@ class CustomPickAssetWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final pickMask = AnimatedBuilder(
-      animation: provider,
+      animation: provider!,
       builder: (_, __) {
-        final pickIndex = provider.pickIndex(asset);
+        final pickIndex = provider!.pickIndex(asset);
         final picked = pickIndex >= 0;
         return pickColorMaskBuilder?.call(context, picked) ??
             PickColorMask(
@@ -38,13 +39,13 @@ class CustomPickAssetWidget extends StatelessWidget {
     );
 
     final checkWidget = AnimatedBuilder(
-      animation: provider,
+      animation: provider!,
       builder: (_, __) {
-        final pickIndex = provider.pickIndex(asset);
+        final pickIndex = provider!.pickIndex(asset);
         return pickedCheckboxBuilder?.call(context, pickIndex) ??
             PickedCheckbox(
               onClick: () {
-                provider.pickEntity(asset);
+                provider!.pickEntity(asset);
               },
               checkIndex: pickIndex,
             );
@@ -71,7 +72,7 @@ class CustomPickAssetWidget extends StatelessWidget {
           checkWidget,
         ],
       ),
-      onTap: onTap,
+      onTap: onTap as void Function()?,
     );
   }
 }

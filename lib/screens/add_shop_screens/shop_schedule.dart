@@ -17,9 +17,9 @@ import '../../widgets/schedule_picker.dart';
 import 'customize_availability.dart';
 
 class ShopSchedule extends StatefulWidget {
-  final File shopPhoto;
+  final File? shopPhoto;
   final bool forEditing;
-  final Function() onShopEdit;
+  final Function()? onShopEdit;
 
   const ShopSchedule(
     this.shopPhoto, {
@@ -36,7 +36,7 @@ class _ShopScheduleState extends State<ShopSchedule> {
 
   TimeOfDay _opening = TimeOfDay(hour: 8, minute: 0);
   TimeOfDay _closing = TimeOfDay(hour: 17, minute: 0);
-  DateTime _startDate;
+  DateTime? _startDate;
   List<int> _selectableDays = [];
 
   @override
@@ -49,8 +49,8 @@ class _ShopScheduleState extends State<ShopSchedule> {
     if (shops.isNotEmpty) {
       final shop = shops.first;
       if (isValidOperatingHours(shop.operatingHours)) {
-        _opening = stringToTimeOfDay(shop.operatingHours.startTime);
-        _closing = stringToTimeOfDay(shop.operatingHours.endTime);
+        _opening = stringToTimeOfDay(shop.operatingHours!.startTime!);
+        _closing = stringToTimeOfDay(shop.operatingHours!.endTime!);
       }
     }
   }
@@ -74,27 +74,23 @@ class _ShopScheduleState extends State<ShopSchedule> {
 
     context.read<OperatingHoursBody>().update(
           startDates: dates
-              .map<String>(
-                (date) => DateFormat("yyyy-MM-dd").format(
-                  date ?? DateTime.now(),
-                ),
-              )
+              .map<String>((date) => DateFormat("yyyy-MM-dd").format(date))
               .toList(),
           repeatType: repeatType,
         );
   }
 
   Future<void> _selectTime(
-    TimeOfDay initialTime,
+    TimeOfDay? initialTime,
     Function(TimeOfDay) onSet,
   ) async {
-    final TimeOfDay pickedTime = await showTimePicker(
+    final TimeOfDay? pickedTime = await showTimePicker(
         context: context,
         initialTime: initialTime ?? TimeOfDay.now(),
-        builder: (BuildContext context, Widget child) {
+        builder: (BuildContext context, Widget? child) {
           return MediaQuery(
             data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: false),
-            child: child,
+            child: child!,
           );
         });
 
@@ -107,7 +103,7 @@ class _ShopScheduleState extends State<ShopSchedule> {
 
   RepeatChoices _getRepeatChoice() {
     final repeatType =
-        context.read<OperatingHoursBody>().operatingHours.repeatType;
+        context.read<OperatingHoursBody>().operatingHours.repeatType!;
     var repeatChoice = RepeatChoices.month;
     if (repeatType.split("-").length <= 1) {
       RepeatChoices.values.forEach((choice) {
@@ -157,7 +153,7 @@ class _ShopScheduleState extends State<ShopSchedule> {
                       onPressed: () => node.unfocus(),
                       child: Text(
                         "Done",
-                        style: Theme.of(context).textTheme.bodyText1.copyWith(
+                        style: Theme.of(context).textTheme.bodyText1!.copyWith(
                               color: Colors.black,
                             ),
                       ),
@@ -264,7 +260,7 @@ class _ShopScheduleState extends State<ShopSchedule> {
                           usedDatePicker: context
                                   .read<OperatingHoursBody>()
                                   .operatingHours
-                                  .repeatType
+                                  .repeatType!
                                   .split("-")
                                   .length <=
                               1,
@@ -291,11 +287,11 @@ class _HoursPicker extends StatelessWidget {
   final void Function() onSelectClosing;
 
   const _HoursPicker({
-    Key key,
-    @required this.opening,
-    @required this.closing,
-    @required this.onSelectOpening,
-    @required this.onSelectClosing,
+    Key? key,
+    required this.opening,
+    required this.closing,
+    required this.onSelectOpening,
+    required this.onSelectClosing,
   }) : super(key: key);
 
   @override
@@ -307,7 +303,7 @@ class _HoursPicker extends StatelessWidget {
       children: [
         Text(
           "Every",
-          style: Theme.of(context).textTheme.headline6.copyWith(
+          style: Theme.of(context).textTheme.headline6!.copyWith(
                 fontWeight: FontWeight.normal,
               ),
         ),
@@ -349,7 +345,7 @@ class _HoursPicker extends StatelessWidget {
         spacerBox,
         Text(
           "To",
-          style: Theme.of(context).textTheme.headline6.copyWith(
+          style: Theme.of(context).textTheme.headline6!.copyWith(
                 fontWeight: FontWeight.normal,
               ),
         ),

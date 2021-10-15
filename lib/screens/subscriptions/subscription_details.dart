@@ -22,19 +22,19 @@ class SubscriptionDetails extends StatelessWidget {
   final bool isBuyer;
   final ProductSubscriptionPlan subscriptionPlan;
   const SubscriptionDetails({
-    @required this.subscriptionPlan,
+    required this.subscriptionPlan,
     this.isBuyer = true,
   });
 
   Widget buildTextInfo(BuildContext context) {
-    final _address = context.read<CurrentUser>().address;
-    final address = _address.street +
+    final _address = context.read<CurrentUser>().address!;
+    final address = _address.street! +
         ", " +
-        _address.barangay +
+        _address.barangay! +
         ", " +
-        _address.subdivision +
+        _address.subdivision! +
         " " +
-        _address.city;
+        _address.city!;
 
     return Container(
       width: double.infinity,
@@ -46,7 +46,7 @@ class SubscriptionDetails extends StatelessWidget {
             style: Theme.of(context).textTheme.subtitle1,
           ),
           Text(
-            subscriptionPlan.instruction,
+            subscriptionPlan.instruction!,
             style: Theme.of(context).textTheme.bodyText1,
           ),
           SizedBox(height: 16.0.h),
@@ -70,7 +70,7 @@ class SubscriptionDetails extends StatelessWidget {
         context.read<Products>().findById(subscriptionPlan.productId);
 
     // only needed for operatingHours
-    final shop = context.read<Shops>().findById(subscriptionPlan.shopId);
+    final shop = context.read<Shops>().findById(subscriptionPlan.shopId)!;
 
     final operatingHours = OperatingHours(
       repeatType: subscriptionPlan.plan.repeatType,
@@ -82,20 +82,20 @@ class SubscriptionDetails extends StatelessWidget {
           .map<String>((date) => DateFormat("yyyy-MM-dd").format(date))
           .toList(),
       customDates: [],
-      startTime: shop.operatingHours.startTime,
-      endTime: shop.operatingHours.endTime,
+      startTime: shop.operatingHours!.startTime,
+      endTime: shop.operatingHours!.endTime,
     );
 
     // product schedule initialization
     final productSelectableDates = _generator
-        .getSelectableDates(product.availability)
+        .getSelectableDates(product!.availability!)
         .where(
           (date) =>
               date.difference(DateTime.now()).inDays <= 45 &&
               date.difference(DateTime.now()).inDays >= 0,
         )
         .toList()
-          ..sort();
+      ..sort();
 
     final markedDates = _generator
         .getSelectableDates(operatingHours)
@@ -105,17 +105,17 @@ class SubscriptionDetails extends StatelessWidget {
               date.difference(DateTime.now()).inDays >= 0,
         )
         .toList()
-          ..sort();
+      ..sort();
 
     subscriptionPlan.plan.overrideDates.forEach((overrideDate) {
-      final index = markedDates
-          .indexWhere((date) => date.compareTo(overrideDate.originalDate) == 0);
+      final index = markedDates.indexWhere(
+          (date) => date.compareTo(overrideDate.originalDate!) == 0);
       if (index > -1) {
         markedDates[index] = overrideDate.newDate;
       }
     });
 
-    return !subscriptionPlan.plan.autoReschedule &&
+    return !subscriptionPlan.plan.autoReschedule! &&
         markedDates
             .toSet()
             .difference(productSelectableDates.toSet())
@@ -132,13 +132,13 @@ class SubscriptionDetails extends StatelessWidget {
           children: [
             Text(
               "Order Details",
-              style: Theme.of(context).textTheme.headline6.copyWith(
+              style: Theme.of(context).textTheme.headline6!.copyWith(
                     color: Colors.white,
                   ),
             ),
             Text(
               "Subscription",
-              style: Theme.of(context).textTheme.subtitle1.copyWith(
+              style: Theme.of(context).textTheme.subtitle1!.copyWith(
                     color: Colors.white,
                   ),
             ),
@@ -168,10 +168,10 @@ class SubscriptionDetails extends StatelessWidget {
                     children: [
                       TextSpan(
                         text:
-                            "P ${subscriptionPlan.quantity * subscriptionPlan.product.price}",
+                            "P ${subscriptionPlan.quantity! * subscriptionPlan.product.price!}",
                         style: Theme.of(context)
                             .textTheme
-                            .subtitle1
+                            .subtitle1!
                             .copyWith(color: Colors.orange),
                       ),
                     ],
@@ -201,9 +201,9 @@ class _SubscriptionDetailsButtons extends StatelessWidget {
   final ProductSubscriptionPlan subscriptionPlan;
   final bool displayWarning;
   const _SubscriptionDetailsButtons({
-    Key key,
-    @required this.subscriptionPlan,
-    @required this.displayWarning,
+    Key? key,
+    required this.subscriptionPlan,
+    required this.displayWarning,
     this.isBuyer = true,
   }) : super(key: key);
 
@@ -227,7 +227,7 @@ class _SubscriptionDetailsButtons extends StatelessWidget {
                   "See Schedule",
                   style: Theme.of(context)
                       .textTheme
-                      .subtitle1
+                      .subtitle1!
                       .copyWith(color: kTealColor),
                 ),
                 if (displayWarning)

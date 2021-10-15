@@ -38,7 +38,7 @@ class _AddShopState extends State<AddShop> {
                 onPressed: () => node.unfocus(),
                 child: Text(
                   "Done",
-                  style: Theme.of(context).textTheme.bodyText1.copyWith(
+                  style: Theme.of(context).textTheme.bodyText1!.copyWith(
                         color: Colors.black,
                       ),
                 ),
@@ -54,7 +54,7 @@ class _AddShopState extends State<AddShop> {
                 onPressed: () => node.unfocus(),
                 child: Text(
                   "Done",
-                  style: Theme.of(context).textTheme.bodyText1.copyWith(
+                  style: Theme.of(context).textTheme.bodyText1!.copyWith(
                         color: Colors.black,
                       ),
                 ),
@@ -66,7 +66,7 @@ class _AddShopState extends State<AddShop> {
     );
   }
 
-  File shopPhoto;
+  File? shopPhoto;
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
@@ -134,7 +134,7 @@ class _AddShopState extends State<AddShop> {
             SizedBox(height: 10.0.h),
             Consumer<ShopBody>(builder: (context, shop, child) {
               bool isNotEmpty =
-                  shop.name.isNotEmpty && shop.description.isNotEmpty;
+                  shop.name!.isNotEmpty && shop.description!.isNotEmpty;
               return SizedBox(
                 width: width * 0.8,
                 child: AppButton(

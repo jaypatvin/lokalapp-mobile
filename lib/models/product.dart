@@ -1,26 +1,26 @@
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
-import 'package:lokalapp/models/operating_hours.dart';
+import 'operating_hours.dart';
 
 import 'lokal_images.dart';
 
 class Product {
-  String id;
-  String name;
-  String description;
-  String shopId;
-  String userId;
-  String communityId;
-  double basePrice;
-  int quantity;
-  String productCategory;
-  String productPhoto;
-  String status;
-  bool archived;
-  bool canSubscribe;
-  OperatingHours availability;
-  List<LokalImages> gallery;
+  String? id;
+  String? name;
+  String? description;
+  String? shopId;
+  String? userId;
+  String? communityId;
+  double? basePrice;
+  int? quantity;
+  String? productCategory;
+  String? productPhoto;
+  String? status;
+  bool? archived;
+  bool? canSubscribe;
+  OperatingHours? availability;
+  List<LokalImages>? gallery;
   Product({
     this.id,
     this.name,
@@ -40,21 +40,21 @@ class Product {
   });
 
   Product copyWith({
-    String id,
-    String name,
-    String description,
-    String shopId,
-    String userId,
-    String communityId,
-    double basePrice,
-    int quantity,
-    String productCategory,
-    String productPhoto,
-    String status,
-    List<LokalImages> gallery,
-    OperatingHours availability,
-    bool archived,
-    bool canSubscribe,
+    String? id,
+    String? name,
+    String? description,
+    String? shopId,
+    String? userId,
+    String? communityId,
+    double? basePrice,
+    int? quantity,
+    String? productCategory,
+    String? productPhoto,
+    String? status,
+    List<LokalImages>? gallery,
+    OperatingHours? availability,
+    bool? archived,
+    bool? canSubscribe,
   }) {
     return Product(
       id: id ?? this.id,
@@ -88,7 +88,7 @@ class Product {
       'product_category': productCategory,
       'product_photo': productPhoto,
       'status': status,
-      'gallery': gallery?.map((x) => x?.toMap())?.toList(),
+      'gallery': gallery?.map((x) => x.toMap()).toList(),
       'availability': availability?.toMap(),
       'archived': archived,
       'can_subscribe': canSubscribe,
@@ -96,8 +96,6 @@ class Product {
   }
 
   factory Product.fromMap(Map<String, dynamic> map) {
-    if (map == null) return null;
-
     return Product(
       id: map['id'],
       name: map['name'],
@@ -116,9 +114,9 @@ class Product {
           ? <LokalImages>[]
           : List<LokalImages>.from(
               map['gallery']?.map((x) => LokalImages.fromMap(x))),
-      availability: map['availability'] != null
+      availability: (map['availability'] != null
           ? OperatingHours.fromMap(map['availability'])
-          : <LokalImages>[],
+          : <LokalImages>[]) as OperatingHours?,
     );
   }
 

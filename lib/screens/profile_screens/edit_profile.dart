@@ -22,7 +22,7 @@ class _EditProfileState extends State<EditProfile> {
   final TextEditingController _fNameController = TextEditingController();
   final TextEditingController _lNameController = TextEditingController();
   final TextEditingController _streetController = TextEditingController();
-  File _profilePhoto;
+  File? _profilePhoto;
 
   @override
   initState() {
@@ -35,13 +35,13 @@ class _EditProfileState extends State<EditProfile> {
       communityId: user.communityId,
     );
 
-    _fNameController.text = user.firstName;
-    _lNameController.text = user.lastName;
-    _streetController.text = user.address.street;
+    _fNameController.text = user.firstName!;
+    _lNameController.text = user.lastName!;
+    _streetController.text = user.address!.street!;
     super.initState();
   }
 
-  Future updateUser() async {
+  Future<bool> _updateUser() async {
     var user = Provider.of<CurrentUser>(context, listen: false);
     var authBody = Provider.of<AuthBody>(context, listen: false);
     var imageService = Provider.of<LocalImageService>(context, listen: false);
@@ -50,7 +50,7 @@ class _EditProfileState extends State<EditProfile> {
       if (_profilePhoto != null) {
         try {
           userPhotoUrl = await imageService.uploadImage(
-            file: _profilePhoto,
+            file: _profilePhoto!,
             name: "profile-photo",
           );
         } catch (e) {
@@ -69,6 +69,7 @@ class _EditProfileState extends State<EditProfile> {
     } catch (e) {
       // do something with error
       print(e);
+      return false;
     }
   }
 
@@ -172,7 +173,7 @@ class _EditProfileState extends State<EditProfile> {
                 fontFamily: "Goldplay",
                 fontColor: Colors.white,
                 onPressed: () async {
-                  bool success = await updateUser();
+                  bool success = await _updateUser();
                   if (success) {
                     Navigator.pop(context);
                   } else {

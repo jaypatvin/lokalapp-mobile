@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class StoreMessage extends StatefulWidget {
-  final String description;
+  final String? description;
   StoreMessage({this.description});
 
   @override
@@ -19,7 +19,7 @@ class _StoreMessageState extends State<StoreMessage> {
           child: Container(
             padding: EdgeInsets.all(22),
             child: Text(
-              widget.description,
+              widget.description!,
               // "Bacon ipsum dolor amet turducken prosciutto shankle buffalo burgdoggen chicken picanha tail. Filet mignon meatball ball tip, buffalo ham chislic jowl drumstick tongue turkey boudin prosciutto cow turducken swine.",
               style: TextStyle(
                   fontFamily: "GoldplayBold",

@@ -7,16 +7,16 @@ import 'operating_hours.dart';
 import 'order.dart';
 
 class OverrideDate {
-  final DateTime originalDate;
+  final DateTime? originalDate;
   final DateTime newDate;
   const OverrideDate({
-    @required this.originalDate,
-    @required this.newDate,
+    required this.originalDate,
+    required this.newDate,
   });
 
   Map<String, dynamic> toMap() {
     return {
-      'original_date': DateFormat("yyyy-MM-dd").format(originalDate),
+      'original_date': DateFormat("yyyy-MM-dd").format(originalDate!),
       'new_date': DateFormat("yyyy-MM-dd").format(newDate),
     };
   }
@@ -51,22 +51,22 @@ class OverrideDate {
 }
 
 class SubscriptionProductDetails {
-  final String name;
-  final String image;
-  final String description;
-  final double price;
+  final String? name;
+  final String? image;
+  final String? description;
+  final double? price;
   const SubscriptionProductDetails({
-    @required this.name,
-    @required this.image,
-    @required this.description,
-    @required this.price,
+    required this.name,
+    required this.image,
+    required this.description,
+    required this.price,
   });
 
   SubscriptionProductDetails copyWith({
-    String name,
-    String image,
-    String description,
-    double price,
+    String? name,
+    String? image,
+    String? description,
+    double? price,
   }) {
     return SubscriptionProductDetails(
       name: name ?? this.name,
@@ -126,19 +126,19 @@ class SubscriptionProductDetails {
 }
 
 class SubscriptionShopDetails {
-  final String name;
-  final String image;
-  final String description;
+  final String? name;
+  final String? image;
+  final String? description;
   SubscriptionShopDetails({
-    @required this.name,
-    @required this.image,
-    @required this.description,
+    required this.name,
+    required this.image,
+    required this.description,
   });
 
   SubscriptionShopDetails copyWith({
-    String name,
-    String image,
-    String description,
+    String? name,
+    String? image,
+    String? description,
   }) {
     return SubscriptionShopDetails(
       name: name ?? this.name,
@@ -188,37 +188,37 @@ class SubscriptionShopDetails {
 
 class ProductSubscriptionSchedule {
   final List<DateTime> startDates;
-  final DateTime lastDate;
-  final int repeatUnit;
-  final bool autoReschedule;
-  final String repeatType;
+  final DateTime? lastDate;
+  final int? repeatUnit;
+  final bool? autoReschedule;
+  final String? repeatType;
   final List<CustomDates> schedule;
   final List<DateTime> customDates;
   final List<DateTime> unavailableDates;
   final List<OverrideDate> overrideDates;
 
   const ProductSubscriptionSchedule({
-    @required this.startDates,
-    @required this.lastDate,
-    @required this.repeatUnit,
-    @required this.repeatType,
-    @required this.schedule,
-    @required this.customDates,
-    @required this.unavailableDates,
-    @required this.autoReschedule,
-    @required this.overrideDates,
+    required this.startDates,
+    required this.lastDate,
+    required this.repeatUnit,
+    required this.repeatType,
+    required this.schedule,
+    required this.customDates,
+    required this.unavailableDates,
+    required this.autoReschedule,
+    required this.overrideDates,
   });
 
   ProductSubscriptionSchedule copyWith({
-    List<DateTime> startDates,
-    DateTime lastDate,
-    int repeatUnit,
-    String repeatType,
-    List<CustomDates> schedule,
-    List<DateTime> customDates,
-    List<DateTime> unavailableDates,
-    bool autoReschedule,
-    List<OverrideDate> overrideDates,
+    List<DateTime>? startDates,
+    DateTime? lastDate,
+    int? repeatUnit,
+    String? repeatType,
+    List<CustomDates>? schedule,
+    List<DateTime>? customDates,
+    List<DateTime>? unavailableDates,
+    bool? autoReschedule,
+    List<OverrideDate>? overrideDates,
   }) {
     return ProductSubscriptionSchedule(
       startDates: startDates ?? this.startDates,
@@ -325,44 +325,44 @@ class ProductSubscriptionSchedule {
 }
 
 class ProductSubscriptionPlan {
-  final String id;
-  final String productId;
-  final String shopId;
-  final String buyerId;
-  final String sellerId;
-  final int quantity;
-  final String instruction;
-  final String status;
+  final String? id;
+  final String? productId;
+  final String? shopId;
+  final String? buyerId;
+  final String? sellerId;
+  final int? quantity;
+  final String? instruction;
+  final String? status;
   final SubscriptionProductDetails product;
   final ProductSubscriptionSchedule plan;
   final SubscriptionShopDetails shop;
 
   ProductSubscriptionPlan({
-    @required this.id,
-    @required this.productId,
-    @required this.shopId,
-    @required this.buyerId,
-    @required this.sellerId,
-    @required this.quantity,
-    @required this.instruction,
-    @required this.status,
-    @required this.plan,
-    @required this.product,
-    @required this.shop,
+    required this.id,
+    required this.productId,
+    required this.shopId,
+    required this.buyerId,
+    required this.sellerId,
+    required this.quantity,
+    required this.instruction,
+    required this.status,
+    required this.plan,
+    required this.product,
+    required this.shop,
   });
 
   ProductSubscriptionPlan copyWith({
-    String id,
-    String productId,
-    String shopId,
-    String buyerId,
-    String sellerId,
-    int quantity,
-    String instruction,
-    String status,
-    ProductSubscriptionSchedule plan,
-    SubscriptionShopDetails shop,
-    ProductOrder product,
+    String? id,
+    String? productId,
+    String? shopId,
+    String? buyerId,
+    String? sellerId,
+    int? quantity,
+    String? instruction,
+    String? status,
+    ProductSubscriptionSchedule? plan,
+    SubscriptionShopDetails? shop,
+    ProductOrder? product,
   }) {
     return ProductSubscriptionPlan(
       id: id ?? this.id,
@@ -374,7 +374,7 @@ class ProductSubscriptionPlan {
       instruction: instruction ?? this.instruction,
       status: status ?? this.status,
       plan: plan ?? this.plan,
-      product: product ?? this.product,
+      product: product as SubscriptionProductDetails? ?? this.product,
       shop: shop ?? this.shop,
     );
   }

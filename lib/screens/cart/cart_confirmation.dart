@@ -15,7 +15,7 @@ class CartConfirmation extends StatelessWidget {
   static const routeName = "/cart/cartConfirmation";
   final bool isSubscription;
   const CartConfirmation({
-    Key key,
+    Key? key,
     this.isSubscription = false,
   }) : super(key: key);
 
@@ -57,7 +57,7 @@ class CartConfirmation extends StatelessWidget {
               textAlign: TextAlign.center,
               style: Theme.of(context)
                   .textTheme
-                  .headline4
+                  .headline4!
                   .copyWith(color: kTealColor),
             ),
             SizedBox(height: 16),

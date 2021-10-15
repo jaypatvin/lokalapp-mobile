@@ -15,8 +15,8 @@ import 'components/order_details.dart';
 class ShopCheckout extends StatelessWidget {
   final ShopModel shop;
   const ShopCheckout({
-    Key key,
-    @required this.shop,
+    Key? key,
+    required this.shop,
   }) : super(key: key);
   @override
   Widget build(BuildContext context) {
@@ -30,7 +30,7 @@ class ShopCheckout extends StatelessWidget {
       ),
       body: Consumer<ShoppingCart>(
         builder: (_, cart, __) {
-          final orders = cart.orders[shop.id];
+          final orders = cart.orders[shop.id]!;
           return ListView.builder(
             itemCount: orders.length,
             itemBuilder: (ctx, index) {
@@ -48,20 +48,20 @@ class ShopCheckout extends StatelessWidget {
 }
 
 class _OrdersCard extends StatelessWidget {
-  final String productId;
+  final String? productId;
   const _OrdersCard({
-    Key key,
-    @required this.productId,
+    Key? key,
+    required this.productId,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final product = context.read<Products>().findById(productId);
-    final order = context.read<ShoppingCart>().getProductOrder(productId);
+    final order = context.read<ShoppingCart>().getProductOrder(productId)!;
     return Card(
       elevation: 0.0,
       shape: RoundedRectangleBorder(
-        side: BorderSide(color: Colors.grey[300]),
+        side: BorderSide(color: Colors.grey[300]!),
         borderRadius: BorderRadius.circular(16.0),
       ),
       child: Padding(
@@ -69,7 +69,7 @@ class _OrdersCard extends StatelessWidget {
         child: Column(
           children: [
             OrderDetails(
-              product: product,
+              product: product!,
               quantity: order.quantity,
               onEditTap: () => Navigator.of(context).push(
                 MaterialPageRoute(builder: (_) => ProductDetail(product)),
@@ -84,7 +84,7 @@ class _OrdersCard extends StatelessWidget {
                   style: TextStyle(color: Color(0xFF828282)),
                   children: [
                     TextSpan(
-                      text: (product.basePrice * order.quantity).toString(),
+                      text: (product.basePrice! * order.quantity).toString(),
                       style: TextStyle(color: Colors.orange),
                     )
                   ],

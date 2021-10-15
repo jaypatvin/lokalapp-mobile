@@ -7,15 +7,15 @@ import '../../../utils/themes.dart';
 import '../../../widgets/app_button.dart';
 
 class AuthInputForm extends StatefulWidget {
-  final Key formKey;
-  final TextEditingController emailController;
-  final TextEditingController passwordController;
-  final void Function() onFormChanged;
-  final void Function() onFormSubmit;
+  final Key? formKey;
+  final TextEditingController? emailController;
+  final TextEditingController? passwordController;
+  final void Function()? onFormChanged;
+  final void Function()? onFormSubmit;
   final bool displaySignInError;
-  final String submitButtonLabel;
+  final String? submitButtonLabel;
   const AuthInputForm({
-    Key key,
+    Key? key,
     this.formKey,
     this.emailController,
     this.passwordController,
@@ -32,7 +32,7 @@ class AuthInputForm extends StatefulWidget {
 class _AuthInputFormState extends State<AuthInputForm> {
   final FocusNode _nodeTextEmail = FocusNode();
   final FocusNode _nodeTextPassword = FocusNode();
-  bool _passwordVisible;
+  late bool _passwordVisible;
 
   @override
   void initState() {
@@ -54,7 +54,7 @@ class _AuthInputFormState extends State<AuthInputForm> {
                 onPressed: () => node.unfocus(),
                 child: Text(
                   "Done",
-                  style: Theme.of(context).textTheme.bodyText1.copyWith(
+                  style: Theme.of(context).textTheme.bodyText1!.copyWith(
                         color: Colors.black,
                       ),
                 ),
@@ -70,7 +70,7 @@ class _AuthInputFormState extends State<AuthInputForm> {
                 onPressed: () => node.unfocus(),
                 child: Text(
                   "Done",
-                  style: Theme.of(context).textTheme.bodyText1.copyWith(
+                  style: Theme.of(context).textTheme.bodyText1!.copyWith(
                         color: Colors.black,
                       ),
                 ),
@@ -114,7 +114,7 @@ class _AuthInputFormState extends State<AuthInputForm> {
                   contentPadding: EdgeInsets.symmetric(horizontal: 16.0.w),
                 ),
                 validator: (email) =>
-                    isEmail(email) ? null : "Enter a valid email",
+                    isEmail(email!) ? null : "Enter a valid email",
               ),
             ),
             SizedBox(height: 15.0.h),
@@ -160,8 +160,8 @@ class _AuthInputFormState extends State<AuthInputForm> {
               width: 130.0.w,
               child: AppButton(
                 widget.submitButtonLabel,
-                widget.emailController.text.isEmpty ||
-                        widget.passwordController.text.isEmpty
+                widget.emailController!.text.isEmpty ||
+                        widget.passwordController!.text.isEmpty
                     ? kTealColor
                     : kOrangeColor,
                 true,

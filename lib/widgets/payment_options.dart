@@ -10,8 +10,8 @@ class PaymentOptions extends StatelessWidget {
   final Color tileColor;
 
   const PaymentOptions({
-    Key key,
-    @required this.onPaymentPressed,
+    Key? key,
+    required this.onPaymentPressed,
     this.tileColor = kInviteScreenColor,
   }) : super(key: key);
 
@@ -35,7 +35,7 @@ class PaymentOptions extends StatelessWidget {
               ),
               title: Text(
                 "Cash On Delivery",
-                style: Theme.of(context).textTheme.headline6.copyWith(
+                style: Theme.of(context).textTheme.headline6!.copyWith(
                       fontWeight: FontWeight.w600,
                     ),
               ),
@@ -61,7 +61,7 @@ class PaymentOptions extends StatelessWidget {
               ),
               title: Text(
                 "Bank Transfer/Deposit",
-                style: Theme.of(context).textTheme.headline6.copyWith(
+                style: Theme.of(context).textTheme.headline6!.copyWith(
                       fontWeight: FontWeight.w600,
                     ),
               ),
@@ -80,7 +80,6 @@ class PaymentOptions extends StatelessWidget {
               tileColor: this.tileColor,
               leading: CircleAvatar(
                 backgroundColor: Colors.white,
-                //TODO: fix GCash Asset
                 child: SvgPicture.asset(
                   "assets/payment/gcash.svg",
                   fit: BoxFit.cover,
@@ -88,7 +87,7 @@ class PaymentOptions extends StatelessWidget {
               ),
               title: Text(
                 "Gcash",
-                style: Theme.of(context).textTheme.headline6.copyWith(
+                style: Theme.of(context).textTheme.headline6!.copyWith(
                       fontWeight: FontWeight.w600,
                     ),
               ),

@@ -5,15 +5,15 @@ import '../../../utils/themes.dart';
 
 class MyProfileList extends StatelessWidget {
   final void Function() onMyPostsTap;
-  final void Function() onNotificationsTap;
-  final void Function() onWishlistTap;
-  final void Function() onInviteFriend;
+  final void Function()? onNotificationsTap;
+  final void Function()? onWishlistTap;
+  final void Function()? onInviteFriend;
   const MyProfileList({
-    Key key,
-    @required this.onMyPostsTap,
-    @required this.onNotificationsTap,
-    @required this.onWishlistTap,
-    @required this.onInviteFriend,
+    Key? key,
+    required this.onMyPostsTap,
+    required this.onNotificationsTap,
+    required this.onWishlistTap,
+    required this.onInviteFriend,
   }) : super(key: key);
 
   @override
@@ -34,7 +34,7 @@ class MyProfileList extends StatelessWidget {
               ),
               onTap: this.onMyPostsTap,
               enableFeedback: true,
-              enabled: this.onMyPostsTap != null,
+              enabled: true,
             ),
             ListTile(
               title: Text("Notifications"),

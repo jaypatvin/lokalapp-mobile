@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:lokalapp/utils/themes.dart';
+import '../../../../utils/themes.dart';
 
 class AppBarSettings extends StatelessWidget {
-  Function onPressed;
-  String text;
-  AppBarSettings({this.onPressed, this.text});
+  final void Function()? onPressed;
+  final String? text;
+  const AppBarSettings({this.onPressed, this.text});
 
   Widget get appBar => PreferredSize(
         preferredSize: Size(double.infinity, 100),
@@ -32,9 +32,6 @@ class AppBarSettings extends StatelessWidget {
                         color: Colors.white,
                       ),
                       onPressed: onPressed,
-                      // () {
-                      // Navigator.pop(context);
-                      // }
                     ),
                   ),
                   SizedBox(
@@ -43,7 +40,7 @@ class AppBarSettings extends StatelessWidget {
                   Container(
                     // padding: const EdgeInsets.only(left: 10),
                     child: Text(
-                      text,
+                      text!,
                       style: TextStyle(
                           fontFamily: "Goldplay",
                           fontSize: 22,

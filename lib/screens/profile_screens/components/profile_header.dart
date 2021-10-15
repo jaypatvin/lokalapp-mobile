@@ -8,7 +8,7 @@ import '../edit_profile.dart';
 import '../settings/settings.dart';
 
 class ProfileHeader extends StatelessWidget {
-  const ProfileHeader({Key key}) : super(key: key);
+  const ProfileHeader({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +53,7 @@ class ProfileHeader extends StatelessWidget {
                   radius: 40.0.r,
                 ),
                 Text(
-                  user.displayName,
+                  user.displayName!,
                   style: TextStyle(
                     fontSize: 18.0.sp,
                     color: Colors.white,
