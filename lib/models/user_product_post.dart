@@ -6,14 +6,14 @@ import 'package:flutter/foundation.dart';
 import 'lokal_images.dart';
 
 class UserProductPost extends ChangeNotifier {
-  String name;
-  String description;
-  String shopId;
-  double basePrice;
-  int quantity;
-  String productCategory;
-  String status;
-  List<LokalImages> gallery;
+  String? name;
+  String? description;
+  String? shopId;
+  double? basePrice;
+  int? quantity;
+  String? productCategory;
+  String? status;
+  List<LokalImages>? gallery;
   UserProductPost({
     this.name,
     this.description,
@@ -26,14 +26,14 @@ class UserProductPost extends ChangeNotifier {
   });
 
   UserProductPost copyWith({
-    String name,
-    String description,
-    String shopId,
-    double basePrice,
-    int quantity,
-    String productCategory,
-    String status,
-    List<LokalImages> gallery,
+    String? name,
+    String? description,
+    String? shopId,
+    double? basePrice,
+    int? quantity,
+    String? productCategory,
+    String? status,
+    List<LokalImages>? gallery,
   }) {
     return UserProductPost(
       name: name ?? this.name,
@@ -56,13 +56,11 @@ class UserProductPost extends ChangeNotifier {
       'quantity': quantity,
       'product_category': productCategory,
       'status': status,
-      'gallery': gallery?.map((x) => x?.toMap())?.toList(),
+      'gallery': gallery?.map((x) => x.toMap()).toList(),
     };
   }
 
   factory UserProductPost.fromMap(Map<String, dynamic> map) {
-    if (map == null) return null;
-
     return UserProductPost(
       name: map['name'],
       description: map['description'],

@@ -1,8 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:screen_loader/screen_loader.dart';
+import '../../../widgets/screen_loader.dart';
 
 import '../../../models/order.dart';
 import '../../../providers/user.dart';
@@ -14,7 +16,7 @@ import 'processing_payment.dart';
 
 class CashOnDelivery extends StatefulWidget {
   final Order order;
-  CashOnDelivery({Key key, @required this.order}) : super(key: key);
+  CashOnDelivery({Key? key, required this.order}) : super(key: key);
 
   @override
   _CashOnDeliveryState createState() => _CashOnDeliveryState();
@@ -26,9 +28,9 @@ class _CashOnDeliveryState extends State<CashOnDelivery> with ScreenLoader {
       print("Terms & Conditions tapped");
     };
 
-  Future<void> _onSubmitHandler(BuildContext context) {
+  FutureOr<void> _onSubmitHandler(BuildContext context) {
     final idToken = Provider.of<CurrentUser>(context, listen: false).idToken;
-    LokalApiService.instance.orders.pay(
+    LokalApiService.instance!.orders!.pay(
       idToken: idToken,
       orderId: this.widget.order.id,
       data: <String, String>{
@@ -58,7 +60,7 @@ class _CashOnDeliveryState extends State<CashOnDelivery> with ScreenLoader {
         .widget
         .order
         .products
-        .fold(0.0, (double prev, product) => prev + product.price);
+        .fold(0.0, (double prev, product) => prev + product.price!);
     return Scaffold(
       appBar: CustomAppBar(
         titleText: "Cash on Delivery",

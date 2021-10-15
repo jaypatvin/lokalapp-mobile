@@ -6,7 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 import 'package:provider/provider.dart';
-import 'package:screen_loader/screen_loader.dart';
+import '../../widgets/screen_loader.dart';
 
 import '../../models/lokal_images.dart';
 import '../../providers/post_requests/operating_hours_body.dart';
@@ -24,12 +24,12 @@ import 'confirmation.dart';
 import 'product_schedule.dart';
 
 class ProductPreview extends StatefulWidget {
-  final AddProductGallery gallery;
-  final ProductScheduleState scheduleState;
-  final String productId;
+  final AddProductGallery? gallery;
+  final ProductScheduleState? scheduleState;
+  final String? productId;
   ProductPreview({
-    @required this.gallery,
-    @required this.scheduleState,
+    required this.gallery,
+    required this.scheduleState,
     this.productId,
   });
 
@@ -38,19 +38,19 @@ class ProductPreview extends StatefulWidget {
 }
 
 class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
-  PhotoViewController controller;
+  PhotoViewController? controller;
   int _current = 0;
-  List<File> images;
-  List<String> _urlImages;
+  late List<File?> images;
+  late List<String?> _urlImages;
 
   @override
   initState() {
-    images = widget.gallery.photoBoxes.map((image) {
+    images = widget.gallery!.photoBoxes.map((image) {
       if (image.file != null) return image.file;
     }).toList()
       ..removeWhere((image) => image == null);
 
-    _urlImages = widget.gallery.photoBoxes.map((image) => image.url).toList()
+    _urlImages = widget.gallery!.photoBoxes.map((image) => image.url).toList()
       ..removeWhere((image) => image == null || image.isEmpty);
 
     super.initState();
@@ -89,28 +89,28 @@ class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
       builder: (context, index) {
         if (_urlImages.length > index) {
           final image = _urlImages[index];
-          if (image == null) return null;
 
           return PhotoViewGalleryPageOptions(
             basePosition: Alignment.center,
-            imageProvider: NetworkImage(image), //NetworkImage(url),
+            imageProvider: NetworkImage(image!), //NetworkImage(url),
             minScale: PhotoViewComputedScale.contained,
             maxScale: PhotoViewComputedScale.covered,
             controller: controller,
             tightMode: true,
+            errorBuilder: (ctx, _, __) => const SizedBox.shrink(),
           );
         } else {
           final _index = index - _urlImages.length;
           final image = images[_index];
-          if (image == null) return null;
 
           return PhotoViewGalleryPageOptions(
             basePosition: Alignment.center,
-            imageProvider: FileImage(image), //NetworkImage(url),
+            imageProvider: FileImage(image!), //NetworkImage(url),
             minScale: PhotoViewComputedScale.contained,
             maxScale: PhotoViewComputedScale.covered,
             controller: controller,
             tightMode: true,
+            errorBuilder: (ctx, _, __) => const SizedBox.shrink(),
           );
         }
       },
@@ -128,7 +128,7 @@ class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
             backgroundColor: Colors.orange,
             value: event == null
                 ? 0
-                : event.cumulativeBytesLoaded / event.expectedTotalBytes,
+                : event.cumulativeBytesLoaded / event.expectedTotalBytes!,
           ),
         ),
       ),
@@ -160,12 +160,12 @@ class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
     );
   }
 
-  Future<String> _createProduct() async {
+  Future<String?> _createProduct() async {
     List<LokalImages> gallery = [];
     for (var image in images) {
       var mediaUrl =
           await Provider.of<LocalImageService>(context, listen: false)
-              .uploadImage(file: image, name: 'productPhoto');
+              .uploadImage(file: image!, name: 'productPhoto');
       gallery.add(LokalImages(url: mediaUrl, order: gallery.length));
     }
 
@@ -194,7 +194,7 @@ class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
 
     try {
       return await products.setAvailability(
-        id: product.id,
+        id: product!.id,
         data: hoursBody.data,
       );
     } catch (e) {
@@ -206,7 +206,7 @@ class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
   Future<bool> _updateProduct() async {
     final _productBody = context.read<ProductBody>();
     final _product = context.read<Products>().findById(widget.productId);
-    final updateBody = ProductBody()..update(shopId: _product.id);
+    final updateBody = ProductBody()..update(shopId: _product!.id);
     updateBody.data.remove("gallery");
 
     if (_productBody.name != _product.name) {
@@ -226,12 +226,12 @@ class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
     }
 
     if (images.isNotEmpty) {
-      final gallery = <LokalImages>[..._product.gallery];
+      final gallery = <LokalImages>[..._product.gallery!];
 
       for (final image in images) {
         final mediaUrl = await context
             .read<LocalImageService>()
-            .uploadImage(file: image, name: 'productPhoto');
+            .uploadImage(file: image!, name: 'productPhoto');
         gallery.add(LokalImages(url: mediaUrl, order: gallery.length));
       }
       if (!listEquals(gallery, _product.gallery)) {
@@ -252,7 +252,7 @@ class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
 
     bool updateSchedule = false;
     if (widget.scheduleState == ProductScheduleState.shop) {
-      final shop = context.read<Shops>().findById(_product.shopId);
+      final shop = context.read<Shops>().findById(_product.shopId)!;
       if (shop.operatingHours != _product.availability) {
         // we update the availability of the product
         // we already set this up at the product_schedule screen.
@@ -260,9 +260,9 @@ class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
       }
     } else {
       final body = context.read<OperatingHoursBody>().operatingHours;
-      final availability = _product.availability;
-      if (!listEquals(body.unavailableDates..sort(),
-          availability.unavailableDates..sort())) {
+      final availability = _product.availability!;
+      if (!listEquals(body.unavailableDates!..sort(),
+          availability.unavailableDates!..sort())) {
         // We update the availability of the product.
         updateSchedule = true;
       }
@@ -311,7 +311,7 @@ class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
         }
       } catch (e) {
         final snackBar = SnackBar(
-          content: Text(e),
+          content: Text(e.toString()),
         );
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
       }
@@ -363,13 +363,13 @@ class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
                   child: _buildImage(product),
                 ),
                 Text(
-                  product.name,
+                  product.name!,
                   style: Theme.of(context).textTheme.headline5,
                   overflow: TextOverflow.ellipsis,
                 ),
                 const SizedBox(height: 10),
                 Text(
-                  product.description,
+                  product.description!,
                   style: Theme.of(context).textTheme.subtitle1,
                 ),
                 Spacer(),

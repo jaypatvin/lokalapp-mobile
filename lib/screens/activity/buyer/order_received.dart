@@ -11,7 +11,7 @@ import '../components/transaction_details.dart';
 
 class OrderReceived extends StatelessWidget {
   final Order order;
-  const OrderReceived({Key key, @required this.order}) : super(key: key);
+  const OrderReceived({Key? key, required this.order}) : super(key: key);
   Widget _buildButtons(context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),

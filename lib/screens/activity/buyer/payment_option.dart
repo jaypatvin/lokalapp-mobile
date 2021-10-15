@@ -11,7 +11,7 @@ import 'cash_on_delivery.dart';
 class PaymentOption extends StatelessWidget {
   final Order order;
 
-  const PaymentOption({Key key, @required this.order}) : super(key: key);
+  const PaymentOption({Key? key, required this.order}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Scaffold(

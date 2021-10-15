@@ -15,7 +15,7 @@ import '../chat/components/chat_avatar.dart';
 import '../profile_screens/components/store_rating.dart';
 
 class ProductDetail extends StatefulWidget {
-  final Product product;
+  final Product? product;
   ProductDetail(this.product);
   @override
   _ProductDetailState createState() => _ProductDetailState();
@@ -24,29 +24,29 @@ class ProductDetail extends StatefulWidget {
 class _ProductDetailState extends State<ProductDetail> {
   final TextEditingController _instructionsController = TextEditingController();
   final FocusNode _nodeInstructions = FocusNode();
-  PhotoViewController _photoViewcontroller;
+  PhotoViewController? _photoViewcontroller;
 
   int _current = 0;
   int quantity = 1;
-  String _appBarTitle;
-  String _buttonLabel;
+  String? _appBarTitle;
+  String? _buttonLabel;
 
   @override
   void initState() {
     super.initState();
-    final product = widget.product;
-    this._appBarTitle = context.read<Shops>().findById(product.shopId).name;
+    final product = widget.product!;
+    this._appBarTitle = context.read<Shops>().findById(product.shopId)!.name;
     this._buttonLabel = "ADD TO CART";
     _photoViewcontroller = PhotoViewController();
 
     // get order details from cart if it exists
     final cart = context.read<ShoppingCart>();
     if (cart.contains(product.id)) {
-      final order = cart.getProductOrder(product.id);
+      final order = cart.getProductOrder(product.id)!;
       _instructionsController.value = TextEditingValue(
-        text: order.notes,
+        text: order.notes!,
         selection: TextSelection.fromPosition(
-          TextPosition(offset: order.notes.length),
+          TextPosition(offset: order.notes!.length),
         ),
       );
       this.quantity = order.quantity;
@@ -57,7 +57,7 @@ class _ProductDetailState extends State<ProductDetail> {
 
   @override
   void dispose() {
-    _photoViewcontroller.dispose();
+    _photoViewcontroller!.dispose();
     _instructionsController.dispose();
     super.dispose();
   }
@@ -99,7 +99,7 @@ class _ProductDetailState extends State<ProductDetail> {
 
   @override
   Widget build(BuildContext context) {
-    final shop = context.read<Shops>().findById(widget.product.shopId);
+    final shop = context.read<Shops>().findById(widget.product!.shopId)!;
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: CustomAppBar(
@@ -120,7 +120,7 @@ class _ProductDetailState extends State<ProductDetail> {
             ),
             SizedBox(width: 8.0),
             Text(
-              _appBarTitle,
+              _appBarTitle!,
               style: TextStyle(
                 color: Colors.black,
                 fontFamily: "Goldplay",
@@ -153,7 +153,7 @@ class _ProductDetailState extends State<ProductDetail> {
                     onPressed: () => node.unfocus(),
                     child: Text(
                       "Done",
-                      style: Theme.of(context).textTheme.bodyText1.copyWith(
+                      style: Theme.of(context).textTheme.bodyText1!.copyWith(
                             color: Colors.black,
                           ),
                     ),
@@ -176,8 +176,8 @@ class _ProductDetailState extends State<ProductDetail> {
               ),
               SizedBox(height: 10),
               _ProductItemAndPrice(
-                productName: widget.product.name,
-                productPrice: widget.product.basePrice,
+                productName: widget.product!.name,
+                productPrice: widget.product!.basePrice,
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -186,7 +186,7 @@ class _ProductDetailState extends State<ProductDetail> {
               SizedBox(height: 10),
               Align(
                 alignment: Alignment.centerLeft,
-                child: Text(widget.product.description),
+                child: Text(widget.product!.description!),
               ),
               Divider(thickness: 1, height: 2, color: Colors.grey.shade300),
               SizedBox(height: 16),
@@ -238,8 +238,8 @@ class _ProductDetailState extends State<ProductDetail> {
                       true,
                       () {
                         Provider.of<ShoppingCart>(context, listen: false).add(
-                          shopId: widget.product.shopId,
-                          productId: widget.product.id,
+                          shopId: widget.product!.shopId,
+                          productId: widget.product!.id,
                           quantity: quantity,
                           notes: _instructionsController.text,
                         );
@@ -261,21 +261,21 @@ class _ProductDetailState extends State<ProductDetail> {
 }
 
 class _ProductGallery extends StatelessWidget {
-  final Product product;
+  final Product? product;
   final int currentIndex;
-  final PhotoViewController controller;
+  final PhotoViewController? controller;
   final void Function(int) onPageChanged;
   const _ProductGallery({
-    Key key,
-    @required this.product,
-    @required this.currentIndex,
-    @required this.controller,
-    @required this.onPageChanged,
+    Key? key,
+    required this.product,
+    required this.currentIndex,
+    required this.controller,
+    required this.onPageChanged,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final gallery = product.gallery;
+    final gallery = product!.gallery;
     if (gallery == null || gallery.length <= 0)
       return SizedBox(
         height: MediaQuery.of(context).size.height / 2,
@@ -286,18 +286,18 @@ class _ProductGallery extends StatelessWidget {
       child: Stack(
         children: [
           PhotoViewGallery.builder(
-            itemCount: product.gallery.length,
+            itemCount: product!.gallery!.length,
             onPageChanged: onPageChanged,
             gaplessPlayback: true,
             builder: (context, index) {
-              final image = product.gallery[index];
-              if (image.url.isEmpty) return null;
+              final image = product!.gallery![index];
               return PhotoViewGalleryPageOptions(
                 imageProvider: NetworkImage(image.url),
                 minScale: PhotoViewComputedScale.contained * 0.8,
                 maxScale: PhotoViewComputedScale.covered * 2,
                 disableGestures: true,
                 controller: controller,
+                errorBuilder: (ctx, _, __) => const SizedBox.shrink(),
               );
             },
             scrollPhysics: BouncingScrollPhysics(),
@@ -314,7 +314,7 @@ class _ProductGallery extends StatelessWidget {
                   backgroundColor: Colors.orange,
                   value: event == null
                       ? 0
-                      : event.cumulativeBytesLoaded / event.expectedTotalBytes,
+                      : event.cumulativeBytesLoaded / event.expectedTotalBytes!,
                 ),
               ),
             ),
@@ -347,12 +347,12 @@ class _ProductGallery extends StatelessWidget {
 }
 
 class _ProductItemAndPrice extends StatelessWidget {
-  final String productName;
-  final double productPrice;
+  final String? productName;
+  final double? productPrice;
   const _ProductItemAndPrice({
-    Key key,
-    @required this.productName,
-    @required this.productPrice,
+    Key? key,
+    required this.productName,
+    required this.productPrice,
   }) : super(key: key);
 
   @override
@@ -363,7 +363,7 @@ class _ProductItemAndPrice extends StatelessWidget {
       children: [
         Expanded(
           child: Text(
-            productName,
+            productName!,
             maxLines: null,
             style: TextStyle(
               fontFamily: "Goldplay",
@@ -387,7 +387,7 @@ class _ProductItemAndPrice extends StatelessWidget {
 }
 
 class _SpecialInstructionsLabel extends StatelessWidget {
-  const _SpecialInstructionsLabel({Key key}) : super(key: key);
+  const _SpecialInstructionsLabel({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -419,9 +419,9 @@ class _SpecialInstructionsLabel extends StatelessWidget {
 class _SpecialInstructionsTextField extends StatelessWidget {
   final maxLines = 10;
   final TextEditingController controller;
-  final FocusNode focusNode;
+  final FocusNode? focusNode;
   const _SpecialInstructionsTextField(
-      {Key key, @required this.controller, this.focusNode})
+      {Key? key, required this.controller, this.focusNode})
       : super(key: key);
 
   @override
@@ -475,10 +475,10 @@ class _SpecialInstructionsTextField extends StatelessWidget {
 }
 
 class _QuantityController extends StatelessWidget {
-  final void Function() onAdd;
-  final void Function() onSubtract;
+  final void Function()? onAdd;
+  final void Function()? onSubtract;
   const _QuantityController({
-    Key key,
+    Key? key,
     this.onAdd,
     this.onSubtract,
   }) : super(key: key);

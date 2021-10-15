@@ -14,13 +14,13 @@ import '../../../utils/themes.dart';
 import '../chat_bubble.dart';
 
 class MessageStream extends StatelessWidget {
-  final Stream<QuerySnapshot> messageStream;
+  final Stream<QuerySnapshot>? messageStream;
   final void Function(String messageId, Conversation message) onReply;
   final void Function(String messageId) onDelete;
   const MessageStream({
-    @required this.messageStream,
-    @required this.onDelete,
-    @required this.onReply,
+    required this.messageStream,
+    required this.onDelete,
+    required this.onReply,
   });
 
   List<FocusedMenuItem> _buildMenuItems(
@@ -67,7 +67,7 @@ class MessageStream extends StatelessWidget {
         FocusedMenuItem(
           title: Text(
             "Delete",
-            style: Theme.of(context).textTheme.subtitle1.copyWith(
+            style: Theme.of(context).textTheme.subtitle1!.copyWith(
                   color: kPinkColor,
                 ),
           ),
@@ -99,10 +99,10 @@ class MessageStream extends StatelessWidget {
       builder: (ctx, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(child: CircularProgressIndicator());
-        } else if (snapshot.hasError || snapshot == null) {
+        } else if (snapshot.hasError) {
           return _buildText("Something went wrong, try again.");
         } else {
-          final messages = snapshot.data.docs;
+          final messages = snapshot.data!.docs;
           if (messages.isEmpty) return _buildText("Say Hi...");
           return ListView.builder(
             physics: BouncingScrollPhysics(),

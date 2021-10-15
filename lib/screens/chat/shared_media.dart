@@ -9,15 +9,15 @@ import '../../widgets/photo_view_gallery/thumbnails/network_photo_thumbnail.dart
 
 class SharedMedia extends StatefulWidget {
   //final ChatModel chat;
-  final List<QueryDocumentSnapshot> conversations;
-  const SharedMedia({Key key, @required this.conversations}) : super(key: key);
+  final List<QueryDocumentSnapshot>? conversations;
+  const SharedMedia({Key? key, required this.conversations}) : super(key: key);
 
   @override
   _SharedMediaState createState() => _SharedMediaState();
 }
 
 class _SharedMediaState extends State<SharedMedia> {
-  List<LokalImages> _sharedMedia;
+  List<LokalImages>? _sharedMedia;
 
   @override
   initState() {
@@ -28,10 +28,10 @@ class _SharedMediaState extends State<SharedMedia> {
 
   List<LokalImages> _getAllChatMedia() {
     final images = <LokalImages>[];
-    for (final c in widget.conversations) {
+    for (final c in widget.conversations!) {
       final _conversation = Conversation.fromDocument(c);
-      if (_conversation.media.isNotEmpty) {
-        images.addAll(_conversation.media);
+      if (_conversation.media!.isNotEmpty) {
+        images.addAll(_conversation.media!);
       }
     }
     return images;
@@ -40,7 +40,7 @@ class _SharedMediaState extends State<SharedMedia> {
   void openGallery(
     BuildContext context,
     final int index,
-    final List<LokalImages> galleryItems,
+    final List<LokalImages>? galleryItems,
   ) {
     Navigator.push(
       context,
@@ -75,14 +75,14 @@ class _SharedMediaState extends State<SharedMedia> {
               width: MediaQuery.of(context).size.width,
               color: Colors.white30,
               child: GridView.builder(
-                itemCount: _sharedMedia.length,
+                itemCount: _sharedMedia!.length,
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 3,
                   childAspectRatio: 1.0,
                 ),
                 itemBuilder: (ctx, index) {
                   return NetworkPhotoThumbnail(
-                    galleryItem: _sharedMedia[index],
+                    galleryItem: _sharedMedia![index],
                     onTap: () => openGallery(context, index, _sharedMedia),
                   );
                 },

@@ -1,10 +1,9 @@
-import 'package:flutter/foundation.dart';
 import 'package:jiffy/jiffy.dart';
 
 class RepeatedDaysGenerator {
-  static RepeatedDaysGenerator _generator;
+  static RepeatedDaysGenerator? _generator;
 
-  static RepeatedDaysGenerator get instance {
+  static RepeatedDaysGenerator? get instance {
     _generator ??= RepeatedDaysGenerator();
     return _generator;
   }
@@ -17,7 +16,7 @@ class RepeatedDaysGenerator {
   }
 
   List<DateTime> getRepeatedDays({
-    @required DateTime startDate,
+    required DateTime? startDate,
     int everyNDays = 1,
     bool validate = true,
   }) {
@@ -48,11 +47,11 @@ class RepeatedDaysGenerator {
   }
 
   List<DateTime> getRepeatedWeekDays({
-    @required DateTime startDate,
+    required DateTime? startDate,
     int everyNWeeks = 1,
     List<int> selectedDays = const [0, 1, 2, 3, 4, 5, 6],
     bool validate = true,
-    int maxLength,
+    int? maxLength,
   }) {
     assert(everyNWeeks > 0);
     startDate ??= DateTime.now();
@@ -69,7 +68,7 @@ class RepeatedDaysGenerator {
     // if the user chooses MWF and its start-date starts at tuesday,
     // we need to make sure to start at monday for the iteration or
     // else we'll be skipping Monday since we iterate every week (7 days)
-    var initialDate = startDate;
+    DateTime? initialDate = startDate;
     var weekDay = startDate.weekday;
     if (weekDay == 7) weekDay = 0;
     startDate = startDate.subtract(
@@ -116,7 +115,7 @@ class RepeatedDaysGenerator {
   }
 
   List<DateTime> getRepeatedMonthDaysByStartDate({
-    @required DateTime startDate,
+    required DateTime? startDate,
     int everyNMonths = 1,
     bool validate = true,
   }) {
@@ -127,7 +126,7 @@ class RepeatedDaysGenerator {
     for (var indexDay =
             DateTime(startDate.year, startDate.month, startDate.day);
         true; // this will be handled by the break check for exactly 1 year
-        indexDay = Jiffy(indexDay).add(months: everyNMonths)) {
+        indexDay = Jiffy(indexDay).add(months: everyNMonths).dateTime) {
       // check that the days (esp. for starting date) is at least today
       if (!_isValidDate(indexDay) && validate) continue;
 
@@ -160,7 +159,7 @@ class RepeatedDaysGenerator {
 
   List<DateTime> getRepeatedMonthDaysByNthDay({
     int everyNMonths = 1,
-    int ordinal = 1, // first
+    int? ordinal = 1, // first
     int weekday = 1, // Monday
     int month = 1, // January
   }) {
@@ -176,7 +175,7 @@ class RepeatedDaysGenerator {
     // next year on the same month
     for (var indexDay = startDate;
         true;
-        indexDay = Jiffy(indexDay).add(months: 1),) {
+        indexDay = Jiffy(indexDay).add(months: 1).dateTime,) {
       var now = DateTime(indexDay.year, indexDay.month, indexDay.day);
       var count = 0;
       var nextMonth = false;
@@ -184,7 +183,7 @@ class RepeatedDaysGenerator {
       // here, we'll count how many day (i.e., Mondays) we've gone through
       // 2nd Monday will mean that we count 2 Mondays for the month
       start:
-      while (count < ordinal) {
+      while (count < ordinal!) {
         while (true) {
           // this is for the rare instances where users will pick 5th as the
           // option, where most months only have 4 weeks

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:lokalapp/screens/profile_screens/settings/settings.dart';
-import 'package:lokalapp/utils/themes.dart';
+import '../settings.dart';
+import '../../../../utils/themes.dart';
 
 class PasswordChanged extends StatelessWidget {
   buildButton(context) => Container(

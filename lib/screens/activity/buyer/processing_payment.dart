@@ -31,9 +31,9 @@ class ProcessingPayment extends StatelessWidget {
   final PaymentMode paymentMode;
 
   const ProcessingPayment({
-    Key key,
-    @required this.order,
-    @required this.paymentMode,
+    Key? key,
+    required this.order,
+    required this.paymentMode,
   }) : super(key: key);
 
   Widget _buildButtons(context) {

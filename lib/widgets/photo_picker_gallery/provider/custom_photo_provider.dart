@@ -2,18 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:photo_manager/photo_manager.dart';
 
 mixin PhotoDataProvider on ChangeNotifier {
-  AssetPathEntity _current;
+  AssetPathEntity? _current;
 
-  AssetPathEntity get currentPath => _current;
+  AssetPathEntity? get currentPath => _current;
 
-  set currentPath(AssetPathEntity current) {
+  set currentPath(AssetPathEntity? current) {
     if (_current != current) {
       _current = current;
       currentPathNotifier.value = current;
     }
   }
 
-  final currentPathNotifier = ValueNotifier<AssetPathEntity>(null);
+  final currentPathNotifier = ValueNotifier<AssetPathEntity?>(null);
 
   Map<String, PickerPathCache> _cacheMap = {};
 
@@ -41,9 +41,8 @@ mixin PhotoDataProvider on ChangeNotifier {
       AssetPathEntity b,
     ) = _defaultSort,
   }) {
-    if (sortBy != null) {
-      list.sort(sortBy);
-    }
+    list.sort(sortBy);
+
     this.pathList.clear();
     this.pathList.addAll(list);
     _cacheMap.clear();
@@ -52,7 +51,7 @@ mixin PhotoDataProvider on ChangeNotifier {
     notifyListeners();
   }
 
-  PickerPathCache getPickerCache(AssetPathEntity path) {
+  PickerPathCache? getPickerCache(AssetPathEntity path) {
     var cache = _cacheMap[path.id];
     if (cache == null) {
       _cacheMap[path.id] = PickerPathCache(path: path);
@@ -62,7 +61,7 @@ mixin PhotoDataProvider on ChangeNotifier {
 }
 
 class CustomPickerDataProvider extends ChangeNotifier with PhotoDataProvider {
-  CustomPickerDataProvider({List<AssetPathEntity> pathList, int max = 9}) {
+  CustomPickerDataProvider({List<AssetPathEntity>? pathList, int max = 9}) {
     if (pathList != null && pathList.isNotEmpty) {
       this.pathList.addAll(pathList);
     }
@@ -143,14 +142,14 @@ class PickerPathCache {
   Map<int, AssetEntity> map = {};
 
   PickerPathCache({
-    @required this.path,
+    required this.path,
   });
 
   void cache(int index, AssetEntity entity) {
     map[index] = entity;
   }
 
-  AssetEntity entity(int index) {
+  AssetEntity? entity(int index) {
     return map[index];
   }
 }

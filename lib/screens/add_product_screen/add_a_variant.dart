@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:lokalapp/providers/post_requests/product_body.dart';
-import 'package:lokalapp/utils/themes.dart';
-import 'package:lokalapp/widgets/custom_app_bar.dart';
-import 'package:lokalapp/widgets/input_name.dart';
-import 'package:lokalapp/widgets/rounded_button.dart';
 import 'package:provider/provider.dart';
 
+import '../../providers/post_requests/product_body.dart';
+import '../../widgets/custom_app_bar.dart';
+import '../../widgets/input_name.dart';
+import '../../widgets/rounded_button.dart';
 import 'components/add_product_gallery.dart';
 import 'components/product_header.dart';
 import 'product_variant_2.dart';
 
 class AddAVariant extends StatefulWidget {
   final AddProductGallery gallery;
-  AddAVariant({@required this.gallery});
+  AddAVariant({required this.gallery});
 
   @override
   _AddAVariantState createState() => _AddAVariantState();

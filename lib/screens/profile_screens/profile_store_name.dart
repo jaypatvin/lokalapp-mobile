@@ -12,7 +12,7 @@ class ProfileStoreName extends StatelessWidget {
         return Container(
           padding: EdgeInsets.all(17),
           child: Text(
-            user.firstName + " " + user.lastName,
+            user.firstName! + " " + user.lastName!,
             style: TextStyle(
                 color: Colors.black, fontWeight: FontWeight.bold, fontSize: 16),
           ),

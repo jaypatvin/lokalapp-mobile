@@ -13,24 +13,24 @@ class ProductBody extends ChangeNotifier {
   };
   Map get data => _productBody;
 
-  String get name => data['name'];
-  String get description => data['description'];
-  String get shopId => data['shop_id'];
-  double get basePrice => data['base_price'];
-  int get quantity => data['quantity'];
-  String get productCategory => data['product_category'];
-  String get status => data['status'];
-  List<Map<String, dynamic>> get gallery => data['gallery'];
+  String? get name => data['name'];
+  String? get description => data['description'];
+  String? get shopId => data['shop_id'];
+  double? get basePrice => data['base_price'];
+  int? get quantity => data['quantity'];
+  String? get productCategory => data['product_category'];
+  String? get status => data['status'];
+  List<Map<String, dynamic>>? get gallery => data['gallery'];
 
   void update({
-    String name,
-    String description,
-    String shopId,
-    double basePrice,
-    int quantity,
-    String productCategory,
-    String status,
-    List<Map<String, dynamic>> gallery,
+    String? name,
+    String? description,
+    String? shopId,
+    double? basePrice,
+    int? quantity,
+    String? productCategory,
+    String? status,
+    List<Map<String, dynamic>>? gallery,
   }) {
     _productBody['name'] = name ?? _productBody['name'];
     _productBody['description'] = description ?? _productBody['description'];

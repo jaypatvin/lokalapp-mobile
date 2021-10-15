@@ -20,23 +20,23 @@ typedef Widget DayBuilder(
 class CalendarCarousel extends StatefulWidget {
   final double width;
   final double height;
-  final DateTime selectedDateTime;
-  final Function(DateTime) onDayPressed;
-  final Function(DateTime) onNonSelectableDayPressed;
-  final List<DateTime> markedDatesMap;
-  final DateTime startDate;
+  final DateTime? selectedDateTime;
+  final Function(DateTime)? onDayPressed;
+  final Function(DateTime)? onNonSelectableDayPressed;
+  final List<DateTime?>? markedDatesMap;
+  final DateTime? startDate;
 
   final bool headerTitleTouchable;
-  final Function onHeaderTitlePressed;
-  final Function onLeftArrowPressed;
-  final Function onRightArrowPressed;
+  final Function? onHeaderTitlePressed;
+  final Function? onLeftArrowPressed;
+  final Function? onRightArrowPressed;
 
   final bool showOnlyCurrentMonthDate;
   final List<int> selectableDaysMap;
-  final List<DateTime> selectableDates;
+  final List<DateTime?> selectableDates;
 
   CalendarCarousel({
-    Key key,
+    Key? key,
     this.height = double.infinity,
     this.width = double.infinity,
     this.selectedDateTime,
@@ -67,21 +67,21 @@ enum WeekdayFormat {
 }
 
 class _CalendarState extends State<CalendarCarousel> {
-  PageController _controller;
-  List<DateTime> _dates;
-  DateTime _selectedDate;
-  DateTime _targetDate;
+  PageController? _controller;
+  late List<DateTime> _dates;
+  DateTime? _selectedDate;
+  DateTime? _targetDate;
   int _startWeekday = 0;
   int _endWeekday = 0;
-  DateFormat _localeDate;
+  DateFormat? _localeDate;
   int _pageNum = 0;
-  DateTime minDate;
-  DateTime maxDate;
-  DateTime startDate;
+  late DateTime minDate;
+  DateTime? maxDate;
+  late DateTime startDate;
 
   /// When FIRSTDAYOFWEEK is 0 in dart-intl, it represents Monday. However it is the second day in the arrays of Weekdays.
   /// Therefore we need to add 1 modulo 7 to pick the right weekday from intl. (cf. [GlobalMaterialLocalizations])
-  int firstDayOfWeek;
+  int? firstDayOfWeek;
 
   /// If the setState called from this class, don't reload the selectedDate, but it should reload selected date if called from external class
 
@@ -116,13 +116,13 @@ class _CalendarState extends State<CalendarCarousel> {
     );
 
     _localeDate = DateFormat.yMMMM("en");
-    firstDayOfWeek = (_localeDate.dateSymbols.FIRSTDAYOFWEEK + 1) % 7;
+    firstDayOfWeek = (_localeDate!.dateSymbols.FIRSTDAYOFWEEK + 1) % 7;
     _setDate();
   }
 
   @override
   dispose() {
-    _controller.dispose();
+    _controller!.dispose();
     super.dispose();
   }
 
@@ -138,11 +138,11 @@ class _CalendarState extends State<CalendarCarousel> {
         children: <Widget>[
           CalendarHeader(
               headerMargin: EdgeInsets.symmetric(vertical: 5.0.h),
-              headerTitle: '${_localeDate.format(this._dates[this._pageNum])}',
+              headerTitle: '${_localeDate!.format(this._dates[this._pageNum])}',
               showHeader: true,
               onLeftButtonPressed: () {
                 if (widget.onLeftArrowPressed != null) {
-                  widget.onLeftArrowPressed();
+                  widget.onLeftArrowPressed!();
                 }
 
                 if (this._pageNum > 0) {
@@ -151,7 +151,7 @@ class _CalendarState extends State<CalendarCarousel> {
               },
               onRightButtonPressed: () {
                 if (widget.onRightArrowPressed != null) {
-                  widget.onRightArrowPressed();
+                  widget.onRightArrowPressed!();
                 }
 
                 if (this._dates.length - 1 > this._pageNum) {
@@ -159,7 +159,7 @@ class _CalendarState extends State<CalendarCarousel> {
                 }
               },
               isTitleTouchable: widget.headerTitleTouchable,
-              onHeaderTitlePressed: widget.onHeaderTitlePressed ??
+              onHeaderTitlePressed: widget.onHeaderTitlePressed as void Function()? ??
                   () {
                     // TODO: add functions
                   }),
@@ -198,7 +198,7 @@ class _CalendarState extends State<CalendarCarousel> {
     DateTime now,
     TextStyle style,
   ) {
-    Color borderColor = Colors.transparent;
+    Color? borderColor = Colors.transparent;
     Color buttonColor = Colors.transparent;
     if (isMarked) {
       borderColor = buttonColor = Colors.orange;
@@ -225,7 +225,7 @@ class _CalendarState extends State<CalendarCarousel> {
         padding: padding,
         decoration: BoxDecoration(
             border: Border.all(
-              color: borderColor,
+              color: borderColor!,
             ),
             shape: BoxShape.rectangle,
             borderRadius: BorderRadius.all(
@@ -237,7 +237,7 @@ class _CalendarState extends State<CalendarCarousel> {
           color: buttonColor,
           onPressed: () {
             if (widget.onNonSelectableDayPressed != null && !isSelectable)
-              widget.onNonSelectableDayPressed(now);
+              widget.onNonSelectableDayPressed!(now);
 
             setState(() {
               if (_selectedDate == now) {
@@ -251,7 +251,7 @@ class _CalendarState extends State<CalendarCarousel> {
 
             // the calling method should handle the logic of the press
             // this is to avoid bloating the calendar picker
-            if (widget.onDayPressed != null) widget.onDayPressed(now);
+            if (widget.onDayPressed != null) widget.onDayPressed!(now);
           },
           shape: RoundedRectangleBorder(
             side:
@@ -278,14 +278,14 @@ class _CalendarState extends State<CalendarCarousel> {
   }
 
   AnimatedBuilder builder(int slideIndex) {
-    _startWeekday = _dates[slideIndex].weekday - firstDayOfWeek;
+    _startWeekday = _dates[slideIndex].weekday - firstDayOfWeek!;
     if (_startWeekday == 7) {
       _startWeekday = 0;
     }
     _endWeekday =
         DateTime(_dates[slideIndex].year, _dates[slideIndex].month + 1, 1)
                 .weekday -
-            firstDayOfWeek;
+            firstDayOfWeek!;
     double screenWidth = MediaQuery.of(context).size.width;
     int totalItemCount = DateTime(
           _dates[slideIndex].year,
@@ -298,11 +298,11 @@ class _CalendarState extends State<CalendarCarousel> {
     int month = _dates[slideIndex].month;
 
     return AnimatedBuilder(
-      animation: _controller,
+      animation: _controller!,
       builder: (context, child) {
         double value = 1.0;
-        if (_controller.position.haveDimensions) {
-          value = _controller.page - slideIndex;
+        if (_controller!.position.haveDimensions) {
+          value = _controller!.page! - slideIndex;
           value = (1 - (value.abs() * .5)).clamp(0.0, 1.0);
         }
 
@@ -349,7 +349,7 @@ class _CalendarState extends State<CalendarCarousel> {
                   } else {
                     return Container();
                   }
-                  bool isMarked = widget.markedDatesMap.contains(now);
+                  bool isMarked = widget.markedDatesMap!.contains(now);
                   int day = now.weekday;
                   if (day == 7) day = 0;
                   bool isSelectable = true;
@@ -359,12 +359,12 @@ class _CalendarState extends State<CalendarCarousel> {
                       startDate.millisecondsSinceEpoch;
                   final bool isLater = maxDate != null &&
                       now.millisecondsSinceEpoch >
-                          maxDate.millisecondsSinceEpoch;
+                          maxDate!.millisecondsSinceEpoch;
                   final bool isInSelectableDays =
                       widget.selectableDaysMap.contains(day);
                   final bool isInSelectableDates = widget.selectableDates.any(
                       (date) =>
-                          date.year == now.year &&
+                          date!.year == now.year &&
                           date.month == now.month &&
                           date.day == now.day);
 
@@ -400,8 +400,8 @@ class _CalendarState extends State<CalendarCarousel> {
   _init() {
     _targetDate = _selectedDate;
 
-    _pageNum = (_targetDate.year - minDate.year) * 12 +
-        _targetDate.month -
+    _pageNum = (_targetDate!.year - minDate.year) * 12 +
+        _targetDate!.month -
         minDate.month;
   }
 
@@ -421,14 +421,14 @@ class _CalendarState extends State<CalendarCarousel> {
     for (int _cnt = 0;
         0 >=
             DateTime(minDate.year, minDate.month + _cnt)
-                .difference(DateTime(maxDate.year, maxDate.month))
+                .difference(DateTime(maxDate!.year, maxDate!.month))
                 .inDays;
         _cnt++) {
       date.add(DateTime(minDate.year, minDate.month + _cnt, 1));
       if (0 ==
           date.last
               .difference(
-                  DateTime(this._targetDate.year, this._targetDate.month))
+                  DateTime(this._targetDate!.year, this._targetDate!.month))
               .inDays) {}
     }
     this._dates = date;
@@ -443,10 +443,10 @@ class _CalendarState extends State<CalendarCarousel> {
       setState(() {
         this._pageNum = page;
         this._targetDate = this._dates[page];
-        _startWeekday = _dates[page].weekday - firstDayOfWeek;
-        _endWeekday = _lastDayOfWeek(_dates[page]).weekday - firstDayOfWeek;
+        _startWeekday = _dates[page].weekday - firstDayOfWeek!;
+        _endWeekday = _lastDayOfWeek(_dates[page]).weekday - firstDayOfWeek!;
       });
-      _controller.animateToPage(page,
+      _controller!.animateToPage(page,
           duration: Duration(milliseconds: 1), curve: Threshold(0.0));
     }
   }
@@ -462,8 +462,8 @@ class _CalendarState extends State<CalendarCarousel> {
   ) {
     return !isSelectable
         ? defaultInactiveDaysTextStyle
-        : (_localeDate.dateSymbols.WEEKENDRANGE
-                    .contains((index - 1 + firstDayOfWeek) % 7)) &&
+        : (_localeDate!.dateSymbols.WEEKENDRANGE
+                    .contains((index - 1 + firstDayOfWeek!) % 7)) &&
                 !isToday
             ? (isPrevMonthDay
                 ? defaultPrevDaysTextStyle

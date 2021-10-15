@@ -11,7 +11,7 @@ import '../../add_product_screen/add_product.dart';
 import 'store_card.dart';
 
 class ShopProductField extends StatelessWidget {
-  const ShopProductField({Key key}) : super(key: key);
+  const ShopProductField({Key? key}) : super(key: key);
 
   void _addProductHandler(BuildContext context) {
     Navigator.push(
@@ -29,7 +29,7 @@ class ShopProductField extends StatelessWidget {
 
     return Consumer<Products>(
       builder: (ctx, products, child) {
-        if (products.findByShop(shop.id).isEmpty) {
+        if (products.findByShop(shop.id!).isEmpty) {
           return Container(
             width: MediaQuery.of(context).size.width * 0.5,
             child: ListView(

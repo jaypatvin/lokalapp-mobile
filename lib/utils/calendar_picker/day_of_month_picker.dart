@@ -3,17 +3,17 @@ import 'package:flutter/material.dart';
 import 'src/default_styles.dart';
 
 class DayOfMonthPicker extends StatefulWidget {
-  final double height;
-  final double width;
+  final double? height;
+  final double? width;
   final Function(int) onDayPressed;
-  final int markedDay;
+  final int? markedDay;
   final EdgeInsets padding;
 
   const DayOfMonthPicker({
-    Key key,
+    Key? key,
     this.height,
     this.width,
-    @required this.onDayPressed,
+    required this.onDayPressed,
     this.markedDay,
     this.padding = EdgeInsets.zero,
   }) : super(key: key);
@@ -23,7 +23,7 @@ class DayOfMonthPicker extends StatefulWidget {
 }
 
 class _DayOfMonthPickerState extends State<DayOfMonthPicker> {
-  int _markedDay;
+  int? _markedDay;
 
   @override
   void initState() {
@@ -41,7 +41,7 @@ class _DayOfMonthPickerState extends State<DayOfMonthPicker> {
           decoration: BoxDecoration(
             border: Border.all(
                 color:
-                    this._markedDay == day ? Colors.orange : Colors.grey[300]),
+                    this._markedDay == day ? Colors.orange : Colors.grey[300]!),
             shape: BoxShape.rectangle,
             borderRadius: BorderRadius.all(
               Radius.circular(15.0),
@@ -59,9 +59,7 @@ class _DayOfMonthPickerState extends State<DayOfMonthPicker> {
                   _markedDay = day;
                 }
               });
-              if (widget.onDayPressed != null) {
-                widget.onDayPressed(day);
-              }
+              widget.onDayPressed(day);
             },
             shape: RoundedRectangleBorder(
               side: BorderSide(

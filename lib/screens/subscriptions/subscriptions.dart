@@ -16,14 +16,14 @@ import 'subscription_details.dart';
 
 class Subscriptions extends StatefulWidget {
   final bool isBuyer;
-  const Subscriptions({Key key, @required this.isBuyer}) : super(key: key);
+  const Subscriptions({Key? key, required this.isBuyer}) : super(key: key);
 
   @override
   _SubscriptionsState createState() => _SubscriptionsState();
 }
 
 class _SubscriptionsState extends State<Subscriptions> {
-  Stream<QuerySnapshot> _stream;
+  Stream<QuerySnapshot>? _stream;
   @override
   void initState() {
     super.initState();
@@ -58,7 +58,7 @@ class _SubscriptionsState extends State<Subscriptions> {
             default:
               if (snapshot.hasError)
                 return Text('Error: ${snapshot.error}');
-              else if (!snapshot.hasData || snapshot.data.docs.length == 0)
+              else if (!snapshot.hasData || snapshot.data!.docs.length == 0)
                 return Center(
                   child: Text(
                     'No subscriptions yet!',
@@ -69,18 +69,20 @@ class _SubscriptionsState extends State<Subscriptions> {
                 return GroupedListView(
                   shrinkWrap: true,
                   physics: AlwaysScrollableScrollPhysics(),
-                  elements: snapshot.data.docs,
+                  elements: snapshot.data!.docs,
                   groupBy: (QueryDocumentSnapshot snapshot) {
-                    final archived = snapshot["archived"] as bool;
+                    final archived = snapshot["archived"] as bool?;
                     return archived;
                   },
-                  groupSeparatorBuilder: (archived) {
+                  groupSeparatorBuilder: (dynamic archived) {
                     return const SizedBox();
                   },
                   order: GroupedListOrder.DESC,
                   itemBuilder: (context, QueryDocumentSnapshot snapshot) {
+                    final snapshotData =
+                        snapshot.data() as Map<String, dynamic>;
                     final data = {
-                      ...snapshot.data(),
+                      ...snapshotData,
                       "id": snapshot.id,
                     };
                     final subscriptionPlan =
@@ -101,8 +103,10 @@ class _SubscriptionsState extends State<Subscriptions> {
                   },
                   itemComparator:
                       (QueryDocumentSnapshot a, QueryDocumentSnapshot b) {
-                    final subA = ProductSubscriptionPlan.fromMap(a.data());
-                    final subB = ProductSubscriptionPlan.fromMap(b.data());
+                    final subA = ProductSubscriptionPlan.fromMap(
+                        a.data() as Map<String, dynamic>);
+                    final subB = ProductSubscriptionPlan.fromMap(
+                        b.data() as Map<String, dynamic>);
 
                     return subA.plan.startDates.first
                         .compareTo(subB.plan.startDates.first);
@@ -117,12 +121,12 @@ class _SubscriptionsState extends State<Subscriptions> {
 }
 
 class _SubscriptionCard extends StatelessWidget {
-  final void Function() onDetailsPressed;
+  final void Function()? onDetailsPressed;
   final bool isBuyer;
   final ProductSubscriptionPlan subscriptionPlan;
   const _SubscriptionCard({
-    Key key,
-    @required this.subscriptionPlan,
+    Key? key,
+    required this.subscriptionPlan,
     this.onDetailsPressed,
     this.isBuyer = true,
   }) : super(key: key);

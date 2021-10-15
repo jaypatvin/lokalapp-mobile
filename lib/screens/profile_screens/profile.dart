@@ -15,7 +15,7 @@ import 'components/user_shop_banner.dart';
 
 class ProfileScreen extends StatefulWidget {
   static const routeName = "/profile";
-  const ProfileScreen({Key key}) : super(key: key);
+  const ProfileScreen({Key? key}) : super(key: key);
 
   @override
   _ProfileScreenState createState() => _ProfileScreenState();

@@ -10,9 +10,9 @@ import '../subscriptions/subscriptions.dart';
 import 'components/grouped_orders.dart';
 
 class Transactions extends StatefulWidget {
-  final Map<int, String> statuses;
+  final Map<int, String?> statuses;
   final bool isBuyer;
-  final Animation<Color> colorAnimation;
+  final Animation<Color?>? colorAnimation;
   const Transactions(this.statuses, this.isBuyer, this.colorAnimation);
 
   @override
@@ -20,9 +20,9 @@ class Transactions extends StatefulWidget {
 }
 
 class _TransactionsState extends State<Transactions> {
-  int selectedIndex;
-  final statuses = <int, String>{};
-  Stream<QuerySnapshot> _stream;
+  int? selectedIndex;
+  final statuses = <int, String?>{};
+  Stream<QuerySnapshot>? _stream;
 
   @override
   void initState() {
@@ -109,12 +109,12 @@ class _TransactionsState extends State<Transactions> {
         Container(
           padding: const EdgeInsets.all(20.0),
           width: MediaQuery.of(context).size.width,
-          color: widget.colorAnimation.value,
+          color: widget.colorAnimation!.value,
           child: Text(
             widget.isBuyer
                 ? "These are the products you ordered from other stores."
                 : "These are the products other people ordered from your stores.",
-            style: Theme.of(context).textTheme.bodyText2.copyWith(
+            style: Theme.of(context).textTheme.bodyText2!.copyWith(
                   color: Colors.white,
                 ),
           ),
@@ -146,7 +146,6 @@ class _TransactionsState extends State<Transactions> {
         if (_stream != null)
           Container(
             height: MediaQuery.of(context).size.height * 0.04,
-            padding: EdgeInsets.symmetric(horizontal: 16.0),
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
               shrinkWrap: true,
@@ -166,7 +165,7 @@ class _TransactionsState extends State<Transactions> {
                           : const Color(0xFFEFEFEF),
                     ),
                     child: Text(
-                      this.statuses[key],
+                      this.statuses[key]!,
                       style: TextStyle(
                         fontWeight: FontWeight.w500,
                       ),

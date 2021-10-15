@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:lokalapp/providers/post_requests/auth_body.dart';
-import 'package:lokalapp/providers/user.dart';
-import 'package:lokalapp/screens/profile_screens/settings/email/email_changed.dart';
-import 'package:lokalapp/services/database.dart';
-import 'package:lokalapp/utils/themes.dart';
+import '../../../../providers/post_requests/auth_body.dart';
+import '../../../../providers/user.dart';
+import 'email_changed.dart';
+import '../../../../services/database.dart';
+import '../../../../utils/themes.dart';
 import 'package:provider/provider.dart';
 
 class ChangeEmail extends StatefulWidget {
@@ -12,11 +12,11 @@ class ChangeEmail extends StatefulWidget {
 }
 
 class _ChangeEmailState extends State<ChangeEmail> {
-  String newEmail;
+  String? newEmail;
 
-  String confirmEmail;
+  String? confirmEmail;
 
-  String pw;
+  String? pw;
 
   bool confirmed = false;
 
@@ -40,7 +40,7 @@ class _ChangeEmailState extends State<ChangeEmail> {
       // height: MediaQuery.of(context).size.height * 0.5,
       child: TextFormField(
         obscureText: obscureText,
-        onChanged: onChanged,
+        onChanged: onChanged as void Function(String)?,
         decoration: InputDecoration(
           fillColor: Colors.white,
           filled: true,

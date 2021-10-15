@@ -23,7 +23,7 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  ScrollController _controller;
+  ScrollController? _controller;
   double _postFieldHeight = 85.0.h;
 
   @override
@@ -39,19 +39,19 @@ class _HomeState extends State<Home> {
 
   @override
   void dispose() {
-    _controller.removeListener(_scrollListener);
-    _controller.dispose();
+    _controller!.removeListener(_scrollListener);
+    _controller!.dispose();
     super.dispose();
   }
 
   void _scrollListener() {
-    if (_controller.position.userScrollDirection == ScrollDirection.reverse) {
+    if (_controller!.position.userScrollDirection == ScrollDirection.reverse) {
       if (_postFieldHeight != 0)
         setState(() {
           _postFieldHeight = 0;
         });
     }
-    if (_controller.position.userScrollDirection == ScrollDirection.forward) {
+    if (_controller!.position.userScrollDirection == ScrollDirection.forward) {
       if (_postFieldHeight == 0)
         setState(() {
           _postFieldHeight = 85.0.h;

@@ -27,13 +27,13 @@ import 'components/comment_card.dart';
 
 class PostDetails extends StatefulWidget {
   final ActivityFeed activity;
-  final Function(String) onUserPressed;
+  final void Function(String?)? onUserPressed;
   final Function() onLike;
 
   PostDetails({
-    @required this.activity,
-    @required this.onUserPressed,
-    @required this.onLike,
+    required this.activity,
+    required this.onUserPressed,
+    required this.onLike,
   });
 
   @override
@@ -45,22 +45,22 @@ class _PostDetailsState extends State<PostDetails> {
   final FocusNode _commentInputFocusNode = FocusNode();
   final ScrollController scrollController = ScrollController();
   bool showImagePicker = false;
-  CustomPickerDataProvider provider;
+  CustomPickerDataProvider? provider;
 
   @override
   void initState() {
     super.initState();
     provider = Provider.of<CustomPickerDataProvider>(context, listen: false);
-    provider.onPickMax.addListener(showMaxAssetsText);
-    provider.pickedNotifier.addListener(onPick);
+    provider!.onPickMax.addListener(showMaxAssetsText);
+    provider!.pickedNotifier.addListener(onPick);
     providerInit();
   }
 
   @override
   void dispose() {
-    provider.picked.clear();
-    provider.removeListener(showMaxAssetsText);
-    provider.pickedNotifier.removeListener(onPick);
+    provider!.picked.clear();
+    provider!.removeListener(showMaxAssetsText);
+    provider!.pickedNotifier.removeListener(onPick);
     super.dispose();
   }
 
@@ -81,7 +81,7 @@ class _PostDetailsState extends State<PostDetails> {
       onlyAll: true,
       type: RequestType.image,
     );
-    provider.resetPathList(pathList);
+    provider!.resetPathList(pathList);
   }
 
   void showMaxAssetsText() {
@@ -93,10 +93,10 @@ class _PostDetailsState extends State<PostDetails> {
   }
 
   Widget buildHeader({
-    @required String firstName,
-    @required String lastName,
-    String photo,
-    double spacing,
+    required String? firstName,
+    required String? lastName,
+    required String photo,
+    double? spacing,
   }) {
     return Row(
       children: [
@@ -239,7 +239,7 @@ class _PostDetailsState extends State<PostDetails> {
 
   void removeAsset(int index) {
     setState(() {
-      provider.picked.removeAt(index);
+      provider!.picked.removeAt(index);
     });
   }
 
@@ -247,10 +247,11 @@ class _PostDetailsState extends State<PostDetails> {
     final cUser = context.read<CurrentUser>();
     final service = context.read<LocalImageService>();
     final gallery = <LokalImages>[];
-    for (var asset in provider.picked) {
+    for (var asset in provider!.picked) {
       var file = await asset.file;
-      var url = await service.uploadImage(file: file, name: 'post_photo');
-      gallery.add(LokalImages(url: url, order: provider.picked.indexOf(asset)));
+      var url = await service.uploadImage(file: file!, name: 'post_photo');
+      gallery
+          .add(LokalImages(url: url, order: provider!.picked.indexOf(asset)));
     }
 
     Map<String, dynamic> body = {
@@ -267,7 +268,7 @@ class _PostDetailsState extends State<PostDetails> {
     if (success) {
       commentInputController.clear();
       setState(() {
-        provider.picked.clear();
+        provider!.picked.clear();
       });
       Provider.of<Activities>(context, listen: false).fetchComments(
         activityId: widget.activity.id,
@@ -327,12 +328,12 @@ class _PostDetailsState extends State<PostDetails> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   AnimatedContainer(
-                    height: provider.picked.length > 0 ? 100 : 0.0,
+                    height: provider!.picked.length > 0 ? 100 : 0.0,
                     duration: const Duration(milliseconds: 200),
                     child: InputImages(
-                      pickedImages: provider.picked,
+                      pickedImages: provider!.picked,
                       onImageRemove: (index) => setState(
-                        () => provider.picked.removeAt(index),
+                        () => provider!.picked.removeAt(index),
                       ),
                     ),
                   ),
@@ -360,7 +361,7 @@ class _PostDetailsState extends State<PostDetails> {
             ? Center(child: CircularProgressIndicator())
             : ListView.builder(
                 physics: NeverScrollableScrollPhysics(),
-                itemCount: widget.activity.comments?.length,
+                itemCount: widget.activity.comments.length,
                 shrinkWrap: true,
                 itemBuilder: (context, index) {
                   final comment = widget.activity.comments[index];
@@ -371,7 +372,7 @@ class _PostDetailsState extends State<PostDetails> {
                       CommentCard(
                         user: commentUser,
                         message: comment.message,
-                        images: comment.images ?? [],
+                        images: comment.images,
                         onLongPress: this.onCommentLongPress,
                         onUserPressed: widget.onUserPressed,
                         onLike: () {
@@ -445,7 +446,7 @@ class _PostDetailsState extends State<PostDetails> {
                       onPressed: () => node.unfocus(),
                       child: Text(
                         "Done",
-                        style: Theme.of(context).textTheme.bodyText1.copyWith(
+                        style: Theme.of(context).textTheme.bodyText1!.copyWith(
                               color: Colors.black,
                             ),
                       ),
@@ -475,7 +476,7 @@ class _PostDetailsState extends State<PostDetails> {
                               child: buildHeader(
                                 firstName: user.firstName,
                                 lastName: user.lastName,
-                                photo: user.profilePhoto,
+                                photo: user.profilePhoto!,
                                 spacing: 10.0.w,
                               ),
                             ),

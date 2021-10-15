@@ -14,7 +14,7 @@ class OrderConfirmed extends StatelessWidget {
   final bool isBuyer;
 
   const OrderConfirmed({
-    @required this.order,
+    required this.order,
     this.isBuyer = true,
   });
 

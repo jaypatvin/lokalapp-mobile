@@ -21,13 +21,13 @@ import 'order_details_buttons/status_buttons/status_500.dart';
 import 'order_details_buttons/status_buttons/status_600.dart';
 
 class OrderDetailsButtons extends StatelessWidget {
-  final int statusCode;
+  final int? statusCode;
   final bool isBuyer;
   final Order order;
   const OrderDetailsButtons({
-    @required this.statusCode,
-    @required this.isBuyer,
-    @required this.order,
+    required this.statusCode,
+    required this.isBuyer,
+    required this.order,
   });
 
   // We'll let this stateless widget handle its own button press
@@ -36,19 +36,19 @@ class OrderDetailsButtons extends StatelessWidget {
 
     switch (action) {
       case OrderAction.cancel:
-        await LokalApiService.instance.orders.cancel(
+        await LokalApiService.instance!.orders!.cancel(
           idToken: authToken,
           orderId: this.order.id,
         );
         break;
       case OrderAction.decline:
-        await LokalApiService.instance.orders.decline(
+        await LokalApiService.instance!.orders!.decline(
           idToken: authToken,
           orderId: this.order.id,
         );
         break;
       case OrderAction.confirm:
-        final response = await LokalApiService.instance.orders.confirm(
+        final response = await LokalApiService.instance!.orders!.confirm(
           idToken: authToken,
           orderId: this.order.id,
         );
@@ -74,12 +74,12 @@ class OrderDetailsButtons extends StatelessWidget {
         break;
       case OrderAction.viewPayment:
         final galleryItems = <LokalImages>[
-          LokalImages(url: order.proofOfPayment, order: 0),
+          LokalImages(url: order.proofOfPayment!, order: 0),
         ];
         openGallery(context, 0, galleryItems);
         break;
       case OrderAction.confirmPayment:
-        final response = await LokalApiService.instance.orders.confirmPayment(
+        final response = await LokalApiService.instance!.orders!.confirmPayment(
           idToken: authToken,
           orderId: this.order.id,
         );
@@ -94,7 +94,7 @@ class OrderDetailsButtons extends StatelessWidget {
         }
         break;
       case OrderAction.shipOut:
-        final response = await LokalApiService.instance.orders.shipOut(
+        final response = await LokalApiService.instance!.orders!.shipOut(
           idToken: authToken,
           orderId: this.order.id,
         );
@@ -109,7 +109,7 @@ class OrderDetailsButtons extends StatelessWidget {
         }
         break;
       case OrderAction.received:
-        final response = await LokalApiService.instance.orders.receive(
+        final response = await LokalApiService.instance!.orders!.receive(
           idToken: authToken,
           orderId: this.order.id,
         );

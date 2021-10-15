@@ -6,8 +6,8 @@ import '../../../../widgets/app_button.dart';
 import '../../../chat/chat_view.dart';
 
 class MessageBuyerButton extends StatelessWidget {
-  final Order order;
-  const MessageBuyerButton({Key key, @required this.order}) : super(key: key);
+  final Order? order;
+  const MessageBuyerButton({Key? key, required this.order}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -18,8 +18,8 @@ class MessageBuyerButton extends StatelessWidget {
         MaterialPageRoute(
           builder: (ctx) => ChatView(
             true,
-            members: [order.buyerId, order.shopId],
-            shopId: order.shopId,
+            members: [order!.buyerId, order!.shopId],
+            shopId: order!.shopId,
           ),
         ),
       );
@@ -30,7 +30,7 @@ class MessageBuyerButton extends StatelessWidget {
 class MessageSellerButton extends StatelessWidget {
   final Order order;
 
-  const MessageSellerButton({Key key, @required this.order}) : super(key: key);
+  const MessageSellerButton({Key? key, required this.order}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return AppButton("Message Seller", kTealColor, false, () {

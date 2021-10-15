@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 
-import "../utils/functions.utils.dart";
 import 'activity_feed_comment.dart';
 import 'lokal_images.dart';
 import 'timestamp_time_object.dart';
@@ -17,32 +16,32 @@ class ActivityFeed {
   List<ActivityFeedComment> comments;
   bool liked;
   DateTime createdAt;
-  int likedCount = 0;
-  int commentCount = 0;
+  int likedCount;
+  int commentCount;
   ActivityFeed({
-    this.id,
-    this.communityId,
-    this.userId,
-    this.message,
-    this.images,
-    this.comments,
-    this.liked,
-    this.createdAt,
-    this.likedCount,
-    this.commentCount,
+    required this.id,
+    required this.communityId,
+    required this.userId,
+    required this.liked,
+    required this.createdAt,
+    required this.message,
+    required this.images,
+    required this.comments,
+    this.likedCount = 0,
+    this.commentCount = 0,
   });
 
   ActivityFeed copyWith({
-    String id,
-    String communityId,
-    String userId,
-    String message,
-    List<LokalImages> images,
-    List<ActivityFeedComment> comments,
-    bool liked,
-    DateTime createdAt,
-    int likedCount,
-    int commentCount,
+    String? id,
+    String? communityId,
+    String? userId,
+    String? message,
+    List<LokalImages>? images,
+    List<ActivityFeedComment>? comments,
+    bool? liked,
+    DateTime? createdAt,
+    int? likedCount,
+    int? commentCount,
   }) {
     return ActivityFeed(
       id: id ?? this.id,
@@ -64,8 +63,8 @@ class ActivityFeed {
       'community_id': communityId,
       'user_id': userId,
       'message': message,
-      'images': images?.map((x) => x.toMap())?.toList(),
-      'comments': comments?.map((x) => x.toMap())?.toList(),
+      'images': images.map((x) => x.toMap()).toList(),
+      'comments': comments.map((x) => x.toMap()).toList(),
       'liked': liked,
       'created_at': Timestamp.fromDate(createdAt),
     };
@@ -73,23 +72,22 @@ class ActivityFeed {
 
   factory ActivityFeed.fromMap(Map<String, dynamic> map) {
     return ActivityFeed(
-      id: map['id'],
-      communityId: map['community_id'],
-      userId: map['user_id'],
-      message: map['message'],
-      images: List<LokalImages>.from(
-          map['images']?.map((x) => LokalImages.fromMap(x))),
+      id: map['id'] ?? "",
+      communityId: map['community_id'] ?? "",
+      userId: map['user_id'] ?? "",
+      message: map['message'] ?? "",
+      images: map['images'] != null
+          ? List<LokalImages>.from(
+              map['images']?.map((x) => LokalImages.fromMap(x)))
+          : const [],
       liked: map['liked'] ?? false,
       comments: map['comments'] == null
-          ? null
+          ? const []
           : List<ActivityFeedComment>.from(
               map['comments']?.map(
                 (x) => ActivityFeedComment.fromMap(map),
               ),
             ),
-      // createdAt: DateTime.fromMicrosecondsSinceEpoch(
-      //     TimestampObject.fromMap(map['created_at']).seconds * 1000000 +
-      //         TimestampObject.fromMap(map['created_at']).nanoseconds ~/ 1000),
       createdAt: TimestampObject.fromMap(map['created_at']).toDateTime(),
       likedCount: map['_meta'] != null ? map['_meta']['likes_count'] ?? 0 : 0,
       commentCount:
@@ -104,7 +102,10 @@ class ActivityFeed {
 
   @override
   String toString() {
-    return 'ActivityFeed(id: $id, communityId: $communityId, userId: $userId, message: $message, images: $images, comments: $comments, liked: $liked, createdAt: $createdAt, likedCount: $likedCount, commentCount: $commentCount)';
+    return 'ActivityFeed(id: $id, communityId: $communityId, userId: $userId, '
+        'message: $message, images: $images, comments: $comments, '
+        'liked: $liked, createdAt: $createdAt, likedCount: $likedCount, '
+        'commentCount: $commentCount)';
   }
 
   @override

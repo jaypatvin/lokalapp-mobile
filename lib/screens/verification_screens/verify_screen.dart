@@ -18,7 +18,7 @@ import 'verify_confirmation_screen.dart';
 
 class VerifyScreen extends StatefulWidget {
   final bool skippable;
-  const VerifyScreen({Key key, this.skippable = true}) : super(key: key);
+  const VerifyScreen({Key? key, this.skippable = true}) : super(key: key);
   @override
   _VerifyScreenState createState() => _VerifyScreenState();
 }
@@ -31,8 +31,8 @@ class _VerifyScreenState extends State<VerifyScreen> {
     "Unified Multipurpose ID",
   ];
 
-  String _chosenIdType;
-  File _file;
+  String? _chosenIdType;
+  File? _file;
 
   Widget androidDropDown() {
     List<DropdownMenuItem<String>> dropDownItems = [];
@@ -115,9 +115,9 @@ class _VerifyScreenState extends State<VerifyScreen> {
         Provider.of<LocalImageService>(context, listen: false);
     if (_file != null) {
       String mediaUrl =
-          await picker.uploadImage(file: _file, name: 'verification');
+          await picker.uploadImage(file: _file!, name: 'verification');
 
-      if (mediaUrl != null && mediaUrl.isNotEmpty) {
+      if (mediaUrl.isNotEmpty) {
         Provider.of<CurrentUser>(context, listen: false)
           ..verify({
             'id_photo': mediaUrl,
@@ -154,7 +154,7 @@ class _VerifyScreenState extends State<VerifyScreen> {
     }
   }
 
-  List<Widget> _appBarActions() {
+  List<Widget>? _appBarActions() {
     if (widget.skippable) {
       return [
         TextButton(

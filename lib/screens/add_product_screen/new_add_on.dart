@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:lokalapp/providers/post_requests/product_body.dart';
-import 'package:lokalapp/screens/add_product_screen/product_add_ons_2.dart';
-import 'package:lokalapp/widgets/custom_app_bar.dart';
-import 'package:lokalapp/widgets/input_name.dart';
-import 'package:lokalapp/widgets/rounded_button.dart';
+import '../../providers/post_requests/product_body.dart';
+import 'product_add_ons_2.dart';
+import '../../widgets/custom_app_bar.dart';
+import '../../widgets/input_name.dart';
+import '../../widgets/rounded_button.dart';
 import 'package:provider/provider.dart';
 
 import 'components/add_product_gallery.dart';
@@ -11,7 +11,7 @@ import 'components/product_header.dart';
 
 class NewAddOn extends StatefulWidget {
   final AddProductGallery gallery;
-  NewAddOn({@required this.gallery});
+  NewAddOn({required this.gallery});
   @override
   _NewAddOnState createState() => _NewAddOnState();
 }
@@ -26,7 +26,6 @@ class _NewAddOnState extends State<NewAddOn> {
     var horizontalPadding = MediaQuery.of(context).size.width * 0.05;
     var topPadding = MediaQuery.of(context).size.height * 0.03;
     var image = widget.gallery.photoBoxes.first;
-    final AddProductGallery _gallery = AddProductGallery();
     return Container(
       padding: EdgeInsets.fromLTRB(
         horizontalPadding,

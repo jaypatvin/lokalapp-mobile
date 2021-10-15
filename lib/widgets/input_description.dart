@@ -3,11 +3,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class InputDescription extends StatelessWidget {
   final int maxLines;
-  final Function(String) onChanged;
-  final String errorText;
-  final String hintText;
-  final TextEditingController controller;
-  final FocusNode focusNode;
+  final Function(String)? onChanged;
+  final String? errorText;
+  final String? hintText;
+  final TextEditingController? controller;
+  final FocusNode? focusNode;
 
   InputDescription({
     this.maxLines = 10,

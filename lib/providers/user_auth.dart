@@ -14,8 +14,8 @@ enum AuthStatus {
 
 class UserAuth extends ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  User _user;
-  User get user => _user;
+  User? _user;
+  User? get user => _user;
 
   void _onUserChanges() {
     _auth.userChanges().listen((user) {
@@ -37,7 +37,7 @@ class UserAuth extends ChangeNotifier {
         this._user = authResult.user;
         notifyListeners();
       }
-    } catch (e) {
+    } on FirebaseAuthException catch (e) {
       if (e.code == "email-already-in-use") {
         retVal = await loginWithEmail(email, password);
       }
@@ -54,7 +54,7 @@ class UserAuth extends ChangeNotifier {
         notifyListeners();
       }
       return AuthStatus.Success;
-    } catch (e) {
+    } on FirebaseAuthException catch (e) {
       switch (e.code) {
         case "invalid-email":
           return AuthStatus.InvalidEmail;
@@ -77,8 +77,9 @@ class UserAuth extends ChangeNotifier {
         ],
       );
 
-      GoogleSignInAccount _googleUser = await _googleSignIn.signIn();
-      GoogleSignInAuthentication _googleAuth = await _googleUser.authentication;
+      GoogleSignInAccount? _googleUser = await _googleSignIn.signIn();
+      GoogleSignInAuthentication _googleAuth =
+          await _googleUser!.authentication;
       final AuthCredential credential = GoogleAuthProvider.credential(
           idToken: _googleAuth.idToken, accessToken: _googleAuth.accessToken);
       final UserCredential authResult =
@@ -96,15 +97,18 @@ class UserAuth extends ChangeNotifier {
 
   Future<AuthStatus> loginWithFacebook() async {
     try {
-      final AccessToken accessToken = await FacebookAuth.instance.login();
+      final LoginResult loginResult = await FacebookAuth.instance.login();
+      final AccessToken accessToken = loginResult.accessToken!;
       final OAuthCredential credential =
           FacebookAuthProvider.credential(accessToken.token);
       final UserCredential authResult =
           await _auth.signInWithCredential(credential);
-      if (authResult != null) {
+
+      if (authResult == null) {
         this._user = authResult.user;
         notifyListeners();
       }
+
       return AuthStatus.Success;
     } catch (e) {
       return AuthStatus.Error;
@@ -123,7 +127,7 @@ class UserAuth extends ChangeNotifier {
 
   Future<AuthStatus> onStartUp() async {
     try {
-      final User _firebaseUser = _auth.currentUser;
+      final User _firebaseUser = _auth.currentUser!;
       await _firebaseUser.reload();
 
       if (_firebaseUser != null) {

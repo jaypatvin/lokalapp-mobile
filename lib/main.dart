@@ -4,7 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lottie/lottie.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
-import 'package:screen_loader/screen_loader.dart';
+import 'widgets/screen_loader.dart';
 
 import 'providers/activities.dart';
 import 'providers/cart.dart';
@@ -29,7 +29,7 @@ import 'utils/themes.dart';
 import 'utils/utility.dart';
 import 'widgets/photo_picker_gallery/provider/custom_photo_provider.dart';
 
-UserSharedPreferences _userSharedPreferences;
+UserSharedPreferences? _userSharedPreferences;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
@@ -45,7 +45,7 @@ class _MyAppState extends State<MyApp> {
   @override
   initState() {
     _userSharedPreferences = UserSharedPreferences();
-    _userSharedPreferences.init();
+    _userSharedPreferences!.init();
     super.initState();
   }
 
@@ -61,39 +61,39 @@ class _MyAppState extends State<MyApp> {
     return MultiProvider(
       providers: [
         //shared preference
-        Provider<UserSharedPreferences>.value(value: _userSharedPreferences),
+        Provider<UserSharedPreferences?>.value(value: _userSharedPreferences),
 
         // auth:
         ChangeNotifierProvider<UserAuth>(create: (_) => UserAuth()),
         ChangeNotifierProvider<Invite>(create: (_) => Invite()),
 
         // states:
-        ChangeNotifierProxyProvider<UserAuth, CurrentUser>(
+        ChangeNotifierProxyProvider<UserAuth, CurrentUser?>(
           create: (_) => CurrentUser(),
-          update: (_, auth, user) => user..initializeToken(auth.user),
+          update: (_, auth, user) => user!..initializeToken(auth.user),
         ),
-        ChangeNotifierProxyProvider<CurrentUser, Activities>(
+        ChangeNotifierProxyProvider<CurrentUser, Activities?>(
           create: (_) => Activities(),
-          update: (_, user, activities) => activities
+          update: (_, user, activities) => activities!
             ..setCommunityId(user.communityId)
             ..setIdToken(user.idToken),
         ),
-        ChangeNotifierProxyProvider<CurrentUser, Shops>(
+        ChangeNotifierProxyProvider<CurrentUser, Shops?>(
           create: (_) => Shops(),
-          update: (_, user, shops) => shops
+          update: (_, user, shops) => shops!
             ..setCommunityId(user.communityId)
             ..setIdToken(user.idToken),
         ),
-        ChangeNotifierProxyProvider<CurrentUser, Products>(
+        ChangeNotifierProxyProvider<CurrentUser, Products?>(
           create: (_) => Products(),
-          update: (_, user, products) => products
+          update: (_, user, products) => products!
             ..setCommunityId(user.communityId)
             ..setIdToken(user.idToken),
         ),
 
-        ChangeNotifierProxyProvider<CurrentUser, Users>(
+        ChangeNotifierProxyProvider<CurrentUser, Users?>(
           create: (_) => Users(),
-          update: (_, user, users) => users
+          update: (_, user, users) => users!
             ..setCommunityId(user.communityId)
             ..setIdToken(user.idToken),
         ),
@@ -109,24 +109,24 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider(create: (_) => CustomPickerDataProvider(max: 5)),
 
         // services:
-        Provider<MediaUtility>(create: (_) => MediaUtility.instance),
-        Provider<LocalImageService>(create: (_) => LocalImageService.instance),
+        Provider<MediaUtility?>(create: (_) => MediaUtility.instance),
+        Provider<LocalImageService?>(create: (_) => LocalImageService.instance),
         Provider<ChatHelpers>(create: (_) => ChatHelpers()),
-        ProxyProvider<CurrentUser, SubscriptionProvider>(
+        ProxyProvider<CurrentUser, SubscriptionProvider?>(
           create: (_) => SubscriptionProvider(),
           update: (_, user, subscription) =>
-              subscription..setIdToken(user.idToken),
+              subscription!..setIdToken(user.idToken),
         ),
-        ProxyProvider<CurrentUser, ChatProvider>(
+        ProxyProvider<CurrentUser, ChatProvider?>(
           create: (_) => ChatProvider(),
-          update: (_, user, chat) => chat..setIdToken(user.idToken),
+          update: (_, user, chat) => chat!..setIdToken(user.idToken),
         ),
 
         // for bottom nav bar
         ListenableProvider(create: (_) => PersistentTabController()),
       ],
       child: StreamBuilder<UserSharedPreferences>(
-        stream: _userSharedPreferences.stream,
+        stream: _userSharedPreferences!.stream,
         builder: (context, snapshot) {
           return ScreenUtilInit(
             builder: () {

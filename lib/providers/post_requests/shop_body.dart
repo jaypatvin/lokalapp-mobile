@@ -14,22 +14,22 @@ class ShopBody extends ChangeNotifier {
 
   Map get data => _shopBody;
 
-  String get name => _shopBody['name'];
-  String get description => _shopBody['description'];
-  String get profilePhoto => _shopBody['profile_photo'];
-  String get coverPhoto => _shopBody['cover_photo'];
+  String? get name => _shopBody['name'];
+  String? get description => _shopBody['description'];
+  String? get profilePhoto => _shopBody['profile_photo'];
+  String? get coverPhoto => _shopBody['cover_photo'];
 
   void update({
-    String name,
-    String userId,
-    String communityId,
-    String description,
-    String profilePhoto,
-    String coverPhoto,
-    bool isClosed,
-    String opening,
-    String closing,
-    String status,
+    String? name,
+    String? userId,
+    String? communityId,
+    String? description,
+    String? profilePhoto,
+    String? coverPhoto,
+    bool? isClosed,
+    String? opening,
+    String? closing,
+    String? status,
   }) {
     _shopBody['name'] = name ?? _shopBody['name'];
     _shopBody['user_id'] = userId ?? _shopBody['user_id'];

@@ -4,9 +4,9 @@ import '../../../models/lokal_images.dart';
 
 class NetworkPhotoThumbnail extends StatelessWidget {
   const NetworkPhotoThumbnail({
-    Key key,
-    @required this.galleryItem,
-    @required this.onTap,
+    Key? key,
+    required this.galleryItem,
+    required this.onTap,
   }) : super(key: key);
 
   final LokalImages galleryItem;

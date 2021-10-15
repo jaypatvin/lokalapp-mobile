@@ -106,7 +106,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
           curve: Curves.ease,
           duration: Duration(milliseconds: 200),
         ),
-        navBarStyle: NavBarStyle.lokal,
+        navBarStyle: NavBarStyle.svg,
       ),
     );
   }

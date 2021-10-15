@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:photo_manager/photo_manager.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:photo_manager/photo_manager.dart';
 
 import '../utils/functions.utils.dart';
 import 'photo_view_gallery/thumbnails/asset_photo_thumbnail.dart';
@@ -9,9 +9,9 @@ class InputImages extends StatelessWidget {
   final List<AssetEntity> pickedImages;
   final void Function(int) onImageRemove;
   const InputImages({
-    Key key,
-    @required this.pickedImages,
-    @required this.onImageRemove,
+    Key? key,
+    required this.pickedImages,
+    required this.onImageRemove,
   }) : super(key: key);
 
   @override

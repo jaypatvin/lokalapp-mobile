@@ -4,7 +4,7 @@ import 'default_styles.dart' show defaultHeaderTextStyle;
 class CalendarHeader extends StatelessWidget {
   /// Passing in values for [leftButtonIcon] or [rightButtonIcon] will override [headerIconColor]
   CalendarHeader(
-      {@required this.headerTitle,
+      {required this.headerTitle,
       this.headerMargin,
       this.showHeader = true,
       this.headerTextStyle,
@@ -12,25 +12,25 @@ class CalendarHeader extends StatelessWidget {
       this.headerIconColor,
       this.leftButtonIcon,
       this.rightButtonIcon,
-      @required this.onLeftButtonPressed,
-      @required this.onRightButtonPressed,
+      required this.onLeftButtonPressed,
+      required this.onRightButtonPressed,
       this.isTitleTouchable,
-      @required this.onHeaderTitlePressed});
+      required this.onHeaderTitlePressed});
 
   final String headerTitle;
-  final EdgeInsetsGeometry headerMargin;
+  final EdgeInsetsGeometry? headerMargin;
   final bool showHeader;
-  final TextStyle headerTextStyle;
+  final TextStyle? headerTextStyle;
   final bool showHeaderButtons;
-  final Color headerIconColor;
-  final Widget leftButtonIcon;
-  final Widget rightButtonIcon;
+  final Color? headerIconColor;
+  final Widget? leftButtonIcon;
+  final Widget? rightButtonIcon;
   final VoidCallback onLeftButtonPressed;
   final VoidCallback onRightButtonPressed;
-  final bool isTitleTouchable;
+  final bool? isTitleTouchable;
   final VoidCallback onHeaderTitlePressed;
 
-  TextStyle get getTextStyle =>
+  TextStyle? get getTextStyle =>
       headerTextStyle != null ? headerTextStyle : defaultHeaderTextStyle;
 
   Widget _leftButton() => IconButton(
@@ -59,12 +59,12 @@ class CalendarHeader extends StatelessWidget {
       ? Container(
           margin: headerMargin,
           child: DefaultTextStyle(
-              style: getTextStyle,
+              style: getTextStyle!,
               child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
                     showHeaderButtons ? _leftButton() : Container(),
-                    isTitleTouchable
+                    isTitleTouchable!
                         ? _headerTouchable()
                         : Text(headerTitle, style: getTextStyle),
                     showHeaderButtons ? _rightButton() : Container(),

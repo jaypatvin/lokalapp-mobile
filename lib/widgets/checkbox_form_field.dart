@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 
 class CheckboxFormField extends FormField<bool> {
   CheckboxFormField({
-    Widget title,
-    FormFieldSetter<bool> onSaved,
-    FormFieldValidator<bool> validator,
+    Widget? title,
+    FormFieldSetter<bool>? onSaved,
+    FormFieldValidator<bool>? validator,
     bool initialValue = false,
     bool autovalidate = false,
   }) : super(
@@ -21,7 +21,7 @@ class CheckboxFormField extends FormField<bool> {
               subtitle: state.hasError
                   ? Builder(
                       builder: (BuildContext context) => Text(
-                        state.errorText,
+                        state.errorText!,
                         style: TextStyle(color: Theme.of(context).errorColor),
                       ),
                     )

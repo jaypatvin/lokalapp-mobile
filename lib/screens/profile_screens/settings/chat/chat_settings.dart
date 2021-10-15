@@ -1,8 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:lokalapp/models/lokal_user.dart';
-import 'package:lokalapp/screens/profile_screens/settings/email/email_changed.dart';
-import 'package:lokalapp/utils/themes.dart';
+
+import '../../../../utils/themes.dart';
 
 class ChatSettings extends StatefulWidget {
   @override

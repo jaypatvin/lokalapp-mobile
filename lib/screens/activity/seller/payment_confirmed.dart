@@ -10,9 +10,9 @@ import '../components/order_details_buttons/message_buttons.dart';
 import '../components/transaction_details.dart';
 
 class PaymentConfirmed extends StatelessWidget {
-  final Order order;
+  final Order? order;
 
-  const PaymentConfirmed({Key key, this.order}) : super(key: key);
+  const PaymentConfirmed({Key? key, this.order}) : super(key: key);
 
   Widget _buildButtons(context) {
     return Padding(

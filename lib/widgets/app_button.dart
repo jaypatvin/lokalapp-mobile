@@ -3,7 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class AppButton extends StatelessWidget {
   /// Button Label
-  final String text;
+  final String? text;
 
   /// Sets the button Color.
   ///
@@ -15,7 +15,7 @@ class AppButton extends StatelessWidget {
   final bool isFilled;
 
   /// The function to be called when this button is pressed.
-  final void Function() onPressed;
+  final void Function()? onPressed;
 
   /// The style to be applied to the Button Label.
   ///
@@ -26,7 +26,7 @@ class AppButton extends StatelessWidget {
   /// fontSize: 16,
   /// fontWeight: FontWeight.w600,
   /// ) ```
-  final TextStyle textStyle;
+  final TextStyle? textStyle;
   const AppButton(
     this.text,
     this.color,
@@ -46,7 +46,7 @@ class AppButton extends StatelessWidget {
       ),
       textColor: isFilled ? Colors.white : this.color,
       child: Text(
-        text,
+        text!,
         style: TextStyle(
           fontFamily: "Goldplay",
           fontSize: 16.0.sp,

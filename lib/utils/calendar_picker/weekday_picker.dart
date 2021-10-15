@@ -8,13 +8,13 @@ import 'src/default_styles.dart';
 class WeekdayPicker extends StatefulWidget {
   final WeekdayFormat weekdayFormat;
   final String locale;
-  final int firstDayOfWeek;
+  final int? firstDayOfWeek;
   final EdgeInsets weekdayMargin;
   final EdgeInsets weekdayPadding;
   final Color weekdayBackgroundColor;
-  final TextStyle weekdayTextStyle;
+  final TextStyle? weekdayTextStyle;
   final bool daysHaveCircularBorder;
-  final void Function(int) onDayPressed;
+  final void Function(int?)? onDayPressed;
   final List<int> markedDaysMap;
 
   WeekdayPicker({
@@ -26,16 +26,16 @@ class WeekdayPicker extends StatefulWidget {
     this.weekdayBackgroundColor = Colors.transparent,
     this.weekdayTextStyle,
     this.daysHaveCircularBorder = true,
-    @required this.onDayPressed,
-    @required this.markedDaysMap,
+    required this.onDayPressed,
+    required this.markedDaysMap,
   });
   @override
   _WeekdayPickerState createState() => _WeekdayPickerState();
 }
 
 class _WeekdayPickerState extends State<WeekdayPicker> {
-  DateFormat _localeDate;
-  int firstDayOfWeek;
+  late DateFormat _localeDate;
+  int? firstDayOfWeek;
 
   @override
   initState() {
@@ -49,7 +49,7 @@ class _WeekdayPickerState extends State<WeekdayPicker> {
     super.initState();
   }
 
-  Widget _weekdayContainer(bool isMarked, int weekday, String weekDayName) {
+  Widget _weekdayContainer(bool isMarked, int? weekday, String weekDayName) {
     return Container(
       margin: EdgeInsets.all(2.0),
       child: GestureDetector(
@@ -58,7 +58,7 @@ class _WeekdayPickerState extends State<WeekdayPicker> {
           padding: const EdgeInsets.all(2.0),
           decoration: BoxDecoration(
             border:
-                Border.all(color: isMarked ? Colors.orange : Colors.grey[300]),
+                Border.all(color: isMarked ? Colors.orange : Colors.grey[300]!),
             shape: widget.daysHaveCircularBorder
                 ? BoxShape.circle
                 : BoxShape.rectangle,
@@ -74,7 +74,7 @@ class _WeekdayPickerState extends State<WeekdayPicker> {
             onPressed: () {
               // the calling method should handle the logic of the day press
               if (widget.onDayPressed != null) {
-                widget.onDayPressed(weekday);
+                widget.onDayPressed!(weekday);
               }
             },
             shape: widget.daysHaveCircularBorder
@@ -116,32 +116,32 @@ class _WeekdayPickerState extends State<WeekdayPicker> {
     List<Widget> list = [];
 
     /// because of number of days in a week is 7, so it would be easier to count it til 7.
-    for (var i = firstDayOfWeek, count = 0;
-        count < 7;
+    for (int? i = firstDayOfWeek, count = 0;
+        count! < 7;
         i = (i + 1) % 7, count++) {
       String weekDay;
 
       switch (widget.weekdayFormat) {
         case WeekdayFormat.weekdays:
-          weekDay = _localeDate.dateSymbols.WEEKDAYS[i];
+          weekDay = _localeDate.dateSymbols.WEEKDAYS[i!];
           break;
         case WeekdayFormat.standalone:
-          weekDay = _localeDate.dateSymbols.STANDALONEWEEKDAYS[i];
+          weekDay = _localeDate.dateSymbols.STANDALONEWEEKDAYS[i!];
           break;
         case WeekdayFormat.short:
-          weekDay = _localeDate.dateSymbols.SHORTWEEKDAYS[i];
+          weekDay = _localeDate.dateSymbols.SHORTWEEKDAYS[i!];
           break;
         case WeekdayFormat.standaloneShort:
-          weekDay = _localeDate.dateSymbols.STANDALONESHORTWEEKDAYS[i];
+          weekDay = _localeDate.dateSymbols.STANDALONESHORTWEEKDAYS[i!];
           break;
         case WeekdayFormat.narrow:
-          weekDay = _localeDate.dateSymbols.NARROWWEEKDAYS[i];
+          weekDay = _localeDate.dateSymbols.NARROWWEEKDAYS[i!];
           break;
         case WeekdayFormat.standaloneNarrow:
-          weekDay = _localeDate.dateSymbols.STANDALONENARROWWEEKDAYS[i];
+          weekDay = _localeDate.dateSymbols.STANDALONENARROWWEEKDAYS[i!];
           break;
         default:
-          weekDay = _localeDate.dateSymbols.STANDALONEWEEKDAYS[i];
+          weekDay = _localeDate.dateSymbols.STANDALONEWEEKDAYS[i!];
           break;
       }
       bool isMarked = widget.markedDaysMap.contains(count);

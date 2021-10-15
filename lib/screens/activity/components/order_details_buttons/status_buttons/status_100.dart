@@ -11,10 +11,10 @@ class Status100Buttons extends StatelessWidget {
   final Order order;
   final void Function(OrderAction) onPress;
   const Status100Buttons({
-    Key key,
+    Key? key,
     this.isBuyer = true,
-    @required this.order,
-    @required this.onPress,
+    required this.order,
+    required this.onPress,
   }) : super(key: key);
 
   @override

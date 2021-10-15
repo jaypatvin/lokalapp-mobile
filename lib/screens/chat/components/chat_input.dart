@@ -12,22 +12,22 @@ class ChatInput extends StatelessWidget {
   final void Function() onMessageSend;
   final void Function() onShowImagePicker;
   final void Function() onCancelReply;
-  final void Function() onTextFieldTap;
+  final void Function()? onTextFieldTap;
   final void Function(int) onImageRemove;
   final TextEditingController chatInputController;
-  final FocusNode chatFocusNode;
-  final Conversation replyMessage;
+  final FocusNode? chatFocusNode;
+  final Conversation? replyMessage;
   final List<AssetEntity> images;
 
   const ChatInput({
-    Key key,
-    @required this.onMessageSend,
-    @required this.onShowImagePicker,
-    @required this.onCancelReply,
-    @required this.replyMessage,
-    @required this.images,
-    @required this.onImageRemove,
-    @required this.chatInputController,
+    Key? key,
+    required this.onMessageSend,
+    required this.onShowImagePicker,
+    required this.onCancelReply,
+    required this.replyMessage,
+    required this.images,
+    required this.onImageRemove,
+    required this.chatInputController,
     this.chatFocusNode,
     this.onTextFieldTap,
   }) : super(key: key);

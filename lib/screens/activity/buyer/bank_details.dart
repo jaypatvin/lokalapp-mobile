@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:screen_loader/screen_loader.dart';
+import '../../../widgets/screen_loader.dart';
 
 import '../../../models/order.dart';
 import '../../../providers/user.dart';
@@ -18,8 +18,8 @@ import 'processing_payment.dart';
 class BankDetails extends StatefulWidget {
   final Order order;
   const BankDetails({
-    Key key,
-    @required this.order,
+    Key? key,
+    required this.order,
   }) : super(key: key);
 
   @override
@@ -27,10 +27,10 @@ class BankDetails extends StatefulWidget {
 }
 
 class _BankDetailsState extends State<BankDetails> with ScreenLoader {
-  File proofOfPayment;
+  File? proofOfPayment;
 
   void _imagePickerHandler() async {
-    final photo = await MediaUtility.instance.showMediaDialog(context);
+    final photo = await MediaUtility.instance!.showMediaDialog(context);
 
     if (photo != null) {
       setState(() {
@@ -41,13 +41,13 @@ class _BankDetailsState extends State<BankDetails> with ScreenLoader {
 
   Future<void> _onSubmitHandler() async {
     final idToken = Provider.of<CurrentUser>(context, listen: false).idToken;
-    final service = LocalImageService.instance;
+    final service = LocalImageService.instance!;
     final url = await service.uploadImage(
-      file: this.proofOfPayment,
+      file: this.proofOfPayment!,
       name: "proof_of_payment",
     );
 
-    LokalApiService.instance.orders.pay(
+    LokalApiService.instance!.orders!.pay(
       idToken: idToken,
       orderId: widget.order.id,
       data: <String, String>{

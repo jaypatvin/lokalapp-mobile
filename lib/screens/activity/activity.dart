@@ -17,16 +17,16 @@ class Activity extends StatefulWidget {
 
 class _ActivityState extends State<Activity>
     with TickerProviderStateMixin, AfterLayoutMixin<Activity> {
-  var _userSharedPreferences = UserSharedPreferences();
-  TabController _tabController;
+  late final _userSharedPreferences;
+  TabController? _tabController;
 
-  final buyerStatuses = <int, String>{};
-  final sellerStatuses = <int, String>{};
+  final buyerStatuses = <int, String?>{};
+  final sellerStatuses = <int, String?>{};
 
-  Future<QuerySnapshot> _statuses;
+  Future<QuerySnapshot>? _statuses;
 
-  AnimationController _animationController;
-  Animation<Color> _colorAnimation;
+  late AnimationController _animationController;
+  Animation<Color?>? _colorAnimation;
 
   @override
   void initState() {
@@ -71,7 +71,7 @@ class _ActivityState extends State<Activity>
         borderRadius: BorderRadius.vertical(
           top: Radius.circular(30.0),
         ),
-        color: _colorAnimation.value,
+        color: _colorAnimation!.value,
       ),
       labelStyle: Theme.of(context).textTheme.headline6,
       tabs: [
@@ -86,9 +86,8 @@ class _ActivityState extends State<Activity>
     return FutureBuilder(
       future: _statuses,
       builder: (ctx, AsyncSnapshot<QuerySnapshot> snapshot) {
-        if (snapshot != null &&
-            (snapshot.connectionState != ConnectionState.done ||
-                snapshot.hasError)) {
+        if (snapshot.connectionState != ConnectionState.done ||
+            snapshot.hasError) {
           return SizedBox(
             width: double.infinity,
             height: double.infinity,
@@ -100,9 +99,9 @@ class _ActivityState extends State<Activity>
             ),
           );
         }
-        snapshot.data.docs.forEach((doc) {
+        snapshot.data!.docs.forEach((doc) {
           final statusCode = int.parse(doc.id);
-          final dataMap = doc.data();
+          final dataMap = doc.data() as Map<String, dynamic>;
           buyerStatuses[statusCode] = dataMap["buyer_status"];
           sellerStatuses[statusCode] = dataMap["seller_status"];
         });
@@ -283,7 +282,7 @@ class _ActivityState extends State<Activity>
   @override
   void dispose() {
     _tabController?.dispose();
-    _userSharedPreferences?.dispose();
+    _userSharedPreferences.dispose();
     super.dispose();
   }
 }

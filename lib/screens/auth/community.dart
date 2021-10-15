@@ -23,14 +23,14 @@ class _CommunityState extends State<Community> {
   final _formKey = GlobalKey<FormState>();
 
   void _signUpUser(
-      {@required LoginType type, String email, String password}) async {
+      {required LoginType type, String? email, String? password}) async {
     final auth = context.read<UserAuth>();
     try {
-      AuthStatus _authStatus;
+      AuthStatus? _authStatus;
 
       switch (type) {
         case LoginType.email:
-          _authStatus = await auth.signUp(email, password);
+          _authStatus = await auth.signUp(email!, password!);
           break;
         case LoginType.google:
           _authStatus = await auth.loginWithGoogle();
@@ -49,7 +49,7 @@ class _CommunityState extends State<Community> {
         );
       } else if (_authStatus == AuthStatus.Success) {
         var user = Provider.of<CurrentUser>(context, listen: false);
-        await user.fetch(auth.user);
+        await user.fetch(auth.user!);
         if (user.state == UserState.LoggedIn) {
           Navigator.pushAndRemoveUntil(
             context,
@@ -138,7 +138,7 @@ class _CommunityState extends State<Community> {
               submitButtonLabel: "REGISTER",
               onFormChanged: () => setState(() {}),
               onFormSubmit: () {
-                if (!_formKey.currentState.validate()) return;
+                if (!_formKey.currentState!.validate()) return;
                 _signUpUser(
                   type: LoginType.email,
                   email: _emailController.text.trim(),

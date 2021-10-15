@@ -8,26 +8,26 @@ import '../services/lokal_api/subscription_service.dart';
 
 class SubscriptionPlanBodySchedule {
   final List<DateTime> startDates;
-  final int repeatUnit;
-  final String repeatType;
-  final DateTime lastDate;
+  final int? repeatUnit;
+  final String? repeatType;
+  final DateTime? lastDate;
 
   const SubscriptionPlanBodySchedule({
-    @required this.startDates,
-    @required this.repeatUnit,
-    @required this.repeatType,
+    required this.startDates,
+    required this.repeatUnit,
+    required this.repeatType,
     this.lastDate,
   });
 
   Map<String, dynamic> toMap() {
     return {
       'start_dates': startDates
-          ?.map((date) => DateFormat("yyyy-MM-dd").format(date))
-          ?.toList(),
+          .map((date) => DateFormat("yyyy-MM-dd").format(date))
+          .toList(),
       'repeat_unit': repeatUnit,
       'repeat_type': repeatType,
       'last_date':
-          lastDate != null ? DateFormat("yyyy-MM-dd").format(lastDate) : "",
+          lastDate != null ? DateFormat("yyyy-MM-dd").format(lastDate!) : "",
     };
   }
 
@@ -60,13 +60,13 @@ class SubscriptionPlanBodySchedule {
 }
 
 class SubscriptionPlanBody {
-  String productId;
-  String buyerId;
-  String shopId;
-  int quantity;
-  String instruction;
-  String paymentMethod;
-  SubscriptionPlanBodySchedule plan;
+  String? productId;
+  String? buyerId;
+  String? shopId;
+  int? quantity;
+  String? instruction;
+  String? paymentMethod;
+  SubscriptionPlanBodySchedule? plan;
   SubscriptionPlanBody({
     this.productId,
     this.buyerId,
@@ -84,7 +84,7 @@ class SubscriptionPlanBody {
       'shop_id': shopId,
       'quantity': quantity,
       'payment_method': paymentMethod,
-      'plan': plan.toMap(),
+      'plan': plan!.toMap(),
       'instruction': instruction,
     };
   }
@@ -126,36 +126,31 @@ class SubscriptionPlanBody {
 
 class SubscriptionProvider {
   final _service = SubscriptionService.instance;
-  String _idToken;
+  String? _idToken;
 
-  void setIdToken(String idToken) {
+  void setIdToken(String? idToken) {
     _idToken = idToken;
   }
 
-  Future<ProductSubscriptionPlan> createSubscriptionPlan(
+  Future<ProductSubscriptionPlan?> createSubscriptionPlan(
     Map<String, dynamic> data,
   ) async {
     final response =
-        await _service.createSubscriptionPlan(idToken: _idToken, data: data);
+        await _service!.createSubscriptionPlan(idToken: _idToken, data: data);
 
-    if (response.statusCode != 200) {
-      return null;
-    }
+    print(response.body);
+    // if (response.statusCode != 200) throw response.reasonPhrase;
 
-    try {
-      final Map<String, dynamic> body = json.decode(response.body);
-      if (body['status'] != "ok") throw Exception(body['data']);
+    final Map<String, dynamic> body = json.decode(response.body);
+    if (body['status'] != "ok") throw body['message'];
 
-      final subscriptionPlan = ProductSubscriptionPlan.fromMap(body['data']);
-      return subscriptionPlan;
-    } catch (e) {
-      return null;
-    }
+    final subscriptionPlan = ProductSubscriptionPlan.fromMap(body['data']);
+    return subscriptionPlan;
   }
 
-  Future<bool> autoReschedulePlan(String planId) async {
+  Future<bool> autoReschedulePlan(String? planId) async {
     final response =
-        await _service.autoReschedulePlan(idToken: _idToken, planId: planId);
+        await _service!.autoReschedulePlan(idToken: _idToken, planId: planId);
 
     if (response.statusCode != 200) {
       return false;
@@ -170,10 +165,10 @@ class SubscriptionProvider {
   }
 
   Future<bool> manualReschedulePlan(
-    String planId,
+    String? planId,
     Map<String, dynamic> data,
   ) async {
-    final response = await _service.manualReschedulePlan(
+    final response = await _service!.manualReschedulePlan(
       idToken: _idToken,
       planId: planId,
       data: data,

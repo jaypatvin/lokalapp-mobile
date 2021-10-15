@@ -10,7 +10,7 @@ import 'components/shop_product_field.dart';
 
 class UserShop extends StatefulWidget {
   static const String routeName = "/profile/shop";
-  const UserShop({Key key}) : super(key: key);
+  const UserShop({Key? key}) : super(key: key);
 
   @override
   _UserShopState createState() => _UserShopState();
@@ -27,7 +27,7 @@ class _UserShopState extends State<UserShop> {
           displayPhoto: user.profilePhoto,
         ),
         title: Text(
-          user.displayName,
+          user.displayName!,
           style: TextStyle(
             color: Colors.black,
             fontWeight: FontWeight.bold,

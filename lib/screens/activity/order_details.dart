@@ -9,23 +9,23 @@ import 'components/transaction_details.dart';
 // code repetition.
 class OrderDetails extends StatelessWidget {
   final bool isBuyer;
-  final String subheader;
+  final String? subheader;
   final Order order;
   const OrderDetails({
-    @required this.order,
+    required this.order,
     this.isBuyer = true,
     this.subheader = "",
   });
 
   Widget buildTextInfo() {
     final _address = order.deliveryAddress;
-    final address = _address.street +
+    final address = _address.street! +
         ", " +
-        _address.barangay +
+        _address.barangay! +
         ", " +
-        _address.subdivision +
+        _address.subdivision! +
         " " +
-        _address.city;
+        _address.city!;
 
     return Container(
       width: double.infinity,
@@ -39,7 +39,7 @@ class OrderDetails extends StatelessWidget {
             ),
           ),
           Text(
-            order.instruction,
+            order.instruction!,
             style: TextStyle(
               fontWeight: FontWeight.w500,
             ),
@@ -58,7 +58,7 @@ class OrderDetails extends StatelessWidget {
             ),
           ),
           SizedBox(height: 16.0),
-          if (order.statusCode >= 400)
+          if (order.statusCode! >= 400)
             RichText(
               text: TextSpan(
                 text: "Mode of Payment: ",
@@ -103,15 +103,15 @@ class OrderDetails extends StatelessWidget {
           children: [
             Text(
               "Order Details",
-              style: Theme.of(context).textTheme.subtitle1.copyWith(
+              style: Theme.of(context).textTheme.subtitle1!.copyWith(
                 color: Colors.white,
               ),
             ),
             Visibility(
-              visible: subheader.isNotEmpty,
+              visible: subheader!.isNotEmpty,
               child: Text(
-                subheader,
-                style: Theme.of(context).textTheme.subtitle2.copyWith(
+                subheader!,
+                style: Theme.of(context).textTheme.subtitle2!.copyWith(
                   color:
                       this.order.statusCode == 10 || this.order.statusCode == 20
                           ? kOrangeColor

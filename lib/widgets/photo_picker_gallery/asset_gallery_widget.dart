@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:photo_widget/photo_widget.dart';
+import 'asset_widget.dart';
+
 import 'package:photo_manager/photo_manager.dart';
 
 typedef Widget AssetPathWidgetBuilder(
@@ -9,22 +10,22 @@ typedef void OnAssetItemClick(
     BuildContext context, AssetEntity entity, int index);
 
 class AssetGalleryWidget extends StatefulWidget {
-  final AssetPathEntity path;
+  final AssetPathEntity? path;
   final AssetWidgetBuilder buildItem;
   final int thumbSize;
   final Widget scrollingWidget;
   final bool loadWhenScrolling;
-  final OnAssetItemClick onAssetItemClick;
+  final OnAssetItemClick? onAssetItemClick;
   final double assetHeight;
   final double assetWidth;
-  final WidgetBuilder specialItemBuilder;
+  final WidgetBuilder? specialItemBuilder;
 
   const AssetGalleryWidget({
-    Key key,
-    @required this.path,
+    Key? key,
+    required this.path,
     this.buildItem = AssetWidget.buildWidget,
     this.thumbSize = 100,
-    this.scrollingWidget = const ScrollingPlaceholder(),
+    this.scrollingWidget = const _ScrollingWidget(),
     this.onAssetItemClick,
     this.loadWhenScrolling = false,
     this.assetHeight = 100,
@@ -69,12 +70,12 @@ class _AssetGalleryWidgetState extends State<AssetGalleryWidget> {
       return widget.buildItem(context, asset, widget.thumbSize);
     } else {
       return FutureBuilder<List<AssetEntity>>(
-        future: widget.path.getAssetListRange(start: index, end: index + 1),
+        future: widget.path!.getAssetListRange(start: index, end: index + 1),
         builder: (ctx, snapshot) {
-          if (!snapshot.hasData || snapshot.data.isEmpty) {
+          if (!snapshot.hasData || snapshot.data!.isEmpty) {
             return widget.scrollingWidget;
           }
-          final asset = snapshot.data[0];
+          final asset = snapshot.data![0];
           if (asset.type == AssetType.video) {}
           cacheMap[index] = asset;
           return widget.buildItem(context, asset, widget.thumbSize);
@@ -92,7 +93,7 @@ class _AssetGalleryWidgetState extends State<AssetGalleryWidget> {
     }
 
     if (index == 0 && widget.specialItemBuilder != null) {
-      return widget.specialItemBuilder(context);
+      return widget.specialItemBuilder!(context);
     }
 
     if (widget.loadWhenScrolling) {
@@ -100,7 +101,7 @@ class _AssetGalleryWidgetState extends State<AssetGalleryWidget> {
         onTap: () async {
           var asset = cacheMap[currentIndex];
           if (asset == null) {
-            asset = (await widget.path.getAssetListRange(
+            asset = (await widget.path!.getAssetListRange(
                 start: currentIndex, end: currentIndex + 1))[0];
             cacheMap[currentIndex] = asset;
           }
@@ -113,7 +114,7 @@ class _AssetGalleryWidgetState extends State<AssetGalleryWidget> {
       onTap: () async {
         var asset = cacheMap[currentIndex];
         if (asset == null) {
-          asset = (await widget.path.getAssetListRange(
+          asset = (await widget.path!.getAssetListRange(
               start: currentIndex, end: currentIndex + 1))[0];
           cacheMap[currentIndex] = asset;
         }
@@ -159,7 +160,7 @@ class _AssetGalleryWidgetState extends State<AssetGalleryWidget> {
 }
 
 class _WrapItem extends StatefulWidget {
-  final AssetPathEntity path;
+  final AssetPathEntity? path;
   final int index;
   final void Function(AssetEntity entity) onLoaded;
   final ValueNotifier<bool> valueNotifier;
@@ -167,19 +168,19 @@ class _WrapItem extends StatefulWidget {
   final AssetWidgetBuilder buildItem;
   final int thumbSize;
   final Widget scrollingPlaceHolder;
-  final AssetEntity entity;
-  final Map<int, AssetEntity> cacheMap;
+  final AssetEntity? entity;
+  final Map<int, AssetEntity>? cacheMap;
   const _WrapItem({
-    Key key,
-    @required this.path,
-    @required this.index,
-    @required this.onLoaded,
-    @required this.valueNotifier,
-    @required this.loaded,
-    @required this.buildItem,
-    @required this.thumbSize,
-    @required this.scrollingPlaceHolder,
-    @required this.entity,
+    Key? key,
+    required this.path,
+    required this.index,
+    required this.onLoaded,
+    required this.valueNotifier,
+    required this.loaded,
+    required this.buildItem,
+    required this.thumbSize,
+    required this.scrollingPlaceHolder,
+    required this.entity,
     this.cacheMap,
   }) : super(key: key);
 
@@ -193,12 +194,12 @@ class __WrapItemState extends State<_WrapItem> {
   bool _loaded = false;
 
   bool get loaded => _loaded || widget.loaded;
-  AssetEntity assetEntity;
+  AssetEntity? assetEntity;
 
   @override
   void initState() {
     super.initState();
-    assetEntity = widget.cacheMap[widget.index];
+    assetEntity = widget.cacheMap![widget.index];
     widget.valueNotifier.addListener(onChange);
     if (!scrolling) {
       _load();
@@ -229,13 +230,13 @@ class __WrapItemState extends State<_WrapItem> {
     if (assetEntity == null) {
       return widget.scrollingPlaceHolder;
     }
-    return widget.buildItem(context, assetEntity, widget.thumbSize);
+    return widget.buildItem(context, assetEntity!, widget.thumbSize);
   }
 
   Future<void> _load() async {
-    final list = await widget.path
+    final list = await widget.path!
         .getAssetListRange(start: widget.index, end: widget.index + 1);
-    if (list != null && list.isNotEmpty) {
+    if (list.isNotEmpty) {
       final asset = list[0];
       _loaded = true;
       widget.onLoaded(asset);
@@ -244,5 +245,22 @@ class __WrapItemState extends State<_WrapItem> {
         setState(() {});
       }
     }
+  }
+}
+
+class _ScrollingWidget extends StatelessWidget {
+  const _ScrollingWidget({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return const SizedBox(
+      width: double.infinity,
+      height: double.infinity,
+      child: const DecoratedBox(
+        decoration: const BoxDecoration(
+          color: const Color(0xFF4A4748),
+        ),
+      ),
+    );
   }
 }

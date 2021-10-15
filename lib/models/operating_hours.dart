@@ -3,9 +3,9 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 
 class CustomDates {
-  String date;
-  String endTime;
-  String startTime;
+  String? date;
+  String? endTime;
+  String? startTime;
   CustomDates({
     this.date,
     this.endTime,
@@ -13,9 +13,9 @@ class CustomDates {
   });
 
   CustomDates copyWith({
-    String date,
-    String endTime,
-    String startTime,
+    String? date,
+    String? endTime,
+    String? startTime,
   }) {
     return CustomDates(
       date: date ?? this.date,
@@ -64,13 +64,13 @@ class CustomDates {
 }
 
 class OperatingHours {
-  String startTime;
-  String endTime;
-  String repeatType;
-  int repeatUnit;
-  List<String> startDates;
-  List<String> unavailableDates;
-  List<CustomDates> customDates;
+  String? startTime;
+  String? endTime;
+  String? repeatType;
+  int? repeatUnit;
+  List<String>? startDates;
+  List<String>? unavailableDates;
+  List<CustomDates>? customDates;
   OperatingHours({
     this.startTime,
     this.endTime,
@@ -82,13 +82,13 @@ class OperatingHours {
   });
 
   OperatingHours copyWith({
-    String startTime,
-    String endTime,
-    String repeatType,
-    int repeatUnit,
-    List<String> startDates,
-    List<String> unavailableDates,
-    List<CustomDates> customDates,
+    String? startTime,
+    String? endTime,
+    String? repeatType,
+    int? repeatUnit,
+    List<String>? startDates,
+    List<String>? unavailableDates,
+    List<CustomDates>? customDates,
   }) {
     return OperatingHours(
       startTime: startTime ?? this.startTime,
@@ -109,7 +109,7 @@ class OperatingHours {
       'repeat_unit': repeatUnit,
       'start_dates': startDates,
       'unavailable_dates': unavailableDates,
-      'custom_dates': customDates?.map((x) => x.toMap())?.toList(),
+      'custom_dates': customDates?.map((x) => x.toMap()).toList(),
     };
   }
 

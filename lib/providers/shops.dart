@@ -1,42 +1,43 @@
 import 'dart:convert';
 
+import 'package:collection/collection.dart' show IterableExtension;
 import 'package:flutter/foundation.dart';
 
 import '../models/user_shop.dart';
 import '../services/lokal_api_service.dart';
 
 class Shops extends ChangeNotifier {
-  String _communityId;
-  String _idToken;
+  String? _communityId;
+  String? _idToken;
   List<ShopModel> _shops = [];
-  bool _isLoading;
+  bool? _isLoading;
 
-  bool get isLoading => _isLoading;
+  bool? get isLoading => _isLoading;
   List<ShopModel> get items {
     return [..._shops];
   }
 
-  String get communityId => _communityId;
+  String? get communityId => _communityId;
 
-  void setCommunityId(String id) {
+  void setCommunityId(String? id) {
     _communityId = id;
   }
 
-  void setIdToken(String id) {
+  void setIdToken(String? id) {
     _idToken = id;
   }
 
-  ShopModel findById(String id) {
-    return _shops.firstWhere((shop) => shop.id == id, orElse: () => null);
+  ShopModel? findById(String? id) {
+    return _shops.firstWhereOrNull((shop) => shop.id == id);
   }
 
-  List<ShopModel> findByUser(String userId) {
+  List<ShopModel> findByUser(String? userId) {
     return _shops.where((shop) => shop.userId == userId).toList();
   }
 
   Future<void> fetch() async {
     _isLoading = true;
-    var response = await LokalApiService.instance.shop
+    var response = await LokalApiService.instance!.shop!
         .getShopsByCommunity(communityId: communityId, idToken: _idToken);
 
     if (response.statusCode != 200) {
@@ -61,7 +62,7 @@ class Shops extends ChangeNotifier {
 
   Future<bool> create(Map data) async {
     try {
-      var response = await LokalApiService.instance.shop
+      var response = await LokalApiService.instance!.shop!
           .create(data: data, idToken: _idToken);
 
       if (response.statusCode != 200) return false;
@@ -81,11 +82,11 @@ class Shops extends ChangeNotifier {
   }
 
   Future<bool> update({
-    @required String id,
-    @required Map data,
+    required String? id,
+    required Map data,
   }) async {
     try {
-      var response = await LokalApiService.instance.shop
+      var response = await LokalApiService.instance!.shop!
           .update(id: id, data: data, idToken: _idToken);
 
       if (response.statusCode != 200) return false;
@@ -104,9 +105,9 @@ class Shops extends ChangeNotifier {
   }
 
   Future<bool> setOperatingHours(
-      {@required String id, @required Map data}) async {
+      {required String? id, required Map data}) async {
     try {
-      var response = await LokalApiService.instance.shop
+      var response = await LokalApiService.instance!.shop!
           .setOperatingHours(data: data, idToken: _idToken, id: id);
 
       if (response.statusCode != 200) return false;

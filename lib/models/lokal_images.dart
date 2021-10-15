@@ -4,13 +4,13 @@ class LokalImages {
   final String url;
   final int order;
   LokalImages({
-    this.url,
-    this.order,
+    required this.url,
+    required this.order,
   });
 
   LokalImages copyWith({
-    String url,
-    int order,
+    String? url,
+    int? order,
   }) {
     return LokalImages(
       url: url ?? this.url,
@@ -27,8 +27,8 @@ class LokalImages {
 
   factory LokalImages.fromMap(Map<String, dynamic> map) {
     return LokalImages(
-      url: map['url'],
-      order: map['order'],
+      url: map['url'] ?? '',
+      order: map['order'] ?? '',
     );
   }
 

@@ -20,9 +20,9 @@ import 'components/product_header.dart';
 import 'product_preview.dart';
 
 class ProductSchedule extends StatefulWidget {
-  final AddProductGallery gallery;
-  final String productId;
-  ProductSchedule({@required this.gallery, this.productId});
+  final AddProductGallery? gallery;
+  final String? productId;
+  ProductSchedule({required this.gallery, this.productId});
   @override
   _ProductScheduleState createState() => _ProductScheduleState();
 }
@@ -30,9 +30,9 @@ class ProductSchedule extends StatefulWidget {
 enum ProductScheduleState { shop, custom }
 
 class _ProductScheduleState extends State<ProductSchedule> {
-  ProductScheduleState _productSchedule;
-  List<DateTime> _markedDatesMap = [];
-  List<DateTime> _selectableDates = [];
+  ProductScheduleState? _productSchedule;
+  List<DateTime?> _markedDatesMap = [];
+  List<DateTime?> _selectableDates = [];
 
   Widget _buildRadioTile() {
     return Column(
@@ -52,7 +52,7 @@ class _ProductScheduleState extends State<ProductSchedule> {
             dense: true,
             title: Text(
               "Follow Shop Schedule",
-              style: Theme.of(context).textTheme.headline6.copyWith(
+              style: Theme.of(context).textTheme.headline6!.copyWith(
                     color: _productSchedule == ProductScheduleState.shop
                         ? Colors.white
                         : kTealColor,
@@ -82,7 +82,7 @@ class _ProductScheduleState extends State<ProductSchedule> {
             dense: true,
             title: Text(
               "Set Custom Schedule",
-              style: Theme.of(context).textTheme.headline6.copyWith(
+              style: Theme.of(context).textTheme.headline6!.copyWith(
                     color: _productSchedule == ProductScheduleState.custom
                         ? Colors.white
                         : kTealColor,
@@ -104,7 +104,7 @@ class _ProductScheduleState extends State<ProductSchedule> {
   Widget buildBody() {
     var horizontalPadding = MediaQuery.of(context).size.width * 0.05;
     var topPadding = MediaQuery.of(context).size.height * 0.03;
-    var image = widget.gallery.photoBoxes.first;
+    var image = widget.gallery!.photoBoxes.first;
 
     return Container(
       padding: EdgeInsets.fromLTRB(
@@ -200,10 +200,7 @@ class _ProductScheduleState extends State<ProductSchedule> {
     final operatingHours = context.read<OperatingHoursBody>();
     final user = context.read<CurrentUser>();
     final shops = context.read<Shops>().findByUser(user.id);
-    final shopSchedule = shops.first.operatingHours;
-    final customDates = _markedDatesMap
-        .where((date) => !_selectableDates.contains(date))
-        .toList();
+    final shopSchedule = shops.first.operatingHours!;
     final unavailableDates = _selectableDates
         .where((date) => !_markedDatesMap.contains(date))
         .toList();
@@ -215,13 +212,13 @@ class _ProductScheduleState extends State<ProductSchedule> {
         repeatUnit: shopSchedule.repeatUnit,
         startDates: shopSchedule.startDates,
         customDates: [
-          ...shopSchedule.customDates
+          ...shopSchedule.customDates!
         ],
         unavailableDates: [
           ...{
-            ...shopSchedule.unavailableDates,
+            ...shopSchedule.unavailableDates!,
             ...unavailableDates
-                .map((date) => DateFormat("yyyy-MM-dd").format(date))
+                .map((date) => DateFormat("yyyy-MM-dd").format(date!))
                 .toList(),
           }
         ]);
@@ -231,20 +228,20 @@ class _ProductScheduleState extends State<ProductSchedule> {
   initState() {
     super.initState();
     final _generator = ScheduleGenerator();
-    OperatingHours _operatingHours;
+    OperatingHours? _operatingHours;
     final user = context.read<CurrentUser>();
     final shops = context.read<Shops>().findByUser(user.id);
     if (shops.isNotEmpty) _operatingHours = shops.first.operatingHours;
 
-    final _selectableDates = _generator.getSelectableDates(_operatingHours);
+    final _selectableDates = _generator.getSelectableDates(_operatingHours!);
 
     this._selectableDates = _selectableDates;
     this._markedDatesMap = [..._selectableDates];
 
-    if (widget.productId != null && widget.productId.isNotEmpty) {
+    if (widget.productId != null && widget.productId!.isNotEmpty) {
       final product = context.read<Products>().findById(widget.productId);
       if (product != null) {
-        final _productSched = product.availability;
+        final _productSched = product.availability!;
         final _productSelectableDates =
             _generator.getSelectableDates(_productSched);
 

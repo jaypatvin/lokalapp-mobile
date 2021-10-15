@@ -15,10 +15,10 @@ import 'components/product_header.dart';
 import 'product_schedule.dart';
 
 class ProductDetails extends StatefulWidget {
-  final AddProductGallery gallery;
-  final String productId;
+  final AddProductGallery? gallery;
+  final String? productId;
 
-  ProductDetails({@required this.gallery, this.productId});
+  ProductDetails({required this.gallery, this.productId});
   @override
   _ProductDetailsState createState() => _ProductDetailsState();
 }
@@ -121,7 +121,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                       .update(quantity: int.tryParse(value) ?? 0);
                 },
                 errorText:
-                    productBody.quantity < 0 ? "Enter a valid number." : null,
+                    productBody.quantity! < 0 ? "Enter a valid number." : null,
               );
             },
           ),
@@ -221,13 +221,13 @@ class _ProductDetailsState extends State<ProductDetails> {
   Widget build(BuildContext context) {
     final horizontalPadding = MediaQuery.of(context).size.width * 0.05;
     final topPadding = MediaQuery.of(context).size.height * 0.03;
-    final image = widget.gallery.photoBoxes.first;
+    final image = widget.gallery!.photoBoxes.first;
 
     final bool valid = (forDelivery | forPickup) &&
         context.read<ProductBody>().productCategory != null &&
-        context.read<ProductBody>().productCategory.isNotEmpty &&
+        context.read<ProductBody>().productCategory!.isNotEmpty &&
         context.read<ProductBody>().quantity != null &&
-        context.read<ProductBody>().quantity >= 0;
+        context.read<ProductBody>().quantity! >= 0;
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: CustomAppBar(
@@ -256,7 +256,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                       onPressed: () => node.unfocus(),
                       child: Text(
                         "Done",
-                        style: Theme.of(context).textTheme.bodyText1.copyWith(
+                        style: Theme.of(context).textTheme.bodyText1!.copyWith(
                               color: Colors.black,
                             ),
                       ),

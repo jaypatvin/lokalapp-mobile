@@ -10,7 +10,7 @@ import '../../discover/product_detail.dart';
 import 'product_card.dart';
 
 class StoreCard extends StatelessWidget {
-  final int crossAxisCount;
+  final int? crossAxisCount;
   final bool isUserProducts;
 
   StoreCard({
@@ -22,11 +22,11 @@ class StoreCard extends StatelessWidget {
     return Consumer3<CurrentUser, Shops, Products>(
       builder: (_, user, shops, products, __) {
         var items = isUserProducts
-            ? products.findByUser(user.id)
+            ? products.findByUser(user.id!)
             : products.items
                 .where((product) => product.userId != user.id)
                 .toList();
-        return shops.isLoading || products.isLoading
+        return shops.isLoading! || products.isLoading!
             ? Center(child: CircularProgressIndicator())
             : GridView.builder(
                 shrinkWrap: true,
@@ -34,14 +34,14 @@ class StoreCard extends StatelessWidget {
                 itemCount: items.length,
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   childAspectRatio: 2 / 3,
-                  crossAxisCount: this.crossAxisCount,
+                  crossAxisCount: this.crossAxisCount!,
                 ),
                 itemBuilder: (BuildContext context, int index) {
                   try {
                     var gallery = items[index].gallery;
                     var isGalleryEmpty = gallery == null || gallery.isEmpty;
                     var productImage = !isGalleryEmpty
-                        ? gallery.firstWhere((g) => g.url != null)
+                        ? gallery!.firstWhere((g) => g.url != null)
                         : null;
 
                     return GestureDetector(
@@ -66,11 +66,11 @@ class StoreCard extends StatelessWidget {
                       child: ProductCard(
                         productId: items[index].id,
                         name: items[index].name,
-                        imageUrl: isGalleryEmpty ? '' : productImage.url,
+                        imageUrl: isGalleryEmpty ? '' : productImage!.url,
                         price: items[index].basePrice,
-                        shopName: shops.findById(items[index].shopId).name,
+                        shopName: shops.findById(items[index].shopId)!.name,
                         shopImageUrl:
-                            shops.findById(items[index].shopId).profilePhoto,
+                            shops.findById(items[index].shopId)!.profilePhoto,
                       ),
                     );
                   } catch (e) {

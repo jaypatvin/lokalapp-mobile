@@ -1,10 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:lokalapp/utils/themes.dart';
-import 'package:lokalapp/widgets/custom_app_bar.dart';
+import '../../utils/themes.dart';
+import '../../widgets/custom_app_bar.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:lokalapp/widgets/custom_expansion_tile.dart' as custom;
+import '../../widgets/custom_expansion_tile.dart' as custom;
 
 import '../../models/chat_model.dart';
 import '../../providers/shops.dart';
@@ -15,8 +15,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'shared_media.dart';
 
 class ChatProfile extends StatefulWidget {
-  final ChatModel chat;
-  final List<QueryDocumentSnapshot> conversations;
+  final ChatModel? chat;
+  final List<QueryDocumentSnapshot>? conversations;
   ChatProfile(this.chat, this.conversations);
 
   @override
@@ -31,10 +31,10 @@ class _ChatProfileState extends State<ChatProfile> {
     super.initState();
 
     final userId = Provider.of<CurrentUser>(context, listen: false).id;
-    switch (widget.chat.chatType) {
+    switch (widget.chat!.chatType) {
       case ChatType.user:
-        final index = widget.chat.members.indexOf(userId);
-        widget.chat.members
+        final index = widget.chat!.members.indexOf(userId!);
+        widget.chat!.members
           ..removeAt(index)
           ..insert(0, userId)
           ..forEach((id) {
@@ -54,7 +54,7 @@ class _ChatProfileState extends State<ChatProfile> {
       case ChatType.product:
         final user = Provider.of<CurrentUser>(context, listen: false);
         final shop = Provider.of<Shops>(context, listen: false)
-            .findById(widget.chat.shopId);
+            .findById(widget.chat!.shopId)!;
         _members.addAll([
           ChatMember(
             displayName: user.displayName,
@@ -76,7 +76,7 @@ class _ChatProfileState extends State<ChatProfile> {
   }
 
   Widget buildTitle() {
-    final names = <String>[];
+    final names = <String?>[];
     final userId = Provider.of<CurrentUser>(context, listen: false).id;
     _members.forEach((user) {
       if (user.id == userId)
@@ -88,7 +88,7 @@ class _ChatProfileState extends State<ChatProfile> {
     final title = names.join(", ");
     return Text(
       title,
-      style: Theme.of(context).textTheme.headline5.copyWith(color: kNavyColor),
+      style: Theme.of(context).textTheme.headline5!.copyWith(color: kNavyColor),
     );
   }
 
@@ -150,7 +150,7 @@ class _ChatProfileState extends State<ChatProfile> {
                     itemBuilder: (ctx, index) {
                       final user = _members[index];
                       final displayName =
-                          user.displayName + (index == 0 ? " (You)" : "");
+                          user.displayName! + (index == 0 ? " (You)" : "");
                       return ListTile(
                         leading: ChatAvatar(
                           displayName: user.displayName,

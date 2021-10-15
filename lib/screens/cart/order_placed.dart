@@ -12,7 +12,7 @@ import 'checkout_cart.dart';
 
 class OrderPlaced extends StatelessWidget {
   static const routeName = "/cart/orderPlaced";
-  const OrderPlaced({Key key}) : super(key: key);
+  const OrderPlaced({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

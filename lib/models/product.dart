@@ -1,25 +1,26 @@
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
-import 'package:lokalapp/models/operating_hours.dart';
+import 'operating_hours.dart';
 
 import 'lokal_images.dart';
 
 class Product {
-  String id;
-  String name;
-  String description;
-  String shopId;
-  String userId;
-  String communityId;
-  double basePrice;
-  int quantity;
-  String productCategory;
-  String productPhoto;
-  String status;
-  bool archived;
-  OperatingHours availability;
-  List<LokalImages> gallery;
+  String? id;
+  String? name;
+  String? description;
+  String? shopId;
+  String? userId;
+  String? communityId;
+  double? basePrice;
+  int? quantity;
+  String? productCategory;
+  String? productPhoto;
+  String? status;
+  bool? archived;
+  bool? canSubscribe;
+  OperatingHours? availability;
+  List<LokalImages>? gallery;
   Product({
     this.id,
     this.name,
@@ -35,23 +36,26 @@ class Product {
     this.gallery,
     this.availability,
     this.archived,
+    this.canSubscribe,
   });
 
-  Product copyWith(
-      {String id,
-      String name,
-      String description,
-      String shopId,
-      String userId,
-      String communityId,
-      double basePrice,
-      int quantity,
-      String productCategory,
-      String productPhoto,
-      String status,
-      List<LokalImages> gallery,
-      OperatingHours availability,
-      bool archived}) {
+  Product copyWith({
+    String? id,
+    String? name,
+    String? description,
+    String? shopId,
+    String? userId,
+    String? communityId,
+    double? basePrice,
+    int? quantity,
+    String? productCategory,
+    String? productPhoto,
+    String? status,
+    List<LokalImages>? gallery,
+    OperatingHours? availability,
+    bool? archived,
+    bool? canSubscribe,
+  }) {
     return Product(
       id: id ?? this.id,
       name: name ?? this.name,
@@ -67,6 +71,7 @@ class Product {
       gallery: gallery ?? this.gallery,
       availability: availability ?? this.availability,
       archived: archived ?? this.archived,
+      canSubscribe: canSubscribe ?? this.canSubscribe,
     );
   }
 
@@ -83,15 +88,14 @@ class Product {
       'product_category': productCategory,
       'product_photo': productPhoto,
       'status': status,
-      'gallery': gallery?.map((x) => x?.toMap())?.toList(),
+      'gallery': gallery?.map((x) => x.toMap()).toList(),
       'availability': availability?.toMap(),
       'archived': archived,
+      'can_subscribe': canSubscribe,
     };
   }
 
   factory Product.fromMap(Map<String, dynamic> map) {
-    if (map == null) return null;
-
     return Product(
       id: map['id'],
       name: map['name'],
@@ -105,13 +109,14 @@ class Product {
       productPhoto: map['product_photo'],
       status: map['status'],
       archived: map['archived'],
+      canSubscribe: map['can_subscribe'],
       gallery: map['gallery'] == null
-          ? null
+          ? <LokalImages>[]
           : List<LokalImages>.from(
               map['gallery']?.map((x) => LokalImages.fromMap(x))),
-      availability: map['availability'] != null
+      availability: (map['availability'] != null
           ? OperatingHours.fromMap(map['availability'])
-          : null,
+          : <LokalImages>[]) as OperatingHours?,
     );
   }
 
@@ -126,7 +131,8 @@ class Product {
         'shopId: $shopId, userId: $userId, communityId: $communityId, '
         'basePrice: $basePrice, quantity: $quantity, productCategory: '
         '$productCategory, productPhoto: $productPhoto, status: $status, '
-        'gallery: $gallery, availability: $availability, archived: $archived)';
+        'gallery: $gallery, availability: $availability, archived: $archived '
+        'canSubscribe: $canSubscribe)';
   }
 
   @override
@@ -147,7 +153,8 @@ class Product {
         o.status == status &&
         o.archived == archived &&
         listEquals(o.gallery, gallery) &&
-        o.availability == availability;
+        o.availability == availability &&
+        o.canSubscribe == canSubscribe;
   }
 
   @override
@@ -165,6 +172,7 @@ class Product {
         status.hashCode ^
         archived.hashCode ^
         gallery.hashCode ^
-        availability.hashCode;
+        availability.hashCode ^
+        canSubscribe.hashCode;
   }
 }

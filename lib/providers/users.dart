@@ -6,32 +6,32 @@ import '../models/lokal_user.dart';
 import '../services/lokal_api_service.dart';
 
 class Users extends ChangeNotifier {
-  List<LokalUser> _users;
-  bool _isLoading;
-  String _idToken;
-  String _communityId;
+  List<LokalUser>? _users;
+  bool? _isLoading;
+  String? _idToken;
+  String? _communityId;
 
   List<LokalUser> get users {
-    return [..._users];
+    return [..._users!];
   }
 
-  bool get isLoading => _isLoading;
+  bool? get isLoading => _isLoading;
 
-  LokalUser findById(String id) {
-    return _users.firstWhere((user) => user.id == id);
+  LokalUser findById(String? id) {
+    return _users!.firstWhere((user) => user.id == id);
   }
 
-  void setCommunityId(String id) {
+  void setCommunityId(String? id) {
     _communityId = id;
   }
 
-  void setIdToken(String id) {
+  void setIdToken(String? id) {
     _idToken = id;
   }
 
   Future<void> fetch() async {
     _isLoading = true;
-    var response = await LokalApiService.instance.user
+    var response = await LokalApiService.instance!.user!
         .getCommunityUsers(communityId: _communityId, idToken: _idToken);
 
     if (response.statusCode != 200) {
@@ -40,13 +40,13 @@ class Users extends ChangeNotifier {
       return;
     }
 
-    Map data = json.decode(response.body);
+    Map<String, dynamic> data = json.decode(response.body);
 
     if (data['status'] == "ok") {
       List<LokalUser> users = [];
-      for (var product in data['data']) {
-        var _product = LokalUser.fromMap(product);
-        users.add(_product);
+      for (final Map<String, dynamic> user in data['data']) {
+        var _user = LokalUser.fromMap(user);
+        users.add(_user);
       }
       _users = users;
     }

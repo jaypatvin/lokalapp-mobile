@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 class RoundedTextField extends StatefulWidget {
-  final String hintText;
-  final Function onTap;
+  final String? hintText;
+  final Function? onTap;
 
   RoundedTextField({this.hintText, this.onTap});
 
@@ -11,13 +11,13 @@ class RoundedTextField extends StatefulWidget {
 }
 
 class _RoundedTextFieldState extends State<RoundedTextField> {
-  String inputValue;
+  String? inputValue;
   @override
   Widget build(BuildContext context) {
     return Container(
       //padding: EdgeInsets.all(40.0),
       child: TextField(
-        onTap: widget.onTap,
+        onTap: widget.onTap as void Function()?,
         decoration: InputDecoration(
           fillColor: Colors.white,
           filled: true,

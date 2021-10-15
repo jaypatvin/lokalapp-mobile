@@ -8,7 +8,7 @@ import '../../../widgets/photo_box.dart';
 
 class AddProductGallery extends StatefulWidget {
   final List<PhotoBox> _photoBoxes = [];
-  final List<LokalImages> images;
+  final List<LokalImages>? images;
 
   AddProductGallery({this.images = const []});
 
@@ -26,8 +26,8 @@ class _AddProductGalleryState extends State<AddProductGallery> {
   void initState() {
     super.initState();
 
-    if (widget.images != null && widget.images.isNotEmpty) {
-      widget.images.forEach((image) {
+    if (widget.images != null && widget.images!.isNotEmpty) {
+      widget.images!.forEach((image) {
         widget._photoBoxes.add(
           PhotoBox(
             shape: boxShape,
@@ -50,7 +50,7 @@ class _AddProductGalleryState extends State<AddProductGallery> {
   }
 
   Future<void> _selectImage(int index) async {
-    var file = await MediaUtility.instance.showMediaDialog(context);
+    var file = await MediaUtility.instance!.showMediaDialog(context);
     if (file != null) {
       setState(() {
         widget._photoBoxes[index] = PhotoBox(

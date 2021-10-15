@@ -6,11 +6,11 @@ int _charsum(String str) {
   return sum;
 }
 
-String hashArrayOfStrings(List<String> arrayOfStrings) {
+String hashArrayOfStrings(List<String?> arrayOfStrings) {
   var sum = 0.0;
   var product = 1;
   for (var i = 0; i < arrayOfStrings.length; i++) {
-    final cs = _charsum(arrayOfStrings[i]);
+    final cs = _charsum(arrayOfStrings[i]!);
     if (product % cs > 0) {
       product *= cs;
       sum += 65027 / cs;

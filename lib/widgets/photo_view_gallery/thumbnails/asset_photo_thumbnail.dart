@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:lokalapp/widgets/photo_picker_gallery/custom_asset_widget.dart';
+import '../../photo_picker_gallery/custom_asset_widget.dart';
 import 'package:photo_manager/photo_manager.dart';
 
 class AssetPhotoThumbnail extends StatelessWidget {
   const AssetPhotoThumbnail(
-      {Key key,
-      @required this.galleryItem,
-      @required this.onTap,
+      {Key? key,
+      required this.galleryItem,
+      required this.onTap,
       this.onRemove,
       this.fit = BoxFit.cover,
       this.decoration})
@@ -14,9 +14,9 @@ class AssetPhotoThumbnail extends StatelessWidget {
 
   final AssetEntity galleryItem;
   final GestureTapCallback onTap;
-  final GestureTapCallback onRemove;
+  final GestureTapCallback? onRemove;
   final BoxFit fit;
-  final BoxDecoration decoration;
+  final BoxDecoration? decoration;
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +28,7 @@ class AssetPhotoThumbnail extends StatelessWidget {
             child: GestureDetector(
               onTap: onTap,
               child: Hero(
-                tag: galleryItem.title,
+                tag: galleryItem.title!,
                 child: Image(
                   alignment: Alignment.topCenter,
                   image: AssetEntityThumbImage(

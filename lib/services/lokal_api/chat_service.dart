@@ -1,14 +1,13 @@
 import 'dart:convert';
 
-import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
 import 'lokal_api_constants.dart';
 
 class ChatService {
-  static ChatService _instance;
+  static ChatService? _instance;
 
-  static ChatService get instance {
+  static ChatService? get instance {
     if (_instance == null) {
       _instance = ChatService();
     }
@@ -17,8 +16,8 @@ class ChatService {
 
   // --GET
   Future<http.Response> getChatByMembers({
-    @required String idToken,
-    @required List<String> members,
+    required String? idToken,
+    required List<String> members,
   }) async {
     String url = "$baseUrl/getChatByMemberIds?";
     members.forEach((member) {
@@ -30,7 +29,7 @@ class ChatService {
     });
 
     return await http.get(
-      url,
+      Uri.parse(url),
       headers: {
         "Content-Type": "application/json",
         "Authorization": "Bearer $idToken"
@@ -40,12 +39,12 @@ class ChatService {
 
   // --POST
   Future<http.Response> create({
-    @required Map data,
-    @required String idToken,
+    required Map data,
+    required String? idToken,
   }) async {
     var body = json.encode(data);
     return await http.post(
-      "$chatsUrl",
+      Uri.parse("$chatsUrl"),
       headers: {
         "Content-Type": "application/json",
         "Authorization": "Bearer $idToken"
@@ -55,13 +54,13 @@ class ChatService {
   }
 
   Future<http.Response> createConversation({
-    @required String chatId,
-    @required Map data,
-    @required String idToken,
+    required String? chatId,
+    required Map data,
+    required String? idToken,
   }) async {
     var body = json.encode(data);
     return await http.post(
-      "$chatsUrl/$chatId/conversation",
+      Uri.parse("$chatsUrl/$chatId/conversation"),
       headers: {
         "Content-Type": "application/json",
         "Authorization": "Bearer $idToken",
@@ -72,13 +71,13 @@ class ChatService {
 
   // --PUT
   Future<http.Response> updateTitle({
-    @required Map data,
-    @required String id,
-    @required String idToken,
+    required Map data,
+    required String id,
+    required String idToken,
   }) async {
     var body = json.encode(data);
     return await http.put(
-      "$chatsUrl/$id/updateTitle",
+      Uri.parse("$chatsUrl/$id/updateTitle"),
       headers: {
         "Content-Type": "application/json",
         "Authorization": "Bearer $idToken",
@@ -88,13 +87,13 @@ class ChatService {
   }
 
   Future<http.Response> invite({
-    @required Map data,
-    @required String id,
-    @required String idToken,
+    required Map data,
+    required String id,
+    required String idToken,
   }) async {
     var body = json.encode(data);
     return await http.put(
-      "$chatsUrl/$id/invite",
+      Uri.parse("$chatsUrl/$id/invite"),
       headers: {
         "Content-Type": "application/json",
         "Authorization": "Bearer $idToken"
@@ -104,13 +103,13 @@ class ChatService {
   }
 
   Future<http.Response> removeUser({
-    @required Map data,
-    @required String id,
-    @required String idToken,
+    required Map data,
+    required String id,
+    required String idToken,
   }) async {
     var body = json.encode(data);
     return await http.put(
-      "$chatsUrl/$id/removeUser",
+      Uri.parse("$chatsUrl/$id/removeUser"),
       headers: {
         "Content-Type": "application/json",
         "Authorization": "Bearer $idToken"
@@ -121,11 +120,12 @@ class ChatService {
 
   // --DELETE
   Future<http.Response> deleteMessage({
-    @required String chatId,
-    @required String messageId,
-    @required String idToken,
+    required String? chatId,
+    required String messageId,
+    required String? idToken,
   }) async {
-    return await http.delete("$chatsUrl/$chatId/conversation/$messageId",
+    return await http.delete(
+        Uri.parse("$chatsUrl/$chatId/conversation/$messageId"),
         headers: {"Authorization": "Bearer $idToken"});
   }
 }

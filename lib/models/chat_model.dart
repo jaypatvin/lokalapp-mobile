@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 
 import 'timestamp_time_object.dart';
 
@@ -17,8 +16,6 @@ extension ChatTypeExtension on ChatType {
         return 'Week';
       case ChatType.product:
         return 'Month';
-      default:
-        return null;
     }
   }
 }
@@ -27,13 +24,13 @@ class Message {
   String content;
   DateTime createdAt;
   Message({
-    @required this.content,
-    @required this.createdAt,
+    required this.content,
+    required this.createdAt,
   });
 
   Message copyWith({
-    String content,
-    DateTime createdAt,
+    String? content,
+    DateTime? createdAt,
   }) {
     return Message(
       content: content ?? this.content,
@@ -52,7 +49,7 @@ class Message {
     return Message(
       content: map['content'],
       createdAt: map['created_at'] is Timestamp
-          ? (map['created_at'] as Timestamp)?.toDate()
+          ? (map['created_at'] as Timestamp).toDate()
           : TimestampObject.fromMap(map['created_at']).toDateTime(),
     );
   }
@@ -90,36 +87,38 @@ class ChatModel {
   Message lastMessage;
 
   // Shop
-  String shopId;
-  String customerName;
+  String? shopId;
+  String? customerName;
 
-  String productId; // specific to product chat
+  // specific to product chat
+  String? productId;
+
   ChatModel({
-    @required this.id,
-    @required this.members,
-    @required this.title,
-    @required this.chatType,
-    @required this.archived,
-    @required this.communityId,
-    @required this.createdAt,
-    @required this.lastMessage,
-    @required this.shopId,
-    @required this.customerName,
-    @required this.productId,
+    required this.id,
+    required this.members,
+    required this.title,
+    required this.chatType,
+    required this.archived,
+    required this.communityId,
+    required this.createdAt,
+    required this.lastMessage,
+    this.shopId,
+    this.customerName,
+    this.productId,
   });
 
   ChatModel copyWith({
-    String id,
-    List<String> members,
-    String title,
-    ChatType chatType,
-    bool archived,
-    String communityId,
-    DateTime createdAt,
-    Message lastMessage,
-    String shopId,
-    String customerName,
-    String productId,
+    String? id,
+    List<String>? members,
+    String? title,
+    ChatType? chatType,
+    bool? archived,
+    String? communityId,
+    DateTime? createdAt,
+    Message? lastMessage,
+    String? shopId,
+    String? customerName,
+    String? productId,
   }) {
     return ChatModel(
       id: id ?? this.id,
@@ -168,11 +167,16 @@ class ChatModel {
 
     return ChatModel(
       id: map['id'],
-      members: List<String>.from(map['members']),
+      members: map['members'] != null
+          ? List<String>.from(
+              map['members'],
+              growable: false,
+            )
+          : const [],
       title: map['title'],
       chatType: chatType,
       archived: map['archived'],
-      communityId: map['community_d'],
+      communityId: map['community_id'],
       createdAt: map['created_at'] is Timestamp
           ? (map['created_at'] as Timestamp).toDate()
           : TimestampObject.fromMap(map['created_at']).toDateTime(),
@@ -183,8 +187,8 @@ class ChatModel {
     );
   }
 
-  factory ChatModel.fromDocument(QueryDocumentSnapshot snapshot) {
-    final map = snapshot.data();
+  factory ChatModel.fromDocument(QueryDocumentSnapshot doc) {
+    final map = doc.data() as Map<String, dynamic>;
     ChatType chatType;
     switch (map['chat_type']) {
       case "product":
@@ -199,7 +203,7 @@ class ChatModel {
     }
 
     return ChatModel(
-      id: snapshot.id,
+      id: doc.id,
       members: List<String>.from(map['members']),
       title: map['title'],
       chatType: chatType,
@@ -220,7 +224,10 @@ class ChatModel {
 
   @override
   String toString() {
-    return 'ChatModel(id: $id, members: $members, title: $title, chatType: $chatType, archived: $archived, communityId: $communityId, createdAt: $createdAt, lastMessage: $lastMessage, shopId: $shopId, customerName: $customerName, productId: $productId)';
+    return 'ChatModel(id: $id, members: $members, title: $title, '
+        'chatType: $chatType, archived: $archived, communityId: $communityId, '
+        'createdAt: $createdAt, lastMessage: $lastMessage, shopId: $shopId, '
+        'customerName: $customerName, productId: $productId)';
   }
 
   @override

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:screen_loader/screen_loader.dart';
+import '../../../widgets/screen_loader.dart';
 
 import '../../../utils/themes.dart';
 import '../../../widgets/app_button.dart';
@@ -10,7 +10,7 @@ import '../../../widgets/custom_app_bar.dart';
 class SetUpPaymentOptions extends StatefulWidget {
   static const routeName = "/profile/shop/paymentOptions";
   final void Function() onSubmit;
-  const SetUpPaymentOptions({Key key, @required this.onSubmit})
+  const SetUpPaymentOptions({Key? key, required this.onSubmit})
       : super(key: key);
 
   @override
@@ -34,7 +34,7 @@ class _SetUpPaymentOptionsState extends State<SetUpPaymentOptions>
             const SizedBox(height: 15.0),
             Text(
               "Set-up payment options",
-              style: Theme.of(context).textTheme.headline5.copyWith(
+              style: Theme.of(context).textTheme.headline5!.copyWith(
                     color: Colors.black,
                     fontWeight: FontWeight.w600,
                   ),
@@ -53,7 +53,7 @@ class _SetUpPaymentOptionsState extends State<SetUpPaymentOptions>
                 ),
                 title: Text(
                   "Bank Transfer/Deposit",
-                  style: Theme.of(context).textTheme.headline6.copyWith(
+                  style: Theme.of(context).textTheme.headline6!.copyWith(
                         fontWeight: FontWeight.w600,
                       ),
                 ),
@@ -72,7 +72,6 @@ class _SetUpPaymentOptionsState extends State<SetUpPaymentOptions>
                 tileColor: Colors.grey[300],
                 leading: CircleAvatar(
                   backgroundColor: Colors.white,
-                  //TODO: fix GCash Asset
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: SvgPicture.asset(
@@ -83,7 +82,7 @@ class _SetUpPaymentOptionsState extends State<SetUpPaymentOptions>
                 ),
                 title: Text(
                   "Gcash",
-                  style: Theme.of(context).textTheme.headline6.copyWith(
+                  style: Theme.of(context).textTheme.headline6!.copyWith(
                         fontWeight: FontWeight.w600,
                       ),
                 ),

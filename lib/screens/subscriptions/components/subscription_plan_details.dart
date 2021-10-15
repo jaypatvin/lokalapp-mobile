@@ -11,16 +11,16 @@ class SubscriptionPlanDetails extends StatelessWidget {
   final bool displayHeader;
   final ProductSubscriptionPlan subscriptionPlan;
   const SubscriptionPlanDetails({
-    Key key,
+    Key? key,
     this.isBuyer = true,
     this.displayHeader = true,
-    @required this.subscriptionPlan,
+    required this.subscriptionPlan,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final user = context.read<CurrentUser>();
-    final name = isBuyer ? subscriptionPlan.shop.name : user.displayName;
+    final name = isBuyer ? subscriptionPlan.shop.name! : user.displayName!;
     final displayPhoto =
         isBuyer ? subscriptionPlan.shop.image : user.profilePhoto;
     final item = subscriptionPlan.product;
@@ -60,7 +60,7 @@ class SubscriptionPlanDetails extends StatelessWidget {
                   width: 40.0.w,
                   height: 40.0.w,
                   child: Image.network(
-                    item.image,
+                    item.image!,
                     fit: BoxFit.cover,
                     errorBuilder: (ctx, obj, stack) {
                       return Text("No Image");
@@ -70,7 +70,7 @@ class SubscriptionPlanDetails extends StatelessWidget {
                 SizedBox(width: 10.0.w),
                 Expanded(
                   child: Text(
-                    item.name,
+                    item.name!,
                     style: Theme.of(context).textTheme.subtitle1,
                     overflow: TextOverflow.ellipsis,
                   ),

@@ -11,7 +11,7 @@ import 'checkout_shop.dart';
 import 'components/order_details.dart';
 
 class CheckoutCart extends StatelessWidget {
-  const CheckoutCart({Key key}) : super(key: key);
+  const CheckoutCart({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -25,13 +25,13 @@ class CheckoutCart extends StatelessWidget {
               itemBuilder: (ctx, index) {
                 // get shopId from Map
                 final key = cart.orders.keys.elementAt(index);
-                final shop = context.read<Shops>().findById(key);
+                final shop = context.read<Shops>().findById(key)!;
                 return Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     SizedBox(height: 24.0),
                     Text(
-                      shop.name,
+                      shop.name!,
                       style: TextStyle(
                         color: kNavyColor,
                         fontFamily: "Goldplay",
@@ -50,7 +50,7 @@ class CheckoutCart extends StatelessWidget {
                       child: Card(
                         elevation: 0.0,
                         shape: RoundedRectangleBorder(
-                          side: BorderSide(color: Colors.grey[300]),
+                          side: BorderSide(color: Colors.grey[300]!),
                           borderRadius: BorderRadius.circular(16.0),
                         ),
                         child: Padding(
@@ -59,19 +59,19 @@ class CheckoutCart extends StatelessWidget {
                             children: [
                               ListView.builder(
                                 shrinkWrap: true,
-                                itemCount: cart.orders[key].length,
+                                itemCount: cart.orders[key]!.length,
                                 physics: NeverScrollableScrollPhysics(),
                                 itemBuilder: (_, orderIndex) {
                                   // get the shopOrders
-                                  final orders = cart.orders[key];
+                                  final orders = cart.orders[key]!;
                                   // get productId from Map using orderIndex
                                   final _key =
                                       orders.keys.elementAt(orderIndex);
                                   final product =
                                       context.read<Products>().findById(_key);
                                   return OrderDetails(
-                                    product: product,
-                                    quantity: orders[_key].quantity,
+                                    product: product!,
+                                    quantity: orders[_key]!.quantity,
                                     onEditTap: () => Navigator.of(context).push(
                                       MaterialPageRoute(
                                           builder: (_) =>
@@ -81,7 +81,6 @@ class CheckoutCart extends StatelessWidget {
                                 },
                               ),
                               SizedBox(height: 12.0),
-                              // TODO: NAVIGATE TO CHECKOUT
                               Container(
                                 width: double.infinity,
                                 child: AppButton(
@@ -111,11 +110,11 @@ class CheckoutCart extends StatelessWidget {
   }
 }
 
-class _CheckOutCartAppBar extends PreferredSize {
+class _CheckOutCartAppBar extends StatelessWidget
+    implements PreferredSizeWidget {
   final double height;
-  const _CheckOutCartAppBar({
-    this.height = kToolbarHeight,
-  });
+
+  const _CheckOutCartAppBar({this.height = kToolbarHeight});
 
   @override
   Size get preferredSize => Size.fromHeight(height);

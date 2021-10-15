@@ -15,14 +15,14 @@ import '../../verification_screens/verify_screen.dart';
 import '../user_shop.dart';
 
 class UserShopBanner extends StatefulWidget {
-  const UserShopBanner({Key key}) : super(key: key);
+  const UserShopBanner({Key? key}) : super(key: key);
 
   @override
   _UserShopBannerState createState() => _UserShopBannerState();
 }
 
 class _UserShopBannerState extends State<UserShopBanner> {
-  Stream<DocumentSnapshot> _userStream;
+  Stream<DocumentSnapshot>? _userStream;
   bool _verified = false;
 
   @override
@@ -30,7 +30,7 @@ class _UserShopBannerState extends State<UserShopBanner> {
     super.initState();
 
     final user = context.read<CurrentUser>();
-    final isVerified = user.registrationStatus.verified;
+    final isVerified = user.registrationStatus!.verified!;
 
     _verified = isVerified;
 
@@ -40,18 +40,19 @@ class _UserShopBannerState extends State<UserShopBanner> {
           .doc(user.id)
           .snapshots();
 
-      _userStream.listen(_streamListener);
+      _userStream!.listen(_streamListener);
     }
   }
 
   void _streamListener(DocumentSnapshot snapshot) {
     if (snapshot.exists) {
-      final bool validated = snapshot.data()["registration"]["verified"];
+      final snapshotData = snapshot.data() as Map<String, dynamic>;
+      final bool validated = snapshotData["registration"]["verified"];
       if (validated) {
         setState(() {
           _verified = true;
         });
-        final fireUser = FirebaseAuth.instance.currentUser;
+        final fireUser = FirebaseAuth.instance.currentUser!;
         context.read<CurrentUser>().fetch(fireUser);
         _userStream = null;
       }
@@ -153,7 +154,7 @@ class _UserShopBannerState extends State<UserShopBanner> {
                 );
               },
               title: Text(
-                shop.name,
+                shop.name!,
                 style: TextStyle(
                   color: Colors.black,
                   fontWeight: FontWeight.bold,

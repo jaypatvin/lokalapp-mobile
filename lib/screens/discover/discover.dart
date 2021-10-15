@@ -20,7 +20,7 @@ class Discover extends StatefulWidget {
 }
 
 class _DiscoverState extends State<Discover> with AfterLayoutMixin<Discover> {
-  var _userSharedPreferences = UserSharedPreferences();
+  late final _userSharedPreferences;
 
   Widget _buildCategories() {
     final categories = [
@@ -211,7 +211,7 @@ class _DiscoverState extends State<Discover> with AfterLayoutMixin<Discover> {
 
   @override
   dispose() {
-    _userSharedPreferences?.dispose();
+    _userSharedPreferences.dispose();
     super.dispose();
   }
 

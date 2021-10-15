@@ -4,31 +4,31 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 
 class DeliveryAddress {
-  String barangay;
-  String city;
-  String country;
-  String state;
-  String street;
-  String subdivision;
-  String zipCode;
+  String? barangay;
+  String? city;
+  String? country;
+  String? state;
+  String? street;
+  String? subdivision;
+  String? zipCode;
   DeliveryAddress({
-    @required this.barangay,
-    @required this.city,
-    @required this.country,
-    @required this.state,
-    @required this.street,
-    @required this.subdivision,
-    @required this.zipCode,
+    required this.barangay,
+    required this.city,
+    required this.country,
+    required this.state,
+    required this.street,
+    required this.subdivision,
+    required this.zipCode,
   });
 
   DeliveryAddress copyWith({
-    String barangay,
-    String city,
-    String country,
-    String state,
-    String street,
-    String subdivision,
-    String zipCode,
+    String? barangay,
+    String? city,
+    String? country,
+    String? state,
+    String? street,
+    String? subdivision,
+    String? zipCode,
   }) {
     return DeliveryAddress(
       barangay: barangay ?? this.barangay,
@@ -102,28 +102,28 @@ class DeliveryAddress {
 }
 
 class ProductOrder {
-  String instruction;
-  String description;
-  String id;
-  String name;
-  double price;
-  int quantity;
+  String? instruction;
+  String? description;
+  String? id;
+  String? name;
+  double? price;
+  int? quantity;
   ProductOrder({
-    @required this.instruction,
-    @required this.description,
-    @required this.id,
-    @required this.name,
-    @required this.price,
-    @required this.quantity,
+    required this.instruction,
+    required this.description,
+    required this.id,
+    required this.name,
+    required this.price,
+    required this.quantity,
   });
 
   ProductOrder copyWith({
-    String instruction,
-    String productDescription,
-    String productId,
-    String productName,
-    double productPrice,
-    int quantity,
+    String? instruction,
+    String? productDescription,
+    String? productId,
+    String? productName,
+    double? productPrice,
+    int? quantity,
   }) {
     return ProductOrder(
       instruction: instruction ?? this.instruction,
@@ -194,67 +194,67 @@ class ProductOrder {
 }
 
 class Order {
-  final String id;
-  final String buyerId;
-  final String communityId;
+  final String? id;
+  final String? buyerId;
+  final String? communityId;
   final DateTime createdAt;
   final DateTime deliveryDate;
-  final String deliveryOption;
-  final String instruction;
-  final String proofOfPayment;
-  final String paymentMethod;
-  final bool isPaid;
+  final String? deliveryOption;
+  final String? instruction;
+  final String? proofOfPayment;
+  final String? paymentMethod;
+  final bool? isPaid;
   final List<String> productIds;
   final List<ProductOrder> products;
-  final String sellerId;
-  final String shopDescription;
-  final String shopId;
-  final String shopName;
-  final String shopImage;
-  final int statusCode;
+  final String? sellerId;
+  final String? shopDescription;
+  final String? shopId;
+  final String? shopName;
+  final String? shopImage;
+  final int? statusCode;
   final DeliveryAddress deliveryAddress;
   Order({
-    @required this.id,
-    @required this.communityId,
-    @required this.buyerId,
-    @required this.createdAt,
-    @required this.deliveryDate,
-    @required this.deliveryOption,
-    @required this.instruction,
-    @required this.isPaid,
-    @required this.productIds,
-    @required this.products,
-    @required this.sellerId,
-    @required this.shopDescription,
-    @required this.shopId,
-    @required this.shopName,
-    @required this.statusCode,
-    @required this.deliveryAddress,
-    @required this.shopImage,
-    @required this.proofOfPayment,
-    @required this.paymentMethod,
+    required this.id,
+    required this.communityId,
+    required this.buyerId,
+    required this.createdAt,
+    required this.deliveryDate,
+    required this.deliveryOption,
+    required this.instruction,
+    required this.isPaid,
+    required this.productIds,
+    required this.products,
+    required this.sellerId,
+    required this.shopDescription,
+    required this.shopId,
+    required this.shopName,
+    required this.statusCode,
+    required this.deliveryAddress,
+    required this.shopImage,
+    required this.proofOfPayment,
+    required this.paymentMethod,
   });
 
   Order copyWith({
-    String id,
-    String buyerId,
-    String communityId,
-    DateTime createdAt,
-    DateTime deliveryDate,
-    String deliveryOption,
-    String instruction,
-    bool isPaid,
-    List<String> productIds,
-    List<ProductOrder> products,
-    String sellerId,
-    String shopDescription,
-    String shopId,
-    String shopName,
-    int statusCode,
-    DeliveryAddress deliveryAddress,
-    String shopImage,
-    String proofOfPayment,
-    String paymentMethod,
+    String? id,
+    String? buyerId,
+    String? communityId,
+    DateTime? createdAt,
+    DateTime? deliveryDate,
+    String? deliveryOption,
+    String? instruction,
+    bool? isPaid,
+    List<String>? productIds,
+    List<ProductOrder>? products,
+    String? sellerId,
+    String? shopDescription,
+    String? shopId,
+    String? shopName,
+    int? statusCode,
+    DeliveryAddress? deliveryAddress,
+    String? shopImage,
+    String? proofOfPayment,
+    String? paymentMethod,
   }) {
     return Order(
       id: id ?? this.id,
@@ -290,13 +290,13 @@ class Order {
       'instruction': instruction,
       'is_paid': isPaid,
       'product_ids': productIds,
-      'products': products?.map((x) => x.toMap())?.toList(),
+      'products': products.map((x) => x.toMap()).toList(),
       'seller_id': sellerId,
       'shop_description': shopDescription,
       'shop_id': shopId,
       'shop_name': shopName,
       'status_code': statusCode,
-      'delivery_address': deliveryAddress?.toMap(),
+      'delivery_address': deliveryAddress.toMap(),
       'shop_image': shopImage,
       'proof_of_payment': proofOfPayment,
       'payment_method': paymentMethod,

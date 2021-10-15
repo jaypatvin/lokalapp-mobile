@@ -8,12 +8,12 @@ import 'custom_pick_asset_widget.dart';
 import 'provider/custom_photo_provider.dart';
 
 class ImageGalleryPicker extends StatelessWidget {
-  final CustomPickerDataProvider provider; // can be inserted to provider
+  final CustomPickerDataProvider? provider; // can be inserted to provider
   final double pickerHeight;
   final double assetHeight;
   final double assetWidth;
   final bool enableSpecialItemBuilder;
-  final WidgetBuilder specialItemBuilder;
+  final WidgetBuilder? specialItemBuilder;
   final int thumbSize;
 
   ImageGalleryPicker(
@@ -31,7 +31,7 @@ class ImageGalleryPicker extends StatelessWidget {
     return SizedBox(
       height: 150,
       child: AnimatedBuilder(
-        animation: this.provider.currentPathNotifier,
+        animation: this.provider!.currentPathNotifier,
         builder: (_, __) => _buildPath(),
       ),
     );
@@ -41,16 +41,16 @@ class ImageGalleryPicker extends StatelessWidget {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: () async {
-        final AssetEntity result = await CameraPicker.pickFromCamera(
+        final AssetEntity? result = await CameraPicker.pickFromCamera(
           context,
-          isAllowRecording: false,
+          enableRecording: false,
           // maximumRecordingDuration: const Duration(seconds: 30),
           // textDelegate: EnglishCameraPickerTextDelegateWithRecording(),
           textDelegate: EnglishCameraPickerTextDelegate(),
         );
         if (result != null) {
           ///Navigator.of(context).pop(<AssetEntity>[...assets, result]);
-          provider.picked = [...provider.picked, result];
+          provider!.picked = [...provider!.picked, result];
         }
       },
       child: const Center(
@@ -60,11 +60,11 @@ class ImageGalleryPicker extends StatelessWidget {
   }
 
   Widget _buildPath() {
-    if (this.provider.currentPath == null) {
+    if (this.provider!.currentPath == null) {
       return Container();
     }
     return AssetGalleryWidget(
-      path: this.provider.currentPath,
+      path: this.provider!.currentPath,
       assetHeight: this.assetHeight,
       assetWidth: this.assetWidth,
       thumbSize: this.thumbSize,

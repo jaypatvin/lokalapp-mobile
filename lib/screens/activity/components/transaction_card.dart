@@ -12,9 +12,9 @@ class TransactionCard extends StatelessWidget {
   final bool enableSecondButton;
   final String secondButtonText;
   final double price;
-  final String status;
+  final String? status;
   final bool isBuyer;
-  final void Function() onSecondButtonPress;
+  final void Function()? onSecondButtonPress;
 
   const TransactionCard._(
     this.order,
@@ -30,10 +30,10 @@ class TransactionCard extends StatelessWidget {
   // its second button. If performance is an issue, we can probably
   // lift it one state up.
   factory TransactionCard({
-    Order order,
-    String status,
+    required Order order,
+    String? status,
     bool isBuyer = false,
-    void Function() onSecondButtonPress,
+    void Function()? onSecondButtonPress,
   }) {
     bool enableSecondButton = false;
     String secondButtonText = '';
@@ -74,7 +74,7 @@ class TransactionCard extends StatelessWidget {
 
     double price = 0;
     order.products.forEach((product) {
-      price += (product.price * product.quantity);
+      price += (product.price! * product.quantity!);
     });
 
     return TransactionCard._(

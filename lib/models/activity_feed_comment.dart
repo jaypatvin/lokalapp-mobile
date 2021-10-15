@@ -14,21 +14,21 @@ class ActivityFeedComment {
   DateTime createdAt;
   bool liked;
   ActivityFeedComment({
-    this.id,
-    this.userId,
-    this.message,
-    this.images,
-    this.createdAt,
-    this.liked,
+    required this.id,
+    required this.userId,
+    required this.message,
+    required this.images,
+    required this.createdAt,
+    required this.liked,
   });
 
   ActivityFeedComment copyWith({
-    String id,
-    String userId,
-    String message,
-    List<LokalImages> images,
-    DateTime createdAt,
-    bool liked,
+    String? id,
+    String? userId,
+    String? message,
+    List<LokalImages>? images,
+    DateTime? createdAt,
+    bool? liked,
   }) {
     return ActivityFeedComment(
       id: id ?? this.id,
@@ -45,7 +45,7 @@ class ActivityFeedComment {
       'id': id,
       'user_id': userId,
       'message': message,
-      'images': images?.map((x) => x.toMap())?.toList(),
+      'images': images.map((x) => x.toMap()).toList(),
       'created_at': Timestamp.fromDate(createdAt),
       'liked': liked,
     };
@@ -53,14 +53,16 @@ class ActivityFeedComment {
 
   factory ActivityFeedComment.fromMap(Map<String, dynamic> map) {
     return ActivityFeedComment(
-      id: map['id'],
-      userId: map['user_id'],
-      message: map['message'],
-      images: List<LokalImages>.from(
-          map['images']?.map((x) => LokalImages.fromMap(x))),
+      id: map['id'] ?? "",
+      userId: map['user_id'] ?? "",
+      message: map['message'] ?? "",
+      images: map['images'] != null
+          ? List<LokalImages>.from(
+              map['images']?.map((x) => LokalImages.fromMap(x)))
+          : const [],
       createdAt: DateTime.fromMicrosecondsSinceEpoch(
-          TimestampObject.fromMap(map['created_at']).seconds * 1000000 +
-              TimestampObject.fromMap(map['created_at']).nanoseconds ~/ 1000),
+          TimestampObject.fromMap(map['created_at']).seconds! * 1000000 +
+              TimestampObject.fromMap(map['created_at']).nanoseconds! ~/ 1000),
       liked: map['liked'] ?? false,
     );
   }
