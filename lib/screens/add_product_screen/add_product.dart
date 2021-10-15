@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:keyboard_actions/keyboard_actions.dart';
+import 'package:lokalapp/models/lokal_images.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
@@ -56,6 +57,11 @@ class _AddProductState extends State<AddProduct> with ScreenLoader {
         _descriptionController.text = product.description;
         _title = "Edit Product";
 
+        var _productGallery = <LokalImages>[];
+        if (product.gallery != null) {
+          _productGallery = product.gallery;
+        }
+
         context.read<ProductBody>()
           ..clear()
           ..update(
@@ -66,7 +72,7 @@ class _AddProductState extends State<AddProduct> with ScreenLoader {
             quantity: product.quantity,
             productCategory: product.productCategory,
             status: product.status,
-            gallery: product.gallery.map((e) => e.toMap()).toList(),
+            gallery: _productGallery.map((e) => e.toMap()).toList(),
           );
         return;
       }

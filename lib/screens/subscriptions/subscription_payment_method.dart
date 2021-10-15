@@ -34,27 +34,37 @@ class _SubscriptionPaymentMethodState extends State<SubscriptionPaymentMethod>
     BuildContext context,
     PaymentMode paymentMode,
   ) async {
-    final subscriptionProvider = context.read<SubscriptionProvider>();
-    widget.subscriptionPlanBody.paymentMethod = paymentMode.value;
+    try {
+      final subscriptionProvider = context.read<SubscriptionProvider>();
+      widget.subscriptionPlanBody.paymentMethod = paymentMode.value;
 
-    final subscriptionPlan = await subscriptionProvider
-        .createSubscriptionPlan(widget.subscriptionPlanBody.toMap());
+      final subscriptionPlan = await subscriptionProvider
+          .createSubscriptionPlan(widget.subscriptionPlanBody.toMap());
 
-    if (subscriptionPlan != null && this.widget.reschedule) {
-      await subscriptionProvider.autoReschedulePlan(subscriptionPlan.id);
-    }
+      if (subscriptionPlan != null && this.widget.reschedule) {
+        await subscriptionProvider.autoReschedulePlan(subscriptionPlan.id);
+      }
 
-    if (subscriptionPlan != null) {
-      context
-          .read<ShoppingCart>()
-          .remove(widget.subscriptionPlanBody.productId);
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (ctx) {
-            return CartConfirmation(
-              isSubscription: true,
-            );
-          },
+      if (subscriptionPlan != null) {
+        context
+            .read<ShoppingCart>()
+            .remove(widget.subscriptionPlanBody.productId);
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (ctx) {
+              return CartConfirmation(
+                isSubscription: true,
+              );
+            },
+          ),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            e.toString(),
+          ),
         ),
       );
     }

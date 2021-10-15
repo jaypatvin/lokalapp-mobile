@@ -412,12 +412,15 @@ class _ShopPhotoSection extends StatelessWidget {
               child: Stack(
                 children: [
                   PhotoBox(
+                    width: 140.0,
+                    height: 140.0,
                     file: this.shopPhoto,
                     shape: BoxShape.circle,
                     url: shopBody.profilePhoto,
                   ),
                   Container(
                     width: 140.0,
+                    height: 140.0,
                     decoration: new BoxDecoration(
                       color: Colors.black.withOpacity(0.30),
                       shape: BoxShape.circle,

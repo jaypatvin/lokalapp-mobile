@@ -138,19 +138,14 @@ class SubscriptionProvider {
     final response =
         await _service.createSubscriptionPlan(idToken: _idToken, data: data);
 
-    if (response.statusCode != 200) {
-      return null;
-    }
+    print(response.body);
+    // if (response.statusCode != 200) throw response.reasonPhrase;
 
-    try {
-      final Map<String, dynamic> body = json.decode(response.body);
-      if (body['status'] != "ok") throw Exception(body['data']);
+    final Map<String, dynamic> body = json.decode(response.body);
+    if (body['status'] != "ok") throw body['message'];
 
-      final subscriptionPlan = ProductSubscriptionPlan.fromMap(body['data']);
-      return subscriptionPlan;
-    } catch (e) {
-      return null;
-    }
+    final subscriptionPlan = ProductSubscriptionPlan.fromMap(body['data']);
+    return subscriptionPlan;
   }
 
   Future<bool> autoReschedulePlan(String planId) async {

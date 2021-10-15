@@ -24,33 +24,33 @@ class OrderDetails extends StatelessWidget {
           child: Row(
             children: [
               if (product.gallery != null && product.gallery.isNotEmpty)
-                Container(
-                  width: 70.00,
-                  height: 60.00,
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: NetworkImage(product.gallery.first.url),
-                      fit: BoxFit.cover,
+                SizedBox(
+                  width: 60.0,
+                  height: 60.0,
+                  child: Image(
+                    image: NetworkImage(product.gallery.first.url),
+                    fit: BoxFit.cover,
+                    errorBuilder: (ctx, obj, stk) => SizedBox(),
+                  ),
+                ),
+              if (product.gallery == null || product.gallery.isEmpty)
+                SizedBox(
+                  width: 60.0,
+                  height: 60.0,
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: Colors.grey,
+                      ),
+                    ),
+                    child: Center(
+                      child: Text(
+                        "No image",
+                        textAlign: TextAlign.center,
+                      ),
                     ),
                   ),
                 ),
-              SizedBox(
-                width: 60.0,
-                height: 60.0,
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: Colors.grey,
-                    ),
-                  ),
-                  child: Center(
-                    child: Text(
-                      "No image",
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                ),
-              ),
               SizedBox(
                 width: 10.0,
               ),

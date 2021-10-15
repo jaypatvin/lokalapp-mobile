@@ -81,7 +81,6 @@ class CheckoutCart extends StatelessWidget {
                                 },
                               ),
                               SizedBox(height: 12.0),
-                              // TODO: NAVIGATE TO CHECKOUT
                               Container(
                                 width: double.infinity,
                                 child: AppButton(

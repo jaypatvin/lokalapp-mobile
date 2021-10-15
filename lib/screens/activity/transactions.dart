@@ -146,7 +146,6 @@ class _TransactionsState extends State<Transactions> {
         if (_stream != null)
           Container(
             height: MediaQuery.of(context).size.height * 0.04,
-            padding: EdgeInsets.symmetric(horizontal: 16.0),
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
               shrinkWrap: true,
