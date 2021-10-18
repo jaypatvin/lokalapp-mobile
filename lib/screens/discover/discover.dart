@@ -2,7 +2,9 @@ import 'package:after_layout/after_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 
+import '../../providers/categories.dart';
 import '../../utils/shared_preference.dart';
 import '../../utils/themes.dart';
 import '../../widgets/custom_app_bar.dart';
@@ -23,44 +25,54 @@ class _DiscoverState extends State<Discover> with AfterLayoutMixin<Discover> {
   late final _userSharedPreferences;
 
   Widget _buildCategories() {
-    final categories = [
-      "Dessert & Pastries",
-      "Meals & Snacks",
-      "Drinks",
-      "Fashion"
-    ];
-    return ListView.builder(
-      scrollDirection: Axis.horizontal,
-      shrinkWrap: true,
-      itemCount: categories.length,
-      itemBuilder: (ctx, index) {
-        return SizedBox(
-          width: 100.0.w,
-          child: Column(
-            children: [
-              CircleAvatar(
-                radius: 35.0.r,
-                backgroundColor: Color(0XFFF1FAFF),
-                child: Icon(
-                  Icons.food_bank,
-                  color: kTealColor,
-                  size: 35.0.sp,
-                ),
+    // final categories = [
+    //   "Dessert & Pastries",
+    //   "Meals & Snacks",
+    //   "Drinks",
+    //   "Fashion"
+    // ];
+    return Consumer<Categories>(
+      builder: (ctx, provider, _) {
+        if (provider.isLoading || provider.categories.isEmpty) {
+          return CircularProgressIndicator();
+        }
+        final categories = provider.categories;
+        return ListView.builder(
+          scrollDirection: Axis.horizontal,
+          shrinkWrap: true,
+          itemCount: categories.length,
+          itemBuilder: (ctx, index) {
+            return SizedBox(
+              width: 100.0.w,
+              child: Column(
+                children: [
+                  CircleAvatar(
+                    radius: 35.0.r,
+                    backgroundColor: Color(0XFFF1FAFF),
+                    foregroundImage: NetworkImage(categories[index].iconUrl),
+                    onForegroundImageError: (obj, stack) {},
+                    // child: Icon(
+                    //   Icons.food_bank,
+                    //   color: kTealColor,
+                    //   size: 35.0.sp,
+                    // ),
+                  ),
+                  SizedBox(height: 10.0.h),
+                  Text(
+                    categories[index].name,
+                    maxLines: 2,
+                    softWrap: true,
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 16.0.sp,
+                    ),
+                  ),
+                ],
               ),
-              SizedBox(height: 10.0.h),
-              Text(
-                categories[index],
-                maxLines: 2,
-                softWrap: true,
-                overflow: TextOverflow.ellipsis,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 16.0.sp,
-                ),
-              ),
-            ],
-          ),
+            );
+          },
         );
       },
     );

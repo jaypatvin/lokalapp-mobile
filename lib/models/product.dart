@@ -109,7 +109,7 @@ class Product {
       productPhoto: map['product_photo'],
       status: map['status'],
       archived: map['archived'],
-      canSubscribe: map['can_subscribe'],
+      canSubscribe: map['can_subscribe'] ?? true,
       gallery: map['gallery'] == null
           ? <LokalImages>[]
           : List<LokalImages>.from(

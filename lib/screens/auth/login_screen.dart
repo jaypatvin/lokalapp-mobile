@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
-import '../../widgets/screen_loader.dart';
 
 import '../../providers/activities.dart';
+import '../../providers/categories.dart';
 import '../../providers/products.dart';
 import '../../providers/shops.dart';
 import '../../providers/user.dart';
 import '../../providers/user_auth.dart';
 import '../../providers/users.dart';
 import '../../utils/themes.dart';
+import '../../widgets/screen_loader.dart';
 import '../../widgets/sso_block.dart';
 import '../bottom_navigation.dart';
 import 'components/auth_input_form.dart';
@@ -62,6 +63,7 @@ class _LoginScreenState extends State<LoginScreen>
             await context.read<Shops>().fetch();
             await context.read<Products>().fetch();
             await context.read<Users>().fetch();
+            await context.read<Categories>().fetch();
           });
           Navigator.pushAndRemoveUntil(
             context,
