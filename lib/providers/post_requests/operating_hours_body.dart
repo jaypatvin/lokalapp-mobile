@@ -6,7 +6,7 @@ class OperatingHoursBody extends ChangeNotifier {
   OperatingHours _operatingHours = OperatingHours();
   OperatingHours get operatingHours => _operatingHours;
 
-  Map get data => _operatingHours.toMap();
+  Map<String, dynamic> get data => _operatingHours.toMap();
 
   void update({
     String? startTime,

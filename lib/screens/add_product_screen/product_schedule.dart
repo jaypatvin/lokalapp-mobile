@@ -206,22 +206,21 @@ class _ProductScheduleState extends State<ProductSchedule> {
         .toList();
     operatingHours.clear();
     operatingHours.update(
-        startTime: shopSchedule.startTime,
-        endTime: shopSchedule.endTime,
-        repeatType: shopSchedule.repeatType,
-        repeatUnit: shopSchedule.repeatUnit,
-        startDates: shopSchedule.startDates,
-        customDates: [
-          ...shopSchedule.customDates!
-        ],
-        unavailableDates: [
-          ...{
-            ...shopSchedule.unavailableDates!,
-            ...unavailableDates
-                .map((date) => DateFormat("yyyy-MM-dd").format(date!))
-                .toList(),
-          }
-        ]);
+      startTime: shopSchedule.startTime,
+      endTime: shopSchedule.endTime,
+      repeatType: shopSchedule.repeatType,
+      repeatUnit: shopSchedule.repeatUnit,
+      startDates: shopSchedule.startDates,
+      customDates: [...shopSchedule.customDates!],
+      unavailableDates: [
+        ...{
+          ...shopSchedule.unavailableDates!,
+          ...unavailableDates
+              .map((date) => DateFormat("yyyy-MM-dd").format(date!))
+              .toList(),
+        }
+      ],
+    );
   }
 
   @override

@@ -23,6 +23,7 @@ class AddShop extends StatefulWidget {
 class _AddShopState extends State<AddShop> {
   final FocusNode _nameFocusNode = FocusNode();
   final FocusNode _descriptionFocusNode = FocusNode();
+  File? shopPhoto;
 
   KeyboardActionsConfig _buildConfig() {
     return KeyboardActionsConfig(
@@ -66,7 +67,6 @@ class _AddShopState extends State<AddShop> {
     );
   }
 
-  File? shopPhoto;
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
@@ -126,8 +126,7 @@ class _AddShopState extends State<AddShop> {
                 hintText: "Shop Description",
                 focusNode: this._descriptionFocusNode,
                 onChanged: (value) {
-                  Provider.of<ShopBody>(context, listen: false)
-                      .update(description: value);
+                  context.read<ShopBody>().update(description: value);
                 },
               ),
             ),
