@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import '../components/appbar.dart';
-import '../privacy%20setting/account_deleted.dart';
+
 import '../../../../utils/constants/themes.dart';
+import '../components/appbar.dart';
+import 'account_deleted.dart';
 
 class DeleteAccount extends StatefulWidget {
   @override

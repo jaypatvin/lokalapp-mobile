@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '../privacy%20setting/delete_account.dart';
 
 import '../../../../utils/constants/themes.dart';
+import 'delete_account.dart';
 
 class PrivacySetting extends StatelessWidget {
   buildButton(context) => Container(

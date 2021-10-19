@@ -25,6 +25,10 @@ class Database {
     return _database!;
   }
 
+  Future<QuerySnapshot<Map<String, dynamic>>> getNotificationTypes() {
+    return FirebaseFirestore.instance.collection('notification_types').get();
+  }
+
   Future<DocumentSnapshot<Map<String, dynamic>>> getPostLikes(
     String activityId,
     String docId,
