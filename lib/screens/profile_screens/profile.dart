@@ -8,6 +8,8 @@ import '../../providers/activities.dart';
 import '../../providers/user.dart';
 import '../../utils/constants/assets.dart';
 import '../../utils/constants/themes.dart';
+import '../../utils/shared_preference.dart';
+import '../../widgets/onboarding.dart';
 import '../home/timeline.dart';
 import 'components/my_profile_list.dart';
 import 'components/profile_header.dart';
@@ -27,97 +29,103 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     final user = context.read<CurrentUser>();
-    return NestedWillPopScope(
-      onWillPop: () async {
-        if (_pageController.page == 0)
-          return true;
-        else {
-          _pageController.animateToPage(
-            0,
-            duration: const Duration(milliseconds: 250),
-            curve: Curves.easeIn,
-          );
-          return false;
-        }
-      },
-      child: Scaffold(
-        backgroundColor: kInviteScreenColor,
-        body: SafeArea(
-          child: Column(
-            children: [
-              ProfileHeader(),
-              UserShopBanner(),
-              SizedBox(height: 20.0.h),
-              Expanded(
-                child: PageView(
-                  controller: _pageController,
-                  physics: NeverScrollableScrollPhysics(),
-                  children: [
-                    Column(
-                      children: [
-                        Container(
-                          padding: EdgeInsets.all(10.0.w),
-                          width: double.infinity,
-                          child: Text(
-                            "My Profile",
-                            style: TextStyle(
-                              color: kTealColor,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ),
-                        Expanded(
-                          child: SingleChildScrollView(
-                            child: MyProfileList(
-                              onMyPostsTap: () => _pageController.animateToPage(
-                                1,
-                                duration: const Duration(milliseconds: 250),
-                                curve: Curves.easeIn,
+    return Onboarding(
+      screen: MainScreen.profile,
+      child: NestedWillPopScope(
+        onWillPop: () async {
+          if (_pageController.page == 0)
+            return true;
+          else {
+            _pageController.animateToPage(
+              0,
+              duration: const Duration(milliseconds: 250),
+              curve: Curves.easeIn,
+            );
+            return false;
+          }
+        },
+        child: Scaffold(
+          backgroundColor: kInviteScreenColor,
+          body: SafeArea(
+            child: Column(
+              children: [
+                ProfileHeader(),
+                UserShopBanner(),
+                SizedBox(height: 20.0.h),
+                Expanded(
+                  child: PageView(
+                    controller: _pageController,
+                    physics: NeverScrollableScrollPhysics(),
+                    children: [
+                      Column(
+                        children: [
+                          Container(
+                            padding: EdgeInsets.all(10.0.w),
+                            width: double.infinity,
+                            child: Text(
+                              "My Profile",
+                              style: TextStyle(
+                                color: kTealColor,
+                                fontWeight: FontWeight.w600,
                               ),
-                              onInviteFriend: null,
-                              onNotificationsTap: null,
-                              onWishlistTap: null,
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                    GestureDetector(
-                      onPanUpdate: (data) {
-                        if (data.delta.dx > 0) {
-                          Navigator.maybePop(context);
-                        }
-                      },
-                      child: SingleChildScrollView(
-                        child: Container(
-                          color: Color(0XFFF1FAFF),
-                          child: Consumer<Activities>(
-                            builder: (context, activities, child) {
-                              return activities.isLoading
-                                  ? SizedBox(
-                                      width: double.infinity,
-                                      height: double.infinity,
-                                      child: DecoratedBox(
-                                        decoration: const BoxDecoration(
-                                          color: Colors.white,
+                          Expanded(
+                            child: SingleChildScrollView(
+                              child: MyProfileList(
+                                onMyPostsTap: () =>
+                                    _pageController.animateToPage(
+                                  1,
+                                  duration: const Duration(milliseconds: 250),
+                                  curve: Curves.easeIn,
+                                ),
+                                onInviteFriend: null,
+                                onNotificationsTap: null,
+                                onWishlistTap: null,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      GestureDetector(
+                        onPanUpdate: (data) {
+                          if (data.delta.dx > 0) {
+                            Navigator.maybePop(context);
+                          }
+                        },
+                        child: SingleChildScrollView(
+                          child: Container(
+                            color: Color(0XFFF1FAFF),
+                            child: Consumer<Activities>(
+                              builder: (context, activities, child) {
+                                return activities.isLoading
+                                    ? SizedBox(
+                                        width: double.infinity,
+                                        height: double.infinity,
+                                        child: DecoratedBox(
+                                          decoration: const BoxDecoration(
+                                            color: Colors.white,
+                                          ),
+                                          child:
+                                              Lottie.asset(kAnimationLoading),
                                         ),
-                                        child: Lottie.asset(kAnimationLoading),
-                                      ),
-                                    )
-                                  : RefreshIndicator(
-                                      onRefresh: () => activities.fetch(),
-                                      child: Timeline(
-                                          activities.findByUser(user.id), null),
-                                    );
-                            },
+                                      )
+                                    : RefreshIndicator(
+                                        onRefresh: () => activities.fetch(),
+                                        child: Timeline(
+                                            activities.findByUser(user.id),
+                                            null),
+                                      );
+                              },
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

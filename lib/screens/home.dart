@@ -14,8 +14,10 @@ import '../providers/activities.dart';
 import '../services/database.dart';
 import '../utils/constants/assets.dart';
 import '../utils/constants/themes.dart';
+import '../utils/shared_preference.dart';
 import '../widgets/app_button.dart';
 import '../widgets/custom_app_bar.dart';
+import '../widgets/onboarding.dart';
 import 'cart/cart_container.dart';
 import 'home/draft_post.dart';
 import 'home/timeline.dart';
@@ -132,65 +134,68 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Color(0xffF1FAFF),
-      resizeToAvoidBottomInset: true,
-      appBar: CustomAppBar(
-        titleText: "White Plains",
-        titleStyle: TextStyle(color: Colors.white),
-        backgroundColor: kTealColor,
-        buildLeading: false,
-      ),
-      body: CartContainer(
-        child: Column(
-          children: [
-            _postField(),
-            Expanded(
-              child: Stack(
-                children: [
-                  Positioned.fill(
-                    child: Consumer<Activities>(
-                      builder: (context, activities, child) {
-                        return activities.isLoading
-                            ? SizedBox(
-                                width: double.infinity,
-                                height: double.infinity,
-                                child: DecoratedBox(
-                                  decoration: const BoxDecoration(
-                                    color: Colors.white,
+    return Onboarding(
+      screen: MainScreen.home,
+      child: Scaffold(
+        backgroundColor: Color(0xffF1FAFF),
+        resizeToAvoidBottomInset: true,
+        appBar: CustomAppBar(
+          titleText: "White Plains",
+          titleStyle: TextStyle(color: Colors.white),
+          backgroundColor: kTealColor,
+          buildLeading: false,
+        ),
+        body: CartContainer(
+          child: Column(
+            children: [
+              _postField(),
+              Expanded(
+                child: Stack(
+                  children: [
+                    Positioned.fill(
+                      child: Consumer<Activities>(
+                        builder: (context, activities, child) {
+                          return activities.isLoading
+                              ? SizedBox(
+                                  width: double.infinity,
+                                  height: double.infinity,
+                                  child: DecoratedBox(
+                                    decoration: const BoxDecoration(
+                                      color: Colors.white,
+                                    ),
+                                    child: Lottie.asset(kAnimationLoading),
                                   ),
-                                  child: Lottie.asset(kAnimationLoading),
-                                ),
-                              )
-                            : RefreshIndicator(
-                                onRefresh: () => activities.fetch(),
-                                child: Timeline(activities.feed, _controller),
-                              );
-                      },
-                    ),
-                  ),
-                  if (this._displayNewPost)
-                    Align(
-                      alignment: Alignment.topCenter,
-                      child: AppButton(
-                        "New Posts",
-                        Colors.grey.withOpacity(0.5),
-                        true,
-                        () {
-                          context.read<Activities>().fetch();
-                          setState(() {
-                            _displayNewPost = false;
-                          });
+                                )
+                              : RefreshIndicator(
+                                  onRefresh: () => activities.fetch(),
+                                  child: Timeline(activities.feed, _controller),
+                                );
                         },
-                        textStyle: TextStyle(
-                          color: Colors.black,
-                        ),
                       ),
                     ),
-                ],
+                    if (this._displayNewPost)
+                      Align(
+                        alignment: Alignment.topCenter,
+                        child: AppButton(
+                          "New Posts",
+                          Colors.grey.withOpacity(0.5),
+                          true,
+                          () {
+                            context.read<Activities>().fetch();
+                            setState(() {
+                              _displayNewPost = false;
+                            });
+                          },
+                          textStyle: TextStyle(
+                            color: Colors.black,
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

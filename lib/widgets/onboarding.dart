@@ -1,161 +1,151 @@
+import 'package:after_layout/after_layout.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
 
-import '../utils/themes.dart';
+import '../utils/constants/assets.dart';
+import '../utils/constants/descriptions.dart';
+import '../utils/constants/themes.dart';
+import '../utils/shared_preference.dart';
+import 'app_button.dart';
 
 class Onboarding extends StatefulWidget {
-  final IconData? icon;
-  final String? iconText;
-  final String? firstSentence;
-  final String? secondSentence;
-  final String? thirdSentence;
-  final String? fourthSentence;
-  final String? buttonText;
-  Onboarding(
-      {this.icon,
-      this.iconText,
-      this.fourthSentence,
-      this.buttonText,
-      this.thirdSentence,
-      this.secondSentence,
-      this.firstSentence});
+  final Widget child;
+  final MainScreen screen;
+  const Onboarding({required this.screen, required this.child});
 
   @override
   _OnboardingState createState() => _OnboardingState();
 }
 
-class _OnboardingState extends State<Onboarding> {
-  showAlert(BuildContext context) {
-    double width = MediaQuery.of(context).size.width;
-    double height = MediaQuery.of(context).size.height;
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        insetPadding: EdgeInsets.symmetric(horizontal: 22),
-        clipBehavior: Clip.antiAliasWithSaveLayer,
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(32.0))),
-        contentPadding: EdgeInsets.only(top: 10.0),
-        content: Container(
-          height: height * 0.3,
-          width: width * 0.9,
-          decoration:
-              BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5))),
-          child: Container(
-            width: width * 0.9,
-            child: Row(
-              children: <Widget>[
-                ClipRRect(
-                  borderRadius: BorderRadius.all(Radius.circular(5)),
-                  child: Column(
-                    children: [
-                      SizedBox(
-                        height: 20,
-                      ),
-                      Container(
-                        padding: EdgeInsets.all(8),
-                        width: width * 0.25,
-                        child: Icon(
-                          widget.icon,
-                          size: 80,
-                          color: Color(0xffCC3752),
+class _OnboardingState extends State<Onboarding> with AfterLayoutMixin {
+  static const _onboardDetails = <MainScreen, Map<String, String>>{
+    MainScreen.home: {
+      'icon': kBottomIconHome,
+      'title': 'Home',
+      'description': kDescriptionHome,
+      'label': 'Okay!'
+    },
+    MainScreen.discover: {
+      'icon': kBottomIconDiscover,
+      'title': 'Discover',
+      'description': kDescriptionDiscover,
+      'label': 'Got it!'
+    },
+    MainScreen.chats: {
+      'icon': kBottomIconChat,
+      'title': 'Chats',
+      'description': kDescriptionChat,
+      'label': 'Gotcha!'
+    },
+    MainScreen.activity: {
+      'icon': kBottomIconActivity,
+      'title': 'Activity',
+      'description': kDescriptionActivity,
+      'label': 'Okay!'
+    },
+    MainScreen.profile: {
+      'icon': kBottomIconProfile,
+      'title': 'Profile',
+      'description': kDescriptionProfile,
+      'label': 'Okay!'
+    },
+  };
+
+  bool _displayOnboarding = false;
+
+  @override
+  void afterFirstLayout(BuildContext context) async {
+    final _prefs = context.read<UserSharedPreferences>();
+    if (!_prefs.getOnboardingStatus(widget.screen)) {
+      // await _showAlert();
+      // await _prefs.updateStatus(widget.screen);
+      if (this.mounted) setState(() => _displayOnboarding = true);
+    }
+  }
+
+  Widget _buildOnboardingCard() {
+    return Container(
+      padding: EdgeInsets.fromLTRB(20.0.w, 30.0.h, 20.0.w, 10.0.h),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.all(Radius.circular(20.0.r)),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SvgPicture.asset(
+                    _onboardDetails[widget.screen]!['icon']!,
+                    fit: BoxFit.contain,
+                    color: kPinkColor,
+                    height: 75.0.h,
+                  ),
+                  Text(
+                    _onboardDetails[widget.screen]!['title']!,
+                    style: Theme.of(context).textTheme.bodyText1!.copyWith(
+                          color: kPinkColor,
                         ),
-                      ),
-                      Text(
-                        widget.iconText!,
-                        style: TextStyle(color: Color(0xffCC3752)),
-                      )
-                    ],
-                  ),
+                  )
+                ],
+              ),
+              SizedBox(width: 20.0.w),
+              Expanded(
+                child: Text(
+                  _onboardDetails[widget.screen]!['description']!,
+                  style: Theme.of(context).textTheme.bodyText1,
                 ),
-                Expanded(
-                  child: Center(
-                    child: Container(
-                      padding: EdgeInsets.only(
-                          left: 10, top: 5, right: 15, bottom: 5),
-                      width: MediaQuery.of(context).size.width * 0.9,
-                      child: Column(
-                        children: <Widget>[
-                          Container(
-                            padding: EdgeInsets.only(
-                                left: 10, top: 30, right: 15, bottom: 5),
-                            child: Text(
-                              widget.firstSentence!,
-                              textAlign: TextAlign.left,
-                              style: TextStyle(fontSize: 14),
-                            ),
-                          ),
-                          Container(
-                            padding: EdgeInsets.only(
-                                left: 8, right: 15, bottom: 5, top: 1),
-                            child: Text(
-                              widget.secondSentence!,
-                              textAlign: TextAlign.left,
-                              style: TextStyle(fontSize: 14),
-                            ),
-                          ),
-                          Container(
-                              padding:
-                                  EdgeInsets.only(right: 30, bottom: 5, top: 1),
-                              child: Text(
-                                widget.thirdSentence!,
-                                textAlign: TextAlign.left,
-                                style: TextStyle(fontSize: 14),
-                              )),
-                          Container(
-                              padding: EdgeInsets.only(
-                                  left: 10, right: 15, bottom: 5, top: 1),
-                              child: Text(
-                                widget.fourthSentence!,
-                                textAlign: TextAlign.left,
-                                style: TextStyle(fontSize: 14),
-                              )),
-                          SizedBox(
-                            height: 20,
-                          ),
-                          Row(
-                            children: [
-                              Center(
-                                child: Container(
-                                  height: 43,
-                                  width: 180,
-                                  child: FlatButton(
-                                    color: kTealColor,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(20.0),
-                                      side: BorderSide(color: kTealColor),
-                                    ),
-                                    textColor: kTealColor,
-                                    child: Text(
-                                      widget.buttonText!,
-                                      style: TextStyle(
-                                          fontFamily: "Goldplay",
-                                          fontSize: 14,
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.w700),
-                                    ),
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                    },
-                                  ),
-                                ),
-                              ),
-                            ],
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
+              )
+            ],
           ),
-        ),
+          const SizedBox(height: 15),
+          SizedBox(
+            width: MediaQuery.of(context).size.width * 0.5,
+            child: AppButton(
+                _onboardDetails[widget.screen]!['label']!, kTealColor, true,
+                //() => Navigator.pop(ctx),
+                () async {
+              setState(() {
+                _displayOnboarding = false;
+              });
+              await context
+                  .read<UserSharedPreferences>()
+                  .updateOnboardingStatus(widget.screen);
+            }),
+          ),
+        ],
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return showAlert(context);
+    return Stack(
+      children: [
+        widget.child,
+        if (_displayOnboarding)
+          SizedBox(
+            width: double.infinity,
+            height: double.infinity,
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                color: Colors.black.withOpacity(0.5),
+              ),
+              child: Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: _buildOnboardingCard(),
+                ),
+              ),
+            ),
+          ),
+      ],
+    );
   }
 }

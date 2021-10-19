@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 
+import '../utils/constants/assets.dart';
 import 'activity/activity.dart';
 import 'chat/chat.dart';
 import 'discover/discover.dart';
@@ -29,7 +30,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
   List<PersistentBottomNavBarItem> _navBarsItems() {
     return [
       PersistentBottomNavBarItem(
-        assetName: 'assets/bottomNavIcons/Home.svg',
+        assetName: kBottomIconHome,
         title: ("Home"),
         contentPadding: 0.0,
         iconSize: 34,
@@ -40,7 +41,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
         ),
       ),
       PersistentBottomNavBarItem(
-        assetName: 'assets/bottomNavIcons/Discover.svg',
+        assetName: kBottomIconDiscover,
         title: ("Discover"),
         iconSize: 34,
         activeColorPrimary: Color(0xFFCC3752),
@@ -50,7 +51,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
         ),
       ),
       PersistentBottomNavBarItem(
-        assetName: 'assets/bottomNavIcons/Chats.svg',
+        assetName: kBottomIconChat,
         title: ("Chat"),
         iconSize: 34,
         activeColorPrimary: Color(0xFFCC3752),
@@ -60,7 +61,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
         ),
       ),
       PersistentBottomNavBarItem(
-        assetName: 'assets/bottomNavIcons/Activity.svg',
+        assetName: kBottomIconActivity,
         title: ("Activity"),
         iconSize: 34,
         activeColorPrimary: Color(0xFFCC3752),
@@ -70,7 +71,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
         ),
       ),
       PersistentBottomNavBarItem(
-        assetName: 'assets/bottomNavIcons/Profile.svg',
+        assetName: kBottomIconProfile,
         title: ("Profile"),
         iconSize: 34,
         activeColorPrimary: Color(0xFFCC3752),

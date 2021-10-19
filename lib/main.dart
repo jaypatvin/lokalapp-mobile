@@ -22,7 +22,6 @@ import 'providers/user.dart';
 import 'providers/user_auth.dart';
 import 'providers/users.dart';
 import 'root/root.dart';
-import 'screens/chat/chat_helpers.dart';
 import 'services/api/api.dart';
 import 'services/local_image_service.dart';
 import 'utils/constants/assets.dart';
@@ -48,8 +47,8 @@ class _MyAppState extends State<MyApp> {
 
   @override
   initState() {
-    _prefs.init();
     super.initState();
+    _prefs.init();
   }
 
   @override
@@ -70,7 +69,7 @@ class _MyAppState extends State<MyApp> {
     ChangeNotifierProvider<Invite>(create: (_) => Invite()),
 
     // states:
-    //TODO: update user structure 
+    //TODO: update user structure
     ChangeNotifierProxyProvider<UserAuth, CurrentUser?>(
       create: (_) => CurrentUser(),
       update: (_, auth, user) => user!..initializeToken(auth.user),
@@ -132,7 +131,6 @@ class _MyAppState extends State<MyApp> {
       lazy: true,
     ),
 
-
     ChangeNotifierProvider(
       create: (_) => CustomPickerDataProvider(max: 5),
       lazy: true,
@@ -141,7 +139,6 @@ class _MyAppState extends State<MyApp> {
     // services:
     Provider<MediaUtility?>(create: (_) => MediaUtility.instance),
     Provider<LocalImageService?>(create: (_) => LocalImageService.instance),
-    Provider<ChatHelpers>(create: (_) => ChatHelpers()),
     ProxyProvider<CurrentUser, SubscriptionProvider?>(
       create: (_) => SubscriptionProvider(),
       update: (_, user, subscription) =>

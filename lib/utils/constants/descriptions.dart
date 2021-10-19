@@ -12,6 +12,6 @@ const kDescriptionDiscover = 'Discover is where you can find food, products, '
 const kDescriptionChat = 'This is where you can send messages, photos, and '
     'videos to other members of this community!';
 const kDescriptionActivity = 'The Activity Tab is where you can track your '
-    "pending orders from other stores or other people's orders from your store";
+    "pending orders from other stores or other people's orders from your store.";
 const kDescriptionProfile = 'This screen is where you can edit your profile '
     'and set up a store if you decide.';
