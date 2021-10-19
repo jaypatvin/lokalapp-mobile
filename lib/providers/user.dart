@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
@@ -29,7 +28,8 @@ class CurrentUser extends ChangeNotifier {
   UserAddress? get address => _user!.address;
   UserRegistrationStatus? get registrationStatus => _user!.registration;
   UserRoles? get roles => _user!.roles;
-  Timestamp? get createdAt => _user!.createdAt;
+  DateTime? get createdAt => _user!.createdAt;
+  LokalUser? get user => _user;
 
   UserState get state => _state;
   String? get idToken => _idToken;
@@ -92,7 +92,7 @@ class CurrentUser extends ChangeNotifier {
   Future<bool> verify(Map body) async {
     http.Response response = await LokalApiService.instance!.user!.update(
       data: {"id": this.id, "registration": body},
-      idToken: this.idToken,
+      idToken: this._idToken,
     );
 
     if (response.statusCode != 200) return false;
@@ -104,7 +104,7 @@ class CurrentUser extends ChangeNotifier {
   Future<bool> update(Map body) async {
     http.Response response = await LokalApiService.instance!.user!.update(
       data: {"id": this.id, ...body},
-      idToken: idToken,
+      idToken: _idToken,
     );
 
     if (response.statusCode != 200) return false;

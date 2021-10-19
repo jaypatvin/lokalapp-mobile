@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:localstorage/localstorage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 enum MainScreen {
@@ -13,8 +14,9 @@ enum MainScreen {
 class UserSharedPreferences {
   late final SharedPreferences? _preference;
   final _streamController = StreamController<UserSharedPreferences>.broadcast();
+  final _storage = LocalStorage('session');
 
-  static const _keys = const <MainScreen, String>{
+  static const _onboardingKeys = const <MainScreen, String>{
     MainScreen.home: 'onboard_home',
     MainScreen.discover: 'onboard_discover',
     MainScreen.chats: 'onboard_chats',
@@ -25,30 +27,48 @@ class UserSharedPreferences {
   Stream<UserSharedPreferences> get stream => _streamController.stream;
   void dispose() {
     _streamController.close();
+    _storage.clear();
+    _storage.dispose();
   }
 
   bool get isReady => _preference != null;
   Future<bool> init() async {
+    if (_preference != null) {
+      return true;
+    }
     _streamController.add(this);
     _preference = await SharedPreferences.getInstance();
     _streamController.add(this);
     return isReady;
   }
 
-  String getOnboardingKey(MainScreen screen) {
-    return _keys[screen]!;
+  Future<void> _setBoolValue(String key, bool value) async {
+    if (!isReady) await init();
+    _preference!.setBool(key, value);
+    _streamController.add(this);
   }
 
-  bool getOnboardingStatus(MainScreen screen) {
-    return _preference?.getBool(_keys[screen]!) ?? false;
+  bool _getBoolValue(String key) => _preference?.getBool(key) ?? false;
+
+  String getOnboardingKey(MainScreen screen) {
+    return _onboardingKeys[screen]!;
   }
+
+  bool getOnboardingStatus(MainScreen screen) =>
+      _getBoolValue(_onboardingKeys[screen]!);
 
   Future<void> updateOnboardingStatus(
     MainScreen screen, [
     bool status = true,
-  ]) async {
-    if (!isReady) await init();
-    _preference!.setBool(_keys[screen]!, status);
-    _streamController.add(this);
+  ]) =>
+      _setBoolValue(_onboardingKeys[screen]!, status);
+
+  Future<void> setSessionCache(String key, String value) async {
+    final ready = await _storage.ready;
+    if (!ready) return;
+
+    _storage.setItem(key, value);
   }
+
+  String getSessionCache(String key, String value) => _storage.getItem(key);
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 
 import '../../../providers/user.dart';
@@ -35,11 +36,10 @@ class ProfileHeader extends StatelessWidget {
             ),
             color: Colors.white,
             onPressed: () {
-              Navigator.push(
+              pushNewScreenWithRouteSettings(
                 context,
-                MaterialPageRoute(
-                  builder: (context) => Settings(),
-                ),
+                screen: Settings(),
+                settings: RouteSettings(name: Settings.routeName),
               );
             },
           ),
