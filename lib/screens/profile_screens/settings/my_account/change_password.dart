@@ -1,46 +1,22 @@
 import 'package:flutter/material.dart';
-import '../../../../providers/post_requests/auth_body.dart';
-import '../../../../providers/user.dart';
-import 'email_changed.dart';
-import '../../../../services/database.dart';
+import 'package:lokalapp/screens/profile_screens/settings/my_account/confirmation.dart';
+
 import '../../../../utils/constants/themes.dart';
-import 'package:provider/provider.dart';
 
-class ChangeEmail extends StatefulWidget {
-  @override
-  _ChangeEmailState createState() => _ChangeEmailState();
-}
+class ChangePassword extends StatelessWidget {
+  final TextEditingController oldPwController = TextEditingController();
+  final TextEditingController confirmPwController = TextEditingController();
+  final TextEditingController newPwController = TextEditingController();
 
-class _ChangeEmailState extends State<ChangeEmail> {
-  String? newEmail;
+  final bool confirmed = false;
 
-  String? confirmEmail;
-
-  String? pw;
-
-  bool confirmed = false;
-
-  Future updateEmail() async {
-    CurrentUser currentUser = Provider.of<CurrentUser>(context, listen: false);
-    AuthBody authBody = Provider.of<AuthBody>(context, listen: false);
-
-    try {
-      authBody.update(email: newEmail);
-      await usersRef.doc(currentUser.id).update({'email': newEmail});
-      Navigator.pop(context);
-    } on Exception catch (_) {
-      print(_);
-    }
-  }
-
-  buildInput(context, Function onChanged, bool obscureText) {
+  buildInput(context, controller) {
     return Container(
       // width: MediaQuery.of(context).size.width * 0.5,
       padding: const EdgeInsets.only(top: 6, left: 30, right: 30),
       // height: MediaQuery.of(context).size.height * 0.5,
       child: TextFormField(
-        obscureText: obscureText,
-        onChanged: onChanged as void Function(String)?,
+        controller: controller,
         decoration: InputDecoration(
           fillColor: Colors.white,
           filled: true,
@@ -97,13 +73,14 @@ class _ChangeEmailState extends State<ChangeEmail> {
                 fontWeight: FontWeight.w600),
           ),
           onPressed: () {
-            try {
-              if (newEmail == confirmEmail) {
-                updateEmail();
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => EmailChanged()));
-              }
-            } catch (e) {}
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => MyAccountConfirmation(
+                  isPassword: true,
+                ),
+              ),
+            );
           },
         ),
       );
@@ -145,9 +122,8 @@ class _ChangeEmailState extends State<ChangeEmail> {
                       width: 40,
                     ),
                     Container(
-                      // padding: const EdgeInsets.only(left: 10),
                       child: Text(
-                        "Change Email Address",
+                        "Change Password",
                         style: TextStyle(
                             fontFamily: "Goldplay",
                             fontSize: 22,
@@ -170,51 +146,39 @@ class _ChangeEmailState extends State<ChangeEmail> {
               Container(
                   padding: const EdgeInsets.only(left: 40, bottom: 5),
                   child: Text(
-                    "New Email Address",
+                    "Old Password",
                     style: TextStyle(
                       fontFamily: "GoldplayBold",
                       fontSize: 14,
                     ),
                   )),
-              buildInput(context, (value) {
-                setState(() {
-                  newEmail = value;
-                });
-              }, false),
+              buildInput(context, oldPwController),
               SizedBox(
                 height: 10,
               ),
               Container(
                   padding: const EdgeInsets.only(left: 40, bottom: 5),
                   child: Text(
-                    "Confirm Email Address",
+                    "New Password",
                     style: TextStyle(
                       fontFamily: "GoldplayBold",
                       fontSize: 14,
                     ),
                   )),
-              buildInput(context, (value) {
-                setState(() {
-                  confirmEmail = value;
-                });
-              }, false),
+              buildInput(context, newPwController),
               SizedBox(
                 height: 10,
               ),
               Container(
                   padding: const EdgeInsets.only(left: 40, bottom: 5),
                   child: Text(
-                    "Password",
+                    "Confirm Password",
                     style: TextStyle(
                       fontFamily: "GoldplayBold",
                       fontSize: 14,
                     ),
                   )),
-              buildInput(context, (value) {
-                setState(() {
-                  pw = value;
-                });
-              }, true),
+              buildInput(context, confirmPwController),
               SizedBox(
                 height: MediaQuery.of(context).size.height * 0.2,
               ),

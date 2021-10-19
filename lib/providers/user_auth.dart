@@ -12,7 +12,6 @@ enum AuthStatus {
   Error,
 }
 
-
 // TODO: checking for errors (no authResult etc.)
 class UserAuth extends ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -86,7 +85,7 @@ class UserAuth extends ChangeNotifier {
           idToken: _googleAuth.idToken, accessToken: _googleAuth.accessToken);
       final UserCredential authResult =
           await _auth.signInWithCredential(credential);
-      if (authResult != null) {
+      if (authResult.user != null) {
         this._user = authResult.user;
         notifyListeners();
       }
@@ -106,7 +105,7 @@ class UserAuth extends ChangeNotifier {
       final UserCredential authResult =
           await _auth.signInWithCredential(credential);
 
-      if (authResult == null) {
+      if (authResult.user != null) {
         this._user = authResult.user;
         notifyListeners();
       }
@@ -141,6 +140,73 @@ class UserAuth extends ChangeNotifier {
       return AuthStatus.Error;
     } catch (e) {
       return AuthStatus.Error;
+    }
+  }
+
+  bool checkSignInMethod() {
+    final userInfos = _auth.currentUser!.providerData;
+    final result = userInfos.any(
+      (userInfo) => userInfo.providerId == EmailAuthProvider.PROVIDER_ID,
+    );
+
+    if (!result) {
+      for (final userInfo in userInfos) {
+        if (userInfo.providerId == EmailAuthProvider.PROVIDER_ID) {
+          debugPrint('Signed in with Email.');
+        } else if (userInfo.providerId == GoogleAuthProvider.PROVIDER_ID) {
+          debugPrint('Signed in with Google.');
+          throw ('Signed in with Google.');
+        } else if (userInfo.providerId == FacebookAuthProvider.PROVIDER_ID) {
+          debugPrint('Signed in with Google.');
+          throw ('Signed in with Facebook');
+        }
+      }
+    }
+
+    return result;
+  }
+
+  Future<void> changeEmail(
+    String email,
+    String password,
+    String newEmail,
+  ) async {
+    try {
+      checkSignInMethod();
+      final userCredential = await _auth.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      await _auth.currentUser!.reauthenticateWithCredential(
+        userCredential.credential!,
+      );
+      return await _auth.currentUser!.updateEmail(newEmail);
+    } on FirebaseAuthException catch (e) {
+      throw (e.code);
+    } catch (e) {
+      throw (e);
+    }
+  }
+
+  Future<void> changePassword(
+    String email,
+    String password,
+    String newPassword,
+  ) async {
+    try {
+      checkSignInMethod();
+      final userCredential = await _auth.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      await _auth.currentUser!.reauthenticateWithCredential(
+        userCredential.credential!,
+      );
+      return await _auth.currentUser!.updatePassword(newPassword);
+    } on FirebaseAuthException catch (e) {
+      throw (e.code);
+    } catch (e) {
+      throw (e);
     }
   }
 }
