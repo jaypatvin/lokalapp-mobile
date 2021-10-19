@@ -45,15 +45,15 @@ class ShopModel {
 
   factory ShopModel.fromMap(Map<String, dynamic> map) {
     return ShopModel(
-      id: map['id'],
-      name: map['name'],
-      userId: map['user_id'],
-      communityId: map['community_id'],
-      description: map['description'],
-      profilePhoto: map['profile_photo'],
-      coverPhoto: map['cover_photo'],
-      isClosed: map['is_close'],
-      status: map['status'],
+      id: map['id'] ?? '',
+      name: map['name'] ?? '',
+      userId: map['user_id'] ?? '',
+      communityId: map['community_id'] ?? '',
+      description: map['description'] ?? '',
+      profilePhoto: map['profile_photo'] ?? '',
+      coverPhoto: map['cover_photo'] ?? '',
+      isClosed: map['is_close'] ?? false,
+      status: map['status'] ?? 'enabled',
       operatingHours: map['operating_hours'] != null
           ? OperatingHours.fromMap(map['operating_hours'])
           : OperatingHours(),

@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart' show DateFormat;
 import 'package:provider/provider.dart';
-import '../../widgets/screen_loader.dart';
 
 import '../../models/operating_hours.dart';
 import '../../providers/post_requests/operating_hours_body.dart';
@@ -18,6 +17,7 @@ import '../../utils/themes.dart';
 import '../../widgets/app_button.dart';
 import '../../widgets/custom_app_bar.dart';
 import '../../widgets/schedule_picker.dart';
+import '../../widgets/screen_loader.dart';
 import 'payment_options/payment_options.dart';
 import 'shop_confirmation.dart';
 
@@ -79,9 +79,9 @@ class _CustomizeAvailabilityState extends State<CustomizeAvailability>
     markedDates = [...initialDates!];
   }
 
-  Future<List<DateTime>?> _showCalendarPicker() async {
+  Future<List<DateTime?>?> _showCalendarPicker() async {
     List<DateTime?> selectedDates = [...markedDates!];
-    return await showDialog<List<DateTime>>(
+    return await showDialog<List<DateTime?>?>(
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
@@ -94,7 +94,9 @@ class _CustomizeAvailabilityState extends State<CustomizeAvailability>
                 selectedDates.add(day);
             });
           },
-          onCancel: () => Navigator.pop(context, markedDates),
+          onCancel: () {
+            Navigator.pop(context, markedDates);
+          },
           onConfirm: () {
             setState(() {
               markedDates = selectedDates;
@@ -146,7 +148,7 @@ class _CustomizeAvailabilityState extends State<CustomizeAvailability>
     );
   }
 
-  Future<bool> createShop() async {
+  Future<bool> _createShop() async {
     if (_shopCreated) return true;
     var file = widget.shopPhoto;
     String mediaUrl = "";
@@ -162,40 +164,27 @@ class _CustomizeAvailabilityState extends State<CustomizeAvailability>
       profilePhoto: mediaUrl,
       userId: user.id,
       communityId: user.communityId,
+      operatingHours: context.read<OperatingHoursBody>().data,
     );
 
     try {
-      bool success = await shops.create(shopBody.data);
-      if (success) {
-        await shops.fetch();
-        return true;
-      }
+      return await shops.create(shopBody.data);
     } on Exception catch (e) {
       debugPrint(e.toString());
       return false;
     }
-    return false;
   }
 
   Future<void> _onSubmit() async {
-    _shopCreated = await createShop();
+    _shopCreated = await _createShop();
     if (_shopCreated) {
-      bool updated = await updateShopSchedule();
-      if (updated) {
-        context.read<Shops>().fetch();
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (BuildContext context) => AddShopConfirmation(),
-          ),
-        );
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text("Failed to upload shop schedule. Try again"),
-          ),
-        );
-      }
+      context.read<Shops>().fetch();
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (BuildContext context) => AddShopConfirmation(),
+        ),
+      );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(

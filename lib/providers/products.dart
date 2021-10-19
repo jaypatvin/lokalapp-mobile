@@ -14,10 +14,6 @@ class Products extends ChangeNotifier {
   bool? _isLoading;
 
   bool? get isLoading => _isLoading;
-  // List<Product> get items {
-  //   return [..._products];
-  // }
-  // UnmodifiableListView<Product> get items => UnmodifiableListView(_products);
 
   UnmodifiableListView<Product> get items {
     return UnmodifiableListView(
@@ -69,7 +65,6 @@ class Products extends ChangeNotifier {
       List<Product> products = [];
       for (var product in data['data']) {
         var _product = Product.fromMap(product);
-        print(_product.archived);
         products.add(_product);
       }
       _products = products;
@@ -188,7 +183,6 @@ class Products extends ChangeNotifier {
       }
       throw (response.body);
     } catch (e) {
-      print(e);
       return null;
     }
   }

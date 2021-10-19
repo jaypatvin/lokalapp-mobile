@@ -2,12 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:keyboard_actions/keyboard_actions.dart';
-import '../../models/lokal_images.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
-import '../../widgets/screen_loader.dart';
 
+import '../../models/lokal_images.dart';
 import '../../providers/post_requests/product_body.dart';
 import '../../providers/products.dart';
 import '../../utils/themes.dart';
@@ -15,6 +14,7 @@ import '../../widgets/app_button.dart';
 import '../../widgets/custom_app_bar.dart';
 import '../../widgets/input_description.dart';
 import '../../widgets/input_name.dart';
+import '../../widgets/screen_loader.dart';
 import '../profile_screens/user_shop.dart';
 import 'components/add_product_gallery.dart';
 import 'product_details.dart';
@@ -72,6 +72,7 @@ class _AddProductState extends State<AddProduct> with ScreenLoader {
             quantity: product.quantity,
             productCategory: product.productCategory,
             status: product.status,
+            canSubscribe: product.canSubscribe,
             gallery: _productGallery!.map((e) => e.toMap()).toList(),
           );
         return;

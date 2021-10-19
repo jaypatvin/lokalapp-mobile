@@ -72,6 +72,7 @@ class _ShopScheduleState extends State<ShopSchedule> {
       this._startDate = dates.first;
     }
 
+    print(dates);
     context.read<OperatingHoursBody>().update(
           startDates: dates
               .map<String>((date) => DateFormat("yyyy-MM-dd").format(date))

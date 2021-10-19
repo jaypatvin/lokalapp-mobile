@@ -4,10 +4,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lottie/lottie.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
-import 'widgets/screen_loader.dart';
+import 'package:provider/single_child_widget.dart';
 
 import 'providers/activities.dart';
 import 'providers/cart.dart';
+import 'providers/categories.dart';
 import 'providers/chat_provider.dart';
 import 'providers/invite.dart';
 import 'providers/post_requests/auth_body.dart';
@@ -22,12 +23,14 @@ import 'providers/user_auth.dart';
 import 'providers/users.dart';
 import 'root/root.dart';
 import 'screens/chat/chat_helpers.dart';
+import 'services/api/api.dart';
 import 'services/local_image_service.dart';
 import 'utils/constants.dart';
 import 'utils/shared_preference.dart';
 import 'utils/themes.dart';
 import 'utils/utility.dart';
 import 'widgets/photo_picker_gallery/provider/custom_photo_provider.dart';
+import 'widgets/screen_loader.dart';
 
 UserSharedPreferences? _userSharedPreferences;
 void main() async {
@@ -55,76 +58,98 @@ class _MyAppState extends State<MyApp> {
     super.dispose();
   }
 
+  List<SingleChildWidget> _providers = [
+    //shared preference
+    Provider<UserSharedPreferences?>.value(value: _userSharedPreferences),
+
+    // auth:
+    ChangeNotifierProvider<UserAuth>(create: (_) => UserAuth()),
+    ChangeNotifierProvider<Invite>(create: (_) => Invite()),
+
+    // states:
+    ChangeNotifierProxyProvider<UserAuth, CurrentUser?>(
+      create: (_) => CurrentUser(),
+      update: (_, auth, user) => user!..initializeToken(auth.user),
+    ),
+    ChangeNotifierProxyProvider<CurrentUser, Activities?>(
+      create: (_) => Activities(),
+      update: (_, user, activities) => activities!
+        ..setCommunityId(user.communityId)
+        ..setIdToken(user.idToken),
+    ),
+    ChangeNotifierProxyProvider<CurrentUser, API>(
+      create: (_) => API(),
+      update: (_, user, api) => api!..setIdToken(user.idToken!),
+    ),
+    ChangeNotifierProxyProvider<CurrentUser, Shops?>(
+      create: (_) => Shops(),
+      update: (_, user, shops) => shops!
+        ..setCommunityId(user.communityId)
+        ..setIdToken(user.idToken),
+    ),
+    ChangeNotifierProxyProvider<CurrentUser, Products?>(
+      create: (_) => Products(),
+      update: (_, user, products) => products!
+        ..setCommunityId(user.communityId)
+        ..setIdToken(user.idToken),
+    ),
+    ChangeNotifierProxyProvider<CurrentUser, Users?>(
+      create: (_) => Users(),
+      update: (_, user, users) => users!
+        ..setCommunityId(user.communityId)
+        ..setIdToken(user.idToken),
+    ),
+    ChangeNotifierProxyProvider<API, Categories>(
+      create: (_) => Categories(),
+      update: (_, api, categories) => categories!..setAPI(api),
+    ),
+
+    ChangeNotifierProvider<ShoppingCart>(create: (_) => ShoppingCart()),
+
+    // post body requests:
+    ChangeNotifierProvider<AuthBody>(
+      create: (_) => AuthBody(),
+      lazy: true,
+    ),
+    ChangeNotifierProvider<ProductBody>(
+      create: (_) => ProductBody(),
+      lazy: true,
+    ),
+    ChangeNotifierProvider<ShopBody>(
+      create: (_) => ShopBody(),
+      lazy: true,
+    ),
+    ChangeNotifierProvider<OperatingHoursBody>(
+      create: (_) => OperatingHoursBody(),
+      lazy: true,
+    ),
+    ChangeNotifierProvider(
+      create: (_) => CustomPickerDataProvider(max: 5),
+      lazy: true,
+    ),
+
+    // services:
+    Provider<MediaUtility?>(create: (_) => MediaUtility.instance),
+    Provider<LocalImageService?>(create: (_) => LocalImageService.instance),
+    Provider<ChatHelpers>(create: (_) => ChatHelpers()),
+    ProxyProvider<CurrentUser, SubscriptionProvider?>(
+      create: (_) => SubscriptionProvider(),
+      update: (_, user, subscription) =>
+          subscription!..setIdToken(user.idToken),
+    ),
+    ProxyProvider<CurrentUser, ChatProvider?>(
+      create: (_) => ChatProvider(),
+      update: (_, user, chat) => chat!..setIdToken(user.idToken),
+    ),
+
+    // for bottom nav bar
+    ListenableProvider(create: (_) => PersistentTabController()),
+  ];
+
   @override
   Widget build(BuildContext context) {
-    // TODO: clean this up -> separate file
     return MultiProvider(
-      providers: [
-        //shared preference
-        Provider<UserSharedPreferences?>.value(value: _userSharedPreferences),
-
-        // auth:
-        ChangeNotifierProvider<UserAuth>(create: (_) => UserAuth()),
-        ChangeNotifierProvider<Invite>(create: (_) => Invite()),
-
-        // states:
-        ChangeNotifierProxyProvider<UserAuth, CurrentUser?>(
-          create: (_) => CurrentUser(),
-          update: (_, auth, user) => user!..initializeToken(auth.user),
-        ),
-        ChangeNotifierProxyProvider<CurrentUser, Activities?>(
-          create: (_) => Activities(),
-          update: (_, user, activities) => activities!
-            ..setCommunityId(user.communityId)
-            ..setIdToken(user.idToken),
-        ),
-        ChangeNotifierProxyProvider<CurrentUser, Shops?>(
-          create: (_) => Shops(),
-          update: (_, user, shops) => shops!
-            ..setCommunityId(user.communityId)
-            ..setIdToken(user.idToken),
-        ),
-        ChangeNotifierProxyProvider<CurrentUser, Products?>(
-          create: (_) => Products(),
-          update: (_, user, products) => products!
-            ..setCommunityId(user.communityId)
-            ..setIdToken(user.idToken),
-        ),
-
-        ChangeNotifierProxyProvider<CurrentUser, Users?>(
-          create: (_) => Users(),
-          update: (_, user, users) => users!
-            ..setCommunityId(user.communityId)
-            ..setIdToken(user.idToken),
-        ),
-
-        ChangeNotifierProvider<ShoppingCart>(create: (_) => ShoppingCart()),
-
-        // post body requests:
-        ChangeNotifierProvider<AuthBody>(create: (_) => AuthBody()),
-        ChangeNotifierProvider<ProductBody>(create: (_) => ProductBody()),
-        ChangeNotifierProvider<ShopBody>(create: (_) => ShopBody()),
-        ChangeNotifierProvider<OperatingHoursBody>(
-            create: (_) => OperatingHoursBody()),
-        ChangeNotifierProvider(create: (_) => CustomPickerDataProvider(max: 5)),
-
-        // services:
-        Provider<MediaUtility?>(create: (_) => MediaUtility.instance),
-        Provider<LocalImageService?>(create: (_) => LocalImageService.instance),
-        Provider<ChatHelpers>(create: (_) => ChatHelpers()),
-        ProxyProvider<CurrentUser, SubscriptionProvider?>(
-          create: (_) => SubscriptionProvider(),
-          update: (_, user, subscription) =>
-              subscription!..setIdToken(user.idToken),
-        ),
-        ProxyProvider<CurrentUser, ChatProvider?>(
-          create: (_) => ChatProvider(),
-          update: (_, user, chat) => chat!..setIdToken(user.idToken),
-        ),
-
-        // for bottom nav bar
-        ListenableProvider(create: (_) => PersistentTabController()),
-      ],
+      providers: _providers,
       child: StreamBuilder<UserSharedPreferences>(
         stream: _userSharedPreferences!.stream,
         builder: (context, snapshot) {

@@ -6,7 +6,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 import 'package:provider/provider.dart';
-import '../../widgets/screen_loader.dart';
 
 import '../../models/lokal_images.dart';
 import '../../providers/post_requests/operating_hours_body.dart';
@@ -18,6 +17,7 @@ import '../../services/local_image_service.dart';
 import '../../utils/themes.dart';
 import '../../widgets/app_button.dart';
 import '../../widgets/custom_app_bar.dart';
+import '../../widgets/screen_loader.dart';
 import '../profile_screens/user_shop.dart';
 import 'components/add_product_gallery.dart';
 import 'confirmation.dart';
@@ -178,6 +178,7 @@ class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
       productBody.update(
         gallery: gallery.map((image) => image.toMap()).toList(),
         shopId: shop.id,
+        availability: context.read<OperatingHoursBody>().data,
       );
       return await products.create(productBody.data);
     } on Exception catch (e) {
@@ -224,6 +225,9 @@ class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
     if (_productBody.quantity != _product.quantity) {
       updateBody.update(quantity: _productBody.quantity);
     }
+    if (_productBody.canSubscribe != _product.canSubscribe) {
+      updateBody.update(canSubscribe: _productBody.canSubscribe);
+    }
 
     if (images.isNotEmpty) {
       final gallery = <LokalImages>[..._product.gallery!];
@@ -243,6 +247,7 @@ class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
 
     final updateData = updateBody.data;
     updateData.remove("shop_id");
+    updateData.remove('availability');
 
     ProductBody().data.forEach((key, value) {
       if (updateData[key] == value || updateData[key] == null) {
@@ -320,15 +325,15 @@ class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
 
     final productId = await _createProduct();
     if (productId != null) {
-      if (widget.scheduleState == ProductScheduleState.custom) {
-        final availabilitySet = await _setAvailability(productId);
-        if (!availabilitySet) {
-          final snackBar = SnackBar(
-            content: Text('Failed to set product availability'),
-          );
-          ScaffoldMessenger.of(context).showSnackBar(snackBar);
-        }
-      }
+      // if (widget.scheduleState == ProductScheduleState.custom) {
+      //   final availabilitySet = await _setAvailability(productId);
+      //   if (!availabilitySet) {
+      //     final snackBar = SnackBar(
+      //       content: Text('Failed to set product availability'),
+      //     );
+      //     ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      //   }
+      // }
       Navigator.push(
         context,
         MaterialPageRoute(

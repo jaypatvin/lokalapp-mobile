@@ -7,9 +7,11 @@ class ProductBody extends ChangeNotifier {
     "shop_id": "",
     "base_price": 0.0,
     "quantity": 0,
-    "gallery": [],
-    "product_category": "A",
-    "status": "enabled,"
+    "gallery": <Map<String, dynamic>>[],
+    "product_category": "",
+    "status": "enabled",
+    "can_subscribe": true,
+    "availability": <String, dynamic>{},
   };
   Map get data => _productBody;
 
@@ -20,7 +22,9 @@ class ProductBody extends ChangeNotifier {
   int? get quantity => data['quantity'];
   String? get productCategory => data['product_category'];
   String? get status => data['status'];
+  bool get canSubscribe => data['can_subscribe'];
   List<Map<String, dynamic>>? get gallery => data['gallery'];
+  Map<String, dynamic>? get availability => data['availability'];
 
   void update({
     String? name,
@@ -30,7 +34,9 @@ class ProductBody extends ChangeNotifier {
     int? quantity,
     String? productCategory,
     String? status,
+    bool? canSubscribe,
     List<Map<String, dynamic>>? gallery,
+    Map<String, dynamic>? availability,
   }) {
     _productBody['name'] = name ?? _productBody['name'];
     _productBody['description'] = description ?? _productBody['description'];
@@ -41,7 +47,9 @@ class ProductBody extends ChangeNotifier {
         productCategory ?? _productBody['product_category'];
     _productBody['status'] = status ?? _productBody['status'];
     _productBody['gallery'] = gallery ?? _productBody['gallery'];
-
+    _productBody['can_subscribe'] =
+        canSubscribe ?? _productBody['can_subscribe'];
+    _productBody['availability'] = availability ?? _productBody['availability'];
     notifyListeners();
   }
 

@@ -5,9 +5,12 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 
+import '../../models/lokal_category.dart';
+import '../../providers/categories.dart';
 import '../../providers/post_requests/product_body.dart';
 import '../../utils/themes.dart';
 import '../../widgets/app_button.dart';
+import '../../widgets/app_checkbox.dart';
 import '../../widgets/custom_app_bar.dart';
 import '../../widgets/input_name.dart';
 import 'components/add_product_gallery.dart';
@@ -24,8 +27,8 @@ class ProductDetails extends StatefulWidget {
 }
 
 class _ProductDetailsState extends State<ProductDetails> {
-  bool forDelivery = true;
-  bool forPickup = true;
+  bool _forDelivery = true;
+  bool _forPickup = true;
   final _stockController = TextEditingController();
   final FocusNode _stockFocusNode = FocusNode();
 
@@ -34,8 +37,11 @@ class _ProductDetailsState extends State<ProductDetails> {
     super.initState();
 
     final details = context.read<ProductBody>();
-
     _stockController.text = details.quantity.toString();
+
+    if (context.read<Categories>().categories.isEmpty) {
+      context.read<Categories>().fetch();
+    }
   }
 
   Widget _buildCategories() {
@@ -56,7 +62,6 @@ class _ProductDetailsState extends State<ProductDetails> {
             decoration: BoxDecoration(
               color: const Color(0xFFF2F2F2),
               borderRadius: BorderRadius.circular(30.0.r),
-              //border: Border.all(color: Colors.grey.shade200),
             ),
             child: ButtonTheme(
               alignedDropdown: true,
@@ -64,30 +69,45 @@ class _ProductDetailsState extends State<ProductDetails> {
                 horizontal: 20.w,
                 vertical: 13.h,
               ),
-              child: DropdownButton<String>(
-                isExpanded: true,
-                iconEnabledColor: kTealColor,
-                iconDisabledColor: kTealColor,
-                iconSize: 24.0.sp,
-                icon: Icon(MdiIcons.chevronDown),
-                underline: SizedBox(),
-                value: productBody.productCategory,
-                hint: Text(
-                  "Select",
-                  style: Theme.of(context).textTheme.bodyText1,
-                ),
-                items: <String>['A', 'B', 'C', 'D'].map((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: new Text(value),
+              child: Consumer<Categories>(builder: (ctx, provider, _) {
+                if (provider.isLoading || provider.categories.isEmpty) {
+                  return const SizedBox();
+                }
+
+                if (productBody.productCategory != null &&
+                        productBody.productCategory!.isEmpty ||
+                    !provider.categories
+                        .any((c) => c.id == productBody.productCategory!)) {
+                  productBody.update(
+                    productCategory: provider.categories.first.id,
                   );
-                }).toList(),
-                onChanged: (value) {
-                  productBody.update(productCategory: value);
-                  setState(() {});
-                },
-                style: Theme.of(context).textTheme.bodyText1,
-              ),
+                }
+
+                return DropdownButton<String>(
+                  isExpanded: true,
+                  iconEnabledColor: kTealColor,
+                  iconDisabledColor: kTealColor,
+                  iconSize: 24.0.sp,
+                  icon: Icon(MdiIcons.chevronDown),
+                  underline: SizedBox(),
+                  value: productBody.productCategory,
+                  hint: Text(
+                    "Select",
+                    style: Theme.of(context).textTheme.bodyText1,
+                  ),
+                  items: provider.categories.map((LokalCategory category) {
+                    return DropdownMenuItem<String>(
+                      value: category.id,
+                      child: new Text(category.name),
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    productBody.update(productCategory: value);
+                    setState(() {});
+                  },
+                  style: Theme.of(context).textTheme.bodyText1,
+                );
+              }),
             ),
           ),
         ),
@@ -132,87 +152,48 @@ class _ProductDetailsState extends State<ProductDetails> {
 
   Widget _buildDeliveryOptions() {
     return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Expanded(
-          child: GestureDetector(
-            onTap: null, //() => setState(() => forPickup = !forPickup),
-            child: Row(
-              children: [
-                SizedBox(
-                  height: 24,
-                  width: 24,
-                  child: DecoratedBox(
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: Colors.transparent, //Colors.black,
-                        width: 2,
-                      ),
-                    ),
-                    child: Theme(
-                      data: ThemeData(
-                        accentColor: Colors.transparent,
-                        unselectedWidgetColor: Colors.transparent,
-                      ),
-                      child: Checkbox(
-                        checkColor: Colors.black,
-                        value: forPickup,
-                        onChanged: null,
-                        // onChanged: (value) {
-                        //   setState(() {
-                        //     forPickup = value;
-                        //   });
-                        // },
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 10),
-                Text("Customer Pick-up"),
-              ],
-            ),
+          child: AppCheckBox(
+            value: _forPickup,
+            onTap: () {}, // () => setState(() => _forPickup = !_forPickup),
+            title: Text("Customer Pick-up"),
           ),
         ),
         Expanded(
-          child: GestureDetector(
-            onTap: null, //() => setState(() => forDelivery = !forDelivery),
-            child: Row(
-              children: [
-                SizedBox(
-                  height: 24,
-                  width: 24,
-                  child: DecoratedBox(
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: Colors.transparent, //Colors.black,
-                        width: 2,
-                      ),
-                    ),
-                    child: Theme(
-                      data: ThemeData(
-                        accentColor: Colors.transparent,
-                        unselectedWidgetColor: Colors.transparent,
-                      ),
-                      child: Checkbox(
-                        checkColor: Colors.black,
-                        value: forDelivery,
-                        onChanged: null,
-                        // onChanged: (value) {
-                        //   setState(() {
-                        //     forDelivery = value;
-                        //   });
-                        // },
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 10),
-                Text("Delivery"),
-              ],
-            ),
+          child: AppCheckBox(
+            value: _forDelivery,
+            onTap: () {}, //() => setState(() => _forDelivery = !_forDelivery),
+            title: Text("Delivery"),
           ),
         ),
+      ],
+    );
+  }
+
+  Widget _buildSubscriptionSection() {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          "Subscription",
+          style: Theme.of(context).textTheme.headline6,
+        ),
+        const SizedBox(height: 10),
+        Consumer<ProductBody>(builder: (ctx, productBody, child) {
+          return AppCheckBox(
+            value: productBody.canSubscribe,
+            onTap: () => productBody.update(
+              canSubscribe: !productBody.canSubscribe,
+            ),
+            title: Text(
+              "Available for Subscription",
+              style: Theme.of(context).textTheme.headline6,
+            ),
+          );
+        }),
       ],
     );
   }
@@ -223,7 +204,7 @@ class _ProductDetailsState extends State<ProductDetails> {
     final topPadding = MediaQuery.of(context).size.height * 0.03;
     final image = widget.gallery!.photoBoxes.first;
 
-    final bool valid = (forDelivery | forPickup) &&
+    final bool valid = (_forDelivery | _forPickup) &&
         context.read<ProductBody>().productCategory != null &&
         context.read<ProductBody>().productCategory!.isNotEmpty &&
         context.read<ProductBody>().quantity != null &&
@@ -268,57 +249,63 @@ class _ProductDetailsState extends State<ProductDetails> {
           ),
           disableScroll: true,
           tapOutsideBehavior: TapOutsideBehavior.translucentDismiss,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Consumer<ProductBody>(
-                builder: (context, product, child) {
-                  return ProductHeader(
-                    photoBox: image,
-                    productName: product.name,
-                    productPrice: product.basePrice,
-                    //productStock: product.quantity,
-                  );
-                },
-              ),
-              SizedBox(
-                height: MediaQuery.of(context).size.height * 0.05,
-              ),
-              _buildCategories(),
-              SizedBox(
-                height: MediaQuery.of(context).size.height * 0.025,
-              ),
-              _buildCurrentStock(),
-              SizedBox(
-                height: MediaQuery.of(context).size.height * 0.05,
-              ),
-              Text(
-                "Delivery Options",
-                style: Theme.of(context).textTheme.headline6,
-              ),
-              const SizedBox(height: 10),
-              _buildDeliveryOptions(),
-              const SizedBox(height: 20),
-              SizedBox(
-                width: double.infinity,
-                child: AppButton(
-                  "Next",
-                  kTealColor,
-                  true,
-                  valid
-                      ? () {
-                          pushNewScreen(
-                            context,
-                            screen: ProductSchedule(
-                              gallery: widget.gallery,
-                              productId: widget.productId,
-                            ),
-                          );
-                        }
-                      : null,
+          child: SingleChildScrollView(
+            physics: NeverScrollableScrollPhysics(),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Consumer<ProductBody>(
+                  builder: (context, product, child) {
+                    return ProductHeader(
+                      photoBox: image,
+                      productName: product.name,
+                      productPrice: product.basePrice,
+                      //productStock: product.quantity,
+                    );
+                  },
                 ),
-              )
-            ],
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.05,
+                ),
+                _buildCategories(),
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.025,
+                ),
+                _buildCurrentStock(),
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.05,
+                ),
+                Text(
+                  "Delivery Options",
+                  style: Theme.of(context).textTheme.headline6,
+                ),
+                const SizedBox(height: 10),
+                _buildDeliveryOptions(),
+                const SizedBox(height: 10),
+                _buildSubscriptionSection(),
+                const SizedBox(height: 20),
+                SizedBox(
+                  width: double.infinity,
+                  child: AppButton(
+                    "Next",
+                    kTealColor,
+                    true,
+                    valid
+                        ? () {
+                            pushNewScreen(
+                              context,
+                              screen: ProductSchedule(
+                                gallery: widget.gallery,
+                                productId: widget.productId,
+                              ),
+                            );
+                          }
+                        : null,
+                  ),
+                )
+              ],
+            ),
           ),
         ),
       ),

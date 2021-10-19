@@ -70,13 +70,14 @@ class Shops extends ChangeNotifier {
       Map body = json.decode(response.body);
 
       if (body['status'] == 'ok') {
-        var shop = ShopModel.fromMap(data["data"]);
+        final shop = ShopModel.fromMap(body["data"]);
         _shops.add(shop);
         notifyListeners();
         return true;
       }
       return false;
     } catch (e) {
+      debugPrint(e.toString());
       return false;
     }
   }

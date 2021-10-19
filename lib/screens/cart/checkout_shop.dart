@@ -95,21 +95,23 @@ class _OrdersCard extends StatelessWidget {
             Row(
               // TODO: ADD ON PRESS FUNCTIONS
               children: [
-                Expanded(
-                  child: AppButton(
-                    "Subscribe",
-                    kTealColor,
-                    false,
-                    () => Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) => SubscriptionSchedule(
-                          productId: productId,
+                if (context.read<Products>().findById(productId)!.canSubscribe!)
+                  Expanded(
+                    child: AppButton(
+                      "Subscribe",
+                      kTealColor,
+                      false,
+                      () => Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => SubscriptionSchedule(
+                            productId: productId,
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
-                SizedBox(width: 8.0),
+                if (context.read<Products>().findById(productId)!.canSubscribe!)
+                  SizedBox(width: 8.0),
                 Expanded(
                   child: AppButton(
                     "Checkout",

@@ -264,7 +264,7 @@ class _SchedulePickerState extends State<SchedulePicker> {
             if (day == 7) day = 0;
             if (this._selectableDays.contains(day)) {
               this._startDate = indexDay;
-              return;
+              break;
             } else {
               this._startDate = null;
             }
@@ -284,11 +284,11 @@ class _SchedulePickerState extends State<SchedulePicker> {
             this._startDate = indexDay;
             this._markedStartDates.add(indexDay);
             // widget.onStartDateChanged(_startDate);
-            _onStartDateChanged();
-            return;
+            break;
           }
         }
       }
+      _onStartDateChanged();
     });
   }
 
@@ -386,9 +386,10 @@ class _SchedulePickerState extends State<SchedulePicker> {
             });
           },
           onCancel: () {
-            _markedStartDates
-              ..clear()
-              ..add(_startDate!);
+            if (_startDate != null)
+              _markedStartDates
+                ..clear()
+                ..add(_startDate!);
             Navigator.pop(context, _startDate);
           },
           onConfirm: () {
@@ -458,6 +459,7 @@ class _SchedulePickerState extends State<SchedulePicker> {
       _markedStartDates = _startDates;
     }
 
+    print(_startDates);
     final _repeatType = _getRepeatType();
     widget.onStartDatesChanged(_startDates, _repeatType);
   }

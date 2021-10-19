@@ -5,9 +5,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:keyboard_actions/keyboard_actions.dart';
 import 'package:provider/provider.dart';
-import '../../widgets/screen_loader.dart';
 
 import '../../providers/activities.dart';
+import '../../providers/categories.dart';
 import '../../providers/invite.dart';
 import '../../providers/post_requests/auth_body.dart';
 import '../../providers/products.dart';
@@ -22,6 +22,7 @@ import '../../widgets/app_button.dart';
 import '../../widgets/checkbox_form_field.dart';
 import '../../widgets/custom_app_bar.dart';
 import '../../widgets/photo_box.dart';
+import '../../widgets/screen_loader.dart';
 import '../verification_screens/verify_screen.dart';
 
 class ProfileRegistration extends StatefulWidget {
@@ -152,6 +153,7 @@ class _ProfileRegistrationState extends State<ProfileRegistration>
       context.read<Shops>().fetch();
       context.read<Products>().fetch();
       context.read<Users>().fetch();
+      context.read<Categories>().fetch();
       Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(

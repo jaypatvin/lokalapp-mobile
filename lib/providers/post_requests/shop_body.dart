@@ -9,15 +9,16 @@ class ShopBody extends ChangeNotifier {
     'cover_photo': '',
     'is_close': false,
     'status': 'enabled',
-    'operating_hours': {}
+    'operating_hours': <String, dynamic>{}
   };
 
-  Map get data => _shopBody;
+  Map<String, dynamic> get data => _shopBody;
 
   String? get name => _shopBody['name'];
   String? get description => _shopBody['description'];
   String? get profilePhoto => _shopBody['profile_photo'];
   String? get coverPhoto => _shopBody['cover_photo'];
+  Map<String, dynamic>? get operatingHours => _shopBody['operating_hours'];
 
   void update({
     String? name,
@@ -30,6 +31,7 @@ class ShopBody extends ChangeNotifier {
     String? opening,
     String? closing,
     String? status,
+    Map<String, dynamic>? operatingHours,
   }) {
     _shopBody['name'] = name ?? _shopBody['name'];
     _shopBody['user_id'] = userId ?? _shopBody['user_id'];
@@ -41,6 +43,8 @@ class ShopBody extends ChangeNotifier {
     _shopBody['opening'] = opening ?? _shopBody['opening'];
     _shopBody['closing'] = closing ?? _shopBody['closing'];
     _shopBody['status'] = status ?? _shopBody['status'];
+    _shopBody['operating_hours'] =
+        operatingHours ?? _shopBody['operating_hours'];
 
     notifyListeners();
   }

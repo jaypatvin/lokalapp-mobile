@@ -3,6 +3,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/activities.dart';
+import '../providers/categories.dart';
 import '../providers/products.dart';
 import '../providers/shops.dart';
 import '../providers/user.dart';
@@ -42,6 +43,7 @@ class _RootState extends State<Root> {
         await context.read<Shops>().fetch();
         await context.read<Products>().fetch();
         await context.read<Users>().fetch();
+        await context.read<Categories>().fetch();
         Navigator.of(context).pushAndRemoveUntil(
             MaterialPageRoute(
               builder: (_) => BottomNavigation(),
