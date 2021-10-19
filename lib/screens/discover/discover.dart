@@ -95,6 +95,7 @@ class _DiscoverState extends State<Discover> with AfterLayoutMixin<Discover> {
         buildLeading: false,
       ),
       body: CartContainer(
+        displayButton: true,
         child: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
