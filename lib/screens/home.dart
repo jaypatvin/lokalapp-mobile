@@ -1,7 +1,13 @@
+import 'dart:async';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import '../services/database.dart';
+import '../widgets/app_button.dart';
+import '../models/activity_feed.dart';
 import 'package:lottie/lottie.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
@@ -23,8 +29,12 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  ScrollController? _controller;
-  double _postFieldHeight = 85.0.h;
+  late final ScrollController? _controller;
+  late final Stream<QuerySnapshot> _stream;
+  late final StreamSubscription _subscription;
+
+  double _postFieldHeight = 75.0.h;
+  bool _displayNewPost = false;
 
   @override
   void initState() {
@@ -34,6 +44,19 @@ class _HomeState extends State<Home> {
       activities.fetch();
     }
 
+    _stream = Database.instance.getCommunityTimeline();
+    _subscription = _stream.listen((snapshot) {
+      debugPrint('first: ${snapshot.docs.first.id}');
+      debugPrint('first API: ${activities.feed.first.id}');
+      if (snapshot.docs.first.id != activities.feed.first.id) {
+        if (mounted) {
+          setState(() {
+            _displayNewPost = true;
+          });
+        }
+      }
+    });
+
     _controller = ScrollController()..addListener(_scrollListener);
   }
 
@@ -41,6 +64,7 @@ class _HomeState extends State<Home> {
   void dispose() {
     _controller!.removeListener(_scrollListener);
     _controller!.dispose();
+    _subscription.cancel();
     super.dispose();
   }
 
@@ -54,7 +78,7 @@ class _HomeState extends State<Home> {
     if (_controller!.position.userScrollDirection == ScrollDirection.forward) {
       if (_postFieldHeight == 0)
         setState(() {
-          _postFieldHeight = 85.0.h;
+          _postFieldHeight = 75.0.h;
         });
     }
   }
@@ -123,24 +147,48 @@ class _HomeState extends State<Home> {
           children: [
             _postField(),
             Expanded(
-              child: Consumer<Activities>(
-                builder: (context, activities, child) {
-                  return activities.isLoading
-                      ? SizedBox(
-                          width: double.infinity,
-                          height: double.infinity,
-                          child: DecoratedBox(
-                            decoration: const BoxDecoration(
-                              color: Colors.white,
-                            ),
-                            child: Lottie.asset(kAnimationLoading),
-                          ),
-                        )
-                      : RefreshIndicator(
-                          onRefresh: () => activities.fetch(),
-                          child: Timeline(activities.feed, _controller),
-                        );
-                },
+              child: Stack(
+                children: [
+                  Positioned.fill(
+                    child: Consumer<Activities>(
+                      builder: (context, activities, child) {
+                        return activities.isLoading
+                            ? SizedBox(
+                                width: double.infinity,
+                                height: double.infinity,
+                                child: DecoratedBox(
+                                  decoration: const BoxDecoration(
+                                    color: Colors.white,
+                                  ),
+                                  child: Lottie.asset(kAnimationLoading),
+                                ),
+                              )
+                            : RefreshIndicator(
+                                onRefresh: () => activities.fetch(),
+                                child: Timeline(activities.feed, _controller),
+                              );
+                      },
+                    ),
+                  ),
+                  if (this._displayNewPost)
+                    Align(
+                      alignment: Alignment.topCenter,
+                      child: AppButton(
+                        "New Posts",
+                        Colors.grey.withOpacity(0.5),
+                        true,
+                        () {
+                          context.read<Activities>().fetch();
+                          setState(() {
+                            _displayNewPost = false;
+                          });
+                        },
+                        textStyle: TextStyle(
+                          color: Colors.black,
+                        ),
+                      ),
+                    ),
+                ],
               ),
             ),
           ],

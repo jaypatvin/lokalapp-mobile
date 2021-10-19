@@ -95,6 +95,31 @@ class ActivityFeed {
     );
   }
 
+  factory ActivityFeed.fromDocument(Map<String, dynamic> map) {
+    return ActivityFeed(
+      id: map['id'] ?? "",
+      communityId: map['community_id'] ?? "",
+      userId: map['user_id'] ?? "",
+      message: map['message'] ?? "",
+      images: map['images'] != null
+          ? List<LokalImages>.from(
+              map['images']?.map((x) => LokalImages.fromMap(x)))
+          : const [],
+      liked: map['liked'] ?? false,
+      comments: map['comments'] == null
+          ? const []
+          : List<ActivityFeedComment>.from(
+              map['comments']?.map(
+                (x) => ActivityFeedComment.fromMap(map),
+              ),
+            ),
+      createdAt: (map['created_at'] as Timestamp).toDate(),
+      likedCount: map['_meta'] != null ? map['_meta']['likes_count'] ?? 0 : 0,
+      commentCount:
+          map['_meta'] != null ? map['_meta']['comment_count'] ?? 0 : 0,
+    );
+  }
+
   String toJson() => json.encode(toMap());
 
   factory ActivityFeed.fromJson(String source) =>

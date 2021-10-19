@@ -6,7 +6,6 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:persistent_bottom_nav_bar/models/nested_will_pop_scope.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:provider/provider.dart';
-import '../../widgets/screen_loader.dart';
 
 import '../../models/lokal_images.dart';
 import '../../providers/activities.dart';
@@ -19,6 +18,7 @@ import '../../widgets/photo_picker_gallery/image_gallery_picker.dart';
 import '../../widgets/photo_picker_gallery/provider/custom_photo_provider.dart';
 import '../../widgets/photo_view_gallery/gallery/gallery_asset_photo_view.dart';
 import '../../widgets/photo_view_gallery/thumbnails/asset_photo_thumbnail.dart';
+import '../../widgets/screen_loader.dart';
 
 class DraftPost extends StatefulWidget {
   @override
@@ -240,23 +240,23 @@ class _DraftPostState extends State<DraftPost>
     );
   }
 
-  Future<bool?> _onWillPop() async {
+  Future<bool> _onWillPop() async {
     if (_userController.text.isEmpty && _provider!.picked.isEmpty) {
       return true;
     }
-    return showModalBottomSheet<bool>(
+    return (await showModalBottomSheet<bool>(
       context: context,
       isDismissible: false,
       isScrollControlled: true,
       useRootNavigator: true,
       builder: (ctx) => _ExitNotification(),
-    );
+    )) ?? false;
   }
 
   @override
   Widget screen(BuildContext context) {
     return NestedWillPopScope(
-      onWillPop: _onWillPop as Future<bool> Function(),
+      onWillPop:_onWillPop,
       child: Scaffold(
         key: _key,
         backgroundColor: Colors.white,

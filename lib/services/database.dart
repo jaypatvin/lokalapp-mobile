@@ -25,6 +25,41 @@ class Database {
     return _database!;
   }
 
+  Future<DocumentSnapshot<Map<String, dynamic>>> getPostLikes(
+    String activityId,
+    String docId,
+  ) {
+    return FirebaseFirestore.instance
+        .collection('activities')
+        .doc(activityId)
+        .collection('likes')
+        .doc(docId)
+        .get();
+  }
+
+  Future<QuerySnapshot<Map<String, dynamic>>> getPostImages(String docId) {
+    return FirebaseFirestore.instance
+        .collection('activities')
+        .doc(docId)
+        .collection('images')
+        .get();
+  }
+
+  Stream<QuerySnapshot> getUserTimeline(String userId) {
+    return FirebaseFirestore.instance
+        .collection('activities')
+        .where('user_id', isEqualTo: userId)
+        .orderBy('created_at')
+        .snapshots();
+  }
+
+  Stream<QuerySnapshot> getCommunityTimeline() {
+    return FirebaseFirestore.instance
+        .collection('activities')
+        .orderBy('created_at', descending: true)
+        .snapshots();
+  }
+
   CollectionReference getOrderStatuses() {
     return FirebaseFirestore.instance.collection("order_status");
   }
