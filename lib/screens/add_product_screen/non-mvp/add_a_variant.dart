@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 
-import '../../providers/post_requests/product_body.dart';
-import '../../widgets/custom_app_bar.dart';
-import '../../widgets/input_name.dart';
-import '../../widgets/rounded_button.dart';
-import 'components/add_product_gallery.dart';
-import 'components/product_header.dart';
+import '../../../providers/post_requests/product_body.dart';
+import '../../../utils/constants/themes.dart';
+import '../../../widgets/app_button.dart';
+import '../../../widgets/custom_app_bar.dart';
+import '../../../widgets/input_name.dart';
+import '../components/add_product_gallery.dart';
+import '../components/product_header.dart';
 import 'product_variant_2.dart';
 
 class AddAVariant extends StatefulWidget {
@@ -102,20 +104,15 @@ class _AddAVariantState extends State<AddAVariant> {
             SizedBox(
               height: MediaQuery.of(context).size.height * 0.08,
             ),
-            RoundedButton(
-              label: "Add a Variant",
-              height: 10,
-              minWidth: double.infinity,
-              fontSize: 16,
-              fontWeight: FontWeight.w700,
-              fontFamily: "GoldplayBold",
-              fontColor: Colors.white,
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) =>
-                            ProductVariant2(gallery: widget.gallery)));
+            AppButton(
+              "Add a Variant",
+              kTealColor,
+              true,
+              () {
+                pushNewScreen(
+                  context,
+                  screen: ProductVariant2(gallery: widget.gallery),
+                );
               },
             ),
             SizedBox(

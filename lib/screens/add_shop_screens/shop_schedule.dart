@@ -10,7 +10,7 @@ import '../../providers/post_requests/operating_hours_body.dart';
 import '../../providers/shops.dart';
 import '../../providers/user.dart';
 import '../../utils/functions.utils.dart';
-import '../../utils/themes.dart';
+import '../../utils/constants/themes.dart';
 import '../../widgets/app_button.dart';
 import '../../widgets/custom_app_bar.dart';
 import '../../widgets/schedule_picker.dart';
@@ -188,7 +188,7 @@ class _ShopScheduleState extends State<ShopSchedule> {
               const SizedBox(height: 15),
               Text(
                 "Hours",
-                style: kTextStyle.copyWith(fontSize: 24.0),
+                style: Theme.of(context).textTheme.headline5,
               ),
               const SizedBox(height: 10),
               _HoursPicker(

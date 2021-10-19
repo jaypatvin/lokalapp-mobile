@@ -3,7 +3,7 @@ import '../../../../providers/post_requests/auth_body.dart';
 import '../../../../providers/user.dart';
 import 'email_changed.dart';
 import '../../../../services/database.dart';
-import '../../../../utils/themes.dart';
+import '../../../../utils/constants/themes.dart';
 import 'package:provider/provider.dart';
 
 class ChangeEmail extends StatefulWidget {

@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:keyboard_actions/keyboard_actions.dart';
 import 'package:provider/provider.dart';
-import '../../widgets/screen_loader.dart';
 
 import '../../providers/invite.dart';
 import '../../providers/post_requests/auth_body.dart';
 import '../../providers/user.dart';
-import '../../utils/constants.dart';
-import '../../utils/themes.dart';
+import '../../utils/constants/descriptions.dart';
+import '../../utils/constants/themes.dart';
 import '../../widgets/app_button.dart';
+import '../../widgets/screen_loader.dart';
 import 'community.dart';
 import 'profile_registration.dart';
 
@@ -108,7 +108,7 @@ class _InvitePageState extends State<InvitePage> with ScreenLoader {
                   ),
                 ),
                 Text(
-                  kInviteCodeDescription,
+                  kDescriptionInviteCode,
                   style: Theme.of(context)
                       .textTheme
                       .bodyText1!
@@ -168,7 +168,7 @@ class _InvitePageState extends State<InvitePage> with ScreenLoader {
                 style: TextStyle(fontWeight: FontWeight.w500),
                 decoration: kInputDecoration.copyWith(
                   hintText: "Invite Code",
-                  errorText: _displayError ? kInviteCodeError : null,
+                  errorText: _displayError ? kErrorInviteCode : null,
                   errorMaxLines: 2,
                 ),
               ),

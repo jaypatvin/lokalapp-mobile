@@ -3,7 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:keyboard_actions/keyboard_actions.dart';
 import 'package:validators/validators.dart';
 
-import '../../../utils/themes.dart';
+import '../../../utils/constants/themes.dart';
 import '../../../widgets/app_button.dart';
 
 class AuthInputForm extends StatefulWidget {

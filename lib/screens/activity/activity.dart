@@ -1,12 +1,13 @@
 import 'package:after_layout/after_layout.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import '../../utils/constants/assets.dart';
 import 'package:lottie/lottie.dart';
 
 import '../../services/database.dart';
-import '../../utils/constants.dart';
+import '../../utils/constants/descriptions.dart';
 import '../../utils/shared_preference.dart';
-import '../../utils/themes.dart';
+import '../../utils/constants/themes.dart';
 import 'transactions.dart';
 
 class Activity extends StatefulWidget {

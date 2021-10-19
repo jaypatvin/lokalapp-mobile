@@ -6,7 +6,7 @@ import 'package:keyboard_actions/keyboard_actions.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/post_requests/shop_body.dart';
-import '../../utils/themes.dart';
+import '../../utils/constants/themes.dart';
 import '../../utils/utility.dart';
 import '../../widgets/app_button.dart';
 import '../../widgets/custom_app_bar.dart';

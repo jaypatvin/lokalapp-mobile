@@ -1,22 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:lokalapp/providers/post_requests/product_body.dart';
+import 'package:lokalapp/screens/add_product_screen/components/add_product_gallery.dart';
+import 'package:lokalapp/screens/add_product_screen/components/product_header.dart';
+import 'package:lokalapp/utils/constants/themes.dart';
+import 'package:lokalapp/widgets/app_button.dart';
+import 'package:lokalapp/widgets/custom_app_bar.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
+
+import 'add_a_variant.dart';
+import 'product_add_on.dart';
+
 import 'package:provider/provider.dart';
 
-import '../../providers/post_requests/product_body.dart';
-import '../../utils/themes.dart';
-import '../../widgets/custom_app_bar.dart';
-import '../../widgets/rounded_button.dart';
-import 'components/add_product_gallery.dart';
-import 'components/product_header.dart';
-import 'product_schedule.dart';
-
-class ProductAddOn2 extends StatefulWidget {
+class ProductVariant2 extends StatefulWidget {
   final AddProductGallery gallery;
-  ProductAddOn2({required this.gallery});
+  ProductVariant2({required this.gallery});
   @override
-  _ProductAddOn2State createState() => _ProductAddOn2State();
+  _ProductVariant2State createState() => _ProductVariant2State();
 }
 
-class _ProductAddOn2State extends State<ProductAddOn2> {
+class _ProductVariant2State extends State<ProductVariant2> {
   Widget buildBody() {
     var horizontalPadding = MediaQuery.of(context).size.width * 0.05;
     var topPadding = MediaQuery.of(context).size.height * 0.03;
@@ -47,7 +50,7 @@ class _ProductAddOn2State extends State<ProductAddOn2> {
               height: MediaQuery.of(context).size.height * 0.05,
             ),
             Text(
-              "Add-ons",
+              "Variants",
               style: TextStyle(
                   fontFamily: "Goldplay", fontWeight: FontWeight.w600),
             ),
@@ -62,35 +65,29 @@ class _ProductAddOn2State extends State<ProductAddOn2> {
             SizedBox(
               height: 20,
             ),
-            RoundedButton(
-              label: "New add-on",
-              height: 10,
-              minWidth: double.infinity,
-              fontSize: 16,
-              fontWeight: FontWeight.w700,
-              color: Colors.white,
-              fontFamily: "GoldplayBold",
-              fontColor: kTealColor,
-              onPressed: () {},
+            AppButton(
+              "Add another variant",
+              kTealColor,
+              true,
+              () {
+                pushNewScreen(
+                  context,
+                  screen: AddAVariant(gallery: widget.gallery),
+                );
+              },
             ),
             SizedBox(
               height: MediaQuery.of(context).size.height / 3,
             ),
-            RoundedButton(
-              label: "Next",
-              height: 10,
-              minWidth: double.infinity,
-              fontSize: 16,
-              fontWeight: FontWeight.w700,
-              color: kTealColor,
-              fontFamily: "GoldplayBold",
-              fontColor: Colors.white,
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) =>
-                            ProductSchedule(gallery: widget.gallery)));
+            AppButton(
+              "Next",
+              kTealColor,
+              true,
+              () {
+                pushNewScreen(
+                  context,
+                  screen: ProductAddOn(gallery: widget.gallery),
+                );
               },
             ),
           ],
@@ -104,7 +101,7 @@ class _ProductAddOn2State extends State<ProductAddOn2> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: CustomAppBar(
-        titleText: "Product Add-ons",
+        titleText: "Product Variant",
         onPressedLeading: () {
           Navigator.pop(context);
         },

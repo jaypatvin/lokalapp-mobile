@@ -4,8 +4,8 @@ import 'package:lottie/lottie.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 
-import '../../utils/constants.dart';
-import '../../utils/themes.dart';
+import '../../utils/constants/assets.dart';
+import '../../utils/constants/themes.dart';
 import '../../widgets/app_button.dart';
 import '../../widgets/custom_app_bar.dart';
 import '../discover/discover.dart';

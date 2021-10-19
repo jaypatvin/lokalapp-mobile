@@ -6,8 +6,8 @@ import 'package:provider/provider.dart';
 
 import '../../providers/activities.dart';
 import '../../providers/user.dart';
-import '../../utils/constants.dart';
-import '../../utils/themes.dart';
+import '../../utils/constants/assets.dart';
+import '../../utils/constants/themes.dart';
 import '../home/timeline.dart';
 import 'components/my_profile_list.dart';
 import 'components/profile_header.dart';

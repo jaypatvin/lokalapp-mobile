@@ -3,7 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 import '../../../providers/cart.dart';
-import '../../../utils/themes.dart';
+import '../../../utils/constants/themes.dart';
 
 class ProductCard extends StatelessWidget {
   final String? productId;

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'invite_sent.dart';
-import '../../../utils/themes.dart';
+import '../../../utils/constants/themes.dart';
 
 class InviteAFriend extends StatelessWidget {
   final TextEditingController _emailController = TextEditingController();

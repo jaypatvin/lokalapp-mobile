@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:persistent_bottom_nav_bar/models/nested_will_pop_scope.dart';
 
-import '../../utils/themes.dart';
+import '../../utils/constants/themes.dart';
 import '../../widgets/custom_app_bar.dart';
 import '../bottom_navigation.dart';
 

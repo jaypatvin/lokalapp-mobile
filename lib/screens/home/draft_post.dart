@@ -11,7 +11,7 @@ import '../../models/lokal_images.dart';
 import '../../providers/activities.dart';
 import '../../providers/user.dart';
 import '../../services/local_image_service.dart';
-import '../../utils/themes.dart';
+import '../../utils/constants/themes.dart';
 import '../../widgets/app_button.dart';
 import '../../widgets/custom_app_bar.dart';
 import '../../widgets/photo_picker_gallery/image_gallery_picker.dart';
@@ -116,13 +116,9 @@ class _DraftPostState extends State<DraftPost>
             vertical: 11.0,
           ),
           hintText: "What's on your mind?",
-          hintStyle: kTextStyle.copyWith(
-            fontWeight: FontWeight.normal,
-          ),
+          hintStyle: Theme.of(context).textTheme.bodyText1,
         ),
-        style: kTextStyle.copyWith(
-          fontWeight: FontWeight.normal,
-        ),
+        style: Theme.of(context).textTheme.bodyText1,
       ),
     );
   }
@@ -245,18 +241,19 @@ class _DraftPostState extends State<DraftPost>
       return true;
     }
     return (await showModalBottomSheet<bool>(
-      context: context,
-      isDismissible: false,
-      isScrollControlled: true,
-      useRootNavigator: true,
-      builder: (ctx) => _ExitNotification(),
-    )) ?? false;
+          context: context,
+          isDismissible: false,
+          isScrollControlled: true,
+          useRootNavigator: true,
+          builder: (ctx) => _ExitNotification(),
+        )) ??
+        false;
   }
 
   @override
   Widget screen(BuildContext context) {
     return NestedWillPopScope(
-      onWillPop:_onWillPop,
+      onWillPop: _onWillPop,
       child: Scaffold(
         key: _key,
         backgroundColor: Colors.white,
@@ -271,11 +268,9 @@ class _DraftPostState extends State<DraftPost>
                   child: Center(
                     child: Text(
                       "Cancel",
-                      style: kTextStyle.copyWith(
-                        color: kPinkColor,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 14.0.sp,
-                      ),
+                      style: Theme.of(context).textTheme.subtitle2!.copyWith(
+                            color: kPinkColor,
+                          ),
                     ),
                   ),
                 ),
@@ -286,10 +281,10 @@ class _DraftPostState extends State<DraftPost>
             },
           ),
           titleText: "Write a Post",
-          titleStyle: kTextStyle.copyWith(
-            color: Colors.black,
-            fontSize: 16.0.sp,
-          ),
+          titleStyle: Theme.of(context).textTheme.headline6!.copyWith(
+                color: Colors.black,
+                fontSize: 16.0.sp,
+              ),
         ),
         body: KeyboardActions(
           config: _buildConfig(),

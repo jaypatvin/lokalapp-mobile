@@ -1,22 +1,23 @@
 import 'package:flutter/material.dart';
-import '../../providers/post_requests/product_body.dart';
-import 'add_a_variant.dart';
-import '../../utils/themes.dart';
-import '../../widgets/custom_app_bar.dart';
-import '../../widgets/rounded_button.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 
-import 'components/add_product_gallery.dart';
-import 'components/product_header.dart';
+import '../../../providers/post_requests/product_body.dart';
+import '../../../utils/constants/themes.dart';
+import '../../../widgets/app_button.dart';
+import '../../../widgets/custom_app_bar.dart';
+import '../components/add_product_gallery.dart';
+import '../components/product_header.dart';
+import 'new_add_on.dart';
 
-class ProductVariant extends StatefulWidget {
+class ProductAddOn extends StatefulWidget {
   final AddProductGallery gallery;
-  ProductVariant({required this.gallery});
+  ProductAddOn({required this.gallery});
   @override
-  _ProductVariantState createState() => _ProductVariantState();
+  _ProductAddOnState createState() => _ProductAddOnState();
 }
 
-class _ProductVariantState extends State<ProductVariant> {
+class _ProductAddOnState extends State<ProductAddOn> {
   Widget buildBody() {
     var horizontalPadding = MediaQuery.of(context).size.width * 0.05;
     var topPadding = MediaQuery.of(context).size.height * 0.03;
@@ -47,43 +48,37 @@ class _ProductVariantState extends State<ProductVariant> {
               height: MediaQuery.of(context).size.height * 0.05,
             ),
             Text(
-              "Variants",
+              "Add-ons",
               style: TextStyle(
                   fontFamily: "Goldplay", fontWeight: FontWeight.w600),
             ),
             SizedBox(
               height: 20,
             ),
-            RoundedButton(
-              label: "Add a Variant",
-              height: 10,
-              minWidth: double.infinity,
-              fontSize: 16,
-              fontWeight: FontWeight.w700,
-              color: Colors.white,
-              fontFamily: "GoldplayBold",
-              fontColor: kTealColor,
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) =>
-                            AddAVariant(gallery: widget.gallery)));
+            AppButton(
+              "New Add-on",
+              kTealColor,
+              true,
+              () {
+                pushNewScreen(
+                  context,
+                  screen: NewAddOn(gallery: widget.gallery),
+                );
               },
             ),
             SizedBox(
               height: MediaQuery.of(context).size.height / 3,
             ),
-            RoundedButton(
-              label: "Skip",
-              height: 10,
-              minWidth: double.infinity,
-              fontSize: 16,
-              fontWeight: FontWeight.w700,
-              color: Colors.white,
-              fontFamily: "GoldplayBold",
-              fontColor: kTealColor,
-              onPressed: () {},
+            AppButton(
+              "Skip",
+              kTealColor,
+              true,
+              () {
+                pushNewScreen(
+                  context,
+                  screen: NewAddOn(gallery: widget.gallery),
+                );
+              },
             ),
           ],
         ),
@@ -96,7 +91,7 @@ class _ProductVariantState extends State<ProductVariant> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: CustomAppBar(
-        titleText: "Product Variant",
+        titleText: "Product Add-ons",
         onPressedLeading: () {
           Navigator.pop(context);
         },

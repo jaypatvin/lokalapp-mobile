@@ -10,11 +10,6 @@ const kTextFieldBorderColor = const Color(0xFFF2F2F2);
 const kYellowColor = const Color(0xffFFC700);
 const kKeyboardActionHeight = 45.0;
 
-const TextStyle kTextStyle = const TextStyle(
-  fontWeight: FontWeight.w700,
-  fontFamily: "Goldplay",
-  fontSize: 16.0,
-);
 const kInputDecoration = const InputDecoration(
   filled: true,
   isDense: true,

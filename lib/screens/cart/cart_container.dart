@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/cart.dart';
-import '../../utils/themes.dart';
+import '../../utils/constants/themes.dart';
 import 'checkout_cart.dart';
 
 /// Handles the FAB of the shopping cart found throughout the app

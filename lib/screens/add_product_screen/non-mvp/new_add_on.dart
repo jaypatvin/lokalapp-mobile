@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
-import '../../providers/post_requests/product_body.dart';
-import 'product_add_ons_2.dart';
-import '../../widgets/custom_app_bar.dart';
-import '../../widgets/input_name.dart';
-import '../../widgets/rounded_button.dart';
+import 'package:lokalapp/providers/post_requests/product_body.dart';
+import 'package:lokalapp/screens/add_product_screen/components/add_product_gallery.dart';
+import 'package:lokalapp/screens/add_product_screen/components/product_header.dart';
+import 'package:lokalapp/screens/add_product_screen/non-mvp/product_add_ons_2.dart';
+import 'package:lokalapp/utils/constants/themes.dart';
+import 'package:lokalapp/widgets/app_button.dart';
+import 'package:lokalapp/widgets/custom_app_bar.dart';
+import 'package:lokalapp/widgets/input_name.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
-
-import 'components/add_product_gallery.dart';
-import 'components/product_header.dart';
 
 class NewAddOn extends StatefulWidget {
   final AddProductGallery gallery;
@@ -91,20 +92,15 @@ class _NewAddOnState extends State<NewAddOn> {
             SizedBox(
               height: MediaQuery.of(context).size.height * 0.08,
             ),
-            RoundedButton(
-              label: "Add add-on",
-              height: 10,
-              minWidth: double.infinity,
-              fontSize: 16,
-              fontWeight: FontWeight.w700,
-              fontFamily: "GoldplayBold",
-              fontColor: Colors.white,
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) =>
-                            ProductAddOn2(gallery: widget.gallery)));
+            AppButton(
+              "Add add-on",
+              kTealColor,
+              true,
+              () {
+                pushNewScreen(
+                  context,
+                  screen: ProductAddOn2(gallery: widget.gallery),
+                );
               },
             ),
             SizedBox(

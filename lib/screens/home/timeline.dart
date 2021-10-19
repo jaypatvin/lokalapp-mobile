@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 import '../../models/activity_feed.dart';
 import '../../providers/activities.dart';
 import '../../providers/user.dart';
-import '../../utils/themes.dart';
+import '../../utils/constants/themes.dart';
 import 'components/post_card.dart';
 import 'post_details.dart';
 
@@ -48,63 +48,7 @@ class Timeline extends StatelessWidget {
     );
   }
 
-  void onUserTripleDotsPressed(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      useRootNavigator: true,
-      isScrollControlled: true,
-      builder: (BuildContext context) {
-        return Wrap(
-          children: [
-            GestureDetector(
-              onTap: () {},
-              child: ListTile(
-                leading: Icon(
-                  MdiIcons.squareEditOutline,
-                  color: Colors.black,
-                ),
-                title: Text(
-                  "Edit Post",
-                  softWrap: true,
-                  style: kTextStyle,
-                ),
-              ),
-            ),
-            GestureDetector(
-              onTap: () {},
-              child: ListTile(
-                leading: Icon(
-                  MdiIcons.deleteOutline,
-                  color: kPinkColor,
-                ),
-                title: Text(
-                  "Delete Post",
-                  softWrap: true,
-                  style: kTextStyle.copyWith(color: kPinkColor),
-                ),
-              ),
-            ),
-            GestureDetector(
-              onTap: () {},
-              child: ListTile(
-                leading: Icon(
-                  MdiIcons.linkVariant,
-                  color: Colors.black,
-                ),
-                title: Text(
-                  "Copy Link",
-                  softWrap: true,
-                  style: kTextStyle,
-                ),
-              ),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void onTripleDotsPressed(BuildContext context) {
+  void onTripleDotsPressed(BuildContext context, [bool isUser = false]) {
     showModalBottomSheet(
       context: context,
       useRootNavigator: true,
@@ -120,9 +64,12 @@ class Timeline extends StatelessWidget {
                   color: kPinkColor,
                 ),
                 title: Text(
-                  "Report Post",
+                  isUser ? "Edit Post" : "Report Post",
                   softWrap: true,
-                  style: kTextStyle.copyWith(color: kPinkColor),
+                  style: Theme.of(context)
+                      .textTheme
+                      .subtitle1!
+                      .copyWith(color: kPinkColor),
                 ),
               ),
             ),
@@ -134,9 +81,9 @@ class Timeline extends StatelessWidget {
                   color: Colors.black,
                 ),
                 title: Text(
-                  "Hide Post",
+                  isUser ? "Delete Post" : "Hide Post",
                   softWrap: true,
-                  style: kTextStyle,
+                  style: Theme.of(context).textTheme.subtitle1,
                 ),
               ),
             ),
@@ -150,7 +97,7 @@ class Timeline extends StatelessWidget {
                 title: Text(
                   "Copy Link",
                   softWrap: true,
-                  style: kTextStyle,
+                  style: Theme.of(context).textTheme.subtitle1,
                 ),
               ),
             ),
@@ -183,9 +130,7 @@ class Timeline extends StatelessWidget {
           },
           onLike: () => onLike(context, activity, user),
           onTripleDotsPressed: () {
-            user.id == activity.userId
-                ? this.onUserTripleDotsPressed(context)
-                : this.onTripleDotsPressed(context);
+            this.onTripleDotsPressed(context, user.id == activity.userId);
           },
           onUserPressed: () {
             debugPrint("Pressed the user: ${activity.userId}");

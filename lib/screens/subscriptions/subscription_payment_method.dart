@@ -7,7 +7,7 @@ import '../../widgets/screen_loader.dart';
 import '../../providers/cart.dart';
 import '../../providers/products.dart';
 import '../../providers/subscriptions.dart';
-import '../../utils/themes.dart';
+import '../../utils/constants/themes.dart';
 import '../../widgets/custom_app_bar.dart';
 import '../../widgets/payment_options.dart';
 import '../activity/buyer/processing_payment.dart';

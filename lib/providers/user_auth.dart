@@ -12,6 +12,8 @@ enum AuthStatus {
   Error,
 }
 
+
+// TODO: checking for errors (no authResult etc.)
 class UserAuth extends ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   User? _user;

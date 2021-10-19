@@ -10,7 +10,7 @@ import '../../../providers/products.dart';
 import '../../../providers/shops.dart';
 import '../../../providers/user.dart';
 import '../../../providers/users.dart';
-import '../../../utils/constants.dart';
+import '../../../utils/constants/assets.dart';
 import '../../../widgets/search_text_field.dart';
 import '../chat_view.dart';
 import 'chat_avatar.dart';

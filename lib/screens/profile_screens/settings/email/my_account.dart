@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'change_email.dart';
 import '../password/change_password.dart';
-import '../../../../utils/themes.dart';
+import '../../../../utils/constants/themes.dart';
 
 class MyAccount extends StatelessWidget {
   @override

@@ -7,7 +7,7 @@ import 'package:provider/provider.dart';
 
 import '../../../providers/shops.dart';
 import '../../../providers/user.dart';
-import '../../../utils/themes.dart';
+import '../../../utils/constants/themes.dart';
 import '../../../widgets/app_button.dart';
 import '../../add_shop_screens/add_shop.dart';
 import '../../chat/components/chat_avatar.dart';

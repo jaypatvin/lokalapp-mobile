@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../../utils/themes.dart';
+import '../../../../utils/constants/themes.dart';
 import 'password_changed.dart';
 
 class ChangePassword extends StatelessWidget {

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../../utils/themes.dart';
+import '../../../../utils/constants/themes.dart';
 import '../../../bottom_navigation.dart';
 
 class EmailChanged extends StatelessWidget {

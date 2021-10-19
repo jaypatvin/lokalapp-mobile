@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import '../../../utils/themes.dart';
+import '../../../utils/constants/themes.dart';
 import '../../../widgets/photo_box.dart';
 
 class ProductHeader extends StatelessWidget {
@@ -52,10 +52,10 @@ class ProductHeader extends StatelessWidget {
                     visible: productStock != null,
                     child: Text(
                       "In Stock: $productStock",
-                      style: kTextStyle.copyWith(
-                        fontSize: MediaQuery.of(context).size.width * 0.04,
-                        fontWeight: FontWeight.w400,
-                      ),
+                      style: Theme.of(context).textTheme.bodyText1!.copyWith(
+                            fontSize: MediaQuery.of(context).size.width * 0.04,
+                            fontWeight: FontWeight.w400,
+                          ),
                     ),
                   ),
                 ],

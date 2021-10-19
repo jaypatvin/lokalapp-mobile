@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../utils/themes.dart';
+import '../../../../utils/constants/themes.dart';
 
 class ChatSettings extends StatefulWidget {
   @override

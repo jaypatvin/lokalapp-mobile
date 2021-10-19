@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 
 import '../../providers/categories.dart';
 import '../../utils/shared_preference.dart';
-import '../../utils/themes.dart';
+import '../../utils/constants/themes.dart';
 import '../../widgets/custom_app_bar.dart';
 import '../../widgets/search_text_field.dart';
 import '../cart/cart_container.dart';

@@ -3,8 +3,9 @@ import 'dart:async';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class UserSharedPreferences {
-  SharedPreferences? _preference;
+  late final SharedPreferences? _preference;
   final _streamController = StreamController<UserSharedPreferences>.broadcast();
+  
   Stream<UserSharedPreferences> get stream => _streamController.stream;
   void dispose() {
     _streamController.close();

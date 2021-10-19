@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../models/order.dart';
-import '../../../utils/constants.dart';
-import '../../../utils/themes.dart';
+import '../../../utils/constants/assets.dart';
+import '../../../utils/constants/themes.dart';
 import '../../../widgets/custom_app_bar.dart';
 import 'bank_details.dart';
 import 'cash_on_delivery.dart';

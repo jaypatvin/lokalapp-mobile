@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import '../../models/user_shop.dart';
 import '../../providers/cart.dart';
 import '../../providers/products.dart';
-import '../../utils/themes.dart';
+import '../../utils/constants/themes.dart';
 import '../../widgets/app_button.dart';
 import '../../widgets/custom_app_bar.dart';
 import '../discover/product_detail.dart';

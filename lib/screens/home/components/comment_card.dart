@@ -1,12 +1,11 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 import '../../../models/lokal_images.dart';
 import '../../../models/lokal_user.dart';
 import '../../../utils/functions.utils.dart';
-import '../../../utils/themes.dart';
 import '../../../widgets/photo_view_gallery/thumbnails/network_photo_thumbnail.dart';
 
 class CommentCard extends StatelessWidget {
@@ -74,20 +73,17 @@ class CommentCard extends StatelessWidget {
                 children: [
                   TextSpan(
                     text: "${user.firstName} ${user.lastName}",
-                    style: kTextStyle.copyWith(
-                      color: Colors.black,
-                      fontSize: 14.0.sp,
-                    ),
+                    style: Theme.of(context).textTheme.subtitle2!.copyWith(
+                          color: Colors.black,
+                        ),
                     recognizer: TapGestureRecognizer()
                       ..onTap = () => this.onUserPressed!(user.id),
                   ),
                   TextSpan(
                     text: " $message",
-                    style: kTextStyle.copyWith(
-                      color: Colors.black,
-                      fontWeight: FontWeight.w500,
-                      fontSize: 14.0.sp,
-                    ),
+                    style: Theme.of(context).textTheme.bodyText2!.copyWith(
+                          color: Colors.black,
+                        ),
                   ),
                 ],
               ),

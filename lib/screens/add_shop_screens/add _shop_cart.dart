@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import '../profile_screens/components/store_rating.dart';
-import '../../utils/themes.dart';
+import '../../utils/constants/themes.dart';
 import 'package:photo_view/photo_view.dart';
 
 import 'package:photo_view/photo_view_gallery.dart';

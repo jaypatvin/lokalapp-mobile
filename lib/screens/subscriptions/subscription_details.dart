@@ -10,7 +10,7 @@ import '../../providers/products.dart';
 import '../../providers/shops.dart';
 import '../../providers/user.dart';
 import '../../utils/repeated_days_generator/schedule_generator.dart';
-import '../../utils/themes.dart';
+import '../../utils/constants/themes.dart';
 import '../../widgets/app_button.dart';
 import '../chat/chat_view.dart';
 import 'components/subscription_plan_details.dart';

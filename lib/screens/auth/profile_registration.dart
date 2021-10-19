@@ -16,14 +16,14 @@ import '../../providers/user.dart';
 import '../../providers/user_auth.dart';
 import '../../providers/users.dart';
 import '../../services/local_image_service.dart';
-import '../../utils/themes.dart';
+import '../../utils/constants/themes.dart';
 import '../../utils/utility.dart';
 import '../../widgets/app_button.dart';
-import '../../widgets/checkbox_form_field.dart';
 import '../../widgets/custom_app_bar.dart';
 import '../../widgets/photo_box.dart';
 import '../../widgets/screen_loader.dart';
 import '../verification_screens/verify_screen.dart';
+import 'components/checkbox_form_field.dart';
 
 class ProfileRegistration extends StatefulWidget {
   @override

@@ -3,8 +3,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lottie/lottie.dart';
 
 import '../../../models/order.dart';
-import '../../../utils/constants.dart';
-import '../../../utils/themes.dart';
+import '../../../utils/constants/assets.dart';
+import '../../../utils/constants/themes.dart';
 import '../../../widgets/app_button.dart';
 import '../components/order_details_buttons/message_buttons.dart';
 import '../components/transaction_details.dart';

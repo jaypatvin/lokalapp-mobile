@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../utils/themes.dart';
+import '../../utils/constants/themes.dart';
 
 class ChatHelpers {
   showAlert(BuildContext context) {
