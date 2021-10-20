@@ -42,10 +42,13 @@ class ChatStream extends StatelessWidget {
                 return Center(child: Lottie.asset(kAnimationLoading));
               }
               if (!snapshot.hasData || snapshot.data!.docs.length == 0) {
-                return Text(
-                  "It's lonely here. No Chats yet!",
-                  style: TextStyle(
-                    fontWeight: FontWeight.w500,
+                return Padding(
+                  padding: EdgeInsets.only(top: 24.0.h),
+                  child: Text(
+                    "It's lonely here. No Chats yet!",
+                    style: TextStyle(
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
                 );
               }
