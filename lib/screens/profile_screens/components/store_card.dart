@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 import '../../../providers/products.dart';
@@ -44,33 +45,39 @@ class StoreCard extends StatelessWidget {
                         ? gallery!.firstWhere((g) => g.url != null)
                         : null;
 
-                    return GestureDetector(
-                      onTap: () {
-                        if (this.isUserProducts) {
-                          pushNewScreen(
+                    return Container(
+                      margin: EdgeInsets.symmetric(
+                        vertical: 5.0.h,
+                        horizontal: 2.5.w,
+                      ),
+                      child: GestureDetector(
+                        onTap: () {
+                          if (this.isUserProducts) {
+                            pushNewScreen(
+                              context,
+                              screen: AddProduct(
+                                productId: items[index].id,
+                              ),
+                            );
+                            return;
+                          }
+
+                          Navigator.push(
                             context,
-                            screen: AddProduct(
-                              productId: items[index].id,
+                            MaterialPageRoute(
+                              builder: (context) => ProductDetail(items[index]),
                             ),
                           );
-                          return;
-                        }
-
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => ProductDetail(items[index]),
-                          ),
-                        );
-                      },
-                      child: ProductCard(
-                        productId: items[index].id,
-                        name: items[index].name,
-                        imageUrl: isGalleryEmpty ? '' : productImage!.url,
-                        price: items[index].basePrice,
-                        shopName: shops.findById(items[index].shopId)!.name,
-                        shopImageUrl:
-                            shops.findById(items[index].shopId)!.profilePhoto,
+                        },
+                        child: ProductCard(
+                          productId: items[index].id,
+                          name: items[index].name,
+                          imageUrl: isGalleryEmpty ? '' : productImage!.url,
+                          price: items[index].basePrice,
+                          shopName: shops.findById(items[index].shopId)!.name,
+                          shopImageUrl:
+                              shops.findById(items[index].shopId)!.profilePhoto,
+                        ),
                       ),
                     );
                   } catch (e) {
