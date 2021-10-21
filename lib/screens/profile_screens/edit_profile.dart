@@ -6,12 +6,12 @@ import 'package:provider/provider.dart';
 import '../../providers/post_requests/auth_body.dart';
 import '../../providers/user.dart';
 import '../../services/local_image_service.dart';
-import '../../utils/themes.dart';
+import '../../utils/constants/themes.dart';
 import '../../utils/utility.dart';
+import '../../widgets/app_button.dart';
 import '../../widgets/custom_app_bar.dart';
 import '../../widgets/input_name.dart';
 import '../../widgets/photo_box.dart';
-import '../../widgets/rounded_button.dart';
 
 class EditProfile extends StatefulWidget {
   @override
@@ -104,9 +104,9 @@ class _EditProfileState extends State<EditProfile> {
             Center(
               child: Text(
                 "Edit Photo",
-                style: kTextStyle.copyWith(
-                  color: Colors.white,
-                ),
+                style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                      color: Colors.white,
+                    ),
               ),
             ),
           ],
@@ -164,26 +164,25 @@ class _EditProfileState extends State<EditProfile> {
               SizedBox(
                 height: height * 0.05,
               ),
-              RoundedButton(
-                label: "Apply Changes",
-                height: 10,
-                minWidth: width * 0.6,
-                fontSize: 16,
-                fontWeight: FontWeight.w700,
-                fontFamily: "Goldplay",
-                fontColor: Colors.white,
-                onPressed: () async {
-                  bool success = await _updateUser();
-                  if (success) {
-                    Navigator.pop(context);
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text("Failed to update user profile"),
-                      ),
-                    );
-                  }
-                },
+              SizedBox(
+                width: width * 0.6,
+                child: AppButton(
+                  "Apply Changes",
+                  kTealColor,
+                  true,
+                  () async {
+                    bool success = await _updateUser();
+                    if (success) {
+                      Navigator.pop(context);
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text("Failed to update user profile"),
+                        ),
+                      );
+                    }
+                  },
+                ),
               ),
             ],
           ),

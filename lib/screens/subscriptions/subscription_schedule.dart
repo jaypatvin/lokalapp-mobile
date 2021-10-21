@@ -16,7 +16,7 @@ import '../../providers/subscriptions.dart';
 import '../../providers/user.dart';
 import '../../utils/calendar_picker/calendar_picker.dart';
 import '../../utils/repeated_days_generator/schedule_generator.dart';
-import '../../utils/themes.dart';
+import '../../utils/constants/themes.dart';
 import '../../widgets/app_button.dart';
 import '../../widgets/custom_app_bar.dart';
 import '../../widgets/schedule_picker.dart';

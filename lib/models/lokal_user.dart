@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:lokalapp/models/timestamp_time_object.dart';
 
 class UserAddress {
   String? barangay;
@@ -132,7 +133,9 @@ class LokalUser {
   UserAddress? address;
   UserRegistrationStatus? registration;
   UserRoles? roles;
-  Timestamp? createdAt;
+  DateTime? createdAt;
+  Map<String, dynamic> notificationSettings;
+  bool showReadReceipts;
 
   LokalUser({
     this.userUids,
@@ -149,6 +152,8 @@ class LokalUser {
     this.registration,
     this.roles,
     this.createdAt,
+    required this.notificationSettings,
+    required this.showReadReceipts,
   });
 
   Map<String, dynamic> toMap() {
@@ -167,20 +172,17 @@ class LokalUser {
       'registration': registration!.toMap(),
       'roles': roles!.toMap(),
       'created_at': createdAt,
+      'notification_settings': notificationSettings,
+      'chat_settings': showReadReceipts
     };
   }
 
-  factory LokalUser.fromMap(Map<String, dynamic>? map) {
-    if (map == null) {
-      return LokalUser();
-    }
-
-    late final Timestamp _createdAt;
+  factory LokalUser.fromMap(Map<String, dynamic> map) {
+    late final DateTime _createdAt;
     if (map['created_at'] is Timestamp) {
-      _createdAt = map['created_at'];
+      _createdAt = (map['created_at'] as Timestamp).toDate();
     } else if (map['created_at'] is Map) {
-      _createdAt = Timestamp(
-          map['created_at']['_seconds'], map['created_at']['_nanoseconds']);
+      _createdAt = TimestampObject.fromMap(map['created_at']).toDateTime();
     }
 
     return LokalUser(
@@ -199,6 +201,8 @@ class LokalUser {
           UserRegistrationStatus.fromMap(map['registration'] ?? Map()),
       roles: UserRoles.fromMap(map['roles'] ?? Map()),
       createdAt: _createdAt,
+      notificationSettings: map['notification_settings'] ?? {},
+      showReadReceipts: map['chat_settings']?['show_read_receipts'] ?? true,
     );
   }
 

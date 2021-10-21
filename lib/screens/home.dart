@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -8,9 +11,13 @@ import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/activities.dart';
-import '../utils/constants.dart';
-import '../utils/themes.dart';
+import '../services/database.dart';
+import '../utils/constants/assets.dart';
+import '../utils/constants/themes.dart';
+import '../utils/shared_preference.dart';
+import '../widgets/app_button.dart';
 import '../widgets/custom_app_bar.dart';
+import '../widgets/onboarding.dart';
 import 'cart/cart_container.dart';
 import 'home/draft_post.dart';
 import 'home/timeline.dart';
@@ -23,8 +30,12 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  ScrollController? _controller;
-  double _postFieldHeight = 85.0.h;
+  late final ScrollController? _controller;
+  late final Stream<QuerySnapshot> _stream;
+  late final StreamSubscription _subscription;
+
+  double _postFieldHeight = 75.0.h;
+  bool _displayNewPost = false;
 
   @override
   void initState() {
@@ -34,6 +45,19 @@ class _HomeState extends State<Home> {
       activities.fetch();
     }
 
+    _stream = Database.instance.getCommunityTimeline();
+    _subscription = _stream.listen((snapshot) {
+      debugPrint('first: ${snapshot.docs.first.id}');
+      debugPrint('first API: ${activities.feed.first.id}');
+      if (snapshot.docs.first.id != activities.feed.first.id) {
+        if (mounted) {
+          setState(() {
+            _displayNewPost = true;
+          });
+        }
+      }
+    });
+
     _controller = ScrollController()..addListener(_scrollListener);
   }
 
@@ -41,6 +65,7 @@ class _HomeState extends State<Home> {
   void dispose() {
     _controller!.removeListener(_scrollListener);
     _controller!.dispose();
+    _subscription.cancel();
     super.dispose();
   }
 
@@ -54,7 +79,7 @@ class _HomeState extends State<Home> {
     if (_controller!.position.userScrollDirection == ScrollDirection.forward) {
       if (_postFieldHeight == 0)
         setState(() {
-          _postFieldHeight = 85.0.h;
+          _postFieldHeight = 75.0.h;
         });
     }
   }
@@ -109,41 +134,68 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Color(0xffF1FAFF),
-      resizeToAvoidBottomInset: true,
-      appBar: CustomAppBar(
-        titleText: "White Plains",
-        titleStyle: TextStyle(color: Colors.white),
-        backgroundColor: kTealColor,
-        buildLeading: false,
-      ),
-      body: CartContainer(
-        child: Column(
-          children: [
-            _postField(),
-            Expanded(
-              child: Consumer<Activities>(
-                builder: (context, activities, child) {
-                  return activities.isLoading
-                      ? SizedBox(
-                          width: double.infinity,
-                          height: double.infinity,
-                          child: DecoratedBox(
-                            decoration: const BoxDecoration(
-                              color: Colors.white,
-                            ),
-                            child: Lottie.asset(kAnimationLoading),
+    return Onboarding(
+      screen: MainScreen.home,
+      child: Scaffold(
+        backgroundColor: Color(0xffF1FAFF),
+        resizeToAvoidBottomInset: true,
+        appBar: CustomAppBar(
+          titleText: "White Plains",
+          titleStyle: TextStyle(color: Colors.white),
+          backgroundColor: kTealColor,
+          buildLeading: false,
+        ),
+        body: CartContainer(
+          child: Column(
+            children: [
+              _postField(),
+              Expanded(
+                child: Stack(
+                  children: [
+                    Positioned.fill(
+                      child: Consumer<Activities>(
+                        builder: (context, activities, child) {
+                          return activities.isLoading
+                              ? SizedBox(
+                                  width: double.infinity,
+                                  height: double.infinity,
+                                  child: DecoratedBox(
+                                    decoration: const BoxDecoration(
+                                      color: Colors.white,
+                                    ),
+                                    child: Lottie.asset(kAnimationLoading),
+                                  ),
+                                )
+                              : RefreshIndicator(
+                                  onRefresh: () => activities.fetch(),
+                                  child: Timeline(activities.feed, _controller),
+                                );
+                        },
+                      ),
+                    ),
+                    if (this._displayNewPost)
+                      Align(
+                        alignment: Alignment.topCenter,
+                        child: AppButton(
+                          "New Posts",
+                          Colors.grey.withOpacity(0.5),
+                          true,
+                          () {
+                            context.read<Activities>().fetch();
+                            setState(() {
+                              _displayNewPost = false;
+                            });
+                          },
+                          textStyle: TextStyle(
+                            color: Colors.black,
                           ),
-                        )
-                      : RefreshIndicator(
-                          onRefresh: () => activities.fetch(),
-                          child: Timeline(activities.feed, _controller),
-                        );
-                },
+                        ),
+                      ),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

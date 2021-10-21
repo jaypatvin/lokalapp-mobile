@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import '../../../providers/products.dart';
 import '../../../providers/shops.dart';
 import '../../../providers/user.dart';
-import '../../../utils/themes.dart';
+import '../../../utils/constants/themes.dart';
 import '../../../widgets/app_button.dart';
 import '../../add_product_screen/add_product.dart';
 import 'store_card.dart';

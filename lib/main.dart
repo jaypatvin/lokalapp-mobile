@@ -22,17 +22,15 @@ import 'providers/user.dart';
 import 'providers/user_auth.dart';
 import 'providers/users.dart';
 import 'root/root.dart';
-import 'screens/chat/chat_helpers.dart';
 import 'services/api/api.dart';
 import 'services/local_image_service.dart';
-import 'utils/constants.dart';
+import 'utils/constants/assets.dart';
 import 'utils/shared_preference.dart';
-import 'utils/themes.dart';
+import 'utils/constants/themes.dart';
 import 'utils/utility.dart';
 import 'widgets/photo_picker_gallery/provider/custom_photo_provider.dart';
 import 'widgets/screen_loader.dart';
 
-UserSharedPreferences? _userSharedPreferences;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
@@ -45,28 +43,33 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  static UserSharedPreferences _prefs = UserSharedPreferences();
+
   @override
   initState() {
-    _userSharedPreferences = UserSharedPreferences();
-    _userSharedPreferences!.init();
     super.initState();
+    _prefs.init();
   }
 
   @override
   dispose() {
-    _userSharedPreferences?.dispose();
+    _prefs.dispose();
     super.dispose();
   }
 
   List<SingleChildWidget> _providers = [
     //shared preference
-    Provider<UserSharedPreferences?>.value(value: _userSharedPreferences),
+    Provider<UserSharedPreferences>.value(value: _prefs),
 
     // auth:
     ChangeNotifierProvider<UserAuth>(create: (_) => UserAuth()),
+
+    // TODO: use in specific screen (MVVM pattern)
+    // this is only used in a specific screen
     ChangeNotifierProvider<Invite>(create: (_) => Invite()),
 
     // states:
+    //TODO: update user structure
     ChangeNotifierProxyProvider<UserAuth, CurrentUser?>(
       create: (_) => CurrentUser(),
       update: (_, auth, user) => user!..initializeToken(auth.user),
@@ -77,10 +80,12 @@ class _MyAppState extends State<MyApp> {
         ..setCommunityId(user.communityId)
         ..setIdToken(user.idToken),
     ),
-    ChangeNotifierProxyProvider<CurrentUser, API>(
+    ChangeNotifierProxyProvider<CurrentUser, API?>(
       create: (_) => API(),
       update: (_, user, api) => api!..setIdToken(user.idToken!),
     ),
+
+    // TODO: separate BL (MVVM pattern)
     ChangeNotifierProxyProvider<CurrentUser, Shops?>(
       create: (_) => Shops(),
       update: (_, user, shops) => shops!
@@ -99,14 +104,16 @@ class _MyAppState extends State<MyApp> {
         ..setCommunityId(user.communityId)
         ..setIdToken(user.idToken),
     ),
-    ChangeNotifierProxyProvider<API, Categories>(
+    ChangeNotifierProxyProvider<API, Categories?>(
       create: (_) => Categories(),
       update: (_, api, categories) => categories!..setAPI(api),
     ),
 
-    ChangeNotifierProvider<ShoppingCart>(create: (_) => ShoppingCart()),
+    // This is used in 3 Separate Screens (Tabs) - Home, Discover, and Profile
+    ChangeNotifierProvider<ShoppingCart?>(create: (_) => ShoppingCart()),
 
     // post body requests:
+    // TODO: use these in specific Screens (MVVM pattern)
     ChangeNotifierProvider<AuthBody>(
       create: (_) => AuthBody(),
       lazy: true,
@@ -123,6 +130,7 @@ class _MyAppState extends State<MyApp> {
       create: (_) => OperatingHoursBody(),
       lazy: true,
     ),
+
     ChangeNotifierProvider(
       create: (_) => CustomPickerDataProvider(max: 5),
       lazy: true,
@@ -131,7 +139,6 @@ class _MyAppState extends State<MyApp> {
     // services:
     Provider<MediaUtility?>(create: (_) => MediaUtility.instance),
     Provider<LocalImageService?>(create: (_) => LocalImageService.instance),
-    Provider<ChatHelpers>(create: (_) => ChatHelpers()),
     ProxyProvider<CurrentUser, SubscriptionProvider?>(
       create: (_) => SubscriptionProvider(),
       update: (_, user, subscription) =>
@@ -150,86 +157,81 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: _providers,
-      child: StreamBuilder<UserSharedPreferences>(
-        stream: _userSharedPreferences!.stream,
-        builder: (context, snapshot) {
-          return ScreenUtilInit(
-            builder: () {
-              return ScreenLoaderApp(
-                globalLoadingBgBlur: 0,
-                globalLoader: SizedBox(
-                  width: double.infinity,
-                  height: double.infinity,
-                  child: DecoratedBox(
-                    decoration: const BoxDecoration(
-                      color: Colors.white,
-                    ),
-                    child: Lottie.asset(kAnimationLoading),
+      child: ScreenUtilInit(
+        builder: () {
+          return ScreenLoaderApp(
+            globalLoadingBgBlur: 0,
+            globalLoader: SizedBox(
+              width: double.infinity,
+              height: double.infinity,
+              child: DecoratedBox(
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                ),
+                child: Lottie.asset(kAnimationLoading),
+              ),
+            ),
+            app: MaterialApp(
+              debugShowCheckedModeBanner: false,
+              title: 'Lokal',
+              theme: ThemeData(
+                fontFamily: "Goldplay",
+                textTheme: TextTheme(
+                  headline1: TextStyle(
+                    fontSize: 96.sp,
+                    color: kNavyColor,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  headline2: TextStyle(
+                    fontSize: 60.0.sp,
+                    color: kNavyColor,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  headline3: TextStyle(
+                    fontSize: 48.0.sp,
+                    color: kNavyColor,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  headline4: TextStyle(
+                    fontSize: 34.0.sp,
+                    color: kNavyColor,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  headline5: TextStyle(
+                    fontSize: 24.0.sp,
+                    color: kNavyColor,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  headline6: TextStyle(
+                    fontSize: 20.0.sp,
+                    color: kNavyColor,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  subtitle1: TextStyle(
+                    fontSize: 16.0.sp,
+                    fontWeight: FontWeight.w600,
+                    color: kNavyColor,
+                  ),
+                  subtitle2: TextStyle(
+                    fontSize: 14.0.sp,
+                    fontWeight: FontWeight.w600,
+                    color: kNavyColor,
+                  ),
+                  bodyText1: TextStyle(
+                    fontSize: 16.0.sp,
+                    color: kNavyColor,
+                    fontWeight: FontWeight.w500,
+                  ),
+                  bodyText2: TextStyle(
+                    fontSize: 14.0.sp,
+                    color: kNavyColor,
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
-                app: MaterialApp(
-                  debugShowCheckedModeBanner: false,
-                  title: 'Lokal',
-                  theme: ThemeData(
-                    fontFamily: "Goldplay",
-                    textTheme: TextTheme(
-                      headline1: TextStyle(
-                        fontSize: 96.sp,
-                        color: kNavyColor,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      headline2: TextStyle(
-                        fontSize: 60.0.sp,
-                        color: kNavyColor,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      headline3: TextStyle(
-                        fontSize: 48.0.sp,
-                        color: kNavyColor,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      headline4: TextStyle(
-                        fontSize: 34.0.sp,
-                        color: kNavyColor,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      headline5: TextStyle(
-                        fontSize: 24.0.sp,
-                        color: kNavyColor,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      headline6: TextStyle(
-                        fontSize: 20.0.sp,
-                        color: kNavyColor,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      subtitle1: TextStyle(
-                        fontSize: 16.0.sp,
-                        fontWeight: FontWeight.w600,
-                        color: kNavyColor,
-                      ),
-                      subtitle2: TextStyle(
-                        fontSize: 14.0.sp,
-                        fontWeight: FontWeight.w600,
-                        color: kNavyColor,
-                      ),
-                      bodyText1: TextStyle(
-                        fontSize: 16.0.sp,
-                        color: kNavyColor,
-                        fontWeight: FontWeight.w500,
-                      ),
-                      bodyText2: TextStyle(
-                        fontSize: 14.0.sp,
-                        color: kNavyColor,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    scaffoldBackgroundColor: Colors.white,
-                  ),
-                  home: Root(),
-                ),
-              );
-            },
+                scaffoldBackgroundColor: Colors.white,
+              ),
+              home: Root(),
+            ),
           );
         },
       ),

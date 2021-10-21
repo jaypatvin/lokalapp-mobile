@@ -8,7 +8,7 @@ import 'package:provider/provider.dart';
 import '../../models/lokal_category.dart';
 import '../../providers/categories.dart';
 import '../../providers/post_requests/product_body.dart';
-import '../../utils/themes.dart';
+import '../../utils/constants/themes.dart';
 import '../../widgets/app_button.dart';
 import '../../widgets/app_checkbox.dart';
 import '../../widgets/custom_app_bar.dart';

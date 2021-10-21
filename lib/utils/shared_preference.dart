@@ -1,71 +1,74 @@
 import 'dart:async';
 
+import 'package:localstorage/localstorage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+enum MainScreen {
+  home,
+  discover,
+  chats,
+  activity,
+  profile,
+}
+
 class UserSharedPreferences {
-  SharedPreferences? _preference;
+  late final SharedPreferences? _preference;
   final _streamController = StreamController<UserSharedPreferences>.broadcast();
+  final _storage = LocalStorage('session');
+
+  static const _onboardingKeys = const <MainScreen, String>{
+    MainScreen.home: 'onboard_home',
+    MainScreen.discover: 'onboard_discover',
+    MainScreen.chats: 'onboard_chats',
+    MainScreen.activity: 'onboard_activity',
+    MainScreen.profile: 'onboard_profile',
+  };
+
   Stream<UserSharedPreferences> get stream => _streamController.stream;
   void dispose() {
     _streamController.close();
+    _storage.clear();
+    _storage.dispose();
   }
 
   bool get isReady => _preference != null;
   Future<bool> init() async {
+    if (_preference != null) {
+      return true;
+    }
     _streamController.add(this);
     _preference = await SharedPreferences.getInstance();
     _streamController.add(this);
     return isReady;
   }
 
-  static const String _isHomeKey = 'is_home_app_opened';
-
-  bool get isHome => _preference?.getBool(_isHomeKey) ?? false;
-  set isHome(bool value) => updateIsHome(value);
-
-  Future updateIsHome(bool value) async {
+  Future<void> _setBoolValue(String key, bool value) async {
     if (!isReady) await init();
-    _preference!.setBool(_isHomeKey, value);
+    _preference!.setBool(key, value);
     _streamController.add(this);
   }
 
-  static const String _isDiscoverKey = 'is_discover_opened';
-  bool get isDiscover => _preference?.getBool(_isDiscoverKey) ?? false;
-  set isDiscover(bool value) => updateIsDiscover(value);
+  bool _getBoolValue(String key) => _preference?.getBool(key) ?? false;
 
-  Future updateIsDiscover(bool value) async {
-    if (!isReady) await init();
-    _preference!.setBool(_isDiscoverKey, value);
-    _streamController.add(this);
+  String getOnboardingKey(MainScreen screen) {
+    return _onboardingKeys[screen]!;
   }
 
-  static const String _isChatKey = 'is_chat';
-  bool get isChat => _preference?.getBool(_isChatKey) ?? false;
-  set isChat(bool value) => updateIsChat(value);
+  bool getOnboardingStatus(MainScreen screen) =>
+      _getBoolValue(_onboardingKeys[screen]!);
 
-  Future updateIsChat(bool value) async {
-    if (!isReady) await init();
-    _preference!.setBool(_isChatKey, value);
-    _streamController.add(this);
+  Future<void> updateOnboardingStatus(
+    MainScreen screen, [
+    bool status = true,
+  ]) =>
+      _setBoolValue(_onboardingKeys[screen]!, status);
+
+  Future<void> setSessionCache(String key, String value) async {
+    final ready = await _storage.ready;
+    if (!ready) return;
+
+    _storage.setItem(key, value);
   }
 
-  static const String _isActivityKey = 'is_activity';
-  bool get isActivity => _preference?.getBool(_isActivityKey) ?? false;
-  set isActivity(bool value) => updateIsActivity(value);
-
-  Future updateIsActivity(bool value) async {
-    if (!isReady) await init();
-    _preference!.setBool(_isActivityKey, value);
-    _streamController.add(this);
-  }
-
-  static const String _isProfileKey = 'is_profile';
-  bool get isProfile => _preference?.getBool(_isProfileKey) ?? false;
-  set isProfile(bool value) => updateIsProfile(value);
-
-  Future updateIsProfile(bool value) async {
-    if (!isReady) await init();
-    _preference!.setBool(_isProfileKey, value);
-    _streamController.add(this);
-  }
+  String getSessionCache(String key, String value) => _storage.getItem(key);
 }

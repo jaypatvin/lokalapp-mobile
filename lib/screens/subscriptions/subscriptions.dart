@@ -8,7 +8,7 @@ import '../../models/product_subscription_plan.dart';
 import '../../providers/shops.dart';
 import '../../providers/user.dart';
 import '../../services/database.dart';
-import '../../utils/themes.dart';
+import '../../utils/constants/themes.dart';
 import '../../widgets/app_button.dart';
 import '../../widgets/custom_app_bar.dart';
 import 'components/subscription_plan_details.dart';

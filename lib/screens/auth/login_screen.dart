@@ -9,11 +9,11 @@ import '../../providers/shops.dart';
 import '../../providers/user.dart';
 import '../../providers/user_auth.dart';
 import '../../providers/users.dart';
-import '../../utils/themes.dart';
+import '../../utils/constants/themes.dart';
 import '../../widgets/screen_loader.dart';
-import '../../widgets/sso_block.dart';
 import '../bottom_navigation.dart';
 import 'components/auth_input_form.dart';
+import 'components/sso_block.dart';
 import 'invite_page.dart';
 
 enum LoginType { email, google, facebook }

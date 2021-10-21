@@ -11,8 +11,8 @@ import '../providers/user_auth.dart';
 import '../providers/users.dart';
 import '../screens/bottom_navigation.dart';
 import '../screens/welcome_screen.dart';
-import '../utils/constants.dart';
-import '../utils/themes.dart';
+import '../utils/constants/assets.dart';
+import '../utils/constants/themes.dart';
 
 class Root extends StatefulWidget {
   final Map<String, String>? account;

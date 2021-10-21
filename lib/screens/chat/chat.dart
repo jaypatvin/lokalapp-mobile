@@ -1,4 +1,3 @@
-import 'package:after_layout/after_layout.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -7,9 +6,9 @@ import 'package:provider/provider.dart';
 import '../../providers/shops.dart';
 import '../../providers/user.dart';
 import '../../services/database.dart';
+import '../../utils/constants/themes.dart';
 import '../../utils/shared_preference.dart';
-import '../../utils/themes.dart';
-import 'chat_helpers.dart';
+import '../../widgets/onboarding.dart';
 import 'components/chat_avatar.dart';
 import 'components/chat_stream.dart';
 
@@ -21,8 +20,7 @@ class Chat extends StatefulWidget {
   _ChatState createState() => _ChatState();
 }
 
-class _ChatState extends State<Chat>
-    with TickerProviderStateMixin, AfterLayoutMixin<Chat> {
+class _ChatState extends State<Chat> with TickerProviderStateMixin {
   TabController? _tabController;
 
   late AnimationController _animationController;
@@ -30,7 +28,6 @@ class _ChatState extends State<Chat>
 
   final _userSearchController = TextEditingController();
   final _shopSearchController = TextEditingController();
-  final _userSharedPreferences = UserSharedPreferences();
 
   Stream<QuerySnapshot>? _userChatStream;
   Stream<QuerySnapshot>? _shopChatStream;
@@ -60,8 +57,6 @@ class _ChatState extends State<Chat>
     if (shops.isNotEmpty) {
       _shopChatStream = Database.instance.getUserChats(shops.first.id);
     }
-
-    _userSharedPreferences.init();
   }
 
   void _tabSelectionHandler() {
@@ -78,66 +73,56 @@ class _ChatState extends State<Chat>
   }
 
   @override
-  void afterFirstLayout(BuildContext context) {
-    _userSharedPreferences.isChat
-        ? Container()
-        : Provider.of<ChatHelpers>(context, listen: false).showAlert(context);
-    setState(() {
-      _userSharedPreferences.isChat = true;
-    });
-  }
-
-  @override
-  dispose() {
-    _userSharedPreferences.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     final user = context.read<CurrentUser>();
     final shops = context.read<Shops>().findByUser(user.id);
 
     if (shops.isEmpty) {
-      return Scaffold(
-        appBar: PreferredSize(
-          child: _ChatAppBar(
-            backgroundColor: kTealColor,
+      return Onboarding(
+        screen: MainScreen.chats,
+        child: Scaffold(
+          appBar: PreferredSize(
+            child: _ChatAppBar(
+              backgroundColor: kTealColor,
+            ),
+            preferredSize: Size.fromHeight(
+              50.0,
+            ),
           ),
-          preferredSize: Size.fromHeight(
-            50.0,
+          body: ChatStream(
+            chatStream: _userChatStream,
+            searchController: _userSearchController,
           ),
-        ),
-        body: ChatStream(
-          chatStream: _userChatStream,
-          searchController: _userSearchController,
         ),
       );
     }
 
     // .first throws an error if shops is empty,
     // however, we already checked that on the prior if condition
-    return Scaffold(
-      appBar: _ChatAppBar(
-        height: 120.0.h,
-        backgroundColor: _colorAnimation.value,
-        bottom: _ChatAppBarBottom(
-          tabController: _tabController,
+    return Onboarding(
+      screen: MainScreen.chats,
+      child: Scaffold(
+        appBar: _ChatAppBar(
+          height: 120.0.h,
+          backgroundColor: _colorAnimation.value,
+          bottom: _ChatAppBarBottom(
+            tabController: _tabController,
+          ),
         ),
-      ),
-      body: TabBarView(
-        physics: NeverScrollableScrollPhysics(),
-        controller: _tabController,
-        children: [
-          ChatStream(
-            chatStream: _userChatStream,
-            searchController: _userSearchController,
-          ),
-          ChatStream(
-            chatStream: _shopChatStream,
-            searchController: _shopSearchController,
-          ),
-        ],
+        body: TabBarView(
+          physics: NeverScrollableScrollPhysics(),
+          controller: _tabController,
+          children: [
+            ChatStream(
+              chatStream: _userChatStream,
+              searchController: _userSearchController,
+            ),
+            ChatStream(
+              chatStream: _shopChatStream,
+              searchController: _shopSearchController,
+            ),
+          ],
+        ),
       ),
     );
   }

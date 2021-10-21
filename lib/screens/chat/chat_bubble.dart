@@ -7,7 +7,7 @@ import 'package:provider/provider.dart';
 import '../../models/conversation.dart';
 import '../../models/lokal_images.dart';
 import '../../providers/user.dart';
-import '../../utils/themes.dart';
+import '../../utils/constants/themes.dart';
 import '../../widgets/photo_view_gallery/gallery/gallery_network_photo_view.dart';
 import '../../widgets/photo_view_gallery/thumbnails/network_photo_thumbnail.dart';
 import 'components/reply_message.dart';

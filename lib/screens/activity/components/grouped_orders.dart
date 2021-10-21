@@ -2,13 +2,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:grouped_list/grouped_list.dart';
 import 'package:intl/intl.dart';
-import '../../../utils/constants.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 
 import '../../../models/order.dart';
 import '../../../providers/user.dart';
 import '../../../services/lokal_api_service.dart';
+import '../../../utils/constants/assets.dart';
 import '../buyer/order_received.dart';
 import '../buyer/payment_option.dart';
 import '../order_details.dart';

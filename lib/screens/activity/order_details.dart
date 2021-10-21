@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../models/order.dart';
-import '../../utils/themes.dart';
+import '../../utils/constants/themes.dart';
 import 'components/order_details_buttons.dart';
 import 'components/transaction_details.dart';
 

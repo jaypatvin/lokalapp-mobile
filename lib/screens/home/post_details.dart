@@ -16,7 +16,7 @@ import '../../providers/user.dart';
 import '../../providers/users.dart';
 import '../../services/local_image_service.dart';
 import '../../utils/functions.utils.dart';
-import '../../utils/themes.dart';
+import '../../utils/constants/themes.dart';
 import '../../widgets/custom_app_bar.dart';
 import '../../widgets/input_images.dart';
 import '../../widgets/input_text_field.dart';
@@ -107,7 +107,9 @@ class _PostDetailsState extends State<PostDetails> {
         SizedBox(width: spacing),
         Text(
           "$firstName $lastName",
-          style: kTextStyle.copyWith(fontSize: 19.0.sp),
+          style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                fontSize: 19.0.sp,
+              ),
         ),
       ],
     );
@@ -138,7 +140,10 @@ class _PostDetailsState extends State<PostDetails> {
             },
           ),
           SizedBox(width: 8.0.w),
-          Text(this.widget.activity.likedCount.toString(), style: kTextStyle),
+          Text(
+            this.widget.activity.likedCount.toString(),
+            style: Theme.of(context).textTheme.subtitle1,
+          ),
           Spacer(),
           IconButton(
             constraints: BoxConstraints(),
@@ -150,7 +155,10 @@ class _PostDetailsState extends State<PostDetails> {
             },
           ),
           SizedBox(width: 8.0.w),
-          Text(this.widget.activity.commentCount.toString(), style: kTextStyle),
+          Text(
+            this.widget.activity.commentCount.toString(),
+            style: Theme.of(context).textTheme.subtitle1,
+          ),
         ],
       ),
     );
@@ -174,7 +182,9 @@ class _PostDetailsState extends State<PostDetails> {
                 title: Text(
                   "Reply",
                   softWrap: true,
-                  style: kTextStyle.copyWith(color: kTealColor),
+                  style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                        color: kTealColor,
+                      ),
                 ),
               ),
             ),
@@ -188,7 +198,7 @@ class _PostDetailsState extends State<PostDetails> {
                 title: Text(
                   "Hide Comment",
                   softWrap: true,
-                  style: kTextStyle,
+                  style: Theme.of(context).textTheme.subtitle1,
                 ),
               ),
             ),
@@ -202,7 +212,9 @@ class _PostDetailsState extends State<PostDetails> {
                 title: Text(
                   "Report Comment",
                   softWrap: true,
-                  style: kTextStyle.copyWith(color: kPinkColor),
+                  style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                        color: kPinkColor,
+                      ),
                 ),
               ),
             ),
@@ -494,10 +506,13 @@ class _PostDetailsState extends State<PostDetails> {
                             Text(
                               DateFormat("hh:mm a • dd MMMM yyyy")
                                   .format(widget.activity.createdAt),
-                              style: kTextStyle.copyWith(
-                                fontWeight: FontWeight.w500,
-                                fontSize: 14.0.sp,
-                              ),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyText2!
+                                  .copyWith(
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 14.0.sp,
+                                  ),
                             ),
                           ],
                         ),

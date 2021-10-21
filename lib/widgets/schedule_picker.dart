@@ -11,7 +11,7 @@ import '../utils/calendar_picker/weekday_picker.dart';
 import '../utils/functions.utils.dart';
 import '../utils/repeated_days_generator/repeated_days_generator.dart';
 import '../utils/repeated_days_generator/schedule_generator.dart';
-import '../utils/themes.dart';
+import '../utils/constants/themes.dart';
 import 'app_button.dart';
 
 /// The user can choose to repeat the schedule/subscription by day, week, or months
@@ -421,11 +421,11 @@ class _SchedulePickerState extends State<SchedulePicker> {
         if (_selectableDays.isEmpty)
           Text(
             "Select a day or days to repeat every week",
-            style: kTextStyle.copyWith(
-              color: Colors.red,
-              fontWeight: FontWeight.normal,
-              fontSize: 16.0.sp,
-            ),
+            style: Theme.of(context).textTheme.bodyText1!.copyWith(
+                  color: Colors.red,
+                  fontWeight: FontWeight.normal,
+                  fontSize: 16.0.sp,
+                ),
           ),
         SizedBox(height: 10.0.h),
       ],
@@ -536,7 +536,7 @@ class _SchedulePickerState extends State<SchedulePicker> {
       children: [
         Text(
           widget.header,
-          style: kTextStyle.copyWith(fontSize: 24.0.sp),
+          style: Theme.of(context).textTheme.headline5,
         ),
         SizedBox(height: 10.0.h),
         Text(
@@ -612,9 +612,7 @@ class _DayOfMonthPickerBody extends StatelessWidget {
               ),
               Text(
                 "Start Date",
-                style: kTextStyle.copyWith(
-                  fontSize: 24.0,
-                ),
+                style: Theme.of(context).textTheme.headline5,
               ),
               DayOfMonthPicker(
                 width: MediaQuery.of(context).size.width * 0.95,
@@ -679,9 +677,7 @@ class _CalendarPickerBody extends StatelessWidget {
               ),
               Text(
                 "Start Date",
-                style: kTextStyle.copyWith(
-                  fontSize: 24.0,
-                ),
+                style: Theme.of(context).textTheme.headline5,
               ),
               Container(
                 width: MediaQuery.of(context).size.width * 0.95,
@@ -788,10 +784,9 @@ class _DayOfMonth extends StatelessWidget {
             padding: EdgeInsets.symmetric(vertical: height * 0.01),
             child: Text(
               'or',
-              style: kTextStyle.copyWith(
-                fontWeight: FontWeight.normal,
-                fontSize: 20.0.sp,
-              ),
+              style: Theme.of(context).textTheme.headline6!.copyWith(
+                    fontWeight: FontWeight.normal,
+                  ),
             ),
           ),
         ),
@@ -871,10 +866,10 @@ class _DayOfMonth extends StatelessWidget {
           children: [
             Text(
               'Start Month',
-              style: kTextStyle.copyWith(
-                fontWeight: FontWeight.normal,
-                fontSize: 20.0.sp,
-              ),
+              style: Theme.of(context).textTheme.headline6!.copyWith(
+                    fontWeight: FontWeight.normal,
+                    fontSize: 20.0.sp,
+                  ),
             ),
             SizedBox(width: 10.0.w),
             Expanded(
@@ -931,8 +926,10 @@ class _StartDatePicker extends StatelessWidget {
       children: [
         Text(
           "Start date",
-          style: kTextStyle.copyWith(
-              fontWeight: FontWeight.normal, fontSize: 18.0.sp),
+          style: Theme.of(context)
+              .textTheme
+              .bodyText1!
+              .copyWith(fontWeight: FontWeight.normal, fontSize: 18.0.sp),
         ),
         SizedBox(width: 15.0.w),
         Expanded(
@@ -985,10 +982,10 @@ class _RepeatabilityPicker extends StatelessWidget {
           children: [
             Text(
               "Every",
-              style: kTextStyle.copyWith(
-                fontWeight: FontWeight.normal,
-                fontSize: 20.0.sp,
-              ),
+              style: Theme.of(context).textTheme.bodyText1!.copyWith(
+                    fontWeight: FontWeight.normal,
+                    fontSize: 20.0.sp,
+                  ),
             ),
             SizedBox(width: 30.0.w),
             Container(
@@ -1012,10 +1009,9 @@ class _RepeatabilityPicker extends StatelessWidget {
                   ),
                 ),
                 textAlign: TextAlign.center,
-                style: kTextStyle.copyWith(
-                  color: kTealColor,
-                  fontSize: 32.0.sp,
-                ),
+                style: Theme.of(context).textTheme.headline4!.copyWith(
+                      color: kTealColor,
+                    ),
               ),
             ),
             SizedBox(width: 30.0.w),

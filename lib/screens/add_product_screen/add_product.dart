@@ -9,7 +9,7 @@ import 'package:provider/provider.dart';
 import '../../models/lokal_images.dart';
 import '../../providers/post_requests/product_body.dart';
 import '../../providers/products.dart';
-import '../../utils/themes.dart';
+import '../../utils/constants/themes.dart';
 import '../../widgets/app_button.dart';
 import '../../widgets/custom_app_bar.dart';
 import '../../widgets/input_description.dart';

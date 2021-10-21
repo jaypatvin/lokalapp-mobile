@@ -14,7 +14,7 @@ import '../../providers/chat_provider.dart';
 import '../../providers/user.dart';
 import '../../services/database.dart';
 import '../../services/firestore.utils.dart';
-import '../../utils/themes.dart';
+import '../../utils/constants/themes.dart';
 import '../../widgets/custom_app_bar.dart';
 import '../../widgets/photo_picker_gallery/image_gallery_picker.dart';
 import '../../widgets/photo_picker_gallery/provider/custom_photo_provider.dart';
@@ -204,7 +204,6 @@ class _ChatViewState extends State<ChatView> {
           senderId: user.id!,
           sentAt: DateTime.now(),
           media: [],
-
         );
       });
       if (this._createNewMessage) {
@@ -389,7 +388,7 @@ class _ChatViewState extends State<ChatView> {
       appBar: CustomAppBar(
         backgroundColor: _indicatorColor ?? kYellowColor,
         titleText: this._chatTitle,
-        titleStyle: kTextStyle.copyWith(color: Colors.white),
+        titleStyle: TextStyle(color: Colors.white, fontSize: 16.0),
         leadingColor: Colors.white,
         onPressedLeading: () => Navigator.pop(context),
         actions: [_buildDetailsButton()],

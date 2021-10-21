@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../utils/themes.dart';
+import '../../../utils/constants/themes.dart';
 
 class InviteSent extends StatelessWidget {
   buildButtons(context) {

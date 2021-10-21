@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 
-import '../utils/themes.dart';
+import '../utils/constants/themes.dart';
 
 class PhotoBox extends StatelessWidget {
   final File? file;

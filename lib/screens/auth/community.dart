@@ -4,10 +4,10 @@ import 'package:provider/provider.dart';
 
 import '../../providers/user.dart';
 import '../../providers/user_auth.dart';
-import '../../utils/themes.dart';
-import '../../widgets/sso_block.dart';
+import '../../utils/constants/themes.dart';
 import '../bottom_navigation.dart';
 import 'components/auth_input_form.dart';
+import 'components/sso_block.dart';
 import 'profile_registration.dart';
 
 enum LoginType { email, google, facebook }

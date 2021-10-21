@@ -3,7 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 
 import '../screens/activity/buyer/processing_payment.dart';
-import '../utils/themes.dart';
+import '../utils/constants/themes.dart';
 
 class PaymentOptions extends StatelessWidget {
   final void Function(PaymentMode) onPaymentPressed;

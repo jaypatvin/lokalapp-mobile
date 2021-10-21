@@ -10,7 +10,7 @@ import 'package:swipe_to/swipe_to.dart';
 
 import '../../../models/conversation.dart';
 import '../../../providers/user.dart';
-import '../../../utils/themes.dart';
+import '../../../utils/constants/themes.dart';
 import '../chat_bubble.dart';
 
 class MessageStream extends StatelessWidget {

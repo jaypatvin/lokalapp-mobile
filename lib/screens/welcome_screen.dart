@@ -3,9 +3,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../utils/themes.dart';
+import '../utils/constants/themes.dart';
 import '../widgets/app_button.dart';
-import '../widgets/rounded_button.dart';
 import 'auth/invite_page.dart';
 import 'auth/login_screen.dart';
 
@@ -18,7 +17,6 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   int _current = 0;
   bool isActive = false;
   CarouselController _buttonCarouselController = CarouselController();
-  RoundedButton roundedButton = RoundedButton();
   final List _list = [1, 2, 3, 4];
   @override
   void initState() {

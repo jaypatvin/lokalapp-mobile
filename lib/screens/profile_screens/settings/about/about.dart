@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../components/appbar.dart';
-import '../../../../utils/themes.dart';
+import '../../../../utils/constants/themes.dart';
 
 class About extends StatelessWidget {
   @override

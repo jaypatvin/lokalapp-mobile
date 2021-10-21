@@ -7,7 +7,6 @@ import 'package:provider/provider.dart';
 import '../../../models/activity_feed.dart';
 import '../../../models/lokal_images.dart';
 import '../../../providers/users.dart';
-import '../../../utils/themes.dart';
 import '../../../widgets/photo_view_gallery/gallery/gallery_network_photo_view.dart';
 import '../../../widgets/photo_view_gallery/thumbnails/network_photo_thumbnail.dart';
 
@@ -27,19 +26,7 @@ class PostCard extends StatelessWidget {
     required this.onMessagePressed,
   });
 
-  Widget buildComments() {
-    return Row(
-      children: [
-        IconButton(
-          icon: Icon(MdiIcons.commentOutline),
-          onPressed: () => this.onCommentsPressed(),
-        ),
-        Text(this.activityFeed.commentCount.toString(), style: kTextStyle),
-      ],
-    );
-  }
-
-  Widget buildHeader(BuildContext context) {
+  Widget _buildHeader(BuildContext context) {
     var difference = DateTime.now().difference(this.activityFeed.createdAt);
     String createdSince = " • ";
     if (difference.inDays >= 1) {
@@ -70,17 +57,11 @@ class PostCard extends StatelessWidget {
           children: [
             Text(
               "${user.firstName} ${user.lastName}",
-              style: kTextStyle.copyWith(
-                fontSize: 14.0.sp,
-                fontWeight: FontWeight.w600,
-              ),
+              style: Theme.of(context).textTheme.subtitle2,
             ),
             Text(
               createdSince,
-              style: kTextStyle.copyWith(
-                fontSize: 14.0.sp,
-                fontWeight: FontWeight.normal,
-              ),
+              style: Theme.of(context).textTheme.subtitle2,
               overflow: TextOverflow.clip,
             ),
           ],
@@ -93,7 +74,7 @@ class PostCard extends StatelessWidget {
     );
   }
 
-  Widget buildMessageBody({
+  Widget _buildMessageBody({
     required String message,
     double horizontalPadding = 8.0,
   }) {
@@ -116,7 +97,7 @@ class PostCard extends StatelessWidget {
     );
   }
 
-  void openGallery(
+  void _openGallery(
     BuildContext context,
     final int index,
     final List<LokalImages> galleryItems,
@@ -136,7 +117,7 @@ class PostCard extends StatelessWidget {
     );
   }
 
-  Widget buildPostImages({
+  Widget _buildPostImages({
     BuildContext? context,
   }) {
     var images = this.activityFeed.images;
@@ -149,7 +130,7 @@ class PostCard extends StatelessWidget {
       itemBuilder: (ctx, index) {
         return NetworkPhotoThumbnail(
           galleryItem: images[index],
-          onTap: () => openGallery(context!, index, images),
+          onTap: () => _openGallery(context!, index, images),
         );
       },
       staggeredTileBuilder: (index) {
@@ -186,16 +167,16 @@ class PostCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     SizedBox(height: 10.0.h),
-                    buildHeader(context),
+                    _buildHeader(context),
                     SizedBox(height: 5.0.h),
-                    buildMessageBody(
+                    _buildMessageBody(
                       message: activityFeed.message,
                       horizontalPadding: 20.0.w,
                     ),
                     SizedBox(height: 5.0.h),
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 20.0.w),
-                      child: buildPostImages(context: context),
+                      child: _buildPostImages(context: context),
                     ),
                     Divider(
                       color: Colors.grey,
@@ -223,10 +204,21 @@ class PostCard extends StatelessWidget {
                           ),
                           Text(
                             this.activityFeed.likedCount.toString(),
-                            style: kTextStyle,
+                            style: Theme.of(context).textTheme.subtitle1,
                           ),
                           Spacer(),
-                          buildComments(),
+                          Row(
+                            children: [
+                              IconButton(
+                                icon: Icon(MdiIcons.commentOutline),
+                                onPressed: () => this.onCommentsPressed(),
+                              ),
+                              Text(
+                                this.activityFeed.commentCount.toString(),
+                                style: Theme.of(context).textTheme.subtitle1,
+                              ),
+                            ],
+                          ),
                         ],
                       ),
                     ),
