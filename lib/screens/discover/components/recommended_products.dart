@@ -35,6 +35,11 @@ class RecommendedProducts extends StatelessWidget {
                         ? gallery!.firstWhere((g) => g.url.isNotEmpty)
                         : null;
                     return Container(
+                      padding: index == 0
+                          ? EdgeInsets.only(left: 16.0.w, right: 2.5.w)
+                          : index == products.items.length - 1
+                              ? EdgeInsets.only(left: 2.5.w, right: 16.0.w)
+                              : EdgeInsets.symmetric(horizontal: 2.5.w),
                       child: GestureDetector(
                         onTap: () {
                           Navigator.push(

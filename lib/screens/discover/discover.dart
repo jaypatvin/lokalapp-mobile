@@ -176,15 +176,18 @@ class _DiscoverState extends State<Discover> {
                   ),
                 ),
                 SizedBox(height: 10.0.h),
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Expanded(
-                      child: StoreCard(
-                        crossAxisCount: 2,
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 13.5.w),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Expanded(
+                        child: StoreCard(
+                          crossAxisCount: 2,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ],
             ),

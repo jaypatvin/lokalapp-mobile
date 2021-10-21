@@ -44,9 +44,7 @@ class ProductCard extends StatelessWidget {
               margin: EdgeInsets.zero,
               padding: EdgeInsets.symmetric(horizontal: 5.0.w, vertical: 2.0.h),
               constraints: BoxConstraints(),
-              decoration: BoxDecoration(
-                color: Colors.white,
-              ),
+              color: Colors.white,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
