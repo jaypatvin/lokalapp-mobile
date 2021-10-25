@@ -80,35 +80,79 @@ class _VerifyScreenState extends State<VerifyScreen> {
   }
 
   Widget iOSPicker() {
-    List<Widget> pickerItems = [];
-
-    for (var id in _ids) {
-      pickerItems.add(
-        Center(
-          child: Text(
-            id,
-            overflow: TextOverflow.ellipsis,
+    final pickerItems = this
+        ._ids
+        .map<Widget>(
+          (id) => Center(
+            child: Text(
+              id,
+              overflow: TextOverflow.ellipsis,
+            ),
           ),
-        ),
-      );
-    }
+        )
+        .toList();
 
-    return CupertinoTheme(
-      data: CupertinoThemeData(
-        textTheme: CupertinoTextThemeData(
-          pickerTextStyle: TextStyle(
-            color: Colors.black,
-            fontSize: 18.0.sp,
+    return CupertinoButton(
+      // child: Text(
+      //   _chosenIdType ?? 'Select type of ID',
+      //   style: Theme.of(context).textTheme.bodyText2,
+      // ),
+      child: Row(
+        children: [
+          if (_chosenIdType == null)
+            Expanded(
+              child: Text(
+                'Select type of ID',
+                style: Theme.of(context).textTheme.bodyText2!.copyWith(
+                      color: Colors.grey,
+                    ),
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          if (_chosenIdType != null)
+            Expanded(
+              child: Text(
+                _chosenIdType!,
+                style: Theme.of(context).textTheme.bodyText2,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          Icon(
+            Icons.arrow_drop_down,
+            color: kTealColor,
           ),
-        ),
+        ],
       ),
-      child: CupertinoPicker(
-        itemExtent: 32.0.h,
-        onSelectedItemChanged: (selectedIndex) {
-          setState(() => _chosenIdType = _ids[selectedIndex]);
-        },
-        children: pickerItems,
-      ),
+      onPressed: () {
+        showModalBottomSheet(
+          context: context,
+          builder: (ctx) {
+            return SizedBox(
+              height: 200.h,
+              child: CupertinoTheme(
+                data: CupertinoThemeData(
+                  textTheme: CupertinoTextThemeData(
+                    textStyle: Theme.of(context).textTheme.bodyText2,
+                    actionTextStyle: Theme.of(context).textTheme.bodyText2,
+                    pickerTextStyle:
+                        Theme.of(context).textTheme.bodyText1!.copyWith(
+                              color: Colors.black,
+                              fontSize: 18.0.sp,
+                            ),
+                  ),
+                ),
+                child: CupertinoPicker(
+                  itemExtent: 32.0.h,
+                  onSelectedItemChanged: (selectedIndex) {
+                    setState(() => _chosenIdType = _ids[selectedIndex]);
+                  },
+                  children: pickerItems,
+                ),
+              ),
+            );
+          },
+        );
+      },
     );
   }
 
@@ -225,7 +269,8 @@ class _VerifyScreenState extends State<VerifyScreen> {
               ),
               SizedBox(height: 10.0.h),
               Text(
-                "In order to access all of Lokal's features, we need to verify your identity",
+                "In order to access all of Lokal's features, "
+                "we need to verify your identity",
                 style: TextStyle(
                   fontSize: 16.0,
                   color: kNavyColor,
@@ -235,28 +280,40 @@ class _VerifyScreenState extends State<VerifyScreen> {
               ),
               SizedBox(height: 75.0.h),
               Container(
-                width: double.infinity,
-                decoration: ShapeDecoration(
-                  color: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(30.0)),
+                  width: double.infinity,
+                  decoration: ShapeDecoration(
+                    color: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(30.0)),
+                    ),
+                  ),
+                  child:
+                      iOSPicker() // Platform.isIOS ? iOSPicker() : androidDropDown(),
+                  ),
+              SizedBox(height: 20.0.h),
+              if (_file != null)
+                SizedBox(
+                  height: 150.h,
+                  child: Image.file(
+                    this._file!,
+                    fit: BoxFit.cover,
                   ),
                 ),
-                child: Platform.isIOS ? iOSPicker() : androidDropDown(),
-              ),
-              SizedBox(height: 20.0.h),
               SizedBox(
                 width: double.infinity,
                 child: AppButton(
-                  "UPLOAD PHOTO OF ID",
+                  this._file != null
+                      ? 'Choose a different photo'
+                      : 'UPLOAD PHOTO OF ID',
                   kTealColor,
                   false,
                   () async => this._file = await context
-                      .read<MediaUtility>()
-                      .showMediaDialog(context),
+                          .read<MediaUtility>()
+                          .showMediaDialog(context) ??
+                      this._file,
                 ),
               ),
-              SizedBox(height: 150.0.h),
+              const Spacer(),
               SizedBox(
                 width: 120.0.w,
                 child: AppButton(
