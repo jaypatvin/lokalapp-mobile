@@ -49,7 +49,11 @@ class Database {
         .get();
   }
 
-  Stream<QuerySnapshot> getUserTimeline(String userId) {
+  Future<QuerySnapshot<Map<String, dynamic>>> getPostImagesCollection() async {
+    return FirebaseFirestore.instance.collectionGroup('images').get();
+  }
+
+  Stream<QuerySnapshot<Map<String, dynamic>>> getUserTimeline(String userId) {
     return FirebaseFirestore.instance
         .collection('activities')
         .where('user_id', isEqualTo: userId)

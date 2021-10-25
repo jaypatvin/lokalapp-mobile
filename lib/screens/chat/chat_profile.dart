@@ -1,17 +1,17 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import '../../utils/constants/themes.dart';
-import '../../widgets/custom_app_bar.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
-import '../../widgets/custom_expansion_tile.dart' as custom;
 
 import '../../models/chat_model.dart';
+import '../../providers/auth.dart';
 import '../../providers/shops.dart';
-import '../../providers/user.dart';
 import '../../providers/users.dart';
+import '../../utils/constants/themes.dart';
+import '../../widgets/custom_app_bar.dart';
+import '../../widgets/custom_expansion_tile.dart' as custom;
 import 'components/chat_avatar.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'shared_media.dart';
 
 class ChatProfile extends StatefulWidget {
@@ -30,7 +30,7 @@ class _ChatProfileState extends State<ChatProfile> {
   void initState() {
     super.initState();
 
-    final userId = Provider.of<CurrentUser>(context, listen: false).id;
+    final userId = context.read<Auth>().user!.id;
     switch (widget.chat!.chatType) {
       case ChatType.user:
         final index = widget.chat!.members.indexOf(userId!);
@@ -52,7 +52,7 @@ class _ChatProfileState extends State<ChatProfile> {
         break;
       case ChatType.shop:
       case ChatType.product:
-        final user = Provider.of<CurrentUser>(context, listen: false);
+        final user = context.read<Auth>().user!;
         final shop = Provider.of<Shops>(context, listen: false)
             .findById(widget.chat!.shopId)!;
         _members.addAll([
@@ -77,7 +77,7 @@ class _ChatProfileState extends State<ChatProfile> {
 
   Widget buildTitle() {
     final names = <String?>[];
-    final userId = Provider.of<CurrentUser>(context, listen: false).id;
+    final userId = context.read<Auth>().user!.id;
     _members.forEach((user) {
       if (user.id == userId)
         names.add("You");

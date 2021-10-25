@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
+import '../../../providers/auth.dart';
 import '../../../providers/products.dart';
 import '../../../providers/shops.dart';
-import '../../../providers/user.dart';
 import '../../../utils/constants/themes.dart';
 import '../../../widgets/app_button.dart';
 import '../../add_product_screen/add_product.dart';
@@ -24,7 +24,7 @@ class ShopProductField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final user = context.read<CurrentUser>();
+    final user = context.read<Auth>().user!;
     final shop = context.read<Shops>().findByUser(user.id).first;
 
     return Consumer<Products>(

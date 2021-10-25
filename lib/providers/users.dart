@@ -7,7 +7,7 @@ import '../services/lokal_api_service.dart';
 
 class Users extends ChangeNotifier {
   List<LokalUser>? _users;
-  bool? _isLoading;
+  bool _isLoading = false;
   String? _idToken;
   String? _communityId;
 
@@ -15,7 +15,7 @@ class Users extends ChangeNotifier {
     return [..._users!];
   }
 
-  bool? get isLoading => _isLoading;
+  bool get isLoading => _isLoading;
 
   LokalUser findById(String? id) {
     return _users!.firstWhere((user) => user.id == id);

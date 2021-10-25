@@ -5,12 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
-import '../../widgets/screen_loader.dart';
 
+import '../../providers/auth.dart';
 import '../../providers/post_requests/operating_hours_body.dart';
 import '../../providers/post_requests/shop_body.dart';
 import '../../providers/shops.dart';
-import '../../providers/user.dart';
 import '../../services/local_image_service.dart';
 import '../../utils/constants/themes.dart';
 import '../../utils/utility.dart';
@@ -19,6 +18,7 @@ import '../../widgets/custom_app_bar.dart';
 import '../../widgets/input_description.dart';
 import '../../widgets/input_name.dart';
 import '../../widgets/photo_box.dart';
+import '../../widgets/screen_loader.dart';
 import 'shop_schedule.dart';
 
 class EditShop extends StatefulWidget {
@@ -42,7 +42,7 @@ class _EditShopState extends State<EditShop> with ScreenLoader {
   initState() {
     super.initState();
 
-    final user = context.read<CurrentUser>();
+    final user = context.read<Auth>().user!;
     final shop = context.read<Shops>().findByUser(user.id).first;
     shopNameController.text = shop.name!;
     shopDescController.text = shop.description!;
@@ -73,7 +73,7 @@ class _EditShopState extends State<EditShop> with ScreenLoader {
   Future<bool> _updateShop() async {
     final shops = context.read<Shops>();
     final shopBody = context.read<ShopBody>();
-    final user = context.read<CurrentUser>();
+    final user = context.read<Auth>().user!;
     final shop = shops.findByUser(user.id).first;
     final imageService = context.read<LocalImageService>();
 
@@ -179,7 +179,7 @@ class _EditShopState extends State<EditShop> with ScreenLoader {
     var operatingHoursBody =
         Provider.of<OperatingHoursBody>(context, listen: false);
 
-    var user = Provider.of<CurrentUser>(context, listen: false);
+    var user = context.read<Auth>().user!;
     var shops = Provider.of<Shops>(context, listen: false);
     var userShop = shops.findByUser(user.id).first;
     return await shops.setOperatingHours(
@@ -254,10 +254,11 @@ class _EditShopState extends State<EditShop> with ScreenLoader {
                         ),
                         Text(
                           "Edit Cover Photo",
-                          style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                                decoration: TextDecoration.underline,
-                                color: kTealColor,
-                              ),
+                          style:
+                              Theme.of(context).textTheme.subtitle1!.copyWith(
+                                    decoration: TextDecoration.underline,
+                                    color: kTealColor,
+                                  ),
                         ),
                       ],
                     ),

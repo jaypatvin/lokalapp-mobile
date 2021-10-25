@@ -6,9 +6,9 @@ import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 
 import '../../../models/chat_model.dart';
+import '../../../providers/auth.dart';
 import '../../../providers/products.dart';
 import '../../../providers/shops.dart';
-import '../../../providers/user.dart';
 import '../../../providers/users.dart';
 import '../../../utils/constants/assets.dart';
 import '../../../widgets/search_text_field.dart';
@@ -110,7 +110,7 @@ class _ChatList extends StatelessWidget {
       shrinkWrap: true,
       itemCount: chatSnapshot!.data!.docs.length,
       itemBuilder: (ctx, index) {
-        final cUserId = context.read<CurrentUser>().id;
+        final cUserId = context.read<Auth>().user!.id;
         final snapshotData =
             chatSnapshot!.data!.docs[index].data() as Map<String, dynamic>;
         final document = {

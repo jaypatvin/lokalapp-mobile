@@ -6,7 +6,7 @@ import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 
 import '../../../models/order.dart';
-import '../../../providers/user.dart';
+import '../../../providers/auth.dart';
 import '../../../services/lokal_api_service.dart';
 import '../../../utils/constants/assets.dart';
 import '../buyer/order_received.dart';
@@ -37,8 +37,7 @@ class GroupedOrders extends StatelessWidget {
           );
           break;
         case 500:
-          final idToken =
-              Provider.of<CurrentUser>(context, listen: false).idToken;
+          final idToken = context.read<Auth>().idToken;
           LokalApiService.instance!.orders!
               .receive(idToken: idToken, orderId: order.id)
               .then((response) {
@@ -70,8 +69,7 @@ class GroupedOrders extends StatelessWidget {
           break;
         case 300:
           if (order.paymentMethod == "cod") {
-            final idToken =
-                Provider.of<CurrentUser>(context, listen: false).idToken;
+            final idToken = context.read<Auth>().idToken;
             LokalApiService.instance!.orders!
                 .confirmPayment(idToken: idToken, orderId: order.id)
                 .then((response) {
@@ -98,8 +96,7 @@ class GroupedOrders extends StatelessWidget {
 
           break;
         case 400:
-          final idToken =
-              Provider.of<CurrentUser>(context, listen: false).idToken;
+          final idToken = context.read<Auth>().idToken;
           LokalApiService.instance!.orders!
               .shipOut(
             idToken: idToken,

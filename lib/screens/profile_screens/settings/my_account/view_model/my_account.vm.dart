@@ -1,11 +1,11 @@
 import 'dart:async';
 
-import '../../../../../providers/user_auth.dart';
+import '../../../../../providers/auth.dart';
 
 class MyAccountViewModel {
   MyAccountViewModel(this._userAuth);
 
-  final UserAuth _userAuth;
+  final Auth _userAuth;
 
   final StreamController<String> _errorStream = StreamController.broadcast();
 

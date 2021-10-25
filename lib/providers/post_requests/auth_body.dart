@@ -3,7 +3,7 @@ import 'package:flutter/foundation.dart';
 class AuthBody extends ChangeNotifier {
   Map<String, dynamic> _authBody = Map();
 
-  Map get data => _authBody;
+  Map<String, dynamic> get data => _authBody;
 
   String? get firstName => _authBody["first_name"];
   String? get lastName => _authBody["last_name"];

@@ -5,8 +5,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 
+import '../../../providers/auth.dart';
 import '../../../providers/shops.dart';
-import '../../../providers/user.dart';
 import '../../../utils/constants/themes.dart';
 import '../../../widgets/app_button.dart';
 import '../../add_shop_screens/add_shop.dart';
@@ -29,8 +29,8 @@ class _UserShopBannerState extends State<UserShopBanner> {
   void initState() {
     super.initState();
 
-    final user = context.read<CurrentUser>();
-    final isVerified = user.registrationStatus!.verified!;
+    final user = context.read<Auth>().user!;
+    final isVerified = user.registration!.verified!;
 
     _verified = isVerified;
 
@@ -44,6 +44,7 @@ class _UserShopBannerState extends State<UserShopBanner> {
     }
   }
 
+  // TODO: remove this as Auth already handles changes to the user
   void _streamListener(DocumentSnapshot snapshot) {
     if (snapshot.exists) {
       final snapshotData = snapshot.data() as Map<String, dynamic>;
@@ -53,7 +54,7 @@ class _UserShopBannerState extends State<UserShopBanner> {
           _verified = true;
         });
         final fireUser = FirebaseAuth.instance.currentUser!;
-        context.read<CurrentUser>().fetch(fireUser);
+        context.read<Auth>().manualFetch(fireUser);
         _userStream = null;
       }
     }
@@ -107,7 +108,7 @@ class _UserShopBannerState extends State<UserShopBanner> {
 
     return Consumer<Shops>(
       builder: (ctx, shopProvider, child) {
-        final user = context.read<CurrentUser>();
+        final user = context.read<Auth>().user!;
         final shops = shopProvider.findByUser(user.id);
         if (shops.isEmpty) {
           return Container(

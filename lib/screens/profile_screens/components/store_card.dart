@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 
+import '../../../providers/auth.dart';
 import '../../../providers/products.dart';
 import '../../../providers/shops.dart';
-import '../../../providers/user.dart';
 import '../../add_product_screen/add_product.dart';
 import '../../discover/product_detail.dart';
 import 'product_card.dart';
@@ -20,8 +20,9 @@ class StoreCard extends StatelessWidget {
   });
   @override
   Widget build(BuildContext context) {
-    return Consumer3<CurrentUser, Shops, Products>(
-      builder: (_, user, shops, products, __) {
+    return Consumer3<Auth, Shops, Products>(
+      builder: (_, auth, shops, products, __) {
+        final user = auth.user!;
         var items = isUserProducts
             ? products.findByUser(user.id!)
             : products.items

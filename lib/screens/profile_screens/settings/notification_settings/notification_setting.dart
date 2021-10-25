@@ -4,7 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../providers/user.dart';
+import '../../../../providers/auth.dart';
 import '../../../../services/api/api.dart';
 import '../../../../services/api/user_api_service.dart';
 import '../../../../utils/constants/assets.dart';
@@ -24,7 +24,7 @@ class _NotificationSettingState extends State<NotificationSetting> {
   void initState() {
     super.initState();
     _viewModel = NotificationSettingViewModel(
-      context.read<CurrentUser>().user!,
+      context.read<Auth>().user!,
       UserAPIService(context.read<API>()),
     )..init();
   }

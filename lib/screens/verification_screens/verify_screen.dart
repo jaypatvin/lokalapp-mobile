@@ -7,7 +7,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:persistent_bottom_nav_bar/models/nested_will_pop_scope.dart';
 import 'package:provider/provider.dart';
 
-import '../../providers/user.dart';
+import '../../providers/auth.dart';
+import '../../services/api/api.dart';
+import '../../services/api/user_api_service.dart';
 import '../../services/local_image_service.dart';
 import '../../utils/constants/themes.dart';
 import '../../utils/utility.dart';
@@ -118,38 +120,43 @@ class _VerifyScreenState extends State<VerifyScreen> {
           await picker.uploadImage(file: _file!, name: 'verification');
 
       if (mediaUrl.isNotEmpty) {
-        Provider.of<CurrentUser>(context, listen: false)
-          ..verify({
-            'id_photo': mediaUrl,
-            'id_type': _chosenIdType,
-          }).then(
-            (bool verified) {
-              if (verified) {
-                if (widget.skippable) {
-                  Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => VerifyConfirmationScreen(
-                        skippable: widget.skippable,
-                      ),
-                    ),
-                    (route) => false,
-                  );
-                } else {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => VerifyConfirmationScreen(
-                        skippable: widget.skippable,
-                      ),
-                    ),
-                  );
-                }
-              } else {
-                // failed, do nothing
-              }
+        // TODO: CHANGE TO PROVIDER
+        final user = context.read<Auth>().user!;
+        try {
+          final verified = await UserAPIService(context.read<API>()).update(
+            body: {
+              'id': user.id!,
+              'id_photo': mediaUrl,
+              'id_type': _chosenIdType,
             },
+            userId: user.id!,
           );
+
+          if (verified) {
+            if (widget.skippable) {
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => VerifyConfirmationScreen(
+                    skippable: widget.skippable,
+                  ),
+                ),
+                (route) => false,
+              );
+            } else {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => VerifyConfirmationScreen(
+                    skippable: widget.skippable,
+                  ),
+                ),
+              );
+            }
+          }
+        } catch (e) {
+          // TODO: SHOW ERROR MESSAGE
+        }
       }
     }
   }

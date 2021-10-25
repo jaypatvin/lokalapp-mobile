@@ -4,16 +4,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:keyboard_actions/keyboard_actions.dart';
+import 'package:persistent_bottom_nav_bar/models/nested_will_pop_scope.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/activities.dart';
+import '../../providers/auth.dart';
 import '../../providers/categories.dart';
 import '../../providers/invite.dart';
 import '../../providers/post_requests/auth_body.dart';
 import '../../providers/products.dart';
 import '../../providers/shops.dart';
-import '../../providers/user.dart';
-import '../../providers/user_auth.dart';
 import '../../providers/users.dart';
 import '../../services/local_image_service.dart';
 import '../../utils/constants/themes.dart';
@@ -112,8 +112,8 @@ class _ProfileRegistrationState extends State<ProfileRegistration>
           file: profilePhoto!, name: 'profile_photo');
     }
 
-    UserAuth auth = Provider.of<UserAuth>(context, listen: false);
-    CurrentUser user = Provider.of<CurrentUser>(context, listen: false);
+    //UserAuth auth = Provider.of<UserAuth>(context, listen: false);
+    final auth = context.read<Auth>();
     AuthBody authBody = Provider.of<AuthBody>(context, listen: false);
     Invite invite = Provider.of<Invite>(context, listen: false);
     authBody.update(
@@ -121,17 +121,17 @@ class _ProfileRegistrationState extends State<ProfileRegistration>
       firstName: _firstNameController.text,
       lastName: _lastNameController.text,
       address: _streetController.text,
-      userUid: auth.user!.uid,
-      email: auth.user!.email,
+      userUid: auth.authUid,
+      email: auth.authEmail,
     );
 
-    await user.register(authBody.data);
+    await auth.register(authBody.data);
     bool inviteCodeClaimed = false;
-    if (user.state == UserState.LoggedIn) {
+    if (auth.user != null) {
       inviteCodeClaimed = await invite.claim(
-        email: user.email,
-        userId: user.id,
-        authToken: user.idToken,
+        email: auth.user!.email,
+        userId: auth.user!.id,
+        authToken: auth.idToken,
       );
     }
     return inviteCodeClaimed;
@@ -149,11 +149,11 @@ class _ProfileRegistrationState extends State<ProfileRegistration>
     }
     bool success = await _registerUser();
     if (success) {
-      context.read<Activities>().fetch();
-      context.read<Shops>().fetch();
-      context.read<Products>().fetch();
-      context.read<Users>().fetch();
-      context.read<Categories>().fetch();
+      await context.read<Activities>().fetch();
+      await context.read<Shops>().fetch();
+      await context.read<Products>().fetch();
+      await context.read<Users>().fetch();
+      await context.read<Categories>().fetch();
       Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(
@@ -172,95 +172,102 @@ class _ProfileRegistrationState extends State<ProfileRegistration>
 
   @override
   Widget screen(BuildContext context) {
-    return Scaffold(
-      backgroundColor: kInviteScreenColor,
-      appBar: CustomAppBar(
+    return NestedWillPopScope(
+      onWillPop: () async {
+        print('Will pop!');
+        await context.read<Auth>().logOut();
+        return true;
+      },
+      child: Scaffold(
         backgroundColor: kInviteScreenColor,
-        leadingColor: kTealColor,
-        onPressedLeading: () => Navigator.maybePop(context),
-      ),
-      body: KeyboardActions(
-        config: _buildConfig(context),
-        child: Column(
-          children: [
-            Text(
-              "Let's set up your profile",
-              style: TextStyle(
-                fontWeight: FontWeight.w500,
-                fontSize: 16.0.sp,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            SizedBox(height: 25.0.h),
-            GestureDetector(
-              onTap: _picturePickerHandler,
-              child: PhotoBox(
-                file: profilePhoto,
-                shape: BoxShape.circle,
-                width: 120.0.w,
-                height: 120.0.h,
-              ),
-            ),
-            SizedBox(
-              height: 20.0.h,
-            ),
-            if (_hasEmptyField)
+        appBar: CustomAppBar(
+          backgroundColor: kInviteScreenColor,
+          leadingColor: kTealColor,
+          onPressedLeading: () => Navigator.maybePop(context),
+        ),
+        body: KeyboardActions(
+          config: _buildConfig(context),
+          child: Column(
+            children: [
               Text(
-                "You must fill out all field to proceed.",
+                "Let's set up your profile",
                 style: TextStyle(
-                  color: kPinkColor,
                   fontWeight: FontWeight.w500,
-                  fontSize: 12.0.sp,
+                  fontSize: 16.0.sp,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(height: 25.0.h),
+              GestureDetector(
+                onTap: _picturePickerHandler,
+                child: PhotoBox(
+                  file: profilePhoto,
+                  shape: BoxShape.circle,
+                  width: 120.0.w,
+                  height: 120.0.h,
                 ),
               ),
-            SizedBox(height: 10.0.h),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 30.0.w),
-              child: _RegistrationForm(
-                formKey: _formKey,
-                firstNameController: _firstNameController,
-                firstNameNode: _nodeFirstName,
-                lastNameController: _lastNameController,
-                lastNameNode: _nodeLastName,
-                streetAddressController: _streetController,
-                streetAdddressNode: _nodeStreet,
-                onFormSubmit: () async => await performFuture<void>(
-                  () async => await _registerHandler(),
-                ),
-                formFieldDecoration: InputDecoration(
-                  filled: true,
-                  fillColor: Colors.white,
-                  alignLabelWithHint: true,
-                  contentPadding: EdgeInsets.symmetric(horizontal: 16.0.w),
-                  border: new OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(30.0.r)),
-                    borderSide: _hasEmptyField
-                        ? BorderSide(color: kPinkColor)
-                        : BorderSide.none,
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(30.0.r)),
-                    borderSide: _hasEmptyField
-                        ? BorderSide(color: kPinkColor)
-                        : BorderSide.none,
+              SizedBox(
+                height: 20.0.h,
+              ),
+              if (_hasEmptyField)
+                Text(
+                  "You must fill out all field to proceed.",
+                  style: TextStyle(
+                    color: kPinkColor,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 12.0.sp,
                   ),
                 ),
-              ),
-            ),
-            SizedBox(height: 30.0.h),
-            SizedBox(
-              width: 200.0.w,
-              child: AppButton(
-                "CREATE PROFILE",
-                kTealColor,
-                true,
-                () async => await performFuture<void>(
-                  () async => await _registerHandler(),
+              SizedBox(height: 10.0.h),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 30.0.w),
+                child: _RegistrationForm(
+                  formKey: _formKey,
+                  firstNameController: _firstNameController,
+                  firstNameNode: _nodeFirstName,
+                  lastNameController: _lastNameController,
+                  lastNameNode: _nodeLastName,
+                  streetAddressController: _streetController,
+                  streetAdddressNode: _nodeStreet,
+                  onFormSubmit: () async => await performFuture<void>(
+                    () async => await _registerHandler(),
+                  ),
+                  formFieldDecoration: InputDecoration(
+                    filled: true,
+                    fillColor: Colors.white,
+                    alignLabelWithHint: true,
+                    contentPadding: EdgeInsets.symmetric(horizontal: 16.0.w),
+                    border: new OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(30.0.r)),
+                      borderSide: _hasEmptyField
+                          ? BorderSide(color: kPinkColor)
+                          : BorderSide.none,
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(30.0.r)),
+                      borderSide: _hasEmptyField
+                          ? BorderSide(color: kPinkColor)
+                          : BorderSide.none,
+                    ),
+                  ),
                 ),
-                textStyle: TextStyle(color: kNavyColor),
               ),
-            ),
-          ],
+              SizedBox(height: 30.0.h),
+              SizedBox(
+                width: 200.0.w,
+                child: AppButton(
+                  "CREATE PROFILE",
+                  kTealColor,
+                  true,
+                  () async => await performFuture<void>(
+                    () async => await _registerHandler(),
+                  ),
+                  textStyle: TextStyle(color: kNavyColor),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

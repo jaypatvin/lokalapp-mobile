@@ -1,10 +1,12 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:lokalapp/services/api/api.dart';
+import 'package:lokalapp/services/api/user_api_service.dart';
 import 'package:provider/provider.dart';
 
+import '../../providers/auth.dart';
 import '../../providers/post_requests/auth_body.dart';
-import '../../providers/user.dart';
 import '../../services/local_image_service.dart';
 import '../../utils/constants/themes.dart';
 import '../../utils/utility.dart';
@@ -26,7 +28,7 @@ class _EditProfileState extends State<EditProfile> {
 
   @override
   initState() {
-    var user = Provider.of<CurrentUser>(context, listen: false);
+    var user = context.read<Auth>().user!;
     Provider.of<AuthBody>(context, listen: false).update(
       firstName: user.firstName,
       lastName: user.lastName,
@@ -42,7 +44,7 @@ class _EditProfileState extends State<EditProfile> {
   }
 
   Future<bool> _updateUser() async {
-    var user = Provider.of<CurrentUser>(context, listen: false);
+    var user = context.read<Auth>().user!;
     var authBody = Provider.of<AuthBody>(context, listen: false);
     var imageService = Provider.of<LocalImageService>(context, listen: false);
     try {
@@ -65,7 +67,10 @@ class _EditProfileState extends State<EditProfile> {
         profilePhoto: userPhotoUrl,
       );
 
-      return await user.update(authBody.data);
+      return await UserAPIService(context.read<API>()).update(
+        body: authBody.data,
+        userId: user.id!,
+      );
     } catch (e) {
       // do something with error
       print(e);

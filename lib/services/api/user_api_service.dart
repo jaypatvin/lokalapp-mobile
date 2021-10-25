@@ -76,7 +76,10 @@ class UserAPIService extends APIService<LokalUser> {
     return handleGenericResponse(response);
   }
 
-  Future<bool> updateChatSettings({required String userId, required Map<String, bool> body,})async {
+  Future<bool> updateChatSettings({
+    required String userId,
+    required Map<String, bool> body,
+  }) async {
     final response = await http.put(
       api.endpointUri(
         endpoint,

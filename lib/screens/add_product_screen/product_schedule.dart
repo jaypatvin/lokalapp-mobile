@@ -5,14 +5,14 @@ import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/operating_hours.dart';
+import '../../providers/auth.dart';
 import '../../providers/post_requests/operating_hours_body.dart';
 import '../../providers/post_requests/product_body.dart';
 import '../../providers/products.dart';
 import '../../providers/shops.dart';
-import '../../providers/user.dart';
 import '../../utils/calendar_picker/calendar_picker.dart';
-import '../../utils/repeated_days_generator/schedule_generator.dart';
 import '../../utils/constants/themes.dart';
+import '../../utils/repeated_days_generator/schedule_generator.dart';
 import '../../widgets/app_button.dart';
 import '../../widgets/custom_app_bar.dart';
 import 'components/add_product_gallery.dart';
@@ -198,7 +198,7 @@ class _ProductScheduleState extends State<ProductSchedule> {
 
   void setupProductAvailability() {
     final operatingHours = context.read<OperatingHoursBody>();
-    final user = context.read<CurrentUser>();
+    final user = context.read<Auth>().user!;
     final shops = context.read<Shops>().findByUser(user.id);
     final shopSchedule = shops.first.operatingHours!;
     final unavailableDates = _selectableDates
@@ -228,7 +228,7 @@ class _ProductScheduleState extends State<ProductSchedule> {
     super.initState();
     final _generator = ScheduleGenerator();
     OperatingHours? _operatingHours;
-    final user = context.read<CurrentUser>();
+    final user = context.read<Auth>().user!;
     final shops = context.read<Shops>().findByUser(user.id);
     if (shops.isNotEmpty) _operatingHours = shops.first.operatingHours;
 

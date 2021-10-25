@@ -4,13 +4,12 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../../models/lokal_user.dart';
-import '../../../../../providers/user_auth.dart';
+import '../../../../../providers/auth.dart';
 
 class ChangeEmailViewModel extends ChangeNotifier {
-  ChangeEmailViewModel(this._userAuth, this._user);
+  ChangeEmailViewModel(this._userAuth);
 
-  final UserAuth _userAuth;
-  final LokalUser _user;
+  final Auth _userAuth;
   final StreamController<String> _errorStream = StreamController.broadcast();
 
   bool _displayEmailError = false;

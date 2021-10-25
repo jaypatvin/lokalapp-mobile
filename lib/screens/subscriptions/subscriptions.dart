@@ -5,8 +5,8 @@ import 'package:grouped_list/grouped_list.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/product_subscription_plan.dart';
+import '../../providers/auth.dart';
 import '../../providers/shops.dart';
-import '../../providers/user.dart';
 import '../../services/database.dart';
 import '../../utils/constants/themes.dart';
 import '../../widgets/app_button.dart';
@@ -27,7 +27,7 @@ class _SubscriptionsState extends State<Subscriptions> {
   @override
   void initState() {
     super.initState();
-    final user = context.read<CurrentUser>();
+    final user = context.read<Auth>().user!;
 
     if (widget.isBuyer) {
       _stream = Database.instance.getUserSubscriptions(user.id);

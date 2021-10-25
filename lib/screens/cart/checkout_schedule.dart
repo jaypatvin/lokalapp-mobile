@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import '../../providers/auth.dart';
 import 'package:provider/provider.dart';
 import '../../widgets/screen_loader.dart';
 
 import '../../providers/cart.dart';
 import '../../providers/products.dart';
 import '../../providers/shops.dart';
-import '../../providers/user.dart';
 import '../../services/lokal_api_service.dart';
 import '../../utils/calendar_picker/calendar_picker.dart';
 import '../../utils/repeated_days_generator/schedule_generator.dart';
@@ -27,13 +27,14 @@ class CheckoutSchedule extends StatefulWidget {
 
 class _CheckoutScheduleState extends State<CheckoutSchedule> with ScreenLoader {
   Future<void> _placeOrderHandler(BuildContext context, String? shopId) async {
-    final user = context.read<CurrentUser>();
+    final auth = context.read<Auth>();
+    final user = auth.user!;
     final order =
         context.read<ShoppingCart>().orders[shopId]![widget.productId]!;
 
     // TODO: separate payload body into another class
     final response = await LokalApiService.instance!.orders!.create(
-      idToken: user.idToken,
+      idToken: auth.idToken,
       data: {
         "products": [
           {

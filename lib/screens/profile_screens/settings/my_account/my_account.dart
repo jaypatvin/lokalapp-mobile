@@ -5,7 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../providers/user_auth.dart';
+import '../../../../providers/auth.dart';
 import '../../../../utils/constants/themes.dart';
 import '../../../../widgets/app_button.dart';
 import '../../../../widgets/custom_app_bar.dart';
@@ -25,7 +25,7 @@ class _MyAccountState extends State<MyAccount> {
   @override
   void initState() {
     super.initState();
-    _viewModel = MyAccountViewModel(context.read<UserAuth>());
+    _viewModel = MyAccountViewModel(context.read<Auth>());
     _errorSubscription = _viewModel.errorStream.listen(
       (event) {
         if (this.mounted) {

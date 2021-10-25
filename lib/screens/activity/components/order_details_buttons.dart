@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../../../models/lokal_images.dart';
 import '../../../models/order.dart';
-import '../../../providers/user.dart';
+import '../../../providers/auth.dart';
 import '../../../services/lokal_api_service.dart';
 import '../../../utils/functions.utils.dart';
 import '../buyer/order_received.dart';
@@ -32,7 +32,7 @@ class OrderDetailsButtons extends StatelessWidget {
 
   // We'll let this stateless widget handle its own button press
   void onPress(BuildContext context, OrderAction action) async {
-    final authToken = Provider.of<CurrentUser>(context, listen: false).idToken;
+    final authToken = context.read<Auth>().idToken;
 
     switch (action) {
       case OrderAction.cancel:

@@ -6,14 +6,14 @@ import 'package:intl/intl.dart' show DateFormat;
 import 'package:provider/provider.dart';
 
 import '../../models/operating_hours.dart';
+import '../../providers/auth.dart';
 import '../../providers/post_requests/operating_hours_body.dart';
 import '../../providers/post_requests/shop_body.dart';
 import '../../providers/shops.dart';
-import '../../providers/user.dart';
 import '../../services/local_image_service.dart';
 import '../../utils/calendar_picker/calendar_picker.dart';
-import '../../utils/repeated_days_generator/schedule_generator.dart';
 import '../../utils/constants/themes.dart';
+import '../../utils/repeated_days_generator/schedule_generator.dart';
 import '../../widgets/app_button.dart';
 import '../../widgets/custom_app_bar.dart';
 import '../../widgets/schedule_picker.dart';
@@ -71,7 +71,7 @@ class _CustomizeAvailabilityState extends State<CustomizeAvailability>
     }
 
     OperatingHours? _operatingHours;
-    var user = Provider.of<CurrentUser>(context, listen: false);
+    var user = context.read<Auth>().user!;
     var shops = Provider.of<Shops>(context, listen: false).findByUser(user.id);
     if (shops.isNotEmpty) _operatingHours = shops.first.operatingHours;
 
@@ -138,7 +138,7 @@ class _CustomizeAvailabilityState extends State<CustomizeAvailability>
   }
 
   Future<bool> updateShopSchedule() async {
-    final user = context.read<CurrentUser>();
+    final user = context.read<Auth>().user!;
     var shops = context.read<Shops>();
     var userShop = shops.findByUser(user.id).first;
     var operatingHours = context.read<OperatingHoursBody>();
@@ -156,7 +156,7 @@ class _CustomizeAvailabilityState extends State<CustomizeAvailability>
       mediaUrl = await Provider.of<LocalImageService>(context, listen: false)
           .uploadImage(file: file, name: 'shop_photo');
     }
-    CurrentUser user = Provider.of<CurrentUser>(context, listen: false);
+    final user = context.read<Auth>().user!;
     ShopBody shopBody = Provider.of<ShopBody>(context, listen: false);
     Shops shops = Provider.of<Shops>(context, listen: false);
 

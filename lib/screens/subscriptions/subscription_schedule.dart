@@ -4,22 +4,22 @@ import 'package:intl/intl.dart';
 import 'package:keyboard_actions/keyboard_actions.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
-import '../../widgets/screen_loader.dart';
 
 import '../../models/operating_hours.dart';
 import '../../models/product.dart';
 import '../../models/product_subscription_plan.dart';
+import '../../providers/auth.dart';
 import '../../providers/cart.dart';
 import '../../providers/products.dart';
 import '../../providers/shops.dart';
 import '../../providers/subscriptions.dart';
-import '../../providers/user.dart';
 import '../../utils/calendar_picker/calendar_picker.dart';
-import '../../utils/repeated_days_generator/schedule_generator.dart';
 import '../../utils/constants/themes.dart';
+import '../../utils/repeated_days_generator/schedule_generator.dart';
 import '../../widgets/app_button.dart';
 import '../../widgets/custom_app_bar.dart';
 import '../../widgets/schedule_picker.dart';
+import '../../widgets/screen_loader.dart';
 import '../activity/activity.dart';
 import '../discover/product_detail.dart';
 import 'subscription_payment_method.dart';
@@ -410,7 +410,7 @@ class _SubscriptionScheduleState extends State<SubscriptionSchedule>
     // create subscription plan body for API endpoint
     final subscriptionPlanBody = SubscriptionPlanBody(
       productId: _product!.id,
-      buyerId: context.read<CurrentUser>().id,
+      buyerId: context.read<Auth>().user!.id,
       shopId: _product!.shopId,
       quantity: _quantity,
       instruction:

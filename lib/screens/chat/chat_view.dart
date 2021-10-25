@@ -10,8 +10,8 @@ import 'package:provider/provider.dart';
 
 import '../../models/chat_model.dart';
 import '../../models/conversation.dart';
+import '../../providers/auth.dart';
 import '../../providers/chat_provider.dart';
-import '../../providers/user.dart';
 import '../../services/database.dart';
 import '../../services/firestore.utils.dart';
 import '../../utils/constants/themes.dart';
@@ -86,7 +86,7 @@ class _ChatViewState extends State<ChatView> {
     provider!.pickedNotifier.addListener(() => setState(() {}));
 
     providerInit();
-    final userId = context.read<CurrentUser>().id;
+    final userId = context.read<Auth>().user!.id;
     if (!widget.createMessage) {
       this._chatTitle = widget.chat!.title;
       this._chat = widget.chat;
@@ -129,7 +129,7 @@ class _ChatViewState extends State<ChatView> {
 
   void _messageStreamListener(QuerySnapshot snapshot) {
     final conversation = Conversation.fromDocument(snapshot.docs.first);
-    final user = context.read<CurrentUser>();
+    final user = context.read<Auth>().user!;
     this._conversations = snapshot.docs;
     debugPrint("$conversation");
     if (this.mounted) {
@@ -170,7 +170,7 @@ class _ChatViewState extends State<ChatView> {
 
     // the code below is slow, i don't know how to handle it yet
 
-    // final idToken = context.read<CurrentUser>().idToken;
+    // final idToken = context.read<Auth>().user.idToken;
     // final response = await LokalApiService.instance.chat.getChatByMembers(
     //   idToken: idToken,
     //   members: widget.members,
@@ -194,7 +194,7 @@ class _ChatViewState extends State<ChatView> {
 
   void _onSendMessage() async {
     try {
-      final user = context.read<CurrentUser>();
+      final user = context.read<Auth>().user!;
       setState(() {
         this._sendingMessage = true;
         this._currentlySendingMessage = Conversation(

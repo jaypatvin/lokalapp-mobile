@@ -4,9 +4,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:keyboard_actions/keyboard_actions.dart';
 import 'package:provider/provider.dart';
 
+import '../../providers/auth.dart';
 import '../../providers/invite.dart';
 import '../../providers/post_requests/auth_body.dart';
-import '../../providers/user.dart';
 import '../../utils/constants/descriptions.dart';
 import '../../utils/constants/themes.dart';
 import '../../widgets/app_button.dart';
@@ -52,11 +52,11 @@ class _InvitePageState extends State<InvitePage> with ScreenLoader {
 
   Future<void> _validateInviteCode(BuildContext context, String code) async {
     final invite = context.read<Invite>();
-    final user = context.read<CurrentUser>();
+    final auth = context.read<Auth>();
 
-    String communityId = await invite.check(code, user.idToken) ?? "";
+    String communityId = await invite.check(code, auth.idToken) ?? "";
     if (communityId.isNotEmpty) {
-      final fireUser = FirebaseAuth.instance.currentUser;
+      final fireUser = auth.firebaseUser;
       context.read<AuthBody>().update(communityId: communityId);
       if (_displayError) {
         setState(() {

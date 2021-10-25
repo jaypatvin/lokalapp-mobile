@@ -4,8 +4,8 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 
+import '../../../providers/auth.dart';
 import '../../../providers/shops.dart';
-import '../../../providers/user.dart';
 import '../../add_shop_screens/edit_shop.dart';
 import '../../chat/components/chat_avatar.dart';
 import '../settings/settings.dart';
@@ -15,7 +15,7 @@ class ShopHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final user = context.read<CurrentUser>();
+    final user = context.read<Auth>().user!;
     final shop = context.read<Shops>().findByUser(user.id).first;
     return Stack(
       children: [

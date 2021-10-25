@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
-import '../../providers/user.dart';
+import '../../providers/auth.dart';
 import '../../widgets/search_text_field.dart';
 import '../chat/components/chat_avatar.dart';
 import 'components/shop_header.dart';
@@ -18,7 +18,7 @@ class UserShop extends StatefulWidget {
 
 class _UserShopState extends State<UserShop> {
   Widget _buildBanner() {
-    final user = context.read<CurrentUser>();
+    final user = context.read<Auth>().user!;
     return Container(
       padding: EdgeInsets.symmetric(vertical: 10.0.h, horizontal: 5.0.w),
       child: ListTile(

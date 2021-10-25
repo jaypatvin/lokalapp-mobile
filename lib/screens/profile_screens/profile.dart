@@ -5,7 +5,7 @@ import 'package:persistent_bottom_nav_bar/models/nested_will_pop_scope.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/activities.dart';
-import '../../providers/user.dart';
+import '../../providers/auth.dart';
 import '../../utils/constants/assets.dart';
 import '../../utils/constants/themes.dart';
 import '../../utils/shared_preference.dart';
@@ -28,7 +28,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final user = context.read<CurrentUser>();
+    final user = context.read<Auth>().user!;
     return Onboarding(
       screen: MainScreen.profile,
       child: NestedWillPopScope(

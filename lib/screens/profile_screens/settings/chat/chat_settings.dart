@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../providers/user.dart';
+import '../../../../providers/auth.dart';
 import '../../../../services/api/api.dart';
 import '../../../../services/api/user_api_service.dart';
 import '../../../../utils/constants/themes.dart';
@@ -26,7 +26,7 @@ class ChatSettings extends StatelessWidget {
       ),
       body: ChangeNotifierProvider(
         create: (_) => ChatSettingsViewModel(
-          context.read<CurrentUser>().user!,
+          context.read<Auth>().user!,
           UserAPIService(context.read<API>()),
         ),
         builder: (ctx, _) {

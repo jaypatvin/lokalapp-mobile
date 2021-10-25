@@ -8,11 +8,11 @@ import 'package:photo_view/photo_view_gallery.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/lokal_images.dart';
+import '../../providers/auth.dart';
 import '../../providers/post_requests/operating_hours_body.dart';
 import '../../providers/post_requests/product_body.dart';
 import '../../providers/products.dart';
 import '../../providers/shops.dart';
-import '../../providers/user.dart';
 import '../../services/local_image_service.dart';
 import '../../utils/constants/themes.dart';
 import '../../widgets/app_button.dart';
@@ -169,7 +169,7 @@ class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
       gallery.add(LokalImages(url: mediaUrl, order: gallery.length));
     }
 
-    var user = Provider.of<CurrentUser>(context, listen: false);
+    var user = context.read<Auth>().user!;
     var shop =
         Provider.of<Shops>(context, listen: false).findByUser(user.id).first;
     var products = Provider.of<Products>(context, listen: false);

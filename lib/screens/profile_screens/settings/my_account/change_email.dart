@@ -4,8 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../providers/user.dart';
-import '../../../../providers/user_auth.dart';
+import '../../../../providers/auth.dart';
 import '../../../../utils/constants/themes.dart';
 import '../../../../widgets/app_button.dart';
 import '../../../../widgets/custom_app_bar.dart';
@@ -29,8 +28,7 @@ class _ChangeEmailState extends State<ChangeEmail> {
   void initState() {
     super.initState();
     _viewModel = ChangeEmailViewModel(
-      context.read<UserAuth>(),
-      context.read<CurrentUser>().user!,
+      context.read<Auth>(),
     );
     _email.addListener(_onEmailChanged);
     _newEmail.addListener(_onNewEmailChanged);

@@ -4,14 +4,14 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import '../../../widgets/screen_loader.dart';
 
 import '../../../models/order.dart';
-import '../../../providers/user.dart';
+import '../../../providers/auth.dart';
 import '../../../services/lokal_api_service.dart';
 import '../../../utils/constants/themes.dart';
 import '../../../widgets/app_button.dart';
 import '../../../widgets/custom_app_bar.dart';
+import '../../../widgets/screen_loader.dart';
 import 'processing_payment.dart';
 
 class CashOnDelivery extends StatefulWidget {
@@ -29,7 +29,7 @@ class _CashOnDeliveryState extends State<CashOnDelivery> with ScreenLoader {
     };
 
   FutureOr<void> _onSubmitHandler(BuildContext context) {
-    final idToken = Provider.of<CurrentUser>(context, listen: false).idToken;
+    final idToken = context.read<Auth>().idToken;
     LokalApiService.instance!.orders!.pay(
       idToken: idToken,
       orderId: this.widget.order.id,

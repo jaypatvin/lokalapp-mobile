@@ -3,7 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 import '../../../models/product_subscription_plan.dart';
-import '../../../providers/user.dart';
+import '../../../providers/auth.dart';
 import '../../chat/components/chat_avatar.dart';
 
 class SubscriptionPlanDetails extends StatelessWidget {
@@ -19,7 +19,7 @@ class SubscriptionPlanDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final user = context.read<CurrentUser>();
+    final user = context.read<Auth>().user!;
     final name = isBuyer ? subscriptionPlan.shop.name! : user.displayName!;
     final displayPhoto =
         isBuyer ? subscriptionPlan.shop.image : user.profilePhoto;

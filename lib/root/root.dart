@@ -3,11 +3,10 @@ import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/activities.dart';
+import '../providers/auth.dart';
 import '../providers/categories.dart';
 import '../providers/products.dart';
 import '../providers/shops.dart';
-import '../providers/user.dart';
-import '../providers/user_auth.dart';
 import '../providers/users.dart';
 import '../screens/bottom_navigation.dart';
 import '../screens/welcome_screen.dart';
@@ -30,33 +29,32 @@ class _RootState extends State<Root> {
     _onStartUp();
   }
 
-  Future<void> _onStartUp() async {
-    final auth = Provider.of<UserAuth>(context, listen: false);
+  void _onStartUp() async {
+    final auth = context.read<Auth>();
 
-    final authStatus = await auth.onStartUp();
-
-    if (authStatus == AuthStatus.Success) {
-      CurrentUser user = Provider.of<CurrentUser>(context, listen: false);
-      await user.fetch(auth.user!);
-      if (user.state == UserState.LoggedIn) {
-        await context.read<Activities>().fetch();
-        await context.read<Shops>().fetch();
-        await context.read<Products>().fetch();
-        await context.read<Users>().fetch();
-        await context.read<Categories>().fetch();
-        Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(
-              builder: (_) => BottomNavigation(),
-              settings: RouteSettings(name: BottomNavigation.routeName),
-            ),
-            (route) => false);
-      }
-    } else {
+    try {
+      await auth.onStartUp();
+      if (auth.user == null) throw 'user-not-registered';
+      await context.read<Activities>().fetch();
+      await context.read<Shops>().fetch();
+      await context.read<Products>().fetch();
+      await context.read<Users>().fetch();
+      await context.read<Categories>().fetch();
       Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(
-            builder: (_) => WelcomeScreen(),
-          ),
-          (route) => false);
+        MaterialPageRoute(
+          builder: (_) => BottomNavigation(),
+          settings: RouteSettings(name: BottomNavigation.routeName),
+        ),
+        (route) => false,
+      );
+    } catch (e) {
+      await auth.logOut();
+      Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(
+          builder: (_) => WelcomeScreen(),
+        ),
+        (route) => false,
+      );
     }
   }
 

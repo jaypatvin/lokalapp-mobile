@@ -6,11 +6,11 @@ import 'package:provider/provider.dart';
 
 import '../../models/operating_hours.dart';
 import '../../models/product_subscription_plan.dart';
+import '../../providers/auth.dart';
 import '../../providers/products.dart';
 import '../../providers/shops.dart';
-import '../../providers/user.dart';
-import '../../utils/repeated_days_generator/schedule_generator.dart';
 import '../../utils/constants/themes.dart';
+import '../../utils/repeated_days_generator/schedule_generator.dart';
 import '../../widgets/app_button.dart';
 import '../chat/chat_view.dart';
 import 'components/subscription_plan_details.dart';
@@ -27,7 +27,7 @@ class SubscriptionDetails extends StatelessWidget {
   });
 
   Widget buildTextInfo(BuildContext context) {
-    final _address = context.read<CurrentUser>().address!;
+    final _address = context.read<Auth>().user!.address!;
     final address = _address.street! +
         ", " +
         _address.barangay! +

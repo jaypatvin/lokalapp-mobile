@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 
 import '../../models/conversation.dart';
 import '../../models/lokal_images.dart';
-import '../../providers/user.dart';
+import '../../providers/auth.dart';
 import '../../utils/constants/themes.dart';
 import '../../widgets/photo_view_gallery/gallery/gallery_network_photo_view.dart';
 import '../../widgets/photo_view_gallery/thumbnails/network_photo_thumbnail.dart';
@@ -118,7 +118,7 @@ class ChatBubble extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cUser = context.read<CurrentUser>();
+    final cUser = context.read<Auth>().user!;
     final isUser = conversation!.senderId == cUser.id;
 
     final radius = Radius.circular(12.0.r);

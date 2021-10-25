@@ -6,11 +6,11 @@ import 'package:intl/intl.dart' show DateFormat;
 import 'package:keyboard_actions/keyboard_actions.dart';
 import 'package:provider/provider.dart';
 
+import '../../providers/auth.dart';
 import '../../providers/post_requests/operating_hours_body.dart';
 import '../../providers/shops.dart';
-import '../../providers/user.dart';
-import '../../utils/functions.utils.dart';
 import '../../utils/constants/themes.dart';
+import '../../utils/functions.utils.dart';
 import '../../widgets/app_button.dart';
 import '../../widgets/custom_app_bar.dart';
 import '../../widgets/schedule_picker.dart';
@@ -43,7 +43,7 @@ class _ShopScheduleState extends State<ShopSchedule> {
   void initState() {
     super.initState();
 
-    final user = context.read<CurrentUser>();
+    final user = context.read<Auth>().user!;
     final shops = context.read<Shops>().findByUser(user.id);
 
     if (shops.isNotEmpty) {
@@ -118,7 +118,7 @@ class _ShopScheduleState extends State<ShopSchedule> {
 
   @override
   Widget build(BuildContext context) {
-    final user = context.read<CurrentUser>();
+    final user = context.read<Auth>().user!;
     final shops = context.read<Shops>().findByUser(user.id);
 
     double height = MediaQuery.of(context).size.height;
