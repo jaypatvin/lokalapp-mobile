@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -52,11 +53,6 @@ class Auth extends ChangeNotifier {
     super.dispose();
   }
 
-  void _onUserChanges() {
-    _authChangesSubscription?.cancel();
-    _authChangesSubscription = _auth.userChanges().listen(_userChangeListener);
-  }
-
   void _onIdTokenChanges() {
     _idTokenChangesSubscription?.cancel();
     _idTokenChangesSubscription = _auth.idTokenChanges().listen(
@@ -82,18 +78,22 @@ class Auth extends ChangeNotifier {
       if (user != null) {
         _idToken = await user.getIdToken();
         _api.setIdToken(_idToken!);
-        if (_idTokenChangesSubscription == null) _onIdTokenChanges();
+        _idTokenChangesSubscription?.cancel();
+        _onIdTokenChanges();
 
         final id = await _db.getUserDocId(user.uid);
         if (id.isEmpty) {
           this._user = null;
+
           notifyListeners();
           return;
         }
         if (_user != null && id == _user!.id) {
+          notifyListeners();
           return;
         }
 
+        print('API called by firebaseAuth changes');
         this._user = await _apiService.getById(userId: id);
 
         _userStreamSubscription?.cancel();
@@ -104,6 +104,7 @@ class Auth extends ChangeNotifier {
 
         _userStreamSubscription = _userStream!.listen(
           (_) async {
+            print('API called by firestore changes');
             this._user = await _apiService.getById(userId: id);
             notifyListeners();
           },
@@ -111,6 +112,7 @@ class Auth extends ChangeNotifier {
       } else {
         this._user = null;
       }
+
       notifyListeners();
     } catch (e) {
       print(e.toString());
@@ -129,8 +131,6 @@ class Auth extends ChangeNotifier {
       print(e.toString());
       throw e;
     } finally {
-      _onUserChanges();
-      // _onIdTokenChanges();
       notifyListeners();
     }
   }
@@ -202,7 +202,14 @@ class Auth extends ChangeNotifier {
     }
   }
 
-  Future<void> logOut() => _auth.signOut();
+  Future<void> logOut() async {
+    _authChangesSubscription?.cancel();
+    _idTokenChangesSubscription?.cancel();
+    _userStreamSubscription?.cancel();
+
+    _userChangeListener(null);
+    await _auth.signOut();
+  }
 
   bool checkSignInMethod() {
     final userInfos = _auth.currentUser!.providerData;

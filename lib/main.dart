@@ -97,10 +97,7 @@ class _MyAppState extends State<MyApp> {
           ..setCommunityId(auth.user?.communityId)
           ..setIdToken(auth.idToken),
       ),
-      ChangeNotifierProxyProvider<API, Categories?>(
-        create: (_) => Categories(),
-        update: (_, api, categories) => categories!..setAPI(api),
-      ),
+      ChangeNotifierProvider<Categories>(create: (_) => Categories(_api)),
 
       // This is used in 3 Separate Screens (Tabs) - Home, Discover, and Profile
       ChangeNotifierProvider<ShoppingCart?>(create: (_) => ShoppingCart()),
