@@ -20,6 +20,7 @@ class MyProfileList extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListView(
       shrinkWrap: true,
+      //physics: NeverScrollableScrollPhysics(),
       children: ListTile.divideTiles(
         context: context,
         tiles: [

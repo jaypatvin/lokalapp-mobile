@@ -170,7 +170,6 @@ class ChatModel {
       members: map['members'] != null
           ? List<String>.from(
               map['members'],
-              growable: false,
             )
           : const [],
       title: map['title'],

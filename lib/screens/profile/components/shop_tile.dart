@@ -1,31 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 
 import '../../../models/user_shop.dart';
 import '../../../utils/constants/themes.dart';
 import '../../chat/components/chat_avatar.dart';
-import '../user_shop.dart';
 
 class ShopTile extends StatelessWidget {
   final ShopModel shop;
-  const ShopTile({Key? key, required this.shop}) : super(key: key);
+  final void Function() onGoToShop;
+  const ShopTile({
+    Key? key,
+    required this.shop,
+    required this.onGoToShop,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
+      contentPadding: EdgeInsets.all(10.0.h),
+      tileColor: Colors.white,
       leading: ChatAvatar(
         displayName: shop.name,
         displayPhoto: shop.profilePhoto,
       ),
-      onTap: () {
-        pushNewScreenWithRouteSettings(
-          context,
-          screen: UserShop(),
-          settings: RouteSettings(name: UserShop.routeName),
-          pageTransitionAnimation: PageTransitionAnimation.cupertino,
-        );
-      },
+      onTap: onGoToShop,
       title: Text(
         shop.name!,
         style: TextStyle(

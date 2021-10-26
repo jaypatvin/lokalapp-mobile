@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/chat_model.dart';
@@ -11,6 +12,7 @@ import '../../providers/users.dart';
 import '../../utils/constants/themes.dart';
 import '../../widgets/custom_app_bar.dart';
 import '../../widgets/custom_expansion_tile.dart' as custom;
+import '../profile/profile_screen.dart';
 import 'components/chat_avatar.dart';
 import 'shared_media.dart';
 
@@ -152,6 +154,13 @@ class _ChatProfileState extends State<ChatProfile> {
                       final displayName =
                           user.displayName! + (index == 0 ? " (You)" : "");
                       return ListTile(
+                        onTap: () {
+                          ctx.read<PersistentTabController>().jumpToTab(4);
+                          pushNewScreen(
+                            ctx,
+                            screen: ProfileScreen(userId: user.id!),
+                          );
+                        },
                         leading: ChatAvatar(
                           displayName: user.displayName,
                           displayPhoto: user.displayPhoto,
