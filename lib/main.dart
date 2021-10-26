@@ -27,8 +27,8 @@ import 'utils/constants/assets.dart';
 import 'utils/constants/themes.dart';
 import 'utils/shared_preference.dart';
 import 'utils/utility.dart';
+import 'widgets/overlays/screen_loader.dart';
 import 'widgets/photo_picker_gallery/provider/custom_photo_provider.dart';
-import 'widgets/screen_loader.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

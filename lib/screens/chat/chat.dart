@@ -8,7 +8,7 @@ import '../../providers/shops.dart';
 import '../../services/database.dart';
 import '../../utils/constants/themes.dart';
 import '../../utils/shared_preference.dart';
-import '../../widgets/onboarding.dart';
+import '../../widgets/overlays/onboarding.dart';
 import 'components/chat_avatar.dart';
 import 'components/chat_stream.dart';
 

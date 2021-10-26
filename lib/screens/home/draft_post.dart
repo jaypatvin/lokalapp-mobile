@@ -18,7 +18,7 @@ import '../../widgets/photo_picker_gallery/image_gallery_picker.dart';
 import '../../widgets/photo_picker_gallery/provider/custom_photo_provider.dart';
 import '../../widgets/photo_view_gallery/gallery/gallery_asset_photo_view.dart';
 import '../../widgets/photo_view_gallery/thumbnails/asset_photo_thumbnail.dart';
-import '../../widgets/screen_loader.dart';
+import '../../widgets/overlays/screen_loader.dart';
 
 class DraftPost extends StatefulWidget {
   @override

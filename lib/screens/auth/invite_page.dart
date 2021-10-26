@@ -10,7 +10,7 @@ import '../../providers/post_requests/auth_body.dart';
 import '../../utils/constants/descriptions.dart';
 import '../../utils/constants/themes.dart';
 import '../../widgets/app_button.dart';
-import '../../widgets/screen_loader.dart';
+import '../../widgets/overlays/screen_loader.dart';
 import 'community.dart';
 import 'profile_registration.dart';
 

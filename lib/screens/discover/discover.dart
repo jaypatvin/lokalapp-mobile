@@ -7,11 +7,11 @@ import '../../providers/categories.dart';
 import '../../utils/constants/themes.dart';
 import '../../utils/shared_preference.dart';
 import '../../widgets/custom_app_bar.dart';
-import '../../widgets/onboarding.dart';
-import '../../widgets/search_text_field.dart';
+import '../../widgets/overlays/onboarding.dart';
+import '../../widgets/inputs/search_text_field.dart';
 import '../cart/cart_container.dart';
-import '../profile_screens/components/store_card.dart';
-import '../search/search.dart';
+import '../profile/components/store_card.dart';
+import 'search.dart';
 import 'components/recommended_products.dart';
 import 'explore_categories.dart';
 

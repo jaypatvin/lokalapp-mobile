@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 
 import '../../../providers/products.dart';
 import '../../../providers/shops.dart';
-import '../../profile_screens/components/product_card.dart';
+import '../../profile/components/product_card.dart';
 import '../product_detail.dart';
 
 class RecommendedProducts extends StatelessWidget {

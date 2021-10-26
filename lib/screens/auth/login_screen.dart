@@ -10,7 +10,7 @@ import '../../providers/products.dart';
 import '../../providers/shops.dart';
 import '../../providers/users.dart';
 import '../../utils/constants/themes.dart';
-import '../../widgets/screen_loader.dart';
+import '../../widgets/overlays/screen_loader.dart';
 import '../bottom_navigation.dart';
 import 'components/auth_input_form.dart';
 import 'components/sso_block.dart';

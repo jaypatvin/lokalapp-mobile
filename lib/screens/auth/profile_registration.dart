@@ -20,9 +20,9 @@ import '../../utils/constants/themes.dart';
 import '../../utils/utility.dart';
 import '../../widgets/app_button.dart';
 import '../../widgets/custom_app_bar.dart';
+import '../../widgets/overlays/screen_loader.dart';
 import '../../widgets/photo_box.dart';
-import '../../widgets/screen_loader.dart';
-import '../verification_screens/verify_screen.dart';
+import '../../widgets/verification/verify_screen.dart';
 import 'components/checkbox_form_field.dart';
 
 class ProfileRegistration extends StatefulWidget {

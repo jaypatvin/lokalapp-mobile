@@ -12,7 +12,7 @@ import '../../../utils/utility.dart';
 import '../../../widgets/app_button.dart';
 import '../../../widgets/custom_app_bar.dart';
 import '../../../widgets/photo_box.dart';
-import '../../../widgets/screen_loader.dart';
+import '../../../widgets/overlays/screen_loader.dart';
 import 'processing_payment.dart';
 
 class BankDetails extends StatefulWidget {

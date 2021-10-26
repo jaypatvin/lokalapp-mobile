@@ -6,8 +6,8 @@ import '../../providers/auth.dart';
 import '../../providers/shops.dart';
 import '../../services/database.dart';
 import '../../utils/constants/themes.dart';
-import '../subscriptions/subscriptions.dart';
 import 'components/grouped_orders.dart';
+import 'subscriptions/subscriptions.dart';
 
 class Transactions extends StatefulWidget {
   final Map<int, String?> statuses;

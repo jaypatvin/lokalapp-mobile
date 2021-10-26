@@ -14,7 +14,7 @@ class AppCheckBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: this.onTap, //() => setState(() => forDelivery = !forDelivery),
+      onTap: this.onTap,
       child: Row(
         children: [
           SizedBox(

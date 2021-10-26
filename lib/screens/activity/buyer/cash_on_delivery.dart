@@ -11,7 +11,7 @@ import '../../../services/lokal_api_service.dart';
 import '../../../utils/constants/themes.dart';
 import '../../../widgets/app_button.dart';
 import '../../../widgets/custom_app_bar.dart';
-import '../../../widgets/screen_loader.dart';
+import '../../../widgets/overlays/screen_loader.dart';
 import 'processing_payment.dart';
 
 class CashOnDelivery extends StatefulWidget {

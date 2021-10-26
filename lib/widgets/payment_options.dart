@@ -17,7 +17,7 @@ class PaymentOptions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return Padding(
       padding: EdgeInsets.symmetric(horizontal: 16.0.w),
       child: ListView(
         shrinkWrap: true,

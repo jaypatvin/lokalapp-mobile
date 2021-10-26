@@ -6,7 +6,7 @@ import '../../services/database.dart';
 import '../../utils/constants/assets.dart';
 import '../../utils/constants/themes.dart';
 import '../../utils/shared_preference.dart';
-import '../../widgets/onboarding.dart';
+import '../../widgets/overlays/onboarding.dart';
 import 'transactions.dart';
 
 class Activity extends StatefulWidget {
