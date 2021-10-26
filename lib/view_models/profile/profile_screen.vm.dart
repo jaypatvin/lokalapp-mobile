@@ -19,8 +19,8 @@ class ProfileScreenViewModel {
 
   bool get isCurrentUser => _authProvider.user!.id == userId;
   List<Color> get profileHeaderColors => isCurrentUser
-      ? [Color(0xffFFC700), Colors.black45]
-      : [kPinkColor, Colors.black45];
+      ? const [Color(0xffFFC700), Colors.black45]
+      : const [kPinkColor, Colors.black45];
 
   late final LokalUser user;
   late final Auth _authProvider;

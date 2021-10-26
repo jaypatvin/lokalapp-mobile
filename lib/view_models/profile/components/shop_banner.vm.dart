@@ -8,7 +8,7 @@ import '../../../providers/auth.dart';
 import '../../../providers/shops.dart';
 import '../../../providers/users.dart';
 import '../../../screens/profile/add_shop/add_shop.dart';
-import '../../../screens/profile/user_shop.dart';
+import '../../../screens/profile/shop/user_shop.dart';
 import '../../../widgets/verification/verify_screen.dart';
 
 enum ShopBannerMode {
@@ -17,8 +17,8 @@ enum ShopBannerMode {
   otherUserWithShop,
 }
 
-class UserShopBannerViewModel {
-  UserShopBannerViewModel(this.context, this.userId);
+class ShopBannerViewModel {
+  ShopBannerViewModel(this.context, this.userId);
   final BuildContext context;
   final String userId;
 
@@ -75,7 +75,7 @@ class UserShopBannerViewModel {
   void goToShop() {
     pushNewScreenWithRouteSettings(
       context,
-      screen: UserShop(),
+      screen: UserShop(userId: userId),
       settings: RouteSettings(name: UserShop.routeName),
       pageTransitionAnimation: PageTransitionAnimation.cupertino,
     );

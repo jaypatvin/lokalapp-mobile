@@ -11,9 +11,9 @@ class Products extends ChangeNotifier {
   String? _idToken;
 
   List<Product> _products = [];
-  bool? _isLoading;
+  bool _isLoading = false;
 
-  bool? get isLoading => _isLoading;
+  bool get isLoading => _isLoading;
 
   UnmodifiableListView<Product> get items {
     return UnmodifiableListView(

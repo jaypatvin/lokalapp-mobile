@@ -178,7 +178,7 @@ class _CustomizeAvailabilityState extends State<CustomizeAvailability>
   Future<void> _onSubmit() async {
     _shopCreated = await _createShop();
     if (_shopCreated) {
-      context.read<Shops>().fetch();
+      await context.read<Shops>().fetch();
       Navigator.push(
         context,
         MaterialPageRoute(

@@ -5,12 +5,12 @@ import 'package:provider/provider.dart';
 import '../../../providers/auth.dart';
 import '../../../providers/shops.dart';
 import '../../../utils/constants/themes.dart';
-import '../../../view_models/profile/components/user_shop_banner.vm.dart';
+import '../../../view_models/profile/components/shop_banner.vm.dart';
 import '../../../widgets/app_button.dart';
 import 'shop_tile.dart';
 
-class UserShopBanner extends StatelessWidget {
-  const UserShopBanner({
+class ShopBanner extends StatelessWidget {
+  const ShopBanner({
     Key? key,
     required this.userId,
   }) : super(key: key);
@@ -19,9 +19,9 @@ class UserShopBanner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Provider(
-      create: (ctx) => UserShopBannerViewModel(context, userId)..init(),
+      create: (ctx) => ShopBannerViewModel(context, userId)..init(),
       builder: (ctx2, _) {
-        final vm = ctx2.read<UserShopBannerViewModel>();
+        final vm = ctx2.read<ShopBannerViewModel>();
 
         switch (vm.mode) {
           case ShopBannerMode.otherUserNoShop:

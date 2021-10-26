@@ -15,7 +15,7 @@ import '../../../widgets/custom_app_bar.dart';
 import '../../../widgets/inputs/input_description_field.dart';
 import '../../../widgets/inputs/input_name_field.dart';
 import '../../../widgets/overlays/screen_loader.dart';
-import '../../profile/user_shop.dart';
+import '../shop/user_shop.dart';
 import 'components/add_product_gallery.dart';
 import 'product_details.dart';
 

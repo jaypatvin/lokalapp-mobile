@@ -155,7 +155,10 @@ class _ChatProfileState extends State<ChatProfile> {
                           user.displayName! + (index == 0 ? " (You)" : "");
                       return ListTile(
                         onTap: () {
-                          ctx.read<PersistentTabController>().jumpToTab(4);
+                          if (user.id == context.read<Auth>().user!.id) {
+                            ctx.read<PersistentTabController>().jumpToTab(4);
+                            return;
+                          }
                           pushNewScreen(
                             ctx,
                             screen: ProfileScreen(userId: user.id!),

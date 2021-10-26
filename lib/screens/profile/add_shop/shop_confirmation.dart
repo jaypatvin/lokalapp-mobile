@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:lokalapp/providers/auth.dart';
+import 'package:lokalapp/providers/shops.dart';
 import 'package:lottie/lottie.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
+import 'package:provider/provider.dart';
 
 import '../../../utils/constants/assets.dart';
 import '../../../utils/constants/themes.dart';
 import '../../../widgets/app_button.dart';
 import '../../../widgets/custom_app_bar.dart';
 import '../../profile/profile_screen.dart';
-import '../../profile/user_shop.dart';
+import '../shop/user_shop.dart';
 import '../add_product/add_product.dart';
 
 class AddShopConfirmation extends StatelessWidget {
@@ -86,9 +89,11 @@ class AddShopConfirmation extends StatelessWidget {
                     context,
                     ModalRoute.withName(ProfileScreen.routeName),
                   );
+
+                  final user = context.read<Auth>().user!;
                   pushNewScreenWithRouteSettings(
                     context,
-                    screen: UserShop(),
+                    screen: UserShop(userId: user.id!),
                     settings: RouteSettings(name: UserShop.routeName),
                   );
                 },

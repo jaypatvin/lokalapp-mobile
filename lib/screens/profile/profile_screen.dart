@@ -12,7 +12,7 @@ import '../../widgets/overlays/onboarding.dart';
 import '../chat/components/chat_avatar.dart';
 import '../home/timeline.dart';
 import 'components/current_user_profile.dart';
-import 'components/user_shop_banner.dart';
+import 'components/shop_banner.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({Key? key, required this.userId}) : super(key: key);
@@ -49,7 +49,7 @@ class ProfileScreen extends StatelessWidget {
                       colors: vm.profileHeaderColors,
                     ),
                   ),
-                  UserShopBanner(userId: this.userId),
+                  ShopBanner(userId: this.userId),
                   Expanded(
                     child: !vm.isCurrentUser
                         ? Container(
@@ -103,77 +103,95 @@ class _ProfileHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.only(top: 10.0.h, bottom: 10.0.h),
-      decoration: BoxDecoration(
-        gradient: this.backgroundGradient,
-      ),
-      child: Stack(
-        children: [
-          Positioned(
-            left: 10.0.w,
-            child: Visibility(
-              visible: displaySettings,
-              child: IconButton(
-                padding: EdgeInsets.zero,
-                icon: Icon(
-                  Icons.settings,
-                  size: 30.0.r,
+    return Stack(
+      children: [
+        Positioned.fill(
+          child: Image(
+            image: NetworkImage(
+              user.profilePhoto!,
+            ),
+            fit: BoxFit.cover,
+            errorBuilder: (ctx, obj, trace) => SizedBox(
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  gradient: backgroundGradient,
                 ),
-                color: Colors.white,
-                onPressed: onSettingsPressed,
               ),
             ),
           ),
-          Center(
-            child: Padding(
-              padding: EdgeInsets.only(top: 10.0.h),
-              child: Column(
-                children: [
-                  ChatAvatar(
-                    displayName: user.displayName,
-                    displayPhoto: user.profilePhoto,
-                    radius: 40.0.r,
-                  ),
-                  Text(
-                    user.displayName!,
-                    style: TextStyle(
-                      fontSize: 18.0.sp,
-                      color: Colors.white,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  if (this.displaySendMessageButton)
-                    SizedBox(
-                      width: 120.w,
-                      child: AppButton(
-                        "Send a Message",
-                        Colors.white,
-                        false,
-                        this.onMessageSend,
-                        textStyle: TextStyle(
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                ],
+        ),
+        Positioned.fill(
+          child: SizedBox(
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                color: Colors.black.withOpacity(0.30),
               ),
             ),
           ),
-          Positioned(
-            right: 10.0.w,
+        ),
+        Positioned(
+          left: 10.0.w,
+          child: Visibility(
+            visible: displaySettings,
             child: IconButton(
               padding: EdgeInsets.zero,
               icon: Icon(
-                Icons.more_horiz,
+                Icons.settings,
                 size: 30.0.r,
               ),
               color: Colors.white,
-              onPressed: this.onTripleDotsPressed,
+              onPressed: onSettingsPressed,
             ),
           ),
-        ],
-      ),
+        ),
+        Center(
+          child: Padding(
+            padding: EdgeInsets.only(top: 10.0.h, bottom: 10.0.h),
+            child: Column(
+              children: [
+                ChatAvatar(
+                  displayName: user.displayName,
+                  displayPhoto: user.profilePhoto,
+                  radius: 40.0.r,
+                ),
+                Text(
+                  user.displayName!,
+                  style: TextStyle(
+                    fontSize: 18.0.sp,
+                    color: Colors.white,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                if (this.displaySendMessageButton)
+                  SizedBox(
+                    width: 120.w,
+                    child: AppButton(
+                      "Send a Message",
+                      Colors.white,
+                      false,
+                      this.onMessageSend,
+                      textStyle: TextStyle(
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+          ),
+        ),
+        Positioned(
+          right: 10.0.w,
+          child: IconButton(
+            padding: EdgeInsets.zero,
+            icon: Icon(
+              Icons.more_horiz,
+              size: 30.0.r,
+            ),
+            color: Colors.white,
+            onPressed: this.onTripleDotsPressed,
+          ),
+        ),
+      ],
     );
   }
 }

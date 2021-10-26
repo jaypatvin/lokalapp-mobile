@@ -6,7 +6,7 @@ import '../../../utils/constants/assets.dart';
 import '../../../utils/constants/themes.dart';
 import '../../../widgets/app_button.dart';
 import '../../../widgets/custom_app_bar.dart';
-import '../../profile/user_shop.dart';
+import '../shop/user_shop.dart';
 
 class AddProductConfirmation extends StatelessWidget {
   @override

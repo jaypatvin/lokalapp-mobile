@@ -18,7 +18,7 @@ import '../../../utils/constants/themes.dart';
 import '../../../widgets/app_button.dart';
 import '../../../widgets/custom_app_bar.dart';
 import '../../../widgets/overlays/screen_loader.dart';
-import '../../profile/user_shop.dart';
+import '../shop/user_shop.dart';
 import 'components/add_product_gallery.dart';
 import 'confirmation.dart';
 import 'product_schedule.dart';

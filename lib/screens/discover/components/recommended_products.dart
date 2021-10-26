@@ -14,7 +14,7 @@ class RecommendedProducts extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer2<Products, Shops>(
       builder: (context, products, shops, __) {
-        return products.isLoading! || shops.isLoading!
+        return products.isLoading || shops.isLoading!
             ? Center(child: CircularProgressIndicator())
             : Container(
                 height: 250.0.h,
