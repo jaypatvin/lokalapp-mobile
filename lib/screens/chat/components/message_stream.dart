@@ -9,7 +9,7 @@ import 'package:provider/provider.dart';
 import 'package:swipe_to/swipe_to.dart';
 
 import '../../../models/conversation.dart';
-import '../../../providers/user.dart';
+import '../../../providers/auth.dart';
 import '../../../utils/constants/themes.dart';
 import '../chat_bubble.dart';
 
@@ -112,7 +112,7 @@ class MessageStream extends StatelessWidget {
               final messageId = messages[index].id;
               final message = Conversation.fromDocument(messages[index]);
               final userMessage =
-                  message.senderId == context.read<CurrentUser>().id;
+                  message.senderId == context.read<Auth>().user!.id;
               final replyTo = message.replyTo;
               return FocusedMenuHolder(
                 onPressed: () {},

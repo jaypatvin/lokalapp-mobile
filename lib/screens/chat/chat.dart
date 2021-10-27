@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
+import '../../providers/auth.dart';
 import '../../providers/shops.dart';
-import '../../providers/user.dart';
 import '../../services/database.dart';
 import '../../utils/constants/themes.dart';
 import '../../utils/shared_preference.dart';
-import '../../widgets/onboarding.dart';
+import '../../widgets/overlays/onboarding.dart';
 import 'components/chat_avatar.dart';
 import 'components/chat_stream.dart';
 
@@ -50,7 +50,7 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
         setState(() {});
       });
 
-    final user = context.read<CurrentUser>();
+    final user = context.read<Auth>().user!;
     final shops = context.read<Shops>().findByUser(user.id);
 
     _userChatStream = Database.instance.getUserChats(user.id);
@@ -74,7 +74,7 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    final user = context.read<CurrentUser>();
+    final user = context.read<Auth>().user!;
     final shops = context.read<Shops>().findByUser(user.id);
 
     if (shops.isEmpty) {
@@ -204,7 +204,7 @@ class _ChatAppBarBottom extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    final user = context.read<CurrentUser>();
+    final user = context.read<Auth>().user!;
     final shop = context.read<Shops>().findByUser(user.id).first;
     return Container(
       padding: EdgeInsets.only(bottom: 14.0.h, left: 14.0.w, right: 14.0.w),

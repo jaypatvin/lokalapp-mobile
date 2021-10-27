@@ -2,10 +2,9 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../../widgets/screen_loader.dart';
 
 import '../../../models/order.dart';
-import '../../../providers/user.dart';
+import '../../../providers/auth.dart';
 import '../../../services/local_image_service.dart';
 import '../../../services/lokal_api_service.dart';
 import '../../../utils/constants/themes.dart';
@@ -13,6 +12,7 @@ import '../../../utils/utility.dart';
 import '../../../widgets/app_button.dart';
 import '../../../widgets/custom_app_bar.dart';
 import '../../../widgets/photo_box.dart';
+import '../../../widgets/overlays/screen_loader.dart';
 import 'processing_payment.dart';
 
 class BankDetails extends StatefulWidget {
@@ -40,7 +40,7 @@ class _BankDetailsState extends State<BankDetails> with ScreenLoader {
   }
 
   Future<void> _onSubmitHandler() async {
-    final idToken = Provider.of<CurrentUser>(context, listen: false).idToken;
+    final idToken = context.read<Auth>().idToken;
     final service = LocalImageService.instance!;
     final url = await service.uploadImage(
       file: this.proofOfPayment!,

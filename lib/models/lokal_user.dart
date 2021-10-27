@@ -1,7 +1,8 @@
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:lokalapp/models/timestamp_time_object.dart';
+
+import 'timestamp_time_object.dart';
 
 class UserAddress {
   String? barangay;
@@ -152,8 +153,8 @@ class LokalUser {
     this.registration,
     this.roles,
     this.createdAt,
-    required this.notificationSettings,
-    required this.showReadReceipts,
+    this.notificationSettings = const <String, dynamic>{},
+    this.showReadReceipts = false,
   });
 
   Map<String, dynamic> toMap() {

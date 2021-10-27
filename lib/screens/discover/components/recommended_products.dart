@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 
 import '../../../providers/products.dart';
 import '../../../providers/shops.dart';
-import '../../profile_screens/components/product_card.dart';
+import '../../profile/components/product_card.dart';
 import '../product_detail.dart';
 
 class RecommendedProducts extends StatelessWidget {
@@ -14,7 +14,7 @@ class RecommendedProducts extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer2<Products, Shops>(
       builder: (context, products, shops, __) {
-        return products.isLoading! || shops.isLoading!
+        return products.isLoading || shops.isLoading!
             ? Center(child: CircularProgressIndicator())
             : Container(
                 height: 250.0.h,

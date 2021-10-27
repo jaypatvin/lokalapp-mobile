@@ -1,9 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import '../../providers/auth.dart';
+import '../../widgets/overlays/screen_loader.dart';
 import 'package:provider/provider.dart';
 
-import '../../providers/user.dart';
-import '../../providers/user_auth.dart';
 import '../../utils/constants/themes.dart';
 import '../bottom_navigation.dart';
 import 'components/auth_input_form.dart';
@@ -17,53 +18,48 @@ class Community extends StatefulWidget {
   _CommunityState createState() => _CommunityState();
 }
 
-class _CommunityState extends State<Community> {
+class _CommunityState extends State<Community> with ScreenLoader {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
-  void _signUpUser(
-      {required LoginType type, String? email, String? password}) async {
-    final auth = context.read<UserAuth>();
+  void _signUpUser({
+    required LoginType type,
+    String? email,
+    String? password,
+  }) async {
+    final auth = context.read<Auth>();
     try {
-      AuthStatus? _authStatus;
-
       switch (type) {
-        case LoginType.email:
-          _authStatus = await auth.signUp(email!, password!);
-          break;
-        case LoginType.google:
-          _authStatus = await auth.loginWithGoogle();
-          break;
-        case LoginType.facebook:
-          _authStatus = await auth.loginWithFacebook();
-          break;
-        default:
-      }
-      if (_authStatus == AuthStatus.NewUser) {
+          case LoginType.email:
+            await auth.signUp(email!, password!);
+            break;
+          case LoginType.google:
+            await auth.loginWithGoogle();
+            break;
+          case LoginType.facebook:
+            await auth.loginWithFacebook();
+            break;
+          default:
+        }
+
+      if (auth.user == null) {
         int count = 0;
         Navigator.popUntil(context, (_) => count++ >= 2);
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => ProfileRegistration()),
         );
-      } else if (_authStatus == AuthStatus.Success) {
-        var user = Provider.of<CurrentUser>(context, listen: false);
-        await user.fetch(auth.user!);
-        if (user.state == UserState.LoggedIn) {
-          Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(builder: (context) => BottomNavigation()),
-            (route) => false,
-          );
-        } else if (user.state == UserState.NotRegistered) {
-          int count = 0;
-          Navigator.popUntil(context, (_) => count++ >= 2);
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => ProfileRegistration()),
-          );
-        }
+      } else {
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => BottomNavigation()),
+          (route) => false,
+        );
+      }
+    } on FirebaseAuthException catch (e) {
+      debugPrint(e.message);
+      switch (e.code) {
       }
     } catch (e) {
       // TODO: do something with error
@@ -72,7 +68,7 @@ class _CommunityState extends State<Community> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget screen(BuildContext context) {
     final bottom = MediaQuery.of(context).viewInsets.bottom;
     return Scaffold(
       resizeToAvoidBottomInset: false,

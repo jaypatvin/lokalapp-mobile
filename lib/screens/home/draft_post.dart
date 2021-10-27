@@ -9,7 +9,7 @@ import 'package:provider/provider.dart';
 
 import '../../models/lokal_images.dart';
 import '../../providers/activities.dart';
-import '../../providers/user.dart';
+import '../../providers/auth.dart';
 import '../../services/local_image_service.dart';
 import '../../utils/constants/themes.dart';
 import '../../widgets/app_button.dart';
@@ -18,7 +18,7 @@ import '../../widgets/photo_picker_gallery/image_gallery_picker.dart';
 import '../../widgets/photo_picker_gallery/provider/custom_photo_provider.dart';
 import '../../widgets/photo_view_gallery/gallery/gallery_asset_photo_view.dart';
 import '../../widgets/photo_view_gallery/thumbnails/asset_photo_thumbnail.dart';
-import '../../widgets/screen_loader.dart';
+import '../../widgets/overlays/screen_loader.dart';
 
 class DraftPost extends StatefulWidget {
   @override
@@ -187,7 +187,7 @@ class _DraftPostState extends State<DraftPost>
   Future<void> _postHandler() async {
     final service = context.read<LocalImageService>();
     final activities = context.read<Activities>();
-    final user = context.read<CurrentUser>();
+    final user = context.read<Auth>().user!;
 
     var gallery = <LokalImages>[];
     for (var asset in _provider!.picked) {

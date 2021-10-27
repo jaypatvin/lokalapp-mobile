@@ -1,14 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 
+import '../providers/auth.dart';
 import '../utils/constants/assets.dart';
 import 'activity/activity.dart';
 import 'chat/chat.dart';
 import 'discover/discover.dart';
-import 'home.dart';
-import 'profile_screens/profile.dart';
+import 'home/home.dart';
+import 'profile/profile_screen.dart';
 
 class BottomNavigation extends StatefulWidget {
   static const routeName = 'bottomNav';
@@ -17,13 +19,25 @@ class BottomNavigation extends StatefulWidget {
 }
 
 class _BottomNavigationState extends State<BottomNavigation> {
+  final GlobalKey<NavigatorState> _homeNavigatorKey = GlobalKey();
+  final GlobalKey<NavigatorState> _discoverNavigatorKey = GlobalKey();
+  final GlobalKey<NavigatorState> _chatNavigatorKey = GlobalKey();
+  final GlobalKey<NavigatorState> _activityNavigatorKey = GlobalKey();
+  final GlobalKey<NavigatorState> _profileNavigatorKey = GlobalKey();
+
+  @override
+  void initState() {
+    super.initState();
+    context.read<PersistentTabController>().addListener(() {});
+  }
+
   List<Widget> _buildScreens() {
     return [
       Home(),
       Discover(),
       Chat(),
       Activity(),
-      ProfileScreen(),
+      ProfileScreen(userId: context.read<Auth>().user!.id!),
     ];
   }
 

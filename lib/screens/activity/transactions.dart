@@ -2,12 +2,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../providers/auth.dart';
 import '../../providers/shops.dart';
-import '../../providers/user.dart';
 import '../../services/database.dart';
 import '../../utils/constants/themes.dart';
-import '../subscriptions/subscriptions.dart';
 import 'components/grouped_orders.dart';
+import 'subscriptions/subscriptions.dart';
 
 class Transactions extends StatefulWidget {
   final Map<int, String?> statuses;
@@ -29,7 +29,7 @@ class _TransactionsState extends State<Transactions> {
     super.initState();
     this._initializeStatuses();
     this.selectedIndex = this.statuses.keys.toList().first;
-    final currentUser = context.read<CurrentUser>();
+    final currentUser = context.read<Auth>().user!;
 
     // We can probably get all the streams for all statuses here in initState
     // to avoid rebuilding and reconnecting to Firestore.
@@ -76,7 +76,7 @@ class _TransactionsState extends State<Transactions> {
   void _changeIndex(int key) {
     if (key == this.selectedIndex) return;
 
-    final userId = Provider.of<CurrentUser>(context, listen: false).id;
+    final userId = context.read<Auth>().user!.id;
     // Revert the multiplication
     final statusCode = (key == 1000 || key == 2000) ? key ~/ 100 : key;
 

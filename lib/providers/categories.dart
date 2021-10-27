@@ -6,7 +6,7 @@ import '../services/api/api.dart';
 import '../services/api/category_api_service.dart';
 
 class Categories extends ChangeNotifier {
-  Categories({this.api});
+  Categories(this.api);
 
   List<LokalCategory> _categories = [];
 
@@ -14,11 +14,7 @@ class Categories extends ChangeNotifier {
 
   bool get isLoading => _isLoading;
 
-  API? api;
-
-  void setAPI(API api) {
-    this.api = api;
-  }
+  final API api;
 
   UnmodifiableListView<LokalCategory> get categories =>
       UnmodifiableListView(_categories);
@@ -27,7 +23,7 @@ class Categories extends ChangeNotifier {
     _isLoading = true;
     notifyListeners();
 
-    final _service = CategoryAPIService(api!);
+    final _service = CategoryAPIService(api);
 
     _categories = await _service.getAll();
     _isLoading = false;

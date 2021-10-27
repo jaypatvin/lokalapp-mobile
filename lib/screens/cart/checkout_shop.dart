@@ -7,8 +7,8 @@ import '../../providers/products.dart';
 import '../../utils/constants/themes.dart';
 import '../../widgets/app_button.dart';
 import '../../widgets/custom_app_bar.dart';
+import '../activity/subscriptions/subscription_schedule.dart';
 import '../discover/product_detail.dart';
-import '../subscriptions/subscription_schedule.dart';
 import 'checkout.dart';
 import 'components/order_details.dart';
 

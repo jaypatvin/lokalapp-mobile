@@ -12,14 +12,14 @@ import 'package:provider/provider.dart';
 import '../../models/activity_feed.dart';
 import '../../models/lokal_images.dart';
 import '../../providers/activities.dart';
-import '../../providers/user.dart';
+import '../../providers/auth.dart';
 import '../../providers/users.dart';
 import '../../services/local_image_service.dart';
-import '../../utils/functions.utils.dart';
 import '../../utils/constants/themes.dart';
+import '../../utils/functions.utils.dart';
 import '../../widgets/custom_app_bar.dart';
-import '../../widgets/input_images.dart';
-import '../../widgets/input_text_field.dart';
+import '../../widgets/inputs/input_images_picker.dart';
+import '../../widgets/inputs/input_text_field.dart';
 import '../../widgets/photo_picker_gallery/image_gallery_picker.dart';
 import '../../widgets/photo_picker_gallery/provider/custom_photo_provider.dart';
 import '../../widgets/photo_view_gallery/thumbnails/network_photo_thumbnail.dart';
@@ -256,7 +256,7 @@ class _PostDetailsState extends State<PostDetails> {
   }
 
   Future<void> createComment() async {
-    final cUser = context.read<CurrentUser>();
+    final cUser = context.read<Auth>().user!;
     final service = context.read<LocalImageService>();
     final gallery = <LokalImages>[];
     for (var asset in provider!.picked) {
@@ -342,7 +342,7 @@ class _PostDetailsState extends State<PostDetails> {
                   AnimatedContainer(
                     height: provider!.picked.length > 0 ? 100 : 0.0,
                     duration: const Duration(milliseconds: 200),
-                    child: InputImages(
+                    child: InputImagesPicker(
                       pickedImages: provider!.picked,
                       onImageRemove: (index) => setState(
                         () => provider!.picked.removeAt(index),
@@ -366,7 +366,7 @@ class _PostDetailsState extends State<PostDetails> {
   }
 
   Widget _buildComments() {
-    final cUser = context.read<CurrentUser>();
+    final cUser = context.read<Auth>().user!;
     return Consumer<Activities>(
       builder: (_, activities, __) {
         return activities.isCommentLoading

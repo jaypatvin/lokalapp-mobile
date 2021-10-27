@@ -1,19 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 
+import '../../providers/auth.dart';
 import '../../providers/categories.dart';
+import '../../providers/products.dart';
 import '../../utils/constants/themes.dart';
 import '../../utils/shared_preference.dart';
 import '../../widgets/custom_app_bar.dart';
-import '../../widgets/onboarding.dart';
-import '../../widgets/search_text_field.dart';
+import '../../widgets/inputs/search_text_field.dart';
+import '../../widgets/overlays/onboarding.dart';
+import '../../widgets/products_list.dart';
 import '../cart/cart_container.dart';
-import '../profile_screens/components/store_card.dart';
-import '../search/search.dart';
 import 'components/recommended_products.dart';
 import 'explore_categories.dart';
+import 'product_detail.dart';
+import 'search.dart';
 
 class Discover extends StatefulWidget {
   static const routeName = "/discover";
@@ -182,8 +186,26 @@ class _DiscoverState extends State<Discover> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Expanded(
-                        child: StoreCard(
-                          crossAxisCount: 2,
+                        child: Consumer<Products>(
+                          builder: (ctx, products, _) {
+                            if (products.isLoading) {
+                              return Center(
+                                child: CircularProgressIndicator(),
+                              );
+                            }
+                            final cUser = context.read<Auth>().user!;
+                            return ProductsList(
+                              items: products.items
+                                  .where((p) => p.userId != cUser.id)
+                                  .toList(),
+                              onProductTap: (id) {
+                                pushNewScreen(
+                                  context,
+                                  screen: ProductDetail(products.findById(id)),
+                                );
+                              },
+                            );
+                          },
                         ),
                       ),
                     ],

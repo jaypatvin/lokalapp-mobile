@@ -117,9 +117,9 @@ class PostCard extends StatelessWidget {
     );
   }
 
-  Widget _buildPostImages({
-    BuildContext? context,
-  }) {
+  Widget _buildPostImages(
+    BuildContext context,
+  ) {
     var images = this.activityFeed.images;
     var count = images.length;
     return StaggeredGridView.countBuilder(
@@ -130,7 +130,7 @@ class PostCard extends StatelessWidget {
       itemBuilder: (ctx, index) {
         return NetworkPhotoThumbnail(
           galleryItem: images[index],
-          onTap: () => _openGallery(context!, index, images),
+          onTap: () => _openGallery(context, index, images),
         );
       },
       staggeredTileBuilder: (index) {
@@ -148,84 +148,86 @@ class PostCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
-    return Consumer<Users>(builder: (context, users, child) {
-      return Container(
-        padding: EdgeInsets.symmetric(horizontal: width * 0.05),
-        child: Card(
-          margin: EdgeInsets.only(top: height * 0.02),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16.0.r),
-          ),
-          child: users.isLoading!
-              ? Container(
-                  height: 100.0.h,
-                  child: Center(
-                    child: CircularProgressIndicator(),
-                  ),
-                )
-              : Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    SizedBox(height: 10.0.h),
-                    _buildHeader(context),
-                    SizedBox(height: 5.0.h),
-                    _buildMessageBody(
-                      message: activityFeed.message,
-                      horizontalPadding: 20.0.w,
+    return Consumer<Users>(
+      builder: (context, users, child) {
+        return Container(
+          padding: EdgeInsets.symmetric(horizontal: width * 0.05),
+          child: Card(
+            margin: EdgeInsets.only(top: height * 0.02),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16.0.r),
+            ),
+            child: users.isLoading
+                ? Container(
+                    height: 100.0.h,
+                    child: Center(
+                      child: CircularProgressIndicator(),
                     ),
-                    SizedBox(height: 5.0.h),
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 20.0.w),
-                      child: _buildPostImages(context: context),
-                    ),
-                    Divider(
-                      color: Colors.grey,
-                      indent: 20.0.w,
-                      endIndent: 20.0.w,
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(
-                        left: 10.0.w,
-                        right: 20.0.w,
+                  )
+                : Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      SizedBox(height: 10.0.h),
+                      _buildHeader(context),
+                      SizedBox(height: 5.0.h),
+                      _buildMessageBody(
+                        message: activityFeed.message,
+                        horizontalPadding: 20.0.w,
                       ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          IconButton(
-                            icon: Icon(
-                              this.activityFeed.liked
-                                  ? MdiIcons.heart
-                                  : MdiIcons.heartOutline,
-                              color: this.activityFeed.liked
-                                  ? Colors.red
-                                  : Colors.black,
+                      SizedBox(height: 5.0.h),
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 20.0.w),
+                        child: _buildPostImages(context),
+                      ),
+                      Divider(
+                        color: Colors.grey,
+                        indent: 20.0.w,
+                        endIndent: 20.0.w,
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(
+                          left: 10.0.w,
+                          right: 20.0.w,
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            IconButton(
+                              icon: Icon(
+                                this.activityFeed.liked
+                                    ? MdiIcons.heart
+                                    : MdiIcons.heartOutline,
+                                color: this.activityFeed.liked
+                                    ? Colors.red
+                                    : Colors.black,
+                              ),
+                              onPressed: this.onLike,
                             ),
-                            onPressed: this.onLike,
-                          ),
-                          Text(
-                            this.activityFeed.likedCount.toString(),
-                            style: Theme.of(context).textTheme.subtitle1,
-                          ),
-                          Spacer(),
-                          Row(
-                            children: [
-                              IconButton(
-                                icon: Icon(MdiIcons.commentOutline),
-                                onPressed: () => this.onCommentsPressed(),
-                              ),
-                              Text(
-                                this.activityFeed.commentCount.toString(),
-                                style: Theme.of(context).textTheme.subtitle1,
-                              ),
-                            ],
-                          ),
-                        ],
+                            Text(
+                              this.activityFeed.likedCount.toString(),
+                              style: Theme.of(context).textTheme.subtitle1,
+                            ),
+                            Spacer(),
+                            Row(
+                              children: [
+                                IconButton(
+                                  icon: Icon(MdiIcons.commentOutline),
+                                  onPressed: () => this.onCommentsPressed(),
+                                ),
+                                Text(
+                                  this.activityFeed.commentCount.toString(),
+                                  style: Theme.of(context).textTheme.subtitle1,
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-        ),
-      );
-    });
+                    ],
+                  ),
+          ),
+        );
+      },
+    );
   }
 }

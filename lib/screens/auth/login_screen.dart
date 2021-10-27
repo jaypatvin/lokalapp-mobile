@@ -1,16 +1,16 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/activities.dart';
+import '../../providers/auth.dart';
 import '../../providers/categories.dart';
 import '../../providers/products.dart';
 import '../../providers/shops.dart';
-import '../../providers/user.dart';
-import '../../providers/user_auth.dart';
 import '../../providers/users.dart';
 import '../../utils/constants/themes.dart';
-import '../../widgets/screen_loader.dart';
+import '../../widgets/overlays/screen_loader.dart';
 import '../bottom_navigation.dart';
 import 'components/auth_input_form.dart';
 import 'components/sso_block.dart';
@@ -38,56 +38,58 @@ class _LoginScreenState extends State<LoginScreen>
     String? password,
   }) async {
     FocusScope.of(context).unfocus();
-    CurrentUser user = Provider.of<CurrentUser>(context, listen: false);
-    UserAuth auth = Provider.of<UserAuth>(context, listen: false);
+    // CurrentUser user = context.read<Auth>().user!;
+    // UserAuth auth = Provider.of<UserAuth>(context, listen: false);
+    final auth = context.read<Auth>();
     try {
-      AuthStatus? _authStatus;
-
       switch (type) {
         case LoginType.email:
-          _authStatus = await auth.loginWithEmail(email!, password!);
+          await auth.loginWithEmail(email!, password!);
           break;
         case LoginType.google:
-          _authStatus = await auth.loginWithGoogle();
+          await auth.loginWithGoogle();
           break;
         case LoginType.facebook:
-          _authStatus = await auth.loginWithFacebook();
+          await auth.loginWithFacebook();
           break;
         default:
       }
-      if (_authStatus == AuthStatus.Success) {
-        await user.fetch(auth.user!);
-        if (user.state == UserState.LoggedIn) {
-          await performFuture(() async {
-            await context.read<Activities>().fetch();
-            await context.read<Shops>().fetch();
-            await context.read<Products>().fetch();
-            await context.read<Users>().fetch();
-            await context.read<Categories>().fetch();
-          });
-          Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(builder: (context) => BottomNavigation()),
-            (route) => false,
-          );
-        } else {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => InvitePage()),
-          );
-        }
-      } else if (_authStatus == AuthStatus.UserNotFound) {
+
+      if (auth.user != null) {
+        await performFuture(() async {
+          await context.read<Activities>().fetch();
+          await context.read<Shops>().fetch();
+          await context.read<Products>().fetch();
+          await context.read<Users>().fetch();
+          await context.read<Categories>().fetch();
+        });
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => BottomNavigation()),
+          (route) => false,
+        );
+      } else {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => InvitePage()),
         );
-      } else if (_authStatus == AuthStatus.InvalidPassword) {
-        setState(() {
-          _signInError = true;
-        });
-      } else {
-        final snackBar = SnackBar(content: Text('Error Logging In'));
-        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      }
+    } on FirebaseAuthException catch (e) {
+      switch (e.code) {
+        case "invalid-email":
+        case "wrong-password":
+          setState(() {
+            _signInError = true;
+          });
+          break;
+        case "user-not-found":
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => InvitePage()),
+          );
+          break;
+        default:
+          throw e.message!;
       }
     } catch (e) {
       final snackBar = SnackBar(content: Text('Error Logging In'));

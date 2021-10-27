@@ -12,7 +12,7 @@ enum MainScreen {
 }
 
 class UserSharedPreferences {
-  late final SharedPreferences? _preference;
+  SharedPreferences? _preference;
   final _streamController = StreamController<UserSharedPreferences>.broadcast();
   final _storage = LocalStorage('session');
 

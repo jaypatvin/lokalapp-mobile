@@ -12,7 +12,7 @@ import '../../utils/constants/themes.dart';
 import '../../widgets/app_button.dart';
 import '../../widgets/custom_app_bar.dart';
 import '../chat/components/chat_avatar.dart';
-import '../profile_screens/components/store_rating.dart';
+import '../profile/components/store_rating.dart';
 
 class ProductDetail extends StatefulWidget {
   final Product? product;

@@ -4,8 +4,8 @@ import 'package:photo_manager/photo_manager.dart';
 
 import '../../../models/conversation.dart';
 import '../../../utils/constants/themes.dart';
-import '../../../widgets/input_images.dart';
-import '../../../widgets/input_text_field.dart';
+import '../../../widgets/inputs/input_images_picker.dart';
+import '../../../widgets/inputs/input_text_field.dart';
 import 'reply_message.dart';
 
 class ChatInput extends StatelessWidget {
@@ -78,7 +78,7 @@ class ChatInput extends StatelessWidget {
                       AnimatedContainer(
                         height: this.images.length > 0 ? 100 : 0.0,
                         duration: const Duration(milliseconds: 200),
-                        child: InputImages(
+                        child: InputImagesPicker(
                           pickedImages: this.images,
                           onImageRemove: this.onImageRemove,
                         ),

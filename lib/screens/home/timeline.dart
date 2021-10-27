@@ -4,8 +4,9 @@ import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/activity_feed.dart';
+import '../../models/lokal_user.dart';
 import '../../providers/activities.dart';
-import '../../providers/user.dart';
+import '../../providers/auth.dart';
 import '../../utils/constants/themes.dart';
 import 'components/post_card.dart';
 import 'post_details.dart';
@@ -16,7 +17,7 @@ class Timeline extends StatelessWidget {
 
   Timeline(this.activities, this.scrollController);
 
-  void onLike(BuildContext context, ActivityFeed activity, CurrentUser user) {
+  void onLike(BuildContext context, ActivityFeed activity, LokalUser user) {
     if (activity.liked) {
       context.read<Activities>().unlikePost(
             activityId: activity.id,
@@ -33,7 +34,7 @@ class Timeline extends StatelessWidget {
   }
 
   void onCommentsPressed(ActivityFeed activity, BuildContext context) {
-    final user = Provider.of<CurrentUser>(context, listen: false);
+    final user = context.read<Auth>().user!;
     context.read<Activities>().fetchComments(activityId: activity.id);
     pushNewScreen(
       context,
@@ -109,7 +110,7 @@ class Timeline extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var user = Provider.of<CurrentUser>(context, listen: false);
+    var user = context.read<Auth>().user!;
     if (activities.length <= 0) {
       return Center(
         child: Text("No posts yet! Be the first one to post."),
