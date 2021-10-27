@@ -8,28 +8,40 @@ import '../../models/lokal_user.dart';
 import '../../providers/activities.dart';
 import '../../providers/auth.dart';
 import '../../utils/constants/themes.dart';
+import '../profile/profile_screen.dart';
 import 'components/post_card.dart';
 import 'post_details.dart';
 
 class Timeline extends StatelessWidget {
   final List<ActivityFeed> activities;
   final ScrollController? scrollController;
+  final double firstIndexPadding;
 
-  Timeline(this.activities, this.scrollController);
+  Timeline(
+    this.activities,
+    this.scrollController, {
+    this.firstIndexPadding = 0,
+  });
 
   void onLike(BuildContext context, ActivityFeed activity, LokalUser user) {
-    if (activity.liked) {
-      context.read<Activities>().unlikePost(
-            activityId: activity.id,
-            userId: user.id,
-          );
-      debugPrint("Unliked ${activity.id}");
-    } else {
-      context.read<Activities>().likePost(
-            activityId: activity.id,
-            userId: user.id,
-          );
-      debugPrint("Liked ${activity.id}");
+    try {
+      if (activity.liked) {
+        context.read<Activities>().unlikePost(
+              activityId: activity.id,
+              userId: user.id!,
+            );
+      } else {
+        context.read<Activities>().likePost(
+              activityId: activity.id,
+              userId: user.id!,
+            );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error: $e'),
+        ),
+      );
     }
   }
 
@@ -124,21 +136,34 @@ class Timeline extends StatelessWidget {
       itemCount: activities.length,
       itemBuilder: (context, index) {
         var activity = activities[index];
-        return PostCard(
-          activityFeed: activity,
-          onCommentsPressed: () {
-            this.onCommentsPressed(activity, context);
-          },
-          onLike: () => onLike(context, activity, user),
-          onTripleDotsPressed: () {
-            this.onTripleDotsPressed(context, user.id == activity.userId);
-          },
-          onUserPressed: () {
-            debugPrint("Pressed the user: ${activity.userId}");
-          },
-          onMessagePressed: () {
-            this.onCommentsPressed(activity, context);
-          },
+        return Container(
+          margin: index == 0
+              ? EdgeInsets.only(top: this.firstIndexPadding)
+              : EdgeInsets.zero,
+          child: PostCard(
+            activityFeed: activity,
+            onCommentsPressed: () {
+              this.onCommentsPressed(activity, context);
+            },
+            onLike: () => onLike(context, activity, user),
+            onTripleDotsPressed: () {
+              this.onTripleDotsPressed(context, user.id == activity.userId);
+            },
+            onUserPressed: () {
+              debugPrint("Pressed the user: ${activity.userId}");
+              if (activity.userId == user.id) {
+                context.read<PersistentTabController>().jumpToTab(4);
+                return;
+              }
+              pushNewScreen(
+                context,
+                screen: ProfileScreen(userId: activity.userId),
+              );
+            },
+            onMessagePressed: () {
+              this.onCommentsPressed(activity, context);
+            },
+          ),
         );
       },
     );

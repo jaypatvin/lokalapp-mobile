@@ -1,6 +1,3 @@
-import 'dart:async';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -11,11 +8,9 @@ import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/activities.dart';
-import '../../services/database.dart';
 import '../../utils/constants/assets.dart';
 import '../../utils/constants/themes.dart';
 import '../../utils/shared_preference.dart';
-import '../../widgets/app_button.dart';
 import '../../widgets/custom_app_bar.dart';
 import '../../widgets/overlays/onboarding.dart';
 import '../cart/cart_container.dart';
@@ -30,12 +25,16 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  late final ScrollController? _controller;
-  late final Stream<QuerySnapshot> _stream;
-  late final StreamSubscription _subscription;
+  late final ScrollController _controller;
 
   double _postFieldHeight = 75.0.h;
-  bool _displayNewPost = false;
+  double _offset = 0.0;
+
+  double _forwardOffset = 0.0;
+  double _reverseOffset = 0.0;
+
+  double _currentForwardOffset = 0.0;
+  double _currentReverseOffset = 0.0;
 
   @override
   void initState() {
@@ -45,49 +44,46 @@ class _HomeState extends State<Home> {
       activities.fetch();
     }
 
-    _stream = Database.instance.getCommunityTimeline();
-    _subscription = _stream.listen((snapshot) {
-      debugPrint('first: ${snapshot.docs.first.id}');
-      debugPrint('first API: ${activities.feed.first.id}');
-      if (snapshot.docs.first.id != activities.feed.first.id) {
-        if (mounted) {
-          setState(() {
-            _displayNewPost = true;
-          });
-        }
-      }
-    });
-
     _controller = ScrollController()..addListener(_scrollListener);
   }
 
   @override
   void dispose() {
-    _controller!.removeListener(_scrollListener);
-    _controller!.dispose();
-    _subscription.cancel();
+    _controller.removeListener(_scrollListener);
+    _controller.dispose();
     super.dispose();
   }
 
   void _scrollListener() {
-    if (_controller!.position.userScrollDirection == ScrollDirection.reverse) {
-      if (_postFieldHeight != 0)
-        setState(() {
-          _postFieldHeight = 0;
-        });
+    if (_controller.position.userScrollDirection == ScrollDirection.reverse) {
+      _reverseOffset = _controller.offset;
+      if (_controller.offset - _forwardOffset >= _postFieldHeight) {
+        if (_offset == _postFieldHeight) return;
+        _offset = -_postFieldHeight;
+      } else {
+        _offset = _currentForwardOffset - (_controller.offset - _forwardOffset);
+      }
+      _currentReverseOffset = _offset;
     }
-    if (_controller!.position.userScrollDirection == ScrollDirection.forward) {
-      if (_postFieldHeight == 0)
-        setState(() {
-          _postFieldHeight = 75.0.h;
-        });
+    if (_controller.position.userScrollDirection == ScrollDirection.forward) {
+      _forwardOffset = _controller.offset;
+      _offset = (_reverseOffset - _controller.offset) + _currentReverseOffset;
+
+      if (_offset >= 0) {
+        if (_offset == 0) return;
+        _offset = 0;
+      }
+
+      _currentForwardOffset = _offset;
     }
+    setState(() {});
   }
 
   Widget _postField() {
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 300),
+    return Container(
       height: _postFieldHeight,
+      width: double.infinity,
+      color: kInviteScreenColor.withOpacity(0.7),
       child: Padding(
         padding: EdgeInsets.symmetric(
           horizontal: 20.0.w,
@@ -146,55 +142,39 @@ class _HomeState extends State<Home> {
           buildLeading: false,
         ),
         body: CartContainer(
-          child: Column(
-            children: [
-              _postField(),
-              Expanded(
-                child: Stack(
-                  children: [
-                    Positioned.fill(
-                      child: Consumer<Activities>(
-                        builder: (context, activities, child) {
-                          return activities.isLoading
-                              ? SizedBox(
-                                  width: double.infinity,
-                                  height: double.infinity,
-                                  child: DecoratedBox(
-                                    decoration: const BoxDecoration(
-                                      color: Colors.white,
-                                    ),
-                                    child: Lottie.asset(kAnimationLoading),
-                                  ),
-                                )
-                              : RefreshIndicator(
-                                  onRefresh: () => activities.fetch(),
-                                  child: Timeline(activities.feed, _controller),
-                                );
-                        },
-                      ),
-                    ),
-                    if (this._displayNewPost)
-                      Align(
-                        alignment: Alignment.topCenter,
-                        child: AppButton(
-                          "New Posts",
-                          Colors.grey.withOpacity(0.5),
-                          true,
-                          () {
-                            context.read<Activities>().fetch();
-                            setState(() {
-                              _displayNewPost = false;
-                            });
-                          },
-                          textStyle: TextStyle(
-                            color: Colors.black,
-                          ),
-                        ),
-                      ),
-                  ],
+          child: SizedBox(
+            height: MediaQuery.of(context).size.height,
+            child: Stack(
+              children: [
+                Consumer<Activities>(
+                  builder: (context, activities, child) {
+                    return activities.isLoading
+                        ? SizedBox(
+                            width: double.infinity,
+                            height: double.infinity,
+                            child: DecoratedBox(
+                              decoration: const BoxDecoration(
+                                color: Colors.white,
+                              ),
+                              child: Lottie.asset(kAnimationLoading),
+                            ),
+                          )
+                        : RefreshIndicator(
+                            onRefresh: () => activities.fetch(),
+                            child: Timeline(
+                              activities.feed,
+                              _controller,
+                              firstIndexPadding: _postFieldHeight,
+                            ),
+                          );
+                  },
                 ),
-              ),
-            ],
+                Transform.translate(
+                  offset: Offset(0, _offset),
+                  child: _postField(),
+                ),
+              ],
+            ),
           ),
         ),
       ),

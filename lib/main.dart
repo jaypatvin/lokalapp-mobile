@@ -72,13 +72,16 @@ class _MyAppState extends State<MyApp> {
       ChangeNotifierProvider<Invite>(create: (_) => Invite()),
 
       ChangeNotifierProxyProvider<Auth, Activities?>(
-        create: (_) => Activities(),
-        update: (_, auth, activities) => activities!
-          ..setCommunityId(auth.user?.communityId)
-          ..setIdToken(auth.idToken),
+        create: (_) => Activities(_api),
+        update: (_, auth, activities) =>
+            activities!..setCommunityId(auth.user?.communityId),
+      ),
+      ChangeNotifierProxyProvider<Auth, Users?>(
+        create: (_) => Users(_api),
+        update: (_, auth, users) =>
+            users!..setCommunityId(auth.user?.communityId),
       ),
 
-      // TODO: separate BL (MVVM pattern)
       ChangeNotifierProxyProvider<Auth, Shops?>(
         create: (_) => Shops(),
         update: (_, auth, shops) => shops!
@@ -91,12 +94,7 @@ class _MyAppState extends State<MyApp> {
           ..setCommunityId(auth.user?.communityId)
           ..setIdToken(auth.idToken),
       ),
-      ChangeNotifierProxyProvider<Auth, Users?>(
-        create: (_) => Users(),
-        update: (_, auth, users) => users!
-          ..setCommunityId(auth.user?.communityId)
-          ..setIdToken(auth.idToken),
-      ),
+
       ChangeNotifierProvider<Categories>(create: (_) => Categories(_api)),
 
       // This is used in 3 Separate Screens (Tabs) - Home, Discover, and Profile
