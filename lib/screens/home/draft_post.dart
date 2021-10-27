@@ -14,11 +14,11 @@ import '../../services/local_image_service.dart';
 import '../../utils/constants/themes.dart';
 import '../../widgets/app_button.dart';
 import '../../widgets/custom_app_bar.dart';
+import '../../widgets/overlays/screen_loader.dart';
 import '../../widgets/photo_picker_gallery/image_gallery_picker.dart';
 import '../../widgets/photo_picker_gallery/provider/custom_photo_provider.dart';
 import '../../widgets/photo_view_gallery/gallery/gallery_asset_photo_view.dart';
 import '../../widgets/photo_view_gallery/thumbnails/asset_photo_thumbnail.dart';
-import '../../widgets/overlays/screen_loader.dart';
 
 class DraftPost extends StatefulWidget {
   @override
@@ -197,16 +197,23 @@ class _DraftPostState extends State<DraftPost>
           .add(LokalImages(url: url, order: _provider!.picked.indexOf(asset)));
     }
 
-    bool postSuccess = await activities.post(
-      {
+    try {
+      await activities.post({
         'community_id': user.communityId,
         'user_id': user.id,
         'message': _userController.text,
         'images': gallery.map((x) => x.toMap()).toList(),
-      },
-    );
-    if (postSuccess) {
+      });
+
       Navigator.pop(context, true);
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            e.toString(),
+          ),
+        ),
+      );
     }
   }
 

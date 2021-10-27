@@ -1,264 +1,233 @@
-import 'dart:convert';
+import 'dart:async';
+import 'dart:developer';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 
 import '../models/activity_feed.dart';
-import '../models/activity_feed_comment.dart';
-import '../services/lokal_api_service.dart';
+import '../services/api/activity_api_service.dart';
+import '../services/api/api.dart';
+import '../services/api/comment_api_service.dart';
+import '../services/database.dart';
 
 class Activities extends ChangeNotifier {
-  String? _communityId;
-  String? _idToken;
+  Activities._(this._activityService, this._commentService);
+
+  factory Activities(API api) {
+    final _activityService = ActivityAPIService(api);
+    final _commentService = CommentsAPIService(api);
+    return Activities._(_activityService, _commentService);
+  }
+
+  final ActivityAPIService _activityService;
+  final CommentsAPIService _commentService;
+  final Database _db = Database.instance;
+  //final Map<String, ActivityFeed> _feed = {};
   List<ActivityFeed> _feed = [];
+
+  StreamSubscription<QuerySnapshot<Map<String, dynamic>>>?
+      _activityFeedSubscription;
+
+  String _communityId = '';
   bool _isLoading = false;
   bool _isCommentLoading = false;
 
+  UnmodifiableListView<ActivityFeed> get feed => UnmodifiableListView(_feed);
+  String get communityId => _communityId;
   bool get isLoading => _isLoading;
   bool get isCommentLoading => _isCommentLoading;
-  List<ActivityFeed> get feed {
-    return [..._feed];
+
+  @override
+  void dispose() {
+    _activityFeedSubscription?.cancel();
+    super.dispose();
   }
 
-  String? get communityId => _communityId;
-  //set communityId(String communityId) => this._communityId = communityId;
-  //
   void setCommunityId(String? id) {
-    _communityId = id;
+    if (id != null) {
+      if (id == _communityId) return;
+      _communityId = id;
+      _activityFeedSubscription?.cancel();
+      _activityFeedSubscription =
+          _db.getCommunityTimeline(id).listen(_activityFeedListener);
+    }
   }
 
-  void setIdToken(String? idToken) {
-    _idToken = idToken;
+  void _activityFeedListener(QuerySnapshot<Map<String, dynamic>> query) async {
+    final length = query.docChanges.length;
+    if (_isLoading || length > 1) return;
+    for (final change in query.docChanges) {
+      final id = change.doc.id;
+      if (_feed.any((a) => a.id == id)) return;
+      final activityFeed = await _activityService.getById(activityId: id);
+      _feed
+        ..add(activityFeed)
+        ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
+      notifyListeners();
+    }
   }
 
   ActivityFeed findById(String id) {
-    return _feed.firstWhere((activity) => activity.id == id);
+    final index = _feed.indexWhere((a) => a.id == id);
+    if (index < 0) throw 'No Product with that Id.';
+    return _feed[index];
   }
 
   List<ActivityFeed> findByUser(String? userId) {
     return _feed.where((activity) => activity.userId == userId).toList();
   }
 
-  Future<bool> likePost({
-    required String? activityId,
-    required String? userId,
+  Future<void> likePost({
+    required String activityId,
+    required String userId,
   }) async {
-    var feed = _feed.where((feed) => feed.id == activityId).first;
+    final feed = this.findById(activityId);
     feed.likedCount++;
     feed.liked = true;
     notifyListeners();
 
-    var response = await LokalApiService.instance!.activity!.like(
-      idToken: _idToken,
-      activityId: activityId,
-      userId: userId,
-    );
-
-    if (response.statusCode != 200) {
+    try {
+      await _activityService.like(activityId: activityId, userId: userId);
+    } catch (e) {
       feed.likedCount--;
       feed.liked = false;
       notifyListeners();
-      return false;
+      throw e;
     }
-    var data = json.decode(response.body);
-    if (data['status'] == 'ok') {
-      return true;
-    }
-    return false;
   }
 
-  Future<bool> unlikePost({
-    required String? activityId,
-    required String? userId,
+  Future<void> unlikePost({
+    required String activityId,
+    required String userId,
   }) async {
-    var feed = _feed.where((feed) => feed.id == activityId).first;
+    final feed = this.findById(activityId);
     feed.likedCount--;
     feed.liked = false;
     notifyListeners();
 
-    var response = await LokalApiService.instance!.activity!.unlike(
-      idToken: _idToken,
-      activityId: activityId,
-      userId: userId,
-    );
-
-    if (response.statusCode != 200) {
+    try {
+      await _activityService.like(activityId: activityId, userId: userId);
+    } catch (e) {
       feed.likedCount++;
       feed.liked = true;
       notifyListeners();
-      return false;
+      throw e;
     }
-    var data = json.decode(response.body);
-    if (data['status'] == 'ok') {
-      return true;
-    }
-    return false;
   }
 
-  Future<bool> likeComment({
-    required String? commentId,
-    required String? activityId,
-    required String? userId,
+  Future<void> likeComment({
+    required String activityId,
+    required String commentId,
+    required String userId,
   }) async {
-    var feed = _feed.where((feed) => feed.id == activityId).first;
-    var comment =
-        feed.comments.where((comment) => comment.id == commentId).first;
+    final feed = this.findById(activityId);
+    final comment = feed.comments.firstWhere(
+      (comment) => comment.id == commentId,
+      orElse: () => throw 'Comment does not exist!',
+    );
     comment.liked = true;
     notifyListeners();
 
-    var response = await LokalApiService.instance!.comment!.like(
-      idToken: _idToken,
-      activityId: activityId,
-      userId: userId,
-      commentId: commentId,
-    );
-
-    if (response.statusCode != 200) {
+    try {
+      await _commentService.like(
+        activityId: activityId,
+        commentId: commentId,
+        userId: userId,
+      );
+    } catch (e) {
       comment.liked = false;
       notifyListeners();
-      return false;
+      throw e;
     }
-    var data = json.decode(response.body);
-    if (data['status'] == 'ok') {
-      return true;
-    }
-    return false;
   }
 
-  Future<bool> unlikeComment({
-    required String? commentId,
-    required String? activityId,
-    required String? userId,
+  Future<void> unlikeComment({
+    required String activityId,
+    required String commentId,
+    required String userId,
   }) async {
-    var feed = _feed.where((feed) => feed.id == activityId).first;
-    var comment =
-        feed.comments.where((comment) => comment.id == commentId).first;
+    final feed = this.findById(activityId);
+    final comment = feed.comments.firstWhere(
+      (comment) => comment.id == commentId,
+      orElse: () => throw 'Comment does not exist!',
+    );
     comment.liked = false;
     notifyListeners();
 
-    var response = await LokalApiService.instance!.comment!.unlike(
-      idToken: _idToken,
-      activityId: activityId,
-      userId: userId,
-      commentId: commentId,
-    );
-
-    if (response.statusCode != 200) {
-      comment.liked = false;
-      notifyListeners();
-      return false;
-    }
-    var data = json.decode(response.body);
-    if (data['status'] == 'ok') {
-      return true;
-    }
-    return false;
-  }
-
-  Future<bool> createComment({
-    required String? activityId,
-    required Map body,
-  }) async {
     try {
-      var response = await LokalApiService.instance!.comment!.create(
+      await _commentService.unlike(
         activityId: activityId,
-        idToken: _idToken,
-        data: body,
+        commentId: commentId,
+        userId: userId,
       );
-
-      if (response.statusCode != 200) {
-        return false;
-      }
-      var data = json.decode(response.body);
-      if (data['status'] == 'ok') {
-        return true;
-      }
-      return false;
     } catch (e) {
-      return false;
+      comment.liked = true;
+      notifyListeners();
+      throw e;
     }
   }
 
-  Future<void> fetchComments({
-    required String? activityId,
+  Future<void> createComment({
+    required String activityId,
+    required Map<String, dynamic> body,
   }) async {
-    _isCommentLoading = true;
     try {
-      var response = await LokalApiService.instance!.comment!
-          .getActivityComments(activityId: activityId, idToken: _idToken);
+      final comment = await _commentService.create(
+        activityId: activityId,
+        body: body,
+      );
+      this.findById(activityId).comments.add(comment);
+      notifyListeners();
+    } catch (e) {
+      throw e;
+    }
+  }
 
-      if (response.statusCode != 200) {
-        _isCommentLoading = false;
-        notifyListeners();
-        return;
-      }
+  Future<void> fetchComments({required String activityId}) async {
+    _isCommentLoading = true;
+    notifyListeners();
 
-      var data = json.decode(response.body);
-
-      if (data['status'] == 'ok') {
-        List<ActivityFeedComment> comments = [];
-        for (var comment in data['data']) {
-          var _comment = ActivityFeedComment.fromMap(comment);
-          comments.add(_comment);
-        }
-        comments.sort((a, b) => a.createdAt.compareTo(b.createdAt));
-        _feed.firstWhere((feed) => feed.id == activityId)..comments = comments;
-      }
+    try {
+      final comments = await _commentService.getActivityComments(
+        activityId: activityId,
+      );
+      comments.sort((a, b) => a.createdAt.compareTo(b.createdAt));
+      this.findById(activityId).comments = comments;
       _isCommentLoading = false;
+      notifyListeners();
     } catch (e) {
       _isCommentLoading = false;
+      notifyListeners();
+      throw e;
     }
-    notifyListeners();
   }
 
   Future<void> fetch() async {
     _isLoading = true;
     notifyListeners();
+
     try {
-      var response = await LokalApiService.instance!.activity!
-          .getCommunityActivities(communityId: communityId, idToken: _idToken);
-
-      if (response.statusCode != 200) {
-        _isLoading = false;
-        notifyListeners();
-        return;
-      }
-
-      var data = json.decode(response.body);
-
-      if (data['status'] == 'ok') {
-        List<ActivityFeed> activities = [];
-
-        for (var activity in data['data']) {
-          var _activity = ActivityFeed.fromMap(activity);
-          _activity.comments = [];
-          activities.add(_activity);
-        }
-
-        _feed = activities..sort((a, b) => b.createdAt.compareTo(a.createdAt));
-      }
-
+      final feed = await _activityService.getAll();
+      _feed = feed..sort((a, b) => b.createdAt.compareTo(a.createdAt));
       _isLoading = false;
+      notifyListeners();
     } catch (e) {
       _isLoading = false;
+      notifyListeners();
+      throw e;
     }
-    notifyListeners();
   }
 
-  Future<bool> post(Map data) async {
+  Future<void> post(Map<String, dynamic> data) async {
     try {
-      var response = await LokalApiService.instance!.activity!
-          .create(idToken: _idToken, data: data);
-
-      if (response.statusCode != 200) {
-        return false;
-      }
-      var body = json.decode(response.body);
-      if (body['status'] == 'ok') {
-        return true;
-      }
-      return false;
+      final activity = await _activityService.create(data: data);
+      _feed
+        ..add(activity)
+        ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
+      notifyListeners();
     } catch (e) {
-      return false;
+      throw e;
     }
   }
 }

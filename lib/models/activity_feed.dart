@@ -79,10 +79,10 @@ class ActivityFeed {
       images: map['images'] != null
           ? List<LokalImages>.from(
               map['images']?.map((x) => LokalImages.fromMap(x)))
-          : const [],
+          : [],
       liked: map['liked'] ?? false,
       comments: map['comments'] == null
-          ? const []
+          ? []
           : List<ActivityFeedComment>.from(
               map['comments']?.map(
                 (x) => ActivityFeedComment.fromMap(map),

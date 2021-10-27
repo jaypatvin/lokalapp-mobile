@@ -61,10 +61,22 @@ class Database {
         .snapshots();
   }
 
-  Stream<QuerySnapshot> getCommunityTimeline() {
+  Stream<QuerySnapshot<Map<String, dynamic>>> getCommunityTimeline(
+    String communityId,
+  ) {
     return FirebaseFirestore.instance
         .collection('activities')
+        .where('community_id', isEqualTo: communityId)
         .orderBy('created_at', descending: true)
+        .snapshots();
+  }
+
+  Stream<QuerySnapshot<Map<String, dynamic>>> getCommunityUsers(
+    String communityId,
+  ) {
+    return FirebaseFirestore.instance
+        .collection('users')
+        .where('community_id', isEqualTo: communityId)
         .snapshots();
   }
 

@@ -10,6 +10,7 @@ import 'package:photo_manager/photo_manager.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/activity_feed.dart';
+import '../../models/activity_feed_comment.dart';
 import '../../models/lokal_images.dart';
 import '../../providers/activities.dart';
 import '../../providers/auth.dart';
@@ -44,6 +45,7 @@ class _PostDetailsState extends State<PostDetails> {
   final TextEditingController commentInputController = TextEditingController();
   final FocusNode _commentInputFocusNode = FocusNode();
   final ScrollController scrollController = ScrollController();
+  bool commentUploading = false;
   bool showImagePicker = false;
   CustomPickerDataProvider? provider;
 
@@ -224,6 +226,34 @@ class _PostDetailsState extends State<PostDetails> {
     );
   }
 
+  void _commentLikeHandler(ActivityFeedComment comment) {
+    final cUser = context.read<Auth>().user!;
+
+    try {
+      if (comment.liked) {
+        Provider.of<Activities>(context, listen: false).unlikeComment(
+          commentId: comment.id,
+          activityId: widget.activity.id,
+          userId: cUser.id!,
+        );
+        debugPrint("Unliked comment ${comment.id}");
+      } else {
+        Provider.of<Activities>(context, listen: false).likeComment(
+          commentId: comment.id,
+          activityId: widget.activity.id,
+          userId: cUser.id!,
+        );
+        debugPrint("Liked comment ${comment.id}");
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error: $e'),
+        ),
+      );
+    }
+  }
+
   Widget buildPostImages() {
     final images = this.widget.activity.images;
     final count = images.length;
@@ -256,6 +286,9 @@ class _PostDetailsState extends State<PostDetails> {
   }
 
   Future<void> createComment() async {
+    if (commentUploading || commentInputController.text.isEmpty) return;
+
+    commentUploading = true;
     final cUser = context.read<Auth>().user!;
     final service = context.read<LocalImageService>();
     final gallery = <LokalImages>[];
@@ -272,23 +305,22 @@ class _PostDetailsState extends State<PostDetails> {
       "images": gallery.map((x) => x.toMap()).toList(),
     };
 
-    final success = await context.read<Activities>().createComment(
-          activityId: widget.activity.id,
-          body: body,
-        );
+    try {
+      await context.read<Activities>().createComment(
+            activityId: widget.activity.id,
+            body: body,
+          );
 
-    if (success) {
+      commentUploading = false;
       commentInputController.clear();
       setState(() {
         provider!.picked.clear();
       });
-      Provider.of<Activities>(context, listen: false).fetchComments(
-        activityId: widget.activity.id,
-      );
-    } else {
+    } catch (e) {
+      commentUploading = false;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text("Cannot create a comment"),
+          content: Text('Cannot create a comment: $e'),
         ),
       );
     }
@@ -366,10 +398,9 @@ class _PostDetailsState extends State<PostDetails> {
   }
 
   Widget _buildComments() {
-    final cUser = context.read<Auth>().user!;
     return Consumer<Activities>(
       builder: (_, activities, __) {
-        return activities.isCommentLoading
+        return activities.isCommentLoading && widget.activity.comments.isEmpty
             ? Center(child: CircularProgressIndicator())
             : ListView.builder(
                 physics: NeverScrollableScrollPhysics(),
@@ -387,25 +418,7 @@ class _PostDetailsState extends State<PostDetails> {
                         images: comment.images,
                         onLongPress: this.onCommentLongPress,
                         onUserPressed: widget.onUserPressed,
-                        onLike: () {
-                          if (comment.liked) {
-                            Provider.of<Activities>(context, listen: false)
-                                .unlikeComment(
-                              commentId: comment.id,
-                              activityId: widget.activity.id,
-                              userId: cUser.id,
-                            );
-                            debugPrint("Unliked comment ${comment.id}");
-                          } else {
-                            Provider.of<Activities>(context, listen: false)
-                                .likeComment(
-                              commentId: comment.id,
-                              activityId: widget.activity.id,
-                              userId: cUser.id,
-                            );
-                            debugPrint("Liked comment ${comment.id}");
-                          }
-                        },
+                        onLike: () => _commentLikeHandler(comment),
                         liked: comment.liked,
                       ),
                       Divider(),
