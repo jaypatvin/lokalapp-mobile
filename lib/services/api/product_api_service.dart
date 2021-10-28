@@ -129,6 +129,7 @@ class ProductApiService extends APIService<Product> {
   }) async {
     final response = await http.get(
       api.baseUri(
+        pathSegments: ['recommendedProducts'],
         queryParameters: {
           'user_id': userId,
           'community_id': communityId,
