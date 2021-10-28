@@ -269,14 +269,14 @@ class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
     try {
       if (updateData.isNotEmpty) {
         updatedProductDetails = await context.read<Products>().update(
-              id: _product.id!,
+              id: _product.id,
               data: updateBody.data,
             );
       }
 
       if (updateSchedule) {
         updatedProductSchedule = await context.read<Products>().setAvailability(
-              id: _product.id!,
+              id: _product.id,
               data: context.read<OperatingHoursBody>().data,
             );
       }

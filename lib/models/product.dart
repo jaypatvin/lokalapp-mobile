@@ -1,42 +1,46 @@
 import 'dart:convert';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
-import 'operating_hours.dart';
+import 'timestamp_time_object.dart';
 
 import 'lokal_images.dart';
+import 'operating_hours.dart';
 
 class Product {
-  String? id;
-  String? name;
+  String id;
+  String name;
   String? description;
-  String? shopId;
-  String? userId;
-  String? communityId;
-  double? basePrice;
-  int? quantity;
-  String? productCategory;
+  String shopId;
+  String userId;
+  String communityId;
+  double basePrice;
+  int quantity;
+  String productCategory;
   String? productPhoto;
-  String? status;
-  bool? archived;
-  bool? canSubscribe;
+  String status;
+  bool archived;
+  bool canSubscribe;
   OperatingHours? availability;
   List<LokalImages>? gallery;
+  DateTime createdAt;
   Product({
-    this.id,
-    this.name,
+    required this.id,
+    required this.name,
+    required this.shopId,
+    required this.userId,
+    required this.communityId,
+    required this.basePrice,
+    required this.quantity,
+    required this.productCategory,
+    required this.status,
+    required this.archived,
+    required this.canSubscribe,
+    required this.createdAt,
     this.description,
-    this.shopId,
-    this.userId,
-    this.communityId,
-    this.basePrice,
-    this.quantity,
-    this.productCategory,
     this.productPhoto,
-    this.status,
     this.gallery,
     this.availability,
-    this.archived,
-    this.canSubscribe,
   });
 
   Product copyWith({
@@ -55,6 +59,7 @@ class Product {
     OperatingHours? availability,
     bool? archived,
     bool? canSubscribe,
+    DateTime? createdAt,
   }) {
     return Product(
       id: id ?? this.id,
@@ -72,6 +77,7 @@ class Product {
       availability: availability ?? this.availability,
       archived: archived ?? this.archived,
       canSubscribe: canSubscribe ?? this.canSubscribe,
+      createdAt: createdAt ?? this.createdAt,
     );
   }
 
@@ -92,6 +98,7 @@ class Product {
       'availability': availability?.toMap(),
       'archived': archived,
       'can_subscribe': canSubscribe,
+      'created_at': Timestamp.fromDate(createdAt),
     };
   }
 
@@ -110,6 +117,7 @@ class Product {
       status: map['status'],
       archived: map['archived'],
       canSubscribe: map['can_subscribe'] ?? true,
+      createdAt: TimestampObject.fromMap(map['created_at']).toDateTime(),
       gallery: map['gallery'] == null
           ? <LokalImages>[]
           : List<LokalImages>.from(
@@ -132,7 +140,7 @@ class Product {
         'basePrice: $basePrice, quantity: $quantity, productCategory: '
         '$productCategory, productPhoto: $productPhoto, status: $status, '
         'gallery: $gallery, availability: $availability, archived: $archived '
-        'canSubscribe: $canSubscribe)';
+        'canSubscribe: $canSubscribe, createdAt: $createdAt)';
   }
 
   @override
@@ -154,7 +162,8 @@ class Product {
         o.archived == archived &&
         listEquals(o.gallery, gallery) &&
         o.availability == availability &&
-        o.canSubscribe == canSubscribe;
+        o.canSubscribe == canSubscribe &&
+        o.createdAt == createdAt;
   }
 
   @override
@@ -173,6 +182,7 @@ class Product {
         archived.hashCode ^
         gallery.hashCode ^
         availability.hashCode ^
-        canSubscribe.hashCode;
+        canSubscribe.hashCode ^
+        createdAt.hashCode;
   }
 }

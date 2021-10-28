@@ -75,7 +75,7 @@ class _SubscriptionPaymentMethodState extends State<SubscriptionPaymentMethod>
     final _productId = widget.subscriptionPlanBody.productId;
     final _quantity = widget.subscriptionPlanBody.quantity!;
     final _product = context.read<Products>().findById(_productId);
-    final double _totalPrice = _quantity * _product!.basePrice!;
+    final double _totalPrice = _quantity * _product!.basePrice;
 
     return Scaffold(
       backgroundColor: Colors.white,

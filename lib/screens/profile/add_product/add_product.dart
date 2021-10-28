@@ -52,7 +52,7 @@ class _AddProductState extends State<AddProduct> with ScreenLoader {
         _gallery = AddProductGallery(
           images: product.gallery,
         );
-        _nameController.text = product.name!;
+        _nameController.text = product.name;
         _priceController.text = product.basePrice.toString();
         _descriptionController.text = product.description!;
         _title = "Edit Product";

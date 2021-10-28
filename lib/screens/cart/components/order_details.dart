@@ -61,7 +61,7 @@ class OrderDetails extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      product.name!,
+                      product.name,
                       overflow: TextOverflow.ellipsis,
                       maxLines: 1,
                       softWrap: false,

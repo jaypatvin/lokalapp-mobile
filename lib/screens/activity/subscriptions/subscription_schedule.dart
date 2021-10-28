@@ -623,7 +623,7 @@ class _ProductCard extends StatelessWidget {
                           children: [
                             Expanded(
                               child: Text(
-                                product!.name!,
+                                product!.name,
                                 overflow: TextOverflow.ellipsis,
                                 maxLines: 2,
                                 softWrap: false,

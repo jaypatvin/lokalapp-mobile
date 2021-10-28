@@ -28,7 +28,7 @@ class Products extends ChangeNotifier {
       _productsSubscription;
 
   UnmodifiableListView<Product> get items => UnmodifiableListView(
-        _products.where((product) => !product.archived!),
+        _products.where((product) => !product.archived),
       );
   bool get isLoading => _isLoading;
 
