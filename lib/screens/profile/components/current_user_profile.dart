@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:lokalapp/providers/auth.dart';
 import 'package:lottie/lottie.dart';
 import 'package:persistent_bottom_nav_bar/models/nested_will_pop_scope.dart';
 import 'package:provider/provider.dart';
 
 import '../../../providers/activities.dart';
+import '../../../providers/auth.dart';
 import '../../../utils/constants/assets.dart';
 import '../../../utils/constants/themes.dart';
 import '../../../view_models/profile/components/current_user_profile.vm.dart';

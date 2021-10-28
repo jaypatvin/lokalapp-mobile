@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 
-import '../../../../../models/lokal_user.dart';
-import '../../../../../services/api/user_api_service.dart';
+import '../../../../models/lokal_user.dart';
+import '../../../../services/api/user_api_service.dart';
 
 class ChatSettingsViewModel extends ChangeNotifier {
   ChatSettingsViewModel(this.user, this._userAPIService);

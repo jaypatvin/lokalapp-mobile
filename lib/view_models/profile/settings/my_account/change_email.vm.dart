@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../../models/lokal_user.dart';
-import '../../../../../providers/auth.dart';
+import '../../../../models/lokal_user.dart';
+import '../../../../providers/auth.dart';
 
 class ChangeEmailViewModel extends ChangeNotifier {
   ChangeEmailViewModel(this._userAuth);

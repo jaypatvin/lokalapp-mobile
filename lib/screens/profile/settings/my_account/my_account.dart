@@ -7,11 +7,11 @@ import 'package:provider/provider.dart';
 
 import '../../../../providers/auth.dart';
 import '../../../../utils/constants/themes.dart';
+import '../../../../view_models/profile/settings/my_account/my_account.vm.dart';
 import '../../../../widgets/app_button.dart';
 import '../../../../widgets/custom_app_bar.dart';
 import 'change_email.dart';
 import 'change_password.dart';
-import 'view_model/my_account.vm.dart';
 
 class MyAccount extends StatefulWidget {
   @override

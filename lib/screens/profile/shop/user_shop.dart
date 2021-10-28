@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:lokalapp/view_models/profile/shop/user_shop.vm.dart';
 import 'package:provider/provider.dart';
 
+import '../../../view_models/profile/shop/user_shop.vm.dart';
 import '../../../widgets/inputs/search_text_field.dart';
 import 'components/shop_header.dart';
 import 'components/shop_product_field.dart';
