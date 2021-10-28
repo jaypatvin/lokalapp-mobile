@@ -3,7 +3,6 @@ import 'lokal_api/comments_service.dart';
 import 'lokal_api/community_service.dart';
 import 'lokal_api/invite_service.dart';
 import 'lokal_api/orders_service.dart';
-import 'lokal_api/products_service.dart';
 import 'lokal_api/shops_service.dart';
 import 'lokal_api/subscription_service.dart';
 
@@ -20,7 +19,6 @@ class LokalApiService {
   CommentsService? get comment => CommentsService.instance;
   CommunityService? get community => CommunityService.instance;
   InviteService? get invite => InviteService.instance;
-  ProductsService? get product => ProductsService.instance;
   ShopsService? get shop => ShopsService.instance;
   ChatService? get chat => ChatService.instance;
   OrdersService? get orders => OrdersService.instance;

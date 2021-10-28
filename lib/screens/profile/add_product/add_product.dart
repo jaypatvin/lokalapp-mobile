@@ -276,7 +276,7 @@ class _AddProductState extends State<AddProduct> with ScreenLoader {
 
       if (delete) {
         await performFuture(() async =>
-            await context.read<Products>().deleteProduct(id: widget.productId));
+            await context.read<Products>().deleteProduct(widget.productId!));
         Navigator.popUntil(
           context,
           ModalRoute.withName(UserShop.routeName),

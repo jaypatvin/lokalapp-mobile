@@ -82,15 +82,15 @@ class _MyAppState extends State<MyApp> {
             users!..setCommunityId(auth.user?.communityId),
       ),
 
+      ChangeNotifierProxyProvider<Auth, Products?>(
+        create: (_) => Products(_api),
+        update: (_, auth, products) =>
+            products!..setCommunityId(auth.user?.communityId),
+      ),
+
       ChangeNotifierProxyProvider<Auth, Shops?>(
         create: (_) => Shops(),
         update: (_, auth, shops) => shops!
-          ..setCommunityId(auth.user?.communityId)
-          ..setIdToken(auth.idToken),
-      ),
-      ChangeNotifierProxyProvider<Auth, Products?>(
-        create: (_) => Products(),
-        update: (_, auth, products) => products!
           ..setCommunityId(auth.user?.communityId)
           ..setIdToken(auth.idToken),
       ),

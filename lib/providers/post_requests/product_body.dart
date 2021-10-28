@@ -13,7 +13,7 @@ class ProductBody extends ChangeNotifier {
     "can_subscribe": true,
     "availability": <String, dynamic>{},
   };
-  Map get data => _productBody;
+  Map<String, dynamic> get data => _productBody;
 
   String? get name => data['name'];
   String? get description => data['description'];
