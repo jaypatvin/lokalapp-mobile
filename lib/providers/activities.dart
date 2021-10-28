@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:collection/collection.dart';
@@ -23,7 +22,6 @@ class Activities extends ChangeNotifier {
   final ActivityAPIService _activityService;
   final CommentsAPIService _commentService;
   final Database _db = Database.instance;
-  //final Map<String, ActivityFeed> _feed = {};
   List<ActivityFeed> _feed = [];
 
   StreamSubscription<QuerySnapshot<Map<String, dynamic>>>?
@@ -59,7 +57,22 @@ class Activities extends ChangeNotifier {
     if (_isLoading || length > 1) return;
     for (final change in query.docChanges) {
       final id = change.doc.id;
-      if (_feed.any((a) => a.id == id)) return;
+      final index = _feed.indexWhere((a) => a.id == id);
+
+      if (index >= 0) {
+        final _activity = ActivityFeed.fromDocument({
+          'id': id,
+          ...change.doc.data()!,
+        });
+        if (_feed[index].likedCount == _activity.likedCount &&
+            _feed[index].commentCount == _activity.commentCount) return;
+
+        _feed[index].likedCount = _activity.likedCount;
+        _feed[index].commentCount = _activity.commentCount;
+        notifyListeners();
+        return;
+      }
+
       final activityFeed = await _activityService.getById(activityId: id);
       _feed
         ..add(activityFeed)

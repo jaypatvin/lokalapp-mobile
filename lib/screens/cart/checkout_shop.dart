@@ -84,7 +84,7 @@ class _OrdersCard extends StatelessWidget {
                   style: TextStyle(color: Color(0xFF828282)),
                   children: [
                     TextSpan(
-                      text: (product.basePrice! * order.quantity).toString(),
+                      text: (product.basePrice * order.quantity).toString(),
                       style: TextStyle(color: Colors.orange),
                     )
                   ],
@@ -95,7 +95,7 @@ class _OrdersCard extends StatelessWidget {
             Row(
               // TODO: ADD ON PRESS FUNCTIONS
               children: [
-                if (context.read<Products>().findById(productId)!.canSubscribe!)
+                if (context.read<Products>().findById(productId)!.canSubscribe)
                   Expanded(
                     child: AppButton(
                       "Subscribe",
@@ -110,7 +110,7 @@ class _OrdersCard extends StatelessWidget {
                       ),
                     ),
                   ),
-                if (context.read<Products>().findById(productId)!.canSubscribe!)
+                if (context.read<Products>().findById(productId)!.canSubscribe)
                   SizedBox(width: 8.0),
                 Expanded(
                   child: AppButton(

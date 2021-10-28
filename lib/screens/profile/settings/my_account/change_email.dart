@@ -6,10 +6,10 @@ import 'package:provider/provider.dart';
 
 import '../../../../providers/auth.dart';
 import '../../../../utils/constants/themes.dart';
+import '../../../../view_models/profile/settings/my_account/change_email.vm.dart';
 import '../../../../widgets/app_button.dart';
 import '../../../../widgets/custom_app_bar.dart';
 import 'components/email_input_form.dart';
-import 'view_model/change_email.vm.dart';
 
 class ChangeEmail extends StatefulWidget {
   @override

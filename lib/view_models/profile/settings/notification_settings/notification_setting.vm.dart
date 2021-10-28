@@ -3,10 +3,10 @@ import 'dart:collection';
 import 'package:flutter/foundation.dart';
 import 'package:recase/recase.dart';
 
-import '../../../../../models/lokal_user.dart';
-import '../../../../../services/api/user_api_service.dart';
-import '../../../../../services/database.dart';
-import '../model/notification_setting.model.dart';
+import '../../../../models/lokal_user.dart';
+import '../../../../services/api/user_api_service.dart';
+import '../../../../services/database.dart';
+import '../../../../screens/profile/settings/notification_settings/model/notification_setting.model.dart';
 
 class NotificationSettingViewModel extends ChangeNotifier {
   NotificationSettingViewModel(this.user, this._userAPIService);

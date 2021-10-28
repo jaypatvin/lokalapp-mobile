@@ -6,8 +6,8 @@ import '../../../../providers/auth.dart';
 import '../../../../services/api/api.dart';
 import '../../../../services/api/user_api_service.dart';
 import '../../../../utils/constants/themes.dart';
+import '../../../../view_models/profile/settings/chat/chat_settings.vm.dart';
 import '../../../../widgets/custom_app_bar.dart';
-import 'view_model/chat_settings.vm.dart';
 
 class ChatSettings extends StatelessWidget {
   const ChatSettings({Key? key}) : super(key: key);

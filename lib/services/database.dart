@@ -71,6 +71,15 @@ class Database {
         .snapshots();
   }
 
+  Stream<QuerySnapshot<Map<String, dynamic>>> getCommunityProducts(
+    String communityId,
+  ) {
+     return FirebaseFirestore.instance
+        .collection('products')
+        .where('community_id', isEqualTo: communityId)
+        .snapshots();
+  }
+
   Stream<QuerySnapshot<Map<String, dynamic>>> getCommunityUsers(
     String communityId,
   ) {

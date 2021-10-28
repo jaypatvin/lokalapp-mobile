@@ -123,6 +123,24 @@ class ProductApiService extends APIService<Product> {
     return handleResponseList((map) => Product.fromMap(map), response);
   }
 
+  Future<List<Product>> getRecommendedProducts({
+    required String userId,
+    required String communityId,
+  }) async {
+    final response = await http.get(
+      api.baseUri(
+        pathSegments: ['recommendedProducts'],
+        queryParameters: {
+          'user_id': userId,
+          'community_id': communityId,
+        },
+      ),
+      headers: api.authHeader(),
+    );
+
+    return handleResponseList((map) => Product.fromMap(map), response);
+  }
+
   Future<Product> getById({
     required String productId,
   }) async {

@@ -160,7 +160,7 @@ class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
     );
   }
 
-  Future<String?> _createProduct() async {
+  Future<void> _createProduct() async {
     List<LokalImages> gallery = [];
     for (var image in images) {
       var mediaUrl =
@@ -184,23 +184,8 @@ class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
     } on Exception catch (e) {
       print(e);
       return null;
-    }
-  }
-
-  Future<bool> _setAvailability(String productId) async {
-    final products = context.read<Products>();
-    final product =
-        products.findById(productId); // this should get the latest item added
-    final hoursBody = Provider.of<OperatingHoursBody>(context, listen: false);
-
-    try {
-      return await products.setAvailability(
-        id: product!.id,
-        data: hoursBody.data,
-      );
     } catch (e) {
-      // do something with the error
-      return false;
+      throw e;
     }
   }
 
@@ -281,22 +266,26 @@ class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
     bool updatedProductDetails = false;
     bool updatedProductSchedule = false;
 
-    if (updateData.isNotEmpty) {
-      updatedProductDetails = await context.read<Products>().update(
-            id: _product.id,
-            data: updateBody.data,
-          );
-    }
+    try {
+      if (updateData.isNotEmpty) {
+        updatedProductDetails = await context.read<Products>().update(
+              id: _product.id,
+              data: updateBody.data,
+            );
+      }
 
-    if (updateSchedule) {
-      updatedProductSchedule = await context.read<Products>().setAvailability(
-            id: _product.id,
-            data: context.read<OperatingHoursBody>().data,
-          );
-    }
+      if (updateSchedule) {
+        updatedProductSchedule = await context.read<Products>().setAvailability(
+              id: _product.id,
+              data: context.read<OperatingHoursBody>().data,
+            );
+      }
 
-    return (updateData.isNotEmpty && updatedProductDetails) ||
-        (updateSchedule && updatedProductSchedule);
+      return (updateData.isNotEmpty && updatedProductDetails) ||
+          (updateSchedule && updatedProductSchedule);
+    } catch (e) {
+      throw e;
+    }
   }
 
   Future<void> _onConfirm() async {
@@ -323,25 +312,16 @@ class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
       return;
     }
 
-    final productId = await _createProduct();
-    if (productId != null) {
-      // if (widget.scheduleState == ProductScheduleState.custom) {
-      //   final availabilitySet = await _setAvailability(productId);
-      //   if (!availabilitySet) {
-      //     final snackBar = SnackBar(
-      //       content: Text('Failed to set product availability'),
-      //     );
-      //     ScaffoldMessenger.of(context).showSnackBar(snackBar);
-      //   }
-      // }
+    try {
+      await _createProduct();
       Navigator.push(
         context,
         MaterialPageRoute(
           builder: (BuildContext context) => AddProductConfirmation(),
         ),
       );
-    } else {
-      final snackBar = SnackBar(content: Text('Failed to create product'));
+    } catch (e) {
+      final snackBar = SnackBar(content: Text(e.toString()));
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
     }
   }

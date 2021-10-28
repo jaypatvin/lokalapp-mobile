@@ -9,8 +9,8 @@ import '../../../../services/api/api.dart';
 import '../../../../services/api/user_api_service.dart';
 import '../../../../utils/constants/assets.dart';
 import '../../../../utils/constants/themes.dart';
+import '../../../../view_models/profile/settings/notification_settings/notification_setting.vm.dart';
 import '../../../../widgets/custom_app_bar.dart';
-import 'view_model/notification_setting.vm.dart';
 
 class NotificationSetting extends StatefulWidget {
   @override

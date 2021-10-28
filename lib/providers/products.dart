@@ -1,44 +1,77 @@
-import 'dart:collection';
-import 'dart:convert';
+import 'dart:async';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 
 import '../models/product.dart';
-import '../services/lokal_api_service.dart';
+import '../services/api/api.dart';
+import '../services/api/product_api_service.dart';
+import '../services/database.dart';
 
 class Products extends ChangeNotifier {
-  String? _communityId;
-  String? _idToken;
+  Products._(this._apiService);
+
+  factory Products(API api) {
+    return Products._(ProductApiService(api));
+  }
+
+  final Database _db = Database.instance;
+  final ProductApiService _apiService;
 
   List<Product> _products = [];
+
+  String? _communityId;
   bool _isLoading = false;
 
+  StreamSubscription<QuerySnapshot<Map<String, dynamic>>>?
+      _productsSubscription;
+
+  UnmodifiableListView<Product> get items => UnmodifiableListView(
+        _products.where((product) => !product.archived),
+      );
   bool get isLoading => _isLoading;
 
-  UnmodifiableListView<Product> get items {
-    return UnmodifiableListView(
-      _products.where((product) => !product.archived!),
-    );
-  }
-
   String? get communityId => _communityId;
-
   void setCommunityId(String? id) {
-    _communityId = id;
+    if (id != null) {
+      if (id == _communityId) return;
+      _communityId = id;
+      _productsSubscription?.cancel();
+      _productsSubscription =
+          _db.getCommunityProducts(id).listen(_productListener);
+    }
   }
 
-  void setIdToken(String? id) {
-    _idToken = id;
+  void _productListener(QuerySnapshot<Map<String, dynamic>> query) async {
+    final length = query.docChanges.length;
+    if (_isLoading || length > 1) return;
+    for (final change in query.docChanges) {
+      final id = change.doc.id;
+      final index = _products.indexWhere((p) => p.id == id);
+
+      if (index >= 0) {
+        _products[index] = await _apiService.getById(productId: id);
+        notifyListeners();
+        return;
+      }
+
+      final product = await _apiService.getById(productId: id);
+      _products..add(product);
+      notifyListeners();
+    }
+  }
+
+  @override
+  void dispose() {
+    _productsSubscription?.cancel();
+    super.dispose();
   }
 
   Product? findById(String? id) {
-    try {
-      return items.firstWhere(
-        (product) => product.id == id,
-      );
-    } catch (e) {
-      return null;
-    }
+    return items.firstWhereOrNull(
+      (product) => product.id == id,
+    );
   }
 
   List<Product> findByUser(String userId) {
@@ -51,139 +84,69 @@ class Products extends ChangeNotifier {
 
   Future<void> fetch() async {
     _isLoading = true;
-    var response = await LokalApiService.instance!.product!
-        .getCommunityProducts(communityId: communityId, idToken: _idToken);
-
-    if (response.statusCode != 200) {
-      _isLoading = false;
-      return;
-    }
-
-    Map data = json.decode(response.body);
-
-    if (data['status'] == "ok") {
-      List<Product> products = [];
-      for (var product in data['data']) {
-        var _product = Product.fromMap(product);
-        products.add(_product);
-      }
-      _products = products;
-    }
-
-    _isLoading = false;
     notifyListeners();
+
+    try {
+      _products = await _apiService.getCommunityProducts(
+        communityId: _communityId!,
+      );
+      _isLoading = false;
+      notifyListeners();
+    } catch (e) {
+      _isLoading = false;
+      notifyListeners();
+      throw e;
+    }
   }
 
-  Future<String?> create(Map data) async {
+  Future<void> create(Map<String, dynamic> body) async {
     try {
-      var response = await LokalApiService.instance!.product!
-          .create(data: data, idToken: _idToken);
-
-      if (response.statusCode != 200) return null;
-
-      Map body = json.decode(response.body);
-
-      if (body['status'] == 'ok') {
-        // await fetch(authToken);
-        final product = Product.fromMap(body['data']);
-        _products.add(product);
-        notifyListeners();
-        return product.id;
-      }
-      return null;
+      final _product = await _apiService.create(body: body);
+      _products.add(_product);
+      notifyListeners();
     } catch (e) {
-      return null;
+      throw e;
     }
   }
 
   Future<bool> update({
-    required String? id,
-    required Map data,
+    required String id,
+    required Map<String, dynamic> data,
   }) async {
     try {
-      var response = await LokalApiService.instance!.product!
-          .update(productId: id, data: data, idToken: _idToken);
-
-      if (response.statusCode != 200) return false;
-
-      Map body = json.decode(response.body);
-
-      if (body['status'] == 'ok') {
-        fetchProductById(id: id);
-        return true;
-      }
-      return false;
+      return await _apiService.update(productId: id, body: data);
     } catch (e) {
-      return false;
+      throw e;
     }
   }
 
   Future<bool> setAvailability({
-    required String? id,
-    required Map data,
+    required String id,
+    required Map<String, dynamic> data,
   }) async {
     try {
-      final response = await LokalApiService.instance!.product!.setAvailability(
+      return await _apiService.setAvailability(
         productId: id,
-        data: data,
-        idToken: _idToken,
+        body: data,
       );
-      if (response.statusCode != 200) return false;
-
-      Map body = json.decode(response.body);
-
-      if (body['status'] == 'ok') {
-        // await fetch(authToken);
-        // manually fetch data
-        fetchProductById(id: id);
-        return true;
-      }
-      return false;
     } catch (e) {
-      return false;
+      throw e;
     }
   }
 
-  Future<void> deleteProduct({required String? id}) async {
-    final response = await LokalApiService.instance!.product!
-        .deleteProduct(id: id, idToken: _idToken);
-
-    if (response.statusCode != 200) throw response.reasonPhrase!;
-
-    Map body = json.decode(response.body);
-
-    if (body['status'] == 'ok') {
-      _products.removeWhere((product) => product.id == id);
-      notifyListeners();
-    } else {
-      throw (body['status']);
-    }
-  }
-
-  Future<void> fetchProductById({required String? id}) async {
+  Future<void> deleteProduct(String productId) async {
     try {
-      final response = await LokalApiService.instance!.product!.getById(
-        productId: id,
-        idToken: _idToken,
-      );
-      if (response.statusCode != 200) throw response.reasonPhrase!;
-
-      Map body = json.decode(response.body);
-
-      if (body['status'] == 'ok') {
-        final product = Product.fromMap(body['data']);
-        final index = _products.indexWhere((product) => product.id == id);
-        if (index < 0) {
-          _products.add(product);
-          notifyListeners();
-        } else {
-          _products[index] = product;
-          notifyListeners();
-        }
-      }
-      throw (response.body);
+      await _apiService.deleteProduct(productId: productId);
     } catch (e) {
-      return null;
+      throw e;
+    }
+  }
+
+  Future<Product> fetchProductById(String productId) async {
+    try {
+      return await _apiService.getById(productId: productId);
+    } catch (e) {
+      throw e;
     }
   }
 }

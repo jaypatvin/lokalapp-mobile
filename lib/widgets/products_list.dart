@@ -39,7 +39,7 @@ class ProductsList extends StatelessWidget {
               horizontal: 2.5.w,
             ),
             child: GestureDetector(
-              onTap: () => onProductTap(items[index].id!),
+              onTap: () => onProductTap(items[index].id),
               child: ProductCard(
                 productId: items[index].id,
                 name: items[index].name,

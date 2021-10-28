@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import '../../../../../providers/auth.dart';
+import '../../../../providers/auth.dart';
 
 class MyAccountViewModel {
   MyAccountViewModel(this._userAuth);
