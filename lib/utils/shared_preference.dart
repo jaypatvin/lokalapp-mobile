@@ -36,9 +36,12 @@ class UserSharedPreferences {
     if (_preference != null) {
       return true;
     }
+    await _storage.ready;
+    _storage.clear();
     _streamController.add(this);
     _preference = await SharedPreferences.getInstance();
     _streamController.add(this);
+
     return isReady;
   }
 
@@ -64,11 +67,8 @@ class UserSharedPreferences {
       _setBoolValue(_onboardingKeys[screen]!, status);
 
   Future<void> setSessionCache(String key, String value) async {
-    final ready = await _storage.ready;
-    if (!ready) return;
-
     _storage.setItem(key, value);
   }
 
-  String getSessionCache(String key, String value) => _storage.getItem(key);
+  String? getSessionCache(String key) => _storage.getItem(key);
 }
