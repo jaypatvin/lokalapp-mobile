@@ -11,6 +11,9 @@ class AuthBody extends ChangeNotifier {
   String? get email => _authBody["email"];
   String? get street => _authBody["street"];
 
+  String? _inviteCode;
+  String? get inviteCode => _inviteCode;
+
   void update({
     String? firstName,
     String? lastName,
@@ -28,6 +31,11 @@ class AuthBody extends ChangeNotifier {
     _authBody["profile_photo"] = profilePhoto ?? _authBody["profile_photo"];
     _authBody["email"] = email ?? _authBody["email"];
 
+    notifyListeners();
+  }
+
+  void setInviteCode(String inviteCode) {
+    _inviteCode = inviteCode;
     notifyListeners();
   }
 }

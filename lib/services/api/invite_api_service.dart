@@ -2,16 +2,17 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 
+import '../../models/lokal_invite.dart';
 import 'api.dart';
 import 'api_service.dart';
 
-class InviteAPIService extends APIService {
+class InviteAPIService extends APIService<LokalInvite> {
   const InviteAPIService(this.api);
 
   final API api;
   final Endpoint endpoint = Endpoint.invite;
 
-  Future<bool> check(String code) async {
+  Future<LokalInvite> check(String code) async {
     final response = await http.get(
       api.endpointUri(
         endpoint,
@@ -20,7 +21,7 @@ class InviteAPIService extends APIService {
       headers: api.authHeader(),
     );
 
-    return handleGenericResponse(response);
+    return handleResponse((map) => LokalInvite.fromMap(map), response);
   }
 
   Future<bool> claim({
@@ -31,8 +32,8 @@ class InviteAPIService extends APIService {
       api.endpointUri(endpoint),
       headers: api.withBodyHeader(),
       body: json.encode({
-        "user_id": userId,
-        "code": code,
+        'user_id': userId,
+        'code': code,
       }),
     );
 

@@ -10,11 +10,12 @@ import 'package:provider/provider.dart';
 import '../../providers/activities.dart';
 import '../../providers/auth.dart';
 import '../../providers/categories.dart';
-import '../../providers/invite.dart';
 import '../../providers/post_requests/auth_body.dart';
 import '../../providers/products.dart';
 import '../../providers/shops.dart';
 import '../../providers/users.dart';
+import '../../services/api/api.dart';
+import '../../services/api/invite_api_service.dart';
 import '../../services/local_image_service.dart';
 import '../../utils/constants/themes.dart';
 import '../../utils/utility.dart';
@@ -114,8 +115,9 @@ class _ProfileRegistrationState extends State<ProfileRegistration>
 
     //UserAuth auth = Provider.of<UserAuth>(context, listen: false);
     final auth = context.read<Auth>();
-    AuthBody authBody = Provider.of<AuthBody>(context, listen: false);
-    Invite invite = Provider.of<Invite>(context, listen: false);
+    final AuthBody authBody = Provider.of<AuthBody>(context, listen: false);
+    final String inviteCode = authBody.inviteCode!;
+    final _apiService = InviteAPIService(context.read<API>());
     authBody.update(
       profilePhoto: mediaUrl,
       firstName: _firstNameController.text,
@@ -128,11 +130,14 @@ class _ProfileRegistrationState extends State<ProfileRegistration>
     await auth.register(authBody.data);
     bool inviteCodeClaimed = false;
     if (auth.user != null) {
-      inviteCodeClaimed = await invite.claim(
-        email: auth.user!.email,
-        userId: auth.user!.id,
-        authToken: auth.idToken,
-      );
+      try {
+        inviteCodeClaimed = await _apiService.claim(
+          userId: auth.user!.id!,
+          code: inviteCode,
+        );
+      } catch (e) {
+        // TODO: do something with error
+      }
     }
     return inviteCodeClaimed;
   }

@@ -5,7 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../utils/constants/themes.dart';
 import '../widgets/app_button.dart';
-import 'auth/invite_page.dart';
+import 'auth/invite_screen.dart';
 import 'auth/login_screen.dart';
 
 class WelcomeScreen extends StatefulWidget {
