@@ -11,7 +11,6 @@ import 'providers/auth.dart';
 import 'providers/cart.dart';
 import 'providers/categories.dart';
 import 'providers/chat_provider.dart';
-import 'providers/invite.dart';
 import 'providers/post_requests/auth_body.dart';
 import 'providers/post_requests/operating_hours_body.dart';
 import 'providers/post_requests/product_body.dart';
@@ -66,10 +65,6 @@ class _MyAppState extends State<MyApp> {
       // auth:
       ChangeNotifierProvider<Auth>(create: (_) => Auth(_api)),
       ChangeNotifierProvider<API>.value(value: _api),
-
-      // TODO: use in specific screen (MVVM pattern)
-      // this is only used in a specific screen
-      ChangeNotifierProvider<Invite>(create: (_) => Invite()),
 
       ChangeNotifierProxyProvider<Auth, Activities?>(
         create: (_) => Activities(_api),

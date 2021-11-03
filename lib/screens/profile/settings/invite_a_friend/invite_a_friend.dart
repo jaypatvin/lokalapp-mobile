@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
-import 'invite_sent.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import '../../../../utils/constants/themes.dart';
+import '../../../../widgets/app_button.dart';
+import '../../../../widgets/custom_app_bar.dart';
+import '../../../../widgets/inputs/input_email_field.dart';
+import '../../../../widgets/inputs/input_field.dart';
 
 class InviteAFriend extends StatelessWidget {
   final TextEditingController _emailController = TextEditingController();
@@ -9,162 +14,77 @@ class InviteAFriend extends StatelessWidget {
     return Scaffold(
       backgroundColor: Color(0xffF1FAFF),
       resizeToAvoidBottomInset: true,
-      appBar: PreferredSize(
-        preferredSize: Size(double.infinity, 100),
-        child: Container(
-          decoration: BoxDecoration(
-            boxShadow: [
-              BoxShadow(color: Colors.black12, spreadRadius: 5, blurRadius: 2)
-            ],
-          ),
-          width: MediaQuery.of(context).size.width,
-          height: 100,
-          child: Container(
-            decoration: BoxDecoration(color: kTealColor),
-            child: Container(
-              margin: const EdgeInsets.fromLTRB(0, 40, 0, 0),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Container(
-                    padding: const EdgeInsets.only(right: 10),
-                    child: IconButton(
-                        icon: Icon(
-                          Icons.arrow_back_sharp,
-                          color: Colors.white,
-                        ),
-                        onPressed: () {
-                          Navigator.pop(context);
-                        }),
-                  ),
-                  SizedBox(
-                    width: 60,
-                  ),
-                  Container(
-                    padding: const EdgeInsets.only(left: 18),
-                    child: Text(
-                      "Invite a Friend",
-                      style: TextStyle(
-                          fontFamily: "Goldplay",
-                          fontSize: 22,
-                          fontWeight: FontWeight.w600,
-                          color: Color(0XFFFFC700)),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
+      appBar: CustomAppBar(
+        titleText: 'Invite a Friend',
+        backgroundColor: kTealColor,
+        titleStyle: TextStyle(
+          color: Colors.white,
         ),
+        onPressedLeading: () => Navigator.pop(context),
       ),
       body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              SizedBox(
-                height: 140,
-              ),
-              Row(
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 24.0.w),
+          child: Center(
+            child: SingleChildScrollView(
+              child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Container(
-                    // padding: const EdgeInsets.all(30),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Container(
+                        child: Text(
+                          "Expand your community!",
+                          style:
+                              Theme.of(context).textTheme.headline5!.copyWith(
+                                    color: kTealColor,
+                                  ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 10.h),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 36.0.w),
                     child: Text(
-                      "Expand your community!",
-                      style: TextStyle(
-                          fontFamily: "Goldplay",
-                          fontSize: 22,
-                          color: kTealColor,
-                          fontWeight: FontWeight.w600),
+                      "Share an invite code by entering the recipient's email "
+                      "address below.",
+                      textAlign: TextAlign.center,
                     ),
                   ),
-                ],
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              Container(
-                // padding: const EdgeInsets.all(8),
-                child: Text(
-                  "Share an invite code by entering the ",
-                  style: TextStyle(
-                    fontFamily: "GoldplayBold",
-                    // fontSize: 22,
-                    // color: kTealColor,
-                    // fontWeight: FontWeight.w500
+                  SizedBox(height: 20.0.h),
+                  InputEmailField(
+                    validate: true,
                   ),
-                ),
-              ),
-              Text(
-                "recipient's email address below.",
-                style: TextStyle(
-                  fontFamily: "GoldplayBold",
-                  // fontSize: 22,
-                  // color: kTealColor,
-                  // fontWeight: FontWeight.w500
-                ),
-              ),
-              SizedBox(
-                height: 40,
-              ),
-              Container(
-                width: MediaQuery.of(context).size.width * 0.9,
-                height: 80,
-                padding: const EdgeInsets.all(10),
-                child: TextField(
-                  // textAlign: TextAlign.center,
-                  cursorColor: Colors.grey.shade400,
-                  controller: _emailController,
-                  keyboardType: TextInputType.emailAddress,
-                  decoration: InputDecoration(
-                    hintText: 'Email address',
-                    hintStyle: TextStyle(fontSize: 14),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20),
-                      borderSide: BorderSide(
-                        width: 0,
-                        style: BorderStyle.none,
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: 20.0.h),
+                    child: Text('or'),
+                  ),
+                  InputField(
+                    fillColor: Colors.white,
+                    hintText: 'Phone Number',
+                    keyboardType: TextInputType.number,
+                  ),
+                  SizedBox(height: 20.0.h),
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.7,
+                    child: AppButton(
+                      'SEND INVITE CODE',
+                      kTealColor,
+                      true,
+                      () => ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('Not yet implemented.'),
+                        ),
                       ),
                     ),
-                    filled: true,
-                    contentPadding: EdgeInsets.all(16),
-                    fillColor: Colors.white,
-                  ),
-                ),
+                  )
+                ],
               ),
-              SizedBox(
-                height: 50,
-              ),
-              Container(
-                height: 43,
-                width: 200,
-                child: FlatButton(
-                  // height: 50,
-                  // minWidth: 100,
-                  color: kTealColor,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20.0),
-                    side: BorderSide(color: kTealColor),
-                  ),
-                  textColor: Colors.black,
-                  child: Text(
-                    "SEND INVITE CODE",
-                    style: TextStyle(
-                        fontFamily: "Goldplay",
-                        fontSize: 14,
-                        fontWeight: FontWeight.w700),
-                  ),
-                  onPressed: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => InviteSent()));
-                  },
-                ),
-              ),
-            ],
+            ),
           ),
         ),
       ),

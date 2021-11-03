@@ -1,26 +1,44 @@
 import 'package:flutter/material.dart';
-import '../components/appbar.dart';
+import 'package:flutter_html/flutter_html.dart';
+import 'package:lottie/lottie.dart';
+import 'package:provider/provider.dart';
+
+import '../../../../utils/constants/assets.dart';
+import '../../../../utils/constants/themes.dart';
+import '../../../../view_models/profile/settings/privacy_policy.vm.dart';
+import '../../../../widgets/custom_app_bar.dart';
 
 class PrivacyPolicy extends StatelessWidget {
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PreferredSize(
-          preferredSize: Size(double.infinity, 100),
-          child: AppBarSettings(
-            onPressed: () {
-              Navigator.pop(context);
+      appBar: CustomAppBar(
+        backgroundColor: kTealColor,
+        titleText: 'Privacy Policy',
+        titleStyle: TextStyle(color: Colors.white),
+        onPressedLeading: () => Navigator.pop(context),
+      ),
+      body: ChangeNotifierProvider<PrivacyPolicyViewModel>(
+        create: (ctx) => PrivacyPolicyViewModel(ctx)..init(),
+        builder: (ctx, _) {
+          return Consumer<PrivacyPolicyViewModel>(
+            builder: (ctx2, vm, _) {
+              return SingleChildScrollView(
+                child: vm.isLoading
+                    ? Center(
+                        child: Lottie.asset(
+                          kAnimationLoading,
+                          fit: BoxFit.cover,
+                        ),
+                      )
+                    :  Html(
+                            data: vm.html,
+                          ),
+              );
             },
-            text: "Privacy Policy",
-          )),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Center(
-                child: Text(
-                    "Bacon ipsum dolor amet spare ribs short loin bacon bresaola shank. Beef ribeye t-bone rump pork chop leberkas sirloin sausage. Flank boudin ground round, andouille shankle biltong strip steak chuck. Kielbasa ham hock boudin picanha meatloaf kevin strip steak. Alcatra turkey meatloaf salami, sausage biltong tenderloin landjaeger pastrami. Pork pork loin venison chislic. Cupim bresaola pork loin tri-tip spare ribs rump, ribeye t-bone beef ribs ham"))
-          ],
-        ),
+          );
+        },
       ),
     );
   }

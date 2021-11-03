@@ -14,7 +14,7 @@ import '../../widgets/overlays/screen_loader.dart';
 import '../bottom_navigation.dart';
 import 'components/auth_input_form.dart';
 import 'components/sso_block.dart';
-import 'invite_page.dart';
+import 'invite_screen.dart';
 
 enum LoginType { email, google, facebook }
 

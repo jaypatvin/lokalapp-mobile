@@ -7,11 +7,13 @@ import '../../../utils/constants/themes.dart';
 import '../../../widgets/app_button.dart';
 import '../../../widgets/custom_app_bar.dart';
 import '../../welcome_screen.dart';
-import 'invite_a_friend/invite_a_friend.dart';
+import 'about/about.dart';
 import 'chat/chat_settings.dart';
-import 'my_account/my_account.dart';
 import 'help_center/help_center.dart';
+import 'invite_a_friend/invite_a_friend.dart';
+import 'my_account/my_account.dart';
 import 'notification_settings/notification_setting.dart';
+import 'privacy_policy.dart/privacy_policy.dart';
 import 'privacy_settings/privacy_setting.dart';
 import 'terms_of_service/terms_of_service.dart';
 
@@ -25,6 +27,7 @@ class Settings extends StatelessWidget {
       appBar: CustomAppBar(
         backgroundColor: kTealColor,
         titleText: 'Settings',
+        titleStyle: TextStyle(color: Colors.white),
         onPressedLeading: () => Navigator.pop(context),
       ),
       body: SafeArea(
@@ -134,20 +137,6 @@ class Settings extends StatelessWidget {
               ),
             ),
             ListTile(
-              onTap: null,
-              enabled: false,
-              tileColor: Colors.white,
-              leading: Text(
-                "Contact Us",
-                style: Theme.of(context).textTheme.bodyText1,
-              ),
-              trailing: Icon(
-                Icons.arrow_forward_ios,
-                size: 14,
-                color: kTealColor,
-              ),
-            ),
-            ListTile(
               onTap: () => pushNewScreen(context, screen: TermsOfService()),
               tileColor: Colors.white,
               leading: Text(
@@ -161,10 +150,23 @@ class Settings extends StatelessWidget {
               ),
             ),
             ListTile(
+              onTap: () => pushNewScreen(context, screen: PrivacyPolicy()),
               tileColor: Colors.white,
-              enabled: false,
               leading: Text(
                 "Privacy Policy",
+                style: Theme.of(context).textTheme.bodyText1,
+              ),
+              trailing: Icon(
+                Icons.arrow_forward_ios,
+                size: 14,
+                color: kTealColor,
+              ),
+            ),
+            ListTile(
+              onTap: () => pushNewScreen(context, screen: About()),
+              tileColor: Colors.white,
+              leading: Text(
+                "About",
                 style: Theme.of(context).textTheme.bodyText1,
               ),
               trailing: Icon(

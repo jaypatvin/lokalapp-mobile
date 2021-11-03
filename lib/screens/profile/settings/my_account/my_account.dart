@@ -12,6 +12,7 @@ import '../../../../widgets/app_button.dart';
 import '../../../../widgets/custom_app_bar.dart';
 import 'change_email.dart';
 import 'change_password.dart';
+import 'delete_account.dart';
 
 class MyAccount extends StatefulWidget {
   @override
@@ -105,7 +106,7 @@ class _MyAccountState extends State<MyAccount> {
                   "Delete Account",
                   kPinkColor,
                   false,
-                  () {},
+                  () => pushNewScreen(context, screen: DeleteAccount()),
                 ),
               ),
             ],
