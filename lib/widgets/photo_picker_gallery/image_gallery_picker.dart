@@ -60,11 +60,8 @@ class ImageGalleryPicker extends StatelessWidget {
   }
 
   Widget _buildPath() {
-    if (this.provider!.currentPath == null) {
-      return Container();
-    }
     return AssetGalleryWidget(
-      path: this.provider!.currentPath,
+      path: this.provider?.currentPath,
       assetHeight: this.assetHeight,
       assetWidth: this.assetWidth,
       thumbSize: this.thumbSize,

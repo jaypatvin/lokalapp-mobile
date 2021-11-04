@@ -41,6 +41,7 @@ mixin PhotoDataProvider on ChangeNotifier {
       AssetPathEntity b,
     ) = _defaultSort,
   }) {
+    if (list.isEmpty) return;
     list.sort(sortBy);
 
     this.pathList.clear();
