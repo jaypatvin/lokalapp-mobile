@@ -7,11 +7,12 @@ class NetworkPhotoThumbnail extends StatelessWidget {
     Key? key,
     required this.galleryItem,
     required this.onTap,
+    this.fit = BoxFit.cover,
   }) : super(key: key);
 
   final LokalImages galleryItem;
-
   final GestureTapCallback onTap;
+  final BoxFit fit;
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +24,7 @@ class NetworkPhotoThumbnail extends StatelessWidget {
           child: Image.network(
             galleryItem.url,
             alignment: Alignment.topCenter,
-            fit: BoxFit.cover,
+            fit: this.fit,
           ),
         ),
       ),
