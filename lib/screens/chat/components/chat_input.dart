@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:photo_manager/photo_manager.dart';
 
 import '../../../models/conversation.dart';
 import '../../../utils/constants/themes.dart';
+import '../../../utils/functions.utils.dart';
 import '../../../widgets/inputs/input_images_picker.dart';
 import '../../../widgets/inputs/input_text_field.dart';
-import 'reply_message.dart';
+import '../../../widgets/photo_view_gallery/thumbnails/network_photo_thumbnail.dart';
 
 class ChatInput extends StatelessWidget {
   final void Function() onMessageSend;
@@ -37,8 +39,8 @@ class ChatInput extends StatelessWidget {
     return Column(
       children: [
         replyMessage != null
-            ? ReplyMessageWidget(
-                message: replyMessage,
+            ? _ReplyToWidget(
+                message: replyMessage!,
                 onCancelReply: onCancelReply,
               )
             : const SizedBox(),
@@ -98,6 +100,84 @@ class ChatInput extends StatelessWidget {
           ],
         ),
       ],
+    );
+  }
+}
+
+class _ReplyToWidget extends StatelessWidget {
+  const _ReplyToWidget({Key? key, required this.message, this.onCancelReply})
+      : super(key: key);
+
+  final Conversation message;
+  final void Function()? onCancelReply;
+
+  @override
+  Widget build(BuildContext context) {
+    return IntrinsicHeight(
+      child: Row(
+        children: [
+          Container(
+            color: kTealColor,
+            width: 2.0.w,
+          ),
+          SizedBox(width: 6.0.w),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          "Replying to",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontStyle: FontStyle.italic,
+                            color: kTealColor,
+                          ),
+                        ),
+                      ),
+                      if (onCancelReply != null)
+                        GestureDetector(
+                          child: Icon(Icons.close, size: 16.0.r),
+                          onTap: onCancelReply,
+                        )
+                    ],
+                  ),
+                  SizedBox(height: 5.0.h),
+                  if (message.media != null && message.media!.isNotEmpty)
+                    SizedBox(
+                      height: 90.h,
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        scrollDirection: Axis.horizontal,
+                        itemCount: message.media!.length,
+                        itemBuilder: (ctx, index) {
+                          return NetworkPhotoThumbnail(
+                            galleryItem: message.media![index],
+                            fit: BoxFit.cover,
+                            onTap: () =>
+                                openGallery(context, index, message.media!),
+                          );
+                        },
+                      ),
+                    ),
+                  if (message.message != null)
+                    Text(
+                      message.message!,
+                      style: Theme.of(context).textTheme.bodyText2!.copyWith(
+                            color: Colors.black,
+                            fontStyle: FontStyle.italic,
+                          ),
+                    ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

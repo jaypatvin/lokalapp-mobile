@@ -15,6 +15,7 @@ import '../../widgets/custom_app_bar.dart';
 import '../../widgets/overlays/onboarding.dart';
 import '../cart/cart_container.dart';
 import 'draft_post.dart';
+import 'notifications.dart';
 import 'timeline.dart';
 
 class Home extends StatefulWidget {
@@ -140,6 +141,12 @@ class _HomeState extends State<Home> {
           titleStyle: TextStyle(color: Colors.white),
           backgroundColor: kTealColor,
           buildLeading: false,
+          actions: [
+            IconButton(
+              onPressed: () => pushNewScreen(context, screen: Notifications()),
+              icon: Icon(Icons.notifications_outlined),
+            )
+          ],
         ),
         body: CartContainer(
           child: SizedBox(

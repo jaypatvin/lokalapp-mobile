@@ -53,7 +53,7 @@ class _AssetGalleryWidgetState extends State<AssetGalleryWidget> {
         key: ValueKey(widget.path),
         shrinkWrap: true,
         scrollDirection: Axis.horizontal,
-        itemCount: widget.path?.assetCount ?? 0,
+        itemCount: widget.path?.assetCount ?? 1,
         itemBuilder: (context, index) => Container(
           height: widget.assetHeight,
           width: widget.assetWidth,
