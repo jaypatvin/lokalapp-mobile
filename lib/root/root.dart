@@ -14,10 +14,11 @@ import '../utils/constants/assets.dart';
 import '../utils/constants/themes.dart';
 
 class Root extends StatefulWidget {
+  static const routeName = '/';
+  const Root({this.account});
+
   final Map<String, String>? account;
-  Root({
-    this.account,
-  });
+
   @override
   _RootState createState() => _RootState();
 }

@@ -20,6 +20,7 @@ import 'providers/shops.dart';
 import 'providers/subscriptions.dart';
 import 'providers/users.dart';
 import 'root/root.dart';
+import 'routers/routers.dart';
 import 'services/api/api.dart';
 import 'services/local_image_service.dart';
 import 'utils/constants/assets.dart';
@@ -42,12 +43,14 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   late final UserSharedPreferences _prefs;
+  late final AppRouter _router;
 
   @override
   initState() {
     super.initState();
     _prefs = UserSharedPreferences();
     _prefs.init();
+    _router = AppRouter();
   }
 
   @override
@@ -61,6 +64,9 @@ class _MyAppState extends State<MyApp> {
     return <SingleChildWidget>[
       //shared preference
       Provider<UserSharedPreferences>.value(value: _prefs),
+
+      // router:
+      Provider<AppRouter>.value(value: _router),
 
       // auth:
       ChangeNotifierProvider<Auth>(create: (_) => Auth(_api)),
@@ -221,6 +227,9 @@ class _MyAppState extends State<MyApp> {
                 scaffoldBackgroundColor: Colors.white,
               ),
               home: Root(),
+              navigatorKey: AppRouter.rootNavigatorKey,
+              initialRoute: '/',
+              onGenerateRoute: _router.rootNavigatorOnGenerateRoute,
             ),
           );
         },
