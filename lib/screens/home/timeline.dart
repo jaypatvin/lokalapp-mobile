@@ -7,6 +7,8 @@ import '../../models/activity_feed.dart';
 import '../../models/lokal_user.dart';
 import '../../providers/activities.dart';
 import '../../providers/auth.dart';
+import '../../routers/home/post_details.props.dart';
+import '../../routers/routers.dart';
 import '../../utils/constants/themes.dart';
 import '../profile/profile_screen.dart';
 import 'components/post_card.dart';
@@ -23,7 +25,7 @@ class Timeline extends StatelessWidget {
     this.firstIndexPadding = 0,
   });
 
-  void onLike(BuildContext context, ActivityFeed activity, LokalUser user) {
+  void _onLike(BuildContext context, ActivityFeed activity, LokalUser user) {
     try {
       if (activity.liked) {
         context.read<Activities>().unlikePost(
@@ -45,23 +47,24 @@ class Timeline extends StatelessWidget {
     }
   }
 
-  void onCommentsPressed(ActivityFeed activity, BuildContext context) {
+  void _onCommentsPressed(ActivityFeed activity, BuildContext context) {
     final user = context.read<Auth>().user!;
     context.read<Activities>().fetchComments(activityId: activity.id);
-    pushNewScreen(
-      context,
-      screen: PostDetails(
-        onUserPressed: (user) {
-          debugPrint("Go to $user");
-        },
-        onLike: () => onLike(context, activity, user),
+    context.read<PersistentTabController>().jumpToTab(0);
+    AppRouter.homeNavigatorKey.currentState!.pushNamed(
+      PostDetails.routeName,
+      arguments: PostDetailsProps(
         activity: activity,
+        onUserPressed: (userId) => pushNewScreen(
+          context,
+          screen: ProfileScreen(userId: userId),
+        ),
+        onLike: () => _onLike(context, activity, user),
       ),
-      withNavBar: false,
     );
   }
 
-  void onTripleDotsPressed(BuildContext context, [bool isUser = false]) {
+  void _onTripleDotsPressed(BuildContext context, [bool isUser = false]) {
     showModalBottomSheet(
       context: context,
       useRootNavigator: true,
@@ -143,11 +146,11 @@ class Timeline extends StatelessWidget {
           child: PostCard(
             activityFeed: activity,
             onCommentsPressed: () {
-              this.onCommentsPressed(activity, context);
+              this._onCommentsPressed(activity, context);
             },
-            onLike: () => onLike(context, activity, user),
+            onLike: () => _onLike(context, activity, user),
             onTripleDotsPressed: () {
-              this.onTripleDotsPressed(context, user.id == activity.userId);
+              this._onTripleDotsPressed(context, user.id == activity.userId);
             },
             onUserPressed: () {
               debugPrint("Pressed the user: ${activity.userId}");
@@ -161,7 +164,7 @@ class Timeline extends StatelessWidget {
               );
             },
             onMessagePressed: () {
-              this.onCommentsPressed(activity, context);
+              this._onCommentsPressed(activity, context);
             },
           ),
         );

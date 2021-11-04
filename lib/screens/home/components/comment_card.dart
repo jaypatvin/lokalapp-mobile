@@ -12,7 +12,7 @@ class CommentCard extends StatelessWidget {
   final LokalUser user;
   final String? message;
   final Function? onLongPress;
-  final Function(String?)? onUserPressed;
+  final Function(String)? onUserPressed;
   final Function? onLike;
   final List<LokalImages>? images;
   final bool? liked;
@@ -62,7 +62,7 @@ class CommentCard extends StatelessWidget {
             contentPadding: EdgeInsets.zero,
             //onLongPress: this.onLongPress,
             leading: GestureDetector(
-              onTap: () => this.onUserPressed!(user.id),
+              onTap: () => this.onUserPressed!(user.id!),
               child: CircleAvatar(
                 radius: 18.0.r,
                 backgroundImage: photo.isNotEmpty ? NetworkImage(photo) : null,
@@ -77,7 +77,7 @@ class CommentCard extends StatelessWidget {
                           color: Colors.black,
                         ),
                     recognizer: TapGestureRecognizer()
-                      ..onTap = () => this.onUserPressed!(user.id),
+                      ..onTap = () => this.onUserPressed!(user.id!),
                   ),
                   TextSpan(
                     text: " $message",

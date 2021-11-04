@@ -4,6 +4,7 @@ import '../../utils/constants/themes.dart';
 import '../../widgets/custom_app_bar.dart';
 
 class Notifications extends StatelessWidget {
+  static const routeName = '/home/notifications';
   const Notifications({Key? key}) : super(key: key);
 
   @override

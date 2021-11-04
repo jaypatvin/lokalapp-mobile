@@ -4,10 +4,10 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lottie/lottie.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/activities.dart';
+import '../../routers/routers.dart';
 import '../../utils/constants/assets.dart';
 import '../../utils/constants/themes.dart';
 import '../../utils/shared_preference.dart';
@@ -91,11 +91,8 @@ class _HomeState extends State<Home> {
           vertical: 15.h,
         ),
         child: GestureDetector(
-          onTap: () => pushNewScreen(
-            context,
-            screen: DraftPost(),
-            withNavBar: false,
-            pageTransitionAnimation: PageTransitionAnimation.slideUp,
+          onTap: () => AppRouter.rootNavigatorKey.currentState!.pushNamed(
+            DraftPost.routeName,
           ),
           child: Container(
             height: 50.0.h,
@@ -143,7 +140,8 @@ class _HomeState extends State<Home> {
           buildLeading: false,
           actions: [
             IconButton(
-              onPressed: () => pushNewScreen(context, screen: Notifications()),
+              onPressed: () => AppRouter.homeNavigatorKey.currentState!
+                  .pushNamed(Notifications.routeName),
               icon: Icon(Icons.notifications_outlined),
             )
           ],

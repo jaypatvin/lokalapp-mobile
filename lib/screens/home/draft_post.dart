@@ -21,6 +21,7 @@ import '../../widgets/photo_view_gallery/gallery/gallery_asset_photo_view.dart';
 import '../../widgets/photo_view_gallery/thumbnails/asset_photo_thumbnail.dart';
 
 class DraftPost extends StatefulWidget {
+  static const routeName = '/home/draft_post';
   @override
   _DraftPostState createState() => _DraftPostState();
 }

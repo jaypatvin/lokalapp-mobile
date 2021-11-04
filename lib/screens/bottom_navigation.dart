@@ -1,10 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/auth.dart';
+import '../routers/routers.dart';
 import '../utils/constants/assets.dart';
 import 'activity/activity.dart';
 import 'chat/chat.dart';
@@ -19,12 +19,6 @@ class BottomNavigation extends StatefulWidget {
 }
 
 class _BottomNavigationState extends State<BottomNavigation> {
-  final GlobalKey<NavigatorState> _homeNavigatorKey = GlobalKey();
-  final GlobalKey<NavigatorState> _discoverNavigatorKey = GlobalKey();
-  final GlobalKey<NavigatorState> _chatNavigatorKey = GlobalKey();
-  final GlobalKey<NavigatorState> _activityNavigatorKey = GlobalKey();
-  final GlobalKey<NavigatorState> _profileNavigatorKey = GlobalKey();
-
   @override
   void initState() {
     super.initState();
@@ -50,9 +44,10 @@ class _BottomNavigationState extends State<BottomNavigation> {
         iconSize: 34,
         activeColorPrimary: Color(0xFFCC3752),
         inactiveColorPrimary: Color(0xFF103045),
-        routeAndNavigatorSettings: RouteAndNavigatorSettings(
-          initialRoute: Home.routeName,
-        ),
+        // routeAndNavigatorSettings: RouteAndNavigatorSettings(
+        //   initialRoute: Home.routeName,
+        // ),
+        routeAndNavigatorSettings: context.read<AppRouter>().homeNavigator,
       ),
       PersistentBottomNavBarItem(
         assetName: kBottomIconDiscover,

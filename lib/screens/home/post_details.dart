@@ -27,15 +27,16 @@ import '../../widgets/photo_view_gallery/thumbnails/network_photo_thumbnail.dart
 import 'components/comment_card.dart';
 
 class PostDetails extends StatefulWidget {
-  final ActivityFeed activity;
-  final void Function(String?)? onUserPressed;
-  final Function() onLike;
-
-  PostDetails({
+  static const routeName = '/home/post_details';
+  const PostDetails({
     required this.activity,
     required this.onUserPressed,
     required this.onLike,
   });
+
+  final ActivityFeed activity;
+  final void Function(String) onUserPressed;
+  final void Function() onLike;
 
   @override
   _PostDetailsState createState() => _PostDetailsState();
@@ -98,22 +99,26 @@ class _PostDetailsState extends State<PostDetails> {
     required String? firstName,
     required String? lastName,
     required String photo,
+    void Function()? onTap,
     double? spacing,
   }) {
-    return Row(
-      children: [
-        CircleAvatar(
-          backgroundImage: photo.isNotEmpty ? NetworkImage(photo) : null,
-          radius: 24.0.r,
-        ),
-        SizedBox(width: spacing),
-        Text(
-          "$firstName $lastName",
-          style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                fontSize: 19.0.sp,
-              ),
-        ),
-      ],
+    return GestureDetector(
+      onTap: onTap,
+      child: Row(
+        children: [
+          CircleAvatar(
+            backgroundImage: photo.isNotEmpty ? NetworkImage(photo) : null,
+            radius: 24.0.r,
+          ),
+          SizedBox(width: spacing),
+          Text(
+            "$firstName $lastName",
+            style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                  fontSize: 19.0.sp,
+                ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -499,6 +504,7 @@ class _PostDetailsState extends State<PostDetails> {
                             Padding(
                               padding: EdgeInsets.symmetric(vertical: 20.0.h),
                               child: buildHeader(
+                                onTap: () => widget.onUserPressed(user.id!),
                                 firstName: user.firstName,
                                 lastName: user.lastName,
                                 photo: user.profilePhoto!,
