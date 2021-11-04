@@ -37,17 +37,6 @@ class MyProfileList extends StatelessWidget {
             enabled: true,
           ),
           ListTile(
-            tileColor: Colors.white,
-            title: Text("Notifications"),
-            trailing: Icon(
-              Icons.arrow_forward_ios,
-              color: kTealColor,
-              size: 14.0.r,
-            ),
-            onTap: this.onNotificationsTap,
-            enabled: this.onNotificationsTap != null,
-          ),
-          ListTile(
               tileColor: Colors.white,
               title: Text("Wishlist"),
               trailing: Icon(
