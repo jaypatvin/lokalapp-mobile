@@ -7,7 +7,7 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:provider/provider.dart';
 
 import '../../providers/activities.dart';
-import '../../routers/routers.dart';
+import '../../routers/app_router.dart';
 import '../../utils/constants/assets.dart';
 import '../../utils/constants/themes.dart';
 import '../../utils/shared_preference.dart';
@@ -91,9 +91,15 @@ class _HomeState extends State<Home> {
           vertical: 15.h,
         ),
         child: GestureDetector(
-          onTap: () => AppRouter.rootNavigatorKey.currentState!.pushNamed(
-            DraftPost.routeName,
-          ),
+          // onTap: () => context
+          //     .read<AppRouter>()
+          //     .keyOf(AppRoute.home)
+          //     .currentState!
+          //     .pushNamed(DraftPost.routeName),
+          onTap: () => context.read<AppRouter>().navigateTo(
+                AppRoute.home,
+                DraftPost.routeName,
+              ),
           child: Container(
             height: 50.0.h,
             width: double.infinity,
@@ -140,7 +146,10 @@ class _HomeState extends State<Home> {
           buildLeading: false,
           actions: [
             IconButton(
-              onPressed: () => AppRouter.homeNavigatorKey.currentState!
+              onPressed: () => context
+                  .read<AppRouter>()
+                  .keyOf(AppRoute.home)
+                  .currentState!
                   .pushNamed(Notifications.routeName),
               icon: Icon(Icons.notifications_outlined),
             )

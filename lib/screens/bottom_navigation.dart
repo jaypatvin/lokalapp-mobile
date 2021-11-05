@@ -4,7 +4,7 @@ import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/auth.dart';
-import '../routers/routers.dart';
+import '../routers/app_router.dart';
 import '../utils/constants/assets.dart';
 import 'activity/activity.dart';
 import 'chat/chat.dart';
@@ -44,10 +44,11 @@ class _BottomNavigationState extends State<BottomNavigation> {
         iconSize: 34,
         activeColorPrimary: Color(0xFFCC3752),
         inactiveColorPrimary: Color(0xFF103045),
-        // routeAndNavigatorSettings: RouteAndNavigatorSettings(
-        //   initialRoute: Home.routeName,
-        // ),
-        routeAndNavigatorSettings: context.read<AppRouter>().homeNavigator,
+        routeAndNavigatorSettings: RouteAndNavigatorSettings(
+          navigatorKey: context.read<AppRouter>().keyOf(AppRoute.home),
+          initialRoute: Home.routeName,
+          
+        ),
       ),
       PersistentBottomNavBarItem(
         assetName: kBottomIconDiscover,

@@ -8,7 +8,7 @@ import '../../models/lokal_user.dart';
 import '../../providers/activities.dart';
 import '../../providers/auth.dart';
 import '../../routers/home/post_details.props.dart';
-import '../../routers/routers.dart';
+import '../../routers/app_router.dart';
 import '../../utils/constants/themes.dart';
 import '../profile/profile_screen.dart';
 import 'components/post_card.dart';
@@ -24,6 +24,14 @@ class Timeline extends StatelessWidget {
     this.scrollController, {
     this.firstIndexPadding = 0,
   });
+
+  void _onUserPressed(BuildContext context, String userId) {
+    context.read<AppRouter>().navigateTo(
+      AppRoute.profile,
+      ProfileScreen.routeName,
+      arguments: {'userId': userId},
+    );
+  }
 
   void _onLike(BuildContext context, ActivityFeed activity, LokalUser user) {
     try {
@@ -49,19 +57,17 @@ class Timeline extends StatelessWidget {
 
   void _onCommentsPressed(ActivityFeed activity, BuildContext context) {
     final user = context.read<Auth>().user!;
-    context.read<Activities>().fetchComments(activityId: activity.id);
-    context.read<PersistentTabController>().jumpToTab(0);
-    AppRouter.homeNavigatorKey.currentState!.pushNamed(
-      PostDetails.routeName,
-      arguments: PostDetailsProps(
-        activity: activity,
-        onUserPressed: (userId) => pushNewScreen(
-          context,
-          screen: ProfileScreen(userId: userId),
+    context
+      ..read<Activities>().fetchComments(activityId: activity.id)
+      ..read<AppRouter>().navigateTo(
+        AppRoute.home,
+        PostDetails.routeName,
+        arguments: PostDetailsProps(
+          activity: activity,
+          onUserPressed: (userId) => _onUserPressed(context, userId),
+          onLike: () => _onLike(context, activity, user),
         ),
-        onLike: () => _onLike(context, activity, user),
-      ),
-    );
+      );
   }
 
   void _onTripleDotsPressed(BuildContext context, [bool isUser = false]) {
@@ -158,10 +164,7 @@ class Timeline extends StatelessWidget {
                 context.read<PersistentTabController>().jumpToTab(4);
                 return;
               }
-              pushNewScreen(
-                context,
-                screen: ProfileScreen(userId: activity.userId),
-              );
+              return _onUserPressed(context, activity.userId);
             },
             onMessagePressed: () {
               this._onCommentsPressed(activity, context);

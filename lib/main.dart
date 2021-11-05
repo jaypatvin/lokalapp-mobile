@@ -20,7 +20,7 @@ import 'providers/shops.dart';
 import 'providers/subscriptions.dart';
 import 'providers/users.dart';
 import 'root/root.dart';
-import 'routers/routers.dart';
+import 'routers/app_router.dart';
 import 'services/api/api.dart';
 import 'services/local_image_service.dart';
 import 'utils/constants/assets.dart';
@@ -44,13 +44,15 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   late final UserSharedPreferences _prefs;
   late final AppRouter _router;
+  late final PersistentTabController _tabController;
 
   @override
   initState() {
     super.initState();
     _prefs = UserSharedPreferences();
     _prefs.init();
-    _router = AppRouter();
+    _tabController = PersistentTabController();
+    _router = AppRouter(_tabController);
   }
 
   @override
@@ -67,6 +69,9 @@ class _MyAppState extends State<MyApp> {
 
       // router:
       Provider<AppRouter>.value(value: _router),
+
+      // for bottom nav bar
+      ListenableProvider.value(value: _tabController),
 
       // auth:
       ChangeNotifierProvider<Auth>(create: (_) => Auth(_api)),
@@ -137,9 +142,6 @@ class _MyAppState extends State<MyApp> {
         create: (_) => ChatProvider(),
         update: (_, auth, chat) => chat!..setIdToken(auth.idToken),
       ),
-
-      // for bottom nav bar
-      ListenableProvider(create: (_) => PersistentTabController()),
     ];
   }
 
@@ -227,9 +229,10 @@ class _MyAppState extends State<MyApp> {
                 scaffoldBackgroundColor: Colors.white,
               ),
               home: Root(),
-              navigatorKey: AppRouter.rootNavigatorKey,
+              navigatorKey: _router.keyOf(AppRoute.root),
               initialRoute: '/',
-              onGenerateRoute: _router.rootNavigatorOnGenerateRoute,
+              onGenerateRoute:
+                  _router.navigatorOf(AppRoute.root).onGenerateRoute,
             ),
           );
         },
