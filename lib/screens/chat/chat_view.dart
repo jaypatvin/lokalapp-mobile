@@ -24,6 +24,7 @@ import 'components/chat_input.dart';
 import 'components/message_stream.dart';
 
 class ChatView extends StatefulWidget {
+  static const routeName = '/chat/view';
   final ChatModel? chat;
 
   // There may be better ways to implement this

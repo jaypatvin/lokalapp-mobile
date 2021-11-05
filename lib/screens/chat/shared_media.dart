@@ -8,9 +8,10 @@ import '../../widgets/photo_view_gallery/gallery/gallery_network_photo_view.dart
 import '../../widgets/photo_view_gallery/thumbnails/network_photo_thumbnail.dart';
 
 class SharedMedia extends StatefulWidget {
-  //final ChatModel chat;
-  final List<QueryDocumentSnapshot>? conversations;
+  static const routeName = '/chat/view/profile/shared_media';
   const SharedMedia({Key? key, required this.conversations}) : super(key: key);
+
+  final List<QueryDocumentSnapshot> conversations;
 
   @override
   _SharedMediaState createState() => _SharedMediaState();
@@ -28,7 +29,7 @@ class _SharedMediaState extends State<SharedMedia> {
 
   List<LokalImages> _getAllChatMedia() {
     final images = <LokalImages>[];
-    for (final c in widget.conversations!) {
+    for (final c in widget.conversations) {
       final _conversation = Conversation.fromDocument(c);
       if (_conversation.media!.isNotEmpty) {
         images.addAll(_conversation.media!);

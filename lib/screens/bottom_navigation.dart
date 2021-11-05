@@ -64,7 +64,12 @@ class _BottomNavigationState extends State<BottomNavigation> {
         activeColorPrimary: Color(0xFFCC3752),
         inactiveColorPrimary: Color(0xFF103045),
         routeAndNavigatorSettings: RouteAndNavigatorSettings(
+          navigatorKey: context.read<AppRouter>().keyOf(AppRoute.chat),
           initialRoute: Chat.routeName,
+          onGenerateRoute: context
+              .read<AppRouter>()
+              .navigatorOf(AppRoute.chat)
+              .onGenerateRoute,
         ),
       ),
       PersistentBottomNavBarItem(
