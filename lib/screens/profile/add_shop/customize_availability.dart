@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart' show DateFormat;
+import 'package:lokalapp/routers/app_router.dart';
 import 'package:provider/provider.dart';
 
 import '../../../models/operating_hours.dart';
@@ -22,15 +23,7 @@ import 'payment_options.dart';
 import 'shop_confirmation.dart';
 
 class CustomizeAvailability extends StatefulWidget {
-  final RepeatChoices repeatChoice;
-  final int? repeatEvery;
-  final List selectableDays;
-  final DateTime startDate;
-  final File? shopPhoto;
-  final bool usedDatePicker;
-  final bool forEditing;
-  final Function? onShopEdit;
-
+  static const routeName = '/profile/addShop/availability';
   const CustomizeAvailability({
     required this.repeatChoice,
     required this.selectableDays,
@@ -41,6 +34,16 @@ class CustomizeAvailability extends StatefulWidget {
     this.forEditing = false,
     this.onShopEdit,
   });
+
+  final RepeatChoices repeatChoice;
+  final int? repeatEvery;
+  final List selectableDays;
+  final DateTime startDate;
+  final File? shopPhoto;
+  final bool usedDatePicker;
+  final bool forEditing;
+  final Function? onShopEdit;
+
   @override
   _CustomizeAvailabilityState createState() => _CustomizeAvailabilityState();
 }
@@ -179,12 +182,11 @@ class _CustomizeAvailabilityState extends State<CustomizeAvailability>
     _shopCreated = await _createShop();
     if (_shopCreated) {
       await context.read<Shops>().fetch();
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (BuildContext context) => AddShopConfirmation(),
-        ),
-      );
+      context.read<AppRouter>()
+        ..navigateTo(
+          AppRoute.profile,
+          AddShopConfirmation.routeName,
+        );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -202,13 +204,12 @@ class _CustomizeAvailabilityState extends State<CustomizeAvailability>
       return;
     }
 
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (_) => SetUpPaymentOptions(
-          onSubmit: _onSubmit,
-        ),
-      ),
-    );
+    context.read<AppRouter>()
+      ..navigateTo(
+        AppRoute.profile,
+        SetUpPaymentOptions.routeName,
+        arguments: {'onSubmit': _onSubmit},
+      );
   }
 
   @override

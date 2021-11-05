@@ -34,7 +34,7 @@ class AppRouter {
   };
 
   /// Get the navigator keys using the `AppRoute` enum.
-  /// 
+  ///
   /// Should be used when we want to have complex navigation. Otherwise, use
   /// `navigateTo()` instead.
   GlobalKey<NavigatorState> keyOf(AppRoute appRoute) =>
@@ -44,42 +44,18 @@ class AppRouter {
   AppNavigator navigatorOf(AppRoute appRoute) => _navigators[appRoute]!;
 
   /// Makes navigation across the tabs easier.
-  /// 
+  ///
   /// Handles the tab controller without explicitly controlling the index.
   Future<dynamic> navigateTo(
     AppRoute appRoute,
     String routeName, {
     dynamic arguments,
     bool replace = false,
-  }) {
-    switch (appRoute) {
-      case AppRoute.home:
-        if (_tabController.index != 0) {
-          _tabController.jumpToTab(0);
-        }
-        break;
-      case AppRoute.discover:
-        if (_tabController.index != 1) {
-          _tabController.jumpToTab(1);
-        }
-        break;
-      case AppRoute.chat:
-        if (_tabController.index != 2) {
-          _tabController.jumpToTab(2);
-        }
-        break;
-      case AppRoute.activity:
-        if (_tabController.index != 3) {
-          _tabController.jumpToTab(3);
-        }
-        break;
-      case AppRoute.profile:
-        if (_tabController.index != 4) {
-          _tabController.jumpToTab(4);
-        }
-        break;
-      default:
-        break;
+  }) async {
+    jumpToTab(appRoute);
+
+    if (keyOf(appRoute).currentState == null) {
+      await Future.delayed(const Duration(milliseconds: 500));
     }
 
     if (replace) {
@@ -92,5 +68,19 @@ class AppRouter {
           routeName,
           arguments: arguments,
         );
+  }
+
+  void jumpToTab(AppRoute appRoute) {
+    if (appRoute == AppRoute.root || _tabController.index == appRoute.index - 1)
+      return;
+
+    if (keyOf(appRoute).currentState != null)
+      keyOf(appRoute).currentState!.popUntil((route) => route.isFirst);
+
+    _tabController.jumpToTab(appRoute.index - 1);
+  }
+
+  void popScreen(AppRoute appRoute, [dynamic result]) {
+    return keyOf(appRoute).currentState!.pop(result);
   }
 }

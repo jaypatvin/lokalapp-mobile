@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/activity_feed.dart';
 import '../../models/lokal_user.dart';
 import '../../providers/activities.dart';
 import '../../providers/auth.dart';
-import '../../routers/home/post_details.props.dart';
 import '../../routers/app_router.dart';
+import '../../routers/home/post_details.props.dart';
 import '../../utils/constants/themes.dart';
 import '../profile/profile_screen.dart';
 import 'components/post_card.dart';
@@ -26,6 +25,11 @@ class Timeline extends StatelessWidget {
   });
 
   void _onUserPressed(BuildContext context, String userId) {
+    if (context.read<Auth>().user!.id == userId) {
+      context.read<AppRouter>().jumpToTab(AppRoute.profile);
+      return;
+    }
+
     context.read<AppRouter>().navigateTo(
       AppRoute.profile,
       ProfileScreen.routeName,
@@ -158,14 +162,7 @@ class Timeline extends StatelessWidget {
             onTripleDotsPressed: () {
               this._onTripleDotsPressed(context, user.id == activity.userId);
             },
-            onUserPressed: () {
-              debugPrint("Pressed the user: ${activity.userId}");
-              if (activity.userId == user.id) {
-                context.read<PersistentTabController>().jumpToTab(4);
-                return;
-              }
-              return _onUserPressed(context, activity.userId);
-            },
+            onUserPressed: () => _onUserPressed(context, activity.userId),
             onMessagePressed: () {
               this._onCommentsPressed(activity, context);
             },

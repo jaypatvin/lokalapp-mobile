@@ -3,9 +3,11 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:keyboard_actions/keyboard_actions.dart';
+import 'package:lokalapp/routers/profile/shop_schedule.props.dart';
 import 'package:provider/provider.dart';
 
 import '../../../providers/post_requests/shop_body.dart';
+import '../../../routers/app_router.dart';
 import '../../../utils/constants/themes.dart';
 import '../../../utils/utility.dart';
 import '../../../widgets/app_button.dart';
@@ -16,6 +18,7 @@ import '../../../widgets/photo_box.dart';
 import 'shop_schedule.dart';
 
 class AddShop extends StatefulWidget {
+  static const routeName = '/profile/addShop';
   @override
   _AddShopState createState() => _AddShopState();
 }
@@ -75,9 +78,7 @@ class _AddShopState extends State<AddShop> {
     return Scaffold(
       appBar: CustomAppBar(
         titleText: "Add Shop",
-        onPressedLeading: () {
-          Navigator.pop(context);
-        },
+        onPressedLeading: () => Navigator.pop(context),
       ),
       body: KeyboardActions(
         config: _buildConfig(),
@@ -103,7 +104,12 @@ class _AddShopState extends State<AddShop> {
                   shopPhoto = photo;
                 });
               },
-              child: PhotoBox(file: shopPhoto, shape: BoxShape.circle),
+              child: PhotoBox(
+                file: shopPhoto,
+                shape: BoxShape.circle,
+                width: 140.w,
+                height: 140.w,
+              ),
             ),
             SizedBox(
               height: height * 0.02,
@@ -141,13 +147,10 @@ class _AddShopState extends State<AddShop> {
                   kTealColor,
                   true,
                   isNotEmpty
-                      ? () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (ctx) => ShopSchedule(
-                                this.shopPhoto,
-                              ),
-                            ),
+                      ? () => context.read<AppRouter>().navigateTo(
+                            AppRoute.profile,
+                            ShopSchedule.routeName,
+                            arguments: ShopScheduleProps(shopPhoto),
                           )
                       : null,
                 ),

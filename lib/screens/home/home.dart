@@ -91,11 +91,6 @@ class _HomeState extends State<Home> {
           vertical: 15.h,
         ),
         child: GestureDetector(
-          // onTap: () => context
-          //     .read<AppRouter>()
-          //     .keyOf(AppRoute.home)
-          //     .currentState!
-          //     .pushNamed(DraftPost.routeName),
           onTap: () => context.read<AppRouter>().navigateTo(
                 AppRoute.home,
                 DraftPost.routeName,

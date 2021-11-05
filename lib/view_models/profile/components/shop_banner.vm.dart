@@ -17,27 +17,29 @@ enum ShopBannerMode {
   otherUserWithShop,
 }
 
-class ShopBannerViewModel {
+class ShopBannerViewModel extends ChangeNotifier {
   ShopBannerViewModel(this.context, this.userId);
   final BuildContext context;
   final String userId;
 
-  late final bool isUserRegistered;
+  // late final bool isUserRegistered;
   late final bool isCurrentUser;
   late final LokalUser user;
-  late final ShopModel? shop;
-  late final ShopBannerMode mode;
+
+  ShopModel? shop;
+  bool isUserRegistered = false;
+  ShopBannerMode mode = ShopBannerMode.currentUser;
 
   void init() {
     this.isCurrentUser = context.read<Auth>().user!.id == userId;
-    this.isUserRegistered = context.read<Auth>().user!.registration != null &&
-        context.read<Auth>().user!.registration!.verified != null &&
-        context.read<Auth>().user!.registration!.verified!;
-
+    _userSetup();
+    _shopSetup();
     this.user = isCurrentUser
         ? context.read<Auth>().user!
         : context.read<Users>().findById(userId);
+  }
 
+  void _shopSetup() {
     final shops = context.read<Shops>().findByUser(userId);
     if (shops.isNotEmpty) this.shop = shops.first;
 
@@ -50,6 +52,12 @@ class ShopBannerViewModel {
     } else {
       mode = ShopBannerMode.currentUser;
     }
+  }
+
+  void _userSetup() {
+    this.isUserRegistered = context.read<Auth>().user!.registration != null &&
+        context.read<Auth>().user!.registration!.verified != null &&
+        context.read<Auth>().user!.registration!.verified!;
   }
 
   void onAddShop() {
@@ -79,5 +87,11 @@ class ShopBannerViewModel {
       settings: RouteSettings(name: UserShop.routeName),
       pageTransitionAnimation: PageTransitionAnimation.cupertino,
     );
+  }
+
+  void refresh() {
+    _shopSetup();
+    _userSetup();
+    notifyListeners();
   }
 }

@@ -16,6 +16,7 @@ import '../../widgets/inputs/input_name_field.dart';
 import '../../widgets/photo_box.dart';
 
 class EditProfile extends StatefulWidget {
+  static const routeName = '/profile/edit';
   @override
   _EditProfileState createState() => _EditProfileState();
 }

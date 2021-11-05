@@ -20,6 +20,7 @@ import 'components/add_product_gallery.dart';
 import 'product_details.dart';
 
 class AddProduct extends StatefulWidget {
+  static const routeName = '/profile/addProduct';
   final String? productId;
 
   const AddProduct({this.productId});

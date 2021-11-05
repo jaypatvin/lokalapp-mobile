@@ -19,12 +19,6 @@ class BottomNavigation extends StatefulWidget {
 }
 
 class _BottomNavigationState extends State<BottomNavigation> {
-  @override
-  void initState() {
-    super.initState();
-    context.read<PersistentTabController>().addListener(() {});
-  }
-
   List<Widget> _buildScreens() {
     return [
       Home(),
@@ -47,7 +41,10 @@ class _BottomNavigationState extends State<BottomNavigation> {
         routeAndNavigatorSettings: RouteAndNavigatorSettings(
           navigatorKey: context.read<AppRouter>().keyOf(AppRoute.home),
           initialRoute: Home.routeName,
-          
+          onGenerateRoute: context
+              .read<AppRouter>()
+              .navigatorOf(AppRoute.home)
+              .onGenerateRoute,
         ),
       ),
       PersistentBottomNavBarItem(
@@ -87,7 +84,12 @@ class _BottomNavigationState extends State<BottomNavigation> {
         activeColorPrimary: Color(0xFFCC3752),
         inactiveColorPrimary: Color(0xFF103045),
         routeAndNavigatorSettings: RouteAndNavigatorSettings(
+          navigatorKey: context.read<AppRouter>().keyOf(AppRoute.profile),
           initialRoute: ProfileScreen.routeName,
+          onGenerateRoute: context
+              .read<AppRouter>()
+              .navigatorOf(AppRoute.profile)
+              .onGenerateRoute,
         ),
       ),
     ];
