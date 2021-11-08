@@ -104,7 +104,7 @@ class _DiscoverState extends State<Discover> {
           buildLeading: false,
         ),
         body: CartContainer(
-          displayButton: true,
+          alwaysDisplayButton: true,
           child: ChangeNotifierProvider<DiscoverViewModel>.value(
             value: _viewModel,
             builder: (ctx, _) {
