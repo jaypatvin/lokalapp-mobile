@@ -41,7 +41,7 @@ class _HomeState extends State<Home> {
   void initState() {
     super.initState();
     final activities = context.read<Activities>();
-    if (activities.feed.length == 0) {
+    if (activities.feed.length == 0 && !activities.isLoading) {
       activities.fetch();
     }
 

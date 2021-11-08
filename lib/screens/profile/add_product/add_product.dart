@@ -21,9 +21,10 @@ import 'product_details.dart';
 
 class AddProduct extends StatefulWidget {
   static const routeName = '/profile/addProduct';
+  const AddProduct({this.productId});
+
   final String? productId;
 
-  const AddProduct({this.productId});
   @override
   _AddProductState createState() => _AddProductState();
 }

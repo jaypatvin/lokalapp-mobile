@@ -69,8 +69,9 @@ class ProfileNavigator extends AppNavigator {
         return CupertinoPageRoute(builder: (_) => AddShopConfirmation());
 
       case AddProduct.routeName:
-        final productId =
-            (settings.arguments as Map<String, String>)['productId'];
+        final productId = settings.arguments != null
+            ? (settings.arguments as Map<String, String>)['productId']
+            : null;
         return CupertinoPageRoute(
           builder: (_) => AddProduct(
             productId: productId,

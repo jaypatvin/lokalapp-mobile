@@ -1,9 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import '../../../../providers/products.dart';
-import '../../../../screens/discover/product_detail.dart';
-import '../../../../screens/profile/add_product/product_details.dart';
-import '../../../../screens/profile/add_product/add_product.dart';
+import 'package:lokalapp/screens/discover/product_detail.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 
@@ -11,8 +8,11 @@ import '../../../../models/lokal_user.dart';
 import '../../../../models/product.dart';
 import '../../../../models/user_shop.dart';
 import '../../../../providers/auth.dart';
+import '../../../../providers/products.dart';
 import '../../../../providers/shops.dart';
 import '../../../../providers/users.dart';
+import '../../../../routers/app_router.dart';
+import '../../../../screens/profile/add_product/add_product.dart';
 
 class ShopProductFieldViewModel extends ChangeNotifier {
   ShopProductFieldViewModel(
@@ -64,19 +64,22 @@ class ShopProductFieldViewModel extends ChangeNotifier {
   }
 
   void addProduct() {
-    pushNewScreen(context, screen: AddProduct());
+    context
+        .read<AppRouter>()
+        .navigateTo(AppRoute.profile, AddProduct.routeName);
   }
 
   void onProductTap(String id) {
     final product = _products.firstWhereOrNull((p) => p.id == id);
     if (product == null) throw 'Product does not exist!';
-    pushNewScreen(
-      context,
-      screen: isCurrentUser
-          ? AddProduct(
-              productId: product.id,
-            )
-          : ProductDetail(product),
-    );
+    if (isCurrentUser) {
+      context.read<AppRouter>().navigateTo(
+        AppRoute.profile,
+        AddProduct.routeName,
+        arguments: {'productId': product.id},
+      );
+      return;
+    }
+    pushNewScreen(context, screen: ProductDetail(product));
   }
 }
