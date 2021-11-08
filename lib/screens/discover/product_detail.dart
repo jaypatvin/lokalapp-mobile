@@ -15,8 +15,9 @@ import '../chat/components/chat_avatar.dart';
 import '../profile/components/store_rating.dart';
 
 class ProductDetail extends StatefulWidget {
+  static const routeName = '/discover/productDetail';
   final Product? product;
-  ProductDetail(this.product);
+  const ProductDetail(this.product);
   @override
   _ProductDetailState createState() => _ProductDetailState();
 }

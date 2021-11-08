@@ -7,52 +7,7 @@ import '../../utils/constants/themes.dart';
 import '../../widgets/custom_app_bar.dart';
 
 class ExploreCategories extends StatelessWidget {
-  // final categories = [
-  //   "Dessert & Pastries",
-  //   "Meals & Snacks",
-  //   "Drinks",
-  //   "Fashion",
-  //   "Dessert & Pastries",
-  //   "Meals & Snacks",
-  //   "Drinks",
-  //   "Fashion",
-  //   "Dessert & Pastries",
-  //   "Meals & Snacks",
-  //   "Drinks",
-  //   "Fashion",
-  //   "Dessert & Pastries",
-  //   "Meals & Snacks",
-  //   "Drinks",
-  //   "Fashion",
-  //   "Dessert & Pastries",
-  //   "Meals & Snacks",
-  //   "Drinks",
-  //   "Fashion",
-  //   "Dessert & Pastries",
-  //   "Meals & Snacks",
-  //   "Drinks",
-  //   "Fashion",
-  //   "Dessert & Pastries",
-  //   "Meals & Snacks",
-  //   "Drinks",
-  //   "Fashion",
-  //   "Dessert & Pastries",
-  //   "Meals & Snacks",
-  //   "Drinks",
-  //   "Fashion",
-  //   "Dessert & Pastries",
-  //   "Meals & Snacks",
-  //   "Drinks",
-  //   "Fashion",
-  //   "Dessert & Pastries",
-  //   "Meals & Snacks",
-  //   "Drinks",
-  //   "Fashion",
-  //   "Dessert & Pastries",
-  //   "Meals & Snacks",
-  //   "Drinks",
-  //   "Fashion",
-  // ];
+  static const routeName = '/discover/categories';
 
   @override
   Widget build(BuildContext context) {
@@ -108,15 +63,8 @@ class ExploreCategories extends StatelessWidget {
                                     backgroundColor: Color(0XFFF1FAFF),
                                     foregroundImage: NetworkImage(
                                       categories[index].iconUrl,
-                                      
                                     ),
                                     onForegroundImageError: (obj, stack) {},
-                                    
-                                    // child: Icon(
-                                    //   Icons.food_bank,
-                                    //   color: kTealColor,
-                                    //   size: 35.0.sp,
-                                    // ),
                                   ),
                                   SizedBox(height: 10.0.h),
                                   Text(

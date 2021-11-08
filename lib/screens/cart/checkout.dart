@@ -4,6 +4,9 @@ import 'package:provider/provider.dart';
 import '../../providers/cart.dart';
 import '../../providers/products.dart';
 import '../../providers/shops.dart';
+import '../../routers/app_router.dart';
+import '../../routers/discover/cart/checkout_schedule.props.dart';
+import '../../routers/discover/product_detail.props.dart';
 import '../../utils/constants/themes.dart';
 import '../../widgets/app_button.dart';
 import '../../widgets/custom_app_bar.dart';
@@ -12,7 +15,8 @@ import 'checkout_schedule.dart';
 import 'components/order_details.dart';
 
 class Checkout extends StatelessWidget {
-  final String? productId;
+  static const routeName = '/cart/checkout/shop/checkout';
+  final String productId;
   const Checkout({
     Key? key,
     required this.productId,
@@ -58,10 +62,14 @@ class Checkout extends StatelessWidget {
                     child: OrderDetails(
                       product: product,
                       quantity: order.quantity,
-                      onEditTap: () => Navigator.of(context).push(
-                        MaterialPageRoute(
-                            builder: (_) => ProductDetail(product)),
-                      ),
+                      onEditTap: () {
+                        context.read<AppRouter>()
+                          ..navigateTo(
+                            AppRoute.discover,
+                            ProductDetail.routeName,
+                            arguments: ProductDetailProps(product),
+                          );
+                      },
                     ),
                   ),
                 );
@@ -144,11 +152,14 @@ class Checkout extends StatelessWidget {
                     "Continue",
                     kTealColor,
                     true,
-                    () => Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) => CheckoutSchedule(productId: productId),
-                      ),
-                    ),
+                    () {
+                      context.read<AppRouter>()
+                        ..navigateTo(
+                          AppRoute.discover,
+                          CheckoutSchedule.routeName,
+                          arguments: CheckoutScheduleProps(productId),
+                        );
+                    },
                   ),
                 )
               ],

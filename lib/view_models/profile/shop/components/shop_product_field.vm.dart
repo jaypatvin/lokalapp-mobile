@@ -1,7 +1,5 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:lokalapp/screens/discover/product_detail.dart';
-import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../models/lokal_user.dart';
@@ -12,6 +10,8 @@ import '../../../../providers/products.dart';
 import '../../../../providers/shops.dart';
 import '../../../../providers/users.dart';
 import '../../../../routers/app_router.dart';
+import '../../../../routers/discover/product_detail.props.dart';
+import '../../../../screens/discover/product_detail.dart';
 import '../../../../screens/profile/add_product/add_product.dart';
 
 class ShopProductFieldViewModel extends ChangeNotifier {
@@ -80,6 +80,11 @@ class ShopProductFieldViewModel extends ChangeNotifier {
       );
       return;
     }
-    pushNewScreen(context, screen: ProductDetail(product));
+    context.read<AppRouter>()
+      ..navigateTo(
+        AppRoute.discover,
+        ProductDetail.routeName,
+        arguments: ProductDetailProps(product),
+      );
   }
 }

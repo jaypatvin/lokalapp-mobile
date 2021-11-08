@@ -54,7 +54,12 @@ class _BottomNavigationState extends State<BottomNavigation> {
         activeColorPrimary: Color(0xFFCC3752),
         inactiveColorPrimary: Color(0xFF103045),
         routeAndNavigatorSettings: RouteAndNavigatorSettings(
+          navigatorKey: context.read<AppRouter>().keyOf(AppRoute.discover),
           initialRoute: Discover.routeName,
+          onGenerateRoute: context
+              .read<AppRouter>()
+              .navigatorOf(AppRoute.discover)
+              .onGenerateRoute,
         ),
       ),
       PersistentBottomNavBarItem(

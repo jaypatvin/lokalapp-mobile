@@ -6,6 +6,7 @@ import '../../widgets/custom_app_bar.dart';
 import '../../widgets/inputs/search_text_field.dart';
 
 class Search extends StatefulWidget {
+  static const routeName = '/discover/search';
   @override
   _SearchState createState() => _SearchState();
 }

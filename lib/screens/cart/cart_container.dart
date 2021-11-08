@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/cart.dart';
+import '../../routers/app_router.dart';
 import '../../utils/constants/themes.dart';
 import 'checkout_cart.dart';
 
@@ -52,10 +53,13 @@ class CartContainer extends StatelessWidget {
                       ),
                     ],
                   ),
-                  onPressed: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => CheckoutCart()),
-                  ),
+                  onPressed: () {
+                    context.read<AppRouter>()
+                      ..navigateTo(
+                        AppRoute.discover,
+                        CheckoutCart.routeName,
+                      );
+                  },
                 ),
               ),
             );

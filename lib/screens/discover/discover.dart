@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -8,9 +7,7 @@ import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/product.dart';
-import '../../providers/auth.dart';
 import '../../providers/categories.dart';
-import '../../providers/products.dart';
 import '../../providers/shops.dart';
 import '../../utils/constants/assets.dart';
 import '../../utils/constants/themes.dart';
