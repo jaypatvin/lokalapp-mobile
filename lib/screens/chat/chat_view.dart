@@ -297,6 +297,7 @@ class _ChatViewState extends State<ChatView> {
         });
       },
       onDelete: (id) => _onDeleteMessage(id),
+      trailing: _buildAdditionalStates(),
     );
   }
 
@@ -429,7 +430,7 @@ class _ChatViewState extends State<ChatView> {
                 child: _buildMessages(),
               ),
             ),
-            _buildAdditionalStates(),
+            //_buildAdditionalStates(),
             _buildChatInput(),
             _buildImagePicker(),
           ],

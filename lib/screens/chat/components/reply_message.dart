@@ -33,6 +33,7 @@ class ReplyMessageWidget extends StatelessWidget {
               itemCount: message.media!.length,
               itemBuilder: (ctx, index) {
                 return NetworkPhotoThumbnail(
+                  heroTag: '${message.media![index].url}_reply',
                   galleryItem: message.media![index],
                   fit: BoxFit.cover,
                   onTap: () => openGallery(context, index, message.media!),
