@@ -10,7 +10,6 @@ import 'providers/activities.dart';
 import 'providers/auth.dart';
 import 'providers/cart.dart';
 import 'providers/categories.dart';
-import 'providers/chat_provider.dart';
 import 'providers/post_requests/auth_body.dart';
 import 'providers/post_requests/operating_hours_body.dart';
 import 'providers/post_requests/product_body.dart';
@@ -45,6 +44,7 @@ class _MyAppState extends State<MyApp> {
   late final UserSharedPreferences _prefs;
   late final AppRouter _router;
   late final PersistentTabController _tabController;
+  late final API _api;
 
   @override
   initState() {
@@ -53,6 +53,7 @@ class _MyAppState extends State<MyApp> {
     _prefs.init();
     _tabController = PersistentTabController();
     _router = AppRouter(_tabController);
+    _api = API();
   }
 
   @override
@@ -62,7 +63,6 @@ class _MyAppState extends State<MyApp> {
   }
 
   List<SingleChildWidget> _getProviders() {
-    final _api = API();
     return <SingleChildWidget>[
       //shared preference
       Provider<UserSharedPreferences>.value(value: _prefs),
@@ -138,10 +138,10 @@ class _MyAppState extends State<MyApp> {
         update: (_, auth, subscription) =>
             subscription!..setIdToken(auth.idToken),
       ),
-      ProxyProvider<Auth, ChatProvider?>(
-        create: (_) => ChatProvider(),
-        update: (_, auth, chat) => chat!..setIdToken(auth.idToken),
-      ),
+      // ProxyProvider<Auth, ChatProvider?>(
+      //   create: (_) => ChatProvider(),
+      //   update: (_, auth, chat) => chat!..setIdToken(auth.idToken),
+      // ),
     ];
   }
 

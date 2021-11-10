@@ -52,8 +52,12 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
 
     final user = context.read<Auth>().user!;
     final shops = context.read<Shops>().findByUser(user.id);
-
     _userChatStream = Database.instance.getUserChats(user.id);
+    _userChatStream?.listen((event) {
+      for (var snapshot in event.docs) {
+        print(snapshot.id);
+      }
+    });
     if (shops.isNotEmpty) {
       _shopChatStream = Database.instance.getUserChats(shops.first.id);
     }
@@ -75,55 +79,61 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     final user = context.read<Auth>().user!;
-    final shops = context.read<Shops>().findByUser(user.id);
+    //final shops = context.read<Shops>().findByUser(user.id);
 
-    if (shops.isEmpty) {
-      return Onboarding(
-        screen: MainScreen.chats,
-        child: Scaffold(
-          appBar: PreferredSize(
-            child: _ChatAppBar(
-              backgroundColor: kTealColor,
+    return Consumer<Shops>(
+      builder: (ctx, shops, _) {
+        final _shops = shops.findByUser(user.id);
+        if (_shops.isEmpty) {
+          return Onboarding(
+            screen: MainScreen.chats,
+            child: Scaffold(
+              appBar: PreferredSize(
+                child: _ChatAppBar(
+                  backgroundColor: kTealColor,
+                ),
+                preferredSize: Size.fromHeight(
+                  50.0,
+                ),
+              ),
+              body: ChatStream(
+                chatStream: _userChatStream,
+                searchController: _userSearchController,
+              ),
             ),
-            preferredSize: Size.fromHeight(
-              50.0,
-            ),
-          ),
-          body: ChatStream(
-            chatStream: _userChatStream,
-            searchController: _userSearchController,
-          ),
-        ),
-      );
-    }
+          );
+        }
 
-    // .first throws an error if shops is empty,
-    // however, we already checked that on the prior if condition
-    return Onboarding(
-      screen: MainScreen.chats,
-      child: Scaffold(
-        appBar: _ChatAppBar(
-          height: 120.0.h,
-          backgroundColor: _colorAnimation.value,
-          bottom: _ChatAppBarBottom(
-            tabController: _tabController,
+        if (_shopChatStream == null) {
+          _shopChatStream = Database.instance.getUserChats(_shops.first.id);
+        }
+        return Onboarding(
+          screen: MainScreen.chats,
+          child: Scaffold(
+            appBar: _ChatAppBar(
+              height: 120.0.h,
+              backgroundColor: _colorAnimation.value,
+              bottom: _ChatAppBarBottom(
+                tabController: _tabController,
+              ),
+            ),
+            body: TabBarView(
+              physics: NeverScrollableScrollPhysics(),
+              controller: _tabController,
+              children: [
+                ChatStream(
+                  chatStream: _userChatStream,
+                  searchController: _userSearchController,
+                ),
+                ChatStream(
+                  chatStream: _shopChatStream,
+                  searchController: _shopSearchController,
+                ),
+              ],
+            ),
           ),
-        ),
-        body: TabBarView(
-          physics: NeverScrollableScrollPhysics(),
-          controller: _tabController,
-          children: [
-            ChatStream(
-              chatStream: _userChatStream,
-              searchController: _userSearchController,
-            ),
-            ChatStream(
-              chatStream: _shopChatStream,
-              searchController: _shopSearchController,
-            ),
-          ],
-        ),
-      ),
+        );
+      },
     );
   }
 }

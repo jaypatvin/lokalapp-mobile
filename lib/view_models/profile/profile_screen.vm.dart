@@ -44,7 +44,7 @@ class ProfileScreenViewModel {
         ChatView.routeName,
         arguments: ChatViewProps(
           true,
-          members: [context.read<Auth>().user!.id, user.id],
+          members: [context.read<Auth>().user!.id!, user.id!],
         ),
       );
   }

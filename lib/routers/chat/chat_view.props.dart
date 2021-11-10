@@ -11,7 +11,7 @@ class ChatViewProps {
 
   final ChatModel? chat;
   final bool createMessage;
-  final List<String?>? members;
+  final List<String>? members;
   final String? shopId;
   final String? productId;
 }

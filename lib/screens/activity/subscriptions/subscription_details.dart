@@ -276,8 +276,8 @@ class _SubscriptionDetailsButtons extends StatelessWidget {
                       arguments: ChatViewProps(
                         true,
                         members: [
-                          subscriptionPlan.buyerId,
-                          subscriptionPlan.shopId
+                          subscriptionPlan.buyerId!,
+                          subscriptionPlan.shopId!,
                         ],
                         shopId: subscriptionPlan.shopId,
                       ),
