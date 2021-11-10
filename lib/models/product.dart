@@ -28,6 +28,7 @@ class Product {
   int numRatings;
   double avgRating;
   String updatedFrom;
+  List<String> likes;
   Product({
     required this.id,
     required this.name,
@@ -45,6 +46,7 @@ class Product {
     required this.numRatings,
     required this.avgRating,
     required this.updatedFrom,
+    required this.likes,
     this.description,
     this.productPhoto,
     this.gallery,
@@ -72,6 +74,7 @@ class Product {
     int? numRatings,
     double? avgRating,
     String? updatedFrom,
+    List<String>? likes,
   }) {
     return Product(
       id: id ?? this.id,
@@ -94,6 +97,7 @@ class Product {
       numRatings: numRatings ?? this.numRatings,
       avgRating: avgRating ?? this.avgRating,
       updatedFrom: updatedFrom ?? this.updatedFrom,
+      likes: likes ?? this.likes,
     );
   }
 
@@ -118,7 +122,8 @@ class Product {
       'updated_at': updatedAt != null ? Timestamp.fromDate(updatedAt!) : null,
       'numRatings': numRatings,
       'avgRating': avgRating,
-      'updated_from': updatedFrom
+      'updated_from': updatedFrom,
+      'likes': likes,
     };
   }
 
@@ -151,6 +156,7 @@ class Product {
       numRatings: map['numRatings'] ?? 0,
       avgRating: map['avgRating']?.toDouble() ?? 0.0,
       updatedFrom: map['updated_from'] ?? '',
+      likes: List<String>.from(map['likes'] ?? []),
     );
   }
 
@@ -168,7 +174,7 @@ class Product {
         'gallery: $gallery, availability: $availability, archived: $archived '
         'canSubscribe: $canSubscribe, createdAt: $createdAt, '
         'updatedAt: $updatedAt, numRatings: $numRatings, avgRating: $avgRating, '
-        'updatedFrom: $updatedFrom)';
+        'updatedFrom: $updatedFrom, likes: $likes)';
   }
 
   @override
@@ -195,7 +201,8 @@ class Product {
         o.updatedAt == updatedAt &&
         o.numRatings == numRatings &&
         o.avgRating == avgRating &&
-        o.updatedFrom == updatedFrom;
+        o.updatedFrom == updatedFrom &&
+        listEquals(o.likes, likes);
   }
 
   @override
@@ -219,6 +226,7 @@ class Product {
         updatedAt.hashCode ^
         numRatings.hashCode ^
         avgRating.hashCode ^
-        updatedFrom.hashCode;
+        updatedFrom.hashCode ^
+        likes.hashCode;
   }
 }

@@ -5,7 +5,7 @@ import '../models/product.dart';
 import '../screens/profile/components/product_card.dart';
 
 class ProductsList extends StatelessWidget {
-  ProductsList({
+  const ProductsList({
     required this.items,
     required this.onProductTap,
     this.crossAxisCount = 2,

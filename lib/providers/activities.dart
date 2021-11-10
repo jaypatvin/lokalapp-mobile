@@ -120,7 +120,7 @@ class Activities extends ChangeNotifier {
     notifyListeners();
 
     try {
-      await _activityService.like(activityId: activityId, userId: userId);
+      await _activityService.unlike(activityId: activityId, userId: userId);
     } catch (e) {
       feed.likedCount++;
       feed.liked = true;
