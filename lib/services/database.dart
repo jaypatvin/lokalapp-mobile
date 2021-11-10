@@ -74,7 +74,7 @@ class Database {
   Stream<QuerySnapshot<Map<String, dynamic>>> getCommunityProducts(
     String communityId,
   ) {
-     return FirebaseFirestore.instance
+    return FirebaseFirestore.instance
         .collection('products')
         .where('community_id', isEqualTo: communityId)
         .snapshots();
@@ -169,7 +169,7 @@ class Database {
   Stream<QuerySnapshot> getUserChats(String? userId) {
     return chatsRef
         .where("members", arrayContains: userId)
-        .orderBy("updated_at", descending: true)
+        .orderBy("last_message.created_at", descending: true)
         .snapshots();
   }
 

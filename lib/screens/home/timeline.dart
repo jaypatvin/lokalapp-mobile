@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/activity_feed.dart';
 import '../../models/lokal_user.dart';
 import '../../providers/activities.dart';
 import '../../providers/auth.dart';
+import '../../routers/app_router.dart';
+import '../../routers/home/post_details.props.dart';
 import '../../utils/constants/themes.dart';
 import '../profile/profile_screen.dart';
 import 'components/post_card.dart';
@@ -23,7 +24,20 @@ class Timeline extends StatelessWidget {
     this.firstIndexPadding = 0,
   });
 
-  void onLike(BuildContext context, ActivityFeed activity, LokalUser user) {
+  void _onUserPressed(BuildContext context, String userId) {
+    if (context.read<Auth>().user!.id == userId) {
+      context.read<AppRouter>().jumpToTab(AppRoute.profile);
+      return;
+    }
+
+    context.read<AppRouter>().navigateTo(
+      AppRoute.profile,
+      ProfileScreen.routeName,
+      arguments: {'userId': userId},
+    );
+  }
+
+  void _onLike(BuildContext context, ActivityFeed activity, LokalUser user) {
     try {
       if (activity.liked) {
         context.read<Activities>().unlikePost(
@@ -45,23 +59,22 @@ class Timeline extends StatelessWidget {
     }
   }
 
-  void onCommentsPressed(ActivityFeed activity, BuildContext context) {
+  void _onCommentsPressed(ActivityFeed activity, BuildContext context) {
     final user = context.read<Auth>().user!;
-    context.read<Activities>().fetchComments(activityId: activity.id);
-    pushNewScreen(
-      context,
-      screen: PostDetails(
-        onUserPressed: (user) {
-          debugPrint("Go to $user");
-        },
-        onLike: () => onLike(context, activity, user),
-        activity: activity,
-      ),
-      withNavBar: false,
-    );
+    context
+      ..read<Activities>().fetchComments(activityId: activity.id)
+      ..read<AppRouter>().navigateTo(
+        AppRoute.home,
+        PostDetails.routeName,
+        arguments: PostDetailsProps(
+          activity: activity,
+          onUserPressed: (userId) => _onUserPressed(context, userId),
+          onLike: () => _onLike(context, activity, user),
+        ),
+      );
   }
 
-  void onTripleDotsPressed(BuildContext context, [bool isUser = false]) {
+  void _onTripleDotsPressed(BuildContext context, [bool isUser = false]) {
     showModalBottomSheet(
       context: context,
       useRootNavigator: true,
@@ -143,25 +156,15 @@ class Timeline extends StatelessWidget {
           child: PostCard(
             activityFeed: activity,
             onCommentsPressed: () {
-              this.onCommentsPressed(activity, context);
+              this._onCommentsPressed(activity, context);
             },
-            onLike: () => onLike(context, activity, user),
+            onLike: () => _onLike(context, activity, user),
             onTripleDotsPressed: () {
-              this.onTripleDotsPressed(context, user.id == activity.userId);
+              this._onTripleDotsPressed(context, user.id == activity.userId);
             },
-            onUserPressed: () {
-              debugPrint("Pressed the user: ${activity.userId}");
-              if (activity.userId == user.id) {
-                context.read<PersistentTabController>().jumpToTab(4);
-                return;
-              }
-              pushNewScreen(
-                context,
-                screen: ProfileScreen(userId: activity.userId),
-              );
-            },
+            onUserPressed: () => _onUserPressed(context, activity.userId),
             onMessagePressed: () {
-              this.onCommentsPressed(activity, context);
+              this._onCommentsPressed(activity, context);
             },
           ),
         );

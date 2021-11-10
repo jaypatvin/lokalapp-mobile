@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 
 import '../../../models/lokal_user.dart';
@@ -7,6 +6,7 @@ import '../../../models/user_shop.dart';
 import '../../../providers/auth.dart';
 import '../../../providers/shops.dart';
 import '../../../providers/users.dart';
+import '../../../routers/app_router.dart';
 import '../../../screens/profile/profile_screen.dart';
 import '../../../utils/constants/themes.dart';
 
@@ -52,16 +52,24 @@ class UserShopViewModel {
 
   void onSettingsTap() {}
   void onEditTap() {}
+
   void goToProfile() {
     if (isCurrentUser) {
-      Navigator.popUntil(context, (route) => route.isFirst);
-      context.read<PersistentTabController>()..jumpToTab(4);
+      context.read<AppRouter>()
+        ..jumpToTab(AppRoute.profile)
+        ..keyOf(AppRoute.profile).currentState?.popUntil(
+              (route) => route.isFirst,
+            );
     } else {
-      Navigator.popUntil(context, (route) => route.isFirst);
-      pushNewScreen(
-        context,
-        screen: ProfileScreen(userId: user.id!),
-      );
+      context.read<AppRouter>()
+        ..keyOf(AppRoute.profile).currentState?.popUntil(
+              (route) => route.isFirst,
+            )
+        ..navigateTo(
+          AppRoute.profile,
+          ProfileScreen.routeName,
+          arguments: {'userId': user.id!},
+        );
     }
   }
 }

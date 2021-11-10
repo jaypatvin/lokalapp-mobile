@@ -2,13 +2,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/chat_model.dart';
 import '../../providers/auth.dart';
 import '../../providers/shops.dart';
 import '../../providers/users.dart';
+import '../../routers/app_router.dart';
 import '../../utils/constants/themes.dart';
 import '../../widgets/custom_app_bar.dart';
 import '../../widgets/custom_expansion_tile.dart' as custom;
@@ -17,9 +17,11 @@ import 'components/chat_avatar.dart';
 import 'shared_media.dart';
 
 class ChatProfile extends StatefulWidget {
+  static const routeName = '/chat/view/profile';
+  const ChatProfile(this.chat, this.conversations);
+
   final ChatModel? chat;
   final List<QueryDocumentSnapshot>? conversations;
-  ChatProfile(this.chat, this.conversations);
 
   @override
   _ChatProfileState createState() => _ChatProfileState();
@@ -156,12 +158,13 @@ class _ChatProfileState extends State<ChatProfile> {
                       return ListTile(
                         onTap: () {
                           if (user.id == context.read<Auth>().user!.id) {
-                            ctx.read<PersistentTabController>().jumpToTab(4);
+                            ctx.read<AppRouter>().jumpToTab(AppRoute.profile);
                             return;
                           }
-                          pushNewScreen(
-                            ctx,
-                            screen: ProfileScreen(userId: user.id!),
+                          ctx.read<AppRouter>().navigateTo(
+                            AppRoute.profile,
+                            ProfileScreen.routeName,
+                            arguments: {'userId': user.id!},
                           );
                         },
                         leading: ChatAvatar(
@@ -189,13 +192,10 @@ class _ChatProfileState extends State<ChatProfile> {
                   padding: EdgeInsets.zero,
                   icon: Icon(MdiIcons.chevronRight),
                   onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => SharedMedia(
-                          conversations: widget.conversations,
-                        ),
-                      ),
+                    context.read<AppRouter>().navigateTo(
+                      AppRoute.chat,
+                      SharedMedia.routeName,
+                      arguments: {'conversations': widget.conversations},
                     );
                   },
                 ),

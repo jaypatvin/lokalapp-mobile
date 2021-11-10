@@ -9,6 +9,8 @@ import '../../../models/product_subscription_plan.dart';
 import '../../../providers/auth.dart';
 import '../../../providers/products.dart';
 import '../../../providers/shops.dart';
+import '../../../routers/app_router.dart';
+import '../../../routers/chat/chat_view.props.dart';
 import '../../../utils/constants/themes.dart';
 import '../../../utils/repeated_days_generator/schedule_generator.dart';
 import '../../../widgets/app_button.dart';
@@ -267,19 +269,19 @@ class _SubscriptionDetailsButtons extends StatelessWidget {
                 kTealColor,
                 false,
                 () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (ctx) => ChatView(
+                  context
+                    ..read<AppRouter>().navigateTo(
+                      AppRoute.chat,
+                      ChatView.routeName,
+                      arguments: ChatViewProps(
                         true,
                         members: [
-                          subscriptionPlan.buyerId,
-                          subscriptionPlan.shopId
+                          subscriptionPlan.buyerId!,
+                          subscriptionPlan.shopId!,
                         ],
                         shopId: subscriptionPlan.shopId,
                       ),
-                    ),
-                  );
+                    );
                 },
               ),
             )

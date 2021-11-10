@@ -17,17 +17,19 @@ class MessageStream extends StatelessWidget {
   final Stream<QuerySnapshot>? messageStream;
   final void Function(String messageId, Conversation message) onReply;
   final void Function(String messageId) onDelete;
+  final Widget? trailing;
   const MessageStream({
     required this.messageStream,
     required this.onDelete,
     required this.onReply,
+    this.trailing,
   });
 
   List<FocusedMenuItem> _buildMenuItems(
     BuildContext context,
     String messageId,
     Conversation message,
-    isUser,
+    bool isUser,
   ) {
     return [
       FocusedMenuItem(
@@ -92,6 +94,30 @@ class MessageStream extends StatelessWidget {
     );
   }
 
+  Widget _buildItem({
+    required BuildContext context,
+    required String messageId,
+    required Conversation message,
+    required bool userMessage,
+    DocumentReference? replyTo,
+  }) {
+    return FocusedMenuHolder(
+      onPressed: () {},
+      menuItems: _buildMenuItems(context, messageId, message, userMessage),
+      bottomOffsetHeight: kBottomNavigationBarHeight,
+      blurBackgroundColor: Colors.grey.shade200.withOpacity(0.3),
+      blurSize: 2.0,
+      child: SwipeTo(
+        onRightSwipe: userMessage ? null : () => onReply(messageId, message),
+        onLeftSwipe: userMessage ? () => onReply(messageId, message) : null,
+        child: ChatBubble(
+          conversation: message,
+          replyMessage: replyTo,
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
@@ -114,23 +140,17 @@ class MessageStream extends StatelessWidget {
               final userMessage =
                   message.senderId == context.read<Auth>().user!.id;
               final replyTo = message.replyTo;
-              return FocusedMenuHolder(
-                onPressed: () {},
-                menuItems:
-                    _buildMenuItems(ctx2, messageId, message, userMessage),
-                bottomOffsetHeight: kBottomNavigationBarHeight,
-                blurBackgroundColor: Colors.grey.shade200.withOpacity(0.3),
-                blurSize: 2.0,
-                child: SwipeTo(
-                  onRightSwipe:
-                      userMessage ? null : () => onReply(messageId, message),
-                  onLeftSwipe:
-                      userMessage ? () => onReply(messageId, message) : null,
-                  child: ChatBubble(
-                    conversation: message,
-                    replyMessage: replyTo,
+              return Column(
+                children: [
+                  _buildItem(
+                    context: context,
+                    messageId: messageId,
+                    message: message,
+                    userMessage: userMessage,
+                    replyTo: replyTo,
                   ),
-                ),
+                  if (index == 0 && trailing != null) trailing!,
+                ],
               );
             },
           );

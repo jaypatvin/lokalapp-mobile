@@ -67,6 +67,7 @@ flutter:
     - assets/animations/
     - assets/bottomNavIcons/
     - assets/payment/
+    - assets/rating/
     - assets/sso/
   fonts:
     - family: Goldplay

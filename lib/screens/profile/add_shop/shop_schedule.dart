@@ -9,6 +9,8 @@ import 'package:provider/provider.dart';
 import '../../../providers/auth.dart';
 import '../../../providers/post_requests/operating_hours_body.dart';
 import '../../../providers/shops.dart';
+import '../../../routers/app_router.dart';
+import '../../../routers/profile/customize_availability.props.dart';
 import '../../../utils/constants/themes.dart';
 import '../../../utils/functions.utils.dart';
 import '../../../widgets/app_button.dart';
@@ -17,15 +19,15 @@ import '../../../widgets/schedule_picker.dart';
 import 'customize_availability.dart';
 
 class ShopSchedule extends StatefulWidget {
-  final File? shopPhoto;
-  final bool forEditing;
-  final Function()? onShopEdit;
-
+  static const routeName = '/profile/addShop/schedule';
   const ShopSchedule(
     this.shopPhoto, {
     this.forEditing = false,
     this.onShopEdit,
   });
+  final File? shopPhoto;
+  final bool forEditing;
+  final Function()? onShopEdit;
 
   @override
   _ShopScheduleState createState() => _ShopScheduleState();
@@ -127,16 +129,15 @@ class _ShopScheduleState extends State<ShopSchedule> {
       backgroundColor: Colors.white,
       resizeToAvoidBottomInset: false,
       appBar: CustomAppBar(
-          titleText: "Shop Schedule",
-          titleStyle: TextStyle(
-            color: Colors.black,
-          ),
-          backgroundColor: Colors.white,
-          leadingColor: Colors.black,
-          elevation: 0.0,
-          onPressedLeading: () {
-            Navigator.pop(context);
-          }),
+        titleText: "Shop Schedule",
+        titleStyle: TextStyle(
+          color: Colors.black,
+        ),
+        backgroundColor: Colors.white,
+        leadingColor: Colors.black,
+        elevation: 0.0,
+        onPressedLeading: () => Navigator.pop(context),
+      ),
       body: Container(
         padding: EdgeInsets.symmetric(
           horizontal: width * 0.05,
@@ -245,31 +246,29 @@ class _ShopScheduleState extends State<ShopSchedule> {
                       return;
                     }
 
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (BuildContext context) =>
-                            CustomizeAvailability(
-                          repeatChoice: this._getRepeatChoice(),
-                          repeatEvery: context
-                              .read<OperatingHoursBody>()
-                              .operatingHours
-                              .repeatUnit,
-                          selectableDays: this._selectableDays,
-                          startDate: this._startDate ?? DateTime.now(),
-                          shopPhoto: widget.shopPhoto,
-                          usedDatePicker: context
-                                  .read<OperatingHoursBody>()
-                                  .operatingHours
-                                  .repeatType!
-                                  .split("-")
-                                  .length <=
-                              1,
-                          forEditing: widget.forEditing,
-                          onShopEdit: widget.onShopEdit,
-                        ),
-                      ),
-                    );
+                    context.read<AppRouter>().navigateTo(
+                          AppRoute.profile,
+                          CustomizeAvailability.routeName,
+                          arguments: CustomizeAvailabilityProps(
+                            repeatChoice: this._getRepeatChoice(),
+                            repeatEvery: context
+                                .read<OperatingHoursBody>()
+                                .operatingHours
+                                .repeatUnit,
+                            selectableDays: this._selectableDays,
+                            startDate: this._startDate ?? DateTime.now(),
+                            shopPhoto: widget.shopPhoto,
+                            usedDatePicker: context
+                                    .read<OperatingHoursBody>()
+                                    .operatingHours
+                                    .repeatType!
+                                    .split("-")
+                                    .length <=
+                                1,
+                            forEditing: widget.forEditing,
+                            onShopEdit: widget.onShopEdit,
+                          ),
+                        );
                   },
                 ),
               )

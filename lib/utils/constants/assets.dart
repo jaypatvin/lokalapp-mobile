@@ -21,6 +21,13 @@ const kSvgCashPayment = 'assets/payment/cash.svg';
 const kSvgGCashPayment = 'assets/payment/gcash.svg';
 const kSvgBankPayment = "assets/payment/bank.svg";
 
+// Rating
+const kSvg1StarRating = 'assets/rating/star-1.svg';
+const kSvg2StarRating = 'assets/rating/star-2.svg';
+const kSvg3StarRating = 'assets/rating/star-3.svg';
+const kSvg4StarRating = 'assets/rating/star-4.svg';
+const kSvg5StarRating = 'assets/rating/star-5.svg';
+
 // SSO
 const kPngFbLogo = 'assets/sso/fb_logo.png';
 const kPngAppleLogo = 'assets/sso/apple_logo.png';

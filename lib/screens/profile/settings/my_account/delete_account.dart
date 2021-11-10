@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 
+import '../../../../routers/app_router.dart';
 import '../../../../utils/constants/themes.dart';
 import '../../../../widgets/app_button.dart';
 import '../../../../widgets/custom_app_bar.dart';
@@ -69,10 +71,13 @@ class _DeleteAccountState extends State<DeleteAccount> {
                 'Go back to settings',
                 kTealColor,
                 true,
-                () => Navigator.popUntil(
-                  context,
-                  ModalRoute.withName(Settings.routeName),
-                ),
+                () {
+                  context
+                      .read<AppRouter>()
+                      .keyOf(AppRoute.profile)
+                      .currentState!
+                      .popUntil(ModalRoute.withName(Settings.routeName));
+                },
               ),
             ),
           ],

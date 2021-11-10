@@ -4,6 +4,9 @@ import 'package:provider/provider.dart';
 import '../../providers/cart.dart';
 import '../../providers/products.dart';
 import '../../providers/shops.dart';
+import '../../routers/app_router.dart';
+import '../../routers/discover/cart/checkout_shop.props.dart';
+import '../../routers/discover/product_detail.props.dart';
 import '../../utils/constants/themes.dart';
 import '../../widgets/app_button.dart';
 import '../discover/product_detail.dart';
@@ -11,6 +14,7 @@ import 'checkout_shop.dart';
 import 'components/order_details.dart';
 
 class CheckoutCart extends StatelessWidget {
+  static const routeName = '/cart/checkout';
   const CheckoutCart({Key? key}) : super(key: key);
 
   @override
@@ -72,11 +76,16 @@ class CheckoutCart extends StatelessWidget {
                                   return OrderDetails(
                                     product: product!,
                                     quantity: orders[_key]!.quantity,
-                                    onEditTap: () => Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                          builder: (_) =>
-                                              ProductDetail(product)),
-                                    ),
+                                    onEditTap: () {
+                                      context.read<AppRouter>()
+                                        ..navigateTo(
+                                          AppRoute.discover,
+                                          ProductDetail.routeName,
+                                          arguments: ProductDetailProps(
+                                            product,
+                                          ),
+                                        );
+                                    },
                                   );
                                 },
                               ),
@@ -87,11 +96,14 @@ class CheckoutCart extends StatelessWidget {
                                   "Checkout",
                                   kTealColor,
                                   false,
-                                  () => Navigator.of(context).push(
-                                    MaterialPageRoute(
-                                      builder: (_) => ShopCheckout(shop: shop),
-                                    ),
-                                  ),
+                                  () {
+                                    context.read<AppRouter>()
+                                      ..navigateTo(
+                                        AppRoute.discover,
+                                        ShopCheckout.routeName,
+                                        arguments: ShopCheckoutProps(shop),
+                                      );
+                                  },
                                 ),
                               ),
                             ],

@@ -4,6 +4,8 @@ import 'package:provider/provider.dart';
 
 import '../../../providers/products.dart';
 import '../../../providers/shops.dart';
+import '../../../routers/app_router.dart';
+import '../../../routers/discover/product_detail.props.dart';
 import '../../profile/components/product_card.dart';
 import '../product_detail.dart';
 
@@ -42,23 +44,16 @@ class RecommendedProducts extends StatelessWidget {
                               : EdgeInsets.symmetric(horizontal: 2.5.w),
                       child: GestureDetector(
                         onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => ProductDetail(
+                          context.read<AppRouter>()
+                            ..navigateTo(
+                              AppRoute.discover,
+                              ProductDetail.routeName,
+                              arguments: ProductDetailProps(
                                 products.items[index],
                               ),
-                            ),
-                          );
+                            );
                         },
-                        child: ProductCard(
-                          productId: products.items[index].id,
-                          name: products.items[index].name,
-                          imageUrl: isGalleryEmpty ? '' : productImage!.url,
-                          price: products.items[index].basePrice,
-                          shopName: shop.name,
-                          shopImageUrl: shop.profilePhoto,
-                        ),
+                        child: ProductCard(products.items[index].id),
                       ),
                     );
                   },

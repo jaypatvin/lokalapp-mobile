@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
+import 'package:provider/provider.dart';
 
+import '../../../../routers/app_router.dart';
 import '../../../chat/components/chat_avatar.dart';
 import '../../add_shop/edit_shop.dart';
 import '../../settings/settings.dart';
@@ -61,25 +63,24 @@ class ShopHeader extends StatelessWidget {
             ),
           ),
         ),
-        Positioned(
-          left: 10.0.w,
-          child: IconButton(
-            padding: EdgeInsets.zero,
-            icon: Icon(
-              Icons.settings,
-              size: 30.0.r,
+        if (this.displaySettingsButton)
+          Positioned(
+            left: 10.0.w,
+            child: IconButton(
+              padding: EdgeInsets.zero,
+              icon: Icon(
+                Icons.settings,
+                size: 30.0.r,
+              ),
+              color: Colors.white,
+              onPressed: () {
+                context.read<AppRouter>().navigateTo(
+                      AppRoute.profile,
+                      Settings.routeName,
+                    );
+              },
             ),
-            color: Colors.white,
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => Settings(),
-                ),
-              );
-            },
           ),
-        ),
         Center(
           child: Padding(
             padding: EdgeInsets.only(
@@ -105,25 +106,26 @@ class ShopHeader extends StatelessWidget {
             ),
           ),
         ),
-        Positioned(
-          right: 10.0.w,
-          child: IconButton(
-            padding: EdgeInsets.zero,
-            icon: Icon(
-              MdiIcons.squareEditOutline,
-              size: 30.0.r,
+        if (this.displayEditButton)
+          Positioned(
+            right: 10.0.w,
+            child: IconButton(
+              padding: EdgeInsets.zero,
+              icon: Icon(
+                MdiIcons.squareEditOutline,
+                size: 30.0.r,
+              ),
+              color: Colors.white,
+              onPressed: () {
+                pushNewScreenWithRouteSettings(
+                  context,
+                  screen: EditShop(),
+                  settings: RouteSettings(name: EditShop.routeName),
+                  pageTransitionAnimation: PageTransitionAnimation.cupertino,
+                );
+              },
             ),
-            color: Colors.white,
-            onPressed: () {
-              pushNewScreenWithRouteSettings(
-                context,
-                screen: EditShop(),
-                settings: RouteSettings(name: EditShop.routeName),
-                pageTransitionAnimation: PageTransitionAnimation.cupertino,
-              );
-            },
           ),
-        ),
       ],
     );
   }

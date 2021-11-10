@@ -10,29 +10,6 @@ class StoreRating extends StatelessWidget {
         Container(
           alignment: Alignment.centerRight,
           padding: EdgeInsets.all(10),
-          // child: RatingBar(
-          //   rating: 4,
-          //   icon: Icon(
-          //     Icons.star,
-          //     size: 20,
-          //     color: Colors.grey.shade300,
-          //   ),
-          //   starCount: 5,
-          //   spacing: 12.0,
-          //   size: 1,
-          //   isIndicator: true,
-          //   allowHalfRating: true,
-          //   onRatingCallback: (double value, ValueNotifier<bool> isIndicator) {
-          //     print('Number of stars-->  $value');
-          //     //change the isIndicator from false  to true ,the RatingBar cannot support touch event;
-          //     isIndicator.value = true;
-          //   },
-          //   clickedCallbackAsIndicator: () {
-          //     // when isIndicator is true ,user click the stars, this callback can be called.
-          //     print('clickedMe');
-          //   },
-          //   color: Colors.amber,
-          // ),
           child: RatingBar.builder(
             initialRating: 4.5,
             minRating: 1,

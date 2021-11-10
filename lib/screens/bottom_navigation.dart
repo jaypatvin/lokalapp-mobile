@@ -1,10 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/auth.dart';
+import '../routers/app_router.dart';
 import '../utils/constants/assets.dart';
 import 'activity/activity.dart';
 import 'chat/chat.dart';
@@ -19,18 +19,6 @@ class BottomNavigation extends StatefulWidget {
 }
 
 class _BottomNavigationState extends State<BottomNavigation> {
-  final GlobalKey<NavigatorState> _homeNavigatorKey = GlobalKey();
-  final GlobalKey<NavigatorState> _discoverNavigatorKey = GlobalKey();
-  final GlobalKey<NavigatorState> _chatNavigatorKey = GlobalKey();
-  final GlobalKey<NavigatorState> _activityNavigatorKey = GlobalKey();
-  final GlobalKey<NavigatorState> _profileNavigatorKey = GlobalKey();
-
-  @override
-  void initState() {
-    super.initState();
-    context.read<PersistentTabController>().addListener(() {});
-  }
-
   List<Widget> _buildScreens() {
     return [
       Home(),
@@ -51,7 +39,12 @@ class _BottomNavigationState extends State<BottomNavigation> {
         activeColorPrimary: Color(0xFFCC3752),
         inactiveColorPrimary: Color(0xFF103045),
         routeAndNavigatorSettings: RouteAndNavigatorSettings(
+          navigatorKey: context.read<AppRouter>().keyOf(AppRoute.home),
           initialRoute: Home.routeName,
+          onGenerateRoute: context
+              .read<AppRouter>()
+              .navigatorOf(AppRoute.home)
+              .onGenerateRoute,
         ),
       ),
       PersistentBottomNavBarItem(
@@ -61,7 +54,12 @@ class _BottomNavigationState extends State<BottomNavigation> {
         activeColorPrimary: Color(0xFFCC3752),
         inactiveColorPrimary: Color(0xFF103045),
         routeAndNavigatorSettings: RouteAndNavigatorSettings(
+          navigatorKey: context.read<AppRouter>().keyOf(AppRoute.discover),
           initialRoute: Discover.routeName,
+          onGenerateRoute: context
+              .read<AppRouter>()
+              .navigatorOf(AppRoute.discover)
+              .onGenerateRoute,
         ),
       ),
       PersistentBottomNavBarItem(
@@ -71,7 +69,12 @@ class _BottomNavigationState extends State<BottomNavigation> {
         activeColorPrimary: Color(0xFFCC3752),
         inactiveColorPrimary: Color(0xFF103045),
         routeAndNavigatorSettings: RouteAndNavigatorSettings(
+          navigatorKey: context.read<AppRouter>().keyOf(AppRoute.chat),
           initialRoute: Chat.routeName,
+          onGenerateRoute: context
+              .read<AppRouter>()
+              .navigatorOf(AppRoute.chat)
+              .onGenerateRoute,
         ),
       ),
       PersistentBottomNavBarItem(
@@ -91,7 +94,12 @@ class _BottomNavigationState extends State<BottomNavigation> {
         activeColorPrimary: Color(0xFFCC3752),
         inactiveColorPrimary: Color(0xFF103045),
         routeAndNavigatorSettings: RouteAndNavigatorSettings(
+          navigatorKey: context.read<AppRouter>().keyOf(AppRoute.profile),
           initialRoute: ProfileScreen.routeName,
+          onGenerateRoute: context
+              .read<AppRouter>()
+              .navigatorOf(AppRoute.profile)
+              .onGenerateRoute,
         ),
       ),
     ];

@@ -3,22 +3,24 @@ import 'package:provider/provider.dart';
 
 import '../../providers/cart.dart';
 import '../../utils/constants/themes.dart';
-import 'checkout_cart.dart';
+import '../../view_models/cart/cart_container.vm.dart';
 
 /// Handles the FAB of the shopping cart found throughout the app
 class CartContainer extends StatelessWidget {
+  /// The `Container` that will display the FAB Cart.
+  const CartContainer({
+    Key? key,
+    required this.child,
+    this.alwaysDisplayButton = false,
+  }) : super(key: key);
+
   /// The underlying screen/widget behind the cart button
   final Widget child;
 
   /// Overrides the button display condition.
   ///
   /// Will display the button irrespective of the number of items in the cart.
-  final bool displayButton;
-  const CartContainer({
-    Key? key,
-    required this.child,
-    this.displayButton = false,
-  }) : super(key: key);
+  final bool alwaysDisplayButton;
 
   @override
   Widget build(BuildContext context) {
@@ -26,38 +28,37 @@ class CartContainer extends StatelessWidget {
       alignment: Alignment.topCenter,
       children: [
         this.child,
-        Consumer<ShoppingCart>(
-          builder: (ctx, cart, _) {
-            return Visibility(
-              visible: cart.orders.isNotEmpty || displayButton,
-              child: Positioned(
-                right: 20.0,
-                bottom: 20.0,
-                child: FloatingActionButton(
-                  backgroundColor: kYellowColor,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        cart.orders.length.toString(),
-                        style: TextStyle(
-                          color: kNavyColor,
-                          fontSize: 10.0,
-                          fontWeight: FontWeight.w600,
-                        ),
+        ChangeNotifierProxyProvider<ShoppingCart, CartContainerViewModel>(
+          create: (_) => CartContainerViewModel(context, alwaysDisplayButton),
+          update: (ctx, cart, vm) => vm!..updateCartLength(cart.orders.length),
+          builder: (ctx, _) {
+            return Consumer<CartContainerViewModel>(
+              builder: (ctx2, vm, _) {
+                return Visibility(
+                  visible: vm.displayButton,
+                  child: Positioned(
+                    right: 20.0,
+                    bottom: 20.0,
+                    child: FloatingActionButton(
+                      backgroundColor: kYellowColor,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            vm.numberOfItems,
+                            style: Theme.of(context).textTheme.bodyText2,
+                          ),
+                          Icon(
+                            Icons.shopping_cart_outlined,
+                            color: kNavyColor,
+                          ),
+                        ],
                       ),
-                      Icon(
-                        Icons.shopping_cart_outlined,
-                        color: kNavyColor,
-                      ),
-                    ],
+                      onPressed: vm.onPressed,
+                    ),
                   ),
-                  onPressed: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => CheckoutCart()),
-                  ),
-                ),
-              ),
+                );
+              },
             );
           },
         ),

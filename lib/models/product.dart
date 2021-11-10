@@ -2,10 +2,10 @@ import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
-import 'timestamp_time_object.dart';
 
 import 'lokal_images.dart';
 import 'operating_hours.dart';
+import 'timestamp_time_object.dart';
 
 class Product {
   String id;
@@ -24,6 +24,10 @@ class Product {
   OperatingHours? availability;
   List<LokalImages>? gallery;
   DateTime createdAt;
+  DateTime? updatedAt;
+  int numRatings;
+  double avgRating;
+  String updatedFrom;
   Product({
     required this.id,
     required this.name,
@@ -37,6 +41,10 @@ class Product {
     required this.archived,
     required this.canSubscribe,
     required this.createdAt,
+    required this.updatedAt,
+    required this.numRatings,
+    required this.avgRating,
+    required this.updatedFrom,
     this.description,
     this.productPhoto,
     this.gallery,
@@ -60,6 +68,10 @@ class Product {
     bool? archived,
     bool? canSubscribe,
     DateTime? createdAt,
+    DateTime? updatedAt,
+    int? numRatings,
+    double? avgRating,
+    String? updatedFrom,
   }) {
     return Product(
       id: id ?? this.id,
@@ -78,6 +90,10 @@ class Product {
       archived: archived ?? this.archived,
       canSubscribe: canSubscribe ?? this.canSubscribe,
       createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      numRatings: numRatings ?? this.numRatings,
+      avgRating: avgRating ?? this.avgRating,
+      updatedFrom: updatedFrom ?? this.updatedFrom,
     );
   }
 
@@ -99,6 +115,10 @@ class Product {
       'archived': archived,
       'can_subscribe': canSubscribe,
       'created_at': Timestamp.fromDate(createdAt),
+      'updated_at': updatedAt != null ? Timestamp.fromDate(updatedAt!) : null,
+      'numRatings': numRatings,
+      'avgRating': avgRating,
+      'updated_from': updatedFrom
     };
   }
 
@@ -118,13 +138,19 @@ class Product {
       archived: map['archived'],
       canSubscribe: map['can_subscribe'] ?? true,
       createdAt: TimestampObject.fromMap(map['created_at']).toDateTime(),
+      updatedAt: map['updated_at'] != null
+          ? TimestampObject.fromMap(map['updated_at']).toDateTime()
+          : null,
       gallery: map['gallery'] == null
           ? <LokalImages>[]
           : List<LokalImages>.from(
               map['gallery']?.map((x) => LokalImages.fromMap(x))),
-      availability: (map['availability'] != null
+      availability: map['availability'] != null
           ? OperatingHours.fromMap(map['availability'])
-          : <LokalImages>[]) as OperatingHours?,
+          : OperatingHours(),
+      numRatings: map['numRatings'] ?? 0,
+      avgRating: map['avgRating']?.toDouble() ?? 0.0,
+      updatedFrom: map['updated_from'] ?? '',
     );
   }
 
@@ -140,7 +166,9 @@ class Product {
         'basePrice: $basePrice, quantity: $quantity, productCategory: '
         '$productCategory, productPhoto: $productPhoto, status: $status, '
         'gallery: $gallery, availability: $availability, archived: $archived '
-        'canSubscribe: $canSubscribe, createdAt: $createdAt)';
+        'canSubscribe: $canSubscribe, createdAt: $createdAt, '
+        'updatedAt: $updatedAt, numRatings: $numRatings, avgRating: $avgRating, '
+        'updatedFrom: $updatedFrom)';
   }
 
   @override
@@ -163,7 +191,11 @@ class Product {
         listEquals(o.gallery, gallery) &&
         o.availability == availability &&
         o.canSubscribe == canSubscribe &&
-        o.createdAt == createdAt;
+        o.createdAt == createdAt &&
+        o.updatedAt == updatedAt &&
+        o.numRatings == numRatings &&
+        o.avgRating == avgRating &&
+        o.updatedFrom == updatedFrom;
   }
 
   @override
@@ -183,6 +215,10 @@ class Product {
         gallery.hashCode ^
         availability.hashCode ^
         canSubscribe.hashCode ^
-        createdAt.hashCode;
+        createdAt.hashCode ^
+        updatedAt.hashCode ^
+        numRatings.hashCode ^
+        avgRating.hashCode ^
+        updatedFrom.hashCode;
   }
 }

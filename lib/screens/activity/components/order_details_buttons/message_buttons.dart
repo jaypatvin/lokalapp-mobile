@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../../../models/order.dart';
+import '../../../../routers/app_router.dart';
+import '../../../../routers/chat/chat_view.props.dart';
 import '../../../../utils/constants/themes.dart';
 import '../../../../widgets/app_button.dart';
 import '../../../chat/chat_view.dart';
@@ -13,16 +16,16 @@ class MessageBuyerButton extends StatelessWidget {
   Widget build(BuildContext context) {
     // TODO: ADD MESSAGE BUYER FUNCTION
     return AppButton("Message Buyer", kTealColor, false, () {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (ctx) => ChatView(
+      context
+        ..read<AppRouter>().navigateTo(
+          AppRoute.chat,
+          ChatView.routeName,
+          arguments: ChatViewProps(
             true,
-            members: [order!.buyerId, order!.shopId],
+            members: [order!.buyerId!, order!.shopId!],
             shopId: order!.shopId,
           ),
-        ),
-      );
+        );
     });
   }
 }
@@ -34,16 +37,16 @@ class MessageSellerButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AppButton("Message Seller", kTealColor, false, () {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (ctx) => ChatView(
+      context
+        ..read<AppRouter>().navigateTo(
+          AppRoute.chat,
+          ChatView.routeName,
+          arguments: ChatViewProps(
             true,
-            members: [order.buyerId, order.shopId],
+            members: [order.buyerId!, order.shopId!],
             shopId: order.shopId,
           ),
-        ),
-      );
+        );
     });
   }
 }

@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -8,9 +7,7 @@ import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/product.dart';
-import '../../providers/auth.dart';
 import '../../providers/categories.dart';
-import '../../providers/products.dart';
 import '../../providers/shops.dart';
 import '../../utils/constants/assets.dart';
 import '../../utils/constants/themes.dart';
@@ -107,114 +104,118 @@ class _DiscoverState extends State<Discover> {
           buildLeading: false,
         ),
         body: CartContainer(
-          displayButton: true,
+          alwaysDisplayButton: true,
           child: ChangeNotifierProvider<DiscoverViewModel>.value(
             value: _viewModel,
             builder: (ctx, _) {
               return Consumer<DiscoverViewModel>(
                 builder: (ctx2, vm, _) {
-                  return SingleChildScrollView(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(height: 10.0.h),
-                        GestureDetector(
-                          child: Hero(
-                            tag: "search_field",
-                            child: SearchTextField(
-                              enabled: false,
-                            ),
-                          ),
-                          onTap: vm.onSearch,
-                        ),
-                        SizedBox(height: 10.0.h),
-                        Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 16.0.w),
-                          child: Text(
-                            "Recommended",
-                            style: Theme.of(context).textTheme.headline6,
-                          ),
-                        ),
-                        SizedBox(height: 5.0.h),
-                        if (vm.isLoading)
-                          Center(
-                            child: Lottie.asset(
-                              kAnimationLoading,
-                              fit: BoxFit.contain,
-                            ),
-                          ),
-                        if (!vm.isLoading)
-                          _RecommendedProducts(
-                            products: vm.recommendedProducts,
-                            onProductTap: vm.onProductTap,
-                          ),
-                        SizedBox(height: 15.0.h),
-                        Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 16.0.w),
-                          child: Row(
-                            children: [
-                              Text(
-                                "Explore Categories",
-                                style: Theme.of(context).textTheme.headline6,
+                  return RefreshIndicator(
+                    onRefresh: vm.fetchRecommendedProducts,
+                    child: SingleChildScrollView(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(height: 10.0.h),
+                          GestureDetector(
+                            child: Hero(
+                              tag: "search_field",
+                              child: SearchTextField(
+                                enabled: false,
                               ),
-                              Spacer(),
-                              GestureDetector(
-                                onTap: vm.onExploreCategories,
-                                child: Row(
-                                  children: [
-                                    Text(
-                                      "View All",
-                                      style:
-                                          Theme.of(context).textTheme.subtitle1,
-                                    ),
-                                    Icon(
-                                      Icons.arrow_forward_outlined,
-                                      color: kTealColor,
-                                      size: 16.0.sp,
-                                    ),
-                                  ],
+                            ),
+                            onTap: vm.onSearch,
+                          ),
+                          SizedBox(height: 10.0.h),
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 16.0.w),
+                            child: Text(
+                              "Recommended",
+                              style: Theme.of(context).textTheme.headline6,
+                            ),
+                          ),
+                          SizedBox(height: 5.0.h),
+                          if (vm.isLoading)
+                            Center(
+                              child: Lottie.asset(
+                                kAnimationLoading,
+                                fit: BoxFit.contain,
+                              ),
+                            ),
+                          if (!vm.isLoading)
+                            _RecommendedProducts(
+                              products: vm.recommendedProducts,
+                              onProductTap: vm.onProductTap,
+                            ),
+                          SizedBox(height: 15.0.h),
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 16.0.w),
+                            child: Row(
+                              children: [
+                                Text(
+                                  "Explore Categories",
+                                  style: Theme.of(context).textTheme.headline6,
                                 ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        SizedBox(height: 10.0.h),
-                        SizedBox(
-                          height: 125.0.h,
-                          child: _buildCategories(),
-                        ),
-                        SizedBox(height: 10.0.h),
-                        Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 16.0.w),
-                          child: Text(
-                            "Recent",
-                            style: Theme.of(context).textTheme.headline6,
-                          ),
-                        ),
-                        SizedBox(height: 10.0.h),
-                        Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 13.5.w),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Expanded(
-                                child: vm.isProductsLoading
-                                    ? Center(
-                                        child: Lottie.asset(
-                                          kAnimationLoading,
-                                          fit: BoxFit.contain,
-                                        ),
-                                      )
-                                    : ProductsList(
-                                        items: vm.otherUserProducts,
-                                        onProductTap: vm.onProductTap,
+                                Spacer(),
+                                GestureDetector(
+                                  onTap: vm.onExploreCategories,
+                                  child: Row(
+                                    children: [
+                                      Text(
+                                        "View All",
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .subtitle1,
                                       ),
-                              ),
-                            ],
+                                      Icon(
+                                        Icons.arrow_forward_outlined,
+                                        color: kTealColor,
+                                        size: 16.0.sp,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
+                          SizedBox(height: 10.0.h),
+                          SizedBox(
+                            height: 125.0.h,
+                            child: _buildCategories(),
+                          ),
+                          SizedBox(height: 10.0.h),
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 16.0.w),
+                            child: Text(
+                              "Recent",
+                              style: Theme.of(context).textTheme.headline6,
+                            ),
+                          ),
+                          SizedBox(height: 10.0.h),
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 13.5.w),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Expanded(
+                                  child: vm.isProductsLoading
+                                      ? Center(
+                                          child: Lottie.asset(
+                                            kAnimationLoading,
+                                            fit: BoxFit.contain,
+                                          ),
+                                        )
+                                      : ProductsList(
+                                          items: vm.otherUserProducts,
+                                          onProductTap: vm.onProductTap,
+                                        ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   );
                 },
@@ -251,12 +252,6 @@ class _RecommendedProducts extends StatelessWidget {
           crossAxisCount: 1,
         ),
         itemBuilder: (ctx, index) {
-          final shop = ctx.read<Shops>().findById(products[index].shopId)!;
-          final gallery = products[index].gallery;
-          final isGalleryEmpty = gallery == null || gallery.isEmpty;
-          final productImage = !isGalleryEmpty
-              ? gallery!.firstWhere((g) => g.url.isNotEmpty)
-              : null;
           return Container(
             padding: index == 0
                 ? EdgeInsets.only(left: 16.0.w, right: 2.5.w)
@@ -265,14 +260,7 @@ class _RecommendedProducts extends StatelessWidget {
                     : EdgeInsets.symmetric(horizontal: 2.5.w),
             child: GestureDetector(
               onTap: () => this.onProductTap(products[index].id),
-              child: ProductCard(
-                productId: products[index].id,
-                name: products[index].name,
-                imageUrl: isGalleryEmpty ? '' : productImage!.url,
-                price: products[index].basePrice,
-                shopName: shop.name,
-                shopImageUrl: shop.profilePhoto,
-              ),
+              child: ProductCard(products[index].id),
             ),
           );
         },

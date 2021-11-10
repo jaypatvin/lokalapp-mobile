@@ -5,15 +5,19 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:keyboard_actions/keyboard_actions.dart';
+import 'package:lottie/lottie.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/chat_model.dart';
 import '../../models/conversation.dart';
 import '../../providers/auth.dart';
-import '../../providers/chat_provider.dart';
+import '../../services/api/api.dart';
+import '../../services/api/chat_api_service.dart';
+import '../../services/api/conversation_api_service.dart';
 import '../../services/database.dart';
-import '../../services/firestore.utils.dart';
+import '../../services/local_image_service.dart';
+import '../../utils/constants/assets.dart';
 import '../../utils/constants/themes.dart';
 import '../../widgets/custom_app_bar.dart';
 import '../../widgets/photo_picker_gallery/image_gallery_picker.dart';
@@ -24,11 +28,12 @@ import 'components/chat_input.dart';
 import 'components/message_stream.dart';
 
 class ChatView extends StatefulWidget {
+  static const routeName = '/chat/view';
   final ChatModel? chat;
 
   // There may be better ways to implement this
   final bool createMessage;
-  final List<String?>? members; // should include shopId or productId
+  final List<String>? members; // should include shopId or productId
   final String? shopId;
   final String? productId;
 
@@ -55,7 +60,7 @@ class _ChatViewState extends State<ChatView> {
   String replyId = "";
   Conversation? replyMessage;
   bool showImagePicker = false;
-  CustomPickerDataProvider? provider;
+  late final CustomPickerDataProvider provider;
   Color? _indicatorColor;
 
   Conversation? _currentlySendingMessage;
@@ -65,7 +70,7 @@ class _ChatViewState extends State<ChatView> {
   // this is placed outside of the build function to
   // avoid rebuilds on the StreamBuilder
   Stream<QuerySnapshot>? _messageStream;
-  late StreamSubscription _messageSubscription;
+  late StreamSubscription<QuerySnapshot>? _messageSubscription;
 
   // needed to keep track if creating a new message
   bool _createNewMessage = false;
@@ -74,20 +79,29 @@ class _ChatViewState extends State<ChatView> {
 
   List<QueryDocumentSnapshot>? _conversations;
 
+  late final ChatAPIService _chatApiService;
+  late final ConversationAPIService _conversationAPIService;
+
+  bool _loading = true;
+
   @override
   void initState() {
     super.initState();
 
+    _chatApiService = ChatAPIService(context.read<API>());
+    _conversationAPIService = ConversationAPIService(context.read<API>());
+
     // we're reusing the image picker used in the post and comments section
-    provider = Provider.of<CustomPickerDataProvider>(context, listen: false);
-    provider!.onPickMax.addListener(showMaxAssetsText);
+    provider = context.read<CustomPickerDataProvider>();
+    provider.onPickMax.addListener(showMaxAssetsText);
     // no need to add onPickListener (like in post_details) since we are not
     // using SingleChildScrollView to build the screen
-    provider!.pickedNotifier.addListener(() => setState(() {}));
+    provider.pickedNotifier.addListener(() => setState(() {}));
 
     providerInit();
     final userId = context.read<Auth>().user!.id;
     if (!widget.createMessage) {
+      _loading = false;
       this._chatTitle = widget.chat!.title;
       this._chat = widget.chat;
       _messageStream = Database.instance.getConversations(this._chat!.id);
@@ -99,19 +113,7 @@ class _ChatViewState extends State<ChatView> {
     } else {
       _indicatorColor =
           widget.members!.contains(userId) ? kTealColor : kPurpleColor;
-      checkExistingChat().then((chat) {
-        if (chat == null) {
-          return;
-        }
-        setState(() {
-          this._chat = chat;
-          this._chatTitle = chat.title;
-          this._messageStream = Database.instance.getConversations(chat.id);
-          _createNewMessage = false;
-        });
-        this._messageSubscription =
-            this._messageStream!.listen(_messageStreamListener);
-      });
+      checkExistingChat();
     }
     _createNewMessage = widget.createMessage;
   }
@@ -120,9 +122,9 @@ class _ChatViewState extends State<ChatView> {
   void dispose() {
     // we need to clear and remove the picked images and listeners
     // so that we can use it in its initial state on other screens
-    provider!.picked.clear();
-    provider!.removeListener(showMaxAssetsText);
-    this._messageSubscription.cancel();
+    provider.picked.clear();
+    provider.removeListener(showMaxAssetsText);
+    this._messageSubscription?.cancel();
 
     super.dispose();
   }
@@ -152,36 +154,32 @@ class _ChatViewState extends State<ChatView> {
       onlyAll: true,
       type: RequestType.image,
     );
-    provider!.resetPathList(pathList);
+    provider.resetPathList(pathList);
   }
 
-  Future<ChatModel?> checkExistingChat() async {
-    final hashId = hashArrayOfStrings([...widget.members!]);
-    var chat = await Database.instance.getGroupChatByHash(hashId);
-    if (chat == null) {
-      chat = await Database.instance.getChatById(hashId);
+  Future<void> checkExistingChat() async {
+    try {
+      if (widget.members == null) return;
+
+      this._chat = await _chatApiService.getChatByMembers(
+        members: widget.members!,
+      );
+      this._chatTitle = this._chat!.title;
+      this._messageStream = Database.instance.getConversations(this._chat!.id);
+      _createNewMessage = false;
+      this._messageSubscription =
+          this._messageStream?.listen(_messageStreamListener);
+
+      setState(() {
+        this._loading = false;
+      });
+    } catch (e) {
+      // do nothing as it means there are no chat by these members
+      print(e.toString());
+      setState(() {
+        this._loading = false;
+      });
     }
-
-    if (chat != null) {
-      return ChatModel.fromMap(chat);
-    }
-
-    return null;
-
-    // the code below is slow, i don't know how to handle it yet
-
-    // final idToken = context.read<Auth>().user.idToken;
-    // final response = await LokalApiService.instance.chat.getChatByMembers(
-    //   idToken: idToken,
-    //   members: widget.members,
-    // );
-
-    // if (response.statusCode != 200) {
-    //   return null;
-    // }
-
-    // final Map<String, dynamic> body = json.decode(response.body);
-    // return ChatModel.fromMap(body["data"]);
   }
 
   void showMaxAssetsText() {
@@ -190,6 +188,28 @@ class _ChatViewState extends State<ChatView> {
       content: Text("You have reached the limit of 5 media per message."),
     );
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
+
+  Future<List<Map<String, dynamic>>> _getMedia(
+    List<AssetEntity> assets,
+  ) async {
+    final _imageService = LocalImageService.instance;
+    final media = <Map<String, dynamic>>[];
+
+    for (int index = 0; index < assets.length; index++) {
+      final asset = assets[index];
+      final file = await asset.file;
+      final url = await _imageService!.uploadImage(
+        file: file!,
+        name: 'post_photo',
+      );
+      media.add({
+        "url": url,
+        "type": "image",
+        "order": index,
+      });
+    }
+    return media;
   }
 
   void _onSendMessage() async {
@@ -207,14 +227,17 @@ class _ChatViewState extends State<ChatView> {
         );
       });
       if (this._createNewMessage) {
-        final chat = await context.read<ChatProvider>().createNewChat(
-          userId: user.id,
-          shopId: widget.shopId,
-          productId: widget.productId,
-          replyId: replyId,
-          message: chatInputController.text,
-          assets: provider!.picked,
-          members: [...widget.members!],
+        final media = await _getMedia(provider.picked);
+        final chat = await _chatApiService.createChat(
+          body: {
+            'user_id': user.id,
+            'reply_to': replyId,
+            'message': chatInputController.text,
+            'media': media,
+            'members': [...widget.members!],
+            'shop_id': widget.shopId,
+            'product_id': widget.productId,
+          },
         );
 
         setState(() {
@@ -226,17 +249,20 @@ class _ChatViewState extends State<ChatView> {
         this._messageSubscription =
             this._messageStream!.listen(_messageStreamListener);
       } else {
-        context.read<ChatProvider>().sendMessage(
-              chatId: this._chat!.id,
-              userId: user.id,
-              replyId: replyId,
-              message: chatInputController.text,
-              assets: provider!.picked,
-            );
+        final media = _getMedia(provider.picked);
+        _conversationAPIService.createConversation(
+          chatId: this._chat!.id,
+          body: {
+            'user_id': user.id,
+            'reply_to': replyId,
+            'message': chatInputController.text,
+            'media': media,
+          },
+        );
       }
       chatInputController.clear();
       setState(() {
-        provider!.picked.clear();
+        provider.picked.clear();
         replyId = "";
         showImagePicker = false;
         this.replyMessage = null;
@@ -256,10 +282,10 @@ class _ChatViewState extends State<ChatView> {
   void _onDeleteMessage(String id) async {
     late SnackBar snackBar;
     try {
-      await context.read<ChatProvider>().deleteMessage(
-            chatId: this._chat!.id,
-            messageId: id,
-          );
+      await _conversationAPIService.deleteConversation(
+        chatId: this._chat!.id,
+        messageId: id,
+      );
       snackBar = SnackBar(content: Text("Message deleted succesfully."));
     } catch (e) {
       snackBar = SnackBar(content: Text(e.toString()));
@@ -296,6 +322,7 @@ class _ChatViewState extends State<ChatView> {
         });
       },
       onDelete: (id) => _onDeleteMessage(id),
+      trailing: _buildAdditionalStates(),
     );
   }
 
@@ -310,11 +337,11 @@ class _ChatViewState extends State<ChatView> {
         }),
         onCancelReply: () => setState(() => replyMessage = null),
         onImageRemove: (index) => setState(() {
-          provider!.picked.removeAt(index);
+          provider.picked.removeAt(index);
         }),
         chatInputController: this.chatInputController,
         replyMessage: this.replyMessage,
-        images: this.provider!.picked,
+        images: this.provider.picked,
         onTextFieldTap: () => setState(() => showImagePicker = false),
         chatFocusNode: _chatInputNode,
       ),
@@ -418,21 +445,25 @@ class _ChatViewState extends State<ChatView> {
         ),
         disableScroll: true,
         tapOutsideBehavior: TapOutsideBehavior.translucentDismiss,
-        child: Column(
-          children: [
-            Expanded(
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                ),
-                child: _buildMessages(),
+        child: _loading
+            ? SizedBox.expand(
+                child: Lottie.asset(kAnimationLoading),
+              )
+            : Column(
+                children: [
+                  Expanded(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                      ),
+                      child: _buildMessages(),
+                    ),
+                  ),
+                  //_buildAdditionalStates(),
+                  _buildChatInput(),
+                  _buildImagePicker(),
+                ],
               ),
-            ),
-            _buildAdditionalStates(),
-            _buildChatInput(),
-            _buildImagePicker(),
-          ],
-        ),
       ),
     );
   }

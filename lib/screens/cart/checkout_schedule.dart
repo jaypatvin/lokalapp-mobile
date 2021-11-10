@@ -6,6 +6,8 @@ import '../../providers/auth.dart';
 import '../../providers/cart.dart';
 import '../../providers/products.dart';
 import '../../providers/shops.dart';
+import '../../routers/app_router.dart';
+import '../../routers/discover/product_detail.props.dart';
 import '../../services/lokal_api_service.dart';
 import '../../utils/calendar_picker/calendar_picker.dart';
 import '../../utils/constants/themes.dart';
@@ -13,12 +15,14 @@ import '../../utils/repeated_days_generator/schedule_generator.dart';
 import '../../widgets/app_button.dart';
 import '../../widgets/custom_app_bar.dart';
 import '../../widgets/overlays/screen_loader.dart';
+import '../discover/discover.dart';
 import '../discover/product_detail.dart';
 import 'cart_confirmation.dart';
 import 'components/order_details.dart';
 
 class CheckoutSchedule extends StatefulWidget {
-  final String? productId;
+  static const routeName = '/cart/checkout/shop/checkout/schedule';
+  final String productId;
   const CheckoutSchedule({Key? key, required this.productId}) : super(key: key);
 
   @override
@@ -51,12 +55,17 @@ class _CheckoutScheduleState extends State<CheckoutSchedule> with ScreenLoader {
     );
 
     if (response.statusCode == 200) {
-      context.read<ShoppingCart>().remove(widget.productId);
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (_) => CartConfirmation(),
-        ),
-      );
+      context
+        ..read<ShoppingCart>().remove(widget.productId)
+        ..read<AppRouter>()
+            .keyOf(AppRoute.discover)
+            .currentState!
+            .pushNamedAndRemoveUntil(
+              CartConfirmation.routeName,
+              ModalRoute.withName(
+                Discover.routeName,
+              ),
+            );
     } else {
       // TODO: show snackbar?
     }
@@ -104,10 +113,14 @@ class _CheckoutScheduleState extends State<CheckoutSchedule> with ScreenLoader {
                       child: OrderDetails(
                         product: product,
                         quantity: order.quantity,
-                        onEditTap: () => Navigator.of(context).push(
-                          MaterialPageRoute(
-                              builder: (_) => ProductDetail(product)),
-                        ),
+                        onEditTap: () {
+                          context.read<AppRouter>()
+                            ..navigateTo(
+                              AppRoute.discover,
+                              ProductDetail.routeName,
+                              arguments: ProductDetailProps(product),
+                            );
+                        },
                       ),
                     ),
                   );
@@ -156,9 +169,14 @@ class _CheckoutScheduleState extends State<CheckoutSchedule> with ScreenLoader {
                           kTealColor,
                           true,
                           order.schedule != null
-                              ? () async => await performFuture<void>(
-                                  () async => await _placeOrderHandler(
-                                      context, shop.id))
+                              ? () async {
+                                  await performFuture<void>(
+                                    () async => await _placeOrderHandler(
+                                      context,
+                                      shop.id,
+                                    ),
+                                  );
+                                }
                               : null,
                         );
                       },

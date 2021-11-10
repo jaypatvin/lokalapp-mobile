@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lottie/lottie.dart';
-import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 
+import '../../routers/app_router.dart';
 import '../../utils/constants/assets.dart';
 import '../../utils/constants/themes.dart';
 import '../../widgets/app_button.dart';
@@ -12,7 +12,7 @@ import '../discover/discover.dart';
 import 'checkout_cart.dart';
 
 class CartConfirmation extends StatelessWidget {
-  static const routeName = "/cart/cartConfirmation";
+  static const routeName = "/cart/confirmation";
   final bool isSubscription;
   const CartConfirmation({
     Key? key,
@@ -28,10 +28,13 @@ class CartConfirmation extends StatelessWidget {
         backgroundColor: Colors.transparent,
         actions: [
           TextButton(
-            onPressed: () => Navigator.popUntil(
-              context,
-              ModalRoute.withName(Discover.routeName),
-            ),
+            onPressed: () {
+              context
+                  .read<AppRouter>()
+                  .keyOf(AppRoute.discover)
+                  .currentState!
+                  .popUntil(ModalRoute.withName(Discover.routeName));
+            },
             child: Text(
               "Done",
               style: Theme.of(context).textTheme.subtitle1,
@@ -90,13 +93,14 @@ class CartConfirmation extends StatelessWidget {
                 "BACK TO MY CART",
                 kTealColor,
                 false,
-                () => Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(
-                    builder: (BuildContext context) => CheckoutCart(),
-                  ),
-                  ModalRoute.withName(Discover.routeName),
-                ),
+                () {
+                  context
+                      .read<AppRouter>()
+                      .keyOf(AppRoute.discover)
+                      .currentState!
+                    ..popUntil(ModalRoute.withName(Discover.routeName))
+                    ..pushNamed(CheckoutCart.routeName);
+                },
               ),
             ),
             SizedBox(
@@ -106,11 +110,11 @@ class CartConfirmation extends StatelessWidget {
                 kTealColor,
                 true,
                 () {
-                  Navigator.popUntil(
-                    context,
-                    ModalRoute.withName(Discover.routeName),
-                  );
-                  context.read<PersistentTabController>().jumpToTab(3);
+                  context.read<AppRouter>()
+                    ..keyOf(AppRoute.discover)
+                        .currentState!
+                        .popUntil(ModalRoute.withName(Discover.routeName))
+                    ..jumpToTab(AppRoute.activity);
                 },
               ),
             )

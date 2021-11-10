@@ -9,6 +9,7 @@ import '../../../models/order.dart';
 import '../../../providers/auth.dart';
 import '../../../services/lokal_api_service.dart';
 import '../../../utils/constants/assets.dart';
+import '../../../widgets/overlays/screen_loader.dart';
 import '../buyer/order_received.dart';
 import '../buyer/payment_option.dart';
 import '../order_details.dart';
@@ -17,16 +18,19 @@ import '../seller/payment_confirmed.dart';
 import '../seller/shipped_out.dart';
 import 'transaction_card.dart';
 
-class GroupedOrders extends StatelessWidget {
+class GroupedOrders extends StatefulWidget {
   final Stream<QuerySnapshot>? stream;
   final Map<int, String?> statuses;
   final bool isBuyer;
   const GroupedOrders(this.stream, this.statuses, this.isBuyer);
 
-  // This callback function should be in this hierarchy so that the app
-  // can successfuly Navigate to other screens while keeping the context
-  void onSecondButtonPress(BuildContext context, Order order) {
-    if (this.isBuyer) {
+  @override
+  State<GroupedOrders> createState() => _GroupedOrdersState();
+}
+
+class _GroupedOrdersState extends State<GroupedOrders> with ScreenLoader {
+  Future<void> onSecondButtonPress(BuildContext context, Order order) async {
+    if (this.widget.isBuyer) {
       switch (order.statusCode) {
         case 200:
           Navigator.push(
@@ -38,18 +42,16 @@ class GroupedOrders extends StatelessWidget {
           break;
         case 500:
           final idToken = context.read<Auth>().idToken;
-          LokalApiService.instance!.orders!
-              .receive(idToken: idToken, orderId: order.id)
-              .then((response) {
-            if (response.statusCode == 200) {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => OrderReceived(order: order),
-                ),
-              );
-            }
-          });
+          final response = await LokalApiService.instance!.orders!
+              .receive(idToken: idToken, orderId: order.id);
+          if (response.statusCode == 200) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => OrderReceived(order: order),
+              ),
+            );
+          }
           break;
         default:
           break;
@@ -57,38 +59,41 @@ class GroupedOrders extends StatelessWidget {
     } else {
       switch (order.statusCode) {
         case 100:
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => OrderConfirmed(
-                order: order,
-                isBuyer: this.isBuyer,
+          final idToken = context.read<Auth>().idToken;
+          final response = await LokalApiService.instance!.orders!
+              .confirm(idToken: idToken, orderId: order.id);
+          if (response.statusCode == 200) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => OrderConfirmed(
+                  order: order,
+                  isBuyer: this.widget.isBuyer,
+                ),
               ),
-            ),
-          );
+            );
+          }
           break;
         case 300:
           if (order.paymentMethod == "cod") {
             final idToken = context.read<Auth>().idToken;
-            LokalApiService.instance!.orders!
-                .confirmPayment(idToken: idToken, orderId: order.id)
-                .then((response) {
-              if (response.statusCode == 200) {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => PaymentConfirmed(order: order),
-                  ),
-                );
-              }
-            });
+            final response = await LokalApiService.instance!.orders!
+                .confirmPayment(idToken: idToken, orderId: order.id);
+            if (response.statusCode == 200) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => PaymentConfirmed(order: order),
+                ),
+              );
+            }
           } else {
             Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (context) => OrderDetails(
                   order: order,
-                  isBuyer: isBuyer,
+                  isBuyer: widget.isBuyer,
                 ),
               ),
             );
@@ -97,21 +102,18 @@ class GroupedOrders extends StatelessWidget {
           break;
         case 400:
           final idToken = context.read<Auth>().idToken;
-          LokalApiService.instance!.orders!
-              .shipOut(
+          final response = await LokalApiService.instance!.orders!.shipOut(
             idToken: idToken,
             orderId: order.id,
-          )
-              .then((response) {
-            if (response.statusCode == 200) {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ShippedOut(order: order),
-                ),
-              );
-            }
-          });
+          );
+          if (response.statusCode == 200) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ShippedOut(order: order),
+              ),
+            );
+          }
           break;
         default:
           // do nothing
@@ -121,9 +123,9 @@ class GroupedOrders extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget screen(BuildContext context) {
     return StreamBuilder(
-      stream: this.stream,
+      stream: this.widget.stream,
       builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
         switch (snapshot.connectionState) {
           case ConnectionState.waiting:
@@ -175,10 +177,11 @@ class GroupedOrders extends StatelessWidget {
                   final order = Order.fromMap(data);
                   return TransactionCard(
                     order: order,
-                    isBuyer: this.isBuyer,
-                    status: this.statuses[code!],
-                    onSecondButtonPress: () =>
-                        onSecondButtonPress(context, order),
+                    isBuyer: this.widget.isBuyer,
+                    status: this.widget.statuses[code!],
+                    onSecondButtonPress: () async => await performFuture(
+                      () async => await onSecondButtonPress(context, order),
+                    ),
                   );
                 },
                 itemComparator: (

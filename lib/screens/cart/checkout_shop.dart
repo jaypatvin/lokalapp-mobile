@@ -4,6 +4,9 @@ import 'package:provider/provider.dart';
 import '../../models/user_shop.dart';
 import '../../providers/cart.dart';
 import '../../providers/products.dart';
+import '../../routers/app_router.dart';
+import '../../routers/discover/cart/checkout.props.dart';
+import '../../routers/discover/product_detail.props.dart';
 import '../../utils/constants/themes.dart';
 import '../../widgets/app_button.dart';
 import '../../widgets/custom_app_bar.dart';
@@ -13,6 +16,7 @@ import 'checkout.dart';
 import 'components/order_details.dart';
 
 class ShopCheckout extends StatelessWidget {
+  static const routeName = '/cart/checkout/shop';
   final ShopModel shop;
   const ShopCheckout({
     Key? key,
@@ -34,7 +38,7 @@ class ShopCheckout extends StatelessWidget {
           return ListView.builder(
             itemCount: orders.length,
             itemBuilder: (ctx, index) {
-              final key = orders.keys.elementAt(index);
+              final key = orders.keys.elementAt(index)!;
               return Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: _OrdersCard(productId: key),
@@ -48,7 +52,7 @@ class ShopCheckout extends StatelessWidget {
 }
 
 class _OrdersCard extends StatelessWidget {
-  final String? productId;
+  final String productId;
   const _OrdersCard({
     Key? key,
     required this.productId,
@@ -71,9 +75,14 @@ class _OrdersCard extends StatelessWidget {
             OrderDetails(
               product: product!,
               quantity: order.quantity,
-              onEditTap: () => Navigator.of(context).push(
-                MaterialPageRoute(builder: (_) => ProductDetail(product)),
-              ),
+              onEditTap: () {
+                context.read<AppRouter>()
+                  ..navigateTo(
+                    AppRoute.discover,
+                    ProductDetail.routeName,
+                    arguments: ProductDetailProps(product),
+                  );
+              },
             ),
             Divider(),
             Align(
@@ -117,11 +126,14 @@ class _OrdersCard extends StatelessWidget {
                     "Checkout",
                     kTealColor,
                     true,
-                    () => Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) => Checkout(productId: productId),
-                      ),
-                    ),
+                    () {
+                      context.read<AppRouter>()
+                        ..navigateTo(
+                          AppRoute.discover,
+                          Checkout.routeName,
+                          arguments: CheckoutProps(productId),
+                        );
+                    },
                   ),
                 )
               ],

@@ -10,7 +10,6 @@ import 'providers/activities.dart';
 import 'providers/auth.dart';
 import 'providers/cart.dart';
 import 'providers/categories.dart';
-import 'providers/chat_provider.dart';
 import 'providers/post_requests/auth_body.dart';
 import 'providers/post_requests/operating_hours_body.dart';
 import 'providers/post_requests/product_body.dart';
@@ -20,6 +19,7 @@ import 'providers/shops.dart';
 import 'providers/subscriptions.dart';
 import 'providers/users.dart';
 import 'root/root.dart';
+import 'routers/app_router.dart';
 import 'services/api/api.dart';
 import 'services/local_image_service.dart';
 import 'utils/constants/assets.dart';
@@ -42,12 +42,18 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   late final UserSharedPreferences _prefs;
+  late final AppRouter _router;
+  late final PersistentTabController _tabController;
+  late final API _api;
 
   @override
   initState() {
     super.initState();
     _prefs = UserSharedPreferences();
     _prefs.init();
+    _tabController = PersistentTabController();
+    _router = AppRouter(_tabController);
+    _api = API();
   }
 
   @override
@@ -57,10 +63,15 @@ class _MyAppState extends State<MyApp> {
   }
 
   List<SingleChildWidget> _getProviders() {
-    final _api = API();
     return <SingleChildWidget>[
       //shared preference
       Provider<UserSharedPreferences>.value(value: _prefs),
+
+      // router:
+      Provider<AppRouter>.value(value: _router),
+
+      // for bottom nav bar
+      ListenableProvider.value(value: _tabController),
 
       // auth:
       ChangeNotifierProvider<Auth>(create: (_) => Auth(_api)),
@@ -127,13 +138,10 @@ class _MyAppState extends State<MyApp> {
         update: (_, auth, subscription) =>
             subscription!..setIdToken(auth.idToken),
       ),
-      ProxyProvider<Auth, ChatProvider?>(
-        create: (_) => ChatProvider(),
-        update: (_, auth, chat) => chat!..setIdToken(auth.idToken),
-      ),
-
-      // for bottom nav bar
-      ListenableProvider(create: (_) => PersistentTabController()),
+      // ProxyProvider<Auth, ChatProvider?>(
+      //   create: (_) => ChatProvider(),
+      //   update: (_, auth, chat) => chat!..setIdToken(auth.idToken),
+      // ),
     ];
   }
 
@@ -221,6 +229,10 @@ class _MyAppState extends State<MyApp> {
                 scaffoldBackgroundColor: Colors.white,
               ),
               home: Root(),
+              navigatorKey: _router.keyOf(AppRoute.root),
+              initialRoute: '/',
+              onGenerateRoute:
+                  _router.navigatorOf(AppRoute.root).onGenerateRoute,
             ),
           );
         },

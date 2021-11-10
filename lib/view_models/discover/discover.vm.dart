@@ -3,12 +3,13 @@ import 'dart:async';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/product.dart';
 import '../../providers/auth.dart';
 import '../../providers/products.dart';
+import '../../routers/app_router.dart';
+import '../../routers/discover/product_detail.props.dart';
 import '../../screens/discover/explore_categories.dart';
 import '../../screens/discover/product_detail.dart';
 import '../../screens/discover/search.dart';
@@ -78,17 +79,27 @@ class DiscoverViewModel extends ChangeNotifier {
 
   void onProductTap(String id) {
     final product = context.read<Products>().findById(id);
-    pushNewScreen(
-      context,
-      screen: ProductDetail(product),
-    );
+    context.read<AppRouter>()
+      ..navigateTo(
+        AppRoute.discover,
+        ProductDetail.routeName,
+        arguments: ProductDetailProps(product),
+      );
   }
 
   void onExploreCategories() {
-    pushNewScreen(context, screen: ExploreCategories());
+    context.read<AppRouter>()
+      ..navigateTo(
+        AppRoute.discover,
+        ExploreCategories.routeName,
+      );
   }
 
   void onSearch() {
-    pushNewScreen(context, screen: Search());
+    context.read<AppRouter>()
+      ..navigateTo(
+        AppRoute.discover,
+        Search.routeName,
+      );
   }
 }

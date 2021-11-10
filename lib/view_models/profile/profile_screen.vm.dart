@@ -5,6 +5,8 @@ import 'package:provider/provider.dart';
 import '../../models/lokal_user.dart';
 import '../../providers/auth.dart';
 import '../../providers/users.dart';
+import '../../routers/app_router.dart';
+import '../../routers/chat/chat_view.props.dart';
 import '../../screens/chat/chat_view.dart';
 import '../../screens/profile/edit_profile.dart';
 import '../../screens/profile/settings/settings.dart';
@@ -36,14 +38,15 @@ class ProfileScreenViewModel {
     if (_authProvider.user == this.user) {
       throw 'Cannot send message to self.';
     }
-
-    pushNewScreen(
-      context,
-      screen: ChatView(
-        true,
-        members: [context.read<Auth>().user!.id, user.id],
-      ),
-    );
+    context
+      ..read<AppRouter>().navigateTo(
+        AppRoute.chat,
+        ChatView.routeName,
+        arguments: ChatViewProps(
+          true,
+          members: [context.read<Auth>().user!.id!, user.id!],
+        ),
+      );
   }
 
   void onSettingsPressed() {

@@ -10,6 +10,8 @@ import '../../../providers/auth.dart';
 import '../../../providers/products.dart';
 import '../../../providers/shops.dart';
 import '../../../providers/users.dart';
+import '../../../routers/app_router.dart';
+import '../../../routers/chat/chat_view.props.dart';
 import '../../../utils/constants/assets.dart';
 import '../../../widgets/inputs/search_text_field.dart';
 import '../chat_view.dart';
@@ -157,15 +159,12 @@ class _ChatList extends StatelessWidget {
 
         return GestureDetector(
           onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => ChatView(
-                  false,
-                  chat: chat,
-                ),
-              ),
-            );
+            context
+              ..read<AppRouter>().navigateTo(
+                AppRoute.chat,
+                ChatView.routeName,
+                arguments: ChatViewProps(false, chat: chat),
+              );
           },
           child: ListTile(
             leading: _buildCircleAvatar(members),
