@@ -53,14 +53,7 @@ class RecommendedProducts extends StatelessWidget {
                               ),
                             );
                         },
-                        child: ProductCard(
-                          productId: products.items[index].id,
-                          name: products.items[index].name,
-                          imageUrl: isGalleryEmpty ? '' : productImage!.url,
-                          price: products.items[index].basePrice,
-                          shopName: shop.name,
-                          shopImageUrl: shop.profilePhoto,
-                        ),
+                        child: ProductCard(products.items[index].id),
                       ),
                     );
                   },

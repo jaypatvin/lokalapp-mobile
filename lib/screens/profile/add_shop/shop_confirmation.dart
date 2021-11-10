@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 
 import '../../../providers/auth.dart';
 import '../../../routers/app_router.dart';
+import '../../../routers/profile/user_shop.props.dart';
 import '../../../utils/constants/assets.dart';
 import '../../../utils/constants/themes.dart';
 import '../../../widgets/app_button.dart';
@@ -88,7 +89,7 @@ class AddShopConfirmation extends StatelessWidget {
                     ..navigateTo(
                       AppRoute.profile,
                       UserShop.routeName,
-                      arguments: {'userId': user.id!},
+                      arguments: UserShopProps(user.id!),
                     );
                 },
               ),

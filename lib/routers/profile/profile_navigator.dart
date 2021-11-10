@@ -13,6 +13,7 @@ import '../../screens/profile/settings/settings.dart';
 import '../../screens/profile/shop/user_shop.dart';
 import 'customize_availability.props.dart';
 import 'shop_schedule.props.dart';
+import 'user_shop.props.dart';
 
 class ProfileNavigator extends AppNavigator {
   @override
@@ -31,8 +32,13 @@ class ProfileNavigator extends AppNavigator {
         return CupertinoPageRoute(builder: (_) => Settings());
 
       case UserShop.routeName:
-        final userId = (settings.arguments as Map<String, String>)['userId']!;
-        return CupertinoPageRoute(builder: (_) => UserShop(userId: userId));
+        final props = settings.arguments as UserShopProps;
+        return CupertinoPageRoute(
+          builder: (_) => UserShop(
+            userId: props.userId,
+            shopId: props.shopId,
+          ),
+        );
 
       case AddShop.routeName:
         return CupertinoPageRoute(builder: (_) => AddShop());

@@ -1,10 +1,7 @@
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:provider/provider.dart';
 
 import '../models/product.dart';
-import '../providers/shops.dart';
 import '../screens/profile/components/product_card.dart';
 
 class ProductsList extends StatelessWidget {
@@ -29,10 +26,6 @@ class ProductsList extends StatelessWidget {
       ),
       itemBuilder: (ctx2, index) {
         try {
-          final shops = context.read<Shops>();
-          final productImage = items[index]
-              .gallery
-              ?.firstWhereOrNull((gallery) => gallery.url.isNotEmpty);
           return Container(
             margin: EdgeInsets.symmetric(
               vertical: 5.0.h,
@@ -40,18 +33,11 @@ class ProductsList extends StatelessWidget {
             ),
             child: GestureDetector(
               onTap: () => onProductTap(items[index].id),
-              child: ProductCard(
-                productId: items[index].id,
-                name: items[index].name,
-                imageUrl: productImage?.url ?? '',
-                price: items[index].basePrice,
-                shopName: shops.findById(items[index].shopId)!.name,
-                shopImageUrl: shops.findById(items[index].shopId)!.profilePhoto,
-              ),
+              child: ProductCard(items[index].id),
             ),
           );
         } catch (e) {
-          return Container();
+          return const SizedBox();
         }
       },
     );
