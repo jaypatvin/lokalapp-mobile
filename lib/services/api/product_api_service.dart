@@ -41,6 +41,18 @@ class ProductApiService extends APIService<Product> {
     return handleGenericResponse(response);
   }
 
+  Future<bool> like({required productId}) async {
+    final response = await http.post(
+      api.endpointUri(
+        endpoint,
+        pathSegments: [productId, 'like'],
+      ),
+      headers: api.authHeader(),
+    );
+
+    return handleGenericResponse(response);
+  }
+
   // --PUT
   Future<bool> update({
     required String productId,
@@ -169,6 +181,18 @@ class ProductApiService extends APIService<Product> {
   }) async {
     final response = await http.delete(
       api.endpointUri(endpoint, pathSegments: [productId]),
+      headers: api.authHeader(),
+    );
+
+    return handleGenericResponse(response);
+  }
+
+  Future<bool> unlike({required productId}) async {
+    final response = await http.delete(
+      api.endpointUri(
+        endpoint,
+        pathSegments: [productId, 'unlike'],
+      ),
       headers: api.authHeader(),
     );
 

@@ -149,4 +149,38 @@ class Products extends ChangeNotifier {
       throw e;
     }
   }
+
+  Future<void> likeProduct({
+    required String productId,
+    required String userId,
+  }) async {
+    final product = this.findById(productId);
+    product!.likes.add(userId);
+    notifyListeners();
+
+    try {
+      await _apiService.like(productId: productId);
+    } catch (e) {
+      product.likes.remove(userId);
+      notifyListeners();
+      throw e;
+    }
+  }
+
+  Future<void> unlikeProduct({
+    required String productId,
+    required String userId,
+  }) async {
+    final product = this.findById(productId);
+    product!.likes.remove(userId);
+    notifyListeners();
+
+    try {
+      await _apiService.unlike(productId: productId);
+    } catch (e) {
+      product.likes.add(userId);
+      notifyListeners();
+      throw e;
+    }
+  }
 }

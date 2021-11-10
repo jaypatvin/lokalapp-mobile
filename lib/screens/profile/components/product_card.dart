@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import '../../../providers/shops.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
 
 import '../../../providers/cart.dart';
+import '../../../providers/products.dart';
 import '../../../utils/constants/themes.dart';
 import '../../../view_models/discover/product_card.vm.dart';
 import '../../chat/components/chat_avatar.dart';
@@ -14,12 +16,14 @@ class ProductCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProxyProvider<ShoppingCart, ProductCardViewModel>(
+    return ChangeNotifierProxyProvider3<ShoppingCart, Products, Shops,
+        ProductCardViewModel>(
       create: (ctx) => ProductCardViewModel(ctx, productId)..init(),
-      update: (ctx, cart, vm) => vm!
+      update: (ctx, cart, products, shops, vm) => vm!
         ..updateDisplayBorder(
           cart.contains(productId),
-        ),
+        )
+        ..onProductsUpdate(),
       builder: (_, __) {
         return Consumer<ProductCardViewModel>(
           builder: (ctx2, vm, _) {
@@ -68,11 +72,17 @@ class ProductCard extends StatelessWidget {
                           ),
                           GestureDetector(
                             onTap: vm.onLike,
-                            child: Icon(
-                              MdiIcons.heartOutline,
-                              size: 24.0.r,
-                              color: Colors.black,
-                            ),
+                            child: !vm.isLiked
+                                ? Icon(
+                                    MdiIcons.heartOutline,
+                                    size: 24.0.r,
+                                    color: Colors.black,
+                                  )
+                                : Icon(
+                                    MdiIcons.heart,
+                                    size: 24.0.r,
+                                    color: kPinkColor,
+                                  ),
                           ),
                         ],
                       ),
