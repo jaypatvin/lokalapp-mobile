@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 
-import '../providers/activities.dart';
 import '../providers/auth.dart';
 import '../providers/categories.dart';
 import '../providers/products.dart';
@@ -36,7 +35,6 @@ class _RootState extends State<Root> {
     try {
       await auth.onStartUp();
       if (auth.user == null) throw 'user-not-registered';
-      await context.read<Activities>().fetch();
       await context.read<Shops>().fetch();
       await context.read<Products>().fetch();
       await context.read<Users>().fetch();

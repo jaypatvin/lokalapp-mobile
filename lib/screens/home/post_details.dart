@@ -458,9 +458,7 @@ class _PostDetailsState extends State<PostDetails> {
         ],
       ),
       body: RefreshIndicator(
-        onRefresh: () => activities.fetchComments(
-          activityId: widget.activity.id,
-        ),
+        onRefresh: () async {},
         child: KeyboardActions(
           disableScroll: true,
           tapOutsideBehavior: TapOutsideBehavior.translucentDismiss,

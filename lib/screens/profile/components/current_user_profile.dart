@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:lottie/lottie.dart';
 import 'package:persistent_bottom_nav_bar/models/nested_will_pop_scope.dart';
 import 'package:provider/provider.dart';
 
-import '../../../providers/activities.dart';
 import '../../../providers/auth.dart';
-import '../../../utils/constants/assets.dart';
+import '../../../services/database.dart';
 import '../../../utils/constants/themes.dart';
 import '../../../view_models/profile/components/current_user_profile.vm.dart';
 import '../../home/timeline.dart';
@@ -60,33 +58,7 @@ class CurrentUserProfile extends StatelessWidget {
                   ),
                   GestureDetector(
                     onPanUpdate: vm.onPanUpdate,
-                    child: SingleChildScrollView(
-                      child: Container(
-                        color: Color(0XFFF1FAFF),
-                        child: Consumer<Activities>(
-                          builder: (context, activities, child) {
-                            return activities.isLoading
-                                ? SizedBox(
-                                    width: double.infinity,
-                                    height: double.infinity,
-                                    child: DecoratedBox(
-                                      decoration: const BoxDecoration(
-                                        color: Colors.white,
-                                      ),
-                                      child: Lottie.asset(kAnimationLoading),
-                                    ),
-                                  )
-                                : RefreshIndicator(
-                                    onRefresh: () => activities.fetch(),
-                                    child: Timeline(
-                                      activities.findByUser(user.id),
-                                      null,
-                                    ),
-                                  );
-                          },
-                        ),
-                      ),
-                    ),
+                    child: Timeline(Database.instance.getUserFeed(user.id!)),
                   ),
                 ],
               ),

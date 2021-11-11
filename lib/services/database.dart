@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 
 import '../models/lokal_user.dart';
 
+final activitiesRef = FirebaseFirestore.instance.collection('activities');
 final usersRef = FirebaseFirestore.instance.collection("users");
 final inviteRef = FirebaseFirestore.instance.collection("invites");
 final shopRef = FirebaseFirestore.instance.collection("shops");
@@ -23,6 +24,22 @@ class Database {
       _database = Database();
     }
     return _database!;
+  }
+
+  Stream<QuerySnapshot<Map<String, dynamic>>> getUserFeed(String userId) {
+    return activitiesRef
+        .where('user_id', isEqualTo: userId)
+        .orderBy('created_at', descending: true)
+        .snapshots();
+  }
+
+  Stream<QuerySnapshot<Map<String, dynamic>>> getCommunityFeed(
+    String communityId,
+  ) {
+    return activitiesRef
+        .where('community_id', isEqualTo: communityId)
+        .orderBy('created_at', descending: true)
+        .snapshots();
   }
 
   Future<QuerySnapshot<Map<String, dynamic>>> getNotificationTypes() {
@@ -51,24 +68,6 @@ class Database {
 
   Future<QuerySnapshot<Map<String, dynamic>>> getPostImagesCollection() async {
     return FirebaseFirestore.instance.collectionGroup('images').get();
-  }
-
-  Stream<QuerySnapshot<Map<String, dynamic>>> getUserTimeline(String userId) {
-    return FirebaseFirestore.instance
-        .collection('activities')
-        .where('user_id', isEqualTo: userId)
-        .orderBy('created_at')
-        .snapshots();
-  }
-
-  Stream<QuerySnapshot<Map<String, dynamic>>> getCommunityTimeline(
-    String communityId,
-  ) {
-    return FirebaseFirestore.instance
-        .collection('activities')
-        .where('community_id', isEqualTo: communityId)
-        .orderBy('created_at', descending: true)
-        .snapshots();
   }
 
   Stream<QuerySnapshot<Map<String, dynamic>>> getCommunityProducts(

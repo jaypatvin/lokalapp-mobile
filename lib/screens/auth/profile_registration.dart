@@ -7,7 +7,6 @@ import 'package:keyboard_actions/keyboard_actions.dart';
 import 'package:persistent_bottom_nav_bar/models/nested_will_pop_scope.dart';
 import 'package:provider/provider.dart';
 
-import '../../providers/activities.dart';
 import '../../providers/auth.dart';
 import '../../providers/categories.dart';
 import '../../providers/post_requests/auth_body.dart';
@@ -154,7 +153,6 @@ class _ProfileRegistrationState extends State<ProfileRegistration>
     }
     bool success = await _registerUser();
     if (success) {
-      await context.read<Activities>().fetch();
       await context.read<Shops>().fetch();
       await context.read<Products>().fetch();
       await context.read<Users>().fetch();
