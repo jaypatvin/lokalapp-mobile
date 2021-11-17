@@ -18,9 +18,10 @@ class _SearchState extends State<Search> {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-        create: (ctx) => SearchViewModel(ctx)..init(),
-        builder: (_, __) {
-          return Consumer<SearchViewModel>(builder: (ctx, vm, __) {
+      create: (ctx) => SearchViewModel(ctx)..init(),
+      builder: (_, __) {
+        return Consumer<SearchViewModel>(
+          builder: (ctx, vm, __) {
             return Scaffold(
               resizeToAvoidBottomInset: true,
               appBar: CustomAppBar(
@@ -36,15 +37,10 @@ class _SearchState extends State<Search> {
                 ),
                 onPressedLeading: () => Navigator.of(context).pop(),
               ),
-              body: Builder(
-                builder: (context) {
-                  if (vm.isSearching)
-                    return Center(
-                      child: CircularProgressIndicator(),
-                    );
-
-                  if (vm.searchResults.isEmpty)
-                    return Column(
+              body: SingleChildScrollView(
+                child: Builder(
+                  builder: (_) {
+                    final _recentSearchesWidget = Column(
                       children: [
                         Container(
                           padding: const EdgeInsets.all(12),
@@ -59,9 +55,11 @@ class _SearchState extends State<Search> {
                         ),
                         ListView.builder(
                           shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
                           itemCount: vm.recentSearches.length,
                           itemBuilder: (ctx, index) {
                             return ListTile(
+                              onTap: () => vm.onRecentTap(index),
                               title: Text(vm.recentSearches[index]),
                               trailing: IconButton(
                                 onPressed: () => vm.onSearchDelete(index),
@@ -73,35 +71,143 @@ class _SearchState extends State<Search> {
                       ],
                     );
 
-                  return GridView.builder(
-      shrinkWrap: true,
-      physics: NeverScrollableScrollPhysics(),
-      itemCount: vm.searchResults.length,
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        childAspectRatio: 2 / 3,
-        crossAxisCount: 2,
-      ),
-      itemBuilder: (ctx2, index) {
-        try {
-          return Container(
-            margin: EdgeInsets.symmetric(
-              vertical: 5.0.h,
-              horizontal: 2.5.w,
-            ),
-            child: GestureDetector(
-              onTap: () => vm.onProductTap(index),
-              child: ProductCard(vm.searchResults[index].id),
-            ),
-          );
-        } catch (e) {
-          return const SizedBox();
-        }
-      },
-    ); 
-                },
+                    if (vm.isSearching)
+                      return Center(
+                        child: CircularProgressIndicator(),
+                      );
+
+                    if (vm.searchController.text.isEmpty)
+                      return _recentSearchesWidget;
+
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            "${vm.searchResults.length} results for "
+                            "'${vm.searchController.text}'",
+                            style: Theme.of(context).textTheme.headline6,
+                          ),
+                        ),
+                        if (vm.searchResults.isNotEmpty)
+                          GridView.builder(
+                            shrinkWrap: true,
+                            physics: NeverScrollableScrollPhysics(),
+                            itemCount: vm.searchResults.length,
+                            gridDelegate:
+                                SliverGridDelegateWithFixedCrossAxisCount(
+                              childAspectRatio: 2 / 3,
+                              crossAxisCount: 2,
+                            ),
+                            itemBuilder: (ctx2, index) {
+                              try {
+                                return Container(
+                                  margin: EdgeInsets.symmetric(
+                                    vertical: 5.0.h,
+                                    horizontal: 2.5.w,
+                                  ),
+                                  child: GestureDetector(
+                                    onTap: () => vm.onProductTap(index),
+                                    child:
+                                        ProductCard(vm.searchResults[index].id),
+                                  ),
+                                );
+                              } catch (e) {
+                                return const SizedBox();
+                              }
+                            },
+                          ),
+                        if (vm.searchResults.isEmpty) _recentSearchesWidget,
+                      ],
+                    );
+                  },
+                ),
               ),
+              // body: Builder(
+              //   builder: (context) {
+              //     if (vm.isSearching)
+              //       return Center(
+              //         child: CircularProgressIndicator(),
+              //       );
+
+              //     if (vm.searchResults.isEmpty)
+              //       return Column(
+              //         children: [
+              //           Container(
+              //             padding: const EdgeInsets.all(12),
+              //             child: Text(
+              //               "Recent Searches",
+              //               style: TextStyle(
+              //                 fontSize: 20.0.sp,
+              //                 fontFamily: "Goldplay",
+              //                 fontWeight: FontWeight.bold,
+              //               ),
+              //             ),
+              //           ),
+              //           ListView.builder(
+              //             shrinkWrap: true,
+              //             physics: NeverScrollableScrollPhysics(),
+              //             itemCount: vm.recentSearches.length,
+              //             itemBuilder: (ctx, index) {
+              //               return ListTile(
+              //                 title: Text(vm.recentSearches[index]),
+              //                 trailing: IconButton(
+              //                   onPressed: () => vm.onSearchDelete(index),
+              //                   icon: Icon(Icons.close),
+              //                 ),
+              //               );
+              //             },
+              //           ),
+              //         ],
+              //       );
+
+              //     return SingleChildScrollView(
+              //       child: Column(
+              //         crossAxisAlignment: CrossAxisAlignment.start,
+              //         children: [
+              //           Padding(
+              //             padding: const EdgeInsets.all(8.0),
+              //             child: Text(
+              //               "${vm.searchResults.length} results for "
+              //               "'${vm.searchController.text}'",
+              //               style: Theme.of(context).textTheme.headline6,
+              //             ),
+              //           ),
+              //           GridView.builder(
+              //             shrinkWrap: true,
+              //             physics: NeverScrollableScrollPhysics(),
+              //             itemCount: vm.searchResults.length,
+              //             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              //               childAspectRatio: 2 / 3,
+              //               crossAxisCount: 2,
+              //             ),
+              //             itemBuilder: (ctx2, index) {
+              //               try {
+              //                 return Container(
+              //                   margin: EdgeInsets.symmetric(
+              //                     vertical: 5.0.h,
+              //                     horizontal: 2.5.w,
+              //                   ),
+              //                   child: GestureDetector(
+              //                     onTap: () => vm.onProductTap(index),
+              //                     child: ProductCard(vm.searchResults[index].id),
+              //                   ),
+              //                 );
+              //               } catch (e) {
+              //                 return const SizedBox();
+              //               }
+              //             },
+              //           ),
+              //         ],
+              //       ),
+              //     );
+              //   },
+              // ),
             );
-          });
-        });
+          },
+        );
+      },
+    );
   }
 }

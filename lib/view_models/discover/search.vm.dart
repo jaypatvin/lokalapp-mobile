@@ -53,7 +53,7 @@ class SearchViewModel extends ChangeNotifier {
     if (query.isEmpty) return;
 
     _isSearching = true;
-    _recentSearches.insert(0, query);
+    if (!_recentSearches.contains(query)) _recentSearches.insert(0, query);
     _searchResults.clear();
 
     notifyListeners();
@@ -73,6 +73,7 @@ class SearchViewModel extends ChangeNotifier {
       for (final id in response['products']!) {
         final product = context.read<Products>().findById(id);
         if (product == null) continue;
+        if (product.userId == context.read<Auth>().user!.id) continue;
         _searchResults.add(product);
       }
 
@@ -89,6 +90,11 @@ class SearchViewModel extends ChangeNotifier {
     _recentSearches.removeAt(index);
     context.read<UserSharedPreferences>().setRecentSearches(_recentSearches);
     notifyListeners();
+  }
+
+  void onRecentTap(int index) {
+    searchController.text = _recentSearches[index];
+    _performSearch(searchController.text);
   }
 
   void onProductTap(int index) {
