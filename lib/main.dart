@@ -79,8 +79,11 @@ class _MyAppState extends State<MyApp> {
 
       ChangeNotifierProxyProvider<Auth, Activities?>(
         create: (_) => Activities(_api),
-        update: (_, auth, activities) =>
-            activities!..setCommunityId(auth.user?.communityId),
+        update: (_, auth, activities) => activities!
+          ..setUserCredentials(
+            userId: auth.user?.id,
+            communityId: auth.user?.communityId,
+          ),
       ),
       ChangeNotifierProxyProvider<Auth, Users?>(
         create: (_) => Users(_api),

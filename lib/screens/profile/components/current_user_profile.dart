@@ -4,7 +4,6 @@ import 'package:persistent_bottom_nav_bar/models/nested_will_pop_scope.dart';
 import 'package:provider/provider.dart';
 
 import '../../../providers/auth.dart';
-import '../../../services/database.dart';
 import '../../../utils/constants/themes.dart';
 import '../../../view_models/profile/components/current_user_profile.vm.dart';
 import '../../home/timeline.dart';
@@ -58,7 +57,7 @@ class CurrentUserProfile extends StatelessWidget {
                   ),
                   GestureDetector(
                     onPanUpdate: vm.onPanUpdate,
-                    child: Timeline(Database.instance.getUserFeed(user.id!)),
+                    child: Timeline(userId: user.id),
                   ),
                 ],
               ),

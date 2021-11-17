@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 
+import '../models/activity_feed.dart';
 import '../models/lokal_user.dart';
 
 final activitiesRef = FirebaseFirestore.instance.collection('activities');
@@ -26,11 +27,78 @@ class Database {
     return _database!;
   }
 
-  Stream<QuerySnapshot<Map<String, dynamic>>> getUserFeed(String userId) {
+  Future<List<String>> getActivityLikes(String activityId) async {
+    final snapshot =
+        await activitiesRef.doc(activityId).collection('likes').get();
+
+    return snapshot.docs.map<String>((doc) => doc.id).toList();
+  }
+
+  Future<bool> isCommentLiked({
+    required String activityId,
+    required String userId,
+    required String commentId,
+  }) async {
+    final snapshot = await activitiesRef
+        .doc(activityId)
+        .collection('comments')
+        .doc(commentId)
+        .collection('comment_likes')
+        .where('user_id', isEqualTo: userId)
+        .get();
+
+    return snapshot.docs.isNotEmpty;
+  }
+
+  Future<bool> isActivityLiked(String activityId, String userId) async {
+    final snapshot = await activitiesRef
+        .doc(activityId)
+        .collection('likes')
+        .where('user_id', isEqualTo: userId)
+        .get();
+
+    return snapshot.docs.isNotEmpty;
+  }
+
+  Stream<QuerySnapshot<Map<String, dynamic>>> getCommentFeed(
+      String activityId) {
+    return activitiesRef
+        .doc(activityId)
+        .collection('comments')
+        .orderBy('created_at', descending: true)
+        .snapshots();
+  }
+
+  Stream<List<ActivityFeed>> getUserFeed(String userId) {
     return activitiesRef
         .where('user_id', isEqualTo: userId)
         .orderBy('created_at', descending: true)
-        .snapshots();
+        .snapshots()
+        .map<List<ActivityFeed>>((snapshot) => snapshot.docs
+            .map((doc) => ActivityFeed.fromDocument(doc))
+            .toList());
+  }
+
+  Stream<List<ActivityFeed>> getUserFeedStream(String userId) {
+    return activitiesRef
+        .where('user_id', isEqualTo: userId)
+        .orderBy('created_at', descending: true)
+        .snapshots()
+        .map<List<ActivityFeed>>((snapshot) => snapshot.docs
+            .map((doc) => ActivityFeed.fromDocument(doc))
+            .toList());
+  }
+
+  Stream<List<ActivityFeed>> getCommunityFeedStream(
+    String communityId,
+  ) {
+    return activitiesRef
+        .where('community_id', isEqualTo: communityId)
+        .orderBy('created_at', descending: true)
+        .snapshots()
+        .map<List<ActivityFeed>>((snapshot) => snapshot.docs
+            .map((doc) => ActivityFeed.fromDocument(doc))
+            .toList());
   }
 
   Stream<QuerySnapshot<Map<String, dynamic>>> getCommunityFeed(
@@ -41,6 +109,26 @@ class Database {
         .orderBy('created_at', descending: true)
         .snapshots();
   }
+
+  // Future<List<ActivityFeed>> getCommunityFeed(String communityId,
+  //     {String? userId}) async {
+  //   final snapshot = await activitiesRef
+  //       .where('community_id', isEqualTo: communityId)
+  //       .orderBy('created_at', descending: true)
+  //       .get();
+
+  //   final activities = <ActivityFeed>[];
+
+  //   for (final doc in snapshot.docs) {
+  //     final activity = ActivityFeed.fromDocument(doc);
+  //     if (userId != null)
+  //       activity.liked = await this.isActivityLiked(activity.id, userId);
+
+  //     activities.add(activity);
+  //   }
+
+  //   return activities;
+  // }
 
   Future<QuerySnapshot<Map<String, dynamic>>> getNotificationTypes() {
     return FirebaseFirestore.instance.collection('notification_types').get();
@@ -130,10 +218,6 @@ class Database {
         : null;
 
     return data;
-  }
-
-  String getChatId(List<String> members) {
-    return "";
   }
 
   Stream<QuerySnapshot> getUserOrders(String? userId, {int? statusCode}) {

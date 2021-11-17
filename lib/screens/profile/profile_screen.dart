@@ -3,7 +3,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/lokal_user.dart';
-import '../../services/database.dart';
 import '../../utils/constants/themes.dart';
 import '../../utils/shared_preference.dart';
 import '../../view_models/profile/profile_screen.vm.dart';
@@ -54,8 +53,7 @@ class ProfileScreen extends StatelessWidget {
                     child: !vm.isCurrentUser
                         ? Container(
                             color: kInviteScreenColor,
-                            child:
-                                Timeline(Database.instance.getUserFeed(userId)),
+                            child: Timeline(userId: userId),
                           )
                         : const CurrentUserProfile(),
                   ),
