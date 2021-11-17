@@ -66,6 +66,27 @@ class UserSharedPreferences {
   ]) =>
       _setBoolValue(_onboardingKeys[screen]!, status);
 
+  List<String> getRecentSearches() =>
+      _preference?.getStringList('discover/search/recent') ?? [];
+
+  Future<void> setRecentSearches(List<String> queries) async {
+    if (!isReady) await init();
+    _preference!.setStringList(
+      'discover/search/recent',
+      [...queries],
+    );
+    _streamController.add(this);
+  }
+
+  Future<void> addRecentSearches(String query) async {
+    if (!isReady) await init();
+    _preference!.setStringList(
+      'discover/search/recent',
+      [query, ...getRecentSearches()],
+    );
+    _streamController.add(this);
+  }
+
   Future<void> setSessionCache(String key, String value) async {
     _storage.setItem(key, value);
   }
