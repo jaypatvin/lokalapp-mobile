@@ -1,8 +1,11 @@
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
+import 'package:provider/provider.dart';
 
+import '../../../providers/auth.dart';
+import '../../../routers/app_router.dart';
 import '../../../utils/constants/themes.dart';
 import '../../../widgets/app_button.dart';
 import '../../../widgets/custom_app_bar.dart';
@@ -185,15 +188,18 @@ class Settings extends StatelessWidget {
                       "Log Out",
                       kPinkColor,
                       true,
-                      () {
-                        FirebaseAuth.instance.signOut();
-                        Navigator.of(context, rootNavigator: true)
-                            .pushAndRemoveUntil(
-                          MaterialPageRoute(
-                            builder: (context) => WelcomeScreen(),
-                          ),
-                          (route) => false,
-                        );
+                      () async {
+                        context.read<AppRouter>()
+                          ..jumpToTab(AppRoute.home)
+                          ..keyOf(AppRoute.root)
+                              .currentState!
+                              .pushAndRemoveUntil(
+                                CupertinoPageRoute(
+                                  builder: (_) => WelcomeScreen(),
+                                ),
+                                (route) => false,
+                              );
+                        context.read<Auth>().logOut();
                       },
                     ),
                   ),
