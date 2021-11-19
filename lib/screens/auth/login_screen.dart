@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
-import '../../providers/activities.dart';
 import '../../providers/auth.dart';
 import '../../providers/categories.dart';
 import '../../providers/products.dart';
@@ -57,7 +56,6 @@ class _LoginScreenState extends State<LoginScreen>
 
       if (auth.user != null) {
         await performFuture(() async {
-          await context.read<Activities>().fetch();
           await context.read<Shops>().fetch();
           await context.read<Products>().fetch();
           await context.read<Users>().fetch();

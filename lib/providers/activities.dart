@@ -22,89 +22,115 @@ class Activities extends ChangeNotifier {
   final ActivityAPIService _activityService;
   final CommentsAPIService _commentService;
   final Database _db = Database.instance;
-  List<ActivityFeed> _feed = [];
 
-  StreamSubscription<QuerySnapshot<Map<String, dynamic>>>?
-      _activityFeedSubscription;
+  // late Stream<List<ActivityFeed>> activityFeed;
+  // StreamSubscription<List<ActivityFeed>>? subscriptionListener;
+  late Stream<QuerySnapshot<Map<String, dynamic>>> _snapshotStream;
+  StreamSubscription<QuerySnapshot<Map<String, dynamic>>>? subscriptionListener;
+
+  final _feedController = StreamController<List<ActivityFeed>>.broadcast();
+  Stream<List<ActivityFeed>> get activityFeed => _feedController.stream;
+
+  List<ActivityFeed> _feed = [];
+  UnmodifiableListView<ActivityFeed> get feed =>
+      UnmodifiableListView(_feed.where((a) => !a.archived));
 
   String _communityId = '';
-  bool _isLoading = false;
-  bool _isCommentLoading = false;
-
-  UnmodifiableListView<ActivityFeed> get feed => UnmodifiableListView(_feed);
   String get communityId => _communityId;
+
+  String _userId = '';
+  String get userId => _userId;
+
+  bool _isLoading = false;
   bool get isLoading => _isLoading;
-  bool get isCommentLoading => _isCommentLoading;
 
   @override
   void dispose() {
-    _activityFeedSubscription?.cancel();
+    subscriptionListener?.cancel();
+    _feedController.close();
     super.dispose();
   }
 
-  void setCommunityId(String? id) {
-    if (id != null) {
-      if (id == _communityId) return;
-      _communityId = id;
-      _activityFeedSubscription?.cancel();
-      _activityFeedSubscription =
-          _db.getCommunityTimeline(id).listen(_activityFeedListener);
-    }
-  }
-
-  void _activityFeedListener(QuerySnapshot<Map<String, dynamic>> query) async {
-    final length = query.docChanges.length;
-    if (_isLoading || length > 1) return;
-    for (final change in query.docChanges) {
-      final id = change.doc.id;
-      final index = _feed.indexWhere((a) => a.id == id);
-
-      if (index >= 0) {
-        final _activity = ActivityFeed.fromDocument({
-          'id': id,
-          ...change.doc.data()!,
-        });
-        if (_feed[index].likedCount == _activity.likedCount &&
-            _feed[index].commentCount == _activity.commentCount) return;
-
-        _feed[index].likedCount = _activity.likedCount;
-        _feed[index].commentCount = _activity.commentCount;
-        notifyListeners();
-        return;
-      }
-
-      final activityFeed = await _activityService.getById(activityId: id);
-      _feed
-        ..add(activityFeed)
-        ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
+  void setUserCredentials({String? userId, String? communityId}) async {
+    if (userId != null && communityId != null) {
+      if (communityId == _communityId) return;
+      _isLoading = true;
+      notifyListeners();
+      _communityId = communityId;
+      _userId = userId;
+      _snapshotStream = _db.getCommunityFeed(communityId);
+      await _setActivityFeed();
+      subscriptionListener?.cancel();
+      subscriptionListener = _snapshotStream.listen(_subscriptionListener);
+      _isLoading = false;
       notifyListeners();
     }
   }
 
+  void _subscriptionListener(
+    QuerySnapshot<Map<String, dynamic>> snapshot,
+  ) async {
+    await Future.delayed(const Duration(milliseconds: 100));
+    if (snapshot.docChanges.length == _feed.length) return;
+    for (final change in snapshot.docChanges) {
+      final doc = change.doc;
+      final activity = ActivityFeed.fromDocument(doc);
+      final index = _feed.indexWhere((a) => a.id == doc.id);
+      activity.liked = await _db.isActivityLiked(activity.id, _userId);
+
+      if (index == -1) {
+        _feed.add(activity);
+        continue;
+      }
+
+      if (_feed[index] == activity) continue;
+      _feed[index] = activity;
+    }
+    _feed.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+    _feedController.add(_feed);
+    notifyListeners();
+  }
+
+  Future<void> _setActivityFeed() async {
+    final snapshot = await _snapshotStream.first;
+    final _feed = <ActivityFeed>[];
+
+    for (final doc in snapshot.docs) {
+      final activity = ActivityFeed.fromDocument(doc);
+      activity.liked = await _db.isActivityLiked(activity.id, _userId);
+
+      _feed.add(activity);
+    }
+    _feed.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+    this._feed = _feed;
+    _feedController.add(this._feed);
+  }
+
   ActivityFeed findById(String id) {
     final index = _feed.indexWhere((a) => a.id == id);
-    if (index < 0) throw 'No Product with that Id.';
+    if (index < 0) throw 'No Activity with that Id.';
     return _feed[index];
   }
 
   List<ActivityFeed> findByUser(String? userId) {
-    return _feed.where((activity) => activity.userId == userId).toList();
+    return feed.where((activity) => activity.userId == userId).toList();
   }
 
   Future<void> likePost({
     required String activityId,
     required String userId,
   }) async {
-    final feed = this.findById(activityId);
-    feed.likedCount++;
-    feed.liked = true;
-    notifyListeners();
-
+    final index = _feed.indexWhere((a) => a.id == activityId);
     try {
-      await _activityService.like(activityId: activityId, userId: userId);
+      _feed[index].liked = true;
+      notifyListeners();
+
+      await _activityService.like(
+        activityId: activityId,
+        userId: userId,
+      );
     } catch (e) {
-      feed.likedCount--;
-      feed.liked = false;
+      _feed[index].liked = false;
       notifyListeners();
       throw e;
     }
@@ -114,16 +140,16 @@ class Activities extends ChangeNotifier {
     required String activityId,
     required String userId,
   }) async {
-    final feed = this.findById(activityId);
-    feed.likedCount--;
-    feed.liked = false;
-    notifyListeners();
-
+    final index = _feed.indexWhere((a) => a.id == activityId);
     try {
-      await _activityService.unlike(activityId: activityId, userId: userId);
+      _feed[index].liked = false;
+      notifyListeners();
+      await _activityService.unlike(
+        activityId: activityId,
+        userId: userId,
+      );
     } catch (e) {
-      feed.likedCount++;
-      feed.liked = true;
+      _feed[index].liked = true;
       notifyListeners();
       throw e;
     }
@@ -134,14 +160,6 @@ class Activities extends ChangeNotifier {
     required String commentId,
     required String userId,
   }) async {
-    final feed = this.findById(activityId);
-    final comment = feed.comments.firstWhere(
-      (comment) => comment.id == commentId,
-      orElse: () => throw 'Comment does not exist!',
-    );
-    comment.liked = true;
-    notifyListeners();
-
     try {
       await _commentService.like(
         activityId: activityId,
@@ -149,8 +167,6 @@ class Activities extends ChangeNotifier {
         userId: userId,
       );
     } catch (e) {
-      comment.liked = false;
-      notifyListeners();
       throw e;
     }
   }
@@ -160,14 +176,6 @@ class Activities extends ChangeNotifier {
     required String commentId,
     required String userId,
   }) async {
-    final feed = this.findById(activityId);
-    final comment = feed.comments.firstWhere(
-      (comment) => comment.id == commentId,
-      orElse: () => throw 'Comment does not exist!',
-    );
-    comment.liked = false;
-    notifyListeners();
-
     try {
       await _commentService.unlike(
         activityId: activityId,
@@ -175,8 +183,6 @@ class Activities extends ChangeNotifier {
         userId: userId,
       );
     } catch (e) {
-      comment.liked = true;
-      notifyListeners();
       throw e;
     }
   }
@@ -186,60 +192,32 @@ class Activities extends ChangeNotifier {
     required Map<String, dynamic> body,
   }) async {
     try {
-      final comment = await _commentService.create(
+      await _commentService.create(
         activityId: activityId,
         body: body,
       );
-      this.findById(activityId).comments.add(comment);
-      notifyListeners();
     } catch (e) {
-      throw e;
-    }
-  }
-
-  Future<void> fetchComments({required String activityId}) async {
-    _isCommentLoading = true;
-    notifyListeners();
-
-    try {
-      final comments = await _commentService.getActivityComments(
-        activityId: activityId,
-      );
-      comments.sort((a, b) => a.createdAt.compareTo(b.createdAt));
-      this.findById(activityId).comments = comments;
-      _isCommentLoading = false;
-      notifyListeners();
-    } catch (e) {
-      _isCommentLoading = false;
-      notifyListeners();
-      throw e;
-    }
-  }
-
-  Future<void> fetch() async {
-    _isLoading = true;
-    notifyListeners();
-
-    try {
-      final feed = await _activityService.getAll();
-      _feed = feed..sort((a, b) => b.createdAt.compareTo(a.createdAt));
-      _isLoading = false;
-      notifyListeners();
-    } catch (e) {
-      _isLoading = false;
-      notifyListeners();
       throw e;
     }
   }
 
   Future<void> post(Map<String, dynamic> data) async {
     try {
-      final activity = await _activityService.create(data: data);
-      _feed
-        ..add(activity)
-        ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
-      notifyListeners();
+      await _activityService.create(data: data);
     } catch (e) {
+      throw e;
+    }
+  }
+
+  Future<void> deleteActivity(String activityId) async {
+    final index = _feed.indexWhere((a) => a.id == activityId);
+    _feed[index].archived = true;
+    notifyListeners();
+    try {
+      await _activityService.delete(activityId: activityId);
+    } catch (e) {
+      _feed[index].archived = false;
+      notifyListeners();
       throw e;
     }
   }

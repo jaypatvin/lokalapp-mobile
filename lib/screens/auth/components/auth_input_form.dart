@@ -14,6 +14,7 @@ class AuthInputForm extends StatefulWidget {
   final void Function()? onFormSubmit;
   final bool displaySignInError;
   final String? submitButtonLabel;
+  final String? Function(String?)? passwordValidator;
   const AuthInputForm({
     Key? key,
     this.formKey,
@@ -23,6 +24,7 @@ class AuthInputForm extends StatefulWidget {
     this.onFormSubmit,
     this.displaySignInError = false,
     this.submitButtonLabel,
+    this.passwordValidator,
   }) : super(key: key);
 
   @override
@@ -124,6 +126,7 @@ class _AuthInputFormState extends State<AuthInputForm> {
                 autocorrect: false,
                 obscureText: !_passwordVisible,
                 controller: widget.passwordController,
+                validator: widget.passwordValidator,
                 style: TextStyle(
                   fontWeight: FontWeight.w500,
                   fontSize: 16.0.sp,
@@ -149,6 +152,7 @@ class _AuthInputFormState extends State<AuthInputForm> {
                   alignLabelWithHint: true,
                   hintText: "Password",
                   contentPadding: EdgeInsets.symmetric(horizontal: 16.0.w),
+                  errorMaxLines: 3,
                   errorText: widget.displaySignInError
                       ? "The email and password combination is incorrect."
                       : null,

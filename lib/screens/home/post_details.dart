@@ -1,10 +1,12 @@
 import 'dart:async';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:intl/intl.dart' show DateFormat;
 import 'package:keyboard_actions/keyboard_actions.dart';
+import 'package:lottie/lottie.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:provider/provider.dart';
@@ -15,7 +17,9 @@ import '../../models/lokal_images.dart';
 import '../../providers/activities.dart';
 import '../../providers/auth.dart';
 import '../../providers/users.dart';
+import '../../services/database.dart';
 import '../../services/local_image_service.dart';
+import '../../utils/constants/assets.dart';
 import '../../utils/constants/themes.dart';
 import '../../utils/functions.utils.dart';
 import '../../widgets/custom_app_bar.dart';
@@ -29,12 +33,14 @@ import 'components/comment_card.dart';
 class PostDetails extends StatefulWidget {
   static const routeName = '/home/post_details';
   const PostDetails({
-    required this.activity,
+    //required this.activity,
+    required this.activityId,
     required this.onUserPressed,
     required this.onLike,
   });
 
-  final ActivityFeed activity;
+  //final ActivityFeed activity;
+  final String activityId;
   final void Function(String) onUserPressed;
   final void Function() onLike;
 
@@ -50,9 +56,12 @@ class _PostDetailsState extends State<PostDetails> {
   bool showImagePicker = false;
   CustomPickerDataProvider? provider;
 
+  late Stream<QuerySnapshot<Map<String, dynamic>>> _stream;
+
   @override
   void initState() {
     super.initState();
+    _stream = Database.instance.getCommentFeed(widget.activityId);
     provider = Provider.of<CustomPickerDataProvider>(context, listen: false);
     provider!.onPickMax.addListener(showMaxAssetsText);
     provider!.pickedNotifier.addListener(onPick);
@@ -122,7 +131,7 @@ class _PostDetailsState extends State<PostDetails> {
     );
   }
 
-  Widget buildLikeAndCommentRow() {
+  Widget buildLikeAndCommentRow(ActivityFeed activity) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 20.0.w, vertical: 10.0.h),
       decoration: BoxDecoration(
@@ -138,8 +147,8 @@ class _PostDetailsState extends State<PostDetails> {
             constraints: BoxConstraints(),
             padding: EdgeInsets.zero,
             icon: Icon(
-              widget.activity.liked ? MdiIcons.heart : MdiIcons.heartOutline,
-              color: widget.activity.liked ? Colors.red : Colors.black,
+              activity.liked ? MdiIcons.heart : MdiIcons.heartOutline,
+              color: activity.liked ? Colors.red : Colors.black,
             ),
             onPressed: () {
               this.widget.onLike();
@@ -148,7 +157,7 @@ class _PostDetailsState extends State<PostDetails> {
           ),
           SizedBox(width: 8.0.w),
           Text(
-            this.widget.activity.likedCount.toString(),
+            activity.likedCount.toString(),
             style: Theme.of(context).textTheme.subtitle1,
           ),
           Spacer(),
@@ -163,7 +172,7 @@ class _PostDetailsState extends State<PostDetails> {
           ),
           SizedBox(width: 8.0.w),
           Text(
-            this.widget.activity.commentCount.toString(),
+            activity.commentCount.toString(),
             style: Theme.of(context).textTheme.subtitle1,
           ),
         ],
@@ -171,96 +180,8 @@ class _PostDetailsState extends State<PostDetails> {
     );
   }
 
-  void onCommentLongPress() {
-    showModalBottomSheet(
-      context: context,
-      useRootNavigator: true,
-      isScrollControlled: true,
-      builder: (BuildContext context) {
-        return Wrap(
-          children: [
-            GestureDetector(
-              onTap: () {},
-              child: ListTile(
-                leading: Icon(
-                  MdiIcons.reply,
-                  color: kTealColor,
-                ),
-                title: Text(
-                  "Reply",
-                  softWrap: true,
-                  style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                        color: kTealColor,
-                      ),
-                ),
-              ),
-            ),
-            GestureDetector(
-              onTap: () {},
-              child: ListTile(
-                leading: Icon(
-                  MdiIcons.eyeOffOutline,
-                  color: Colors.black,
-                ),
-                title: Text(
-                  "Hide Comment",
-                  softWrap: true,
-                  style: Theme.of(context).textTheme.subtitle1,
-                ),
-              ),
-            ),
-            GestureDetector(
-              onTap: () {},
-              child: ListTile(
-                leading: Icon(
-                  MdiIcons.alertCircleOutline,
-                  color: kPinkColor,
-                ),
-                title: Text(
-                  "Report Comment",
-                  softWrap: true,
-                  style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                        color: kPinkColor,
-                      ),
-                ),
-              ),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void _commentLikeHandler(ActivityFeedComment comment) {
-    final cUser = context.read<Auth>().user!;
-
-    try {
-      if (comment.liked) {
-        Provider.of<Activities>(context, listen: false).unlikeComment(
-          commentId: comment.id,
-          activityId: widget.activity.id,
-          userId: cUser.id!,
-        );
-        debugPrint("Unliked comment ${comment.id}");
-      } else {
-        Provider.of<Activities>(context, listen: false).likeComment(
-          commentId: comment.id,
-          activityId: widget.activity.id,
-          userId: cUser.id!,
-        );
-        debugPrint("Liked comment ${comment.id}");
-      }
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Error: $e'),
-        ),
-      );
-    }
-  }
-
-  Widget buildPostImages() {
-    final images = this.widget.activity.images;
+  Widget buildPostImages(ActivityFeed activity) {
+    final images = activity.images;
     final count = images.length;
     return StaggeredGridView.countBuilder(
       shrinkWrap: true,
@@ -312,7 +233,7 @@ class _PostDetailsState extends State<PostDetails> {
 
     try {
       await context.read<Activities>().createComment(
-            activityId: widget.activity.id,
+            activityId: widget.activityId,
             body: body,
           );
 
@@ -402,181 +323,228 @@ class _PostDetailsState extends State<PostDetails> {
     );
   }
 
-  Widget _buildComments() {
+  @override
+  Widget build(BuildContext context) {
+    print(MediaQuery.of(context).viewInsets.bottom);
     return Consumer<Activities>(
-      builder: (_, activities, __) {
-        return activities.isCommentLoading && widget.activity.comments.isEmpty
-            ? Center(child: CircularProgressIndicator())
-            : ListView.builder(
+      builder: (ctx, activities, _) {
+        final activity = activities.findById(widget.activityId);
+        final user = context.read<Users>().findById(activity.userId);
+        return Scaffold(
+          backgroundColor: Colors.white,
+          resizeToAvoidBottomInset: false,
+          appBar: CustomAppBar(
+            backgroundColor: kTealColor,
+            titleText: "${user.firstName}'s Post",
+            titleStyle: TextStyle(color: Colors.white),
+            onPressedLeading: () => Navigator.pop(context),
+            actions: [
+              IconButton(
+                icon: Icon(
+                  Icons.more_horiz,
+                  color: Colors.white,
+                  size: 30.sp,
+                ),
+                onPressed: () => Navigator.pop(context),
+              ),
+            ],
+          ),
+          body: RefreshIndicator(
+            onRefresh: () async {},
+            child: KeyboardActions(
+              disableScroll: true,
+              tapOutsideBehavior: TapOutsideBehavior.translucentDismiss,
+              config: KeyboardActionsConfig(
+                keyboardBarColor: Colors.grey.shade200,
+                nextFocus: false,
+                actions: [
+                  KeyboardActionsItem(
+                    focusNode: _commentInputFocusNode,
+                    toolbarButtons: [
+                      (node) {
+                        return TextButton(
+                          onPressed: () => node.unfocus(),
+                          child: Text(
+                            "Done",
+                            style:
+                                Theme.of(context).textTheme.bodyText1!.copyWith(
+                                      color: Colors.black,
+                                    ),
+                          ),
+                        );
+                      },
+                    ],
+                  ),
+                ],
+              ),
+              child: Column(
+                children: [
+                  Expanded(
+                    child: SingleChildScrollView(
+                      controller: scrollController,
+                      physics: AlwaysScrollableScrollPhysics(),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 15.0.w),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Padding(
+                                  padding:
+                                      EdgeInsets.symmetric(vertical: 20.0.h),
+                                  child: buildHeader(
+                                    onTap: () => widget.onUserPressed(user.id!),
+                                    firstName: user.firstName,
+                                    lastName: user.lastName,
+                                    photo: user.profilePhoto!,
+                                    spacing: 10.0.w,
+                                  ),
+                                ),
+                                Text(
+                                  activity.message,
+                                  softWrap: true,
+                                  style: TextStyle(
+                                    fontSize: 16.0.sp,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                                SizedBox(height: 20.0.h),
+                                buildPostImages(activity),
+                                SizedBox(height: 15.0.h),
+                                Text(
+                                  DateFormat("hh:mm a • dd MMMM yyyy")
+                                      .format(activity.createdAt),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyText2!
+                                      .copyWith(
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 14.0.sp,
+                                      ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(height: 10.0.h),
+                          buildLikeAndCommentRow(activity),
+                          SizedBox(height: 10.0.h),
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 15.0.w),
+                            child: _CommentFeed(
+                              _stream,
+                              activity.id,
+                            ), //_buildComments(),
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                  Container(
+                    color: kInviteScreenColor,
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 10.0.w,
+                      vertical: 10.0.h,
+                    ),
+                    child: buildCommentInput(),
+                  ),
+                  AnimatedContainer(
+                    duration: const Duration(milliseconds: 100),
+                    height: this.showImagePicker ? 150.0.h : 0,
+                    child: ImageGalleryPicker(
+                      provider,
+                      pickerHeight: 150.h,
+                      assetHeight: 150.h,
+                      assetWidth: 150.h,
+                      thumbSize: 200,
+                      enableSpecialItemBuilder: true,
+                    ),
+                  ),
+                  AnimatedContainer(
+                    duration: const Duration(milliseconds: 200),
+                    height: MediaQuery.of(context).viewInsets.bottom > 0
+                        ? kKeyboardActionHeight
+                        : 0,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _CommentFeed extends StatelessWidget {
+  const _CommentFeed(this._stream, this._activityId, {Key? key})
+      : super(key: key);
+
+  final String _activityId;
+  final Stream<QuerySnapshot<Map<String, dynamic>>> _stream;
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder(
+      stream: _stream,
+      builder: (
+        ctx,
+        AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot,
+      ) {
+        switch (snapshot.connectionState) {
+          case ConnectionState.waiting:
+            return SizedBox(
+              child: DecoratedBox(
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                ),
+                child: Lottie.asset(kAnimationLoading),
+              ),
+            );
+          default:
+            if (snapshot.hasError)
+              return Text('Error: ${snapshot.error}');
+            else if (!snapshot.hasData || snapshot.data!.docs.length == 0)
+              return Text(
+                'No posts yet! Be the first one to post.',
+                style: TextStyle(
+                  fontWeight: FontWeight.w500,
+                ),
+              );
+            else {
+              final docs = snapshot.data!.docs;
+              final comments = <ActivityFeedComment>[];
+              for (final doc in docs) {
+                final comment = ActivityFeedComment.fromDocument(doc);
+                if (comment.archived) continue;
+
+                comments.add(comment);
+              }
+
+              return ListView.builder(
                 physics: NeverScrollableScrollPhysics(),
-                itemCount: widget.activity.comments.length,
+                itemCount: snapshot.data!.docs.length,
                 shrinkWrap: true,
-                itemBuilder: (context, index) {
-                  final comment = widget.activity.comments[index];
-                  final commentUser =
-                      context.read<Users>().findById(comment.userId);
+                itemBuilder: (ctx, index) {
+                  final comment = ActivityFeedComment.fromDocument(
+                      snapshot.data!.docs[index]);
                   return Column(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
                       CommentCard(
-                        user: commentUser,
-                        message: comment.message,
-                        images: comment.images,
-                        onLongPress: this.onCommentLongPress,
-                        onUserPressed: widget.onUserPressed,
-                        onLike: () => _commentLikeHandler(comment),
-                        liked: comment.liked,
+                        activityId: this._activityId,
+                        comment: comment,
                       ),
                       Divider(),
                     ],
                   );
                 },
               );
+            }
+        }
       },
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final user = context.read<Users>().findById(widget.activity.userId);
-    final activities = context.read<Activities>();
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: CustomAppBar(
-        backgroundColor: kTealColor,
-        titleText: "${user.firstName}'s Post",
-        titleStyle: TextStyle(color: Colors.white),
-        onPressedLeading: () => Navigator.pop(context),
-        actions: [
-          IconButton(
-            icon: Icon(
-              Icons.more_horiz,
-              color: Colors.white,
-              size: 30.sp,
-            ),
-            onPressed: () => Navigator.pop(context),
-          ),
-        ],
-      ),
-      body: RefreshIndicator(
-        onRefresh: () => activities.fetchComments(
-          activityId: widget.activity.id,
-        ),
-        child: KeyboardActions(
-          disableScroll: true,
-          tapOutsideBehavior: TapOutsideBehavior.translucentDismiss,
-          config: KeyboardActionsConfig(
-            keyboardBarColor: Colors.grey.shade200,
-            nextFocus: false,
-            actions: [
-              KeyboardActionsItem(
-                focusNode: _commentInputFocusNode,
-                toolbarButtons: [
-                  (node) {
-                    return TextButton(
-                      onPressed: () => node.unfocus(),
-                      child: Text(
-                        "Done",
-                        style: Theme.of(context).textTheme.bodyText1!.copyWith(
-                              color: Colors.black,
-                            ),
-                      ),
-                    );
-                  },
-                ],
-              ),
-            ],
-          ),
-          child: Column(
-            children: [
-              Expanded(
-                child: SingleChildScrollView(
-                  controller: scrollController,
-                  physics: AlwaysScrollableScrollPhysics(),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 15.0.w),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.symmetric(vertical: 20.0.h),
-                              child: buildHeader(
-                                onTap: () => widget.onUserPressed(user.id!),
-                                firstName: user.firstName,
-                                lastName: user.lastName,
-                                photo: user.profilePhoto!,
-                                spacing: 10.0.w,
-                              ),
-                            ),
-                            Text(
-                              widget.activity.message,
-                              softWrap: true,
-                              style: TextStyle(
-                                fontSize: 16.0.sp,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                            SizedBox(height: 20.0.h),
-                            buildPostImages(),
-                            SizedBox(height: 15.0.h),
-                            Text(
-                              DateFormat("hh:mm a • dd MMMM yyyy")
-                                  .format(widget.activity.createdAt),
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyText2!
-                                  .copyWith(
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 14.0.sp,
-                                  ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      SizedBox(height: 10.0.h),
-                      buildLikeAndCommentRow(),
-                      SizedBox(height: 10.0.h),
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 15.0.w),
-                        child: _buildComments(),
-                      )
-                    ],
-                  ),
-                ),
-              ),
-              Container(
-                color: kInviteScreenColor,
-                padding: EdgeInsets.symmetric(
-                  horizontal: 10.0.w,
-                  vertical: 10.0.h,
-                ),
-                child: buildCommentInput(),
-              ),
-              AnimatedContainer(
-                duration: const Duration(milliseconds: 100),
-                height: this.showImagePicker ? 150.0.h : 0.0.h,
-                child: ImageGalleryPicker(
-                  provider,
-                  pickerHeight: 150.h,
-                  assetHeight: 150.h,
-                  assetWidth: 150.h,
-                  thumbSize: 200,
-                  enableSpecialItemBuilder: true,
-                ),
-              ),
-              AnimatedContainer(
-                duration: const Duration(milliseconds: 100),
-                height: MediaQuery.of(context).viewInsets.bottom > 0
-                    ? kKeyboardActionHeight
-                    : 0,
-              ),
-            ],
-          ),
-        ),
-      ),
     );
   }
 }

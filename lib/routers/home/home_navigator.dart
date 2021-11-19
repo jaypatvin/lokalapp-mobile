@@ -20,7 +20,7 @@ class HomeNavigator extends AppNavigator {
         final props = settings.arguments as PostDetailsProps;
         return CupertinoPageRoute(
           builder: (_) => PostDetails(
-            activity: props.activity,
+            activityId: props.activityId,
             onUserPressed: props.onUserPressed,
             onLike: props.onLike,
           ),

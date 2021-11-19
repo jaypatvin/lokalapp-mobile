@@ -1,4 +1,8 @@
+import 'dart:async';
+import 'dart:io';
+
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lottie/lottie.dart';
@@ -30,9 +34,18 @@ import 'widgets/overlays/screen_loader.dart';
 import 'widgets/photo_picker_gallery/provider/custom_photo_provider.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
-  runApp(MyApp());
+  runZonedGuarded(() async {
+    WidgetsFlutterBinding.ensureInitialized();
+    await Firebase.initializeApp();
+    runApp(MyApp());
+  }, (error, stack) {
+    // do something with error like logging or sending to backend
+    FlutterError.presentError(FlutterErrorDetails(
+      exception: error,
+      stack: stack,
+    ));
+    if (kReleaseMode) exit(1);
+  });
 }
 
 class MyApp extends StatefulWidget {
@@ -79,8 +92,11 @@ class _MyAppState extends State<MyApp> {
 
       ChangeNotifierProxyProvider<Auth, Activities?>(
         create: (_) => Activities(_api),
-        update: (_, auth, activities) =>
-            activities!..setCommunityId(auth.user?.communityId),
+        update: (_, auth, activities) => activities!
+          ..setUserCredentials(
+            userId: auth.user?.id,
+            communityId: auth.user?.communityId,
+          ),
       ),
       ChangeNotifierProxyProvider<Auth, Users?>(
         create: (_) => Users(_api),
@@ -138,10 +154,6 @@ class _MyAppState extends State<MyApp> {
         update: (_, auth, subscription) =>
             subscription!..setIdToken(auth.idToken),
       ),
-      // ProxyProvider<Auth, ChatProvider?>(
-      //   create: (_) => ChatProvider(),
-      //   update: (_, auth, chat) => chat!..setIdToken(auth.idToken),
-      // ),
     ];
   }
 
@@ -233,6 +245,14 @@ class _MyAppState extends State<MyApp> {
               initialRoute: '/',
               onGenerateRoute:
                   _router.navigatorOf(AppRoute.root).onGenerateRoute,
+              builder: (context, widget) {
+                Widget error = Text('...rendering error...');
+                if (widget is Scaffold || widget is Navigator)
+                  error = Scaffold(body: Center(child: error));
+                ErrorWidget.builder = (errorDetails) => error;
+
+                return widget!;
+              },
             ),
           );
         },

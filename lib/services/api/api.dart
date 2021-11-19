@@ -23,6 +23,9 @@ enum Endpoint {
   /// API endpoint for different product operations
   product,
 
+  /// API endpoint for search operations
+  search,
+
   /// API endpoint for different shop operations
   shop,
 
@@ -52,6 +55,8 @@ extension EndpointPath on Endpoint {
         return 'orders';
       case Endpoint.product:
         return 'products';
+      case Endpoint.search:
+        return 'search';
       case Endpoint.shop:
         return 'shops';
       case Endpoint.subscription_plan:

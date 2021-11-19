@@ -12,6 +12,7 @@ class ActivityFeedComment {
   String message;
   List<LokalImages> images;
   DateTime createdAt;
+  bool archived;
   bool liked;
   ActivityFeedComment({
     required this.id,
@@ -20,6 +21,7 @@ class ActivityFeedComment {
     required this.images,
     required this.createdAt,
     required this.liked,
+    required this.archived,
   });
 
   ActivityFeedComment copyWith({
@@ -28,6 +30,7 @@ class ActivityFeedComment {
     String? message,
     List<LokalImages>? images,
     DateTime? createdAt,
+    bool? archived,
     bool? liked,
   }) {
     return ActivityFeedComment(
@@ -36,6 +39,7 @@ class ActivityFeedComment {
       message: message ?? this.message,
       images: images ?? this.images,
       createdAt: createdAt ?? this.createdAt,
+      archived: archived ?? this.archived,
       liked: liked ?? this.liked,
     );
   }
@@ -47,6 +51,7 @@ class ActivityFeedComment {
       'message': message,
       'images': images.map((x) => x.toMap()).toList(),
       'created_at': Timestamp.fromDate(createdAt),
+      'archived': archived,
       'liked': liked,
     };
   }
@@ -63,6 +68,23 @@ class ActivityFeedComment {
       createdAt: DateTime.fromMicrosecondsSinceEpoch(
           TimestampObject.fromMap(map['created_at']).seconds! * 1000000 +
               TimestampObject.fromMap(map['created_at']).nanoseconds! ~/ 1000),
+      archived: map['archived'] ?? false,
+      liked: map['liked'] ?? false,
+    );
+  }
+
+  factory ActivityFeedComment.fromDocument(
+    DocumentSnapshot<Map<String, dynamic>> snapshot,
+  ) {
+    final map = snapshot.data()!;
+    return ActivityFeedComment(
+      id: snapshot.id,
+      userId: map['user_id'] ?? "",
+      message: map['message'] ?? "",
+      images: List<LokalImages>.from(
+          map['images']?.map((x) => LokalImages.fromMap(x)) ?? []),
+      createdAt: (map['created_at'] as Timestamp).toDate(),
+      archived: map['archived'] ?? false,
       liked: map['liked'] ?? false,
     );
   }
@@ -74,7 +96,9 @@ class ActivityFeedComment {
 
   @override
   String toString() {
-    return 'ActivityFeedComment(id: $id, userId: $userId, message: $message, images: $images, createdAt: $createdAt, liked: $liked)';
+    return 'ActivityFeedComment(id: $id, userId: $userId, message: $message, '
+        'images: $images, createdAt: $createdAt, archived: $archived '
+        'liked: $liked)';
   }
 
   @override
@@ -87,6 +111,7 @@ class ActivityFeedComment {
         other.message == message &&
         listEquals(other.images, images) &&
         other.createdAt == createdAt &&
+        other.archived == archived &&
         other.liked == liked;
   }
 
@@ -97,6 +122,7 @@ class ActivityFeedComment {
         message.hashCode ^
         images.hashCode ^
         createdAt.hashCode ^
+        archived.hashCode ^
         liked.hashCode;
   }
 }

@@ -18,6 +18,8 @@ class ActivityFeed {
   DateTime createdAt;
   int likedCount;
   int commentCount;
+  bool archived;
+  String status;
   ActivityFeed({
     required this.id,
     required this.communityId,
@@ -27,6 +29,8 @@ class ActivityFeed {
     required this.message,
     required this.images,
     required this.comments,
+    required this.archived,
+    this.status = 'enabled',
     this.likedCount = 0,
     this.commentCount = 0,
   });
@@ -42,6 +46,8 @@ class ActivityFeed {
     DateTime? createdAt,
     int? likedCount,
     int? commentCount,
+    bool? archived,
+    String? status,
   }) {
     return ActivityFeed(
       id: id ?? this.id,
@@ -54,6 +60,8 @@ class ActivityFeed {
       createdAt: createdAt ?? this.createdAt,
       likedCount: likedCount ?? this.likedCount,
       commentCount: commentCount ?? this.commentCount,
+      archived: archived ?? this.archived,
+      status: status ?? this.status,
     );
   }
 
@@ -72,51 +80,46 @@ class ActivityFeed {
 
   factory ActivityFeed.fromMap(Map<String, dynamic> map) {
     return ActivityFeed(
-      id: map['id'] ?? "",
-      communityId: map['community_id'] ?? "",
-      userId: map['user_id'] ?? "",
-      message: map['message'] ?? "",
-      images: map['images'] != null
-          ? List<LokalImages>.from(
-              map['images']?.map((x) => LokalImages.fromMap(x)))
-          : [],
+      id: map['id'] ?? '',
+      communityId: map['community_id'] ?? '',
+      userId: map['user_id'] ?? '',
+      message: map['message'] ?? '',
+      images: List<LokalImages>.from(
+        map['images']?.map((x) => LokalImages.fromMap(x)) ?? [],
+      ),
       liked: map['liked'] ?? false,
-      comments: map['comments'] == null
-          ? []
-          : List<ActivityFeedComment>.from(
-              map['comments']?.map(
-                (x) => ActivityFeedComment.fromMap(map),
-              ),
-            ),
+      comments: List<ActivityFeedComment>.from(
+        map['comments']?.map((x) => ActivityFeedComment.fromMap(map)) ?? [],
+      ),
       createdAt: TimestampObject.fromMap(map['created_at']).toDateTime(),
-      likedCount: map['_meta'] != null ? map['_meta']['likes_count'] ?? 0 : 0,
-      commentCount:
-          map['_meta'] != null ? map['_meta']['comment_count'] ?? 0 : 0,
+      likedCount: map['_meta']?['likes_count'] ?? 0,
+      commentCount: map['_meta']?['comment_count'] ?? 0,
+      archived: map['archived'],
+      status: map['status'],
     );
   }
 
-  factory ActivityFeed.fromDocument(Map<String, dynamic> map) {
+  factory ActivityFeed.fromDocument(
+    DocumentSnapshot<Map<String, dynamic>> snapshot,
+  ) {
+    final map = snapshot.data()!;
     return ActivityFeed(
-      id: map['id'] ?? "",
-      communityId: map['community_id'] ?? "",
-      userId: map['user_id'] ?? "",
-      message: map['message'] ?? "",
-      images: map['images'] != null
-          ? List<LokalImages>.from(
-              map['images']?.map((x) => LokalImages.fromMap(x)))
-          : const [],
+      id: snapshot.id,
+      communityId: map['community_id'] ?? '',
+      userId: map['user_id'] ?? '',
+      message: map['message'] ?? '',
+      images: List<LokalImages>.from(
+        map['images']?.map((x) => LokalImages.fromMap(x)) ?? [],
+      ),
       liked: map['liked'] ?? false,
-      comments: map['comments'] == null
-          ? const []
-          : List<ActivityFeedComment>.from(
-              map['comments']?.map(
-                (x) => ActivityFeedComment.fromMap(map),
-              ),
-            ),
+      comments: List<ActivityFeedComment>.from(
+        map['comments']?.map((x) => ActivityFeedComment.fromMap(map)) ?? [],
+      ),
       createdAt: (map['created_at'] as Timestamp).toDate(),
-      likedCount: map['_meta'] != null ? map['_meta']['likes_count'] ?? 0 : 0,
-      commentCount:
-          map['_meta'] != null ? map['_meta']['comment_count'] ?? 0 : 0,
+      likedCount: map['_meta']?['likes_count'] ?? 0,
+      commentCount: map['_meta']?['comment_count'] ?? 0,
+      archived: map['archived'],
+      status: map['status'],
     );
   }
 
@@ -147,7 +150,9 @@ class ActivityFeed {
         other.liked == liked &&
         other.createdAt == createdAt &&
         other.likedCount == likedCount &&
-        other.commentCount == commentCount;
+        other.commentCount == commentCount &&
+        other.archived == archived &&
+        other.status == status;
   }
 
   @override
@@ -161,6 +166,8 @@ class ActivityFeed {
         liked.hashCode ^
         createdAt.hashCode ^
         likedCount.hashCode ^
-        commentCount.hashCode;
+        commentCount.hashCode ^
+        archived.hashCode ^
+        status.hashCode;
   }
 }

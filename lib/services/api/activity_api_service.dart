@@ -120,7 +120,7 @@ class ActivityAPIService extends APIService<ActivityFeed> {
   }
 
   Future<bool> unlike({required String activityId, required userId}) async {
-    final uri = api.endpointUri(endpoint, pathSegments: [activityId]);
+    final uri = api.endpointUri(endpoint, pathSegments: [activityId, 'unlike']);
 
     final response = await http.delete(
       uri,
