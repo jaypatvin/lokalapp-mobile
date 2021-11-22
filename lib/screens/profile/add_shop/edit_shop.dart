@@ -2,197 +2,73 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
 
 import '../../../providers/auth.dart';
-import '../../../providers/post_requests/operating_hours_body.dart';
-import '../../../providers/post_requests/shop_body.dart';
 import '../../../providers/shops.dart';
-import '../../../services/local_image_service.dart';
+import '../../../state/mvvm_builder.widget.dart';
+import '../../../state/views/hook.view.dart';
 import '../../../utils/constants/themes.dart';
-import '../../../utils/utility.dart';
+import '../../../view_models/profile/shop/add_shop/edit_shop.vm.dart';
 import '../../../widgets/app_button.dart';
 import '../../../widgets/custom_app_bar.dart';
 import '../../../widgets/inputs/input_description_field.dart';
 import '../../../widgets/inputs/input_name_field.dart';
 import '../../../widgets/overlays/screen_loader.dart';
 import '../../../widgets/photo_box.dart';
-import 'shop_schedule.dart';
 
-class EditShop extends StatefulWidget {
-  static const routeName = "/profile/shop/edit";
-  final bool? isEdit;
-  EditShop({this.isEdit});
-  @override
-  _EditShopState createState() => _EditShopState();
-}
-
-class _EditShopState extends State<EditShop> with ScreenLoader {
-  final TextEditingController shopNameController = TextEditingController();
-  final TextEditingController shopDescController = TextEditingController();
-  File? shopPhoto;
-  File? shopCoverPhoto;
-  bool toggleValue = false;
-  bool animating = false;
-  bool editedShopSchedule = false;
+class EditShop extends StatelessWidget {
+  static const routeName = '/profile/shop/edit';
+  const EditShop({Key? key}) : super(key: key);
 
   @override
-  initState() {
-    super.initState();
-
-    final user = context.read<Auth>().user!;
-    final shop = context.read<Shops>().findByUser(user.id).first;
-    shopNameController.text = shop.name!;
-    shopDescController.text = shop.description!;
-
-    context.read<ShopBody>()
-      ..clear()
-      ..update(
-        name: shop.name,
-        description: shop.description,
-        coverPhoto: shop.coverPhoto,
-        profilePhoto: shop.profilePhoto,
-      );
-
-    context.read<OperatingHoursBody>().clear();
-
-    toggleValue = shop.status == "enabled";
-  }
-
-  void _toggleButton() {
-    setState(() {
-      toggleValue = !toggleValue;
-      animating = true;
-    });
-    final status = toggleValue ? "enabled" : "disabled";
-    context.read<ShopBody>().update(status: status);
-  }
-
-  Future<bool> _updateShop() async {
-    final shops = context.read<Shops>();
-    final shopBody = context.read<ShopBody>();
-    final user = context.read<Auth>().user!;
-    final shop = shops.findByUser(user.id).first;
-    final imageService = context.read<LocalImageService>();
-
-    var shopPhotoUrl = shopBody.profilePhoto;
-    if (shopPhoto != null) {
-      try {
-        shopPhotoUrl = await imageService.uploadImage(
-          file: shopPhoto!,
-          name: "shop-photo",
-        );
-      } catch (e) {
-        shopPhotoUrl = shopBody.profilePhoto;
-      }
-    }
-
-    var shopCoverPhotoUrl = shopBody.coverPhoto;
-    if (shopCoverPhoto != null) {
-      try {
-        shopCoverPhotoUrl = await imageService.uploadImage(
-          file: shopCoverPhoto!,
-          name: "shop-cover-photo",
-        );
-      } catch (e) {
-        shopCoverPhotoUrl = shopBody.coverPhoto;
-      }
-    }
-
-    shopBody.update(
-      name: shopNameController.text,
-      description: shopDescController.text,
-      profilePhoto: shopPhotoUrl,
-      coverPhoto: shopCoverPhotoUrl,
-      status: toggleValue ? "enabled" : "disabled",
-    );
-
-    return await shops.update(
-      id: shop.id,
-      data: shopBody.data,
-    );
-  }
-
-  InkWell _buildToggleButton({double height = 40.0, double width = 100.0}) {
-    return InkWell(
-      onTap: _toggleButton,
-      child: AnimatedContainer(
-        duration: Duration(milliseconds: 1),
-        height: height,
-        width: width,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20.0.r),
-          color: toggleValue ? kTealColor : kPinkColor,
-        ),
-        child: Stack(
-          children: [
-            Visibility(
-              visible: !animating,
-              child: Padding(
-                padding: toggleValue
-                    ? EdgeInsets.only(left: width * 0.10)
-                    : EdgeInsets.only(right: width * 0.10),
-                child: Align(
-                  alignment: toggleValue
-                      ? Alignment.centerLeft
-                      : Alignment.centerRight,
-                  child: Text(
-                    toggleValue ? "Open" : "Closed",
-                    style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                          color: Colors.white,
-                        ),
-                  ),
-                ),
-              ),
-            ),
-            AnimatedPositioned(
-              onEnd: () => setState(() => animating = false),
-              duration: Duration(milliseconds: 300),
-              curve: Curves.linear,
-              // top: height * 0.1,
-              height: height,
-              left: toggleValue ? width * 0.6 : 0.0,
-              right: toggleValue ? 0.0 : width * 0.6,
-              child: Icon(
-                Icons.circle,
-                color: Colors.white,
-                size: height * 0.8,
-                key: UniqueKey(),
-              ),
-            ),
-          ],
-        ),
+  Widget build(BuildContext context) {
+    return MVVM<EditShopViewModel>(
+      view: (_, __) => _EditShopView(),
+      viewModel: EditShopViewModel(
+        shop: context
+            .read<Shops>()
+            .findByUser(context.read<Auth>().user!.id)
+            .first,
       ),
     );
   }
+}
 
-  void _onShopPhotoPick() async {
-    final photo = await context.read<MediaUtility>().showMediaDialog(context);
-    setState(() {
-      shopPhoto = photo;
-    });
-  }
+class _EditShopView extends HookView<EditShopViewModel>
+    with HookScreenLoader<EditShopViewModel> {
+  _EditShopView({Key? key, bool reactive = true})
+      : super(key: key, reactive: reactive);
 
-  Future<bool> _updateShopSchedule() async {
-    var operatingHoursBody =
-        Provider.of<OperatingHoursBody>(context, listen: false);
-
-    var user = context.read<Auth>().user!;
-    var shops = Provider.of<Shops>(context, listen: false);
-    var userShop = shops.findByUser(user.id).first;
-    return await shops.setOperatingHours(
-      id: userShop.id,
-      data: operatingHoursBody.data,
-    );
-  }
+  final _shopNameController = TextEditingController();
+  final _shopDescController = TextEditingController();
 
   @override
-  Widget screen(BuildContext context) {
-    double width = MediaQuery.of(context).size.width;
-    double height = MediaQuery.of(context).size.height;
-    double padding = height * 0.05;
+  Widget screen(context, vm) {
+    final width = MediaQuery.of(context).size.width;
+    final height = MediaQuery.of(context).size.height;
+    final padding = height * 0.05;
+
+    final buttonWidth = 90.0.w;
+    final buttonHeight = 40.0.h;
+
+    final _isAnimating = useState<bool>(false);
+
+    useEffect(() {
+      _shopNameController.text = vm.shopName;
+      _shopDescController.text = vm.shopDescription;
+
+      _shopNameController.addListener(() {
+        vm.onShopNameChanged(_shopNameController.text);
+      });
+      _shopDescController.addListener(() {
+        vm.onShopDescriptionChange(_shopDescController.text);
+      });
+    }, []);
+
     return Scaffold(
       appBar: CustomAppBar(
         titleText: "Edit Shop",
@@ -216,9 +92,58 @@ class _EditShopState extends State<EditShop> with ScreenLoader {
                   "Shop Status",
                   style: Theme.of(context).textTheme.subtitle1,
                 ),
-                _buildToggleButton(
-                  height: 40.0.h,
-                  width: 90.0.w,
+                InkWell(
+                  onTap: () {
+                    _isAnimating.value = true;
+                    vm.toggleButton();
+                  },
+                  child: AnimatedContainer(
+                    duration: Duration(milliseconds: 1),
+                    height: buttonHeight,
+                    width: buttonWidth,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20.0.r),
+                      color: vm.isShopOpen ? kTealColor : kPinkColor,
+                    ),
+                    child: Stack(
+                      children: [
+                        Visibility(
+                          visible: !_isAnimating.value,
+                          child: Padding(
+                            padding: vm.isShopOpen
+                                ? EdgeInsets.only(left: buttonWidth * 0.10)
+                                : EdgeInsets.only(right: buttonWidth * 0.10),
+                            child: Align(
+                              alignment: vm.isShopOpen
+                                  ? Alignment.centerLeft
+                                  : Alignment.centerRight,
+                              child: Text(
+                                vm.isShopOpen ? "Open" : "Closed",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .subtitle1!
+                                    .copyWith(color: Colors.white),
+                              ),
+                            ),
+                          ),
+                        ),
+                        AnimatedPositioned(
+                          onEnd: () => _isAnimating.value = false,
+                          duration: const Duration(milliseconds: 300),
+                          curve: Curves.linear,
+                          height: buttonHeight,
+                          left: vm.isShopOpen ? buttonWidth * 0.6 : 0.0,
+                          right: vm.isShopOpen ? 0.0 : buttonWidth * 0.6,
+                          child: Icon(
+                            Icons.circle,
+                            color: Colors.white,
+                            size: buttonHeight * 0.8,
+                            key: UniqueKey(),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
               ],
             ),
@@ -237,8 +162,11 @@ class _EditShopState extends State<EditShop> with ScreenLoader {
                     height: height * 0.02,
                   ),
                   _ShopPhotoSection(
-                    shopCoverPhoto: this.shopCoverPhoto,
-                    onShopPhotoPick: _onShopPhotoPick,
+                    shopPhoto: vm.shopPhoto,
+                    shopCoverPhoto: vm.shopCoverPhoto,
+                    onShopPhotoPick: vm.onShopPhotoPick,
+                    shopPhotoUrl: vm.shop.profilePhoto,
+                    shopCoverPhotoUrl: vm.shop.coverPhoto,
                   ),
                   SizedBox(
                     height: height * 0.02,
@@ -254,20 +182,16 @@ class _EditShopState extends State<EditShop> with ScreenLoader {
                         ),
                         Text(
                           "Edit Cover Photo",
-                          style:
-                              Theme.of(context).textTheme.subtitle1!.copyWith(
-                                    decoration: TextDecoration.underline,
-                                    color: kTealColor,
-                                  ),
+                          style: Theme.of(context)
+                              .textTheme
+                              .subtitle1!
+                              .copyWith(
+                                  decoration: TextDecoration.underline,
+                                  color: kTealColor),
                         ),
                       ],
                     ),
-                    onTap: () async {
-                      final photo = await context
-                          .read<MediaUtility>()
-                          .showMediaDialog(context);
-                      setState(() => shopCoverPhoto = photo);
-                    },
+                    onTap: vm.onCoverPhotoPick,
                   ),
                   SizedBox(
                     height: height * 0.02,
@@ -275,10 +199,9 @@ class _EditShopState extends State<EditShop> with ScreenLoader {
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: padding),
                     child: InputNameField(
-                      controller: shopNameController,
+                      controller: _shopNameController,
                       hintText: "Shop Name",
-                      onChanged: (value) =>
-                          context.read<ShopBody>().update(name: value),
+                      errorText: vm.errorNameText,
                     ),
                   ),
                   SizedBox(
@@ -287,12 +210,8 @@ class _EditShopState extends State<EditShop> with ScreenLoader {
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: padding),
                     child: InputDescriptionField(
-                      controller: shopDescController,
+                      controller: _shopDescController,
                       hintText: "Shop Description",
-                      onChanged: (value) {
-                        Provider.of<ShopBody>(context, listen: false)
-                            .update(description: value);
-                      },
                     ),
                   ),
                   SizedBox(
@@ -304,28 +223,7 @@ class _EditShopState extends State<EditShop> with ScreenLoader {
                       "Change Shop Schedule",
                       kTealColor,
                       false,
-                      () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (BuildContext context) => ShopSchedule(
-                              shopPhoto,
-                              forEditing: true,
-                              onShopEdit: () {
-                                setState(() {
-                                  editedShopSchedule = true;
-                                });
-                                Navigator.popUntil(
-                                  context,
-                                  ModalRoute.withName(
-                                    EditShop.routeName,
-                                  ),
-                                );
-                              },
-                            ),
-                          ),
-                        );
-                      },
+                      vm.onChangeShopSchedule,
                     ),
                   ),
                   SizedBox(
@@ -344,28 +242,7 @@ class _EditShopState extends State<EditShop> with ScreenLoader {
                       "Apply Changes",
                       kTealColor,
                       true,
-                      () async {
-                        try {
-                          await performFuture<void>(() async {
-                            bool success = await _updateShop();
-                            if (!success) throw "Update shop error";
-
-                            if (editedShopSchedule) {
-                              success = await _updateShopSchedule();
-                              if (!success)
-                                throw "Update operating hours error";
-                            }
-                          });
-                          Provider.of<Shops>(context, listen: false).fetch();
-                          Navigator.pop(context);
-                        } catch (e) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(e.toString()),
-                            ),
-                          );
-                        }
-                      },
+                      () async => await performFuture<void>(vm.onApplyChanges),
                     ),
                   ),
                 ],
@@ -381,17 +258,20 @@ class _EditShopState extends State<EditShop> with ScreenLoader {
 class _ShopPhotoSection extends StatelessWidget {
   final File? shopCoverPhoto;
   final File? shopPhoto;
+  final String? shopCoverPhotoUrl;
+  final String? shopPhotoUrl;
   final void Function()? onShopPhotoPick;
   const _ShopPhotoSection({
     Key? key,
     this.shopCoverPhoto,
     this.shopPhoto,
+    this.shopCoverPhotoUrl,
+    this.shopPhotoUrl,
     this.onShopPhotoPick,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final shopBody = context.read<ShopBody>();
     final height = MediaQuery.of(context).size.height;
     return Container(
       height: height * 0.25,
@@ -403,7 +283,7 @@ class _ShopPhotoSection extends StatelessWidget {
               shape: BoxShape.rectangle,
               width: double.infinity,
               height: height * 0.25,
-              url: shopBody.coverPhoto,
+              url: shopCoverPhotoUrl,
               displayBorder: false,
             ),
           ),
@@ -417,7 +297,7 @@ class _ShopPhotoSection extends StatelessWidget {
                     height: 140.0,
                     file: this.shopPhoto,
                     shape: BoxShape.circle,
-                    url: shopBody.profilePhoto,
+                    url: shopPhotoUrl,
                   ),
                   Container(
                     width: 140.0,
@@ -437,11 +317,12 @@ class _ShopPhotoSection extends StatelessWidget {
                           ),
                           Text(
                             "Edit Photo",
-                            style:
-                                Theme.of(context).textTheme.subtitle1!.copyWith(
-                                      decoration: TextDecoration.underline,
-                                      color: Colors.white,
-                                    ),
+                            style: Theme.of(context)
+                                .textTheme
+                                .subtitle1!
+                                .copyWith(
+                                    decoration: TextDecoration.underline,
+                                    color: Colors.white),
                           ),
                         ],
                       ),

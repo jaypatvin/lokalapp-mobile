@@ -36,3 +36,9 @@ const kPngGoogleLogo = 'assets/sso/google_logo.png';
 // others
 const kSvgBackgroundHouses = 'assets/houses_background.svg';
 const kSvgLokalLogo = 'assets/lokal_logo.svg';
+
+// URLs:
+const kAboutLokalUrl = 'https://www.lokalapp.ph';
+const kHelpCenterUrl = 'https://www.lokalapp.ph';
+const kPrivacyPolicyUrl = 'https://www.lokalapp.ph';
+const kTermsOfServiceUrl = 'https://www.lokalapp.ph';

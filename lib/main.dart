@@ -111,10 +111,9 @@ class _MyAppState extends State<MyApp> {
       ),
 
       ChangeNotifierProxyProvider<Auth, Shops?>(
-        create: (_) => Shops(),
-        update: (_, auth, shops) => shops!
-          ..setCommunityId(auth.user?.communityId)
-          ..setIdToken(auth.idToken),
+        create: (_) => Shops(_api),
+        update: (_, auth, shops) =>
+            shops!..setCommunityId(auth.user?.communityId),
       ),
 
       ChangeNotifierProvider<Categories>(create: (_) => Categories(_api)),

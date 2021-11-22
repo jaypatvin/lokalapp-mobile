@@ -46,7 +46,7 @@ class ProfileNavigator extends AppNavigator {
         final props = settings.arguments as ShopScheduleProps;
         return CupertinoPageRoute(
           builder: (_) => ShopSchedule(
-            props.shopPhoto,
+            shopPhoto: props.shopPhoto,
             forEditing: props.forEditing,
             onShopEdit: props.onShopEdit,
           ),

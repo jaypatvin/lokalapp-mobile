@@ -16,7 +16,7 @@ class CustomizeAvailabilityProps {
 
   final RepeatChoices repeatChoice;
   final int? repeatEvery;
-  final List selectableDays;
+  final List<int> selectableDays;
   final DateTime startDate;
   final File? shopPhoto;
   final bool usedDatePicker;

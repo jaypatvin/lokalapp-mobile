@@ -37,7 +37,7 @@ class CustomizeAvailability extends StatefulWidget {
 
   final RepeatChoices repeatChoice;
   final int? repeatEvery;
-  final List selectableDays;
+  final List<int> selectableDays;
   final DateTime startDate;
   final File? shopPhoto;
   final bool usedDatePicker;
@@ -50,9 +50,9 @@ class CustomizeAvailability extends StatefulWidget {
 
 class _CustomizeAvailabilityState extends State<CustomizeAvailability>
     with ScreenLoader {
-  List<DateTime?>? initialDates;
-  List<DateTime?>? markedDates;
-  bool _shopCreated = false;
+  late List<DateTime?> initialDates;
+  late List<DateTime?> markedDates;
+  // bool _shopCreated = false;
   bool _customized = false;
 
   @override
@@ -60,30 +60,32 @@ class _CustomizeAvailabilityState extends State<CustomizeAvailability>
     super.initState();
     final _generator = ScheduleGenerator();
 
-    if (!widget.forEditing) {
-      initialDates = _generator.generateInitialDates(
-        repeatChoice: widget.repeatChoice,
-        startDate: widget.startDate,
-        repeatEveryNUnit: widget.repeatEvery,
-        selectableDays: widget.selectableDays as List<int>?,
-        repeatType:
-            context.read<OperatingHoursBody>().operatingHours.repeatType,
-      );
-      markedDates = [...initialDates!];
-      return;
-    }
+    final operatingHours = context.read<OperatingHoursBody>().operatingHours;
 
-    OperatingHours? _operatingHours;
-    var user = context.read<Auth>().user!;
-    var shops = Provider.of<Shops>(context, listen: false).findByUser(user.id);
-    if (shops.isNotEmpty) _operatingHours = shops.first.operatingHours;
+    initialDates = _generator.generateInitialDates(
+      repeatChoice: widget.repeatChoice,
+      startDate: widget.startDate,
+      repeatEveryNUnit: widget.repeatEvery,
+      selectableDays: widget.selectableDays,
+      repeatType: operatingHours.repeatType,
+    );
+    markedDates = [...initialDates];
 
-    initialDates = _generator.getSelectableDates(_operatingHours!);
-    markedDates = [...initialDates!];
+    operatingHours.customDates?.forEach((customDate) {
+      markedDates.add(DateTime.parse(customDate.date!));
+    });
+    operatingHours.unavailableDates?.forEach((dateString) {
+      final _date = DateTime.parse(dateString);
+      final index = markedDates
+          .indexWhere((date) => date?.isAtSameMomentAs(_date) ?? false);
+      if (index > -1) {
+        markedDates.removeAt(index);
+      }
+    });
   }
 
   Future<List<DateTime?>?> _showCalendarPicker() async {
-    List<DateTime?> selectedDates = [...markedDates!];
+    List<DateTime?> selectedDates = [...markedDates];
     return await showDialog<List<DateTime?>?>(
       context: context,
       barrierDismissible: false,
@@ -119,15 +121,15 @@ class _CustomizeAvailabilityState extends State<CustomizeAvailability>
   }
 
   void setUpShotSchedule() {
-    markedDates!.sort();
-    initialDates!.sort();
+    markedDates.sort();
+    initialDates.sort();
     var operatingHours =
         Provider.of<OperatingHoursBody>(context, listen: false);
 
     var customDates =
-        markedDates!.where((date) => !initialDates!.contains(date)).toList();
+        markedDates.where((date) => !initialDates.contains(date)).toList();
     var unavailableDates =
-        initialDates!.where((date) => !markedDates!.contains(date)).toList();
+        initialDates.where((date) => !markedDates.contains(date)).toList();
 
     operatingHours.update(
       customDates: customDates
@@ -146,13 +148,12 @@ class _CustomizeAvailabilityState extends State<CustomizeAvailability>
     var userShop = shops.findByUser(user.id).first;
     var operatingHours = context.read<OperatingHoursBody>();
     return await shops.setOperatingHours(
-      id: userShop.id,
+      id: userShop.id!,
       data: operatingHours.data,
     );
   }
 
-  Future<bool> _createShop() async {
-    if (_shopCreated) return true;
+  Future<void> _createShop() async {
     var file = widget.shopPhoto;
     String mediaUrl = "";
     if (file != null) {
@@ -171,23 +172,22 @@ class _CustomizeAvailabilityState extends State<CustomizeAvailability>
     );
 
     try {
-      return await shops.create(shopBody.data);
+      await shops.create(shopBody.data);
     } on Exception catch (e) {
       debugPrint(e.toString());
-      return false;
+      throw e;
     }
   }
 
   Future<void> _onSubmit() async {
-    _shopCreated = await _createShop();
-    if (_shopCreated) {
-      await context.read<Shops>().fetch();
+    try {
+      await _createShop();
       context.read<AppRouter>()
         ..navigateTo(
           AppRoute.profile,
           AddShopConfirmation.routeName,
         );
-    } else {
+    } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text("Failed to create shop. Try again"),
