@@ -60,17 +60,16 @@ class ShopAPIService extends APIService<ShopModel> {
 
   // --GET
 
-  Future<http.Response> getById({
-    required String shopId,
-    required String idToken,
-  }) async {
-    return await http.get(
-      api.endpointUri(endpoint, pathSegments: [shopId]),
+  Future<ShopModel> getById({required String id}) async {
+    final response = await http.get(
+      api.endpointUri(endpoint, pathSegments: [id]),
       headers: api.authHeader(),
     );
+
+    return handleResponse((map) => ShopModel.fromMap(map), response);
   }
 
-  Future<List<ShopModel>> getShopsByCommunity({
+  Future<List<ShopModel>> getCommunityShops({
     required String communityId,
   }) async {
     final response = await http.get(

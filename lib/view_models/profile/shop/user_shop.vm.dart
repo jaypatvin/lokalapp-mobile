@@ -10,7 +10,7 @@ import '../../../routers/app_router.dart';
 import '../../../screens/profile/profile_screen.dart';
 import '../../../utils/constants/themes.dart';
 
-class UserShopViewModel {
+class UserShopViewModel extends ChangeNotifier {
   UserShopViewModel(this.context, this.userId, [this.shopId]);
 
   final BuildContext context;
@@ -18,8 +18,8 @@ class UserShopViewModel {
   final String? shopId;
 
   late final bool isCurrentUser;
-  late final ShopModel shop;
   late final LokalUser user;
+  late ShopModel shop;
 
   List<Color> get shopHeaderColors => isCurrentUser
       ? const [Color(0xffFFC700), Colors.black45]
@@ -29,6 +29,14 @@ class UserShopViewModel {
   bool get displayEditButton => isCurrentUser;
 
   void init() {
+    _shopSetup();
+    this.isCurrentUser = context.read<Auth>().user!.id! == this.userId;
+    this.user = isCurrentUser
+        ? context.read<Auth>().user!
+        : context.read<Users>().findById(userId);
+  }
+
+  void _shopSetup() {
     ShopModel? _shop;
 
     if (shopId != null) {
@@ -44,10 +52,11 @@ class UserShopViewModel {
 
     if (_shop == null) throw 'Error: no shop found.';
     this.shop = _shop;
-    this.isCurrentUser = context.read<Auth>().user!.id! == this.userId;
-    this.user = isCurrentUser
-        ? context.read<Auth>().user!
-        : context.read<Users>().findById(userId);
+  }
+
+  void refresh() {
+    _shopSetup();
+    notifyListeners();
   }
 
   void onSettingsTap() {}

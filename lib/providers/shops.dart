@@ -1,30 +1,60 @@
-import 'dart:convert';
+import 'dart:async';
 
-import 'package:collection/collection.dart' show IterableExtension;
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 
 import '../models/user_shop.dart';
-import '../services/lokal_api_service.dart';
+import '../services/api/api.dart';
+import '../services/api/shop_api_service.dart';
+import '../services/database.dart';
 
 class Shops extends ChangeNotifier {
-  String? _communityId;
-  String? _idToken;
-  List<ShopModel> _shops = [];
-  bool? _isLoading;
+  Shops._(this._apiService);
 
-  bool? get isLoading => _isLoading;
-  List<ShopModel> get items {
-    return [..._shops];
+  factory Shops(API api) {
+    return Shops._(ShopAPIService(api));
   }
 
+  final ShopAPIService _apiService;
+  final Database _db = Database.instance;
+
+  String? _communityId;
+  List<ShopModel> _shops = [];
+  bool _isLoading = false;
+
+  StreamSubscription<QuerySnapshot<Map<String, dynamic>>>? _shopsSubscription;
+
+  bool get isLoading => _isLoading;
+  UnmodifiableListView<ShopModel> get items => UnmodifiableListView(_shops);
   String? get communityId => _communityId;
 
   void setCommunityId(String? id) {
-    _communityId = id;
+    if (id != null) {
+      if (id == _communityId) return;
+      _communityId = id;
+      _shopsSubscription?.cancel();
+      _shopsSubscription = _db.getCommunityShops(id).listen(_shopListener);
+    }
   }
 
-  void setIdToken(String? id) {
-    _idToken = id;
+  void _shopListener(QuerySnapshot<Map<String, dynamic>> query) async {
+    final length = query.docChanges.length;
+    if (_isLoading || length > 1) return;
+    for (final change in query.docChanges) {
+      final id = change.doc.id;
+      final index = _shops.indexWhere((s) => s.id == id);
+
+      if (index >= 0) {
+        _shops[index] = await _apiService.getById(id: id);
+        notifyListeners();
+        return;
+      }
+
+      final shop = await _apiService.getById(id: id);
+      _shops..add(shop);
+      notifyListeners();
+    }
   }
 
   ShopModel? findById(String? id) {
@@ -37,92 +67,50 @@ class Shops extends ChangeNotifier {
 
   Future<void> fetch() async {
     _isLoading = true;
-    var response = await LokalApiService.instance!.shop!
-        .getShopsByCommunity(communityId: communityId, idToken: _idToken);
-
-    if (response.statusCode != 200) {
-      _isLoading = false;
-      return;
-    }
-
-    Map data = json.decode(response.body);
-
-    if (data["status"] == "ok") {
-      List<ShopModel> shops = [];
-      for (var shopData in data['data']) {
-        var shop = ShopModel.fromMap(shopData);
-        shops.add(shop);
-      }
-      _shops = shops;
-    }
-
-    _isLoading = false;
     notifyListeners();
+
+    try {
+      _shops = await _apiService.getCommunityShops(
+        communityId: _communityId!,
+      );
+      _isLoading = false;
+      notifyListeners();
+    } catch (e) {
+      _isLoading = false;
+      notifyListeners();
+      throw e;
+    }
   }
 
-  Future<bool> create(Map data) async {
+  Future<void> create(Map<String, dynamic> body) async {
     try {
-      var response = await LokalApiService.instance!.shop!
-          .create(data: data, idToken: _idToken);
-
-      if (response.statusCode != 200) return false;
-
-      Map body = json.decode(response.body);
-
-      if (body['status'] == 'ok') {
-        final shop = ShopModel.fromMap(body["data"]);
-        _shops.add(shop);
-        notifyListeners();
-        return true;
-      }
-      return false;
+      final _shop = await _apiService.create(body: body);
+      _shops.add(_shop);
+      notifyListeners();
     } catch (e) {
-      debugPrint(e.toString());
-      return false;
+      throw e;
     }
   }
 
   Future<bool> update({
-    required String? id,
-    required Map data,
+    required String id,
+    required Map<String, dynamic> data,
   }) async {
     try {
-      var response = await LokalApiService.instance!.shop!
-          .update(id: id, data: data, idToken: _idToken);
-
-      if (response.statusCode != 200) return false;
-
-      Map body = json.decode(response.body);
-
-      if (body['status'] == 'ok') {
-        //await fetch(authToken);
-        // call fetch manually
-        return true;
-      }
-      return false;
+      return await _apiService.update(id: id, body: data);
     } catch (e) {
-      return false;
+      throw e;
     }
   }
 
-  Future<bool> setOperatingHours(
-      {required String? id, required Map data}) async {
+  Future<bool> setOperatingHours({
+    required String id,
+    required Map<String, dynamic> data,
+  }) async {
     try {
-      var response = await LokalApiService.instance!.shop!
-          .setOperatingHours(data: data, idToken: _idToken, id: id);
-
-      if (response.statusCode != 200) return false;
-
-      Map body = json.decode(response.body);
-
-      if (body['status'] == 'ok') {
-        // call fetch manually?
-        // or getOperatingHours
-        return true;
-      }
-      return false;
+      return await _apiService.setOperatingHours(id: id, body: data);
     } catch (e) {
-      return false;
+      throw e;
     }
   }
 }
