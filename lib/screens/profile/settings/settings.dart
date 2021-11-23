@@ -5,6 +5,7 @@ import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 
 import '../../../providers/auth.dart';
+import '../../../providers/cart.dart';
 import '../../../routers/app_router.dart';
 import '../../../utils/constants/themes.dart';
 import '../../../widgets/app_button.dart';
@@ -189,6 +190,7 @@ class Settings extends StatelessWidget {
                       kPinkColor,
                       true,
                       () async {
+                        context.read<ShoppingCart>().clear();
                         context.read<AppRouter>()
                           ..jumpToTab(AppRoute.home)
                           ..keyOf(AppRoute.root)
