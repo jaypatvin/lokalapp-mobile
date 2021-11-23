@@ -89,8 +89,6 @@ mixin ScreenLoader<T extends StatefulWidget> on State<T> {
 }
 
 mixin HookScreenLoader<T extends ViewModel> on HookView<T> {
-  // final isLoading = useState(false);
-
   static Widget? _globalLoader;
   static double? _globalLoadingBgBlur = 5.0;
   final ValueNotifier<bool> isLoading = ValueNotifier(false);
@@ -135,8 +133,8 @@ mixin HookScreenLoader<T extends ViewModel> on HookView<T> {
         CircularProgressIndicator();
   }
 
-  Widget _buildLoader() {
-    if (this.isLoading.value) {
+  Widget _buildLoader(bool isLoading) {
+    if (isLoading) {
       return Container(
         color: Colors.transparent,
         child: Center(
@@ -153,16 +151,22 @@ mixin HookScreenLoader<T extends ViewModel> on HookView<T> {
   @override
   Widget render(BuildContext context, T viewModel) {
     final isLoading = useState(this.isLoading.value);
+
     useEffect(() {
-      this.isLoading.addListener(() {
+      final void Function() listener = () {
         isLoading.value = this.isLoading.value;
-      });
-    }, []);
+      };
+
+      this.isLoading.addListener(listener);
+
+      return () => this.isLoading.removeListener(listener);
+    }, [this.isLoading]);
+
     return Stack(
       children: <Widget>[
         screen(context, viewModel),
         BackdropFilter(
-          child: _buildLoader(),
+          child: _buildLoader(isLoading.value),
           filter: ImageFilter.blur(
             sigmaX: this._loadingBgBlur(),
             sigmaY: this._loadingBgBlur(),
