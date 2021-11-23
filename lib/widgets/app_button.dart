@@ -37,23 +37,24 @@ class AppButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FlatButton(
-      padding: EdgeInsets.zero,
-      color: isFilled ? this.color : Colors.transparent,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20.0),
-        side: BorderSide(color: this.color),
-      ),
-      textColor: isFilled ? Colors.white : this.color,
+    return ElevatedButton(
+      onPressed: this.onPressed,
       child: Text(
         text!,
         style: TextStyle(
           fontFamily: "Goldplay",
           fontSize: 16.0.sp,
           fontWeight: FontWeight.w600,
+          color: isFilled ? Colors.white : this.color,
         ).merge(this.textStyle),
       ),
-      onPressed: onPressed,
+      style: ElevatedButton.styleFrom(
+        shape: StadiumBorder(),
+        elevation: 0.0,
+        primary: isFilled ? this.color : Colors.transparent,
+        minimumSize: Size(0, 40.0.h),
+        side: BorderSide(color: this.color),
+      ),
     );
   }
 }
