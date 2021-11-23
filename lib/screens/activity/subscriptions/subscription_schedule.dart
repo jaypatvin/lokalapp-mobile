@@ -476,7 +476,7 @@ class _SubscriptionScheduleState extends State<SubscriptionSchedule>
                 onEditTap: widget.subscriptionPlan == null
                     ? () => Navigator.of(context).push(
                           MaterialPageRoute(
-                            builder: (_) => ProductDetail(_product),
+                            builder: (_) => ProductDetail(_product!),
                           ),
                         )
                     : null,

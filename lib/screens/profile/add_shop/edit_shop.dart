@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:keyboard_actions/keyboard_actions.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
 
@@ -43,9 +44,6 @@ class _EditShopView extends HookView<EditShopViewModel>
   _EditShopView({Key? key, bool reactive = true})
       : super(key: key, reactive: reactive);
 
-  final _shopNameController = TextEditingController();
-  final _shopDescController = TextEditingController();
-
   @override
   Widget screen(context, vm) {
     final width = MediaQuery.of(context).size.width;
@@ -57,17 +55,74 @@ class _EditShopView extends HookView<EditShopViewModel>
 
     final _isAnimating = useState<bool>(false);
 
+    final _shopNameController = useTextEditingController();
+    final _shopDescController = useTextEditingController();
+
     useEffect(() {
       _shopNameController.text = vm.shopName;
       _shopDescController.text = vm.shopDescription;
 
-      _shopNameController.addListener(() {
-        vm.onShopNameChanged(_shopNameController.text);
-      });
-      _shopDescController.addListener(() {
-        vm.onShopDescriptionChange(_shopDescController.text);
-      });
+      final void Function() _nameListener =
+          () => vm.onShopNameChanged(_shopNameController.text);
+
+      final void Function() _descriptionListener =
+          () => vm.onShopDescriptionChange(_shopDescController.text);
+
+      _shopNameController.addListener(_nameListener);
+      _shopDescController.addListener(_descriptionListener);
+
+      return () {
+        _shopNameController.removeListener(_nameListener);
+        _shopDescController.removeListener(_descriptionListener);
+      };
     }, []);
+
+    final _nameNode = useFocusNode();
+    final _descriptionNode = useFocusNode();
+
+    final _kbActionsRef = useRef(
+      KeyboardActionsConfig(
+        keyboardActionsPlatform: KeyboardActionsPlatform.ALL,
+        keyboardBarColor: Colors.grey.shade200,
+        nextFocus: true,
+        actions: [
+          KeyboardActionsItem(
+            focusNode: _nameNode,
+            toolbarButtons: [
+              (node) {
+                return TextButton(
+                  onPressed: () => node.unfocus(),
+                  child: Text(
+                    "Done",
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyText1!
+                        .copyWith(color: Colors.black),
+                  ),
+                );
+              },
+            ],
+          ),
+          KeyboardActionsItem(
+            focusNode: _descriptionNode,
+            toolbarButtons: [
+              (node) {
+                return TextButton(
+                  onPressed: () => node.unfocus(),
+                  child: Text(
+                    "Done",
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyText1!
+                        .copyWith(color: Colors.black),
+                  ),
+                );
+              },
+            ],
+          ),
+        ],
+      ),
+    );
 
     return Scaffold(
       appBar: CustomAppBar(
@@ -149,7 +204,9 @@ class _EditShopView extends HookView<EditShopViewModel>
             ),
           ),
           Expanded(
-            child: SingleChildScrollView(
+            child: KeyboardActions(
+              config: _kbActionsRef.value,
+              tapOutsideBehavior: TapOutsideBehavior.translucentDismiss,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -202,6 +259,7 @@ class _EditShopView extends HookView<EditShopViewModel>
                       controller: _shopNameController,
                       hintText: "Shop Name",
                       errorText: vm.errorNameText,
+                      focusNode: _nameNode,
                     ),
                   ),
                   SizedBox(
@@ -212,6 +270,7 @@ class _EditShopView extends HookView<EditShopViewModel>
                     child: InputDescriptionField(
                       controller: _shopDescController,
                       hintText: "Shop Description",
+                      focusNode: _descriptionNode,
                     ),
                   ),
                   SizedBox(

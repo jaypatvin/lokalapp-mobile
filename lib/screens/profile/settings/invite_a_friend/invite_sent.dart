@@ -1,45 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:lokalapp/widgets/app_button.dart';
 import 'package:lottie/lottie.dart';
 
+import '../../../../models/lokal_invite.dart';
+import '../../../../state/mvvm_builder.widget.dart';
+import '../../../../state/views/stateless.view.dart';
 import '../../../../utils/constants/assets.dart';
 import '../../../../utils/constants/themes.dart';
+import '../../../../view_models/profile/settings/invite_sent.vm.dart';
+import '../../../../widgets/app_button.dart';
 import '../../../../widgets/custom_app_bar.dart';
 
 class InviteSent extends StatelessWidget {
-  buildButtons(context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Container(
-          height: 43,
-          width: 180,
-          child: FlatButton(
-            // height: 50,
-            // minWidth: 100,
-            color: kTealColor,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20.0),
-              side: BorderSide(color: kTealColor),
-            ),
-            textColor: Colors.black,
-            child: Text(
-              "COPY INVITE CODE",
-              style: TextStyle(
-                  fontFamily: "Goldplay",
-                  fontSize: 14,
-                  fontWeight: FontWeight.w700),
-            ),
-            onPressed: () {},
-          ),
-        ),
-      ],
-    );
-  }
+  const InviteSent(this.invite);
+
+  final LokalInvite invite;
 
   @override
   Widget build(BuildContext context) {
+    return MVVM(
+      view: (_, __) => _InviteSentView(),
+      viewModel: InviteSentViewModel(this.invite),
+    );
+  }
+}
+
+class _InviteSentView extends StatelessView<InviteSentViewModel> {
+  @override
+  Widget render(BuildContext context, InviteSentViewModel vm) {
     return Scaffold(
       backgroundColor: Color(0XFFF1FAFF),
       appBar: CustomAppBar(
@@ -53,9 +41,10 @@ class InviteSent extends StatelessWidget {
                 padding: const EdgeInsets.only(right: 8.0),
                 child: Text(
                   'Done',
-                  style: Theme.of(context).textTheme.headline6!.copyWith(
-                        color: kTealColor,
-                      ),
+                  style: Theme.of(context)
+                      .textTheme
+                      .headline6!
+                      .copyWith(color: kTealColor),
                 ),
               ),
             ),
@@ -71,9 +60,10 @@ class InviteSent extends StatelessWidget {
             Container(
               child: Text(
                 'Invite Sent!',
-                style: Theme.of(context).textTheme.headline4!.copyWith(
-                      color: kTealColor,
-                    ),
+                style: Theme.of(context)
+                    .textTheme
+                    .headline4!
+                    .copyWith(color: kTealColor),
               ),
             ),
             SizedBox(height: 15.h),
@@ -85,9 +75,10 @@ class InviteSent extends StatelessWidget {
             SizedBox(height: 30.h),
             Text('The invite code is:'),
             Text(
-              'AF2 5DH',
-              style: Theme.of(context).textTheme.headline2,
+              vm.inviteCode,
+              style: Theme.of(context).textTheme.headline3,
             ),
+            Spacer(),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 40.0.w),
               child: SizedBox(
@@ -96,10 +87,11 @@ class InviteSent extends StatelessWidget {
                   'COPY INVITE CODE',
                   kTealColor,
                   true,
-                  () => {},
+                  vm.copyToClipboard,
                 ),
               ),
             ),
+            SizedBox(height: 20.0.h),
           ],
         ),
       ),
