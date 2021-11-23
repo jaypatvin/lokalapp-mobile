@@ -11,12 +11,13 @@ class SocialBlock extends StatelessWidget {
   final Function? appleLogin;
   final Function? googleLogin;
 
-  const SocialBlock(
-      {this.label,
-      this.buttonWidth,
-      this.fbLogin,
-      this.appleLogin,
-      this.googleLogin});
+  const SocialBlock({
+    this.label,
+    this.buttonWidth,
+    this.fbLogin,
+    this.appleLogin,
+    this.googleLogin,
+  });
 
   @override
   Widget build(BuildContext context) {
