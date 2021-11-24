@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lottie/lottie.dart';
+import 'package:oktoast/oktoast.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
@@ -160,101 +161,103 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: _getProviders(),
-      child: ScreenUtilInit(
-        builder: () {
-          return ScreenLoaderApp(
-            globalLoadingBgBlur: 0,
-            globalLoader: SizedBox(
-              width: double.infinity,
-              height: double.infinity,
-              child: DecoratedBox(
-                decoration: const BoxDecoration(
-                  color: Colors.white,
+      child: OKToast(
+        child: ScreenUtilInit(
+          builder: () {
+            return ScreenLoaderApp(
+              globalLoadingBgBlur: 0,
+              globalLoader: SizedBox(
+                width: double.infinity,
+                height: double.infinity,
+                child: DecoratedBox(
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                  ),
+                  child: Lottie.asset(kAnimationLoading),
                 ),
-                child: Lottie.asset(kAnimationLoading),
               ),
-            ),
-            app: MaterialApp(
-              debugShowCheckedModeBanner: false,
-              title: 'Lokal',
-              theme: ThemeData(
-                primarySwatch: Colors.teal,
-                primaryColor: const Color(0xFF09A49A),
-                colorScheme: ColorScheme.fromSwatch(
+              app: MaterialApp(
+                debugShowCheckedModeBanner: false,
+                title: 'Lokal',
+                theme: ThemeData(
                   primarySwatch: Colors.teal,
-                  accentColor: const Color(0xFFFF7A00),
+                  primaryColor: const Color(0xFF09A49A),
+                  colorScheme: ColorScheme.fromSwatch(
+                    primarySwatch: Colors.teal,
+                    accentColor: const Color(0xFFFF7A00),
+                  ),
+                  fontFamily: "Goldplay",
+                  textTheme: TextTheme(
+                    headline1: TextStyle(
+                      fontSize: 96.sp,
+                      color: kNavyColor,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    headline2: TextStyle(
+                      fontSize: 60.0.sp,
+                      color: kNavyColor,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    headline3: TextStyle(
+                      fontSize: 48.0.sp,
+                      color: kNavyColor,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    headline4: TextStyle(
+                      fontSize: 34.0.sp,
+                      color: kNavyColor,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    headline5: TextStyle(
+                      fontSize: 24.0.sp,
+                      color: kNavyColor,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    headline6: TextStyle(
+                      fontSize: 20.0.sp,
+                      color: kNavyColor,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    subtitle1: TextStyle(
+                      fontSize: 16.0.sp,
+                      fontWeight: FontWeight.w600,
+                      color: kNavyColor,
+                    ),
+                    subtitle2: TextStyle(
+                      fontSize: 14.0.sp,
+                      fontWeight: FontWeight.w600,
+                      color: kNavyColor,
+                    ),
+                    bodyText1: TextStyle(
+                      fontSize: 16.0.sp,
+                      color: kNavyColor,
+                      fontWeight: FontWeight.w500,
+                    ),
+                    bodyText2: TextStyle(
+                      fontSize: 14.0.sp,
+                      color: kNavyColor,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  scaffoldBackgroundColor: Colors.white,
                 ),
-                fontFamily: "Goldplay",
-                textTheme: TextTheme(
-                  headline1: TextStyle(
-                    fontSize: 96.sp,
-                    color: kNavyColor,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  headline2: TextStyle(
-                    fontSize: 60.0.sp,
-                    color: kNavyColor,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  headline3: TextStyle(
-                    fontSize: 48.0.sp,
-                    color: kNavyColor,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  headline4: TextStyle(
-                    fontSize: 34.0.sp,
-                    color: kNavyColor,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  headline5: TextStyle(
-                    fontSize: 24.0.sp,
-                    color: kNavyColor,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  headline6: TextStyle(
-                    fontSize: 20.0.sp,
-                    color: kNavyColor,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  subtitle1: TextStyle(
-                    fontSize: 16.0.sp,
-                    fontWeight: FontWeight.w600,
-                    color: kNavyColor,
-                  ),
-                  subtitle2: TextStyle(
-                    fontSize: 14.0.sp,
-                    fontWeight: FontWeight.w600,
-                    color: kNavyColor,
-                  ),
-                  bodyText1: TextStyle(
-                    fontSize: 16.0.sp,
-                    color: kNavyColor,
-                    fontWeight: FontWeight.w500,
-                  ),
-                  bodyText2: TextStyle(
-                    fontSize: 14.0.sp,
-                    color: kNavyColor,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                scaffoldBackgroundColor: Colors.white,
-              ),
-              home: Root(),
-              navigatorKey: _router.keyOf(AppRoute.root),
-              initialRoute: '/',
-              onGenerateRoute:
-                  _router.navigatorOf(AppRoute.root).onGenerateRoute,
-              builder: (context, widget) {
-                Widget error = Text('...rendering error...');
-                if (widget is Scaffold || widget is Navigator)
-                  error = Scaffold(body: Center(child: error));
-                ErrorWidget.builder = (errorDetails) => error;
+                home: Root(),
+                navigatorKey: _router.keyOf(AppRoute.root),
+                initialRoute: '/',
+                onGenerateRoute:
+                    _router.navigatorOf(AppRoute.root).onGenerateRoute,
+                builder: (context, widget) {
+                  Widget error = Text('Error in displaying the screen');
+                  if (widget is Scaffold || widget is Navigator)
+                    error = Scaffold(body: Center(child: error));
+                  ErrorWidget.builder = (errorDetails) => error;
 
-                return widget!;
-              },
-            ),
-          );
-        },
+                  return widget!;
+                },
+              ),
+            );
+          },
+        ),
       ),
     );
   }
