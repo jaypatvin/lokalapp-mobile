@@ -15,6 +15,7 @@ import 'providers/activities.dart';
 import 'providers/auth.dart';
 import 'providers/cart.dart';
 import 'providers/categories.dart';
+import 'providers/community.dart';
 import 'providers/post_requests/auth_body.dart';
 import 'providers/post_requests/operating_hours_body.dart';
 import 'providers/post_requests/product_body.dart';
@@ -90,6 +91,14 @@ class _MyAppState extends State<MyApp> {
       // auth:
       ChangeNotifierProvider<Auth>(create: (_) => Auth(_api)),
       ChangeNotifierProvider<API>.value(value: _api),
+
+      ChangeNotifierProxyProvider<Auth, CommunityProvider>(
+        create: (_) => CommunityProvider(_api),
+        update: (_, auth, comm) => comm!
+          ..setCommunityId(
+            auth.user?.communityId,
+          ),
+      ),
 
       ChangeNotifierProxyProvider<Auth, Activities?>(
         create: (_) => Activities(_api),

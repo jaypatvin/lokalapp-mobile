@@ -2,55 +2,8 @@ import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import 'address.dart';
 import 'timestamp_time_object.dart';
-
-class UserAddress {
-  String? barangay;
-  String? country;
-  String? state;
-  String? city;
-  String? subdivision;
-  String? zipCode;
-  String? street;
-  UserAddress({
-    this.barangay,
-    this.country,
-    this.state,
-    this.city,
-    this.subdivision,
-    this.zipCode,
-    this.street,
-  });
-
-  Map<String, dynamic> toMap() {
-    return {
-      'barangay': barangay,
-      'country': country,
-      'state': state,
-      'city': city,
-      'subdivision': subdivision,
-      'zip_code': zipCode,
-      'street': street,
-    };
-  }
-
-  factory UserAddress.fromMap(Map<String, dynamic>? map) {
-    return UserAddress(
-      barangay: map?['barangay'],
-      country: map?['country'],
-      state: map?['state'],
-      city: map?['city'],
-      subdivision: map?['subdivision'],
-      zipCode: map?['zip_code'],
-      street: map?['street'],
-    );
-  }
-
-  String toJson() => json.encode(toMap());
-
-  factory UserAddress.fromJson(String source) =>
-      UserAddress.fromMap(json.decode(source));
-}
 
 class UserRegistrationStatus {
   int? step;
@@ -131,7 +84,7 @@ class LokalUser {
   String? communityId;
   String? birthDate;
   String? status;
-  UserAddress? address;
+  Address? address;
   UserRegistrationStatus? registration;
   UserRoles? roles;
   DateTime? createdAt;
@@ -197,7 +150,7 @@ class LokalUser {
       communityId: map['community_id'],
       birthDate: map['birth_date'],
       status: map['status'],
-      address: UserAddress.fromMap(map['address'] ?? Map()),
+      address: Address.fromMap(map['address'] ?? Map()),
       registration:
           UserRegistrationStatus.fromMap(map['registration'] ?? Map()),
       roles: UserRoles.fromMap(map['roles'] ?? Map()),
