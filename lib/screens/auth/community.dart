@@ -1,17 +1,17 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import '../../providers/auth.dart';
-import '../../widgets/overlays/screen_loader.dart';
 import 'package:provider/provider.dart';
 
+import '../../providers/auth.dart';
 import '../../utils/constants/themes.dart';
+import '../../widgets/overlays/screen_loader.dart';
 import '../bottom_navigation.dart';
 import 'components/auth_input_form.dart';
 import 'components/sso_block.dart';
 import 'profile_registration.dart';
 
-enum LoginType { email, google, facebook }
+enum LoginType { email, google, facebook, apple }
 
 class Community extends StatefulWidget {
   @override
@@ -40,7 +40,9 @@ class _CommunityState extends State<Community> with ScreenLoader {
         case LoginType.facebook:
           await auth.loginWithFacebook();
           break;
-        default:
+        case LoginType.apple:
+          await auth.loginWithApple();
+          break;
       }
 
       if (auth.user == null) {

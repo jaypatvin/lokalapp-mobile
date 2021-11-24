@@ -14,6 +14,7 @@ class InputField extends StatelessWidget {
     this.errorText,
     this.fillColor = const Color(0xFFF2F2F2),
     this.displayErrorBorder = false,
+    this.enabled = true,
     this.keyboardType,
     this.style,
     this.hintStyle,
@@ -31,10 +32,12 @@ class InputField extends StatelessWidget {
   final TextStyle? style;
   final TextStyle? hintStyle;
   final bool displayErrorBorder;
+  final bool enabled;
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      enabled: this.enabled,
       autocorrect: false,
       focusNode: this.focusNode,
       keyboardType: this.keyboardType,

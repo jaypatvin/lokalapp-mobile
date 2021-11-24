@@ -15,7 +15,7 @@ import 'components/auth_input_form.dart';
 import 'components/sso_block.dart';
 import 'invite_screen.dart';
 
-enum LoginType { email, google, facebook }
+enum LoginType { email, google, facebook, apple }
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -51,7 +51,9 @@ class _LoginScreenState extends State<LoginScreen>
         case LoginType.facebook:
           await auth.loginWithFacebook();
           break;
-        default:
+        case LoginType.apple:
+          await auth.loginWithApple();
+          break;
       }
 
       if (auth.user != null) {

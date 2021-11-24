@@ -1,4 +1,7 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
+import '../../../screens/profile/settings/invite_a_friend/invite_a_friend.dart';
 
 class CurrentUserProfileViewModel extends ChangeNotifier {
   CurrentUserProfileViewModel(this.context);
@@ -33,7 +36,14 @@ class CurrentUserProfileViewModel extends ChangeNotifier {
     );
   }
 
-  void onInviteFriend() => null;
+  void onInviteFriend() {
+    Navigator.of(context).push(
+      CupertinoPageRoute(
+        builder: (_) => InviteAFriend(),
+      ),
+    );
+  }
+
   void onNotificationsTap() => null;
   void onWishlistTap() => null;
 }

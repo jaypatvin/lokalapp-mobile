@@ -83,7 +83,7 @@ class DiscoverViewModel extends ChangeNotifier {
       ..navigateTo(
         AppRoute.discover,
         ProductDetail.routeName,
-        arguments: ProductDetailProps(product),
+        arguments: ProductDetailProps(product!),
       );
   }
 
