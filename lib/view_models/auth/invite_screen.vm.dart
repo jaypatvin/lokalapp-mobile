@@ -1,96 +1,77 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:keyboard_actions/keyboard_actions.dart';
+import 'package:lokalapp/models/community.dart';
+import 'package:lokalapp/providers/community.dart';
+import 'package:oktoast/oktoast.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/auth.dart';
 import '../../providers/post_requests/auth_body.dart';
-import '../../screens/auth/community.dart';
+import '../../screens/auth/register_screen.dart';
 import '../../screens/auth/profile_registration.dart';
 import '../../services/api/api.dart';
 import '../../services/api/invite_api_service.dart';
+import '../../state/view_model.dart';
 
-class InviteScreenViewModel extends ChangeNotifier {
-  InviteScreenViewModel._(this.context, this._apiService);
+class InviteScreenViewModel extends ViewModel {
+  late final InviteAPIService _apiService;
 
-  factory InviteScreenViewModel(BuildContext context) {
-    final _apiService = InviteAPIService(context.read<API>());
-    return InviteScreenViewModel._(context, _apiService);
+  String _inviteCode = '';
+  String get inviteCode => _inviteCode;
+
+  bool _displayError = false;
+  bool get displayError => _displayError;
+
+  @override
+  void init() {
+    super.init();
+    _apiService = InviteAPIService(context.read<API>());
   }
 
-  final BuildContext context;
-  final InviteAPIService _apiService;
-
-  final FocusNode inviteTextNode = FocusNode();
-  final TextEditingController codeController = TextEditingController();
-  bool displayError = false;
-
-  KeyboardActionsConfig buildConfig() {
-    return KeyboardActionsConfig(
-      keyboardActionsPlatform: KeyboardActionsPlatform.ALL,
-      keyboardBarColor: Colors.grey.shade200,
-      nextFocus: false,
-      actions: [
-        KeyboardActionsItem(
-          focusNode: inviteTextNode,
-          toolbarButtons: [
-            (node) {
-              return TextButton(
-                onPressed: () => node.unfocus(),
-                child: Text(
-                  "Done",
-                  style: Theme.of(context).textTheme.bodyText1!.copyWith(
-                        color: Colors.black,
-                      ),
-                ),
-              );
-            },
-          ],
-        ),
-      ],
-    );
+  void onInviteCodeChanged(String value) {
+    _inviteCode = value;
+    notifyListeners();
   }
 
   Future<void> validateInviteCode() async {
     final auth = context.read<Auth>();
 
     try {
-      final _lokalInvite = await _apiService.check(codeController.text);
+      final _lokalInvite = await _apiService.check(_inviteCode);
       final communityId = _lokalInvite.communityId;
       if (communityId.isEmpty) throw 'No Community ID returned.';
 
       final fireUser = auth.firebaseUser;
       context.read<AuthBody>()
         ..update(communityId: communityId)
-        ..setInviteCode(codeController.text);
-      if (displayError) {
-        displayError = false;
+        ..setInviteCode(_inviteCode);
+      context
+          .read<CommunityProvider>()
+          .setCommunityId(_lokalInvite.communityId);
+
+      if (_displayError) {
+        _displayError = false;
         notifyListeners();
       }
       if (fireUser != null) {
         pushNewScreen(context, screen: ProfileRegistration());
       } else {
-        pushNewScreen(context, screen: Community());
+        pushNewScreen(context, screen: RegisterScreen());
       }
-      
     } catch (e) {
-      displayError = true;
+      _displayError = true;
       notifyListeners();
-      this._showError(e.toString());
+      showToast(e.toString());
     }
   }
 
-  Future<void> showInviteCodeDescription(Widget dialogOption) {
-    return showDialog<void>(
+  Future<void> showInviteCodeDescription(Widget dialog) async {
+    return await showDialog<void>(
       context: context,
       builder: (ctx) {
-        return dialogOption;
+        return dialog;
       },
     );
-  }
-
-  void _showError(String error) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(error)));
   }
 }

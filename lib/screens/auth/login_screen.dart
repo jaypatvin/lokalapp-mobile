@@ -1,107 +1,42 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
-import '../../providers/auth.dart';
-import '../../providers/categories.dart';
-import '../../providers/products.dart';
-import '../../providers/shops.dart';
-import '../../providers/users.dart';
+import '../../state/mvvm_builder.widget.dart';
+import '../../state/views/hook.view.dart';
+import '../../utils/constants/assets.dart';
 import '../../utils/constants/themes.dart';
+import '../../view_models/auth/login_screen.vm.dart';
 import '../../widgets/overlays/screen_loader.dart';
-import '../bottom_navigation.dart';
 import 'components/auth_input_form.dart';
 import 'components/sso_block.dart';
-import 'invite_screen.dart';
 
-enum LoginType { email, google, facebook, apple }
+class LoginScreen extends StatelessWidget {
+  static const routeName = '/login';
+  const LoginScreen({Key? key}) : super(key: key);
 
-class LoginScreen extends StatefulWidget {
   @override
-  _LoginScreenState createState() => _LoginScreenState();
+  Widget build(BuildContext context) {
+    return MVVM(
+      view: (_, __) => _LoginScreenView(),
+      viewModel: LoginScreenViewModel(),
+    );
+  }
 }
 
-class _LoginScreenState extends State<LoginScreen>
-    with ScreenLoader<LoginScreen> {
-  TextEditingController _emailController = TextEditingController();
-  TextEditingController _passwordController = TextEditingController();
-  bool isAuth = false;
-  final _formKey = GlobalKey<FormState>();
-  Map<String, String>? account;
-  bool _signInError = false;
-
-  Future<void> _logInUser({
-    required LoginType type,
-    String? email,
-    String? password,
-  }) async {
-    FocusScope.of(context).unfocus();
-    // CurrentUser user = context.read<Auth>().user!;
-    // UserAuth auth = Provider.of<UserAuth>(context, listen: false);
-    final auth = context.read<Auth>();
-    try {
-      switch (type) {
-        case LoginType.email:
-          await auth.loginWithEmail(email!, password!);
-          break;
-        case LoginType.google:
-          await auth.loginWithGoogle();
-          break;
-        case LoginType.facebook:
-          await auth.loginWithFacebook();
-          break;
-        case LoginType.apple:
-          await auth.loginWithApple();
-          break;
-      }
-
-      if (auth.user != null) {
-        await performFuture(() async {
-          await context.read<Shops>().fetch();
-          await context.read<Products>().fetch();
-          await context.read<Users>().fetch();
-          await context.read<Categories>().fetch();
-        });
-        Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(builder: (context) => BottomNavigation()),
-          (route) => false,
-        );
-      } else {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => InvitePage()),
-        );
-      }
-    } on FirebaseAuthException catch (e) {
-      switch (e.code) {
-        case "invalid-email":
-        case "wrong-password":
-          setState(() {
-            _signInError = true;
-          });
-          break;
-        case "user-not-found":
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => InvitePage()),
-          );
-          break;
-        default:
-          throw e.message!;
-      }
-    } catch (e) {
-      final snackBar = SnackBar(content: Text('Error Logging In'));
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
-    }
-  }
-
+class _LoginScreenView extends HookView<LoginScreenViewModel>
+    with HookScreenLoader<LoginScreenViewModel> {
   @override
-  Widget screen(BuildContext context) {
+  Widget screen(BuildContext context, LoginScreenViewModel vm) {
+    final _emailController = useTextEditingController();
+    final _passwordController = useTextEditingController();
+    final _emailFocusNode = useFocusNode();
+    final _passwordFocusNode = useFocusNode();
+
     final bottom = MediaQuery.of(context).viewInsets.bottom;
     return Scaffold(
-      resizeToAvoidBottomInset: false, // added as above is deprecated
+      resizeToAvoidBottomInset: false,
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         mainAxisAlignment: MainAxisAlignment.start,
@@ -118,13 +53,13 @@ class _LoginScreenState extends State<LoginScreen>
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Hero(
-                        tag: "home",
-                        child: Image.asset("assets/Lokalv2.png"),
+                        tag: kSvgLokalLogoV2,
+                        child: SvgPicture.asset(kSvgLokalLogoV2),
                       ),
                       Hero(
-                        tag: "lokal",
+                        tag: '${kSvgLokalLogoV2}_title',
                         child: Text(
-                          "LOKAL",
+                          'LOKAL',
                           style: TextStyle(
                             color: kOrangeColor,
                             fontSize: 24.0.sp,
@@ -133,9 +68,9 @@ class _LoginScreenState extends State<LoginScreen>
                         ),
                       ),
                       Hero(
-                        tag: "plaza",
+                        tag: '${kSvgLokalLogoV2}_subTitle',
                         child: Text(
-                          "Your neighborhood plaza",
+                          'Your neighborhood plaza',
                           style: TextStyle(
                             fontSize: 14.0.sp,
                             color: kTealColor,
@@ -158,26 +93,20 @@ class _LoginScreenState extends State<LoginScreen>
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 AuthInputForm(
-                  formKey: _formKey,
+                  formKey: vm.formKey,
                   emailController: _emailController,
+                  emailFocusNode: _emailFocusNode,
                   passwordController: _passwordController,
+                  passwordFocusNode: _passwordFocusNode,
                   submitButtonLabel: "SIGN IN",
-                  displaySignInError: _signInError,
-                  onFormChanged: () => setState(() {}),
-                  onFormSubmit: () async {
-                    setState(() {
-                      _signInError = false;
-                    });
-                    if (!_formKey.currentState!.validate()) return;
-
-                    await performFuture<void>(
-                      () async => await _logInUser(
-                        type: LoginType.email,
-                        email: _emailController.text.trim(),
-                        password: _passwordController.text.trim(),
-                      ),
-                    );
-                  },
+                  displaySignInError: vm.displayError,
+                  onFormChanged: vm.onFormChanged,
+                  onFormSubmit: () async => await performFuture(
+                    () async => await vm.emailLogin(
+                      email: _emailController.text.trim(),
+                      password: _passwordController.text.trim(),
+                    ),
+                  ),
                 ),
                 SizedBox(height: 10.0.h),
                 InkWell(
@@ -189,10 +118,9 @@ class _LoginScreenState extends State<LoginScreen>
                 ),
                 SizedBox(height: 20.0.h),
                 SocialBlock(
-                  fbLogin: () async => await performFuture(
-                      () async => await _logInUser(type: LoginType.facebook)),
-                  googleLogin: () async => await performFuture(
-                      () async => await _logInUser(type: LoginType.google)),
+                  fbLogin: () async => await performFuture(vm.facebookLogin),
+                  googleLogin: () async => await performFuture(vm.googleLogin),
+                  appleLogin: () async => await performFuture(vm.appleLogin),
                   buttonWidth: 50.0.w,
                 )
               ],

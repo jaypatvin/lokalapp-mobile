@@ -35,7 +35,12 @@ const kPngGoogleLogo = 'assets/sso/google_logo.png';
 
 // others
 const kSvgBackgroundHouses = 'assets/houses_background.svg';
+
+/// Yellow Logo with Name
 const kSvgLokalLogo = 'assets/lokal_logo.svg';
+
+/// Orange Logo with no Name
+const kSvgLokalLogoV2 = 'assets/lokal_logo_v2.svg';
 
 // URLs:
 const kAboutLokalUrl = 'https://www.lokalapp.ph';

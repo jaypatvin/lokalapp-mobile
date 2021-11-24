@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:keyboard_actions/keyboard_actions.dart';
+import 'package:oktoast/oktoast.dart';
 import 'package:persistent_bottom_nav_bar/models/nested_will_pop_scope.dart';
 import 'package:provider/provider.dart';
 
@@ -26,6 +27,7 @@ import '../../widgets/verification/verify_screen.dart';
 import 'components/checkbox_form_field.dart';
 
 class ProfileRegistration extends StatefulWidget {
+  static const routeName = '/register/profile';
   @override
   _ProfileRegistrationState createState() => _ProfileRegistrationState();
 }
@@ -135,7 +137,8 @@ class _ProfileRegistrationState extends State<ProfileRegistration>
           code: inviteCode,
         );
       } catch (e) {
-        // TODO: do something with error
+        showToast(e.toString());
+        print(e.toString());
       }
     }
     return inviteCodeClaimed;

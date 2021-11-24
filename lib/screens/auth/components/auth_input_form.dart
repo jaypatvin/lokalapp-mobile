@@ -15,6 +15,10 @@ class AuthInputForm extends StatefulWidget {
   final bool displaySignInError;
   final String? submitButtonLabel;
   final String? Function(String?)? passwordValidator;
+  final FocusNode? emailFocusNode;
+  final FocusNode? passwordFocusNode;
+  final String? emailInputError;
+  final String? passwordInputError;
   const AuthInputForm({
     Key? key,
     this.formKey,
@@ -25,6 +29,10 @@ class AuthInputForm extends StatefulWidget {
     this.displaySignInError = false,
     this.submitButtonLabel,
     this.passwordValidator,
+    this.emailFocusNode,
+    this.passwordFocusNode,
+    this.emailInputError,
+    this.passwordInputError,
   }) : super(key: key);
 
   @override
@@ -32,13 +40,15 @@ class AuthInputForm extends StatefulWidget {
 }
 
 class _AuthInputFormState extends State<AuthInputForm> {
-  final FocusNode _nodeTextEmail = FocusNode();
-  final FocusNode _nodeTextPassword = FocusNode();
+  late final FocusNode _nodeTextEmail;
+  late final FocusNode _nodeTextPassword;
   late bool _passwordVisible;
 
   @override
   void initState() {
     super.initState();
+    _nodeTextEmail = widget.emailFocusNode ?? FocusNode();
+    _nodeTextPassword = widget.passwordFocusNode ?? FocusNode();
     _passwordVisible = false;
   }
 
@@ -114,6 +124,7 @@ class _AuthInputFormState extends State<AuthInputForm> {
                   alignLabelWithHint: true,
                   hintText: "Email",
                   contentPadding: EdgeInsets.symmetric(horizontal: 16.0.w),
+                  errorText: widget.emailInputError,
                 ),
                 validator: (email) =>
                     isEmail(email!) ? null : "Enter a valid email",
@@ -154,7 +165,8 @@ class _AuthInputFormState extends State<AuthInputForm> {
                   contentPadding: EdgeInsets.symmetric(horizontal: 16.0.w),
                   errorMaxLines: 3,
                   errorText: widget.displaySignInError
-                      ? "The email and password combination is incorrect."
+                      ? widget.passwordInputError ??
+                          "The email and password combination is incorrect."
                       : null,
                 ),
               ),
@@ -169,7 +181,11 @@ class _AuthInputFormState extends State<AuthInputForm> {
                     ? kTealColor
                     : kOrangeColor,
                 true,
-                widget.onFormSubmit,
+                () {
+                  _nodeTextEmail.unfocus();
+                  _nodeTextPassword.unfocus();
+                  if (widget.onFormSubmit != null) widget.onFormSubmit!();
+                },
                 textStyle: TextStyle(color: kNavyColor),
               ),
             )

@@ -280,16 +280,15 @@ class _VerifyScreenState extends State<VerifyScreen> {
               ),
               SizedBox(height: 75.0.h),
               Container(
-                  width: double.infinity,
-                  decoration: ShapeDecoration(
-                    color: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(30.0)),
-                    ),
+                width: double.infinity,
+                decoration: ShapeDecoration(
+                  color: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(30.0)),
                   ),
-                  child:
-                      iOSPicker() // Platform.isIOS ? iOSPicker() : androidDropDown(),
-                  ),
+                ),
+                child: Platform.isIOS ? iOSPicker() : androidDropDown(),
+              ),
               SizedBox(height: 20.0.h),
               if (_file != null)
                 SizedBox(
@@ -307,10 +306,13 @@ class _VerifyScreenState extends State<VerifyScreen> {
                       : 'UPLOAD PHOTO OF ID',
                   kTealColor,
                   false,
-                  () async => this._file = await context
-                          .read<MediaUtility>()
-                          .showMediaDialog(context) ??
-                      this._file,
+                  () async {
+                    this._file = await context
+                            .read<MediaUtility>()
+                            .showMediaDialog(context) ??
+                        this._file;
+                    setState(() {});
+                  },
                 ),
               ),
               const Spacer(),
@@ -328,6 +330,7 @@ class _VerifyScreenState extends State<VerifyScreen> {
                       : null,
                 ),
               ),
+              const SizedBox(height: 20),
             ],
           ),
         ),
