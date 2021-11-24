@@ -24,13 +24,20 @@ class AppRouter {
 
   final PersistentTabController _tabController;
 
+  static final rootNavigatorKey = GlobalKey<NavigatorState>();
+  static final homeNavigatorKey = GlobalKey<NavigatorState>();
+  static final discoverNavigatorKey = GlobalKey<NavigatorState>();
+  static final chatNavigatorKey = GlobalKey<NavigatorState>();
+  static final activityNavigatorKey = GlobalKey<NavigatorState>();
+  static final profileNavigatorKey = GlobalKey<NavigatorState>();
+
   final _navigators = <AppRoute, AppNavigator>{
-    AppRoute.root: RootNavigator(),
-    AppRoute.home: HomeNavigator(),
-    AppRoute.discover: DiscoverNavigator(),
-    AppRoute.chat: ChatNavigator(),
-    AppRoute.activity: ActivityNavigator(),
-    AppRoute.profile: ProfileNavigator(),
+    AppRoute.root: RootNavigator(rootNavigatorKey),
+    AppRoute.home: HomeNavigator(homeNavigatorKey),
+    AppRoute.discover: DiscoverNavigator(discoverNavigatorKey),
+    AppRoute.chat: ChatNavigator(chatNavigatorKey),
+    AppRoute.activity: ActivityNavigator(activityNavigatorKey),
+    AppRoute.profile: ProfileNavigator(profileNavigatorKey),
   };
 
   /// Get the navigator keys using the `AppRoute` enum.

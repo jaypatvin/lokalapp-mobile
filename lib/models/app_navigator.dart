@@ -1,7 +1,8 @@
 import 'package:flutter/widgets.dart';
 
 abstract class AppNavigator {
-  final GlobalKey<NavigatorState> navigatorKey = GlobalKey();
+  const AppNavigator(this.navigatorKey);
+  final GlobalKey<NavigatorState> navigatorKey;
 
   Route<dynamic> onGenerateRoute(RouteSettings settings);
 }
