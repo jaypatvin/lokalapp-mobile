@@ -39,7 +39,7 @@ class InviteAPIService extends APIService<LokalInvite> {
     required String code,
   }) async {
     final response = await http.post(
-      api.endpointUri(endpoint),
+      api.endpointUri(endpoint, pathSegments: ['claim']),
       headers: api.withBodyHeader(),
       body: json.encode({
         'user_id': userId,
