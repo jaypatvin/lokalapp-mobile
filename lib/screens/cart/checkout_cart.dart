@@ -171,9 +171,12 @@ class _CheckOutCartAppBar extends StatelessWidget
             ),
             child: Consumer<ShoppingCart>(
               builder: (_, cart, __) {
+                final quantity = cart.orders.values
+                    .map<int>((orders) => orders.length)
+                    .fold<int>(0, (a, b) => a + b);
                 return Center(
                   child: Text(
-                    cart.orders.length.toString(),
+                    quantity.toString(), //cart.orders.length.toString(),
                     style: TextStyle(
                       color: Colors.white,
                       fontFamily: "Goldplay",
