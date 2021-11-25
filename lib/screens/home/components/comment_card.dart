@@ -46,7 +46,7 @@ class CommentCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final user = context.read<Users>().findById(comment.userId);
+    final user = context.read<Users>().findById(comment.userId)!;
     return ChangeNotifierProvider(
       create: (ctx) => CommentCardViewModel(
         context: context,
@@ -86,7 +86,7 @@ class CommentCard extends StatelessWidget {
                             style: Theme.of(context)
                                 .textTheme
                                 .bodyText2!
-                                .copyWith(color: Colors.black ),
+                                .copyWith(color: Colors.black),
                           ),
                         ],
                       ),

@@ -36,6 +36,7 @@ class ChatStream extends StatelessWidget {
           SearchTextField(
             controller: searchController,
             hintText: "Search Chats",
+            enabled: true,
           ),
           StreamBuilder<QuerySnapshot>(
             stream: chatStream,
@@ -54,7 +55,10 @@ class ChatStream extends StatelessWidget {
                   ),
                 );
               }
-              return _ChatList(chatSnapshot: snapshot);
+              return _ChatList(
+                chatSnapshot: snapshot,
+                search: searchController.text,
+              );
             },
           ),
         ],
@@ -64,11 +68,14 @@ class ChatStream extends StatelessWidget {
 }
 
 class _ChatList extends StatelessWidget {
-  final AsyncSnapshot<QuerySnapshot>? chatSnapshot;
   const _ChatList({
     Key? key,
-    this.chatSnapshot,
+    required this.chatSnapshot,
+    this.search,
   }) : super(key: key);
+
+  final AsyncSnapshot<QuerySnapshot> chatSnapshot;
+  final String? search;
 
   Widget _buildCircleAvatar(List<ChatMember> members) {
     final multUsers = members.length > 1;
@@ -106,18 +113,48 @@ class _ChatList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final _items = search?.isNotEmpty ?? false
+        ? chatSnapshot.data!.docs.where((doc) {
+            final data = doc.data() as Map<String, dynamic>;
+            final document = {...data, 'id': doc.id};
+            final chat = ChatModel.fromMap(document);
+
+            bool isMatch = false;
+
+            for (final id in chat.members) {
+              final shop = context.read<Shops>().findById(id);
+              if (shop != null) {
+                isMatch =
+                    shop.name!.toLowerCase().contains(search!.toLowerCase());
+
+              } else {
+                final user = context.read<Users>().findById(id);
+                if (user != null) {
+                  isMatch = user.displayName!
+                      .toLowerCase()
+                      .contains(search!.toLowerCase());
+                }
+              }
+
+              if (isMatch) break;
+            }
+
+            print('returning $isMatch for search $search');
+            return isMatch;
+          }).toList()
+        : chatSnapshot.data!.docs;
+
     return ListView.builder(
       physics: NeverScrollableScrollPhysics(),
       padding: EdgeInsets.all(5.0.r),
       shrinkWrap: true,
-      itemCount: chatSnapshot!.data!.docs.length,
+      itemCount: _items.length, //chatSnapshot!.data!.docs.length,
       itemBuilder: (ctx, index) {
         final cUserId = context.read<Auth>().user!.id;
-        final snapshotData =
-            chatSnapshot!.data!.docs[index].data() as Map<String, dynamic>;
+        final snapshotData = _items[index].data() as Map<String, dynamic>;
         final document = {
           ...snapshotData,
-          "id": chatSnapshot!.data!.docs[index].id,
+          "id": _items[index].id,
         };
         final chat = ChatModel.fromMap(document);
         final members = <ChatMember>[];
@@ -145,7 +182,7 @@ class _ChatList extends StatelessWidget {
           ids.retainWhere((id) => cUserId != id);
 
           members.addAll(ids.map((id) {
-            final user = context.read<Users>().findById(id);
+            final user = context.read<Users>().findById(id)!;
             return ChatMember(
               displayName: user.displayName,
               displayPhoto: user.profilePhoto,

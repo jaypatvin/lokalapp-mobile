@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:lokalapp/routers/profile/user_shop.props.dart';
+import 'package:lokalapp/screens/profile/shop/user_shop.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
 
@@ -43,7 +45,7 @@ class _ChatProfileState extends State<ChatProfile> {
           ..insert(0, userId)
           ..forEach((id) {
             final user =
-                Provider.of<Users>(context, listen: false).findById(id);
+                Provider.of<Users>(context, listen: false).findById(id)!;
             _members.add(
               ChatMember(
                 displayName: user.displayName,
@@ -159,6 +161,18 @@ class _ChatProfileState extends State<ChatProfile> {
                         onTap: () {
                           if (user.id == context.read<Auth>().user!.id) {
                             ctx.read<AppRouter>().jumpToTab(AppRoute.profile);
+                            return;
+                          }
+                          if (user.type == ChatType.shop) {
+                            final shop = ctx.read<Shops>().findById(user.id);
+                            ctx.read<AppRouter>().navigateTo(
+                                  AppRoute.profile,
+                                  UserShop.routeName,
+                                  arguments: UserShopProps(
+                                    shop!.userId!,
+                                    user.id,
+                                  ),
+                                );
                             return;
                           }
                           ctx.read<AppRouter>().navigateTo(

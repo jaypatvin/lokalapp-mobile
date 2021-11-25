@@ -31,7 +31,7 @@ class ProfileScreenViewModel {
     this._authProvider = context.read<Auth>();
     this.user = isCurrentUser
         ? context.read<Auth>().user!
-        : context.read<Users>().findById(userId);
+        : context.read<Users>().findById(userId)!;
   }
 
   void onSendMessage() {

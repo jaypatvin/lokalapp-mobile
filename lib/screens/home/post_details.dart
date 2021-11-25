@@ -329,7 +329,7 @@ class _PostDetailsState extends State<PostDetails> {
     return Consumer<Activities>(
       builder: (ctx, activities, _) {
         final activity = activities.findById(widget.activityId);
-        final user = context.read<Users>().findById(activity.userId);
+        final user = context.read<Users>().findById(activity.userId)!;
         return Scaffold(
           backgroundColor: Colors.white,
           resizeToAvoidBottomInset: false,

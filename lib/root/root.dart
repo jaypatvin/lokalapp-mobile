@@ -35,10 +35,10 @@ class _RootState extends State<Root> {
     try {
       await auth.onStartUp();
       if (auth.user == null) throw 'user-not-registered';
-      await context.read<Shops>().fetch();
-      await context.read<Products>().fetch();
+      context.read<Shops>().fetch();
+      context.read<Products>().fetch();
+      context.read<Categories>().fetch();
       await context.read<Users>().fetch();
-      await context.read<Categories>().fetch();
       Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute(
           builder: (_) => BottomNavigation(),

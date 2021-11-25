@@ -53,11 +53,6 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
     final user = context.read<Auth>().user!;
     final shops = context.read<Shops>().findByUser(user.id);
     _userChatStream = Database.instance.getUserChats(user.id);
-    _userChatStream?.listen((event) {
-      for (var snapshot in event.docs) {
-        print(snapshot.id);
-      }
-    });
     if (shops.isNotEmpty) {
       _shopChatStream = Database.instance.getUserChats(shops.first.id);
     }

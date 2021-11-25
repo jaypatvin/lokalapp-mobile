@@ -38,7 +38,7 @@ class ShopProductFieldViewModel extends ChangeNotifier {
     this.isCurrentUser = context.read<Auth>().user!.id! == this.userId;
     this.user = isCurrentUser
         ? context.read<Auth>().user!
-        : context.read<Users>().findById(userId);
+        : context.read<Users>().findById(userId)!;
 
     ShopModel? _shop;
 
