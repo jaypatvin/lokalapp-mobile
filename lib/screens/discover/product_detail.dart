@@ -91,16 +91,16 @@ class _ProductDetailView extends HookView<ProductDetailViewModel> {
             )
           ],
         ),
-        actions: [
-          IconButton(
-            icon: Icon(
-              Icons.more_horiz,
-              color: kTealColor,
-              size: 28.0.r,
-            ),
-            onPressed: null,
-          ),
-        ],
+        // actions: [
+        //   IconButton(
+        //     icon: Icon(
+        //       Icons.more_horiz,
+        //       color: kTealColor,
+        //       size: 28.0.r,
+        //     ),
+        //     onPressed: null,
+        //   ),
+        // ],
       ),
       body: KeyboardActions(
         config: KeyboardActionsConfig(
