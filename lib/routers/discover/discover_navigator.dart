@@ -21,6 +21,9 @@ import 'product_detail.props.dart';
 /// We're putting the `Cart` navigation here since we want to navigate to the
 /// `Discover` Tab when we view the `Cart`.
 class DiscoverNavigator extends AppNavigator {
+  const DiscoverNavigator(GlobalKey<NavigatorState> navigatorKey)
+      : super(navigatorKey);
+
   @override
   Route onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {

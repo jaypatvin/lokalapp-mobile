@@ -16,6 +16,9 @@ import 'shop_schedule.props.dart';
 import 'user_shop.props.dart';
 
 class ProfileNavigator extends AppNavigator {
+  const ProfileNavigator(GlobalKey<NavigatorState> navigatorKey)
+      : super(navigatorKey);
+
   @override
   Route onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {

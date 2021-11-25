@@ -30,13 +30,14 @@ class SubscriptionDetails extends StatelessWidget {
 
   Widget buildTextInfo(BuildContext context) {
     final _address = context.read<Auth>().user!.address!;
-    final address = _address.street! +
-        ", " +
-        _address.barangay! +
-        ", " +
-        _address.subdivision! +
-        " " +
-        _address.city!;
+    final _addressList = [
+      _address.street,
+      _address.barangay,
+      _address.subdivision,
+      _address.city,
+    ];
+
+    final address = _addressList.where((text) => text.isNotEmpty).join(', ');
 
     return Container(
       width: double.infinity,

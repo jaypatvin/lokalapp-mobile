@@ -40,7 +40,7 @@ class _EditProfileState extends State<EditProfile> {
 
     _fNameController.text = user.firstName!;
     _lNameController.text = user.lastName!;
-    _streetController.text = user.address!.street!;
+    _streetController.text = user.address!.street;
     super.initState();
   }
 

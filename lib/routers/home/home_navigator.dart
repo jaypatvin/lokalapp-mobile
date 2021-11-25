@@ -9,6 +9,9 @@ import 'post_details.props.dart';
 
 /// Handles named routes under the `Home` tab.
 class HomeNavigator extends AppNavigator {
+  const HomeNavigator(GlobalKey<NavigatorState> navigatorKey)
+      : super(navigatorKey);
+
   @override
   Route<dynamic> onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {

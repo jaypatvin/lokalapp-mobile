@@ -145,12 +145,6 @@ class Auth extends ChangeNotifier {
         password: password,
       );
       await _userChangeListener(credential.user);
-    } on FirebaseAuthException catch (e) {
-      if (e.code == "email-already-in-use") {
-        await loginWithEmail(email, password);
-      } else {
-        throw e;
-      }
     } catch (e) {
       throw e;
     }
@@ -244,7 +238,9 @@ class Auth extends ChangeNotifier {
       await firebaseUser?.updateDisplayName(displayName);
       await firebaseUser?.updateEmail(userEmail);
       await _userChangeListener(credential.user);
-    } catch (e) {}
+    } catch (e) {
+      throw e;
+    }
   }
 
   Future<void> logOut() async {
