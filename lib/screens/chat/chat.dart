@@ -26,11 +26,8 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<Color?> _colorAnimation;
 
-  final _userSearchController = TextEditingController();
-  final _shopSearchController = TextEditingController();
-
-  Stream<QuerySnapshot>? _userChatStream;
-  Stream<QuerySnapshot>? _shopChatStream;
+  late Stream<QuerySnapshot<Map<String, dynamic>>> _userChatStream;
+  Stream<QuerySnapshot<Map<String, dynamic>>>? _shopChatStream;
 
   @override
   void initState() {
@@ -91,10 +88,7 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
                   50.0,
                 ),
               ),
-              body: ChatStream(
-                chatStream: _userChatStream,
-                searchController: _userSearchController,
-              ),
+              body: ChatStream(chatStream: _userChatStream),
             ),
           );
         }
@@ -116,14 +110,8 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
               physics: NeverScrollableScrollPhysics(),
               controller: _tabController,
               children: [
-                ChatStream(
-                  chatStream: _userChatStream,
-                  searchController: _userSearchController,
-                ),
-                ChatStream(
-                  chatStream: _shopChatStream,
-                  searchController: _shopSearchController,
-                ),
+                ChatStream(chatStream: _userChatStream),
+                ChatStream(chatStream: _shopChatStream!),
               ],
             ),
           ),
