@@ -1,4 +1,6 @@
 import 'dart:ui' as ui;
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:photo_manager/photo_manager.dart';
 
@@ -123,9 +125,8 @@ class AssetEntityFileImage extends ImageProvider<AssetEntityFileImage> {
   }
 
   @override
-  Future<AssetEntityFileImage> obtainKey(
-      ImageConfiguration configuration) async {
-    return this;
+  Future<AssetEntityFileImage> obtainKey(ImageConfiguration configuration) {
+    return SynchronousFuture<AssetEntityFileImage>(this);
   }
 
   bool operator ==(other) {

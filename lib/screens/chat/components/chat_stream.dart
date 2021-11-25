@@ -12,33 +12,45 @@ import '../../../providers/shops.dart';
 import '../../../providers/users.dart';
 import '../../../routers/app_router.dart';
 import '../../../routers/chat/chat_view.props.dart';
+import '../../../state/mvvm_builder.widget.dart';
+import '../../../state/views/stateless.view.dart';
 import '../../../utils/constants/assets.dart';
+import '../../../view_models/chat/chat_stream.vm.dart';
 import '../../../widgets/inputs/search_text_field.dart';
 import '../chat_view.dart';
 import 'chat_avatar.dart';
 
 class ChatStream extends StatelessWidget {
-  final Stream<QuerySnapshot>? chatStream;
-  final TextEditingController searchController;
   const ChatStream({
     Key? key,
     required this.chatStream,
-    required this.searchController,
   }) : super(key: key);
+  final Stream<QuerySnapshot<Map<String, dynamic>>> chatStream;
 
   @override
   Widget build(BuildContext context) {
+    return MVVM(
+      view: (_, __) => _ChatStreamView(),
+      viewModel: ChatStreamViewModel(this.chatStream),
+    );
+  }
+}
+
+class _ChatStreamView extends StatelessView<ChatStreamViewModel> {
+  @override
+  Widget render(BuildContext context, ChatStreamViewModel vm) {
     return SingleChildScrollView(
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           SizedBox(height: 10.0.h),
           SearchTextField(
-            controller: searchController,
             hintText: "Search Chats",
+            enabled: true,
+            onChanged: vm.onSearchQueryChanged,
           ),
-          StreamBuilder<QuerySnapshot>(
-            stream: chatStream,
+          StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+            stream: vm.chatStream,
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return Center(child: Lottie.asset(kAnimationLoading));
@@ -54,7 +66,7 @@ class ChatStream extends StatelessWidget {
                   ),
                 );
               }
-              return _ChatList(chatSnapshot: snapshot);
+              return _ChatList(chats: vm.getChats(snapshot));
             },
           ),
         ],
@@ -64,13 +76,10 @@ class ChatStream extends StatelessWidget {
 }
 
 class _ChatList extends StatelessWidget {
-  final AsyncSnapshot<QuerySnapshot>? chatSnapshot;
-  const _ChatList({
-    Key? key,
-    this.chatSnapshot,
-  }) : super(key: key);
+  const _ChatList({Key? key, required this.chats}) : super(key: key);
+  final List<ChatModel> chats;
 
-  Widget _buildCircleAvatar(List<ChatMember> members) {
+  Container _buildCircleAvatar(List<ChatMember> members) {
     final multUsers = members.length > 1;
     return Container(
       height: 45.0.h,
@@ -110,16 +119,10 @@ class _ChatList extends StatelessWidget {
       physics: NeverScrollableScrollPhysics(),
       padding: EdgeInsets.all(5.0.r),
       shrinkWrap: true,
-      itemCount: chatSnapshot!.data!.docs.length,
+      itemCount: chats.length, //chatSnapshot!.data!.docs.length,
       itemBuilder: (ctx, index) {
         final cUserId = context.read<Auth>().user!.id;
-        final snapshotData =
-            chatSnapshot!.data!.docs[index].data() as Map<String, dynamic>;
-        final document = {
-          ...snapshotData,
-          "id": chatSnapshot!.data!.docs[index].id,
-        };
-        final chat = ChatModel.fromMap(document);
+        final chat = chats[index];
         final members = <ChatMember>[];
 
         String? title = chat.title;
@@ -145,7 +148,7 @@ class _ChatList extends StatelessWidget {
           ids.retainWhere((id) => cUserId != id);
 
           members.addAll(ids.map((id) {
-            final user = context.read<Users>().findById(id);
+            final user = context.read<Users>().findById(id)!;
             return ChatMember(
               displayName: user.displayName,
               displayPhoto: user.profilePhoto,

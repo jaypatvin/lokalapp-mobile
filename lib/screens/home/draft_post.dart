@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -166,15 +167,13 @@ class _DraftPostState extends State<DraftPost>
     );
   }
 
-  void _openGallery(
-    BuildContext context,
-    final int index,
-  ) {
+  void _openGallery(final int index) {
     Navigator.push(
       context,
-      MaterialPageRoute(
+      CupertinoPageRoute(
         builder: (context) => GalleryAssetPhotoView(
-          galleryItems: this._provider!.picked,
+          loadingBuilder: (_, __) => Center(child: CircularProgressIndicator()),
+          galleryItems: this._provider?.picked ?? [],
           backgroundDecoration: const BoxDecoration(
             color: Colors.black,
           ),
@@ -218,9 +217,7 @@ class _DraftPostState extends State<DraftPost>
     }
   }
 
-  Widget _buildPostImages({
-    BuildContext? context,
-  }) {
+  Widget _buildPostImages() {
     var count = _provider!.picked.length;
     return StaggeredGridView.countBuilder(
       shrinkWrap: true,
@@ -230,7 +227,7 @@ class _DraftPostState extends State<DraftPost>
       itemBuilder: (ctx, index) {
         return AssetPhotoThumbnail(
           galleryItem: this._provider!.picked[index],
-          onTap: () => _openGallery(context!, index),
+          onTap: () => _openGallery(index),
           onRemove: () =>
               setState(() => this._provider!.picked.removeAt(index)),
         );
@@ -301,7 +298,7 @@ class _DraftPostState extends State<DraftPost>
             children: [
               Visibility(
                 visible: _provider!.picked.length > 0,
-                child: _buildPostImages(context: context),
+                child: _buildPostImages(),
               ),
               Expanded(child: _buildCard()),
               _postButton(),

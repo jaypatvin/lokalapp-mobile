@@ -40,7 +40,7 @@ class TransactionDetails extends StatelessWidget {
     final name = isBuyer
         ? transaction!.shopName
         : Provider.of<Users>(context, listen: false)
-            .findById(transaction!.buyerId)
+            .findById(transaction!.buyerId)!
             .displayName;
 
     final displayPhoto = isBuyer
@@ -48,7 +48,7 @@ class TransactionDetails extends StatelessWidget {
             .findById(transaction!.shopId)!
             .profilePhoto
         : Provider.of<Users>(context, listen: false)
-            .findById(transaction!.buyerId)
+            .findById(transaction!.buyerId)!
             .profilePhoto;
 
     final price = this

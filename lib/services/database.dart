@@ -222,7 +222,7 @@ class Database {
         .limit(1)
         .get();
 
-    Map<String, dynamic>? data = chat != null && chat.docs.length > 0
+    Map<String, dynamic>? data = chat.docs.length > 0
         ? {"id": chat.docs[0].id, ...chat.docs[0].data()}
         : null;
 
@@ -258,7 +258,7 @@ class Database {
         .snapshots();
   }
 
-  Stream<QuerySnapshot> getUserChats(String? userId) {
+  Stream<QuerySnapshot<Map<String, dynamic>>> getUserChats(String? userId) {
     return chatsRef
         .where("members", arrayContains: userId)
         .orderBy("last_message.created_at", descending: true)

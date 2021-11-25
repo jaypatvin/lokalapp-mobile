@@ -26,11 +26,8 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<Color?> _colorAnimation;
 
-  final _userSearchController = TextEditingController();
-  final _shopSearchController = TextEditingController();
-
-  Stream<QuerySnapshot>? _userChatStream;
-  Stream<QuerySnapshot>? _shopChatStream;
+  late Stream<QuerySnapshot<Map<String, dynamic>>> _userChatStream;
+  Stream<QuerySnapshot<Map<String, dynamic>>>? _shopChatStream;
 
   @override
   void initState() {
@@ -53,11 +50,6 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
     final user = context.read<Auth>().user!;
     final shops = context.read<Shops>().findByUser(user.id);
     _userChatStream = Database.instance.getUserChats(user.id);
-    _userChatStream?.listen((event) {
-      for (var snapshot in event.docs) {
-        print(snapshot.id);
-      }
-    });
     if (shops.isNotEmpty) {
       _shopChatStream = Database.instance.getUserChats(shops.first.id);
     }
@@ -96,10 +88,7 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
                   50.0,
                 ),
               ),
-              body: ChatStream(
-                chatStream: _userChatStream,
-                searchController: _userSearchController,
-              ),
+              body: ChatStream(chatStream: _userChatStream),
             ),
           );
         }
@@ -121,14 +110,8 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
               physics: NeverScrollableScrollPhysics(),
               controller: _tabController,
               children: [
-                ChatStream(
-                  chatStream: _userChatStream,
-                  searchController: _userSearchController,
-                ),
-                ChatStream(
-                  chatStream: _shopChatStream,
-                  searchController: _shopSearchController,
-                ),
+                ChatStream(chatStream: _userChatStream),
+                ChatStream(chatStream: _shopChatStream!),
               ],
             ),
           ),

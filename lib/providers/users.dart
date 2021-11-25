@@ -30,8 +30,8 @@ class Users extends ChangeNotifier {
 
   bool get isLoading => _isLoading;
 
-  LokalUser findById(String? id) {
-    return _users.firstWhere((user) => user.id == id);
+  LokalUser? findById(String? id) {
+    return _users.firstWhereOrNull((user) => user.id == id);
   }
 
   void setCommunityId(String? id) {

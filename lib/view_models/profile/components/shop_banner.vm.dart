@@ -36,7 +36,7 @@ class ShopBannerViewModel extends ChangeNotifier {
     _shopSetup();
     this.user = isCurrentUser
         ? context.read<Auth>().user!
-        : context.read<Users>().findById(userId);
+        : context.read<Users>().findById(userId)!;
   }
 
   void _shopSetup() {

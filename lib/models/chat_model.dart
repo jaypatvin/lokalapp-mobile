@@ -203,7 +203,7 @@ class ChatModel {
 
     return ChatModel(
       id: doc.id,
-      members: List<String>.from(map['members']),
+      members: List<String>.from(map['members'] ?? []),
       title: map['title'],
       chatType: chatType,
       archived: map['archived'],

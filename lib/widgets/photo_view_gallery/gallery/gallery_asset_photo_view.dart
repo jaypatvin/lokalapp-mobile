@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
@@ -75,7 +76,25 @@ class _GalleryFilePhotoView extends State<GalleryAssetPhotoView> {
                   decoration: null,
                 ),
               ),
-            )
+            ),
+            Positioned(
+              top: 25,
+              left: 15,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.5),
+                  shape: BoxShape.circle,
+                ),
+                child: InkWell(
+                  onTap: () => Navigator.pop(context),
+                  child: Icon(
+                    MdiIcons.closeCircleOutline,
+                    color: Colors.black.withOpacity(0.5),
+                    size: 24.0,
+                  ),
+                ),
+              ),
+            ),
           ],
         ),
       ),

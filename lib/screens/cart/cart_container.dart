@@ -30,7 +30,12 @@ class CartContainer extends StatelessWidget {
         this.child,
         ChangeNotifierProxyProvider<ShoppingCart, CartContainerViewModel>(
           create: (_) => CartContainerViewModel(context, alwaysDisplayButton),
-          update: (ctx, cart, vm) => vm!..updateCartLength(cart.orders.length),
+          update: (ctx, cart, vm) {
+            final quantity = cart.orders.values
+                .map<int>((orders) => orders.length)
+                .fold<int>(0, (a, b) => a + b);
+            return vm!..updateCartLength(quantity);
+          },
           builder: (ctx, _) {
             return Consumer<CartContainerViewModel>(
               builder: (ctx2, vm, _) {

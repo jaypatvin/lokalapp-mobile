@@ -28,7 +28,7 @@ class PostCard extends StatelessWidget {
       createdSince += "${difference.inSeconds}s";
     }
 
-    final user = vm.context.read<Users>().findById(this.activity.userId);
+    final user = vm.context.read<Users>().findById(this.activity.userId)!;
 
     return ListTile(
       onTap: () => vm.onUserPressed(activity),

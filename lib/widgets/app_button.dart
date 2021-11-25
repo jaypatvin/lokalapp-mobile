@@ -41,6 +41,7 @@ class AppButton extends StatelessWidget {
       onPressed: this.onPressed,
       child: Text(
         text!,
+        textAlign: TextAlign.center,
         style: TextStyle(
           fontFamily: "Goldplay",
           fontSize: 16.0.sp,
