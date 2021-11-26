@@ -6,13 +6,31 @@ import 'package:provider/provider.dart';
 
 import '../../../models/activity_feed.dart';
 import '../../../providers/users.dart';
+import '../../../state/mvvm_builder.widget.dart';
+import '../../../state/views/stateless.view.dart';
 import '../../../view_models/home/post_card.vm.dart';
 import '../../../widgets/photo_view_gallery/thumbnails/network_photo_thumbnail.dart';
 import '../../chat/components/chat_avatar.dart';
 
 class PostCard extends StatelessWidget {
-  const PostCard({required this.activity});
+  const PostCard({Key? key, required this.activity}) : super(key: key);
+  final ActivityFeed activity;
 
+  @override
+  Widget build(BuildContext context) {
+    return MVVM(
+      view: (_, __) => _PostCardView(this.activity),
+      viewModel: PostCardViewModel(),
+    );
+  }
+}
+
+class _PostCardView extends StatelessView<PostCardViewModel> {
+  const _PostCardView(
+    this.activity, {
+    Key? key,
+    bool reactive = true,
+  }) : super(key: key, reactive: reactive);
   final ActivityFeed activity;
 
   Widget _buildHeader(PostCardViewModel vm) {
@@ -113,94 +131,81 @@ class PostCard extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Provider<PostCardViewModel>(
-      create: (ctx) => PostCardViewModel(
-        ctx,
-      )..init(),
-      builder: (_, __) {
-        return Consumer<PostCardViewModel>(
-          builder: (ctx, vm, _) {
-            final height = MediaQuery.of(context).size.height;
-            final width = MediaQuery.of(context).size.width;
-            return Container(
-              padding: EdgeInsets.symmetric(horizontal: width * 0.05),
-              child: GestureDetector(
-                onTap: () => vm.goToPostDetails(activity),
-                child: Card(
-                  margin: EdgeInsets.only(top: height * 0.02),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16.0.r),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      SizedBox(height: 10.0.h),
-                      _buildHeader(vm),
-                      SizedBox(height: 5.0.h),
-                      _buildMessageBody(
-                        vm: vm,
-                        horizontalPadding: 20.0.w,
+  Widget render(BuildContext context, PostCardViewModel vm) {
+    final height = MediaQuery.of(context).size.height;
+    final width = MediaQuery.of(context).size.width;
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: width * 0.05),
+      child: GestureDetector(
+        onTap: () => vm.goToPostDetails(this.activity),
+        child: Card(
+          margin: EdgeInsets.only(top: height * 0.02),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16.0.r),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              SizedBox(height: 10.0.h),
+              _buildHeader(vm),
+              SizedBox(height: 5.0.h),
+              _buildMessageBody(
+                vm: vm,
+                horizontalPadding: 20.0.w,
+              ),
+              SizedBox(height: 5.0.h),
+              Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: 20.0.w,
+                ),
+                child: _buildPostImages(vm),
+              ),
+              Divider(
+                color: Colors.grey,
+                indent: 20.0.w,
+                endIndent: 20.0.w,
+              ),
+              Padding(
+                padding: EdgeInsets.only(
+                  left: 10.0.w,
+                  right: 20.0.w,
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    IconButton(
+                      icon: Icon(
+                        this.activity.liked
+                            ? MdiIcons.heart
+                            : MdiIcons.heartOutline,
+                        color: this.activity.liked ? Colors.red : Colors.black,
                       ),
-                      SizedBox(height: 5.0.h),
-                      Padding(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 20.0.w,
+                      onPressed: () => vm.onLike(this.activity),
+                    ),
+                    Text(
+                      this.activity.likedCount.toString(),
+                      style: Theme.of(context).textTheme.subtitle1,
+                    ),
+                    Spacer(),
+                    Row(
+                      children: [
+                        IconButton(
+                          icon: Icon(MdiIcons.commentOutline),
+                          onPressed: () => vm.goToPostDetails(this.activity),
                         ),
-                        child: _buildPostImages(vm),
-                      ),
-                      Divider(
-                        color: Colors.grey,
-                        indent: 20.0.w,
-                        endIndent: 20.0.w,
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(
-                          left: 10.0.w,
-                          right: 20.0.w,
+                        Text(
+                          this.activity.commentCount.toString(),
+                          style: Theme.of(context).textTheme.subtitle1,
                         ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            IconButton(
-                              icon: Icon(
-                                this.activity.liked
-                                    ? MdiIcons.heart
-                                    : MdiIcons.heartOutline,
-                                color: this.activity.liked
-                                    ? Colors.red
-                                    : Colors.black,
-                              ),
-                              onPressed: () => vm.onLike(activity),
-                            ),
-                            Text(
-                              this.activity.likedCount.toString(),
-                              style: Theme.of(context).textTheme.subtitle1,
-                            ),
-                            Spacer(),
-                            Row(
-                              children: [
-                                IconButton(
-                                  icon: Icon(MdiIcons.commentOutline),
-                                  onPressed: () => vm.goToPostDetails(activity),
-                                ),
-                                Text(
-                                  this.activity.commentCount.toString(),
-                                  style: Theme.of(context).textTheme.subtitle1,
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
+                      ],
+                    ),
+                  ],
                 ),
               ),
-            );
-          },
-        );
-      },
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

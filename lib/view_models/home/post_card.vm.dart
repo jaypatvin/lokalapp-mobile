@@ -9,18 +9,20 @@ import '../../routers/app_router.dart';
 import '../../routers/home/post_details.props.dart';
 import '../../screens/home/post_details.dart';
 import '../../screens/profile/profile_screen.dart';
+import '../../state/view_model.dart';
 import '../../widgets/photo_view_gallery/gallery/gallery_network_photo_view.dart';
 
-class PostCardViewModel {
-  PostCardViewModel(this.context);
-  final BuildContext context;
-
+class PostCardViewModel extends ViewModel {
   bool _isUserLoading = false;
   bool get isUserLoading => _isUserLoading;
 
   bool isCurrentUser(ActivityFeed activity) =>
       context.read<Auth>().user!.id == activity.userId;
 
+  bool _isLiking = false;
+  bool _isDeleting = false;
+
+  @override
   void init() {}
 
   void goToPostDetails(ActivityFeed activity) {
@@ -36,22 +38,28 @@ class PostCardViewModel {
       );
   }
 
-  void onLike(ActivityFeed activity) {
+  Future<void> onLike(ActivityFeed activity) async {
+    if (_isLiking) return;
+    print('I got called');
     final user = context.read<Auth>().user!;
     try {
+      _isLiking = true;
       if (activity.liked) {
-        context.read<Activities>().unlikePost(
+        await context.read<Activities>().unlikePost(
               activityId: activity.id,
               userId: user.id!,
             );
       } else {
-        context.read<Activities>().likePost(
+        print('liking...');
+        await context.read<Activities>().likePost(
               activityId: activity.id,
               userId: user.id!,
             );
       }
     } catch (e) {
       _showError(e.toString());
+    } finally {
+      _isLiking = false;
     }
   }
 
@@ -96,10 +104,14 @@ class PostCardViewModel {
   }
 
   Future<void> onDeletePost(ActivityFeed activity) async {
+    if (_isDeleting) return;
     try {
+      _isDeleting = true;
       await context.read<Activities>().deleteActivity(activity.id);
     } catch (e) {
       _showError(e.toString());
+    } finally {
+      _isDeleting = false;
     }
   }
 
