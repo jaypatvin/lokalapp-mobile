@@ -69,15 +69,16 @@ class _ChatViewState extends State<ChatView> {
 
   // this is placed outside of the build function to
   // avoid rebuilds on the StreamBuilder
-  Stream<QuerySnapshot>? _messageStream;
-  late StreamSubscription<QuerySnapshot>? _messageSubscription;
+  Stream<QuerySnapshot<Map<String, dynamic>>>? _messageStream;
+  late StreamSubscription<QuerySnapshot<Map<String, dynamic>>>?
+      _messageSubscription;
 
   // needed to keep track if creating a new message
   bool _createNewMessage = false;
   String? _chatTitle = "New message";
   ChatModel? _chat;
 
-  List<QueryDocumentSnapshot>? _conversations;
+  List<QueryDocumentSnapshot<Map<String, dynamic>>>? _conversations;
 
   late final ChatAPIService _chatApiService;
   late final ConversationAPIService _conversationAPIService;
@@ -129,7 +130,8 @@ class _ChatViewState extends State<ChatView> {
     super.dispose();
   }
 
-  void _messageStreamListener(QuerySnapshot snapshot) {
+  void _messageStreamListener(QuerySnapshot<Map<String, dynamic>> snapshot) {
+    if (snapshot.docs.isEmpty) return;
     final conversation = Conversation.fromDocument(snapshot.docs.first);
     final user = context.read<Auth>().user!;
     this._conversations = snapshot.docs;
@@ -459,7 +461,6 @@ class _ChatViewState extends State<ChatView> {
                       child: _buildMessages(),
                     ),
                   ),
-                  //_buildAdditionalStates(),
                   _buildChatInput(),
                   _buildImagePicker(),
                 ],

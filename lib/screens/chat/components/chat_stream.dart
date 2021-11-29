@@ -113,6 +113,97 @@ class _ChatList extends StatelessWidget {
     );
   }
 
+  GestureDetector _itemBuilder(BuildContext context, int index) {
+    final cUserId = context.read<Auth>().user!.id;
+    final chat = chats[index];
+    final members = <ChatMember>[];
+
+    String? title = chat.title;
+
+    if (chat.chatType == ChatType.shop) {
+      final shop = context.read<Shops>().findById(chat.shopId)!;
+      if (shop.userId == cUserId) {
+        final ids = [...chat.members];
+        ids.retainWhere((id) => shop.id != id);
+        members.addAll(ids.map((id) {
+          final user = context.read<Users>().findById(id)!;
+          return ChatMember(
+            displayName: user.displayName,
+            displayPhoto: user.profilePhoto,
+            type: chat.chatType,
+          );
+        }).toList());
+        final memberNames = members.map((user) => user.displayName).toList();
+        title = memberNames.join(", ");
+      } else {
+        members.add(
+          ChatMember(
+            displayName: shop.name,
+            displayPhoto: shop.profilePhoto,
+            type: chat.chatType,
+          ),
+        );
+      }
+    } else if (chat.chatType == ChatType.product) {
+      final product = context.read<Products>().findById(chat.productId);
+      members.add(
+        ChatMember(
+          displayName: product!.name,
+          displayPhoto: product.gallery![0].url,
+          type: chat.chatType,
+        ),
+      );
+    } else {
+      final ids = [...chat.members];
+      ids.retainWhere((id) => cUserId != id);
+
+      members.addAll(ids.map((id) {
+        final user = context.read<Users>().findById(id)!;
+        return ChatMember(
+          displayName: user.displayName,
+          displayPhoto: user.profilePhoto,
+          type: chat.chatType,
+        );
+      }).toList());
+
+      final memberNames = members.map((user) => user.displayName).toList();
+      title = memberNames.join(", ");
+    }
+
+    return GestureDetector(
+      onTap: () {
+        context
+          ..read<AppRouter>().navigateTo(
+            AppRoute.chat,
+            ChatView.routeName,
+            arguments: ChatViewProps(false, chat: chat),
+          );
+      },
+      child: ListTile(
+        leading: _buildCircleAvatar(members),
+        title: Text(
+          title,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: TextStyle(
+            fontWeight: FontWeight.w600,
+            fontSize: 13.0.sp,
+          ),
+        ),
+        subtitle: Text(
+          chat.lastMessage.content,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: TextStyle(
+            fontWeight: FontWeight.w500,
+            fontSize: 12.0.sp,
+          ),
+        ),
+        trailing: Text(DateFormat.jm().format(chat.lastMessage.createdAt)),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
@@ -120,79 +211,7 @@ class _ChatList extends StatelessWidget {
       padding: EdgeInsets.all(5.0.r),
       shrinkWrap: true,
       itemCount: chats.length, //chatSnapshot!.data!.docs.length,
-      itemBuilder: (ctx, index) {
-        final cUserId = context.read<Auth>().user!.id;
-        final chat = chats[index];
-        final members = <ChatMember>[];
-
-        String? title = chat.title;
-
-        if (chat.chatType == ChatType.shop) {
-          final shop = context.read<Shops>().findById(chat.shopId)!;
-          members.add(ChatMember(
-            displayName: shop.name,
-            displayPhoto: shop.profilePhoto,
-            type: chat.chatType,
-          ));
-        } else if (chat.chatType == ChatType.product) {
-          final product = context.read<Products>().findById(chat.productId);
-          members.add(
-            ChatMember(
-              displayName: product!.name,
-              displayPhoto: product.gallery![0].url,
-              type: chat.chatType,
-            ),
-          );
-        } else {
-          final ids = [...chat.members];
-          ids.retainWhere((id) => cUserId != id);
-
-          members.addAll(ids.map((id) {
-            final user = context.read<Users>().findById(id)!;
-            return ChatMember(
-              displayName: user.displayName,
-              displayPhoto: user.profilePhoto,
-              type: chat.chatType,
-            );
-          }).toList());
-
-          final memberNames = members.map((user) => user.displayName).toList();
-          title = memberNames.join(", ");
-        }
-
-        return GestureDetector(
-          onTap: () {
-            context
-              ..read<AppRouter>().navigateTo(
-                AppRoute.chat,
-                ChatView.routeName,
-                arguments: ChatViewProps(false, chat: chat),
-              );
-          },
-          child: ListTile(
-            leading: _buildCircleAvatar(members),
-            title: Text(
-              title,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                fontWeight: FontWeight.w600,
-                fontSize: 13.0.sp,
-              ),
-            ),
-            subtitle: Text(
-              chat.lastMessage.content,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                fontWeight: FontWeight.w500,
-                fontSize: 12.0.sp,
-              ),
-            ),
-            trailing: Text(DateFormat.jm().format(chat.lastMessage.createdAt)),
-          ),
-        );
-      },
+      itemBuilder: _itemBuilder,
     );
   }
 }

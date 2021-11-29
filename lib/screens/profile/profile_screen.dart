@@ -97,13 +97,25 @@ class _ProfileHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        Positioned.fill(
-          child: Image(
-            image: NetworkImage(
-              user.profilePhoto!,
+        if (user.profilePhoto != null)
+          Positioned.fill(
+            child: Image(
+              image: NetworkImage(
+                user.profilePhoto ?? '',
+              ),
+              fit: BoxFit.cover,
+              errorBuilder: (ctx, obj, trace) => SizedBox(
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    gradient: backgroundGradient,
+                  ),
+                ),
+              ),
             ),
-            fit: BoxFit.cover,
-            errorBuilder: (ctx, obj, trace) => SizedBox(
+          ),
+        if (user.profilePhoto == null)
+          Positioned.fill(
+            child: SizedBox(
               child: DecoratedBox(
                 decoration: BoxDecoration(
                   gradient: backgroundGradient,
@@ -111,7 +123,6 @@ class _ProfileHeader extends StatelessWidget {
               ),
             ),
           ),
-        ),
         Positioned.fill(
           child: SizedBox(
             child: DecoratedBox(
@@ -141,11 +152,13 @@ class _ProfileHeader extends StatelessWidget {
             padding: EdgeInsets.only(top: 10.0.h, bottom: 10.0.h),
             child: Column(
               children: [
+                SizedBox(height: 10.0.h),
                 ChatAvatar(
                   displayName: user.displayName,
                   displayPhoto: user.profilePhoto,
                   radius: 40.0.r,
                 ),
+                SizedBox(height: 10.0.h),
                 Text(
                   user.displayName!,
                   style: TextStyle(
@@ -154,9 +167,10 @@ class _ProfileHeader extends StatelessWidget {
                     fontWeight: FontWeight.w700,
                   ),
                 ),
+                SizedBox(height: 10.0.h),
                 if (this.displaySendMessageButton)
                   SizedBox(
-                    width: 120.w,
+                    width: 140.w,
                     child: AppButton(
                       "Send a Message",
                       Colors.white,
@@ -171,16 +185,19 @@ class _ProfileHeader extends StatelessWidget {
             ),
           ),
         ),
-        Positioned(
-          right: 10.0.w,
-          child: IconButton(
-            padding: EdgeInsets.zero,
-            icon: Icon(
-              Icons.more_horiz,
-              size: 30.0.r,
+        Visibility(
+          visible: displaySettings,
+          child: Positioned(
+            right: 10.0.w,
+            child: IconButton(
+              padding: EdgeInsets.zero,
+              icon: Icon(
+                Icons.more_horiz,
+                size: 30.0.r,
+              ),
+              color: Colors.white,
+              onPressed: this.onTripleDotsPressed,
             ),
-            color: Colors.white,
-            onPressed: this.onTripleDotsPressed,
           ),
         ),
       ],

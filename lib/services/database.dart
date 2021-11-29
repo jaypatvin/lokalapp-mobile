@@ -265,7 +265,7 @@ class Database {
         .snapshots();
   }
 
-  Stream<QuerySnapshot> getConversations(String? chatId) {
+  Stream<QuerySnapshot<Map<String, dynamic>>> getConversations(String? chatId) {
     return chatsRef
         .doc(chatId)
         .collection("conversation")
