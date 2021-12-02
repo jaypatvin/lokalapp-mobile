@@ -85,10 +85,13 @@ class _ProductDetailView extends HookView<ProductDetailViewModel> {
               ),
             ),
             SizedBox(width: 8.0),
-            Text(
-              vm.appBarTitle,
-              style: Theme.of(context).textTheme.headline6,
-            )
+            Flexible(
+              child: Text(
+                vm.appBarTitle,
+                style: Theme.of(context).textTheme.headline5,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
           ],
         ),
         // actions: [
@@ -196,7 +199,7 @@ class _ProductDetailView extends HookView<ProductDetailViewModel> {
               ),
               SizedBox(height: 10.0.h),
               Divider(thickness: 1, height: 2, color: Colors.grey.shade300),
-              SizedBox(height: 10.0.h),
+              SizedBox(height: 20.0.h),
               Align(
                 alignment: Alignment.centerLeft,
                 child: RichText(
@@ -211,7 +214,10 @@ class _ProductDetailView extends HookView<ProductDetailViewModel> {
                             ?.copyWith(fontSize: 12.0.sp),
                       ),
                     ],
-                    style: Theme.of(context).textTheme.headline6,
+                    style: Theme.of(context)
+                        .textTheme
+                        .subtitle1
+                        ?.copyWith(fontSize: 20.0.sp),
                   ),
                 ),
               ),
@@ -226,23 +232,19 @@ class _ProductDetailView extends HookView<ProductDetailViewModel> {
               RichText(
                 text: TextSpan(
                   children: [
-                    TextSpan(text: "Quantity\t"),
+                    TextSpan(text: "Quantity\t\t"),
                     TextSpan(
                       text: vm.quantity.toString(),
-                      style: TextStyle(
-                        fontFamily: "Goldplay",
-                        fontSize: 20.0.sp,
-                        fontWeight: FontWeight.w700,
-                        color: kTealColor,
-                      ),
+                      style: Theme.of(context)
+                          .textTheme
+                          .subtitle1
+                          ?.copyWith(fontSize: 20.0.sp, color: kTealColor),
                     ),
                   ],
-                  style: TextStyle(
-                    fontFamily: "Goldplay",
-                    fontSize: 20.0.sp,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.black,
-                  ),
+                  style: Theme.of(context)
+                      .textTheme
+                      .subtitle1
+                      ?.copyWith(fontSize: 20.0.sp),
                 ),
               ),
               SizedBox(height: 20.0.h),
@@ -377,15 +379,19 @@ class _ProductItemAndPrice extends StatelessWidget {
           child: Text(
             productName!,
             maxLines: null,
-            style: Theme.of(context).textTheme.headline6,
+            style: Theme.of(context)
+                .textTheme
+                .headline5
+                ?.copyWith(fontWeight: FontWeight.w600),
           ),
         ),
         Text(
           productPrice.toString(),
-          style: Theme.of(context)
-              .textTheme
-              .headline5
-              ?.copyWith(color: kOrangeColor),
+          style: Theme.of(context).textTheme.headline5?.copyWith(
+                color: kOrangeColor,
+                fontSize: 26.0.sp,
+                fontWeight: FontWeight.w600,
+              ),
         )
       ],
     );
@@ -416,19 +422,25 @@ class _SpecialInstructionsTextField extends StatelessWidget {
           fillColor: Colors.white,
           filled: true,
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(10.0.r),
             borderSide: BorderSide(
               width: 1,
-              color: Colors.grey.shade500,
+              color: Colors.grey.shade300,
             ),
           ),
           focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
-            borderSide: BorderSide(width: 1, color: Colors.grey.shade500),
+            borderRadius: BorderRadius.circular(10.0.r),
+            borderSide: BorderSide(
+              width: 1,
+              color: Colors.grey.shade300,
+            ),
           ),
           enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
-            borderSide: BorderSide(width: 1, color: Colors.grey.shade500),
+            borderRadius: BorderRadius.circular(10.0.r),
+            borderSide: BorderSide(
+              width: 1,
+              color: Colors.grey.shade300,
+            ),
           ),
           // errorBorder: InputBorder.none,
           // disabledBorder: InputBorder.none,

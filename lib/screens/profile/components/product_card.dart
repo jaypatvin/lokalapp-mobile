@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import '../../../providers/shops.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
 
 import '../../../providers/cart.dart';
 import '../../../providers/products.dart';
+import '../../../providers/shops.dart';
 import '../../../utils/constants/themes.dart';
 import '../../../view_models/discover/product_card.vm.dart';
 import '../../chat/components/chat_avatar.dart';
@@ -31,7 +31,7 @@ class ProductCard extends StatelessWidget {
               decoration: BoxDecoration(
                 border: vm.displayBorder
                     ? Border.all(color: Colors.orange, width: 3)
-                    : Border.all(color: Colors.transparent),
+                    : Border.all(color: Colors.grey.shade300),
               ),
               child: GridTile(
                 child: Image.network(
