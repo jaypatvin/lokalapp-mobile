@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'operating_hours.dart';
+import 'payment_options.dart';
 
 class ShopModel {
   String? id;
@@ -15,6 +16,7 @@ class ShopModel {
   bool? isClosed;
   String? status;
   OperatingHours? operatingHours;
+  PaymentOptions? paymentOptions;
   ShopModel({
     this.id,
     this.name,
@@ -26,6 +28,7 @@ class ShopModel {
     this.isClosed,
     this.status,
     this.operatingHours,
+    this.paymentOptions,
   });
 
   Map<String, dynamic> toMap() {
@@ -40,6 +43,7 @@ class ShopModel {
       'is_close': isClosed,
       'status': status,
       'operating_hours': operatingHours?.toMap(),
+      'payment_options': paymentOptions?.toMap(),
     };
   }
 
@@ -57,6 +61,9 @@ class ShopModel {
       operatingHours: map['operating_hours'] != null
           ? OperatingHours.fromMap(map['operating_hours'])
           : OperatingHours(),
+      paymentOptions: map['payment_options'] != null
+          ? PaymentOptions.fromMap(map['payment_options'])
+          : PaymentOptions(),
     );
   }
   factory ShopModel.fromDocument(DocumentSnapshot doc) {

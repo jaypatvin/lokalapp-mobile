@@ -4,6 +4,7 @@ import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/auth.dart';
+import '../../providers/bank_codes.dart';
 import '../../providers/categories.dart';
 import '../../providers/products.dart';
 import '../../providers/shops.dart';
@@ -26,6 +27,7 @@ class LoginScreenViewModel extends ViewModel {
       context.read<Shops>().fetch();
       context.read<Products>().fetch();
       context.read<Categories>().fetch();
+      context.read<BankCodes>().fetch();
       await context.read<Users>().fetch();
 
       AppRouter.rootNavigatorKey.currentState?.pushNamedAndRemoveUntil(

@@ -13,6 +13,7 @@ import 'package:provider/single_child_widget.dart';
 
 import 'providers/activities.dart';
 import 'providers/auth.dart';
+import 'providers/bank_codes.dart';
 import 'providers/cart.dart';
 import 'providers/categories.dart';
 import 'providers/community.dart';
@@ -127,6 +128,7 @@ class _MyAppState extends State<MyApp> {
       ),
 
       ChangeNotifierProvider<Categories>(create: (_) => Categories(_api)),
+      ChangeNotifierProvider<BankCodes>(create: (_) => BankCodes()),
 
       // This is used in 3 Separate Screens (Tabs) - Home, Discover, and Profile
       ChangeNotifierProvider<ShoppingCart?>(create: (_) => ShoppingCart()),

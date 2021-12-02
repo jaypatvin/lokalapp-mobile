@@ -15,6 +15,7 @@ final chatsRef = FirebaseFirestore.instance.collection("chats");
 final ordersRef = FirebaseFirestore.instance.collection("orders");
 final subscriptionPlansRef =
     FirebaseFirestore.instance.collection("product_subscription_plans");
+
 final Reference storageRef = FirebaseStorage.instance.ref();
 
 // this class should be refactored for each collection
@@ -25,6 +26,14 @@ class Database {
       _database = Database();
     }
     return _database!;
+  }
+
+  Future<QuerySnapshot<Map<String, dynamic>>> getBankCodes() {
+    return FirebaseFirestore.instance.collection('bank_codes').get();
+  }
+
+  Stream<QuerySnapshot<Map<String, dynamic>>> getBankCodesStream() {
+    return FirebaseFirestore.instance.collection('bank_codes').snapshots();
   }
 
   Future<List<String>> getActivityLikes(String activityId) async {
@@ -109,26 +118,6 @@ class Database {
         .orderBy('created_at', descending: true)
         .snapshots();
   }
-
-  // Future<List<ActivityFeed>> getCommunityFeed(String communityId,
-  //     {String? userId}) async {
-  //   final snapshot = await activitiesRef
-  //       .where('community_id', isEqualTo: communityId)
-  //       .orderBy('created_at', descending: true)
-  //       .get();
-
-  //   final activities = <ActivityFeed>[];
-
-  //   for (final doc in snapshot.docs) {
-  //     final activity = ActivityFeed.fromDocument(doc);
-  //     if (userId != null)
-  //       activity.liked = await this.isActivityLiked(activity.id, userId);
-
-  //     activities.add(activity);
-  //   }
-
-  //   return activities;
-  // }
 
   Future<QuerySnapshot<Map<String, dynamic>>> getNotificationTypes() {
     return FirebaseFirestore.instance.collection('notification_types').get();
