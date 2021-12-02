@@ -4,6 +4,8 @@ import 'package:persistent_bottom_nav_bar/models/nested_will_pop_scope.dart';
 import 'package:provider/provider.dart';
 
 import '../../../providers/auth.dart';
+import '../../../state/mvvm_builder.widget.dart';
+import '../../../state/views/stateless.view.dart';
 import '../../../utils/constants/themes.dart';
 import '../../../view_models/profile/components/current_user_profile.vm.dart';
 import '../../home/timeline.dart';
@@ -14,57 +16,60 @@ class CurrentUserProfile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (ctx) => CurrentUserProfileViewModel(ctx),
-      builder: (ctx, _) {
-        return Consumer<CurrentUserProfileViewModel>(
-          builder: (ctx2, vm, _) {
-            final user = ctx2.read<Auth>().user!;
-            return NestedWillPopScope(
-              onWillPop: vm.onWillPop,
-              child: PageView(
-                controller: vm.pageController,
-                physics: NeverScrollableScrollPhysics(),
-                children: [
-                  Column(
-                    children: [
-                      Container(
-                        color: kInviteScreenColor,
-                        padding: EdgeInsets.fromLTRB(
-                          10.0.w,
-                          20.0.w,
-                          10.0.w,
-                          10.0.w,
-                        ),
-                        width: double.infinity,
-                        child: Text(
-                          "My Profile",
-                          style: TextStyle(
-                            color: kTealColor,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        child: MyProfileList(
-                          onMyPostsTap: vm.onMyPostsTap,
-                          onInviteFriend: vm.onInviteFriend,
-                          onNotificationsTap: vm.onNotificationsTap,
-                          onWishlistTap: vm.onWishlistTap,
-                        ),
-                      ),
-                    ],
+    return MVVM(
+      view: (_, __) => _CurrentUserProfileView(),
+      viewModel: CurrentUserProfileViewModel(
+        context.read<PageController>(),
+      ),
+    );
+  }
+}
+
+class _CurrentUserProfileView
+    extends StatelessView<CurrentUserProfileViewModel> {
+  @override
+  Widget render(BuildContext context, CurrentUserProfileViewModel vm) {
+    final user = context.read<Auth>().user!;
+    return NestedWillPopScope(
+      onWillPop: vm.onWillPop,
+      child: PageView(
+        controller: context.read<PageController>(),
+        physics: NeverScrollableScrollPhysics(),
+        children: [
+          Column(
+            children: [
+              Container(
+                color: kInviteScreenColor,
+                padding: EdgeInsets.fromLTRB(
+                  10.0.w,
+                  20.0.w,
+                  10.0.w,
+                  10.0.w,
+                ),
+                width: double.infinity,
+                child: Text(
+                  "My Profile",
+                  style: TextStyle(
+                    color: kTealColor,
+                    fontWeight: FontWeight.w600,
                   ),
-                  GestureDetector(
-                    onPanUpdate: vm.onPanUpdate,
-                    child: Timeline(userId: user.id),
-                  ),
-                ],
+                ),
               ),
-            );
-          },
-        );
-      },
+              Expanded(
+                child: MyProfileList(
+                  onMyPostsTap: vm.onMyPostsTap,
+                  onInviteFriend: vm.onInviteFriend,
+                  onWishlistTap: vm.onWishlistTap,
+                ),
+              ),
+            ],
+          ),
+          GestureDetector(
+            onPanUpdate: vm.onPanUpdate,
+            child: Timeline(userId: user.id),
+          ),
+        ],
+      ),
     );
   }
 }

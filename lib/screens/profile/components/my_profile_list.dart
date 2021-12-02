@@ -5,13 +5,11 @@ import '../../../utils/constants/themes.dart';
 
 class MyProfileList extends StatelessWidget {
   final void Function() onMyPostsTap;
-  final void Function()? onNotificationsTap;
   final void Function()? onWishlistTap;
   final void Function()? onInviteFriend;
   const MyProfileList({
     Key? key,
     required this.onMyPostsTap,
-    required this.onNotificationsTap,
     required this.onWishlistTap,
     required this.onInviteFriend,
   }) : super(key: key);
@@ -20,7 +18,6 @@ class MyProfileList extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListView(
       shrinkWrap: true,
-      //physics: NeverScrollableScrollPhysics(),
       children: ListTile.divideTiles(
         context: context,
         tiles: [

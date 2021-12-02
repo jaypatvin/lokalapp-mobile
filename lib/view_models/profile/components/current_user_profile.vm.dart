@@ -2,18 +2,18 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../../../screens/profile/settings/invite_a_friend/invite_a_friend.dart';
+import '../../../state/view_model.dart';
 
-class CurrentUserProfileViewModel extends ChangeNotifier {
-  CurrentUserProfileViewModel(this.context);
+class CurrentUserProfileViewModel extends ViewModel {
+  CurrentUserProfileViewModel(this._pageController);
 
-  final BuildContext context;
-  final pageController = PageController(initialPage: 0);
+  final PageController _pageController;
 
   Future<bool> onWillPop() async {
-    if (pageController.page == 0)
+    if (_pageController.page == 0)
       return true;
     else {
-      pageController.animateToPage(
+      _pageController.animateToPage(
         0,
         duration: const Duration(milliseconds: 250),
         curve: Curves.easeIn,
@@ -29,7 +29,7 @@ class CurrentUserProfileViewModel extends ChangeNotifier {
   }
 
   void onMyPostsTap() {
-    pageController.animateToPage(
+    _pageController.animateToPage(
       1,
       duration: const Duration(milliseconds: 250),
       curve: Curves.easeIn,
@@ -44,6 +44,5 @@ class CurrentUserProfileViewModel extends ChangeNotifier {
     );
   }
 
-  void onNotificationsTap() => null;
   void onWishlistTap() => null;
 }
