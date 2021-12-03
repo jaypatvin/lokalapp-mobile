@@ -10,6 +10,7 @@ import '../../../../providers/post_requests/shop_body.dart';
 import '../../../../providers/shops.dart';
 import '../../../../routers/app_router.dart';
 import '../../../../screens/profile/add_shop/edit_shop.dart';
+import '../../../../screens/profile/add_shop/payment_options.dart';
 import '../../../../screens/profile/add_shop/shop_schedule.dart';
 import '../../../../services/local_image_service.dart';
 import '../../../../state/view_model.dart';
@@ -54,6 +55,7 @@ class EditShopViewModel extends ViewModel {
         description: shop.description,
         coverPhoto: shop.coverPhoto,
         profilePhoto: shop.profilePhoto,
+        paymentOptions: shop.paymentOptions?.copyWith(),
       );
     context.read<OperatingHoursBody>()..clear();
   }
@@ -126,6 +128,16 @@ class EditShopViewModel extends ViewModel {
         ));
   }
 
+  void onEditPaymentOptions() {
+    AppRouter.profileNavigatorKey.currentState?.push(
+      CupertinoPageRoute(
+        builder: (_) => SetUpPaymentOptions(
+          onSubmit: () => AppRouter.profileNavigatorKey.currentState?.pop(),
+        ),
+      ),
+    );
+  }
+
   Future<bool> _updateShop() async {
     final shopBody = context.read<ShopBody>();
     final imageService = context.read<LocalImageService>();
@@ -164,7 +176,7 @@ class EditShopViewModel extends ViewModel {
 
     return await context
         .read<Shops>()
-        .update(id: shop.id!, data: shopBody.data);
+        .update(id: shop.id!, data: shopBody.toMap());
   }
 
   Future<bool> _updateShopSchedule() async {

@@ -66,12 +66,15 @@ class ShopBanner extends StatelessWidget {
         child: Align(
           alignment: Alignment.center,
           child: SizedBox(
-            width: 100.0.w,
-            child: AppButton(
-              "+ ADD SHOP",
-              kTealColor,
-              false,
-              vm.onAddShop,
+            width: MediaQuery.of(vm.context).size.width / 3,
+            child: SizedBox(
+              width: 300.w,
+              child: AppButton(
+                "+ ADD SHOP",
+                kTealColor,
+                false,
+                vm.onAddShop,
+              ),
             ),
           ),
         ),

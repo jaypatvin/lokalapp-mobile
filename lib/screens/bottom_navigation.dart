@@ -105,6 +105,17 @@ class _BottomNavigationState extends State<BottomNavigation> {
     ];
   }
 
+  void _onItemSelected(int index) {
+    final _pageController = context.read<PageController>();
+    if (!_pageController.hasClients) return;
+    if (_pageController.page == 0) return;
+    _pageController.animateToPage(
+      0,
+      duration: const Duration(milliseconds: 250),
+      curve: Curves.easeIn,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -130,6 +141,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
           duration: Duration(milliseconds: 200),
         ),
         navBarStyle: NavBarStyle.svg,
+        onItemSelected: _onItemSelected,
       ),
     );
   }

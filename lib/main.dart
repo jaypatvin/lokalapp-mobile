@@ -13,6 +13,7 @@ import 'package:provider/single_child_widget.dart';
 
 import 'providers/activities.dart';
 import 'providers/auth.dart';
+import 'providers/bank_codes.dart';
 import 'providers/cart.dart';
 import 'providers/categories.dart';
 import 'providers/community.dart';
@@ -60,6 +61,7 @@ class _MyAppState extends State<MyApp> {
   late final AppRouter _router;
   late final PersistentTabController _tabController;
   late final API _api;
+  late final PageController _profilePageController;
 
   @override
   initState() {
@@ -67,13 +69,16 @@ class _MyAppState extends State<MyApp> {
     _prefs = UserSharedPreferences();
     _prefs.init();
     _tabController = PersistentTabController();
-    _router = AppRouter(_tabController);
     _api = API();
+    _profilePageController = PageController();
+    _router = AppRouter(_tabController);
   }
 
   @override
   dispose() {
     _prefs.dispose();
+    _profilePageController.dispose();
+
     super.dispose();
   }
 
@@ -127,6 +132,7 @@ class _MyAppState extends State<MyApp> {
       ),
 
       ChangeNotifierProvider<Categories>(create: (_) => Categories(_api)),
+      ChangeNotifierProvider<BankCodes>(create: (_) => BankCodes()),
 
       // This is used in 3 Separate Screens (Tabs) - Home, Discover, and Profile
       ChangeNotifierProvider<ShoppingCart?>(create: (_) => ShoppingCart()),
@@ -156,6 +162,7 @@ class _MyAppState extends State<MyApp> {
       ),
 
       // services:
+      ListenableProvider<PageController>.value(value: _profilePageController),
       Provider<MediaUtility?>(create: (_) => MediaUtility.instance),
       Provider<LocalImageService?>(create: (_) => LocalImageService.instance),
       ProxyProvider<Auth, SubscriptionProvider?>(

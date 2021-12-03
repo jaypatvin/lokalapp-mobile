@@ -291,7 +291,7 @@ class _EditShopView extends HookView<EditShopViewModel>
                       "Edit Payment Options",
                       kTealColor,
                       false,
-                      () {},
+                      vm.onEditPaymentOptions,
                     ),
                   ),
                   SizedBox(height: height * 0.01),

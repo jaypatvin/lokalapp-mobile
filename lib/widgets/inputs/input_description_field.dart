@@ -56,7 +56,10 @@ class InputDescriptionField extends StatelessWidget {
             vertical: 20.0.h,
           ),
           hintText: this.hintText,
-          hintStyle: Theme.of(context).textTheme.bodyText2,
+          hintStyle: Theme.of(context)
+              .textTheme
+              .bodyText2
+              ?.copyWith(color: Colors.grey),
         ),
         style: Theme.of(context).textTheme.bodyText1,
       ),

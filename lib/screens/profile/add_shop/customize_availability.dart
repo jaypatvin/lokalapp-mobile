@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart' show DateFormat;
-import 'package:lokalapp/routers/app_router.dart';
 import 'package:provider/provider.dart';
 
 import '../../../models/operating_hours.dart';
@@ -11,6 +10,7 @@ import '../../../providers/auth.dart';
 import '../../../providers/post_requests/operating_hours_body.dart';
 import '../../../providers/post_requests/shop_body.dart';
 import '../../../providers/shops.dart';
+import '../../../routers/app_router.dart';
 import '../../../services/local_image_service.dart';
 import '../../../utils/calendar_picker/calendar_picker.dart';
 import '../../../utils/constants/themes.dart';
@@ -168,11 +168,11 @@ class _CustomizeAvailabilityState extends State<CustomizeAvailability>
       profilePhoto: mediaUrl,
       userId: user.id,
       communityId: user.communityId,
-      operatingHours: context.read<OperatingHoursBody>().data,
+      operatingHours: context.read<OperatingHoursBody>(),
     );
 
     try {
-      await shops.create(shopBody.data);
+      await shops.create(shopBody.toMap());
     } on Exception catch (e) {
       debugPrint(e.toString());
       throw e;

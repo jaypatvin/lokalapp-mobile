@@ -3,11 +3,11 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:keyboard_actions/keyboard_actions.dart';
-import 'package:lokalapp/routers/profile/shop_schedule.props.dart';
 import 'package:provider/provider.dart';
 
 import '../../../providers/post_requests/shop_body.dart';
 import '../../../routers/app_router.dart';
+import '../../../routers/profile/shop_schedule.props.dart';
 import '../../../utils/constants/themes.dart';
 import '../../../utils/utility.dart';
 import '../../../widgets/app_button.dart';
@@ -136,10 +136,10 @@ class _AddShopState extends State<AddShop> {
                 },
               ),
             ),
-            SizedBox(height: 10.0.h),
+            SizedBox(height: 20.0.h),
             Consumer<ShopBody>(builder: (context, shop, child) {
-              bool isNotEmpty =
-                  shop.name!.isNotEmpty && shop.description!.isNotEmpty;
+              bool isNotEmpty = (shop.name?.isNotEmpty ?? false) &&
+                  (shop.description?.isNotEmpty ?? false);
               return SizedBox(
                 width: width * 0.8,
                 child: AppButton(

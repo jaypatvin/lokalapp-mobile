@@ -1,8 +1,7 @@
 import 'dart:async';
 
 import 'package:collection/collection.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/product.dart';
@@ -15,13 +14,9 @@ import '../../screens/discover/product_detail.dart';
 import '../../screens/discover/search.dart';
 import '../../services/api/api.dart';
 import '../../services/api/product_api_service.dart';
+import '../../state/view_model.dart';
 
-class DiscoverViewModel extends ChangeNotifier {
-  DiscoverViewModel(this.context);
-
-  final BuildContext context;
-  final StreamController<String> _errorStream = StreamController.broadcast();
-
+class DiscoverViewModel extends ViewModel {
   late final ProductApiService _apiService;
 
   List<Product> _recommendedProducts = [];
@@ -46,15 +41,8 @@ class DiscoverViewModel extends ChangeNotifier {
 
   bool get isProductsLoading => context.read<Products>().isLoading;
 
-  Stream<String> get errorStream => _errorStream.stream;
-
   @override
-  void dispose() {
-    _errorStream.close();
-    super.dispose();
-  }
-
-  void init() async {
+  void init() {
     _apiService = ProductApiService(context.read<API>());
     fetchRecommendedProducts();
   }
@@ -70,7 +58,7 @@ class DiscoverViewModel extends ChangeNotifier {
         communityId: user.communityId!,
       );
     } catch (e) {
-      _errorStream.add(e.toString());
+      showToast(e.toString());
     } finally {
       _isLoading = false;
       notifyListeners();

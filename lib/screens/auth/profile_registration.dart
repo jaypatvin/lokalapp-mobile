@@ -9,6 +9,7 @@ import 'package:persistent_bottom_nav_bar/models/nested_will_pop_scope.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/auth.dart';
+import '../../providers/bank_codes.dart';
 import '../../providers/categories.dart';
 import '../../providers/post_requests/auth_body.dart';
 import '../../providers/products.dart';
@@ -160,6 +161,7 @@ class _ProfileRegistrationState extends State<ProfileRegistration>
       await context.read<Products>().fetch();
       await context.read<Users>().fetch();
       await context.read<Categories>().fetch();
+      await context.read<BankCodes>().fetch();
       Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(

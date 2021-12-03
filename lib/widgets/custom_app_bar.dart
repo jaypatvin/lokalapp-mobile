@@ -85,7 +85,7 @@ class _Leading extends StatelessWidget {
           Icons.arrow_back_sharp,
           color: leadingColor,
         ),
-        onPressed: onPressedLeading,
+        onPressed: onPressedLeading ?? Navigator.of(context).pop,
       ),
     );
   }

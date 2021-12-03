@@ -18,6 +18,7 @@ class InputField extends StatelessWidget {
     this.keyboardType,
     this.style,
     this.hintStyle,
+    this.initialValue,
   }) : super(key: key);
 
   final FocusNode? focusNode;
@@ -27,6 +28,7 @@ class InputField extends StatelessWidget {
 
   final String? hintText;
   final String? errorText;
+  final String? initialValue;
   final Color fillColor;
   final TextInputType? keyboardType;
   final TextStyle? style;
@@ -41,6 +43,7 @@ class InputField extends StatelessWidget {
       autocorrect: false,
       focusNode: this.focusNode,
       keyboardType: this.keyboardType,
+      initialValue: this.initialValue,
       controller: this.controller,
       onChanged: this.onChanged,
       style: TextStyle(
@@ -63,6 +66,7 @@ class InputField extends StatelessWidget {
         contentPadding: EdgeInsets.symmetric(horizontal: 16.0.w),
         hintStyle: this.hintStyle,
       ),
+      
       validator: this.validator,
     );
   }
