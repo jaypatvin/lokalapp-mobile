@@ -9,7 +9,7 @@ import '../../../providers/subscriptions.dart';
 import '../../../utils/constants/themes.dart';
 import '../../../widgets/custom_app_bar.dart';
 import '../../../widgets/overlays/screen_loader.dart';
-import '../../../widgets/payment_options.dart';
+import '../../../widgets/payment_options.widget.dart';
 import '../../activity/buyer/processing_payment.dart';
 import '../../cart/cart_confirmation.dart';
 
@@ -123,7 +123,7 @@ class _SubscriptionPaymentMethodState extends State<SubscriptionPaymentMethod>
               ),
             ),
             SizedBox(height: 30.0.h),
-            PaymentOptions(
+            PaymentOptionsWidget(
               onPaymentPressed: (mode) async => performFuture<void>(
                 () async => await _onSubmitHandler(context, mode),
               ),

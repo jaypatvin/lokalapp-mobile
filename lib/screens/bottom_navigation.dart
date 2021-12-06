@@ -39,7 +39,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
         activeColorPrimary: Color(0xFFCC3752),
         inactiveColorPrimary: Color(0xFF103045),
         routeAndNavigatorSettings: RouteAndNavigatorSettings(
-          navigatorKey: context.read<AppRouter>().keyOf(AppRoute.home),
+          navigatorKey: AppRouter.discoverNavigatorKey,
           initialRoute: Home.routeName,
           onGenerateRoute: context
               .read<AppRouter>()
@@ -54,7 +54,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
         activeColorPrimary: Color(0xFFCC3752),
         inactiveColorPrimary: Color(0xFF103045),
         routeAndNavigatorSettings: RouteAndNavigatorSettings(
-          navigatorKey: context.read<AppRouter>().keyOf(AppRoute.discover),
+          navigatorKey: AppRouter.discoverNavigatorKey,
           initialRoute: Discover.routeName,
           onGenerateRoute: context
               .read<AppRouter>()
@@ -69,7 +69,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
         activeColorPrimary: Color(0xFFCC3752),
         inactiveColorPrimary: Color(0xFF103045),
         routeAndNavigatorSettings: RouteAndNavigatorSettings(
-          navigatorKey: context.read<AppRouter>().keyOf(AppRoute.chat),
+          navigatorKey: AppRouter.chatNavigatorKey,
           initialRoute: Chat.routeName,
           onGenerateRoute: context
               .read<AppRouter>()
@@ -84,7 +84,12 @@ class _BottomNavigationState extends State<BottomNavigation> {
         activeColorPrimary: Color(0xFFCC3752),
         inactiveColorPrimary: Color(0xFF103045),
         routeAndNavigatorSettings: RouteAndNavigatorSettings(
+          navigatorKey: AppRouter.activityNavigatorKey,
           initialRoute: Activity.routeName,
+          onGenerateRoute: context
+              .read<AppRouter>()
+              .navigatorOf(AppRoute.profile)
+              .onGenerateRoute,
         ),
       ),
       PersistentBottomNavBarItem(
@@ -94,7 +99,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
         activeColorPrimary: Color(0xFFCC3752),
         inactiveColorPrimary: Color(0xFF103045),
         routeAndNavigatorSettings: RouteAndNavigatorSettings(
-          navigatorKey: context.read<AppRouter>().keyOf(AppRoute.profile),
+          navigatorKey: AppRouter.profileNavigatorKey,
           initialRoute: ProfileScreen.routeName,
           onGenerateRoute: context
               .read<AppRouter>()

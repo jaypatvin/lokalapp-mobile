@@ -5,8 +5,8 @@ import '../../utils/constants/themes.dart';
 import 'components/order_details_buttons.dart';
 import 'components/transaction_details.dart';
 
-// This Widget will display all states/conditions of the order details to avoid
-// code repetition.
+/// This Widget will display all states/conditions of the order details to avoid
+/// code repetition.
 class OrderDetails extends StatelessWidget {
   final bool isBuyer;
   final String? subheader;
@@ -58,7 +58,7 @@ class OrderDetails extends StatelessWidget {
             ),
           ),
           SizedBox(height: 16.0),
-          if (order.statusCode! >= 400)
+          if (order.statusCode! >= 300)
             RichText(
               text: TextSpan(
                 text: "Mode of Payment: ",
@@ -89,7 +89,7 @@ class OrderDetails extends StatelessWidget {
     } else if (order.paymentMethod == "cod") {
       return "Cash on Delivery";
     } else {
-      return "GCash";
+      return "Wallet Transfer/Deposit";
     }
   }
 
@@ -104,19 +104,19 @@ class OrderDetails extends StatelessWidget {
             Text(
               "Order Details",
               style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                color: Colors.white,
-              ),
+                    color: Colors.white,
+                  ),
             ),
             Visibility(
               visible: subheader!.isNotEmpty,
               child: Text(
                 subheader!,
                 style: Theme.of(context).textTheme.subtitle2!.copyWith(
-                  color:
-                      this.order.statusCode == 10 || this.order.statusCode == 20
+                      color: this.order.statusCode == 10 ||
+                              this.order.statusCode == 20
                           ? kOrangeColor
                           : Colors.white,
-                ),
+                    ),
               ),
             ),
           ],
