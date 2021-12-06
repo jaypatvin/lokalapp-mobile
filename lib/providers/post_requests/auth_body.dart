@@ -22,6 +22,8 @@ class AuthBody extends ChangeNotifier {
     String? communityId,
     String? profilePhoto,
     String? email,
+    String? displayName,
+    bool notify = true,
   }) {
     _authBody["first_name"] = firstName ?? _authBody["first_name"];
     _authBody["last_name"] = lastName ?? _authBody["last_name"];
@@ -30,8 +32,9 @@ class AuthBody extends ChangeNotifier {
     _authBody["community_id"] = communityId ?? _authBody["community_id"];
     _authBody["profile_photo"] = profilePhoto ?? _authBody["profile_photo"];
     _authBody["email"] = email ?? _authBody["email"];
+    _authBody['display_name'] = displayName ?? _authBody['display_name'];
 
-    notifyListeners();
+    if (notify) notifyListeners();
   }
 
   void setInviteCode(String inviteCode) {

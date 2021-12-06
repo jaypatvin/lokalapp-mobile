@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 
 import 'address.dart';
 import 'timestamp_time_object.dart';
@@ -164,4 +165,96 @@ class LokalUser {
 
   factory LokalUser.fromJson(String source) =>
       LokalUser.fromMap(json.decode(source));
+
+  LokalUser copyWith({
+    List<String>? userUids,
+    String? id,
+    String? firstName,
+    String? lastName,
+    String? profilePhoto,
+    String? email,
+    String? displayName,
+    String? communityId,
+    String? birthDate,
+    String? status,
+    Address? address,
+    UserRegistrationStatus? registration,
+    UserRoles? roles,
+    DateTime? createdAt,
+    Map<String, dynamic>? notificationSettings,
+    bool? showReadReceipts,
+  }) {
+    return LokalUser(
+      userUids: userUids ?? this.userUids,
+      id: id ?? this.id,
+      firstName: firstName ?? this.firstName,
+      lastName: lastName ?? this.lastName,
+      profilePhoto: profilePhoto ?? this.profilePhoto,
+      email: email ?? this.email,
+      displayName: displayName ?? this.displayName,
+      communityId: communityId ?? this.communityId,
+      birthDate: birthDate ?? this.birthDate,
+      status: status ?? this.status,
+      address: address ?? this.address,
+      registration: registration ?? this.registration,
+      roles: roles ?? this.roles,
+      createdAt: createdAt ?? this.createdAt,
+      notificationSettings: notificationSettings ?? this.notificationSettings,
+      showReadReceipts: showReadReceipts ?? this.showReadReceipts,
+    );
+  }
+
+  @override
+  String toString() {
+    return 'LokalUser(userUids: $userUids, id: $id, firstName: $firstName, '
+        'lastName: $lastName, profilePhoto: $profilePhoto, email: $email, '
+        'displayName: $displayName, communityId: $communityId, '
+        'birthDate: $birthDate, status: $status, address: $address, '
+        'registration: $registration, roles: $roles, createdAt: $createdAt, '
+        'notificationSettings: $notificationSettings, '
+        'showReadReceipts: $showReadReceipts)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is LokalUser &&
+        listEquals(other.userUids, userUids) &&
+        other.id == id &&
+        other.firstName == firstName &&
+        other.lastName == lastName &&
+        other.profilePhoto == profilePhoto &&
+        other.email == email &&
+        other.displayName == displayName &&
+        other.communityId == communityId &&
+        other.birthDate == birthDate &&
+        other.status == status &&
+        other.address == address &&
+        other.registration == registration &&
+        other.roles == roles &&
+        other.createdAt == createdAt &&
+        mapEquals(other.notificationSettings, notificationSettings) &&
+        other.showReadReceipts == showReadReceipts;
+  }
+
+  @override
+  int get hashCode {
+    return userUids.hashCode ^
+        id.hashCode ^
+        firstName.hashCode ^
+        lastName.hashCode ^
+        profilePhoto.hashCode ^
+        email.hashCode ^
+        displayName.hashCode ^
+        communityId.hashCode ^
+        birthDate.hashCode ^
+        status.hashCode ^
+        address.hashCode ^
+        registration.hashCode ^
+        roles.hashCode ^
+        createdAt.hashCode ^
+        notificationSettings.hashCode ^
+        showReadReceipts.hashCode;
+  }
 }
