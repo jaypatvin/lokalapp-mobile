@@ -1,7 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import '../../../routers/app_router.dart';
 import '../../../screens/profile/settings/invite_a_friend/invite_a_friend.dart';
+import '../../../screens/profile/wishlist_screen.dart';
 import '../../../state/view_model.dart';
 
 class CurrentUserProfileViewModel extends ViewModel {
@@ -37,12 +40,16 @@ class CurrentUserProfileViewModel extends ViewModel {
   }
 
   void onInviteFriend() {
-    Navigator.of(context).push(
-      CupertinoPageRoute(
-        builder: (_) => InviteAFriend(),
-      ),
-    );
+    context.read<AppRouter>().navigateTo(
+          AppRoute.profile,
+          InviteAFriend.routeName,
+        );
   }
 
-  void onWishlistTap() => null;
+  void onWishlistTap() {
+    context.read<AppRouter>().navigateTo(
+          AppRoute.profile,
+          WishlistScreen.routeName,
+        );
+  }
 }

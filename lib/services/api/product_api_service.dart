@@ -41,11 +41,23 @@ class ProductApiService extends APIService<Product> {
     return handleGenericResponse(response);
   }
 
-  Future<bool> like({required productId}) async {
+  Future<bool> like({required String productId}) async {
     final response = await http.post(
       api.endpointUri(
         endpoint,
         pathSegments: [productId, 'like'],
+      ),
+      headers: api.authHeader(),
+    );
+
+    return handleGenericResponse(response);
+  }
+
+  Future<bool> addToWishlist({required String productId}) async {
+    final response = await http.post(
+      api.endpointUri(
+        endpoint,
+        pathSegments: [productId, 'wishlist'],
       ),
       headers: api.authHeader(),
     );
@@ -153,6 +165,17 @@ class ProductApiService extends APIService<Product> {
     return handleResponseList((map) => Product.fromMap(map), response);
   }
 
+  Future<List<Product>> getUserWishlist({
+    required String userId,
+  }) async {
+    final response = await http.get(
+      api.endpointUri(Endpoint.user, pathSegments: [userId, 'wishlist']),
+      headers: api.authHeader(),
+    );
+    
+    return handleResponseList((map) => Product.fromMap(map), response);
+  }
+
   Future<Product> getById({
     required String productId,
   }) async {
@@ -195,6 +218,17 @@ class ProductApiService extends APIService<Product> {
       ),
       headers: api.authHeader(),
     );
+
+    return handleGenericResponse(response);
+  }
+
+  Future<bool> removeFromWishlist({required productId}) async {
+    final response = await http.delete(
+        api.endpointUri(
+          endpoint,
+          pathSegments: [productId, 'wishlist'],
+        ),
+        headers: api.authHeader());
 
     return handleGenericResponse(response);
   }

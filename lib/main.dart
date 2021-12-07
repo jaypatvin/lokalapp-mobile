@@ -25,6 +25,7 @@ import 'providers/products.dart';
 import 'providers/shops.dart';
 import 'providers/subscriptions.dart';
 import 'providers/users.dart';
+import 'providers/wishlist.dart';
 import 'root/root.dart';
 import 'routers/app_router.dart';
 import 'services/api/api.dart';
@@ -123,6 +124,11 @@ class _MyAppState extends State<MyApp> {
         create: (_) => Products(_api),
         update: (_, auth, products) =>
             products!..setCommunityId(auth.user?.communityId),
+      ),
+
+      ChangeNotifierProxyProvider<Auth, UserWishlist?>(
+        create: (_) => UserWishlist(_api),
+        update: (_, auth, wishlist) => wishlist!..onUserChanged(auth.user?.id),
       ),
 
       ChangeNotifierProxyProvider<Auth, Shops?>(

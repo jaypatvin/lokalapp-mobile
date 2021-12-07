@@ -11,6 +11,7 @@ import 'package:provider/provider.dart';
 import '../../models/product.dart';
 import '../../providers/cart.dart';
 import '../../providers/shops.dart';
+import '../../providers/wishlist.dart';
 import '../../state/mvvm_builder.widget.dart';
 import '../../state/views/hook.view.dart';
 import '../../utils/constants/themes.dart';
@@ -175,18 +176,56 @@ class _ProductDetailView extends HookView<ProductDetailViewModel> {
                       )
                     ],
                   ),
-                  Container(
-                    child: TextButton(
-                      onPressed: () => null,
-                      child: Text(
-                        "Read Reviews",
-                        style: TextStyle(
-                          fontSize:
-                              Theme.of(context).textTheme.subtitle2?.fontSize,
-                          decoration: TextDecoration.underline,
-                        ),
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // TextButton(
+                      //   onPressed: () => null,
+                      //   style: TextButton.styleFrom(
+                      //     padding: EdgeInsets.zero,
+                      //     minimumSize: Size.zero,
+                      //     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      //   ),
+                      //   child: Text(
+                      //     "Read Reviews",
+                      //     style: TextStyle(
+                      //       fontSize:
+                      //           Theme.of(context).textTheme.subtitle2?.fontSize,
+                      //       decoration: TextDecoration.underline,
+                      //     ),
+                      //   ),
+                      // ),
+                      Consumer<UserWishlist>(
+                        builder: (ctx, wishlist, __) {
+                          if (wishlist.isLoading) {
+                            return Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          }
+
+                          return TextButton(
+                            onPressed: vm.onWishlistPressed,
+                            style: TextButton.styleFrom(
+                              padding: EdgeInsets.zero,
+                              minimumSize: Size.zero,
+                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            ),
+                            child: Text(
+                              wishlist.items.contains(vm.product.id)
+                                  ? 'Remove from Wishlist'
+                                  : 'Add to Wishlist',
+                              style: TextStyle(
+                                fontSize: Theme.of(context)
+                                    .textTheme
+                                    .subtitle2
+                                    ?.fontSize,
+                                decoration: TextDecoration.underline,
+                              ),
+                            ),
+                          );
+                        },
                       ),
-                    ),
+                    ],
                   ),
                 ],
               ),
