@@ -22,13 +22,17 @@ class ShopAPIService extends APIService<ShopModel> {
   Future<ShopModel> create({
     required Map body,
   }) async {
-    var response = await http.post(
-      api.endpointUri(endpoint),
-      headers: api.withBodyHeader(),
-      body: json.encode(body),
-    );
+    try {
+      final response = await http.post(
+        api.endpointUri(endpoint),
+        headers: api.withBodyHeader(),
+        body: json.encode(body),
+      );
 
-    return handleResponse((map) => ShopModel.fromMap(map), response);
+      return handleResponse((map) => ShopModel.fromMap(map), response);
+    } catch (e) {
+      rethrow;
+    }
   }
 
   // --PUT
@@ -36,60 +40,81 @@ class ShopAPIService extends APIService<ShopModel> {
     required Map body,
     required String id,
   }) async {
-    final response = await http.put(
-      api.endpointUri(endpoint, pathSegments: [id]),
-      headers: api.withBodyHeader(),
-      body: json.encode(body),
-    );
+    try {
+      final response = await http.put(
+        api.endpointUri(endpoint, pathSegments: [id]),
+        headers: api.withBodyHeader(),
+        body: json.encode(body),
+      );
 
-    return handleGenericResponse(response);
+      return handleGenericResponse(response);
+    } catch (e) {
+      rethrow;
+    }
   }
 
   Future<bool> setOperatingHours({
     required Map body,
     required String id,
   }) async {
-    final response = await http.put(
-      api.endpointUri(endpoint, pathSegments: [id, 'operatingHours']),
-      headers: api.withBodyHeader(),
-      body: json.encode(body),
-    );
+    try {
+      final response = await http.put(
+        api.endpointUri(endpoint, pathSegments: [id, 'operatingHours']),
+        headers: api.withBodyHeader(),
+        body: json.encode(body),
+      );
 
-    return handleGenericResponse(response);
+      return handleGenericResponse(response);
+    } catch (e) {
+      rethrow;
+    }
   }
 
   // --GET
 
   Future<ShopModel> getById({required String id}) async {
-    final response = await http.get(
-      api.endpointUri(endpoint, pathSegments: [id]),
-      headers: api.authHeader(),
-    );
+    try {
+      final response = await http.get(
+        api.endpointUri(endpoint, pathSegments: [id]),
+        headers: api.authHeader(),
+      );
 
-    return handleResponse((map) => ShopModel.fromMap(map), response);
+      return handleResponse((map) => ShopModel.fromMap(map), response);
+    } catch (e) {
+      rethrow;
+    }
   }
 
   Future<List<ShopModel>> getCommunityShops({
     required String communityId,
   }) async {
-    final response = await http.get(
-      api.endpointUri(Endpoint.community, pathSegments: [communityId, 'shops']),
-      headers: api.authHeader(),
-    );
+    try {
+      final response = await http.get(
+        api.endpointUri(Endpoint.community,
+            pathSegments: [communityId, 'shops']),
+        headers: api.authHeader(),
+      );
 
-    return handleResponseList((map) => ShopModel.fromMap(map), response);
+      return handleResponseList((map) => ShopModel.fromMap(map), response);
+    } catch (e) {
+      rethrow;
+    }
   }
 
   Future<List<ShopModel>> getByUserId({
     required String userId,
     required String idToken,
   }) async {
-    final response = await http.get(
-      api.endpointUri(Endpoint.user, pathSegments: [userId, 'shops']),
-      headers: api.authHeader(),
-    );
+    try {
+      final response = await http.get(
+        api.endpointUri(Endpoint.user, pathSegments: [userId, 'shops']),
+        headers: api.authHeader(),
+      );
 
-    return handleResponseList((map) => ShopModel.fromMap(map), response);
+      return handleResponseList((map) => ShopModel.fromMap(map), response);
+    } catch (e) {
+      rethrow;
+    }
   }
 
   Future<OperatingHours> getOperatingHours({required String shopId}) =>
@@ -103,17 +128,21 @@ class _OperatingHoursAPIService extends APIService<OperatingHours> {
   Future<OperatingHours> getOperatingHours({
     required String shopId,
   }) async {
-    final response = await http.get(
-      api.endpointUri(
-        Endpoint.shop,
-        pathSegments: [
-          shopId,
-          'operatingHours',
-        ],
-      ),
-      headers: api.authHeader(),
-    );
+    try {
+      final response = await http.get(
+        api.endpointUri(
+          Endpoint.shop,
+          pathSegments: [
+            shopId,
+            'operatingHours',
+          ],
+        ),
+        headers: api.authHeader(),
+      );
 
-    return handleResponse((map) => OperatingHours.fromMap(map), response);
+      return handleResponse((map) => OperatingHours.fromMap(map), response);
+    } catch (e) {
+      rethrow;
+    }
   }
 }

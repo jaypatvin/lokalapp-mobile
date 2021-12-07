@@ -14,32 +14,44 @@ class CategoryAPIService extends APIService<LokalCategory> {
 
   //#region --GET
   Future<List<LokalCategory>> getAll() async {
-    final response = await http.get(
-      api.endpointUri(endpoint),
-      headers: api.authHeader(),
-    );
+    try {
+      final response = await http.get(
+        api.endpointUri(endpoint),
+        headers: api.authHeader(),
+      );
 
-    return handleResponseList((map) => LokalCategory.fromMap(map), response);
+      return handleResponseList((map) => LokalCategory.fromMap(map), response);
+    } catch (e) {
+      rethrow;
+    }
   }
 
   Future<LokalCategory> getById({required String id}) async {
-    final response = await http.get(
-      api.endpointUri(endpoint, pathSegments: [id]),
-      headers: api.authHeader(),
-    );
-    return handleResponse((map) => LokalCategory.fromMap(map), response);
+    try {
+      final response = await http.get(
+        api.endpointUri(endpoint, pathSegments: [id]),
+        headers: api.authHeader(),
+      );
+      return handleResponse((map) => LokalCategory.fromMap(map), response);
+    } catch (e) {
+      rethrow;
+    }
   }
   //#endregion
 
   //#region --POST
   Future<bool> create({required Map<String, dynamic> body}) async {
-    final response = await http.post(
-      api.endpointUri(endpoint),
-      headers: api.withBodyHeader(),
-      body: json.encode(body),
-    );
+    try {
+      final response = await http.post(
+        api.endpointUri(endpoint),
+        headers: api.withBodyHeader(),
+        body: json.encode(body),
+      );
 
-    return handleGenericResponse(response);
+      return handleGenericResponse(response);
+    } catch (e) {
+      rethrow;
+    }
   }
   //#endregion
 
@@ -48,24 +60,32 @@ class CategoryAPIService extends APIService<LokalCategory> {
     required String id,
     required Map<String, dynamic> body,
   }) async {
-    final response = await http.put(
-      api.endpointUri(endpoint, pathSegments: [id]),
-      headers: api.withBodyHeader(),
-      body: json.encode(body),
-    );
+    try {
+      final response = await http.put(
+        api.endpointUri(endpoint, pathSegments: [id]),
+        headers: api.withBodyHeader(),
+        body: json.encode(body),
+      );
 
-    return handleGenericResponse(response);
+      return handleGenericResponse(response);
+    } catch (e) {
+      rethrow;
+    }
   }
   //#endregion
 
   //#region --DELETE
   Future<bool> delete({required String id}) async {
-    final response = await http.delete(
-      api.endpointUri(endpoint, pathSegments: [id]),
-      headers: api.authHeader(),
-    );
+    try {
+      final response = await http.delete(
+        api.endpointUri(endpoint, pathSegments: [id]),
+        headers: api.authHeader(),
+      );
 
-    return handleGenericResponse(response);
+      return handleGenericResponse(response);
+    } catch (e) {
+      rethrow;
+    }
   }
   //#endregion
 }

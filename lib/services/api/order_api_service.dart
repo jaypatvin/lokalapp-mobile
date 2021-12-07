@@ -16,13 +16,17 @@ class OrderAPIService extends APIService<Order> {
   Future<Order> create({
     required Map<String, dynamic> body,
   }) async {
-    final response = await http.post(
-      api.endpointUri(endpoint),
-      headers: api.withBodyHeader(),
-      body: json.encode(body),
-    );
+    try {
+      final response = await http.post(
+        api.endpointUri(endpoint),
+        headers: api.withBodyHeader(),
+        body: json.encode(body),
+      );
 
-    return handleResponse((map) => Order.fromMap(map), response);
+      return handleResponse((map) => Order.fromMap(map), response);
+    } catch (e) {
+      rethrow;
+    }
   }
   //#endregion
 
@@ -31,85 +35,118 @@ class OrderAPIService extends APIService<Order> {
   Future<bool> cancel({
     required String orderId,
   }) async {
-    final response = await http.put(
-      api.endpointUri(
-        endpoint,
-        pathSegments: [orderId, 'cancel'],
-      ),
-      headers: api.authHeader(),
-    );
+    try {
+      final response = await http.put(
+        api.endpointUri(
+          endpoint,
+          pathSegments: [orderId, 'cancel'],
+        ),
+        headers: api.authHeader(),
+      );
 
-    return handleGenericResponse(response);
+      return handleGenericResponse(response);
+    } catch (e) {
+      rethrow;
+    }
   }
 
   Future<bool> confirm({
     required String orderId,
   }) async {
-    final response = await http.put(
-      api.endpointUri(endpoint, pathSegments: [orderId, 'confirm']),
-      headers: api.authHeader(),
-    );
+    try {
+      final response = await http.put(
+        api.endpointUri(endpoint, pathSegments: [orderId, 'confirm']),
+        headers: api.authHeader(),
+      );
 
-    return handleGenericResponse(response);
+      return handleGenericResponse(response);
+    } catch (e) {
+      rethrow;
+    }
   }
 
   Future<bool> confirmPayment({
     required String orderId,
   }) async {
-    final response = await http.put(
-      api.endpointUri(endpoint, pathSegments: [orderId, 'confirmPayment']),
-      headers: api.authHeader(),
-    );
+    try {
+      final response = await http.put(
+        api.endpointUri(endpoint, pathSegments: [orderId, 'confirmPayment']),
+        headers: api.authHeader(),
+      );
 
-    return handleGenericResponse(response);
+      return handleGenericResponse(response);
+    } catch (e) {
+      rethrow;
+    }
   }
 
   Future<bool> decline({
     required String orderId,
     String? reason,
   }) async {
-    final response = await http.put(
-      api.endpointUri(endpoint, pathSegments: [orderId, 'decline']),
-      headers: api.authHeader(),
-      body: json.encode({'reason': reason}),
-    );
+    try {
+      final response = await http.put(
+        api.endpointUri(endpoint, pathSegments: [orderId, 'decline']),
+        headers: api.authHeader(),
+        body: json.encode({'reason': reason}),
+      );
 
-    return handleGenericResponse(response);
+      return handleGenericResponse(response);
+    } catch (e) {
+      rethrow;
+    }
   }
 
   Future<bool> pay({
     required String orderId,
     required Map<String, dynamic> body,
   }) async {
-    final response = await http.put(
-      api.endpointUri(endpoint, pathSegments: [orderId, 'pay']),
-      headers: api.withBodyHeader(),
-      body: json.encode(body),
-    );
+    try {
+      final response = await http.put(
+        api.endpointUri(endpoint, pathSegments: [orderId, 'pay']),
+        headers: api.withBodyHeader(),
+        body: json.encode(body),
+      );
 
-    return handleGenericResponse(response);
+      return handleGenericResponse(response);
+    } catch (e) {
+      rethrow;
+    }
   }
 
   Future<bool> receive({
     required String orderId,
   }) async {
-    final response = await http.put(
-      api.endpointUri(endpoint, pathSegments: [orderId, 'receive']),
-      headers: api.authHeader(),
-    );
+    try {
+      final response = await http.put(
+        api.endpointUri(endpoint, pathSegments: [orderId, 'receive']),
+        headers: api.authHeader(),
+      );
 
-    return handleGenericResponse(response);
+      return handleGenericResponse(response);
+    } catch (e) {
+      rethrow;
+    }
   }
 
   Future<bool> shipOut({
     required String orderId,
   }) async {
-    final response = await http.put(
-      api.endpointUri(endpoint, pathSegments: [orderId, 'shipOut']),
-      headers: api.authHeader(),
-    );
+    try {
+      final response = await http.put(
+        api.endpointUri(endpoint, pathSegments: [orderId, 'shipOut']),
+        headers: api.authHeader(),
+      );
 
-    return handleGenericResponse(response);
+      return handleGenericResponse(response);
+    } catch (e) {
+      final response = await http.put(
+        api.endpointUri(endpoint, pathSegments: [orderId, 'shipOut']),
+        headers: api.authHeader(),
+      );
+
+      return handleGenericResponse(response);
+    }
   }
   //#endregion
 }

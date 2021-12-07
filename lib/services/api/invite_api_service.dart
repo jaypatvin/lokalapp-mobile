@@ -13,40 +13,52 @@ class InviteAPIService extends APIService<LokalInvite> {
   final Endpoint endpoint = Endpoint.invite;
 
   Future<LokalInvite> inviteAFriend(Map<String, dynamic> body) async {
-    final response = await http.post(
-      api.endpointUri(endpoint),
-      headers: api.withBodyHeader(),
-      body: json.encode(body),
-    );
+    try {
+      final response = await http.post(
+        api.endpointUri(endpoint),
+        headers: api.withBodyHeader(),
+        body: json.encode(body),
+      );
 
-    return handleResponse((map) => LokalInvite.fromMap(map), response);
+      return handleResponse((map) => LokalInvite.fromMap(map), response);
+    } catch (e) {
+      rethrow;
+    }
   }
 
   Future<LokalInvite> check(String code) async {
-    final response = await http.get(
-      api.endpointUri(
-        endpoint,
-        pathSegments: ['check', code],
-      ),
-      headers: api.authHeader(),
-    );
+    try {
+      final response = await http.get(
+        api.endpointUri(
+          endpoint,
+          pathSegments: ['check', code],
+        ),
+        headers: api.authHeader(),
+      );
 
-    return handleResponse((map) => LokalInvite.fromMap(map), response);
+      return handleResponse((map) => LokalInvite.fromMap(map), response);
+    } catch (e) {
+      rethrow;
+    }
   }
 
   Future<bool> claim({
     required String userId,
     required String code,
   }) async {
-    final response = await http.post(
-      api.endpointUri(endpoint, pathSegments: ['claim']),
-      headers: api.withBodyHeader(),
-      body: json.encode({
-        'user_id': userId,
-        'code': code,
-      }),
-    );
+    try {
+      final response = await http.post(
+        api.endpointUri(endpoint, pathSegments: ['claim']),
+        headers: api.withBodyHeader(),
+        body: json.encode({
+          'user_id': userId,
+          'code': code,
+        }),
+      );
 
-    return handleGenericResponse(response);
+      return handleGenericResponse(response);
+    } catch (e) {
+      rethrow;
+    }
   }
 }

@@ -17,45 +17,57 @@ class CommentsAPIService extends APIService<ActivityFeedComment> {
     required String activityId,
     required String commentId,
   }) async {
-    final response = await http.get(
-      api.endpointUri(
-        endpoint,
-        pathSegments: [activityId, 'comments', commentId],
-      ),
-      headers: api.authHeader(),
-    );
+    try {
+      final response = await http.get(
+        api.endpointUri(
+          endpoint,
+          pathSegments: [activityId, 'comments', commentId],
+        ),
+        headers: api.authHeader(),
+      );
 
-    return handleResponse(
-      (map) => ActivityFeedComment.fromMap(map),
-      response,
-    );
+      return handleResponse(
+        (map) => ActivityFeedComment.fromMap(map),
+        response,
+      );
+    } catch (e) {
+      rethrow;
+    }
   }
 
   Future<List<ActivityFeedComment>> getActivityComments(
       {required String activityId}) async {
-    final response = await http.get(
-      api.endpointUri(endpoint, pathSegments: [activityId, 'comments']),
-      headers: api.authHeader(),
-    );
+    try {
+      final response = await http.get(
+        api.endpointUri(endpoint, pathSegments: [activityId, 'comments']),
+        headers: api.authHeader(),
+      );
 
-    return handleResponseList(
-      (map) => ActivityFeedComment.fromMap(map),
-      response,
-    );
+      return handleResponseList(
+        (map) => ActivityFeedComment.fromMap(map),
+        response,
+      );
+    } catch (e) {
+      rethrow;
+    }
   }
 
   Future<List<ActivityFeedComment>> getUserComments({
     required String userId,
   }) async {
-    final response = await http.get(
-      api.endpointUri(Endpoint.user, pathSegments: [userId, 'comments']),
-      headers: api.authHeader(),
-    );
+    try {
+      final response = await http.get(
+        api.endpointUri(Endpoint.user, pathSegments: [userId, 'comments']),
+        headers: api.authHeader(),
+      );
 
-    return handleResponseList(
-      (map) => ActivityFeedComment.fromMap(map),
-      response,
-    );
+      return handleResponseList(
+        (map) => ActivityFeedComment.fromMap(map),
+        response,
+      );
+    } catch (e) {
+      rethrow;
+    }
   }
   //#endregion
 
@@ -64,16 +76,20 @@ class CommentsAPIService extends APIService<ActivityFeedComment> {
     required String activityId,
     required Map<String, dynamic> body,
   }) async {
-    final response = await http.post(
-      api.endpointUri(endpoint, pathSegments: [activityId, 'comments']),
-      headers: api.withBodyHeader(),
-      body: json.encode(body),
-    );
+    try {
+      final response = await http.post(
+        api.endpointUri(endpoint, pathSegments: [activityId, 'comments']),
+        headers: api.withBodyHeader(),
+        body: json.encode(body),
+      );
 
-    return handleResponse(
-      (map) => ActivityFeedComment.fromMap(map),
-      response,
-    );
+      return handleResponse(
+        (map) => ActivityFeedComment.fromMap(map),
+        response,
+      );
+    } catch (e) {
+      rethrow;
+    }
   }
 
   Future<bool> like({
@@ -81,16 +97,20 @@ class CommentsAPIService extends APIService<ActivityFeedComment> {
     required String commentId,
     required String userId,
   }) async {
-    final response = await http.post(
-      api.endpointUri(
-        endpoint,
-        pathSegments: [activityId, 'comments', commentId, 'like'],
-      ),
-      headers: api.withBodyHeader(),
-      body: json.encode({'user_id': userId}),
-    );
+    try {
+      final response = await http.post(
+        api.endpointUri(
+          endpoint,
+          pathSegments: [activityId, 'comments', commentId, 'like'],
+        ),
+        headers: api.withBodyHeader(),
+        body: json.encode({'user_id': userId}),
+      );
 
-    return handleGenericResponse(response);
+      return handleGenericResponse(response);
+    } catch (e) {
+      rethrow;
+    }
   }
   //#endregion
 
@@ -100,16 +120,20 @@ class CommentsAPIService extends APIService<ActivityFeedComment> {
     required String commentId,
     required Map<String, dynamic> body,
   }) async {
-    final response = await http.post(
-      api.endpointUri(
-        endpoint,
-        pathSegments: [activityId, 'comments', commentId],
-      ),
-      headers: api.withBodyHeader(),
-      body: json.encode(body),
-    );
+    try {
+      final response = await http.post(
+        api.endpointUri(
+          endpoint,
+          pathSegments: [activityId, 'comments', commentId],
+        ),
+        headers: api.withBodyHeader(),
+        body: json.encode(body),
+      );
 
-    return handleGenericResponse(response);
+      return handleGenericResponse(response);
+    } catch (e) {
+      rethrow;
+    }
   }
   //#endregion
 
@@ -118,15 +142,19 @@ class CommentsAPIService extends APIService<ActivityFeedComment> {
     required String activityId,
     required String commentId,
   }) async {
-    final response = await http.delete(
-      api.endpointUri(
-        endpoint,
-        pathSegments: [activityId, 'comments', commentId],
-      ),
-      headers: api.authHeader(),
-    );
+    try {
+      final response = await http.delete(
+        api.endpointUri(
+          endpoint,
+          pathSegments: [activityId, 'comments', commentId],
+        ),
+        headers: api.authHeader(),
+      );
 
-    return handleGenericResponse(response);
+      return handleGenericResponse(response);
+    } catch (e) {
+      rethrow;
+    }
   }
 
   Future<bool> unlike({
@@ -134,16 +162,20 @@ class CommentsAPIService extends APIService<ActivityFeedComment> {
     required String commentId,
     required String userId,
   }) async {
-    final response = await http.delete(
-      api.endpointUri(
-        endpoint,
-        pathSegments: [activityId, 'comments', commentId, 'unlike'],
-      ),
-      headers: api.withBodyHeader(),
-      body: json.encode({"user_id": userId}),
-    );
+    try {
+      final response = await http.delete(
+        api.endpointUri(
+          endpoint,
+          pathSegments: [activityId, 'comments', commentId, 'unlike'],
+        ),
+        headers: api.withBodyHeader(),
+        body: json.encode({"user_id": userId}),
+      );
 
-    return handleGenericResponse(response);
+      return handleGenericResponse(response);
+    } catch (e) {
+      rethrow;
+    }
   }
   //#endregion
 }

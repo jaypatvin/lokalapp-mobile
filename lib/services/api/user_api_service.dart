@@ -1,9 +1,10 @@
 import 'dart:convert';
 
-import 'package:lokalapp/models/lokal_user.dart';
-import 'package:lokalapp/services/api/api.dart';
-import 'package:lokalapp/services/api/api_service.dart';
 import 'package:http/http.dart' as http;
+
+import '../../models/lokal_user.dart';
+import 'api.dart';
+import 'api_service.dart';
 
 class UserAPIService extends APIService<LokalUser> {
   const UserAPIService(this.api);
@@ -15,36 +16,49 @@ class UserAPIService extends APIService<LokalUser> {
   Future<LokalUser> create({
     required Map<String, dynamic> body,
   }) async {
-    final response = await http.post(
-      api.endpointUri(endpoint),
-      headers: api.withBodyHeader(),
-      body: json.encode(body),
-    );
+    try {
+      final response = await http.post(
+        api.endpointUri(endpoint),
+        headers: api.withBodyHeader(),
+        body: json.encode(body),
+      );
 
-    return handleResponse((map) => LokalUser.fromMap(map), response);
+      return handleResponse((map) => LokalUser.fromMap(map), response);
+    } catch (e) {
+      rethrow;
+    }
   }
 
   // --GET
   Future<LokalUser> getById({
     required String userId,
   }) async {
-    final response = await http.get(
-      api.endpointUri(endpoint, pathSegments: [userId]),
-      headers: api.authHeader(),
-    );
+    try {
+      final response = await http.get(
+        api.endpointUri(endpoint, pathSegments: [userId]),
+        headers: api.authHeader(),
+      );
 
-    return handleResponse((map) => LokalUser.fromMap(map), response);
+      return handleResponse((map) => LokalUser.fromMap(map), response);
+    } catch (e) {
+      rethrow;
+    }
   }
 
   Future<List<LokalUser>> getCommunityUsers({
     required String communityId,
   }) async {
-    final response = await http.get(
-      api.endpointUri(Endpoint.community, pathSegments: [communityId, 'users']),
-      headers: api.authHeader(),
-    );
+    try {
+      final response = await http.get(
+        api.endpointUri(Endpoint.community,
+            pathSegments: [communityId, 'users']),
+        headers: api.authHeader(),
+      );
 
-    return handleResponseList((map) => LokalUser.fromMap(map), response);
+      return handleResponseList((map) => LokalUser.fromMap(map), response);
+    } catch (e) {
+      rethrow;
+    }
   }
 
   // --PUT
@@ -52,52 +66,68 @@ class UserAPIService extends APIService<LokalUser> {
     required Map body,
     required String userId,
   }) async {
-    final response = await http.put(
-      api.endpointUri(endpoint, pathSegments: [userId]),
-      headers: api.withBodyHeader(),
-      body: json.encode(body),
-    );
+    try {
+      final response = await http.put(
+        api.endpointUri(endpoint, pathSegments: [userId]),
+        headers: api.withBodyHeader(),
+        body: json.encode(body),
+      );
 
-    return handleGenericResponse(response);
+      return handleGenericResponse(response);
+    } catch (e) {
+      rethrow;
+    }
   }
 
   Future<bool> updateNotficationSettings({
     required String userId,
     required Map<String, bool> body,
   }) async {
-    final response = await http.put(
-      api.endpointUri(
-        endpoint,
-        pathSegments: [userId, 'toggleNotificationSetting'],
-      ),
-      headers: api.withBodyHeader(),
-      body: json.encode(body),
-    );
-    return handleGenericResponse(response);
+    try {
+      final response = await http.put(
+        api.endpointUri(
+          endpoint,
+          pathSegments: [userId, 'toggleNotificationSetting'],
+        ),
+        headers: api.withBodyHeader(),
+        body: json.encode(body),
+      );
+      return handleGenericResponse(response);
+    } catch (e) {
+      rethrow;
+    }
   }
 
   Future<bool> updateChatSettings({
     required String userId,
     required Map<String, bool> body,
   }) async {
-    final response = await http.put(
-      api.endpointUri(
-        endpoint,
-        pathSegments: [userId, 'chatSettings'],
-      ),
-      headers: api.withBodyHeader(),
-      body: json.encode(body),
-    );
-    return handleGenericResponse(response);
+    try {
+      final response = await http.put(
+        api.endpointUri(
+          endpoint,
+          pathSegments: [userId, 'chatSettings'],
+        ),
+        headers: api.withBodyHeader(),
+        body: json.encode(body),
+      );
+      return handleGenericResponse(response);
+    } catch (e) {
+      rethrow;
+    }
   }
 
   // --DELETE
   Future<bool> delete({required String userId, required String idToken}) async {
-    final response = await http.delete(
-      api.endpointUri(endpoint, pathSegments: [userId]),
-      headers: api.authHeader(),
-    );
+    try {
+      final response = await http.delete(
+        api.endpointUri(endpoint, pathSegments: [userId]),
+        headers: api.authHeader(),
+      );
 
-    return handleGenericResponse(response);
+      return handleGenericResponse(response);
+    } catch (e) {
+      rethrow;
+    }
   }
 }

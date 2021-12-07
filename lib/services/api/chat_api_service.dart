@@ -14,29 +14,37 @@ class ChatAPIService extends APIService<ChatModel> {
 
   //#region --GET
   Future<ChatModel> getChatByMembers({required List<String> members}) async {
-    final response = await http.get(
-      api.baseUri(
-        pathSegments: const ['getChatByMemberIds'],
-        queryParameters: <String, List<String>>{
-          'memberIds': [...members]
-        },
-      ),
-      headers: api.authHeader(),
-    );
+    try {
+      final response = await http.get(
+        api.baseUri(
+          pathSegments: const ['getChatByMemberIds'],
+          queryParameters: <String, List<String>>{
+            'memberIds': [...members]
+          },
+        ),
+        headers: api.authHeader(),
+      );
 
-    return handleResponse((map) => ChatModel.fromMap(map), response);
+      return handleResponse((map) => ChatModel.fromMap(map), response);
+    } catch (e) {
+      rethrow;
+    }
   }
   //#endregion
 
   //#region --POST
   Future<ChatModel> createChat({required Map<String, dynamic> body}) async {
-    final response = await http.post(
-      api.endpointUri(endpoint),
-      headers: api.withBodyHeader(),
-      body: json.encode(body),
-    );
+    try {
+      final response = await http.post(
+        api.endpointUri(endpoint),
+        headers: api.withBodyHeader(),
+        body: json.encode(body),
+      );
 
-    return handleResponse((map) => ChatModel.fromMap(map), response);
+      return handleResponse((map) => ChatModel.fromMap(map), response);
+    } catch (e) {
+      rethrow;
+    }
   }
 
   //#endregion
@@ -46,45 +54,57 @@ class ChatAPIService extends APIService<ChatModel> {
     required String chatId,
     required Map<String, String> body,
   }) async {
-    final response = await http.put(
-      api.endpointUri(
-        endpoint,
-        pathSegments: [
-          chatId,
-          'updateTitle',
-        ],
-      ),
-      headers: api.withBodyHeader(),
-      body: json.encode(body),
-    );
+    try {
+      final response = await http.put(
+        api.endpointUri(
+          endpoint,
+          pathSegments: [
+            chatId,
+            'updateTitle',
+          ],
+        ),
+        headers: api.withBodyHeader(),
+        body: json.encode(body),
+      );
 
-    return handleGenericResponse(response);
+      return handleGenericResponse(response);
+    } catch (e) {
+      rethrow;
+    }
   }
 
   Future<bool> inviteUser({
     required String chatId,
     required Map<String, dynamic> body,
   }) async {
-    final response = await http.put(
-      api.endpointUri(endpoint, pathSegments: [chatId, 'invite']),
-      headers: api.withBodyHeader(),
-      body: json.encode(body),
-    );
+    try {
+      final response = await http.put(
+        api.endpointUri(endpoint, pathSegments: [chatId, 'invite']),
+        headers: api.withBodyHeader(),
+        body: json.encode(body),
+      );
 
-    return handleGenericResponse(response);
+      return handleGenericResponse(response);
+    } catch (e) {
+      rethrow;
+    }
   }
 
   Future<bool> removeUser({
     required String chatId,
     required Map<String, String> body,
   }) async {
-    final response = await http.put(
-      api.endpointUri(endpoint, pathSegments: [chatId, 'removeUser']),
-      headers: api.withBodyHeader(),
-      body: json.encode(body),
-    );
+    try {
+      final response = await http.put(
+        api.endpointUri(endpoint, pathSegments: [chatId, 'removeUser']),
+        headers: api.withBodyHeader(),
+        body: json.encode(body),
+      );
 
-    return handleGenericResponse(response);
+      return handleGenericResponse(response);
+    } catch (e) {
+      rethrow;
+    }
   }
   //#endregion
 }
