@@ -20,7 +20,11 @@ class UserWishlist extends ChangeNotifier {
 
   String? _userId;
 
+  String? _errorMessage;
+  String? get errorMessage => _errorMessage;
+
   void onUserChanged(String? value) {
+    if (_userId == value) return;
     _userId = value;
 
     if (value != null) {
@@ -28,16 +32,17 @@ class UserWishlist extends ChangeNotifier {
     }
   }
 
-  void fetchWishlist() async {
+  Future<void> fetchWishlist() async {
     if (_userId == null) return;
     try {
       _isLoading = true;
+      _errorMessage = null;
       notifyListeners();
 
       final _products = await _apiService.getUserWishlist(userId: _userId!);
       _wishList = _products.map<String>((product) => product.id).toList();
     } catch (e) {
-      rethrow;
+      _errorMessage = 'Error fetching wishlist, try again.';
     } finally {
       _isLoading = false;
       notifyListeners();
