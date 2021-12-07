@@ -39,7 +39,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
         activeColorPrimary: Color(0xFFCC3752),
         inactiveColorPrimary: Color(0xFF103045),
         routeAndNavigatorSettings: RouteAndNavigatorSettings(
-          navigatorKey: AppRouter.discoverNavigatorKey,
+          navigatorKey: AppRouter.homeNavigatorKey,
           initialRoute: Home.routeName,
           onGenerateRoute: context
               .read<AppRouter>()
