@@ -25,6 +25,7 @@ import '../../utils/functions.utils.dart';
 import '../../widgets/custom_app_bar.dart';
 import '../../widgets/inputs/input_images_picker.dart';
 import '../../widgets/inputs/input_text_field.dart';
+import '../../widgets/keyboard_visibility_builder.dart';
 import '../../widgets/photo_picker_gallery/image_gallery_picker.dart';
 import '../../widgets/photo_picker_gallery/provider/custom_photo_provider.dart';
 import '../../widgets/photo_view_gallery/thumbnails/network_photo_thumbnail.dart';
@@ -462,11 +463,22 @@ class _PostDetailsState extends State<PostDetails> {
                       enableSpecialItemBuilder: true,
                     ),
                   ),
-                  AnimatedContainer(
-                    duration: const Duration(milliseconds: 200),
-                    height: MediaQuery.of(context).viewInsets.bottom > 0
-                        ? kKeyboardActionHeight
-                        : 0,
+                  KeyboardVisibilityBuilder(
+                    builder: (_, __, isVisible) {
+                      if (isVisible) {
+                        Future.delayed(const Duration(milliseconds: 300), () {
+                          scrollController.animateTo(
+                            scrollController.position.maxScrollExtent,
+                            duration: const Duration(milliseconds: 200),
+                            curve: Curves.ease,
+                          );
+                        });
+                      }
+                      return AnimatedContainer(
+                        duration: const Duration(milliseconds: 200),
+                        height: isVisible ? kKeyboardActionHeight : 0,
+                      );
+                    },
                   ),
                 ],
               ),
