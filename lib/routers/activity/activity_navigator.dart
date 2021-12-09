@@ -7,7 +7,9 @@ class ActivityNavigator extends AppNavigator {
       : super(navigatorKey);
   @override
   Route onGenerateRoute(RouteSettings settings) {
-    // TODO: implement onGenerateRoute
-    throw UnimplementedError();
+    switch (settings.name) {
+      default:
+        throw UnimplementedError();
+    }
   }
 }

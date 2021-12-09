@@ -2,10 +2,10 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../providers/auth.dart';
+import '../../../../routers/app_router.dart';
 import '../../../../utils/constants/themes.dart';
 import '../../../../view_models/profile/settings/my_account/my_account.vm.dart';
 import '../../../../widgets/app_button.dart';
@@ -69,7 +69,7 @@ class _MyAccountState extends State<MyAccount> {
                 onTap: () {
                   final isEmailAuth = viewModel.ifEmailAuth();
                   if (isEmailAuth)
-                    pushNewScreen(context, screen: ChangeEmail());
+                    AppRouter.pushNewScreen(context, screen: ChangeEmail());
                 },
                 leading: Text(
                   'Change Email Address',
@@ -87,7 +87,7 @@ class _MyAccountState extends State<MyAccount> {
                 onTap: () {
                   final isEmailAuth = viewModel.ifEmailAuth();
                   if (isEmailAuth)
-                    pushNewScreen(context, screen: ChangePassword());
+                    AppRouter.pushNewScreen(context, screen: ChangePassword());
                 },
                 leading: Text(
                   'Change Password',
@@ -106,7 +106,7 @@ class _MyAccountState extends State<MyAccount> {
                   "Delete Account",
                   kPinkColor,
                   false,
-                  () => pushNewScreen(context, screen: DeleteAccount()),
+                  () => AppRouter.pushNewScreen(context, screen: DeleteAccount()),
                 ),
               ),
             ],

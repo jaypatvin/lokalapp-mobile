@@ -1,15 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:lokalapp/models/community.dart';
-import 'package:lokalapp/providers/community.dart';
 import 'package:oktoast/oktoast.dart';
-import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/auth.dart';
+import '../../providers/community.dart';
 import '../../providers/post_requests/auth_body.dart';
-import '../../screens/auth/register_screen.dart';
+import '../../routers/app_router.dart';
 import '../../screens/auth/profile_registration.dart';
+import '../../screens/auth/register_screen.dart';
 import '../../services/api/api.dart';
 import '../../services/api/invite_api_service.dart';
 import '../../state/view_model.dart';
@@ -55,9 +54,17 @@ class InviteScreenViewModel extends ViewModel {
         notifyListeners();
       }
       if (fireUser != null) {
-        pushNewScreen(context, screen: ProfileRegistration());
+        AppRouter.rootNavigatorKey.currentState?.push(
+          CupertinoPageRoute(
+            builder: (_) => ProfileRegistration(),
+          ),
+        );
       } else {
-        pushNewScreen(context, screen: RegisterScreen());
+        AppRouter.rootNavigatorKey.currentState?.push(
+          CupertinoPageRoute(
+            builder: (_) => RegisterScreen(),
+          ),
+        );
       }
     } catch (e) {
       _displayError = true;

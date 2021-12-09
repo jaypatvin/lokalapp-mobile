@@ -1,129 +1,174 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../../../models/order.dart';
-import '../../../providers/auth.dart';
-import '../../../services/local_image_service.dart';
-import '../../../services/lokal_api_service.dart';
+import '../../../providers/bank_codes.dart';
+import '../../../state/mvvm_builder.widget.dart';
+import '../../../state/views/hook.view.dart';
 import '../../../utils/constants/themes.dart';
-import '../../../utils/utility.dart';
+import '../../../view_models/activity/buyer/bank_details.vm.dart';
 import '../../../widgets/app_button.dart';
 import '../../../widgets/custom_app_bar.dart';
-import '../../../widgets/photo_box.dart';
 import '../../../widgets/overlays/screen_loader.dart';
+import '../../../widgets/photo_box.dart';
 import 'processing_payment.dart';
 
-class BankDetails extends StatefulWidget {
-  final Order order;
+class BankDetails extends StatelessWidget {
   const BankDetails({
     Key? key,
     required this.order,
+    this.paymentMode = PaymentMode.gCash,
   }) : super(key: key);
+  final Order order;
+  final PaymentMode paymentMode;
 
   @override
-  _BankDetailsState createState() => _BankDetailsState();
+  Widget build(BuildContext context) {
+    return MVVM(
+      view: (_, __) => _WalletDetailsView(),
+      viewModel: BankDetailsViewModel(
+        order: order,
+        paymentMode: paymentMode,
+      ),
+    );
+  }
 }
 
-class _BankDetailsState extends State<BankDetails> with ScreenLoader {
-  File? proofOfPayment;
-
-  void _imagePickerHandler() async {
-    final photo = await MediaUtility.instance!.showMediaDialog(context);
-
-    if (photo != null) {
-      setState(() {
-        proofOfPayment = photo;
-      });
-    }
-  }
-
-  Future<void> _onSubmitHandler() async {
-    final idToken = context.read<Auth>().idToken;
-    final service = LocalImageService.instance!;
-    final url = await service.uploadImage(
-      file: this.proofOfPayment!,
-      name: "proof_of_payment",
+class _WalletDetailsView extends HookView<BankDetailsViewModel>
+    with HookScreenLoader<BankDetailsViewModel> {
+  @override
+  Widget screen(BuildContext context, BankDetailsViewModel vm) {
+    final numberFormat = useMemoized<NumberFormat>(
+      () => NumberFormat("#,###.0#", "en_US"),
     );
 
-    LokalApiService.instance!.orders!.pay(
-      idToken: idToken,
-      orderId: widget.order.id,
-      data: <String, String>{
-        "payment_method": "bank",
-        "proof_of_payment": url,
-      },
-    ).then((response) {
-      if (response.statusCode == 200) {
-        // The ProcessingPaymentScreen returns a boolean on successful
-        // payment. If it is, we pop this and go back to the Activity screen.
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ProcessingPayment(
-              order: widget.order,
-              paymentMode: PaymentMode.bank,
-            ),
-          ),
-        ).then((_) => Navigator.pop(context, true));
-      }
-    });
-  }
-
-  @override
-  Widget screen(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(
-        titleText: "Bank Transfer/Deposit",
+        titleText: '${vm.paymentMode == PaymentMode.gCash ? "Wallet" : "Bank"} '
+            'Transfer/Deposit',
         titleStyle: TextStyle(color: Colors.white),
         backgroundColor: kTealColor,
         leadingColor: Colors.white,
-        onPressedLeading: () => Navigator.pop(context),
       ),
       body: Column(
         children: [
+          Padding(
+            padding: EdgeInsets.all(24.0.h),
+            child: RichText(
+              text: TextSpan(
+                children: [
+                  TextSpan(text: 'Please deposit '),
+                  TextSpan(
+                    text: "P ${numberFormat.format(vm.price)}",
+                    style: Theme.of(context).textTheme.bodyText1?.copyWith(
+                        color: Colors.orange, fontWeight: FontWeight.bold),
+                  ),
+                  TextSpan(
+                    text:
+                        ' to any of these ${vm.paymentMode == PaymentMode.gCash ? "wallet" : "bank"} accounts:',
+                  ),
+                ],
+                style: Theme.of(context).textTheme.bodyText1,
+              ),
+            ),
+          ),
+          Expanded(
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 24.0.h),
+              child: ListView.builder(
+                shrinkWrap: true,
+                itemCount: vm.paymentAccounts.length,
+                itemBuilder: (ctx, index) {
+                  final _account = vm.paymentAccounts[index];
+
+                  return Padding(
+                    padding: EdgeInsets.only(bottom: 16.0.h),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          context.read<BankCodes>().getById(_account.bank).name,
+                          style: Theme.of(context).textTheme.subtitle1,
+                        ),
+                        Row(
+                          children: [
+                            Flexible(
+                              flex: 5,
+                              fit: FlexFit.tight,
+                              child: Text(
+                                'Account Number:',
+                                style: Theme.of(context).textTheme.bodyText1,
+                              ),
+                            ),
+                            Flexible(
+                              flex: 4,
+                              child: Text(
+                                '${_account.accountNumber}',
+                                style: Theme.of(context).textTheme.subtitle1,
+                              ),
+                            ),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Flexible(
+                              flex: 5,
+                              fit: FlexFit.tight,
+                              child: Text(
+                                'Account Name:',
+                                style: Theme.of(context).textTheme.bodyText1,
+                              ),
+                            ),
+                            Flexible(
+                              flex: 4,
+                              child: Text(
+                                '${_account.accountName}',
+                                style: Theme.of(context).textTheme.subtitle1,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+            ),
+          ),
           SizedBox(height: 16.0),
-          // TODO: add bank details
-          Text("Put bank details here in the future"),
-          SizedBox(height: 16.0),
-          if (proofOfPayment != null)
+          if (vm.proofOfPayment != null)
             PhotoBox(
               shape: BoxShape.rectangle,
-              file: proofOfPayment,
+              file: vm.proofOfPayment,
               displayBorder: false,
             ),
-          Spacer(),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: Container(
-              width: double.infinity,
-              child: AppButton(
-                "${proofOfPayment != null ? 'Re-u' : 'U'}pload proof of payment",
-                kTealColor,
-                proofOfPayment != null ? false : true,
-                _imagePickerHandler,
-                textStyle: TextStyle(fontSize: 13.0),
-              ),
+          Container(
+            width: double.infinity,
+            padding: EdgeInsets.symmetric(horizontal: 8.0.w, vertical: 4.0.h),
+            child: AppButton(
+              "${vm.proofOfPayment != null ? 'Re-u' : 'U'}"
+              "pload proof of payment",
+              kTealColor,
+              vm.proofOfPayment != null ? false : true,
+              vm.onImagePick,
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: Container(
-              width: double.infinity,
-              child: AppButton(
-                "Submit",
-                proofOfPayment != null ? kTealColor : Colors.grey,
-                true,
-                proofOfPayment != null
-                    ? () async => await performFuture<void>(
-                        () async => await _onSubmitHandler())
-                    : null,
-                textStyle: TextStyle(fontSize: 13.0),
-              ),
+          Container(
+            width: double.infinity,
+            padding: EdgeInsets.symmetric(horizontal: 8.0.w, vertical: 4.0.h),
+            child: AppButton(
+              "Submit",
+              vm.proofOfPayment != null ? kTealColor : Colors.grey,
+              true,
+              vm.proofOfPayment != null
+                  ? () async => await performFuture<void>(vm.onSubmit)
+                  : null,
             ),
           ),
-          SizedBox(height: 24.0)
         ],
       ),
     );

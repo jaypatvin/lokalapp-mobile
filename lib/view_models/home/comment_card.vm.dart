@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -32,6 +31,7 @@ class CommentCardViewModel extends ChangeNotifier {
       userId: context.read<Auth>().user!.id!,
       commentId: comment.id,
     );
+
     notifyListeners();
   }
 

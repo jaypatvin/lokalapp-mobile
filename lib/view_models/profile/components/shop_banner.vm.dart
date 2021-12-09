@@ -1,5 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 
 import '../../../models/lokal_user.dart';
@@ -7,6 +6,8 @@ import '../../../models/user_shop.dart';
 import '../../../providers/auth.dart';
 import '../../../providers/shops.dart';
 import '../../../providers/users.dart';
+import '../../../routers/app_router.dart';
+import '../../../routers/profile/user_shop.props.dart';
 import '../../../screens/profile/add_shop/add_shop.dart';
 import '../../../screens/profile/shop/user_shop.dart';
 import '../../../widgets/verification/verify_screen.dart';
@@ -61,31 +62,27 @@ class ShopBannerViewModel extends ChangeNotifier {
   }
 
   void onAddShop() {
-    pushNewScreen(
-      context,
-      screen: AddShop(),
-      withNavBar: true,
-      pageTransitionAnimation: PageTransitionAnimation.cupertino,
+    AppRouter.profileNavigatorKey.currentState?.push(
+      CupertinoPageRoute(
+        builder: (_) => AddShop(),
+      ),
     );
   }
 
   void onVerify() {
-    pushNewScreen(
-      context,
-      screen: VerifyScreen(
-        skippable: false,
+    AppRouter.profileNavigatorKey.currentState?.push(
+      CupertinoPageRoute(
+        builder: (_) => VerifyScreen(
+          skippable: false,
+        ),
       ),
-      withNavBar: true,
-      pageTransitionAnimation: PageTransitionAnimation.cupertino,
     );
   }
 
   void goToShop() {
-    pushNewScreenWithRouteSettings(
-      context,
-      screen: UserShop(userId: userId),
-      settings: RouteSettings(name: UserShop.routeName),
-      pageTransitionAnimation: PageTransitionAnimation.cupertino,
+    AppRouter.profileNavigatorKey.currentState?.pushNamed(
+      UserShop.routeName,
+      arguments: UserShopProps(userId),
     );
   }
 

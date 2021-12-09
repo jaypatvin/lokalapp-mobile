@@ -16,37 +16,45 @@ class ConversationAPIService extends APIService<Conversation> {
     required chatId,
     required Map<String, dynamic> body,
   }) async {
-    final response = await http.post(
-      api.endpointUri(
-        endpoint,
-        pathSegments: [chatId, 'conversation'],
-      ),
-      headers: api.withBodyHeader(),
-      body: json.encode(body),
-    );
+    try {
+      final response = await http.post(
+        api.endpointUri(
+          endpoint,
+          pathSegments: [chatId, 'conversation'],
+        ),
+        headers: api.withBodyHeader(),
+        body: json.encode(body),
+      );
 
-    return handleResponse(
-      (map) => Conversation.fromMap(map),
-      response,
-    );
+      return handleResponse(
+        (map) => Conversation.fromMap(map),
+        response,
+      );
+    } catch (e) {
+      rethrow;
+    }
   }
 
   Future<bool> deleteConversation({
     required chatId,
     required messageId,
   }) async {
-    final response = await http.delete(
-      api.endpointUri(
-        endpoint,
-        pathSegments: [
-          chatId,
-          'conversation',
-          messageId,
-        ],
-      ),
-      headers: api.authHeader(),
-    );
+    try {
+      final response = await http.delete(
+        api.endpointUri(
+          endpoint,
+          pathSegments: [
+            chatId,
+            'conversation',
+            messageId,
+          ],
+        ),
+        headers: api.authHeader(),
+      );
 
-    return handleGenericResponse(response);
+      return handleGenericResponse(response);
+    } catch (e) {
+      rethrow;
+    }
   }
 }

@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:keyboard_actions/keyboard_actions.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 
 import '../../../models/lokal_images.dart';
 import '../../../providers/post_requests/product_body.dart';
 import '../../../providers/products.dart';
+import '../../../routers/app_router.dart';
 import '../../../utils/constants/themes.dart';
 import '../../../widgets/app_button.dart';
 import '../../../widgets/custom_app_bar.dart';
@@ -193,7 +192,7 @@ class _AddProductState extends State<AddProduct> with ScreenLoader {
           description: this._descriptionController.text,
         );
 
-    pushNewScreen(
+    AppRouter.pushNewScreen(
       context,
       screen: ProductDetails(
         gallery: _gallery,

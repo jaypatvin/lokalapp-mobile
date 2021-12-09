@@ -23,7 +23,11 @@ class Timeline extends StatelessWidget {
       builder: (_, activities, __) {
         if (activities.isLoading)
           return SizedBox.expand(
-            child: Lottie.asset(kAnimationLoading),
+            child: Lottie.asset(
+              kAnimationLoading,
+              fit: BoxFit.cover,
+              repeat: true,
+            ),
           );
 
         final activityFeed =

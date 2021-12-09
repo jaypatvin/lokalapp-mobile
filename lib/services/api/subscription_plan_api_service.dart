@@ -27,69 +27,85 @@ class SubscriptionPlanAPIService extends APIService<ProductSubscriptionPlan> {
   Future<ProductSubscriptionPlan> createSubscriptionPlan({
     required Map<String, dynamic> body,
   }) async {
-    final response = await http.post(
-      api.endpointUri(endpoint),
-      headers: api.withBodyHeader(),
-      body: json.encode(body),
-    );
+    try {
+      final response = await http.post(
+        api.endpointUri(endpoint),
+        headers: api.withBodyHeader(),
+        body: json.encode(body),
+      );
 
-    return handleResponse(
-      (map) => ProductSubscriptionPlan.fromMap(map),
-      response,
-    );
+      return handleResponse(
+        (map) => ProductSubscriptionPlan.fromMap(map),
+        response,
+      );
+    } catch (e) {
+      rethrow;
+    }
   }
 
   Future<bool> autoRescheduleConflicts({
     required String planId,
   }) async {
-    final response = await http.post(
-      api.endpointUri(
-        endpoint,
-        pathSegments: [
-          planId,
-          'autoRescheduleConflicts',
-        ],
-      ),
-      headers: api.authHeader(),
-    );
+    try {
+      final response = await http.post(
+        api.endpointUri(
+          endpoint,
+          pathSegments: [
+            planId,
+            'autoRescheduleConflicts',
+          ],
+        ),
+        headers: api.authHeader(),
+      );
 
-    return handleGenericResponse(response);
+      return handleGenericResponse(response);
+    } catch (e) {
+      rethrow;
+    }
   }
 
   // --PUT
   Future<bool> confirmSubscriptionPlan({
     required String planId,
   }) async {
-    final response = await http.put(
-      api.endpointUri(
-        endpoint,
-        pathSegments: [
-          planId,
-          'confirm',
-        ],
-      ),
-      headers: api.authHeader(),
-    );
+    try {
+      final response = await http.put(
+        api.endpointUri(
+          endpoint,
+          pathSegments: [
+            planId,
+            'confirm',
+          ],
+        ),
+        headers: api.authHeader(),
+      );
 
-    return handleGenericResponse(response);
+      return handleGenericResponse(response);
+    } catch (e) {
+      rethrow;
+    }
   }
 
   Future<bool> manualReschedulePlan({
     required String planId,
     required Map body,
   }) async {
-    final response = await http.put(
-      api.endpointUri(
-        endpoint,
-        pathSegments: [
-          planId,
-          'overrideDates',
-        ],
-      ),
-      headers: api.withBodyHeader(),
-      body: json.encode(body),
-    );
+    try {
+      final response = await http.put(
+        api.endpointUri(
+          endpoint,
+          pathSegments: [
+            planId,
+            'overrideDates',
+          ],
+        ),
+        headers: api.withBodyHeader(),
+        body: json.encode(body),
+      );
 
-    return handleGenericResponse(response);
+      return handleGenericResponse(response);
+    } catch (e) {
+      rethrow;
+    }
   }
 }

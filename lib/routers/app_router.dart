@@ -90,4 +90,63 @@ class AppRouter {
   void popScreen(AppRoute appRoute, [dynamic result]) {
     return keyOf(appRoute).currentState!.pop(result);
   }
+
+  /// Push a new screen without NavigatorKeys.
+  /// Can also hide the bottom navigation bar.
+  ///
+  /// This will automatically use the [rootNavigatorKey] if `withNavBar` is true.
+  static Future<T?> pushNewScreen<T>(
+    BuildContext context, {
+    required Widget screen,
+    bool? withNavBar,
+    PageTransitionAnimation pageTransitionAnimation =
+        PageTransitionAnimation.cupertino,
+    PageRoute? customPageRoute,
+  }) {
+    if (withNavBar == null) {
+      withNavBar = true;
+    }
+    return Navigator.of(context, rootNavigator: !withNavBar).push<T>(
+        customPageRoute as Route<T>? ??
+            getPageRoute(pageTransitionAnimation, enterPage: screen));
+  }
+
+  /// Push a dynamic (non-widget) screen without NavigatorKeys.
+  /// Can also hide the bottom navigation bar.
+  ///
+  /// This will automatically use the [rootNavigatorKey] if `withNavBar` is true.
+  static Future<T?> pushDynamicScreen<T>(
+    BuildContext context, {
+    required dynamic screen,
+    bool? withNavBar,
+  }) {
+    if (withNavBar == null) {
+      withNavBar = true;
+    }
+    return Navigator.of(context, rootNavigator: !withNavBar).push<T>(screen);
+  }
+
+  /// Push a new screen with route settings without NavigatorKeys.
+  /// Can also hide the bottom navigation bar.
+  ///
+  /// This will automatically use the [rootNavigatorKey] if `withNavBar` is true.
+  /// Typically used if we want to pass named routes.
+  static Future<T?> pushNewScreenWithRouteSettings<T>(
+    BuildContext context, {
+    required Widget screen,
+    required RouteSettings settings,
+    bool? withNavBar,
+    PageTransitionAnimation pageTransitionAnimation =
+        PageTransitionAnimation.cupertino,
+    PageRoute? customPageRoute,
+  }) {
+    if (withNavBar == null) {
+      withNavBar = true;
+    }
+
+    return Navigator.of(context, rootNavigator: !withNavBar).push<T>(
+        customPageRoute as Route<T>? ??
+            getPageRoute(pageTransitionAnimation,
+                enterPage: screen, settings: settings));
+  }
 }

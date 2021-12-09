@@ -3,9 +3,11 @@ import 'package:flutter_svg/svg.dart';
 import 'package:lottie/lottie.dart';
 
 import '../../../models/order.dart';
+import '../../../routers/app_router.dart';
 import '../../../utils/constants/assets.dart';
 import '../../../utils/constants/themes.dart';
 import '../../../widgets/app_button.dart';
+import '../activity.dart';
 import '../components/order_details_buttons/message_buttons.dart';
 import '../components/transaction_details.dart';
 
@@ -19,7 +21,7 @@ extension PaymentModeExtension on PaymentMode {
       case PaymentMode.bank:
         return "bank";
       case PaymentMode.gCash:
-        return "gcash";
+        return "e-wallet";
       default:
         return "";
     }
@@ -54,7 +56,9 @@ class ProcessingPayment extends StatelessWidget {
               kTealColor,
               true,
               () {
-                Navigator.pop(context);
+                AppRouter.activityNavigatorKey.currentState?.popUntil(
+                  ModalRoute.withName(Activity.routeName),
+                );
               },
             ),
           ),

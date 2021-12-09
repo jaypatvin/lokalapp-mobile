@@ -1,8 +1,11 @@
 import 'package:flutter/cupertino.dart';
-import 'package:lokalapp/models/user_shop.dart';
+import 'package:oktoast/oktoast.dart';
+import 'package:provider/provider.dart';
 
 import '../../models/product.dart';
+import '../../models/user_shop.dart';
 import '../../providers/cart.dart';
+import '../../providers/wishlist.dart';
 import '../../state/view_model.dart';
 
 class ProductDetailViewModel extends ViewModel {
@@ -64,5 +67,44 @@ class ProductDetailViewModel extends ViewModel {
       notes: _instructions,
     );
     Navigator.pop(context);
+  }
+
+  Future<void> onWishlistPressed() async {
+    try {
+      final _wishlist = context.read<UserWishlist>();
+      if (_wishlist.items.contains(product.id)) {
+        final success = await _removeFromWishlist();
+        showToast('Successfully removed from wishlist!');
+
+        if (!success) throw 'Error removing from wishlist.';
+        return;
+      }
+      final success = await _addToWishlist();
+      showToast('Successfully added to wishlist!');
+      if (!success) throw 'Error adding to wishlist.';
+      return;
+    } catch (e) {
+      showToast(e.toString());
+    }
+  }
+
+  Future<bool> _removeFromWishlist() async {
+    try {
+      return await context
+          .read<UserWishlist>()
+          .removeFromWishlist(productId: product.id);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<bool> _addToWishlist() async {
+    try {
+      return await context
+          .read<UserWishlist>()
+          .addToWishlist(productId: product.id);
+    } catch (e) {
+      rethrow;
+    }
   }
 }

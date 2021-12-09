@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 
 import '../../../providers/auth.dart';
@@ -50,7 +49,8 @@ class Settings extends StatelessWidget {
               ),
             ),
             ListTile(
-              onTap: () => pushNewScreen(context, screen: MyAccount()),
+              onTap: () =>
+                  AppRouter.pushNewScreen(context, screen: MyAccount()),
               tileColor: Colors.white,
               leading: Text(
                 "My Account",
@@ -63,7 +63,8 @@ class Settings extends StatelessWidget {
               ),
             ),
             ListTile(
-              onTap: () => pushNewScreen(context, screen: ChatSettings()),
+              onTap: () =>
+                  AppRouter.pushNewScreen(context, screen: ChatSettings()),
               tileColor: Colors.white,
               leading: Text(
                 "Chat Settings",
@@ -76,8 +77,8 @@ class Settings extends StatelessWidget {
               ),
             ),
             ListTile(
-              onTap: () =>
-                  pushNewScreen(context, screen: NotificationSetting()),
+              onTap: () => AppRouter.pushNewScreen(context,
+                  screen: NotificationSetting()),
               tileColor: Colors.white,
               leading: Text(
                 "Notification Settings",
@@ -90,7 +91,8 @@ class Settings extends StatelessWidget {
               ),
             ),
             ListTile(
-              onTap: () => pushNewScreen(context, screen: PrivacySetting()),
+              onTap: () =>
+                  AppRouter.pushNewScreen(context, screen: PrivacySetting()),
               tileColor: Colors.white,
               leading: Text(
                 "Privacy Settings",
@@ -103,7 +105,8 @@ class Settings extends StatelessWidget {
               ),
             ),
             ListTile(
-              onTap: () => pushNewScreen(context, screen: InviteAFriend()),
+              onTap: () =>
+                  AppRouter.pushNewScreen(context, screen: InviteAFriend()),
               tileColor: Colors.white,
               leading: Text(
                 "Invite a friend",
@@ -128,7 +131,8 @@ class Settings extends StatelessWidget {
               ),
             ),
             ListTile(
-              onTap: () => pushNewScreen(context, screen: HelpCenter()),
+              onTap: () =>
+                  AppRouter.pushNewScreen(context, screen: HelpCenter()),
               tileColor: Colors.white,
               leading: Text(
                 "Help Center",
@@ -141,7 +145,8 @@ class Settings extends StatelessWidget {
               ),
             ),
             ListTile(
-              onTap: () => pushNewScreen(context, screen: TermsOfService()),
+              onTap: () =>
+                  AppRouter.pushNewScreen(context, screen: TermsOfService()),
               tileColor: Colors.white,
               leading: Text(
                 "Terms of Service",
@@ -154,7 +159,8 @@ class Settings extends StatelessWidget {
               ),
             ),
             ListTile(
-              onTap: () => pushNewScreen(context, screen: PrivacyPolicy()),
+              onTap: () =>
+                  AppRouter.pushNewScreen(context, screen: PrivacyPolicy()),
               tileColor: Colors.white,
               leading: Text(
                 "Privacy Policy",
@@ -167,7 +173,7 @@ class Settings extends StatelessWidget {
               ),
             ),
             ListTile(
-              onTap: () => pushNewScreen(context, screen: About()),
+              onTap: () => AppRouter.pushNewScreen(context, screen: About()),
               tileColor: Colors.white,
               leading: Text(
                 "About",

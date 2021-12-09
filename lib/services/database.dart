@@ -74,7 +74,7 @@ class Database {
     return activitiesRef
         .doc(activityId)
         .collection('comments')
-        .orderBy('created_at', descending: true)
+        .orderBy('created_at', descending: false)
         .snapshots();
   }
 

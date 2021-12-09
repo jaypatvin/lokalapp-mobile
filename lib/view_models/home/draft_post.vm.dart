@@ -1,6 +1,5 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:lokalapp/services/database.dart';
+import 'package:flutter/material.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:provider/provider.dart';
@@ -8,33 +7,24 @@ import 'package:provider/provider.dart';
 import '../../models/lokal_images.dart';
 import '../../providers/activities.dart';
 import '../../providers/auth.dart';
+import '../../routers/app_router.dart';
 import '../../services/local_image_service.dart';
 import '../../state/view_model.dart';
 import '../../widgets/photo_picker_gallery/provider/custom_photo_provider.dart';
+import '../../widgets/photo_view_gallery/gallery/gallery_asset_photo_view.dart';
 
-class PostDetailViewModel extends ViewModel {
-  PostDetailViewModel({
-    required this.activityId,
-    required this.onUserPressed,
-    required this.onLike,
-  });
-
-  final String activityId;
-  final void Function(String) onUserPressed;
-  final void Function() onLike;
-
+class DraftPostViewModel extends ViewModel {
+  DraftPostViewModel();
   late final CustomPickerDataProvider imageProvider;
-  late final Stream<QuerySnapshot<Map<String, dynamic>>> commentFeed;
-  final TextEditingController inputController = TextEditingController();
 
-  bool _isCommentUploading = false;
+  String? _postMessage;
+  String? get postMessage => _postMessage;
 
   @override
   void init() {
     imageProvider = context.read<CustomPickerDataProvider>();
     imageProvider.onPickMax.addListener(_showMaxAssetsText);
     imageProvider.pickedNotifier.addListener(_onPick);
-    commentFeed = Database.instance.getCommentFeed(activityId);
     _providerInit();
   }
 
@@ -43,7 +33,6 @@ class PostDetailViewModel extends ViewModel {
     imageProvider.picked.clear();
     imageProvider.removeListener(_showMaxAssetsText);
     imageProvider.pickedNotifier.removeListener(_onPick);
-    inputController.dispose();
     super.dispose();
   }
 
@@ -60,18 +49,33 @@ class PostDetailViewModel extends ViewModel {
 
   void _onPick() => notifyListeners();
 
-  void onImageRemove(int index) {
-    imageProvider.picked.removeAt(index);
+  void onPostMessageChanged(String? value) {
+    _postMessage = value;
     notifyListeners();
   }
 
-  Future<void> createComment() async {
-    if (_isCommentUploading || inputController.text.isEmpty) return;
+  void openGallery(final int index) {
+    AppRouter.rootNavigatorKey.currentState?.push(
+      CupertinoPageRoute(
+        builder: (context) => GalleryAssetPhotoView(
+          loadingBuilder: (_, __) => Center(child: CircularProgressIndicator()),
+          galleryItems: imageProvider.picked,
+          backgroundDecoration: const BoxDecoration(
+            color: Colors.black,
+          ),
+          initialIndex: index,
+          scrollDirection: Axis.horizontal,
+        ),
+      ),
+    );
+  }
 
-    _isCommentUploading = true;
-    final cUser = context.read<Auth>().user!;
+  Future<void> postHandler() async {
     final service = context.read<LocalImageService>();
-    final gallery = <LokalImages>[];
+    final activities = context.read<Activities>();
+    final user = context.read<Auth>().user!;
+
+    var gallery = <LokalImages>[];
     for (var asset in imageProvider.picked) {
       var file = await asset.file;
       var url = await service.uploadImage(file: file!, name: 'post_photo');
@@ -83,25 +87,31 @@ class PostDetailViewModel extends ViewModel {
       );
     }
 
-    Map<String, dynamic> body = {
-      "user_id": cUser.id,
-      "message": inputController.text,
-      "images": gallery.map((x) => x.toMap()).toList(),
-    };
-
     try {
-      await context
-          .read<Activities>()
-          .createComment(activityId: this.activityId, body: body);
+      await activities.post({
+        'community_id': user.communityId,
+        'user_id': user.id,
+        'message': _postMessage,
+        'images': gallery.map((x) => x.toMap()).toList(),
+      });
 
-      _isCommentUploading = false;
-      inputController.clear();
-      imageProvider.picked.clear();
-      notifyListeners();
+      Navigator.pop(context, true);
     } catch (e) {
-      _isCommentUploading = false;
-      notifyListeners();
-      showToast('Cannot create a comment: $e');
+      showToast(e.toString());
     }
+  }
+
+  Future<bool> onWillPop(Widget displayMessage) async {
+    if (_postMessage == null && imageProvider.picked.isEmpty) {
+      return true;
+    }
+    final willPop = await showModalBottomSheet<bool>(
+      context: context,
+      isDismissible: false,
+      isScrollControlled: true,
+      useRootNavigator: true,
+      builder: (ctx) => displayMessage,
+    );
+    return willPop ?? false;
   }
 }

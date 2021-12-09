@@ -9,8 +9,10 @@ import '../../screens/profile/add_shop/shop_confirmation.dart';
 import '../../screens/profile/add_shop/shop_schedule.dart';
 import '../../screens/profile/edit_profile.dart';
 import '../../screens/profile/profile_screen.dart';
+import '../../screens/profile/settings/invite_a_friend/invite_a_friend.dart';
 import '../../screens/profile/settings/settings.dart';
 import '../../screens/profile/shop/user_shop.dart';
+import '../../screens/profile/wishlist_screen.dart';
 import 'customize_availability.props.dart';
 import 'shop_schedule.props.dart';
 import 'user_shop.props.dart';
@@ -86,6 +88,12 @@ class ProfileNavigator extends AppNavigator {
             productId: productId,
           ),
         );
+
+      case WishlistScreen.routeName:
+        return CupertinoPageRoute(builder: (_) => WishlistScreen());
+
+      case InviteAFriend.routeName:
+        return CupertinoPageRoute(builder: (_) => InviteAFriend());
       default:
         // TODO: implement unknownRoute
         throw UnimplementedError();

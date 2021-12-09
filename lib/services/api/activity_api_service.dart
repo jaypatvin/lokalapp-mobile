@@ -15,61 +15,77 @@ class ActivityAPIService extends APIService<ActivityFeed> {
 
   //#region -- GET
   Future<ActivityFeed> getById({required String activityId}) async {
-    final response = await http.get(
-      api.endpointUri(endpoint, pathSegments: [activityId]),
-      headers: api.authHeader(),
-    );
+    try {
+      final response = await http.get(
+        api.endpointUri(endpoint, pathSegments: [activityId]),
+        headers: api.authHeader(),
+      );
 
-    return handleResponse(
-      (map) => ActivityFeed.fromMap(map),
-      response,
-    );
+      return handleResponse(
+        (map) => ActivityFeed.fromMap(map),
+        response,
+      );
+    } catch (e) {
+      rethrow;
+    }
   }
 
   Future<List<ActivityFeed>> getAll() async {
-    final response = await http.get(
-      api.endpointUri(endpoint),
-      headers: api.authHeader(),
-    );
+    try {
+      final response = await http.get(
+        api.endpointUri(endpoint),
+        headers: api.authHeader(),
+      );
 
-    return handleResponseList(
-      (map) => ActivityFeed.fromMap(map),
-      response,
-    );
+      return handleResponseList(
+        (map) => ActivityFeed.fromMap(map),
+        response,
+      );
+    } catch (e) {
+      rethrow;
+    }
   }
 
   Future<List<ActivityFeed>> getUserActivities({required String userId}) async {
-    final uri = api.endpointUri(
-      Endpoint.user,
-      pathSegments: [userId, 'activities'],
-    );
-    final response = await http.get(
-      uri,
-      headers: api.authHeader(),
-    );
+    try {
+      final uri = api.endpointUri(
+        Endpoint.user,
+        pathSegments: [userId, 'activities'],
+      );
+      final response = await http.get(
+        uri,
+        headers: api.authHeader(),
+      );
 
-    return handleResponseList(
-      (map) => ActivityFeed.fromMap(map),
-      response,
-    );
+      return handleResponseList(
+        (map) => ActivityFeed.fromMap(map),
+        response,
+      );
+    } catch (e) {
+      rethrow;
+    }
   }
 
   Future<List<ActivityFeed>> getCommunityActivities({
     required String communityId,
   }) async {
-    final uri = api.endpointUri(
-      Endpoint.community,
-      pathSegments: [communityId, 'activities'],
-    );
-    final response = await http.get(
-      uri,
-      headers: api.authHeader(),
-    );
+    try {
+      final uri = api.endpointUri(
+        Endpoint.community,
+        pathSegments: [communityId, 'activities'],
+      );
+      final response = await http.get(
+        uri,
+        headers: api.authHeader(),
+      );
 
-    return handleResponseList(
-      (map) => ActivityFeed.fromMap(map),
-      response,
-    );
+      return handleResponseList(
+        (map) => ActivityFeed.fromMap(map),
+        response,
+      );
+    } catch (e) {
+      rethrow;
+    }
   }
   //#endregion
 
@@ -77,58 +93,75 @@ class ActivityAPIService extends APIService<ActivityFeed> {
   Future<ActivityFeed> create({
     required Map data,
   }) async {
-    final body = json.encode(data);
-    final response = await http.post(
-      api.endpointUri(endpoint),
-      headers: api.withBodyHeader(),
-      body: body,
-    );
+    try {
+      final body = json.encode(data);
+      final response = await http.post(
+        api.endpointUri(endpoint),
+        headers: api.withBodyHeader(),
+        body: body,
+      );
 
-    return handleResponse(
-      (map) => ActivityFeed.fromMap(map),
-      response,
-    );
+      return handleResponse(
+        (map) => ActivityFeed.fromMap(map),
+        response,
+      );
+    } catch (e) {
+      rethrow;
+    }
   }
 
   Future<bool> like({
     required String activityId,
     required String userId,
   }) async {
-    final uri = api.endpointUri(
-      endpoint,
-      pathSegments: [activityId, 'like'],
-    );
-    final response = await http.post(
-      uri,
-      headers: api.withBodyHeader(),
-      body: json.encode({"user_id": userId}),
-    );
+    try {
+      final uri = api.endpointUri(
+        endpoint,
+        pathSegments: [activityId, 'like'],
+      );
+      final response = await http.post(
+        uri,
+        headers: api.withBodyHeader(),
+        body: json.encode({"user_id": userId}),
+      );
 
-    return handleGenericResponse(response);
+      return handleGenericResponse(response);
+    } catch (e) {
+      rethrow;
+    }
   }
   //#endregion
 
   //#region -- DELETE
   Future<bool> delete({required String activityId}) async {
-    final uri = api.endpointUri(endpoint, pathSegments: [activityId]);
-    final response = await http.delete(
-      uri,
-      headers: api.authHeader(),
-    );
+    try {
+      final uri = api.endpointUri(endpoint, pathSegments: [activityId]);
+      final response = await http.delete(
+        uri,
+        headers: api.authHeader(),
+      );
 
-    return handleGenericResponse(response);
+      return handleGenericResponse(response);
+    } catch (e) {
+      rethrow;
+    }
   }
 
   Future<bool> unlike({required String activityId, required userId}) async {
-    final uri = api.endpointUri(endpoint, pathSegments: [activityId, 'unlike']);
+    try {
+      final uri =
+          api.endpointUri(endpoint, pathSegments: [activityId, 'unlike']);
 
-    final response = await http.delete(
-      uri,
-      headers: api.withBodyHeader(),
-      body: jsonEncode({"user_id": userId}),
-    );
+      final response = await http.delete(
+        uri,
+        headers: api.withBodyHeader(),
+        body: jsonEncode({"user_id": userId}),
+      );
 
-    return handleGenericResponse(response);
+      return handleGenericResponse(response);
+    } catch (e) {
+      rethrow;
+    }
   }
   //#endregion
 
@@ -137,15 +170,19 @@ class ActivityAPIService extends APIService<ActivityFeed> {
     required String activityId,
     required Map<String, dynamic> udpateData,
   }) async {
-    final uri = api.endpointUri(endpoint, pathSegments: [activityId]);
+    try {
+      final uri = api.endpointUri(endpoint, pathSegments: [activityId]);
 
-    final response = await http.put(
-      uri,
-      headers: api.withBodyHeader(),
-      body: jsonEncode(udpateData),
-    );
+      final response = await http.put(
+        uri,
+        headers: api.withBodyHeader(),
+        body: jsonEncode(udpateData),
+      );
 
-    return handleGenericResponse(response);
+      return handleGenericResponse(response);
+    } catch (e) {
+      rethrow;
+    }
   }
   //#endregion
 }

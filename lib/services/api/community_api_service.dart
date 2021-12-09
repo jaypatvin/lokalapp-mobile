@@ -10,11 +10,15 @@ class CommunityAPIService extends APIService<Community> {
   static const Endpoint endpoint = Endpoint.community;
 
   Future<Community> getById(String id) async {
-    final response = await http.get(
-      api.endpointUri(endpoint, pathSegments: [id]),
-      headers: api.authHeader(),
-    );
+    try {
+      final response = await http.get(
+        api.endpointUri(endpoint, pathSegments: [id]),
+        headers: api.authHeader(),
+      );
 
-    return handleResponse((map) => Community.fromMap(map), response);
+      return handleResponse((map) => Community.fromMap(map), response);
+    } catch (e) {
+      rethrow;
+    }
   }
 }
