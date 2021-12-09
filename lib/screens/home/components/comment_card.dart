@@ -47,6 +47,7 @@ class CommentCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final user = context.read<Users>().findById(comment.userId)!;
+    print('rebuilding ${comment.id}');
     return ChangeNotifierProvider(
       create: (ctx) => CommentCardViewModel(
         context: context,
