@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:keyboard_actions/keyboard_actions.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 
 import '../../../models/lokal_category.dart';
@@ -31,6 +30,8 @@ class _ProductDetailsState extends State<ProductDetails> {
   bool _forPickup = true;
   final _stockController = TextEditingController();
   final FocusNode _stockFocusNode = FocusNode();
+
+  get AppRouter => null;
 
   @override
   void initState() {
@@ -293,7 +294,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                     true,
                     valid
                         ? () {
-                            pushNewScreen(
+                            AppRouter.pushNewScreen(
                               context,
                               screen: ProductSchedule(
                                 gallery: widget.gallery,

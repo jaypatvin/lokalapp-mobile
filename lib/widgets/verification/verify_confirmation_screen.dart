@@ -1,14 +1,10 @@
-import 'dart:ui';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:persistent_bottom_nav_bar/models/nested_will_pop_scope.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 
 import '../../screens/bottom_navigation.dart';
 import '../../utils/constants/themes.dart';
 import '../../widgets/custom_app_bar.dart';
-
 
 class VerifyConfirmationScreen extends StatelessWidget {
   final bool skippable;

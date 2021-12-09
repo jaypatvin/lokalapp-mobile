@@ -5,6 +5,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:lokalapp/services/bottom_nav_bar_hider.dart';
 import 'package:lottie/lottie.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
@@ -93,6 +94,7 @@ class _MyAppState extends State<MyApp> {
 
       // for bottom nav bar
       ListenableProvider.value(value: _tabController),
+      ChangeNotifierProvider(create: (_) => BottomNavBarHider()),
 
       // auth:
       ChangeNotifierProvider<Auth>(create: (_) => Auth(_api)),

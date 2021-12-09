@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/auth.dart';
@@ -44,11 +43,12 @@ class ProfileHeaderViewModel extends ViewModel {
 
   void onSettingsPressed() {
     if (isCurrentUser) {
-      pushNewScreenWithRouteSettings(
-        context,
-        screen: Settings(),
-        settings: RouteSettings(name: Settings.routeName),
-      );
+      // pushNewScreenWithRouteSettings(
+      //   context,
+      //   screen: Settings(),
+      //   settings: RouteSettings(name: Settings.routeName),
+      // );
+      AppRouter.profileNavigatorKey.currentState?.pushNamed(Settings.routeName);
     } else {
       debugPrint('What to do?');
       ScaffoldMessenger.of(context).showSnackBar(
@@ -61,7 +61,9 @@ class ProfileHeaderViewModel extends ViewModel {
 
   void onTripleDotsPressed() {
     if (isCurrentUser) {
-      pushNewScreen(context, screen: EditProfile());
+      AppRouter.profileNavigatorKey.currentState?.pushNamed(
+        EditProfile.routeName,
+      );
     } else {
       debugPrint('What to do?');
       ScaffoldMessenger.of(context).showSnackBar(

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../providers/post_requests/product_body.dart';
+import '../../../../routers/app_router.dart';
 import '../../../../utils/constants/themes.dart';
 import '../../../../widgets/app_button.dart';
 import '../../../../widgets/custom_app_bar.dart';
@@ -109,7 +109,7 @@ class _AddAVariantState extends State<AddAVariant> {
               kTealColor,
               true,
               () {
-                pushNewScreen(
+                AppRouter.pushNewScreen(
                   context,
                   screen: ProductVariant2(gallery: widget.gallery),
                 );

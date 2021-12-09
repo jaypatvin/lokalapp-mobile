@@ -117,7 +117,7 @@ class ShopHeader extends StatelessWidget {
               ),
               color: Colors.white,
               onPressed: () {
-                pushNewScreenWithRouteSettings(
+                AppRouter.pushNewScreenWithRouteSettings(
                   context,
                   screen: EditShop(),
                   settings: RouteSettings(name: EditShop.routeName),

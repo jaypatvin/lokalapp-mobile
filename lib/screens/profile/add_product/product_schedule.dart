@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart' show DateFormat;
+import '../../../routers/app_router.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 
@@ -176,7 +177,7 @@ class _ProductScheduleState extends State<ProductSchedule> {
                 true,
                 () {
                   setupProductAvailability();
-                  pushNewScreen(
+                  AppRouter.pushNewScreen(
                     context,
                     screen: ProductPreview(
                       gallery: widget.gallery,

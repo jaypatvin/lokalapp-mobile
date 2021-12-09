@@ -1,5 +1,5 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:lokalapp/services/bottom_nav_bar_hider.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 
@@ -34,7 +34,6 @@ class _BottomNavigationState extends State<BottomNavigation> {
       PersistentBottomNavBarItem(
         assetName: kBottomIconHome,
         title: ("Home"),
-        contentPadding: 0.0,
         iconSize: 34,
         activeColorPrimary: Color(0xFFCC3752),
         inactiveColorPrimary: Color(0xFF103045),
@@ -129,23 +128,16 @@ class _BottomNavigationState extends State<BottomNavigation> {
         controller: context.read<PersistentTabController>(),
         screens: _buildScreens(),
         items: _navBarsItems(),
-        confineInSafeArea: true,
-        backgroundColor: Colors.white,
         resizeToAvoidBottomInset: true,
-        stateManagement: true,
-        hideNavigationBarWhenKeyboardShows: true,
-        popAllScreensOnTapOfSelectedTab: true,
-        popActionScreens: PopActionScreensType.all,
+        hideNavigationBar: context.watch<BottomNavBarHider>().isHidden,
+        navBarStyle: NavBarStyle.svg,
         itemAnimationProperties: ItemAnimationProperties(
           duration: Duration(milliseconds: 200),
           curve: Curves.ease,
         ),
         screenTransitionAnimation: ScreenTransitionAnimation(
           animateTabTransition: true,
-          curve: Curves.ease,
-          duration: Duration(milliseconds: 200),
         ),
-        navBarStyle: NavBarStyle.svg,
         onItemSelected: _onItemSelected,
       ),
     );

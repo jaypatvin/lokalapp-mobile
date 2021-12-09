@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -12,6 +11,7 @@ import '../../models/product.dart';
 import '../../providers/cart.dart';
 import '../../providers/shops.dart';
 import '../../providers/wishlist.dart';
+import '../../services/bottom_nav_bar_hider.dart';
 import '../../state/mvvm_builder.widget.dart';
 import '../../state/views/hook.view.dart';
 import '../../utils/constants/themes.dart';
@@ -46,8 +46,14 @@ class _ProductDetailView extends HookView<ProductDetailViewModel> {
     final _nodeInstructions = useFocusNode();
     final _photoView = useMemoized(() => PhotoViewController());
     final _galleryIndex = useState<int>(0);
+    final _navBarHider = useMemoized<BottomNavBarHider>(
+      () => context.read<BottomNavBarHider>(),
+    );
 
     useEffect(() {
+      Future.delayed(const Duration(milliseconds: 100), () {
+        _navBarHider.isHidden = true;
+      });
       final void Function() listener = () {
         vm.onInstructionsChanged(_instructionsController.text);
       };
@@ -63,6 +69,9 @@ class _ProductDetailView extends HookView<ProductDetailViewModel> {
         );
       }
       return () {
+        Future.delayed(const Duration(milliseconds: 100), () {
+          _navBarHider.isHidden = false;
+        });
         _instructionsController.removeListener(listener);
       };
     }, []);
@@ -306,6 +315,7 @@ class _ProductDetailView extends HookView<ProductDetailViewModel> {
                   ),
                 ],
               ),
+              SizedBox(height: 10.0.h),
             ],
           ),
         ),
