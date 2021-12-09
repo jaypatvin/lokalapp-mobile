@@ -1,266 +1,71 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:keyboard_actions/keyboard_actions.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:persistent_bottom_nav_bar/models/nested_will_pop_scope.dart';
-import 'package:photo_manager/photo_manager.dart';
-import 'package:provider/provider.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 
-import '../../models/lokal_images.dart';
-import '../../providers/activities.dart';
-import '../../providers/auth.dart';
-import '../../services/local_image_service.dart';
+import '../../state/mvvm_builder.widget.dart';
+import '../../state/views/hook.view.dart';
 import '../../utils/constants/themes.dart';
+import '../../view_models/home/draft_post.vm.dart';
 import '../../widgets/app_button.dart';
 import '../../widgets/custom_app_bar.dart';
 import '../../widgets/overlays/screen_loader.dart';
 import '../../widgets/photo_picker_gallery/image_gallery_picker.dart';
-import '../../widgets/photo_picker_gallery/provider/custom_photo_provider.dart';
-import '../../widgets/photo_view_gallery/gallery/gallery_asset_photo_view.dart';
 import '../../widgets/photo_view_gallery/thumbnails/asset_photo_thumbnail.dart';
 
-class DraftPost extends StatefulWidget {
+class DraftPost extends StatelessWidget {
   static const routeName = '/home/draft_post';
+  const DraftPost({Key? key}) : super(key: key);
+
   @override
-  _DraftPostState createState() => _DraftPostState();
+  Widget build(BuildContext context) {
+    return MVVM(
+      view: (_, __) => _DraftPostView(),
+      viewModel: DraftPostViewModel(),
+    );
+  }
 }
 
-class _DraftPostState extends State<DraftPost>
-    with TickerProviderStateMixin, ScreenLoader {
-  final TextEditingController _userController = TextEditingController();
-  final GlobalKey<ScaffoldState> _key = GlobalKey<ScaffoldState>();
-  final FocusNode _nodePostText = FocusNode();
-  CustomPickerDataProvider? _provider;
-  bool _showImagePicker = false;
-
+class _DraftPostView extends HookView<DraftPostViewModel>
+    with HookScreenLoader {
   @override
-  void initState() {
-    super.initState();
-    _provider = Provider.of<CustomPickerDataProvider>(context, listen: false);
-    _provider!.onPickMax.addListener(_showMaxAssetsText);
-    _provider!.pickedNotifier.addListener(_onPick);
-    _providerInit();
-  }
+  Widget screen(BuildContext context, DraftPostViewModel vm) {
+    final _nodePostText = useFocusNode();
+    final _showImagePicker = useState<bool>(false);
 
-  @override
-  void dispose() {
-    _provider!.picked.clear();
-    _provider!.removeListener(_showMaxAssetsText);
-    _provider!.pickedNotifier.removeListener(_onPick);
-    super.dispose();
-  }
-
-  KeyboardActionsConfig _buildConfig() {
-    return KeyboardActionsConfig(
-      keyboardActionsPlatform: KeyboardActionsPlatform.ALL,
-      keyboardBarColor: Colors.grey.shade200,
-      nextFocus: false,
-      actions: [
-        KeyboardActionsItem(
-          focusNode: _nodePostText,
-          toolbarButtons: [
-            (node) {
-              return TextButton(
-                onPressed: () => node.unfocus(),
-                child: Text(
-                  "Done",
-                  style: Theme.of(context).textTheme.bodyText1!.copyWith(
-                        color: Colors.black,
-                      ),
-                ),
-              );
-            },
-          ],
-        ),
-      ],
-    );
-  }
-
-  void _onPick() {
-    setState(() {});
-  }
-
-  Future<void> _providerInit() async {
-    final pathList = await PhotoManager.getAssetPathList(
-      onlyAll: true,
-      type: RequestType.image,
-    );
-    _provider!.resetPathList(pathList);
-  }
-
-  void _showMaxAssetsText() {
-    // TODO: use OKToast
-    final snackBar = SnackBar(
-      content: Text("You have reached the limit of 5 media per post."),
-    );
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
-  }
-
-  Widget _buildCard() {
-    return Padding(
-      padding: EdgeInsets.only(top: 10, bottom: 0),
-      child: TextField(
-        focusNode: _nodePostText,
-        controller: _userController,
-        cursorColor: Colors.black,
-        keyboardType: TextInputType.multiline,
-        maxLines: null,
-        decoration: InputDecoration(
-          border: InputBorder.none,
-          focusedBorder: InputBorder.none,
-          enabledBorder: InputBorder.none,
-          errorBorder: InputBorder.none,
-          disabledBorder: InputBorder.none,
-          contentPadding: EdgeInsets.symmetric(
-            horizontal: 15.0,
-            vertical: 11.0,
-          ),
-          hintText: "What's on your mind?",
-          hintStyle: Theme.of(context).textTheme.bodyText1,
-        ),
-        style: Theme.of(context).textTheme.bodyText1,
-      ),
-    );
-  }
-
-  Widget _postButton() {
-    return Container(
-      padding: EdgeInsets.symmetric(vertical: 10.0.h, horizontal: 15.0.w),
-      color: kInviteScreenColor,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          GestureDetector(
-            child: Container(
-              padding: EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(100.r),
-                border: Border.all(
-                  width: 1,
-                  color: kTealColor,
-                ),
-              ),
-              child: Icon(
-                MdiIcons.fileImageOutline,
-                color: kTealColor,
-              ),
-            ),
-            onTap: () => setState(
-              () => this._showImagePicker = !this._showImagePicker,
-            ),
-          ),
-          Spacer(),
-          SizedBox(
-            height: 40.0.h,
-            width: 100.0.w,
-            child: AppButton(
-              "POST",
-              kTealColor,
-              true,
-              () async => await performFuture(() async => await _postHandler()),
-            ),
+    final _kbConfig = useMemoized<KeyboardActionsConfig>(() {
+      return KeyboardActionsConfig(
+        keyboardActionsPlatform: KeyboardActionsPlatform.ALL,
+        keyboardBarColor: Colors.grey.shade200,
+        nextFocus: false,
+        actions: [
+          KeyboardActionsItem(
+            focusNode: _nodePostText,
+            toolbarButtons: [
+              (node) {
+                return TextButton(
+                  onPressed: () => node.unfocus(),
+                  child: Text(
+                    "Done",
+                    style: Theme.of(context).textTheme.bodyText1!.copyWith(
+                          color: Colors.black,
+                        ),
+                  ),
+                );
+              },
+            ],
           ),
         ],
-      ),
-    );
-  }
-
-  void _openGallery(final int index) {
-    Navigator.push(
-      context,
-      CupertinoPageRoute(
-        builder: (context) => GalleryAssetPhotoView(
-          loadingBuilder: (_, __) => Center(child: CircularProgressIndicator()),
-          galleryItems: this._provider?.picked ?? [],
-          backgroundDecoration: const BoxDecoration(
-            color: Colors.black,
-          ),
-          initialIndex: index,
-          scrollDirection: Axis.horizontal,
-        ),
-      ),
-    );
-  }
-
-  Future<void> _postHandler() async {
-    final service = context.read<LocalImageService>();
-    final activities = context.read<Activities>();
-    final user = context.read<Auth>().user!;
-
-    var gallery = <LokalImages>[];
-    for (var asset in _provider!.picked) {
-      var file = await asset.file;
-      var url = await service.uploadImage(file: file!, name: 'post_photo');
-      gallery
-          .add(LokalImages(url: url, order: _provider!.picked.indexOf(asset)));
-    }
-
-    try {
-      await activities.post({
-        'community_id': user.communityId,
-        'user_id': user.id,
-        'message': _userController.text,
-        'images': gallery.map((x) => x.toMap()).toList(),
-      });
-
-      Navigator.pop(context, true);
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            e.toString(),
-          ),
-        ),
       );
-    }
-  }
+    });
 
-  Widget _buildPostImages() {
-    var count = _provider!.picked.length;
-    return StaggeredGridView.countBuilder(
-      shrinkWrap: true,
-      physics: NeverScrollableScrollPhysics(),
-      itemCount: count,
-      crossAxisCount: 2,
-      itemBuilder: (ctx, index) {
-        return AssetPhotoThumbnail(
-          galleryItem: this._provider!.picked[index],
-          onTap: () => _openGallery(index),
-          onRemove: () =>
-              setState(() => this._provider!.picked.removeAt(index)),
-        );
-      },
-      staggeredTileBuilder: (index) {
-        if (count % 2 != 0 && index == 0) {
-          return new StaggeredTile.count(2, 0.5);
-        }
-        return new StaggeredTile.count(1, 0.5);
-      },
-    );
-  }
-
-  Future<bool> _onWillPop() async {
-    if (_userController.text.isEmpty && _provider!.picked.isEmpty) {
-      return true;
-    }
-    return (await showModalBottomSheet<bool>(
-          context: context,
-          isDismissible: false,
-          isScrollControlled: true,
-          useRootNavigator: true,
-          builder: (ctx) => _ExitNotification(),
-        )) ??
-        false;
-  }
-
-  @override
-  Widget screen(BuildContext context) {
     return NestedWillPopScope(
-      onWillPop: _onWillPop,
+      onWillPop: () => vm.onWillPop(_ExitNotification()),
       child: Scaffold(
-        key: _key,
         backgroundColor: Colors.white,
         appBar: CustomAppBar(
           leadingWidth: 62.0.w,
@@ -273,9 +78,10 @@ class _DraftPostState extends State<DraftPost>
                   child: Center(
                     child: Text(
                       "Cancel",
-                      style: Theme.of(context).textTheme.subtitle2!.copyWith(
-                            color: kPinkColor,
-                          ),
+                      style: Theme.of(context)
+                          .textTheme
+                          .subtitle2!
+                          .copyWith(color: kPinkColor),
                     ),
                   ),
                 ),
@@ -292,21 +98,105 @@ class _DraftPostState extends State<DraftPost>
               ),
         ),
         body: KeyboardActions(
-          config: _buildConfig(),
+          config: _kbConfig,
           disableScroll: true,
           child: Column(
             children: [
               Visibility(
-                visible: _provider!.picked.length > 0,
-                child: _buildPostImages(),
+                visible: vm.imageProvider.picked.length > 0,
+                child: StaggeredGridView.countBuilder(
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                  itemCount: vm.imageProvider.picked.length,
+                  crossAxisCount: 2,
+                  itemBuilder: (ctx, index) {
+                    return AssetPhotoThumbnail(
+                      galleryItem: vm.imageProvider.picked[index],
+                      onTap: () => vm.openGallery(index),
+                      onRemove: () => vm.imageProvider.picked.removeAt(index),
+                    );
+                  },
+                  staggeredTileBuilder: (index) {
+                    if (vm.imageProvider.picked.length % 2 != 0 && index == 0) {
+                      return new StaggeredTile.count(2, 0.5);
+                    }
+                    return new StaggeredTile.count(1, 0.5);
+                  },
+                ),
               ),
-              Expanded(child: _buildCard()),
-              _postButton(),
+              Expanded(
+                child: Padding(
+                  padding: EdgeInsets.only(top: 10, bottom: 0),
+                  child: TextField(
+                    focusNode: _nodePostText,
+                    onChanged: vm.onPostMessageChanged,
+                    cursorColor: Colors.black,
+                    keyboardType: TextInputType.multiline,
+                    maxLines: null,
+                    onTap: () => _showImagePicker.value = false,
+                    decoration: InputDecoration(
+                      border: InputBorder.none,
+                      focusedBorder: InputBorder.none,
+                      enabledBorder: InputBorder.none,
+                      errorBorder: InputBorder.none,
+                      disabledBorder: InputBorder.none,
+                      contentPadding: EdgeInsets.symmetric(
+                        horizontal: 15.0,
+                        vertical: 11.0,
+                      ),
+                      hintText: "What's on your mind?",
+                      hintStyle: Theme.of(context).textTheme.bodyText1,
+                    ),
+                    style: Theme.of(context).textTheme.bodyText1,
+                  ),
+                ),
+              ),
+              Container(
+                padding: EdgeInsets.symmetric(
+                  vertical: 10.0.h,
+                  horizontal: 15.0.w,
+                ),
+                color: kInviteScreenColor,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    GestureDetector(
+                      child: Container(
+                        padding: EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(100.r),
+                          border: Border.all(
+                            width: 1,
+                            color: kTealColor,
+                          ),
+                        ),
+                        child: Icon(
+                          MdiIcons.fileImageOutline,
+                          color: kTealColor,
+                        ),
+                      ),
+                      onTap: () =>
+                          _showImagePicker.value = !_showImagePicker.value,
+                    ),
+                    Spacer(),
+                    SizedBox(
+                      height: 40.0.h,
+                      width: 100.0.w,
+                      child: AppButton(
+                        "POST",
+                        kTealColor,
+                        true,
+                        () async => await performFuture<void>(vm.postHandler),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
               AnimatedContainer(
                 duration: const Duration(milliseconds: 100),
-                height: this._showImagePicker ? 150.0.h : 0.0.h,
+                height: _showImagePicker.value ? 150.0.h : 0.0.h,
                 child: ImageGalleryPicker(
-                  _provider,
+                  vm.imageProvider,
                   pickerHeight: 150.h,
                   assetHeight: 150.h,
                   assetWidth: 150.h,
