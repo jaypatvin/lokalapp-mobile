@@ -1,7 +1,5 @@
 import 'dart:convert';
 
-import 'package:http/http.dart' as http;
-
 import '../../models/chat_model.dart';
 import 'api.dart';
 import 'api_service.dart';
@@ -15,7 +13,7 @@ class ChatAPIService extends APIService<ChatModel> {
   //#region --GET
   Future<ChatModel> getChatByMembers({required List<String> members}) async {
     try {
-      final response = await http.get(
+      final response = await this.getter(
         api.baseUri(
           pathSegments: const ['getChatByMemberIds'],
           queryParameters: <String, List<String>>{
@@ -35,7 +33,7 @@ class ChatAPIService extends APIService<ChatModel> {
   //#region --POST
   Future<ChatModel> createChat({required Map<String, dynamic> body}) async {
     try {
-      final response = await http.post(
+      final response = await this.poster(
         api.endpointUri(endpoint),
         headers: api.withBodyHeader(),
         body: json.encode(body),
@@ -55,7 +53,7 @@ class ChatAPIService extends APIService<ChatModel> {
     required Map<String, String> body,
   }) async {
     try {
-      final response = await http.put(
+      final response = await this.putter(
         api.endpointUri(
           endpoint,
           pathSegments: [
@@ -78,7 +76,7 @@ class ChatAPIService extends APIService<ChatModel> {
     required Map<String, dynamic> body,
   }) async {
     try {
-      final response = await http.put(
+      final response = await this.putter(
         api.endpointUri(endpoint, pathSegments: [chatId, 'invite']),
         headers: api.withBodyHeader(),
         body: json.encode(body),
@@ -95,7 +93,7 @@ class ChatAPIService extends APIService<ChatModel> {
     required Map<String, String> body,
   }) async {
     try {
-      final response = await http.put(
+      final response = await this.putter(
         api.endpointUri(endpoint, pathSegments: [chatId, 'removeUser']),
         headers: api.withBodyHeader(),
         body: json.encode(body),

@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 
+import '../../models/failure_exception.dart';
 import 'api.dart';
 import 'api_service.dart';
 
@@ -23,53 +24,57 @@ class SearchAPIService extends APIService {
     };
     if (criteria != null) qp['criteria'] = [...criteria];
     if (category != null) qp['category'] = category;
-    final response = await http.get(
-      api.endpointUri(
-        endpoint,
-        queryParameters: qp,
-      ),
-      headers: api.authHeader(),
-    );
 
-    if (response.statusCode == 200) {
-      final result = <String, List<String>>{};
-      final map = json.decode(response.body);
-      final data = map['data'] as Map<String, dynamic>;
+    try {
+      final response = await http.get(
+        api.endpointUri(
+          endpoint,
+          queryParameters: qp,
+        ),
+        headers: api.authHeader(),
+      );
 
-      if (data['products'] == null && data['shops'] == null) throw 'no-results';
+      if (response.statusCode == 200) {
+        final result = <String, List<String>>{};
+        final map = json.decode(response.body);
+        final data = map['data'] as Map<String, dynamic>;
 
-      if (data['products'] != null) {
-        final products = List<String>.from(
-          data['products']?.map((x) => x['id']) ?? [],
-        );
+        if (data['products'] == null && data['shops'] == null)
+          throw 'no-results';
 
-        result['products'] = products;
-      }
+        if (data['products'] != null) {
+          final products = List<String>.from(
+            data['products']?.map((x) => x['id']) ?? [],
+          );
 
-      if (data['shops'] != null) {
-        final shops = List<String>.from(
-          data['shops']?.map((x) => x['id']) ?? [],
-        );
+          result['products'] = products;
+        }
 
-        result['shops'] = shops;
-      }
+        if (data['shops'] != null) {
+          final shops = List<String>.from(
+            data['shops']?.map((x) => x['id']) ?? [],
+          );
 
-      return result;
-    } else {
-      try {
+          result['shops'] = shops;
+        }
+
+        return result;
+      } else {
         final map = json.decode(response.body);
         if (map['data'] != null) {
-          throw map['data'];
+          throw throw (FailureException(map['data']));
         }
 
         if (map['message'] != null) {
-          throw map['message'];
+          throw FailureException(map['message']);
         }
 
-        throw response.reasonPhrase!;
-      } on FormatException {
-        throw response.reasonPhrase!;
+        throw FailureException(response.reasonPhrase ?? 'Error parsing data.');
       }
+    } on FormatException {
+      throw FailureException('Bad response format');
+    } catch (e) {
+      rethrow;
     }
   }
 }

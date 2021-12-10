@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
+import '../../models/failure_exception.dart';
 import '../../providers/auth.dart';
 import '../../providers/bank_codes.dart';
 import '../../providers/categories.dart';
@@ -66,7 +67,7 @@ class LoginScreenViewModel extends ViewModel {
         case 'user-not-found':
           break;
         default:
-          throw e.message ?? 'Error Logging In';
+          throw FailureException(e.message ?? 'Error Logging In');
       }
     } catch (e) {
       showToast(e.toString());

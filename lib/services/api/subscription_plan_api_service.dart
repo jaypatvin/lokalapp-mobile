@@ -1,7 +1,5 @@
 import 'dart:convert';
 
-import 'package:http/http.dart' as http;
-
 import '../../models/product_subscription_plan.dart';
 import 'api.dart';
 import 'api_service.dart';
@@ -28,7 +26,7 @@ class SubscriptionPlanAPIService extends APIService<ProductSubscriptionPlan> {
     required Map<String, dynamic> body,
   }) async {
     try {
-      final response = await http.post(
+      final response = await this.poster(
         api.endpointUri(endpoint),
         headers: api.withBodyHeader(),
         body: json.encode(body),
@@ -47,7 +45,7 @@ class SubscriptionPlanAPIService extends APIService<ProductSubscriptionPlan> {
     required String planId,
   }) async {
     try {
-      final response = await http.post(
+      final response = await this.poster(
         api.endpointUri(
           endpoint,
           pathSegments: [
@@ -69,7 +67,7 @@ class SubscriptionPlanAPIService extends APIService<ProductSubscriptionPlan> {
     required String planId,
   }) async {
     try {
-      final response = await http.put(
+      final response = await this.putter(
         api.endpointUri(
           endpoint,
           pathSegments: [
@@ -91,7 +89,7 @@ class SubscriptionPlanAPIService extends APIService<ProductSubscriptionPlan> {
     required Map body,
   }) async {
     try {
-      final response = await http.put(
+      final response = await this.putter(
         api.endpointUri(
           endpoint,
           pathSegments: [

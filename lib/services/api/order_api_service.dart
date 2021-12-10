@@ -1,7 +1,5 @@
 import 'dart:convert';
 
-import 'package:http/http.dart' as http;
-
 import '../../models/order.dart';
 import 'api.dart';
 import 'api_service.dart';
@@ -17,7 +15,7 @@ class OrderAPIService extends APIService<Order> {
     required Map<String, dynamic> body,
   }) async {
     try {
-      final response = await http.post(
+      final response = await this.poster(
         api.endpointUri(endpoint),
         headers: api.withBodyHeader(),
         body: json.encode(body),
@@ -36,7 +34,7 @@ class OrderAPIService extends APIService<Order> {
     required String orderId,
   }) async {
     try {
-      final response = await http.put(
+      final response = await this.putter(
         api.endpointUri(
           endpoint,
           pathSegments: [orderId, 'cancel'],
@@ -54,7 +52,7 @@ class OrderAPIService extends APIService<Order> {
     required String orderId,
   }) async {
     try {
-      final response = await http.put(
+      final response = await this.putter(
         api.endpointUri(endpoint, pathSegments: [orderId, 'confirm']),
         headers: api.authHeader(),
       );
@@ -69,7 +67,7 @@ class OrderAPIService extends APIService<Order> {
     required String orderId,
   }) async {
     try {
-      final response = await http.put(
+      final response = await this.putter(
         api.endpointUri(endpoint, pathSegments: [orderId, 'confirmPayment']),
         headers: api.authHeader(),
       );
@@ -85,7 +83,7 @@ class OrderAPIService extends APIService<Order> {
     String? reason,
   }) async {
     try {
-      final response = await http.put(
+      final response = await this.putter(
         api.endpointUri(endpoint, pathSegments: [orderId, 'decline']),
         headers: api.authHeader(),
         body: json.encode({'reason': reason}),
@@ -102,7 +100,7 @@ class OrderAPIService extends APIService<Order> {
     required Map<String, dynamic> body,
   }) async {
     try {
-      final response = await http.put(
+      final response = await this.putter(
         api.endpointUri(endpoint, pathSegments: [orderId, 'pay']),
         headers: api.withBodyHeader(),
         body: json.encode(body),
@@ -118,7 +116,7 @@ class OrderAPIService extends APIService<Order> {
     required String orderId,
   }) async {
     try {
-      final response = await http.put(
+      final response = await this.putter(
         api.endpointUri(endpoint, pathSegments: [orderId, 'receive']),
         headers: api.authHeader(),
       );
@@ -133,14 +131,14 @@ class OrderAPIService extends APIService<Order> {
     required String orderId,
   }) async {
     try {
-      final response = await http.put(
+      final response = await this.putter(
         api.endpointUri(endpoint, pathSegments: [orderId, 'shipOut']),
         headers: api.authHeader(),
       );
 
       return handleGenericResponse(response);
     } catch (e) {
-      final response = await http.put(
+      final response = await this.putter(
         api.endpointUri(endpoint, pathSegments: [orderId, 'shipOut']),
         headers: api.authHeader(),
       );

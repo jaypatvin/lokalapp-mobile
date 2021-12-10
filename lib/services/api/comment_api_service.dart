@@ -1,7 +1,5 @@
 import 'dart:convert';
 
-import 'package:http/http.dart' as http;
-
 import '../../models/activity_feed_comment.dart';
 import 'api.dart';
 import 'api_service.dart';
@@ -18,7 +16,7 @@ class CommentsAPIService extends APIService<ActivityFeedComment> {
     required String commentId,
   }) async {
     try {
-      final response = await http.get(
+      final response = await this.getter(
         api.endpointUri(
           endpoint,
           pathSegments: [activityId, 'comments', commentId],
@@ -38,7 +36,7 @@ class CommentsAPIService extends APIService<ActivityFeedComment> {
   Future<List<ActivityFeedComment>> getActivityComments(
       {required String activityId}) async {
     try {
-      final response = await http.get(
+      final response = await this.getter(
         api.endpointUri(endpoint, pathSegments: [activityId, 'comments']),
         headers: api.authHeader(),
       );
@@ -56,7 +54,7 @@ class CommentsAPIService extends APIService<ActivityFeedComment> {
     required String userId,
   }) async {
     try {
-      final response = await http.get(
+      final response = await this.getter(
         api.endpointUri(Endpoint.user, pathSegments: [userId, 'comments']),
         headers: api.authHeader(),
       );
@@ -77,7 +75,7 @@ class CommentsAPIService extends APIService<ActivityFeedComment> {
     required Map<String, dynamic> body,
   }) async {
     try {
-      final response = await http.post(
+      final response = await this.poster(
         api.endpointUri(endpoint, pathSegments: [activityId, 'comments']),
         headers: api.withBodyHeader(),
         body: json.encode(body),
@@ -98,7 +96,7 @@ class CommentsAPIService extends APIService<ActivityFeedComment> {
     required String userId,
   }) async {
     try {
-      final response = await http.post(
+      final response = await this.poster(
         api.endpointUri(
           endpoint,
           pathSegments: [activityId, 'comments', commentId, 'like'],
@@ -121,7 +119,7 @@ class CommentsAPIService extends APIService<ActivityFeedComment> {
     required Map<String, dynamic> body,
   }) async {
     try {
-      final response = await http.post(
+      final response = await this.poster(
         api.endpointUri(
           endpoint,
           pathSegments: [activityId, 'comments', commentId],
@@ -143,7 +141,7 @@ class CommentsAPIService extends APIService<ActivityFeedComment> {
     required String commentId,
   }) async {
     try {
-      final response = await http.delete(
+      final response = await this.deleter(
         api.endpointUri(
           endpoint,
           pathSegments: [activityId, 'comments', commentId],
@@ -163,7 +161,7 @@ class CommentsAPIService extends APIService<ActivityFeedComment> {
     required String userId,
   }) async {
     try {
-      final response = await http.delete(
+      final response = await this.deleter(
         api.endpointUri(
           endpoint,
           pathSegments: [activityId, 'comments', commentId, 'unlike'],

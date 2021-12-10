@@ -1,4 +1,3 @@
-import 'package:http/http.dart' as http;
 
 import '../../models/community.dart';
 import 'api.dart';
@@ -11,7 +10,7 @@ class CommunityAPIService extends APIService<Community> {
 
   Future<Community> getById(String id) async {
     try {
-      final response = await http.get(
+      final response = await this.getter(
         api.endpointUri(endpoint, pathSegments: [id]),
         headers: api.authHeader(),
       );

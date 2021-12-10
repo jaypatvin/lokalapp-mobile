@@ -1,7 +1,5 @@
 import 'dart:convert';
 
-import 'package:http/http.dart' as http;
-
 import '../../models/operating_hours.dart';
 import '../../models/user_shop.dart';
 import 'api.dart';
@@ -23,7 +21,7 @@ class ShopAPIService extends APIService<ShopModel> {
     required Map body,
   }) async {
     try {
-      final response = await http.post(
+      final response = await this.poster(
         api.endpointUri(endpoint),
         headers: api.withBodyHeader(),
         body: json.encode(body),
@@ -41,7 +39,7 @@ class ShopAPIService extends APIService<ShopModel> {
     required String id,
   }) async {
     try {
-      final response = await http.put(
+      final response = await this.putter(
         api.endpointUri(endpoint, pathSegments: [id]),
         headers: api.withBodyHeader(),
         body: json.encode(body),
@@ -58,7 +56,7 @@ class ShopAPIService extends APIService<ShopModel> {
     required String id,
   }) async {
     try {
-      final response = await http.put(
+      final response = await this.putter(
         api.endpointUri(endpoint, pathSegments: [id, 'operatingHours']),
         headers: api.withBodyHeader(),
         body: json.encode(body),
@@ -74,7 +72,7 @@ class ShopAPIService extends APIService<ShopModel> {
 
   Future<ShopModel> getById({required String id}) async {
     try {
-      final response = await http.get(
+      final response = await this.getter(
         api.endpointUri(endpoint, pathSegments: [id]),
         headers: api.authHeader(),
       );
@@ -89,7 +87,7 @@ class ShopAPIService extends APIService<ShopModel> {
     required String communityId,
   }) async {
     try {
-      final response = await http.get(
+      final response = await this.getter(
         api.endpointUri(Endpoint.community,
             pathSegments: [communityId, 'shops']),
         headers: api.authHeader(),
@@ -106,7 +104,7 @@ class ShopAPIService extends APIService<ShopModel> {
     required String idToken,
   }) async {
     try {
-      final response = await http.get(
+      final response = await this.getter(
         api.endpointUri(Endpoint.user, pathSegments: [userId, 'shops']),
         headers: api.authHeader(),
       );
@@ -129,7 +127,7 @@ class _OperatingHoursAPIService extends APIService<OperatingHours> {
     required String shopId,
   }) async {
     try {
-      final response = await http.get(
+      final response = await this.getter(
         api.endpointUri(
           Endpoint.shop,
           pathSegments: [
