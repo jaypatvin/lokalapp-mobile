@@ -5,7 +5,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:lokalapp/services/bottom_nav_bar_hider.dart';
 import 'package:lottie/lottie.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
@@ -30,7 +29,9 @@ import 'providers/wishlist.dart';
 import 'root/root.dart';
 import 'routers/app_router.dart';
 import 'services/api/api.dart';
+import 'services/bottom_nav_bar_hider.dart';
 import 'services/local_image_service.dart';
+import 'utils/connectivity_status.dart';
 import 'utils/constants/assets.dart';
 import 'utils/constants/themes.dart';
 import 'utils/shared_preference.dart';
@@ -49,6 +50,12 @@ void main() async {
       exception: error,
       stack: stack,
     ));
+
+    if (error is SocketException) {
+      showToast('Failed to communicate to the server!');
+      return;
+    }
+
     if (kReleaseMode) exit(1);
   });
 }
@@ -68,6 +75,7 @@ class _MyAppState extends State<MyApp> {
   @override
   initState() {
     super.initState();
+
     _prefs = UserSharedPreferences();
     _prefs.init();
     _tabController = PersistentTabController();
@@ -188,96 +196,98 @@ class _MyAppState extends State<MyApp> {
       child: OKToast(
         child: ScreenUtilInit(
           builder: () {
-            return ScreenLoaderApp(
-              globalLoadingBgBlur: 0,
-              globalLoader: SizedBox(
-                width: double.infinity,
-                height: double.infinity,
-                child: DecoratedBox(
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
+            return ConnectivityStatus(
+              child: ScreenLoaderApp(
+                globalLoadingBgBlur: 0,
+                globalLoader: SizedBox(
+                  width: double.infinity,
+                  height: double.infinity,
+                  child: DecoratedBox(
+                    decoration: const BoxDecoration(
+                      color: Colors.white,
+                    ),
+                    child: Lottie.asset(kAnimationLoading),
                   ),
-                  child: Lottie.asset(kAnimationLoading),
                 ),
-              ),
-              app: MaterialApp(
-                debugShowCheckedModeBanner: false,
-                title: 'Lokal',
-                theme: ThemeData(
-                  primarySwatch: Colors.teal,
-                  primaryColor: const Color(0xFF09A49A),
-                  colorScheme: ColorScheme.fromSwatch(
+                app: MaterialApp(
+                  debugShowCheckedModeBanner: false,
+                  title: 'Lokal',
+                  theme: ThemeData(
                     primarySwatch: Colors.teal,
-                    accentColor: const Color(0xFFFF7A00),
+                    primaryColor: const Color(0xFF09A49A),
+                    colorScheme: ColorScheme.fromSwatch(
+                      primarySwatch: Colors.teal,
+                      accentColor: const Color(0xFFFF7A00),
+                    ),
+                    fontFamily: "Goldplay",
+                    textTheme: TextTheme(
+                      headline1: TextStyle(
+                        fontSize: 96.sp,
+                        color: kNavyColor,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      headline2: TextStyle(
+                        fontSize: 60.0.sp,
+                        color: kNavyColor,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      headline3: TextStyle(
+                        fontSize: 48.0.sp,
+                        color: kNavyColor,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      headline4: TextStyle(
+                        fontSize: 34.0.sp,
+                        color: kNavyColor,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      headline5: TextStyle(
+                        fontSize: 24.0.sp,
+                        color: kNavyColor,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      headline6: TextStyle(
+                        fontSize: 20.0.sp,
+                        color: kNavyColor,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      subtitle1: TextStyle(
+                        fontSize: 16.0.sp,
+                        fontWeight: FontWeight.w600,
+                        color: kNavyColor,
+                      ),
+                      subtitle2: TextStyle(
+                        fontSize: 14.0.sp,
+                        fontWeight: FontWeight.w600,
+                        color: kNavyColor,
+                      ),
+                      bodyText1: TextStyle(
+                        fontSize: 16.0.sp,
+                        color: kNavyColor,
+                        fontWeight: FontWeight.w500,
+                      ),
+                      bodyText2: TextStyle(
+                        fontSize: 14.0.sp,
+                        color: kNavyColor,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    scaffoldBackgroundColor: Colors.white,
                   ),
-                  fontFamily: "Goldplay",
-                  textTheme: TextTheme(
-                    headline1: TextStyle(
-                      fontSize: 96.sp,
-                      color: kNavyColor,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    headline2: TextStyle(
-                      fontSize: 60.0.sp,
-                      color: kNavyColor,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    headline3: TextStyle(
-                      fontSize: 48.0.sp,
-                      color: kNavyColor,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    headline4: TextStyle(
-                      fontSize: 34.0.sp,
-                      color: kNavyColor,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    headline5: TextStyle(
-                      fontSize: 24.0.sp,
-                      color: kNavyColor,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    headline6: TextStyle(
-                      fontSize: 20.0.sp,
-                      color: kNavyColor,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    subtitle1: TextStyle(
-                      fontSize: 16.0.sp,
-                      fontWeight: FontWeight.w600,
-                      color: kNavyColor,
-                    ),
-                    subtitle2: TextStyle(
-                      fontSize: 14.0.sp,
-                      fontWeight: FontWeight.w600,
-                      color: kNavyColor,
-                    ),
-                    bodyText1: TextStyle(
-                      fontSize: 16.0.sp,
-                      color: kNavyColor,
-                      fontWeight: FontWeight.w500,
-                    ),
-                    bodyText2: TextStyle(
-                      fontSize: 14.0.sp,
-                      color: kNavyColor,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  scaffoldBackgroundColor: Colors.white,
-                ),
-                home: Root(),
-                navigatorKey: _router.keyOf(AppRoute.root),
-                initialRoute: '/',
-                onGenerateRoute:
-                    _router.navigatorOf(AppRoute.root).onGenerateRoute,
-                builder: (context, widget) {
-                  Widget error = Text('Error in displaying the screen');
-                  if (widget is Scaffold || widget is Navigator)
-                    error = Scaffold(body: Center(child: error));
-                  ErrorWidget.builder = (errorDetails) => error;
+                  home: Root(),
+                  navigatorKey: _router.keyOf(AppRoute.root),
+                  initialRoute: '/',
+                  onGenerateRoute:
+                      _router.navigatorOf(AppRoute.root).onGenerateRoute,
+                  builder: (context, widget) {
+                    Widget error = Text('Error in displaying the screen');
+                    if (widget is Scaffold || widget is Navigator)
+                      error = Scaffold(body: Center(child: error));
+                    ErrorWidget.builder = (errorDetails) => error;
 
-                  return widget!;
-                },
+                    return widget!;
+                  },
+                ),
               ),
             );
           },
