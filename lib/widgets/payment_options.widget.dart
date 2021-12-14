@@ -57,7 +57,7 @@ class PaymentOptionsWidget extends StatelessWidget {
           const SizedBox(height: 10),
           ListTile(
             enabled: bankEnabled,
-            tileColor: this.tileColor,
+            tileColor: bankEnabled ? this.tileColor : Colors.grey.shade200,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(30.0),
             ),
@@ -76,7 +76,7 @@ class PaymentOptionsWidget extends StatelessWidget {
             ),
             trailing: Icon(
               Icons.arrow_forward_ios,
-              color: kTealColor,
+              color: bankEnabled ? kTealColor : Colors.grey.shade200,
               size: 18.0.r,
             ),
             onTap: () => this.onPaymentPressed(PaymentMode.bank),
@@ -84,7 +84,7 @@ class PaymentOptionsWidget extends StatelessWidget {
           const SizedBox(height: 10),
           ListTile(
             enabled: walletEnabled,
-            tileColor: this.tileColor,
+            tileColor: walletEnabled ? this.tileColor : Colors.grey.shade200,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(30.0),
             ),
@@ -103,7 +103,7 @@ class PaymentOptionsWidget extends StatelessWidget {
             ),
             trailing: Icon(
               Icons.arrow_forward_ios,
-              color: kTealColor,
+              color: walletEnabled ? kTealColor : Colors.grey.shade200,
               size: 18.0.r,
             ),
             onTap: () => this.onPaymentPressed(PaymentMode.gCash),

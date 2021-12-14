@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../models/order.dart';
+import '../../state/mvvm_builder.widget.dart';
+import '../../state/views/hook.view.dart';
 import '../../utils/constants/themes.dart';
+import '../../view_models/activity/order_details.vm.dart';
+import '../../widgets/overlays/screen_loader.dart';
 import 'components/order_details_buttons.dart';
 import 'components/transaction_details.dart';
 
@@ -9,95 +15,107 @@ import 'components/transaction_details.dart';
 /// code repetition.
 class OrderDetails extends StatelessWidget {
   final bool isBuyer;
-  final String? subheader;
+  final String subheader;
   final Order order;
   const OrderDetails({
     required this.order,
     this.isBuyer = true,
-    this.subheader = "",
+    this.subheader = '',
   });
-
-  Widget buildTextInfo() {
-    final _address = order.deliveryAddress;
-    final address = _address.street! +
-        ", " +
-        _address.barangay! +
-        ", " +
-        _address.subdivision! +
-        " " +
-        _address.city!;
-
-    return Container(
-      width: double.infinity,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            "Notes:",
-            style: TextStyle(
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          Text(
-            order.instruction!,
-            style: TextStyle(
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-          SizedBox(height: 16.0),
-          Text(
-            "Delivery Address:",
-            style: TextStyle(
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          Text(
-            address,
-            style: TextStyle(
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-          SizedBox(height: 16.0),
-          if (order.statusCode! >= 300)
-            RichText(
-              text: TextSpan(
-                text: "Mode of Payment: ",
-                children: [
-                  TextSpan(
-                    text: getModeOfPayment(),
-                    style: TextStyle(
-                      fontWeight: FontWeight.w500,
-                      color: Colors.black,
-                    ),
-                  ),
-                ],
-                style: TextStyle(
-                  fontWeight: FontWeight.w600,
-                  color: Colors.black,
-                  fontFamily: "Goldplay",
-                ),
-              ),
-            ),
-        ],
-      ),
-    );
-  }
-
-  String getModeOfPayment() {
-    if (order.paymentMethod == "bank") {
-      return "Bank Transfer/Deposit";
-    } else if (order.paymentMethod == "cod") {
-      return "Cash on Delivery";
-    } else {
-      return "Wallet Transfer/Deposit";
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
+    return MVVM(
+      view: (_, __) => _OrderDetailsView(subheader: subheader),
+      viewModel: OrderDetailsViewModel(order: order, isBuyer: isBuyer),
+    );
+  }
+}
+
+class _OrderDetailsView extends HookView<OrderDetailsViewModel>
+    with HookScreenLoader {
+  _OrderDetailsView({Key? key, this.subheader = ''}) : super(key: key);
+  final String subheader;
+  @override
+  Widget screen(BuildContext context, OrderDetailsViewModel vm) {
+    final _address = useMemoized<String>(() {
+      final _address = vm.order.deliveryAddress;
+      final _addressList = [
+        _address.street,
+        _address.barangay,
+        _address.subdivision,
+        _address.city,
+      ];
+
+      return _addressList.where((text) => text?.isNotEmpty ?? false).join(', ');
+    });
+
+    final _instructions = useMemoized<String>(
+      () => vm.order.instruction?.isNotEmpty ?? false
+          ? vm.order.instruction!
+          : 'No instructions.',
+    );
+
+    final _modeOfPayment = useMemoized<String>(() {
+      if (vm.order.paymentMethod == 'bank') {
+        return 'Bank Transfer/Deposit';
+      } else if (vm.order.paymentMethod == 'cod') {
+        return 'Cash on Delivery';
+      } else {
+        return 'Wallet Transfer/Deposit';
+      }
+    });
+
+    final _textInfo = useMemoized<Container>(() {
+      return Container(
+        width: double.infinity,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Notes:',
+              style: Theme.of(context).textTheme.subtitle1,
+            ),
+            Text(
+              _instructions,
+              style: Theme.of(context).textTheme.bodyText1,
+            ),
+            SizedBox(height: 16.0.h),
+            Text(
+              "Delivery Address:",
+              style: Theme.of(context).textTheme.subtitle1,
+            ),
+            Text(
+              _address,
+              style: Theme.of(context).textTheme.bodyText1,
+            ),
+            SizedBox(height: 16.0.h),
+            if (vm.order.statusCode! >= 300)
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Mode of Payment: ',
+                    style: Theme.of(context).textTheme.subtitle1,
+                  ),
+                  Expanded(
+                    child: Text(
+                      _modeOfPayment,
+                      style: Theme.of(context).textTheme.bodyText1,
+                      // maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ],
+              ),
+          ],
+        ),
+      );
+    }, [_address]);
+
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: this.isBuyer ? kTealColor : Color(0xFF57183F),
+        backgroundColor: vm.isBuyer ? kTealColor : Color(0xFF57183F),
         centerTitle: true,
         title: Column(
           children: [
@@ -108,14 +126,14 @@ class OrderDetails extends StatelessWidget {
                   ),
             ),
             Visibility(
-              visible: subheader!.isNotEmpty,
+              visible: subheader.isNotEmpty,
               child: Text(
-                subheader!,
+                subheader,
                 style: Theme.of(context).textTheme.subtitle2!.copyWith(
-                      color: this.order.statusCode == 10 ||
-                              this.order.statusCode == 20
-                          ? kOrangeColor
-                          : Colors.white,
+                      color:
+                          vm.order.statusCode == 10 || vm.order.statusCode == 20
+                              ? kOrangeColor
+                              : Colors.white,
                     ),
               ),
             ),
@@ -123,27 +141,28 @@ class OrderDetails extends StatelessWidget {
         ),
       ),
       body: Container(
-        padding: EdgeInsets.symmetric(
-          horizontal: 36.0,
-          vertical: 24.0,
-        ),
-        child: Column(
-          children: [
-            TransactionDetails(
-              transaction: order,
-              isBuyer: this.isBuyer,
-            ),
-            SizedBox(height: 16.0),
-            buildTextInfo(),
-            SizedBox(height: 16.0),
-            Spacer(),
-            //Text("Mode of Payment: ${getModeOfPayment()}"),
-            OrderDetailsButtons(
-              statusCode: order.statusCode,
-              isBuyer: this.isBuyer,
-              order: this.order,
-            ),
-          ],
+        padding: EdgeInsets.only(top: 16.0.h, left: 32.0.w, right: 32.0.w),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TransactionDetails(
+                transaction: vm.order,
+                isBuyer: vm.isBuyer,
+              ),
+              SizedBox(height: 12.0.h),
+              _textInfo,
+              SizedBox(height: 24.0.h),
+              OrderDetailsButtons(
+                statusCode: vm.order.statusCode!,
+                isBuyer: vm.isBuyer,
+                order: vm.order,
+                onPress: (action) async => await performFuture(
+                  () async => await vm.onPress(action),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

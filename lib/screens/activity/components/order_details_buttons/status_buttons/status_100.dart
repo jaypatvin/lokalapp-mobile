@@ -48,7 +48,6 @@ class Status100Buttons extends StatelessWidget {
             width: double.infinity,
             child: MessageBuyerButton(order: this.order),
           ),
-          SizedBox(height: MediaQuery.of(context).size.height * 0.01),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [

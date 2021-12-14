@@ -10,7 +10,6 @@ class ViewPaymentButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: ADD VIEW PROOF OF PAYMENT FUNCTION
     return AppButton(
       "View Proof of Payment",
       kTealColor,

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../models/order.dart';
 import '../../../utils/constants/themes.dart';
@@ -113,7 +113,7 @@ class TransactionCard extends StatelessWidget {
                 builder: (context) => OrderDetails(
                   order: this.order,
                   isBuyer: this.isBuyer,
-                  subheader: this.status,
+                  subheader: this.status ?? '',
                 ),
               ),
             ),
@@ -121,9 +121,7 @@ class TransactionCard extends StatelessWidget {
         ),
         Visibility(
           visible: enableSecondButton,
-          child: SizedBox(
-            width: MediaQuery.of(context).size.width * 0.01,
-          ),
+          child: SizedBox(width: 5.0.w),
         ),
         Visibility(
           visible: enableSecondButton,
@@ -144,14 +142,14 @@ class TransactionCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20.0),
+        borderRadius: BorderRadius.circular(20.0.r),
         side: (order.statusCode == 10 || order.statusCode == 20)
             ? BorderSide(color: Colors.red)
             : BorderSide.none,
       ),
       color: Color(0xFFF1FAFF),
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 25.0),
+        padding: EdgeInsets.symmetric(horizontal: 20.0.w, vertical: 15.0.h),
         child: Column(
           children: [
             TransactionDetails(
@@ -159,7 +157,7 @@ class TransactionCard extends StatelessWidget {
               transaction: this.order,
               isBuyer: this.isBuyer,
             ),
-            SizedBox(height: MediaQuery.of(context).size.height * 0.03),
+            SizedBox(height: 15.0.h),
             buildActionButtons(context),
           ],
         ),

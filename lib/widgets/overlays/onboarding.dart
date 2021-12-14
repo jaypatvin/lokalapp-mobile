@@ -65,7 +65,7 @@ class _OnboardingState extends State<Onboarding> with AfterLayoutMixin {
 
   Widget _buildOnboardingCard() {
     return Container(
-      padding: EdgeInsets.fromLTRB(20.0.w, 30.0.h, 20.0.w, 10.0.h),
+      padding: EdgeInsets.fromLTRB(20.0.w, 30.0.h, 20.0.w, 20.0.h),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.all(Radius.circular(20.0.r)),
@@ -137,7 +137,7 @@ class _OnboardingState extends State<Onboarding> with AfterLayoutMixin {
               ),
               child: Center(
                 child: Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.all(16.0),
                   child: _buildOnboardingCard(),
                 ),
               ),

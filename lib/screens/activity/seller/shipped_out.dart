@@ -1,96 +1,90 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:lottie/lottie.dart';
 
 import '../../../models/order.dart';
+import '../../../routers/app_router.dart';
 import '../../../utils/constants/assets.dart';
 import '../../../utils/constants/themes.dart';
 import '../../../widgets/app_button.dart';
+import '../activity.dart';
 import '../components/order_details_buttons/message_buttons.dart';
 import '../components/transaction_details.dart';
 
 class ShippedOut extends StatelessWidget {
-  final Order? order;
+  final Order order;
 
-  const ShippedOut({Key? key, this.order}) : super(key: key);
-
-  Widget _buildButtons(context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          SizedBox(
-            width: double.infinity,
-            child: MessageBuyerButton(order: order),
-          ),
-          SizedBox(
-            width: double.infinity,
-            child: AppButton(
-              "Back to Activity",
-              kTealColor,
-              true,
-              () {
-                Navigator.pop(context);
-              },
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+  const ShippedOut({Key? key, required this.order}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              SizedBox(height: 20.0),
-              Text(
-                "Order Shipped Out!",
-                style: TextStyle(
-                  fontFamily: "Goldplay",
-                  fontWeight: FontWeight.w600,
-                  fontSize: 24.0,
-                ),
-              ),
-              SizedBox(height: 20),
-              Container(
-                height: 140.0,
-                width: double.infinity,
-                child: Stack(
-                  children: [
-                    Positioned.fill(
-                      child: SvgPicture.asset(
-                        kSvgBackgroundHouses,
-                        fit: BoxFit.cover,
-                      ),
+        child: Column(
+          children: [
+            SizedBox(height: 20.0.h),
+            Text(
+              'Order Shipped Out!',
+              style: Theme.of(context).textTheme.headline5,
+            ),
+            SizedBox(height: 20.h),
+            Container(
+              height: 100.0.h,
+              width: double.infinity,
+              child: Stack(
+                children: [
+                  Positioned.fill(
+                    child: SvgPicture.asset(
+                      kSvgBackgroundHouses,
+                      fit: BoxFit.cover,
                     ),
-                    Positioned.fill(
-                      child: Lottie.asset(
-                        kAnimationShippedOut,
-                        fit: BoxFit.contain,
-                      ),
+                  ),
+                  Positioned.fill(
+                    child: Lottie.asset(
+                      kAnimationShippedOut,
+                      fit: BoxFit.contain,
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-              SizedBox(height: 16.0),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: TransactionDetails(
-                  transaction: this.order,
-                  isBuyer: false,
-                ),
+            ),
+            SizedBox(height: 16.0.h),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 24.0.h),
+              child: TransactionDetails(
+                transaction: this.order,
+                isBuyer: false,
               ),
-              SizedBox(height: 24.0),
-              _buildButtons(context),
-              SizedBox(height: 24.0)
-            ],
-          ),
+            ),
+            Spacer(),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16.0.w),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    width: double.infinity,
+                    child: MessageBuyerButton(order: order),
+                  ),
+                  SizedBox(
+                    width: double.infinity,
+                    child: AppButton(
+                      "Back to Activity",
+                      kTealColor,
+                      true,
+                      () {
+                        AppRouter.activityNavigatorKey.currentState?.popUntil(
+                          ModalRoute.withName(Activity.routeName),
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );

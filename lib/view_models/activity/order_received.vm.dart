@@ -1,14 +1,18 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '../../models/order.dart';
-import '../../services/api/api.dart';
-import '../../services/api/product_api_service.dart';
-import '../../utils/constants/assets.dart';
+import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
-class OrderReceivedViewModel extends ChangeNotifier {
-  OrderReceivedViewModel(this.context, this.order);
-  final BuildContext context;
+import '../../models/order.dart';
+import '../../routers/app_router.dart';
+import '../../screens/activity/activity.dart';
+import '../../services/api/api.dart';
+import '../../services/api/product_api_service.dart';
+import '../../state/view_model.dart';
+import '../../utils/constants/assets.dart';
+
+class OrderReceivedViewModel extends ViewModel {
+  OrderReceivedViewModel(this.order);
   final Order order;
 
   bool ratingSubmitted = false;
@@ -19,7 +23,9 @@ class OrderReceivedViewModel extends ChangeNotifier {
   String assetName = kSvg1StarRating;
 
   void onBackToActivity() {
-    Navigator.pop(context);
+    AppRouter.activityNavigatorKey.currentState?.popUntil(
+      ModalRoute.withName(Activity.routeName),
+    );
   }
 
   void onRatingUpdate(double rating) async {
@@ -58,13 +64,7 @@ class OrderReceivedViewModel extends ChangeNotifier {
         },
       );
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            e.toString(),
-          ),
-        ),
-      );
+      showToast(e.toString());
     }
 
     notifyListeners();

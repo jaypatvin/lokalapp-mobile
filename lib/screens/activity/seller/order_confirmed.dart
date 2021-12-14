@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lottie/lottie.dart';
 
@@ -18,49 +19,17 @@ class OrderConfirmed extends StatelessWidget {
     this.isBuyer = true,
   });
 
-  Widget _buildButtons(context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          SizedBox(
-            width: double.infinity,
-            child: MessageBuyerButton(order: order),
-          ),
-          SizedBox(
-            width: double.infinity,
-            child: AppButton(
-              "Back to Activity",
-              kTealColor,
-              true,
-              () => Navigator.pop(context),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
           children: [
-            SizedBox(
-              height: 90.0,
-            ),
+            SizedBox(height: 90.0.h),
             Text(
               "Order Confirmed!",
               textAlign: TextAlign.center,
-              style: TextStyle(
-                color: Colors.black,
-                fontFamily: "GoldplayBold",
-                fontWeight: FontWeight.w700,
-                fontSize: 24,
-              ),
+              style: Theme.of(context).textTheme.headline5,
             ),
             SizedBox(
               height: 20,
@@ -98,7 +67,28 @@ class OrderConfirmed extends StatelessWidget {
             SizedBox(
               height: 24.0,
             ),
-            _buildButtons(context),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    width: double.infinity,
+                    child: MessageBuyerButton(order: order),
+                  ),
+                  SizedBox(
+                    width: double.infinity,
+                    child: AppButton(
+                      "Back to Activity",
+                      kTealColor,
+                      true,
+                      () => Navigator.pop(context),
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ],
         ),
       ),

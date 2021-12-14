@@ -23,11 +23,10 @@ class Status200Buttons extends StatelessWidget {
       return Container(
         child: Column(
           children: [
-            Container(
+            SizedBox(
               width: double.infinity,
               child: MessageSellerButton(order: this.order),
             ),
-            SizedBox(height: MediaQuery.of(context).size.height * 0.01),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -55,7 +54,7 @@ class Status200Buttons extends StatelessWidget {
       );
     }
 
-    return Container(
+    return SizedBox(
       width: double.infinity,
       child: MessageBuyerButton(order: this.order),
     );

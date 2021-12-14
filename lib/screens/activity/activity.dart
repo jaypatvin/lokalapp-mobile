@@ -24,7 +24,7 @@ class _ActivityState extends State<Activity> with TickerProviderStateMixin {
   Future<QuerySnapshot>? _statuses;
 
   late AnimationController _animationController;
-  Animation<Color?>? _colorAnimation;
+  late Animation<Color?> _colorAnimation;
 
   @override
   void initState() {
@@ -73,7 +73,7 @@ class _ActivityState extends State<Activity> with TickerProviderStateMixin {
         borderRadius: BorderRadius.vertical(
           top: Radius.circular(30.0),
         ),
-        color: _colorAnimation!.value,
+        color: _colorAnimation.value,
       ),
       labelStyle: Theme.of(context).textTheme.headline6,
       tabs: [

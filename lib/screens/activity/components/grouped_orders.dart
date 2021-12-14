@@ -1,131 +1,50 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:grouped_list/grouped_list.dart';
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
-import 'package:provider/provider.dart';
 
 import '../../../models/order.dart';
-import '../../../providers/auth.dart';
-import '../../../services/lokal_api_service.dart';
+import '../../../state/mvvm_builder.widget.dart';
+import '../../../state/views/hook.view.dart';
 import '../../../utils/constants/assets.dart';
+import '../../../view_models/activity/components/grouped_orders.vm.dart';
 import '../../../widgets/overlays/screen_loader.dart';
-import '../buyer/order_received.dart';
-import '../buyer/payment_option.dart';
-import '../order_details.dart';
-import '../seller/order_confirmed.dart';
-import '../seller/payment_confirmed.dart';
-import '../seller/shipped_out.dart';
 import 'transaction_card.dart';
 
-class GroupedOrders extends StatefulWidget {
+class GroupedOrders extends StatelessWidget {
+  const GroupedOrders(
+    this.stream,
+    this.statuses,
+    this.isBuyer, {
+    Key? key,
+  }) : super(key: key);
+
   final Stream<QuerySnapshot>? stream;
   final Map<int, String?> statuses;
+
   final bool isBuyer;
-  const GroupedOrders(this.stream, this.statuses, this.isBuyer);
 
   @override
-  State<GroupedOrders> createState() => _GroupedOrdersState();
+  Widget build(BuildContext context) {
+    return MVVM(
+      view: (_, __) => _GroupedOrdersView(stream, statuses),
+      viewModel: GroupedOrdersViewModel(isBuyer: isBuyer),
+    );
+  }
 }
 
-class _GroupedOrdersState extends State<GroupedOrders> with ScreenLoader {
-  Future<void> onSecondButtonPress(BuildContext context, Order order) async {
-    if (this.widget.isBuyer) {
-      switch (order.statusCode) {
-        case 200:
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => PaymentOption(order: order),
-            ),
-          );
-          break;
-        case 500:
-          final idToken = context.read<Auth>().idToken;
-          final response = await LokalApiService.instance!.orders!
-              .receive(idToken: idToken, orderId: order.id);
-          if (response.statusCode == 200) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => OrderReceived(order: order),
-              ),
-            );
-          }
-          break;
-        default:
-          break;
-      }
-    } else {
-      switch (order.statusCode) {
-        case 100:
-          final idToken = context.read<Auth>().idToken;
-          final response = await LokalApiService.instance!.orders!
-              .confirm(idToken: idToken, orderId: order.id);
-          if (response.statusCode == 200) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => OrderConfirmed(
-                  order: order,
-                  isBuyer: this.widget.isBuyer,
-                ),
-              ),
-            );
-          }
-          break;
-        case 300:
-          if (order.paymentMethod == "cod") {
-            final idToken = context.read<Auth>().idToken;
-            final response = await LokalApiService.instance!.orders!
-                .confirmPayment(idToken: idToken, orderId: order.id);
-            if (response.statusCode == 200) {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => PaymentConfirmed(order: order),
-                ),
-              );
-            }
-          } else {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => OrderDetails(
-                  order: order,
-                  isBuyer: widget.isBuyer,
-                ),
-              ),
-            );
-          }
-
-          break;
-        case 400:
-          final idToken = context.read<Auth>().idToken;
-          final response = await LokalApiService.instance!.orders!.shipOut(
-            idToken: idToken,
-            orderId: order.id,
-          );
-          if (response.statusCode == 200) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => ShippedOut(order: order),
-              ),
-            );
-          }
-          break;
-        default:
-          // do nothing
-          break;
-      }
-    }
-  }
+class _GroupedOrdersView extends HookView<GroupedOrdersViewModel>
+    with HookScreenLoader<GroupedOrdersViewModel> {
+  _GroupedOrdersView(this.stream, this.statuses);
+  final Stream<QuerySnapshot>? stream;
+  final Map<int, String?> statuses;
 
   @override
-  Widget screen(BuildContext context) {
+  Widget screen(BuildContext context, GroupedOrdersViewModel vm) {
     return StreamBuilder(
-      stream: this.widget.stream,
+      stream: this.stream,
       builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
         switch (snapshot.connectionState) {
           case ConnectionState.waiting:
@@ -150,10 +69,10 @@ class _GroupedOrdersState extends State<GroupedOrders> with ScreenLoader {
                 ),
               );
             else
-              // Without using ListView.builder, I'm not sure about the performance
-              // on large sets of data
+              // This uses ListView.builder under the hood so is performant.
               return GroupedListView(
                 shrinkWrap: true,
+                padding: EdgeInsets.symmetric(horizontal: 16.0.w),
                 physics: AlwaysScrollableScrollPhysics(),
                 elements: snapshot.data!.docs,
                 groupBy: (QueryDocumentSnapshot element) {
@@ -161,11 +80,14 @@ class _GroupedOrdersState extends State<GroupedOrders> with ScreenLoader {
                   return DateTime(date.year, date.month, date.day);
                 },
                 groupSeparatorBuilder: (DateTime value) {
-                  return Text(
-                    DateFormat.MMMMd().format(value),
-                    style: TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 18.0,
+                  return Container(
+                    margin: EdgeInsets.only(top: 10.0.h, bottom: 15.0.h),
+                    child: Text(
+                      DateFormat.MMMMd().format(value),
+                      style: Theme.of(context)
+                          .textTheme
+                          .subtitle1
+                          ?.copyWith(fontSize: 18.0.sp),
                     ),
                   );
                 },
@@ -177,10 +99,10 @@ class _GroupedOrdersState extends State<GroupedOrders> with ScreenLoader {
                   final order = Order.fromMap(data);
                   return TransactionCard(
                     order: order,
-                    isBuyer: this.widget.isBuyer,
-                    status: this.widget.statuses[code!],
-                    onSecondButtonPress: () async => await performFuture(
-                      () async => await onSecondButtonPress(context, order),
+                    isBuyer: vm.isBuyer,
+                    status: this.statuses[code]!,
+                    onSecondButtonPress: () async => await performFuture<void>(
+                      () async => await vm.onSecondButtonPress(order),
                     ),
                   );
                 },
