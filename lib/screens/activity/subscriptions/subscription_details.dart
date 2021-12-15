@@ -1,135 +1,59 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
 
-import '../../../models/operating_hours.dart';
 import '../../../models/product_subscription_plan.dart';
 import '../../../providers/auth.dart';
-import '../../../providers/products.dart';
-import '../../../providers/shops.dart';
-import '../../../routers/app_router.dart';
-import '../../../routers/chat/chat_view.props.dart';
+import '../../../state/mvvm_builder.widget.dart';
+import '../../../state/views/hook.view.dart';
 import '../../../utils/constants/themes.dart';
-import '../../../utils/repeated_days_generator/schedule_generator.dart';
+import '../../../view_models/activity/subscriptions/subscription_details.vm.dart';
 import '../../../widgets/app_button.dart';
-import '../../chat/chat_view.dart';
 import 'components/subscription_plan_details.dart';
-import 'subscription_schedule.dart';
 
 // This Widget will display all states/conditions of the order details to avoid
 // code repetition.
 class SubscriptionDetails extends StatelessWidget {
-  final bool isBuyer;
-  final ProductSubscriptionPlan subscriptionPlan;
   const SubscriptionDetails({
+    Key? key,
     required this.subscriptionPlan,
     this.isBuyer = true,
-  });
-
-  Widget buildTextInfo(BuildContext context) {
-    final _address = context.read<Auth>().user!.address!;
-    final _addressList = [
-      _address.street,
-      _address.barangay,
-      _address.subdivision,
-      _address.city,
-    ];
-
-    final address = _addressList.where((text) => text.isNotEmpty).join(', ');
-
-    return Container(
-      width: double.infinity,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            "Notes:",
-            style: Theme.of(context).textTheme.subtitle1,
-          ),
-          Text(
-            subscriptionPlan.instruction!,
-            style: Theme.of(context).textTheme.bodyText1,
-          ),
-          SizedBox(height: 16.0.h),
-          Text(
-            "Delivery Address:",
-            style: Theme.of(context).textTheme.subtitle1,
-          ),
-          Text(
-            address,
-            style: Theme.of(context).textTheme.bodyText1,
-          ),
-          SizedBox(height: 16.0.h),
-        ],
-      ),
-    );
-  }
-
-  bool _checkForConflicts(BuildContext context) {
-    final _generator = ScheduleGenerator();
-    final product =
-        context.read<Products>().findById(subscriptionPlan.productId);
-
-    // only needed for operatingHours
-    final shop = context.read<Shops>().findById(subscriptionPlan.shopId)!;
-
-    final operatingHours = OperatingHours(
-      repeatType: subscriptionPlan.plan.repeatType,
-      repeatUnit: subscriptionPlan.plan.repeatUnit,
-      startDates: subscriptionPlan.plan.startDates
-          .map<String>((date) => DateFormat("yyyy-MM-dd").format(date))
-          .toList(),
-      unavailableDates: subscriptionPlan.plan.unavailableDates
-          .map<String>((date) => DateFormat("yyyy-MM-dd").format(date))
-          .toList(),
-      customDates: [],
-      startTime: shop.operatingHours!.startTime,
-      endTime: shop.operatingHours!.endTime,
-    );
-
-    // product schedule initialization
-    final productSelectableDates = _generator
-        .getSelectableDates(product!.availability!)
-        .where(
-          (date) =>
-              date.difference(DateTime.now()).inDays <= 45 &&
-              date.difference(DateTime.now()).inDays >= 0,
-        )
-        .toList()
-      ..sort();
-
-    final markedDates = _generator
-        .getSelectableDates(operatingHours)
-        .where(
-          (date) =>
-              date.difference(DateTime.now()).inDays <= 45 &&
-              date.difference(DateTime.now()).inDays >= 0,
-        )
-        .toList()
-      ..sort();
-
-    subscriptionPlan.plan.overrideDates.forEach((overrideDate) {
-      final index = markedDates.indexWhere(
-          (date) => date.compareTo(overrideDate.originalDate!) == 0);
-      if (index > -1) {
-        markedDates[index] = overrideDate.newDate;
-      }
-    });
-
-    return !subscriptionPlan.plan.autoReschedule! &&
-        markedDates
-            .toSet()
-            .difference(productSelectableDates.toSet())
-            .isNotEmpty;
-  }
+  }) : super(key: key);
+  final bool isBuyer;
+  final ProductSubscriptionPlan subscriptionPlan;
 
   @override
   Widget build(BuildContext context) {
+    return MVVM(
+      view: (_, __) => _SubscriptionDetailsView(),
+      viewModel: SubscriptionDetailsViewModel(
+        subscriptionPlan: subscriptionPlan,
+        isBuyer: isBuyer,
+      ),
+    );
+  }
+}
+
+class _SubscriptionDetailsView extends HookView<SubscriptionDetailsViewModel> {
+  @override
+  Widget render(BuildContext context, SubscriptionDetailsViewModel vm) {
+    final _address = useMemoized<String>(() {
+      final _address = context.read<Auth>().user!.address!;
+      final _addressList = [
+        _address.street,
+        _address.barangay,
+        _address.subdivision,
+        _address.city,
+      ];
+
+      return _addressList.where((text) => text.isNotEmpty).join(', ');
+    });
+
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: this.isBuyer ? kTealColor : Color(0xFF57183F),
+        backgroundColor: vm.isBuyer ? kTealColor : Color(0xFF57183F),
         centerTitle: true,
         title: Column(
           children: [
@@ -151,14 +75,13 @@ class SubscriptionDetails extends StatelessWidget {
       body: Container(
         padding: EdgeInsets.symmetric(
           horizontal: 36.0.w,
-          vertical: 24.0.h,
         ),
         child: Column(
           children: [
             SubscriptionPlanDetails(
-              isBuyer: isBuyer,
+              isBuyer: vm.isBuyer,
               displayHeader: false,
-              subscriptionPlan: this.subscriptionPlan,
+              subscriptionPlan: vm.subscriptionPlan,
             ),
             Divider(),
             Container(
@@ -167,11 +90,10 @@ class SubscriptionDetails extends StatelessWidget {
                 alignment: Alignment.centerRight,
                 child: RichText(
                   text: TextSpan(
-                    text: "Order Total\t",
+                    text: 'Order Total\t',
                     children: [
                       TextSpan(
-                        text:
-                            "P ${subscriptionPlan.quantity! * subscriptionPlan.product.price!}",
+                        text: 'P ${vm.orderTotal}',
                         style: Theme.of(context)
                             .textTheme
                             .subtitle1!
@@ -184,13 +106,40 @@ class SubscriptionDetails extends StatelessWidget {
               ),
             ),
             SizedBox(height: 16.0.h),
-            buildTextInfo(context),
+            Container(
+              width: double.infinity,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Notes:",
+                    style: Theme.of(context).textTheme.subtitle1,
+                  ),
+                  Text(
+                    vm.subscriptionPlan.instruction!,
+                    style: Theme.of(context).textTheme.bodyText1,
+                  ),
+                  SizedBox(height: 16.0.h),
+                  Text(
+                    "Delivery Address:",
+                    style: Theme.of(context).textTheme.subtitle1,
+                  ),
+                  Text(
+                    _address,
+                    style: Theme.of(context).textTheme.bodyText1,
+                  ),
+                  SizedBox(height: 16.0.h),
+                ],
+              ),
+            ),
             //SizedBox(height: 16.0.h),
             Spacer(),
             _SubscriptionDetailsButtons(
-              subscriptionPlan: subscriptionPlan,
-              isBuyer: this.isBuyer,
-              displayWarning: _checkForConflicts(context),
+              isBuyer: vm.isBuyer,
+              displayWarning: vm.checkForConflicts(),
+              onSeeSchedule: vm.onSeeSchedule,
+              onMessageHandler: vm.onMessageSend,
+              onUnsubscribe: vm.onUnsubscribe,
             ),
           ],
         ),
@@ -201,12 +150,16 @@ class SubscriptionDetails extends StatelessWidget {
 
 class _SubscriptionDetailsButtons extends StatelessWidget {
   final bool isBuyer;
-  final ProductSubscriptionPlan subscriptionPlan;
   final bool displayWarning;
+  final void Function()? onSeeSchedule;
+  final void Function()? onMessageHandler;
+  final void Function()? onUnsubscribe;
   const _SubscriptionDetailsButtons({
     Key? key,
-    required this.subscriptionPlan,
     required this.displayWarning,
+    this.onSeeSchedule,
+    this.onMessageHandler,
+    this.onUnsubscribe,
     this.isBuyer = true,
   }) : super(key: key);
 
@@ -216,13 +169,8 @@ class _SubscriptionDetailsButtons extends StatelessWidget {
       children: [
         SizedBox(
           width: double.infinity,
-          child: FlatButton(
-            color: Colors.transparent,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20.0),
-              side: BorderSide(color: kTealColor),
-            ),
-            textColor: kTealColor,
+          child: ElevatedButton(
+            onPressed: this.onSeeSchedule,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -241,15 +189,13 @@ class _SubscriptionDetailsButtons extends StatelessWidget {
                   )
               ],
             ),
-            onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (_) => SubscriptionSchedule(
-                    subscriptionPlan: subscriptionPlan,
-                  ),
-                ),
-              );
-            },
+            style: ElevatedButton.styleFrom(
+              shape: StadiumBorder(),
+              elevation: 0.0,
+              primary: Colors.transparent,
+              minimumSize: Size(0, 40.0.h),
+              side: BorderSide(color: kTealColor),
+            ),
           ),
         ),
         Row(
@@ -259,8 +205,7 @@ class _SubscriptionDetailsButtons extends StatelessWidget {
                 "Unsubscribe",
                 kPinkColor,
                 false,
-                // TODO: add unsubscribe
-                null,
+                this.onUnsubscribe,
               ),
             ),
             SizedBox(width: 10.0.w),
@@ -269,21 +214,7 @@ class _SubscriptionDetailsButtons extends StatelessWidget {
                 this.isBuyer ? "Message Seller" : "Message Buyer",
                 kTealColor,
                 false,
-                () {
-                  context
-                    ..read<AppRouter>().navigateTo(
-                      AppRoute.chat,
-                      ChatView.routeName,
-                      arguments: ChatViewProps(
-                        true,
-                        members: [
-                          subscriptionPlan.buyerId!,
-                          subscriptionPlan.shopId!,
-                        ],
-                        shopId: subscriptionPlan.shopId,
-                      ),
-                    );
-                },
+                this.onMessageHandler,
               ),
             )
           ],

@@ -698,8 +698,25 @@ class _CalendarPickerBody extends StatelessWidget {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      AppButton("Cancel", kTealColor, false, onCancel),
-                      AppButton("Confirm", kTealColor, true, onConfirm),
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.3,
+                        child: AppButton(
+                          "Cancel",
+                          kTealColor,
+                          false,
+                          onCancel,
+                        ),
+                      ),
+                      SizedBox(width: 5.0.h),
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.3,
+                        child: AppButton(
+                          "Confirm",
+                          kTealColor,
+                          true,
+                          onConfirm,
+                        ),
+                      ),
                     ],
                   ),
                 ),

@@ -178,14 +178,17 @@ class Database {
     return FirebaseFirestore.instance.collection("order_status");
   }
 
-  Stream<QuerySnapshot> getUserSubscriptions(String? userId) {
+  Stream<QuerySnapshot<Map<String, dynamic>>> getUserSubscriptions(
+    String? userId,
+  ) {
     return subscriptionPlansRef
         .where("buyer_id", isEqualTo: userId)
         // .orderBy("created_at", descending: true)
         .snapshots();
   }
 
-  Stream<QuerySnapshot> getShopSubscribers(String? shopId) {
+  Stream<QuerySnapshot<Map<String, dynamic>>> getShopSubscribers(
+      String? shopId) {
     return subscriptionPlansRef
         .where("shop_id", isEqualTo: shopId)
         // .orderBy("created_at", descending: true)

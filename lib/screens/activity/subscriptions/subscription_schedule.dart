@@ -41,7 +41,11 @@ class SubscriptionSchedule extends StatefulWidget {
     Key? key,
     this.productId,
     this.subscriptionPlan,
-  }) : super(key: key);
+  })  : assert(
+          productId != null || subscriptionPlan != null,
+          'Either productId or subscriptionPlan must be non-null',
+        ),
+        super(key: key);
 
   final String? productId;
   final ProductSubscriptionPlan? subscriptionPlan;
@@ -60,6 +64,7 @@ class _SubscriptionScheduleState extends State<SubscriptionSchedule>
   // --need a common variable to set it with.
   int? _quantity;
   Product? _product;
+
   // This variable is only used when editing the subscription schedule.
   // Needed for the schedule generation.
   OperatingHours? _operatingHours;
@@ -67,6 +72,7 @@ class _SubscriptionScheduleState extends State<SubscriptionSchedule>
   // --schedule variables
   // Selectable days from the week picker (Mon, Tue, Wed, etc.)
   List<int> _selectableDays = [];
+
   // used on week picker
   List<DateTime> _startDates = [];
   DateTime? _startDate;
