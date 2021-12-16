@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../models/failure_exception.dart';
 import '../../../models/lokal_user.dart';
 import '../../../models/user_shop.dart';
 import '../../../providers/auth.dart';
@@ -8,12 +9,12 @@ import '../../../providers/shops.dart';
 import '../../../providers/users.dart';
 import '../../../routers/app_router.dart';
 import '../../../screens/profile/profile_screen.dart';
+import '../../../state/view_model.dart';
 import '../../../utils/constants/themes.dart';
 
-class UserShopViewModel extends ChangeNotifier {
-  UserShopViewModel(this.context, this.userId, [this.shopId]);
+class UserShopViewModel extends ViewModel {
+  UserShopViewModel(this.userId, [this.shopId]);
 
-  final BuildContext context;
   final String userId;
   final String? shopId;
 
@@ -28,6 +29,7 @@ class UserShopViewModel extends ChangeNotifier {
   bool get displaySettingsButton => isCurrentUser;
   bool get displayEditButton => isCurrentUser;
 
+  @override
   void init() {
     _shopSetup();
     this.isCurrentUser = context.read<Auth>().user!.id! == this.userId;
@@ -35,7 +37,6 @@ class UserShopViewModel extends ChangeNotifier {
         ? context.read<Auth>().user!
         : context.read<Users>().findById(userId)!;
   }
-
   void _shopSetup() {
     ShopModel? _shop;
 
@@ -50,7 +51,7 @@ class UserShopViewModel extends ChangeNotifier {
       _shop = _shops.first;
     }
 
-    if (_shop == null) throw 'Error: no shop found.';
+    if (_shop == null) throw FailureException('Error: no shop found.');
     this.shop = _shop;
   }
 

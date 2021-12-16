@@ -31,17 +31,20 @@ class ShopBanner extends StatelessWidget {
 class _ShopBannerView extends HookView<ShopBannerViewModel> {
   @override
   Widget render(BuildContext context, ShopBannerViewModel vm) {
+    final _auth = useMemoized<Auth>(() => context.read<Auth>(), []);
+    final _shops = useMemoized<Shops>(() => context.read<Shops>(), []);
+
     useEffect(() {
       final _listener = () {
         vm.refresh();
       };
 
-      context.read<Auth>().addListener(_listener);
-      context.read<Shops>().addListener(_listener);
+      _auth.addListener(_listener);
+      _shops.addListener(_listener);
 
       return () {
-        context.read<Auth>().removeListener(_listener);
-        context.read<Shops>().removeListener(_listener);
+        _auth.removeListener(_listener);
+        _shops.removeListener(_listener);
       };
     }, [vm]);
 
