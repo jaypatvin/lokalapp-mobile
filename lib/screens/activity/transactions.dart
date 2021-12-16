@@ -116,9 +116,13 @@ class _TransactionsView extends HookView<TransactionsViewModel> {
                   vm.isBuyer,
                 ),
               )
-            : Text(
-                vm.noOrderMessage,
-                style: Theme.of(context).textTheme.bodyText2,
+            : Expanded(
+                child: Center(
+                  child: Text(
+                    vm.noOrderMessage,
+                    style: Theme.of(context).textTheme.bodyText2,
+                  ),
+                ),
               ),
       ],
     );

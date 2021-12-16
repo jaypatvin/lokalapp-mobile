@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:keyboard_actions/keyboard_actions.dart';
 import 'package:lottie/lottie.dart';
+import 'package:oktoast/oktoast.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:provider/provider.dart';
 
@@ -185,11 +186,7 @@ class _ChatViewState extends State<ChatView> {
   }
 
   void showMaxAssetsText() {
-    // TODO: maybe use OKToast plugin
-    final snackBar = SnackBar(
-      content: Text("You have reached the limit of 5 media per message."),
-    );
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    showToast('You have reached the limit of 5 media per message.');
   }
 
   Future<List<Map<String, dynamic>>> _getMedia(
@@ -271,28 +268,19 @@ class _ChatViewState extends State<ChatView> {
         this.replyId = "";
       });
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            e.toString(),
-          ),
-        ),
-      );
+      showToast(e.toString());
     }
   }
 
   void _onDeleteMessage(String id) async {
-    late SnackBar snackBar;
     try {
       await _conversationAPIService.deleteConversation(
         chatId: this._chat!.id,
         messageId: id,
       );
-      snackBar = SnackBar(content: Text("Message deleted succesfully."));
+      showToast('Message delete succesfully.');
     } catch (e) {
-      snackBar = SnackBar(content: Text(e.toString()));
-    } finally {
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      showToast(e.toString());
     }
   }
 

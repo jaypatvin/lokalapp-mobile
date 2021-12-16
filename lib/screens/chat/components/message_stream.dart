@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:focused_menu/focused_menu.dart';
 import 'package:focused_menu/modals.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 import 'package:swipe_to/swipe_to.dart';
 
@@ -56,13 +57,7 @@ class MessageStream extends StatelessWidget {
           Clipboard.setData(
             ClipboardData(text: message.message),
           );
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                "Message copied to clipboard!",
-              ),
-            ),
-          );
+          showToast('Message copied to clipboard!');
         },
       ),
       if (isUser)

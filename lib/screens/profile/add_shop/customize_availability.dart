@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart' show DateFormat;
+import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
 import '../../../models/operating_hours.dart';
@@ -188,11 +189,7 @@ class _CustomizeAvailabilityState extends State<CustomizeAvailability>
           AddShopConfirmation.routeName,
         );
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text("Failed to create shop. Try again"),
-        ),
-      );
+      showToast('Failed to create shop. Try again.');
     }
   }
 

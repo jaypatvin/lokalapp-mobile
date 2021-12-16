@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:oktoast/oktoast.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 import 'package:provider/provider.dart';
@@ -298,16 +299,10 @@ class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
             ModalRoute.withName(UserShop.routeName),
           );
         } else {
-          final snackBar = SnackBar(
-            content: Text('Failed to update product'),
-          );
-          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+          showToast('Failed to update product');
         }
       } catch (e) {
-        final snackBar = SnackBar(
-          content: Text(e.toString()),
-        );
-        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        showToast(e.toString());
       }
       return;
     }
@@ -321,8 +316,7 @@ class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
         ),
       );
     } catch (e) {
-      final snackBar = SnackBar(content: Text(e.toString()));
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      showToast(e.toString());
     }
   }
 

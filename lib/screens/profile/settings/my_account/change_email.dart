@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../providers/auth.dart';
@@ -35,9 +36,7 @@ class _ChangeEmailState extends State<ChangeEmail> {
     _password.addListener(_onPasswordChanged);
     _errorSubscription = _viewModel.errorStream.listen((event) {
       if (this.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(event)),
-        );
+        showToast(event);
       }
     });
   }

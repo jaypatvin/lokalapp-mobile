@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/auth.dart';
@@ -43,19 +44,9 @@ class ProfileHeaderViewModel extends ViewModel {
 
   void onSettingsPressed() {
     if (isCurrentUser) {
-      // pushNewScreenWithRouteSettings(
-      //   context,
-      //   screen: Settings(),
-      //   settings: RouteSettings(name: Settings.routeName),
-      // );
       AppRouter.profileNavigatorKey.currentState?.pushNamed(Settings.routeName);
     } else {
-      debugPrint('What to do?');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('What to do?'),
-        ),
-      );
+      showToast('Nothing to do here!');
     }
   }
 
@@ -65,12 +56,7 @@ class ProfileHeaderViewModel extends ViewModel {
         EditProfile.routeName,
       );
     } else {
-      debugPrint('What to do?');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('What to do?'),
-        ),
-      );
+      showToast('Nothing to do here!');
     }
   }
 }

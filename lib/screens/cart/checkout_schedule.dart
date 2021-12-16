@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/auth.dart';
@@ -67,7 +68,7 @@ class _CheckoutScheduleState extends State<CheckoutSchedule> with ScreenLoader {
               ),
             );
     } else {
-      // TODO: show snackbar?
+      showToast('Failed to place order.');
     }
   }
 

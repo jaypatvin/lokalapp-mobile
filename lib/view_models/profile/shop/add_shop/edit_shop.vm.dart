@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../models/user_shop.dart';
@@ -202,11 +203,7 @@ class EditShopViewModel extends ViewModel {
         if (!success) throw "Update operating hours error";
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(e.toString()),
-        ),
-      );
+      showToast(e.toString());
     }
   }
 }

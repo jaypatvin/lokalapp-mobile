@@ -60,12 +60,16 @@ class _GroupedOrdersView extends HookView<GroupedOrdersViewModel>
             );
           default:
             if (snapshot.hasError)
-              return Text('Error: ${snapshot.error}');
+              return Center(
+                child: Text('Error: ${snapshot.error}'),
+              );
             else if (!snapshot.hasData || snapshot.data!.docs.length == 0)
-              return Text(
-                'No orders yet!',
-                style: TextStyle(
-                  fontWeight: FontWeight.w500,
+              return Center(
+                child: Text(
+                  'No orders yet!',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
               );
             else

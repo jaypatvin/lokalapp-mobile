@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/product.dart';
@@ -53,28 +54,16 @@ class ProductCardViewModel extends ChangeNotifier {
               productId: productId,
               userId: context.read<Auth>().user!.id!,
             );
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Unliked!'),
-          ),
-        );
+        showToast('Unliked!');
       } else {
         context.read<Products>().likeProduct(
               productId: productId,
               userId: context.read<Auth>().user!.id!,
             );
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Liked!'),
-          ),
-        );
+        showToast('Liked!');
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Error: $e'),
-        ),
-      );
+      showToast(e.toString());
     }
   }
 

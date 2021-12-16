@@ -154,19 +154,20 @@ class _InviteAFriendView extends HookView<InviteAFriendViewModel>
                   controller: _emailController,
                   focusNode: _emailNode,
                   errorText: vm.emailErrorText,
+                  hintText: 'Email Address',
                 ),
-                Padding(
-                  padding: EdgeInsets.symmetric(vertical: 20.0.h),
-                  child: Text('or'),
-                ),
-                InputField(
-                  controller: _phoneController,
-                  focusNode: _phoneNode,
-                  fillColor: Colors.white,
-                  hintText: 'Phone Number',
-                  keyboardType: TextInputType.number,
-                  enabled: false,
-                ),
+                // Padding(
+                //   padding: EdgeInsets.symmetric(vertical: 20.0.h),
+                //   child: Text('or'),
+                // ),
+                // InputField(
+                //   controller: _phoneController,
+                //   focusNode: _phoneNode,
+                //   fillColor: Colors.white,
+                //   hintText: 'Phone Number',
+                //   keyboardType: TextInputType.number,
+                //   enabled: false,
+                // ),
                 SizedBox(height: 20.0.h),
                 SizedBox(
                   width: MediaQuery.of(context).size.width * 0.7,

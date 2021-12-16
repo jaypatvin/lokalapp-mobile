@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:keyboard_actions/keyboard_actions.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
 import '../../../models/operating_hours.dart';
@@ -394,8 +395,7 @@ class _SubscriptionScheduleState extends State<SubscriptionSchedule>
     if (widget.subscriptionPlan != null) {
       final success = await _onOverrideSchedule();
       if (!success) {
-        final snackBar = SnackBar(content: Text("Failed to update schedule"));
-        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        showToast('Failed to update schedule.');
         return;
       }
 
@@ -404,10 +404,7 @@ class _SubscriptionScheduleState extends State<SubscriptionSchedule>
     }
 
     if (_repeatUnit! <= 0) {
-      final snackBar = SnackBar(
-        content: Text("Please enter a valid repeat value."),
-      );
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      showToast('Please enter a valid repeat value.');
       return;
     }
 
