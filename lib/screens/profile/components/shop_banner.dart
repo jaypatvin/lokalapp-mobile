@@ -79,7 +79,7 @@ class _ShopBannerView extends HookView<ShopBannerViewModel> {
             ListTile(
               tileColor: kPinkColor,
               title: Text(
-                "Verify Account",
+                'Verify Account',
                 style: TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.w600,
@@ -97,7 +97,7 @@ class _ShopBannerView extends HookView<ShopBannerViewModel> {
               padding: EdgeInsets.symmetric(horizontal: 75.0.w),
               color: Colors.transparent,
               child: Text(
-                "You must verify your account to add a shop",
+                'You must verify your account to add a shop',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: kPinkColor,
@@ -125,7 +125,7 @@ class _ShopBannerView extends HookView<ShopBannerViewModel> {
               child: SizedBox(
                 width: 300.w,
                 child: AppButton(
-                  "+ ADD SHOP",
+                  '+ ADD SHOP',
                   kTealColor,
                   false,
                   vm.onAddShop,
@@ -154,7 +154,7 @@ class _ShopBannerView extends HookView<ShopBannerViewModel> {
               padding: EdgeInsets.fromLTRB(10.0.w, 20.0.w, 10.0.w, 10.0.w),
               width: double.infinity,
               child: Text(
-                "My Shop",
+                'My Shop',
                 style: TextStyle(
                   color: kTealColor,
                   fontWeight: FontWeight.w600,
