@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:lokalapp/services/bottom_nav_bar_hider.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
@@ -6,6 +7,9 @@ import '../../models/product.dart';
 import '../../models/user_shop.dart';
 import '../../providers/cart.dart';
 import '../../providers/wishlist.dart';
+import '../../routers/app_router.dart';
+import '../../routers/profile/user_shop.props.dart';
+import '../../screens/profile/shop/user_shop.dart';
 import '../../state/view_model.dart';
 
 class ProductDetailViewModel extends ViewModel {
@@ -106,5 +110,15 @@ class ProductDetailViewModel extends ViewModel {
     } catch (e) {
       rethrow;
     }
+  }
+
+  void goToShop() async {
+    context.read<BottomNavBarHider>().isHidden = false;
+    await context.read<AppRouter>().navigateTo(
+          AppRoute.profile,
+          UserShop.routeName,
+          arguments: UserShopProps(product.userId, product.shopId),
+        );
+    context.read<BottomNavBarHider>().isHidden = true;
   }
 }
