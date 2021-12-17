@@ -40,6 +40,7 @@ class ShopTile extends StatelessWidget {
           SizedBox(
             width: 3,
           ),
+          // TODO: ask for shop rating ????
           Text(
             "0",
             style: TextStyle(color: Colors.amber, fontSize: 14),
