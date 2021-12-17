@@ -1,5 +1,4 @@
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
+import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/product.dart';
@@ -10,10 +9,10 @@ import '../../providers/shops.dart';
 import '../../routers/app_router.dart';
 import '../../routers/profile/user_shop.props.dart';
 import '../../screens/profile/shop/user_shop.dart';
+import '../../state/view_model.dart';
 
-class ProductCardViewModel extends ChangeNotifier {
-  ProductCardViewModel(this.context, this.productId);
-  final BuildContext context;
+class ProductCardViewModel extends ViewModel {
+  ProductCardViewModel({required this.productId});
   final String productId;
 
   bool _displayBorder = false;
@@ -30,6 +29,7 @@ class ProductCardViewModel extends ChangeNotifier {
 
   bool get isLiked => product.likes.contains(context.read<Auth>().user!.id);
 
+  @override
   void init() {
     product = context.read<Products>().findById(productId)!;
     shop = context.read<Shops>().findById(product.shopId)!;
@@ -53,28 +53,16 @@ class ProductCardViewModel extends ChangeNotifier {
               productId: productId,
               userId: context.read<Auth>().user!.id!,
             );
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Unliked!'),
-          ),
-        );
+        showToast('Unliked!');
       } else {
         context.read<Products>().likeProduct(
               productId: productId,
               userId: context.read<Auth>().user!.id!,
             );
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Liked!'),
-          ),
-        );
+        showToast('Liked!');
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Error: $e'),
-        ),
-      );
+      showToast(e.toString());
     }
   }
 

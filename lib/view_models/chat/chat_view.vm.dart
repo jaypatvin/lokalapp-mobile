@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:oktoast/oktoast.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:provider/provider.dart';
 
@@ -170,11 +171,7 @@ class ChatViewViewModel extends ChangeNotifier {
   }
 
   void _showMaxAssetsText() {
-    // TODO: maybe use OKToast plugin
-    final snackBar = SnackBar(
-      content: Text("You have reached the limit of 5 media per message."),
-    );
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    showToast('You have reached the limit of 5 media per message.');
   }
 
   void onSendMessage() async {
@@ -237,13 +234,7 @@ class ChatViewViewModel extends ChangeNotifier {
       this._replyId = "";
       notifyListeners();
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            e.toString(),
-          ),
-        ),
-      );
+      showToast(e.toString());
       this.chatInputController.text = message;
       this.provider.picked = picked;
       this._showImagePicker = showImagePicker;
@@ -256,17 +247,14 @@ class ChatViewViewModel extends ChangeNotifier {
   }
 
   void onDeleteMessage(String id) async {
-    late SnackBar snackBar;
     try {
       await _conversationAPIService.deleteConversation(
         chatId: this._chat!.id,
         messageId: id,
       );
-      snackBar = SnackBar(content: Text("Message deleted succesfully."));
+      showToast('Message deleted succesfully.');
     } catch (e) {
-      snackBar = SnackBar(content: Text(e.toString()));
-    } finally {
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      showToast(e.toString());
     }
   }
 

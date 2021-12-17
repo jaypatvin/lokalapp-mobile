@@ -1,7 +1,5 @@
 import 'dart:convert';
 
-import 'package:http/http.dart' as http;
-
 import '../../models/lokal_invite.dart';
 import 'api.dart';
 import 'api_service.dart';
@@ -14,7 +12,7 @@ class InviteAPIService extends APIService<LokalInvite> {
 
   Future<LokalInvite> inviteAFriend(Map<String, dynamic> body) async {
     try {
-      final response = await http.post(
+      final response = await this.poster(
         api.endpointUri(endpoint),
         headers: api.withBodyHeader(),
         body: json.encode(body),
@@ -28,7 +26,7 @@ class InviteAPIService extends APIService<LokalInvite> {
 
   Future<LokalInvite> check(String code) async {
     try {
-      final response = await http.get(
+      final response = await this.getter(
         api.endpointUri(
           endpoint,
           pathSegments: ['check', code],
@@ -47,7 +45,7 @@ class InviteAPIService extends APIService<LokalInvite> {
     required String code,
   }) async {
     try {
-      final response = await http.post(
+      final response = await this.poster(
         api.endpointUri(endpoint, pathSegments: ['claim']),
         headers: api.withBodyHeader(),
         body: json.encode({

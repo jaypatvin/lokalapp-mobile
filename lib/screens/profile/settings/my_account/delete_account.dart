@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../routers/app_router.dart';
@@ -52,11 +53,7 @@ class _DeleteAccountState extends State<DeleteAccount> {
                 'Delete account',
                 kPinkColor,
                 true,
-                () => ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text('Not yet implemented'),
-                  ),
-                ),
+                () => showToast('Not yet implemented.'),
                 // () => pushNewScreen(
                 //   context,
                 //   screen: AccountDeleted(),

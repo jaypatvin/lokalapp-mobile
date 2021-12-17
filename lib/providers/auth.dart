@@ -10,12 +10,12 @@ import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
+import '../models/failure_exception.dart';
 import '../models/lokal_user.dart';
 import '../services/api/api.dart';
 import '../services/api/user_api_service.dart';
 import '../services/database.dart';
 
-// TODO: checking for errors (no authResult etc.)
 class Auth extends ChangeNotifier {
   Auth._(this._api, this._apiService);
 
@@ -264,10 +264,10 @@ class Auth extends ChangeNotifier {
           debugPrint('Signed in with Email.');
         } else if (userInfo.providerId == GoogleAuthProvider.PROVIDER_ID) {
           debugPrint('Signed in with Google.');
-          throw ('Signed in with Google.');
+          throw FailureException('Signed in with Google.');
         } else if (userInfo.providerId == FacebookAuthProvider.PROVIDER_ID) {
           debugPrint('Signed in with Google.');
-          throw ('Signed in with Facebook');
+          throw FailureException('Signed in with Facebook');
         }
       }
     }

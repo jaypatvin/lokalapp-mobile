@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../providers/auth.dart';
@@ -30,9 +31,7 @@ class _MyAccountState extends State<MyAccount> {
     _errorSubscription = _viewModel.errorStream.listen(
       (event) {
         if (this.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(event.toString())),
-          );
+          showToast(event);
         }
       },
     );
@@ -106,7 +105,8 @@ class _MyAccountState extends State<MyAccount> {
                   "Delete Account",
                   kPinkColor,
                   false,
-                  () => AppRouter.pushNewScreen(context, screen: DeleteAccount()),
+                  () =>
+                      AppRouter.pushNewScreen(context, screen: DeleteAccount()),
                 ),
               ),
             ],

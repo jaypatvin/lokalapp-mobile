@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:oktoast/oktoast.dart';
 import 'package:validators/validators.dart';
 
+import '../../../models/failure_exception.dart';
 import '../../../models/lokal_invite.dart';
 import '../../../screens/profile/settings/invite_a_friend/invite_sent.dart';
 import '../../../services/api/api.dart';
@@ -45,7 +47,8 @@ class InviteAFriendViewModel extends ViewModel {
   Future<void> sendInviteCode() async {
     try {
       if (_emailAddress.isEmpty && _phoneNumber.isEmpty)
-        throw ('Email Address or Phone Number should not be empty.');
+        // throw ('Email Address or Phone Number should not be empty.');
+        throw FailureException('Email Address should not be empty!');
 
       if (!isEmail(_emailAddress)) {
         _emailErrorText = 'Enter a valid email.';
@@ -71,11 +74,7 @@ class InviteAFriendViewModel extends ViewModel {
         CupertinoPageRoute(builder: (_) => InviteSent(invite)),
       );
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(e.toString()),
-        ),
-      );
+      showToast(e.toString());
     }
   }
 }

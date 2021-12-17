@@ -2,55 +2,44 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:grouped_list/grouped_list.dart';
-import 'package:provider/provider.dart';
 
 import '../../../models/product_subscription_plan.dart';
-import '../../../providers/auth.dart';
-import '../../../providers/shops.dart';
-import '../../../services/database.dart';
+import '../../../state/mvvm_builder.widget.dart';
+import '../../../state/views/stateless.view.dart';
 import '../../../utils/constants/themes.dart';
+import '../../../view_models/activity/subscriptions/subscriptions.vm.dart';
 import '../../../widgets/app_button.dart';
 import '../../../widgets/custom_app_bar.dart';
 import 'components/subscription_plan_details.dart';
 import 'subscription_details.dart';
 
-class Subscriptions extends StatefulWidget {
-  final bool isBuyer;
+class Subscriptions extends StatelessWidget {
   const Subscriptions({Key? key, required this.isBuyer}) : super(key: key);
-
-  @override
-  _SubscriptionsState createState() => _SubscriptionsState();
-}
-
-class _SubscriptionsState extends State<Subscriptions> {
-  Stream<QuerySnapshot>? _stream;
-  @override
-  void initState() {
-    super.initState();
-    final user = context.read<Auth>().user!;
-
-    if (widget.isBuyer) {
-      _stream = Database.instance.getUserSubscriptions(user.id);
-    } else {
-      final shops = context.read<Shops>().findByUser(user.id);
-      if (shops.isNotEmpty) {
-        final shop = shops.first;
-        _stream = Database.instance.getShopSubscribers(shop.id);
-      }
-    }
-  }
+  final bool isBuyer;
 
   @override
   Widget build(BuildContext context) {
+    return MVVM(
+      view: (_, __) => _SubscriptionsView(),
+      viewModel: SubscriptionsViewModel(
+        isBuyer: isBuyer,
+      ),
+    );
+  }
+}
+
+class _SubscriptionsView extends StatelessView<SubscriptionsViewModel> {
+  @override
+  Widget render(BuildContext context, SubscriptionsViewModel vm) {
     return Scaffold(
       appBar: CustomAppBar(
-        titleText: widget.isBuyer ? "My Subscriptions" : "Subscription Orders",
+        titleText: vm.isBuyer ? "My Subscriptions" : "Subscription Orders",
         titleStyle: TextStyle(color: Colors.white),
-        backgroundColor: widget.isBuyer ? kTealColor : kPurpleColor,
+        backgroundColor: vm.isBuyer ? kTealColor : kPurpleColor,
         onPressedLeading: () => Navigator.of(context).pop(),
       ),
       body: StreamBuilder(
-        stream: this._stream,
+        stream: vm.stream,
         builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.waiting:
@@ -89,7 +78,7 @@ class _SubscriptionsState extends State<Subscriptions> {
                         ProductSubscriptionPlan.fromMap(data);
                     return _SubscriptionCard(
                       subscriptionPlan: subscriptionPlan,
-                      isBuyer: widget.isBuyer,
+                      isBuyer: vm.isBuyer,
                       onDetailsPressed: () {
                         Navigator.of(context).push(
                           MaterialPageRoute(

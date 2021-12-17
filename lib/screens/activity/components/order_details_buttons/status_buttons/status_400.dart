@@ -26,12 +26,11 @@ class Status400Buttons extends StatelessWidget {
       return Container(
         child: Column(
           children: [
-            if (this.paymentMethod != "cod")
-            Container(
-              width: double.infinity,
-              child: ViewPaymentButton(onPress: this.onPress),
-            ),
-            SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+            if (order.proofOfPayment?.isNotEmpty ?? false)
+              Container(
+                width: double.infinity,
+                child: ViewPaymentButton(onPress: this.onPress),
+              ),
             Container(
               width: double.infinity,
               child: MessageSellerButton(order: this.order),
@@ -48,7 +47,6 @@ class Status400Buttons extends StatelessWidget {
             width: double.infinity,
             child: ViewPaymentButton(onPress: this.onPress),
           ),
-          SizedBox(height: MediaQuery.of(context).size.height * 0.01),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [

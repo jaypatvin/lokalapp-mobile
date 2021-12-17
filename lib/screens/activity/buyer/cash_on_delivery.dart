@@ -1,69 +1,58 @@
-import 'dart:async';
-
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
 
 import '../../../models/order.dart';
-import '../../../providers/auth.dart';
-import '../../../services/lokal_api_service.dart';
+import '../../../state/mvvm_builder.widget.dart';
+import '../../../state/views/hook.view.dart';
 import '../../../utils/constants/themes.dart';
+import '../../../view_models/activity/buyer/cash_on_delivery.vm.dart';
 import '../../../widgets/app_button.dart';
 import '../../../widgets/custom_app_bar.dart';
 import '../../../widgets/overlays/screen_loader.dart';
-import 'processing_payment.dart';
 
-class CashOnDelivery extends StatefulWidget {
+class CashOnDelivery extends StatelessWidget {
+  const CashOnDelivery({Key? key, required this.order}) : super(key: key);
   final Order order;
-  CashOnDelivery({Key? key, required this.order}) : super(key: key);
 
   @override
-  _CashOnDeliveryState createState() => _CashOnDeliveryState();
+  Widget build(BuildContext context) {
+    return MVVM(
+      view: (_, __) => _CashOnDeliveryView(),
+      viewModel: CashOnDeliveryViewModel(order),
+    );
+  }
 }
 
-class _CashOnDeliveryState extends State<CashOnDelivery> with ScreenLoader {
-  final _termsConditionHandler = TapGestureRecognizer()
-    ..onTap = () {
-      print("Terms & Conditions tapped");
-    };
-
-  FutureOr<void> _onSubmitHandler(BuildContext context) {
-    final idToken = context.read<Auth>().idToken;
-    LokalApiService.instance!.orders!.pay(
-      idToken: idToken,
-      orderId: this.widget.order.id,
-      data: <String, String>{
-        "payment_method": "cod",
-      },
-    ).then((response) {
-      if (response.statusCode == 200) {
-        // The ProcessingPaymentScreen returns a boolean on successful
-        // payment. If it is, we pop this and go back to the Activity screen.
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ProcessingPayment(
-              order: this.widget.order,
-              paymentMode: PaymentMode.bank,
-            ),
-          ),
-        ).then((_) => Navigator.pop(context, true));
-      }
-    });
-  }
-
+class _CashOnDeliveryView extends HookView<CashOnDeliveryViewModel>
+    with HookScreenLoader {
   @override
-  Widget screen(BuildContext context) {
-    final numberFormat = NumberFormat("#,###.0#", "en_US");
-    final price = this
-        .widget
-        .order
-        .products
-        .fold(0.0, (double prev, product) => prev + product.price!);
+  Widget screen(BuildContext context, CashOnDeliveryViewModel vm) {
+    final _numberFormat = useMemoized<NumberFormat>(
+      () => NumberFormat('#,###.0#', 'en_US'),
+    );
+
+    final _price = useMemoized<String>(
+      () => _numberFormat.format(
+        vm.order.products.fold<double>(
+          0.0,
+          (double prev, product) => prev + product.price!,
+        ),
+      ),
+    );
+
+    final _termsConditionHandler = useMemoized<TapGestureRecognizer>(
+      () => TapGestureRecognizer()
+        ..onTap = () {
+          print('Terms & Conditions tapped');
+        },
+    );
+
     return Scaffold(
       appBar: CustomAppBar(
-        titleText: "Cash on Delivery",
+        titleText: 'Cash on Delivery',
         titleStyle: TextStyle(color: Colors.white),
         backgroundColor: kTealColor,
         leadingColor: Colors.white,
@@ -71,72 +60,62 @@ class _CashOnDeliveryState extends State<CashOnDelivery> with ScreenLoader {
       ),
       body: Column(
         children: [
-          SizedBox(height: 36.0),
+          SizedBox(height: 24.0.h),
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 36.0),
+            padding: EdgeInsets.symmetric(horizontal: 36.0.w),
             child: RichText(
               text: TextSpan(
                 children: [
-                  TextSpan(text: "Please prepare "),
+                  TextSpan(text: 'Please prepare '),
                   TextSpan(
-                    text: "P ${numberFormat.format(price)}",
-                    style: TextStyle(
-                      color: Colors.orange,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    text: 'P $_price',
+                    style: Theme.of(context).textTheme.bodyText2?.copyWith(
+                        color: kOrangeColor, fontWeight: FontWeight.bold),
                   ),
-                  TextSpan(text: " for when the courier arrives.")
+                  TextSpan(text: ' for when the courier arrives.')
                 ],
-                style: TextStyle(
-                  color: Colors.black,
-                  fontFamily: "Goldplay",
-                  fontWeight: FontWeight.w500,
-                  fontSize: 15.0,
-                ),
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyText2
+                    ?.copyWith(color: Colors.black),
               ),
             ),
           ),
           SizedBox(height: 16.0),
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 36.0),
+            padding: EdgeInsets.symmetric(horizontal: 36.0.w),
             child: RichText(
               text: TextSpan(
-                children: [
-                  TextSpan(text: "By completing this order, you agree to all "),
-                  TextSpan(
-                    text: "Terms & Conditions",
-                    recognizer: _termsConditionHandler,
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: kTealColor,
+                  children: [
+                    TextSpan(
+                        text: 'By completing this order, you agree to all '),
+                    TextSpan(
+                      text: 'Terms & Conditions',
+                      recognizer: _termsConditionHandler,
+                      style: Theme.of(context).textTheme.bodyText2?.copyWith(
+                          color: kTealColor, fontWeight: FontWeight.bold),
                     ),
-                  ),
-                ],
-                style: TextStyle(
-                  color: Colors.black,
-                  fontFamily: "Goldplay",
-                  fontWeight: FontWeight.w500,
-                  fontSize: 15.0,
-                ),
-              ),
+                  ],
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyText2
+                      ?.copyWith(color: Colors.black)),
             ),
           ),
           Spacer(),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            padding: EdgeInsets.symmetric(horizontal: 12.0.w),
             child: Container(
               width: double.infinity,
               child: AppButton(
-                "Submit",
+                'Continue with Cash on Delivery',
                 kTealColor,
                 true,
-                () async => await performFuture<void>(
-                    () async => await _onSubmitHandler(context)),
-                textStyle: TextStyle(fontSize: 13.0),
+                () async => await performFuture<void>(vm.onSubmitHandler),
               ),
             ),
           ),
-          SizedBox(height: 24.0)
+          SizedBox(height: 24.0.h)
         ],
       ),
     );

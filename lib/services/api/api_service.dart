@@ -1,12 +1,106 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:http/http.dart' as http;
+import 'package:lokalapp/models/failure_exception.dart';
 
 /// Class that supports handling of responses.
 ///
 /// `T` is an object that will be created from the http response.
 abstract class APIService<T> {
   const APIService();
+
+  /// A wrapper for `http.getter` that throws corresponding apprioriate
+  /// `[SocketException]` or `[HttpException]` error messages.
+  Future<http.Response> getter(
+    Uri endpointUri, {
+    required Map<String, String> headers,
+  }) async {
+    try {
+      return await http.get(
+        endpointUri,
+        headers: headers,
+      );
+    } on SocketException {
+      throw FailureException('No Internet Connection!');
+    } on HttpException {
+      throw FailureException('Failed lookup!');
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  /// A wrapper for `http.post` that throws corresponding apprioriate
+  /// `[SocketException]` or `[HttpException]` error messages.
+  Future<http.Response> poster(
+    Uri endpointUri, {
+    Map<String, String>? headers,
+    Object? body,
+    Encoding? encoding,
+  }) async {
+    try {
+      return await http.post(
+        endpointUri,
+        headers: headers,
+        body: body,
+        encoding: encoding,
+      );
+    } on SocketException {
+      throw FailureException('No Internet Connection!');
+    } on HttpException {
+      throw FailureException('Failed lookup!');
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  /// A wrapper for `http.delete` that throws corresponding apprioriate
+  /// `[SocketException]` or `[HttpException]` error messages.
+  Future<http.Response> deleter(
+    Uri endpointUri, {
+    Map<String, String>? headers,
+    Object? body,
+    Encoding? encoding,
+  }) async {
+    try {
+      return await http.delete(
+        endpointUri,
+        headers: headers,
+        body: body,
+        encoding: encoding,
+      );
+    } on SocketException {
+      throw FailureException('No Internet Connection!');
+    } on HttpException {
+      throw FailureException('Failed lookup!');
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  /// A wrapper for `http.put` that throws corresponding apprioriate
+  /// `[SocketException]` or `[HttpException]` error messages.
+  Future<http.Response> putter(
+    Uri endpointUri, {
+    Map<String, String>? headers,
+    Object? body,
+    Encoding? encoding,
+  }) async {
+    try {
+      return await http.put(
+        endpointUri,
+        headers: headers,
+        body: body,
+        encoding: encoding,
+      );
+    } on SocketException {
+      throw FailureException('No Internet Connection!');
+    } on HttpException {
+      throw FailureException('Failed lookup!');
+    } catch (e) {
+      rethrow;
+    }
+  }
 
   /// Returns an object `T` from the given response.
   ///
@@ -25,16 +119,16 @@ abstract class APIService<T> {
       try {
         final map = json.decode(response.body);
         if (map['data'] != null) {
-          throw map['data'];
+          throw throw (FailureException(map['data']));
         }
 
         if (map['message'] != null) {
-          throw map['message'];
+          throw FailureException(map['message']);
         }
 
-        throw response.reasonPhrase!;
+        throw FailureException(response.reasonPhrase ?? 'Error parsing data.');
       } on FormatException {
-        throw response.reasonPhrase!;
+        throw FailureException('Bad response format');
       }
     }
   }
@@ -62,16 +156,16 @@ abstract class APIService<T> {
       try {
         final map = json.decode(response.body);
         if (map['data'] != null) {
-          throw map['data'];
+          throw throw (FailureException(map['data']));
         }
 
         if (map['message'] != null) {
-          throw map['message'];
+          throw FailureException(map['message']);
         }
 
-        throw response.reasonPhrase!;
+        throw FailureException(response.reasonPhrase ?? 'Error parsing data.');
       } on FormatException {
-        throw response.reasonPhrase!;
+        throw FailureException('Bad response format');
       }
     }
   }
@@ -90,16 +184,16 @@ abstract class APIService<T> {
       try {
         final map = json.decode(response.body);
         if (map['data'] != null) {
-          throw map['data'];
+          throw throw (FailureException(map['data']));
         }
 
         if (map['message'] != null) {
-          throw map['message'];
+          throw FailureException(map['message']);
         }
 
-        throw '${map["status"]}: ${response.reasonPhrase}';
+        throw FailureException(response.reasonPhrase ?? 'Error parsing data.');
       } on FormatException {
-        throw response.reasonPhrase!;
+        throw FailureException('Bad response format');
       }
     }
   }

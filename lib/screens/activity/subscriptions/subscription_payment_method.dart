@@ -1,88 +1,48 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:provider/provider.dart';
 
-import '../../../providers/cart.dart';
-import '../../../providers/products.dart';
 import '../../../providers/subscriptions.dart';
+import '../../../state/mvvm_builder.widget.dart';
+import '../../../state/views/hook.view.dart';
+import '../../../utils/constants/assets.dart';
 import '../../../utils/constants/themes.dart';
+import '../../../view_models/activity/subscriptions/subscription_payment_method.vm.dart';
 import '../../../widgets/custom_app_bar.dart';
 import '../../../widgets/overlays/screen_loader.dart';
 import '../../../widgets/payment_options.widget.dart';
-import '../../activity/buyer/processing_payment.dart';
-import '../../cart/cart_confirmation.dart';
 
-class SubscriptionPaymentMethod extends StatefulWidget {
-  final SubscriptionPlanBody subscriptionPlanBody;
-  final bool reschedule;
-
+class SubscriptionPaymentMethod extends StatelessWidget {
   const SubscriptionPaymentMethod({
     Key? key,
     required this.subscriptionPlanBody,
     required this.reschedule,
   }) : super(key: key);
 
+  final SubscriptionPlanBody subscriptionPlanBody;
+  final bool reschedule;
+
   @override
-  _SubscriptionPaymentMethodState createState() =>
-      _SubscriptionPaymentMethodState();
+  Widget build(BuildContext context) {
+    return MVVM(
+      view: (_, __) => _SubscriptionPaymentMethodView(),
+      viewModel: SubscriptionPaymentMethodViewModel(
+        subscriptionPlanBody: subscriptionPlanBody,
+        reschedule: reschedule,
+      ),
+    );
+  }
 }
 
-class _SubscriptionPaymentMethodState extends State<SubscriptionPaymentMethod>
-    with ScreenLoader {
-  Future<void> _onSubmitHandler(
-    BuildContext context,
-    PaymentMode paymentMode,
-  ) async {
-    try {
-      final subscriptionProvider = context.read<SubscriptionProvider>();
-      widget.subscriptionPlanBody.paymentMethod = paymentMode.value;
-
-      final subscriptionPlan = await subscriptionProvider
-          .createSubscriptionPlan(widget.subscriptionPlanBody.toMap());
-
-      if (subscriptionPlan != null && this.widget.reschedule) {
-        await subscriptionProvider.autoReschedulePlan(subscriptionPlan.id);
-      }
-
-      if (subscriptionPlan != null) {
-        context
-            .read<ShoppingCart>()
-            .remove(widget.subscriptionPlanBody.productId);
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (ctx) {
-              return CartConfirmation(
-                isSubscription: true,
-              );
-            },
-          ),
-        );
-      }
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            e.toString(),
-          ),
-        ),
-      );
-    }
-  }
-
+class _SubscriptionPaymentMethodView
+    extends HookView<SubscriptionPaymentMethodViewModel> with HookScreenLoader {
   @override
-  Widget screen(BuildContext context) {
-    final _productId = widget.subscriptionPlanBody.productId;
-    final _quantity = widget.subscriptionPlanBody.quantity!;
-    final _product = context.read<Products>().findById(_productId);
-    final double _totalPrice = _quantity * _product!.basePrice;
-
+  Widget screen(BuildContext context, SubscriptionPaymentMethodViewModel vm) {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: CustomAppBar(
         backgroundColor: Colors.transparent,
-        titleText: "Choose a Payment Option",
-        onPressedLeading: () => Navigator.pop(context),
+        titleText: 'Choose a Payment Option',
         leadingColor: kTealColor,
         titleStyle: TextStyle(color: Colors.black),
       ),
@@ -96,7 +56,7 @@ class _SubscriptionPaymentMethodState extends State<SubscriptionPaymentMethod>
                 children: [
                   Positioned.fill(
                     child: SvgPicture.asset(
-                      "assets/houses_background.svg",
+                      kSvgBackgroundHouses,
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -106,14 +66,14 @@ class _SubscriptionPaymentMethodState extends State<SubscriptionPaymentMethod>
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
-                          "P$_totalPrice",
-                          style:
-                              Theme.of(context).textTheme.headline3!.copyWith(
-                                    color: kOrangeColor,
-                                  ),
+                          'P${vm.totalPrice}',
+                          style: Theme.of(context)
+                              .textTheme
+                              .headline3
+                              ?.copyWith(color: kOrangeColor),
                         ),
                         Text(
-                          "Total Payment",
+                          'Total Payment',
                           style: Theme.of(context).textTheme.subtitle1,
                         ),
                       ],
@@ -125,7 +85,7 @@ class _SubscriptionPaymentMethodState extends State<SubscriptionPaymentMethod>
             SizedBox(height: 30.0.h),
             PaymentOptionsWidget(
               onPaymentPressed: (mode) async => performFuture<void>(
-                () async => await _onSubmitHandler(context, mode),
+                () async => await vm.onSubmitHandler(mode),
               ),
             ),
           ],

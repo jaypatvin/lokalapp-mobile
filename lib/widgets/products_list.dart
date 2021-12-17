@@ -27,6 +27,7 @@ class ProductsList extends StatelessWidget {
       itemBuilder: (ctx2, index) {
         try {
           return Container(
+            key: ValueKey(items[index].id),
             margin: EdgeInsets.symmetric(
               vertical: 5.0.h,
               horizontal: 2.5.w,

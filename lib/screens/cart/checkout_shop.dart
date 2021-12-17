@@ -38,7 +38,8 @@ class ShopCheckout extends StatelessWidget {
           return ListView.builder(
             itemCount: orders.length,
             itemBuilder: (ctx, index) {
-              final key = orders.keys.elementAt(index)!;
+              final key = orders.keys.elementAt(index);
+              if (key == null) return const SizedBox();
               return Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: _OrdersCard(productId: key),

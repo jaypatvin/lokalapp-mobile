@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:lottie/lottie.dart';
 
@@ -38,35 +39,6 @@ class ProcessingPayment extends StatelessWidget {
     required this.paymentMode,
   }) : super(key: key);
 
-  Widget _buildButtons(context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          SizedBox(
-            width: double.infinity,
-            child: MessageSellerButton(order: order),
-          ),
-          Container(
-            width: double.infinity,
-            child: AppButton(
-              "Back to Activity",
-              kTealColor,
-              true,
-              () {
-                AppRouter.activityNavigatorKey.currentState?.popUntil(
-                  ModalRoute.withName(Activity.routeName),
-                );
-              },
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   String _getTitleText() {
     switch (this.paymentMode) {
       case PaymentMode.bank:
@@ -87,18 +59,15 @@ class ProcessingPayment extends StatelessWidget {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              SizedBox(height: 20.0),
+              SizedBox(height: 20.0.h),
               Text(
                 _getTitleText(),
-                style: TextStyle(
-                  fontFamily: "Goldplay",
-                  fontWeight: FontWeight.w600,
-                  fontSize: 24.0,
-                ),
+                style: Theme.of(context).textTheme.headline5?.copyWith(
+                    color: Colors.black, fontWeight: FontWeight.w600),
               ),
-              SizedBox(height: 20),
+              SizedBox(height: 20.0.h),
               Container(
-                height: 140.0,
+                height: 100.0.h,
                 width: double.infinity,
                 child: Stack(
                   children: [
@@ -108,39 +77,65 @@ class ProcessingPayment extends StatelessWidget {
                         fit: BoxFit.cover,
                       ),
                     ),
-                    Positioned.fill(
-                      child: Lottie.asset(
-                        kAnimationPaymentReceived,
-                        fit: BoxFit.scaleDown,
+                    Center(
+                      child: SizedBox(
+                        width: 250.w,
+                        child: Lottie.asset(
+                          kAnimationPaymentReceived,
+                          fit: BoxFit.scaleDown,
+                          repeat: true,
+                        ),
                       ),
                     ),
                   ],
                 ),
               ),
-              SizedBox(height: 16.0),
+              SizedBox(height: 16.0.h),
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 32.0),
+                padding: EdgeInsets.symmetric(horizontal: 36.0.w),
                 child: Text(
-                  "Please wait for the Shop to confirm your payment. "
-                  "We will notify you once the payment has been confirmed.",
+                  'Please wait for the Shop to confirm your payment. '
+                  'We will notify you once the payment has been confirmed.',
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 16.0,
-                    fontWeight: FontWeight.w500,
-                  ),
+                  style: Theme.of(context).textTheme.bodyText1,
                 ),
               ),
-              SizedBox(height: 16.0),
+              SizedBox(height: 16.0.h),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                padding: EdgeInsets.symmetric(horizontal: 24.0.w),
                 child: TransactionDetails(
                   transaction: this.order,
                   isBuyer: true,
                 ),
               ),
-              SizedBox(height: 24.0),
-              _buildButtons(context),
-              SizedBox(height: 24.0)
+              SizedBox(height: 24.0.h),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16.0.w),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Container(
+                      width: double.infinity,
+                      margin: EdgeInsets.only(bottom: 5.0.h),
+                      child: MessageSellerButton(order: order),
+                    ),
+                    SizedBox(
+                      width: double.infinity,
+                      child: AppButton(
+                        "Back to Activity",
+                        kTealColor,
+                        true,
+                        () {
+                          AppRouter.activityNavigatorKey.currentState?.popUntil(
+                            ModalRoute.withName(Activity.routeName),
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ],
           ),
         ),

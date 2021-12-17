@@ -10,6 +10,7 @@ import '../../../routers/app_router.dart';
 import '../../../routers/profile/user_shop.props.dart';
 import '../../../screens/profile/add_shop/add_shop.dart';
 import '../../../screens/profile/shop/user_shop.dart';
+import '../../../state/view_model.dart';
 import '../../../widgets/verification/verify_screen.dart';
 
 enum ShopBannerMode {
@@ -18,26 +19,27 @@ enum ShopBannerMode {
   otherUserWithShop,
 }
 
-class ShopBannerViewModel extends ChangeNotifier {
-  ShopBannerViewModel(this.context, this.userId);
-  final BuildContext context;
+class ShopBannerViewModel extends ViewModel {
+  ShopBannerViewModel({required this.userId});
   final String userId;
 
-  // late final bool isUserRegistered;
   late final bool isCurrentUser;
-  late final LokalUser user;
+  late LokalUser _user;
+  LokalUser get user => _user;
 
   ShopModel? shop;
-  bool isUserRegistered = false;
   ShopBannerMode mode = ShopBannerMode.currentUser;
+  bool get isUserRegistered => _user.registration?.verified ?? false;
 
+  @override
   void init() {
     this.isCurrentUser = context.read<Auth>().user!.id == userId;
-    _userSetup();
+    if (isCurrentUser) {
+      _userSetup();
+    } else {
+      _user = context.read<Users>().findById(userId)!;
+    }
     _shopSetup();
-    this.user = isCurrentUser
-        ? context.read<Auth>().user!
-        : context.read<Users>().findById(userId)!;
   }
 
   void _shopSetup() {
@@ -56,9 +58,7 @@ class ShopBannerViewModel extends ChangeNotifier {
   }
 
   void _userSetup() {
-    this.isUserRegistered = context.read<Auth>().user!.registration != null &&
-        context.read<Auth>().user!.registration!.verified != null &&
-        context.read<Auth>().user!.registration!.verified!;
+    this._user = context.read<Auth>().user!;
   }
 
   void onAddShop() {

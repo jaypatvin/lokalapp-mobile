@@ -1,7 +1,5 @@
 import 'dart:convert';
 
-import 'package:http/http.dart' as http;
-
 import '../../models/conversation.dart';
 import 'api.dart';
 import 'api_service.dart';
@@ -17,7 +15,7 @@ class ConversationAPIService extends APIService<Conversation> {
     required Map<String, dynamic> body,
   }) async {
     try {
-      final response = await http.post(
+      final response = await this.poster(
         api.endpointUri(
           endpoint,
           pathSegments: [chatId, 'conversation'],
@@ -40,7 +38,7 @@ class ConversationAPIService extends APIService<Conversation> {
     required messageId,
   }) async {
     try {
-      final response = await http.delete(
+      final response = await this.deleter(
         api.endpointUri(
           endpoint,
           pathSegments: [

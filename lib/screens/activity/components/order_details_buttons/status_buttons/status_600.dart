@@ -24,21 +24,32 @@ class Status600Buttons extends StatelessWidget {
   Widget build(BuildContext context) {
     if (this.isBuyer) {
       return Container(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
-            Expanded(
-              child: MessageSellerButton(order: this.order),
-            ),
-            SizedBox(width: MediaQuery.of(context).size.width * 0.01),
-            Expanded(
-              child: AppButton(
-                "Order Again",
-                kTealColor,
-                true,
-                () => this.onPress(OrderAction.orderAgain),
+            if (order.proofOfPayment?.isNotEmpty ?? false)
+              Container(
+                margin: const EdgeInsets.only(bottom: 5),
+                width: double.infinity,
+                child: ViewPaymentButton(onPress: this.onPress),
               ),
-            )
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Expanded(
+                  child: MessageSellerButton(order: this.order),
+                ),
+                SizedBox(width: MediaQuery.of(context).size.width * 0.01),
+                Expanded(
+                  child: AppButton(
+                    "Order Again",
+                    kTealColor,
+                    true,
+                    () => this.onPress(OrderAction.orderAgain),
+                  ),
+                )
+              ],
+            ),
           ],
         ),
       );
@@ -47,12 +58,12 @@ class Status600Buttons extends StatelessWidget {
     return Container(
       child: Column(
         children: [
-          if (this.paymentMethod != "cod")
+          if (order.proofOfPayment?.isNotEmpty ?? false)
             Container(
+              margin: const EdgeInsets.only(bottom: 5.0),
               width: double.infinity,
               child: ViewPaymentButton(onPress: this.onPress),
             ),
-          SizedBox(height: MediaQuery.of(context).size.height * 0.01),
           Container(
             width: double.infinity,
             child: MessageBuyerButton(order: this.order),

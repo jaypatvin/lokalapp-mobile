@@ -1,7 +1,5 @@
 import 'dart:convert';
 
-import 'package:http/http.dart' as http;
-
 import '../../models/lokal_user.dart';
 import 'api.dart';
 import 'api_service.dart';
@@ -17,7 +15,7 @@ class UserAPIService extends APIService<LokalUser> {
     required Map<String, dynamic> body,
   }) async {
     try {
-      final response = await http.post(
+      final response = await this.poster(
         api.endpointUri(endpoint),
         headers: api.withBodyHeader(),
         body: json.encode(body),
@@ -34,7 +32,7 @@ class UserAPIService extends APIService<LokalUser> {
     required String userId,
   }) async {
     try {
-      final response = await http.get(
+      final response = await this.getter(
         api.endpointUri(endpoint, pathSegments: [userId]),
         headers: api.authHeader(),
       );
@@ -49,7 +47,7 @@ class UserAPIService extends APIService<LokalUser> {
     required String communityId,
   }) async {
     try {
-      final response = await http.get(
+      final response = await this.getter(
         api.endpointUri(Endpoint.community,
             pathSegments: [communityId, 'users']),
         headers: api.authHeader(),
@@ -67,7 +65,7 @@ class UserAPIService extends APIService<LokalUser> {
     required String userId,
   }) async {
     try {
-      final response = await http.put(
+      final response = await this.putter(
         api.endpointUri(endpoint, pathSegments: [userId]),
         headers: api.withBodyHeader(),
         body: json.encode(body),
@@ -84,7 +82,7 @@ class UserAPIService extends APIService<LokalUser> {
     required Map<String, bool> body,
   }) async {
     try {
-      final response = await http.put(
+      final response = await this.putter(
         api.endpointUri(
           endpoint,
           pathSegments: [userId, 'toggleNotificationSetting'],
@@ -103,7 +101,7 @@ class UserAPIService extends APIService<LokalUser> {
     required Map<String, bool> body,
   }) async {
     try {
-      final response = await http.put(
+      final response = await this.putter(
         api.endpointUri(
           endpoint,
           pathSegments: [userId, 'chatSettings'],
@@ -120,7 +118,7 @@ class UserAPIService extends APIService<LokalUser> {
   // --DELETE
   Future<bool> delete({required String userId, required String idToken}) async {
     try {
-      final response = await http.delete(
+      final response = await this.deleter(
         api.endpointUri(endpoint, pathSegments: [userId]),
         headers: api.authHeader(),
       );

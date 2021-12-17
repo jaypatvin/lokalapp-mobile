@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/activity_feed_comment.dart';
@@ -83,11 +84,7 @@ class CommentCardViewModel extends ChangeNotifier {
     } catch (e) {
       isLiked = !isLiked;
       notifyListeners();
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Error: $e'),
-        ),
-      );
+      showToast('Error liking comment!');
     }
   }
 }

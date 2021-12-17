@@ -1,7 +1,5 @@
 import 'dart:convert';
 
-import 'package:http/http.dart' as http;
-
 import '../../models/lokal_category.dart';
 import 'api.dart';
 import 'api_service.dart';
@@ -15,7 +13,7 @@ class CategoryAPIService extends APIService<LokalCategory> {
   //#region --GET
   Future<List<LokalCategory>> getAll() async {
     try {
-      final response = await http.get(
+      final response = await this.getter(
         api.endpointUri(endpoint),
         headers: api.authHeader(),
       );
@@ -28,7 +26,7 @@ class CategoryAPIService extends APIService<LokalCategory> {
 
   Future<LokalCategory> getById({required String id}) async {
     try {
-      final response = await http.get(
+      final response = await this.getter(
         api.endpointUri(endpoint, pathSegments: [id]),
         headers: api.authHeader(),
       );
@@ -42,7 +40,7 @@ class CategoryAPIService extends APIService<LokalCategory> {
   //#region --POST
   Future<bool> create({required Map<String, dynamic> body}) async {
     try {
-      final response = await http.post(
+      final response = await this.poster(
         api.endpointUri(endpoint),
         headers: api.withBodyHeader(),
         body: json.encode(body),
@@ -61,7 +59,7 @@ class CategoryAPIService extends APIService<LokalCategory> {
     required Map<String, dynamic> body,
   }) async {
     try {
-      final response = await http.put(
+      final response = await this.putter(
         api.endpointUri(endpoint, pathSegments: [id]),
         headers: api.withBodyHeader(),
         body: json.encode(body),
@@ -77,7 +75,7 @@ class CategoryAPIService extends APIService<LokalCategory> {
   //#region --DELETE
   Future<bool> delete({required String id}) async {
     try {
-      final response = await http.delete(
+      final response = await this.deleter(
         api.endpointUri(endpoint, pathSegments: [id]),
         headers: api.authHeader(),
       );

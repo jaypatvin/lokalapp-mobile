@@ -7,16 +7,15 @@ import '../../providers/auth.dart';
 import '../../providers/shops.dart';
 import '../../screens/activity/subscriptions/subscriptions.dart';
 import '../../services/database.dart';
+import '../../state/view_model.dart';
 
-class TransactionsViewModel extends ChangeNotifier {
+class TransactionsViewModel extends ViewModel {
   TransactionsViewModel(
-    this.context,
-    this._initialStatuses, {
+    this.initialStatuses, {
     this.isBuyer = true,
   });
 
-  final BuildContext context;
-  final Map<int, String?> _initialStatuses;
+  final Map<int, String?> initialStatuses;
   final bool isBuyer;
 
   final _statuses = <int, String?>{};
@@ -39,6 +38,7 @@ class TransactionsViewModel extends ChangeNotifier {
 
   final _db = Database.instance;
 
+  @override
   void init() {
     this._initializeStatuses();
     this._selectedIndex = _statuses.keys.first;
@@ -56,7 +56,7 @@ class TransactionsViewModel extends ChangeNotifier {
   }
 
   void _initializeStatuses() {
-    final _statusCodes = this._initialStatuses.keys.toList().map((key) {
+    final _statusCodes = this.initialStatuses.keys.toList().map((key) {
       if (key == 10 || key == 20) {
         // We're multiplying statuses 10 and 20 (cancelled & declined orders)
         // by 100 to put them in the bottom of the list (after sorting).
@@ -73,7 +73,7 @@ class TransactionsViewModel extends ChangeNotifier {
       // Reverse the multiplication from above to get the correct string value
       // from the firestore collection of statuses
       final _key = (code == 1000 || code == 2000) ? code ~/ 100 : code;
-      this._statuses[code] = this._initialStatuses[_key];
+      this._statuses[code] = this.initialStatuses[_key];
     });
   }
 

@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:keyboard_actions/keyboard_actions.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
 import '../../../models/operating_hours.dart';
@@ -41,7 +42,11 @@ class SubscriptionSchedule extends StatefulWidget {
     Key? key,
     this.productId,
     this.subscriptionPlan,
-  }) : super(key: key);
+  })  : assert(
+          productId != null || subscriptionPlan != null,
+          'Either productId or subscriptionPlan must be non-null',
+        ),
+        super(key: key);
 
   final String? productId;
   final ProductSubscriptionPlan? subscriptionPlan;
@@ -60,6 +65,7 @@ class _SubscriptionScheduleState extends State<SubscriptionSchedule>
   // --need a common variable to set it with.
   int? _quantity;
   Product? _product;
+
   // This variable is only used when editing the subscription schedule.
   // Needed for the schedule generation.
   OperatingHours? _operatingHours;
@@ -67,6 +73,7 @@ class _SubscriptionScheduleState extends State<SubscriptionSchedule>
   // --schedule variables
   // Selectable days from the week picker (Mon, Tue, Wed, etc.)
   List<int> _selectableDays = [];
+
   // used on week picker
   List<DateTime> _startDates = [];
   DateTime? _startDate;
@@ -388,8 +395,7 @@ class _SubscriptionScheduleState extends State<SubscriptionSchedule>
     if (widget.subscriptionPlan != null) {
       final success = await _onOverrideSchedule();
       if (!success) {
-        final snackBar = SnackBar(content: Text("Failed to update schedule"));
-        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        showToast('Failed to update schedule.');
         return;
       }
 
@@ -398,10 +404,7 @@ class _SubscriptionScheduleState extends State<SubscriptionSchedule>
     }
 
     if (_repeatUnit! <= 0) {
-      final snackBar = SnackBar(
-        content: Text("Please enter a valid repeat value."),
-      );
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      showToast('Please enter a valid repeat value.');
       return;
     }
 

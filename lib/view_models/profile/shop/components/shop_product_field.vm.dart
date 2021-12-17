@@ -1,5 +1,4 @@
 import 'package:collection/collection.dart';
-import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../models/lokal_user.dart';
@@ -13,16 +12,14 @@ import '../../../../routers/app_router.dart';
 import '../../../../routers/discover/product_detail.props.dart';
 import '../../../../screens/discover/product_detail.dart';
 import '../../../../screens/profile/add_product/add_product.dart';
+import '../../../../state/view_model.dart';
 
-class ShopProductFieldViewModel extends ChangeNotifier {
-  ShopProductFieldViewModel(
-    this.context,
-    this.userId, [
-    this._products = const [],
+class ShopProductFieldViewModel extends ViewModel {
+  ShopProductFieldViewModel({
+    required this.userId,
     this.shopId,
-  ]);
+  });
 
-  final BuildContext context;
   final String userId;
   final String? shopId;
 
@@ -30,10 +27,26 @@ class ShopProductFieldViewModel extends ChangeNotifier {
   late final ShopModel shop;
   late final LokalUser user;
 
-  List<Product> _products;
-  UnmodifiableListView<Product> get products => UnmodifiableListView(
-      _products.where((product) => product.shopId == shop.id));
+  late List<Product> _products;
+  UnmodifiableListView<Product> get products {
+    if (_searchTerm?.isNotEmpty ?? false) {
+      final items = UnmodifiableListView(
+        _products.where(
+          (product) => product.name.toLowerCase().contains(
+                _searchTerm!.toLowerCase(),
+              ),
+        ),
+      );
+      return items;
+    }
 
+    return UnmodifiableListView(_products);
+  }
+
+  String? _searchTerm;
+  String? get searchTerm => _searchTerm;
+
+  @override
   void init() {
     this.isCurrentUser = context.read<Auth>().user!.id! == this.userId;
     this.user = isCurrentUser
@@ -58,8 +71,9 @@ class ShopProductFieldViewModel extends ChangeNotifier {
     _products = context.read<Products>().findByShop(this.shop.id!);
   }
 
-  void updateProducts(List<Product> products) {
-    _products = [...products];
+  void updateProducts() {
+    final _items = context.read<Products>().findByShop(this.shop.id!);
+    _products = [..._items];
     notifyListeners();
   }
 
@@ -86,5 +100,11 @@ class ShopProductFieldViewModel extends ChangeNotifier {
         ProductDetail.routeName,
         arguments: ProductDetailProps(product),
       );
+  }
+
+  void onSearchTermChanged(String? value) {
+    if (_searchTerm == value) return;
+    _searchTerm = value;
+    notifyListeners();
   }
 }

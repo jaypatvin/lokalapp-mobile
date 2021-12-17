@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
@@ -6,10 +8,11 @@ import '../../../models/order.dart';
 import '../../../providers/products.dart';
 import '../../../providers/shops.dart';
 import '../../../providers/users.dart';
+import '../../../utils/constants/themes.dart';
 import '../../chat/components/chat_avatar.dart';
 
-class TransactionDetails extends StatelessWidget {
-  final Order? transaction;
+class TransactionDetails extends HookWidget {
+  final Order transaction;
   final String? status;
   final bool isBuyer;
 
@@ -19,102 +22,90 @@ class TransactionDetails extends StatelessWidget {
     required this.isBuyer,
   });
 
-  Widget _buildAvatar(BuildContext context, String name, String? displayPhoto) {
-    return Row(
-      children: [
-        ChatAvatar(
-          displayName: name,
-          displayPhoto: displayPhoto ?? "",
-          radius: 20.0,
-        ),
-        SizedBox(
-          width: MediaQuery.of(context).size.width * 0.01,
-        ),
-        Text(name, style: TextStyle(fontWeight: FontWeight.w500)),
-      ],
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
-    final name = isBuyer
-        ? transaction!.shopName
-        : Provider.of<Users>(context, listen: false)
-            .findById(transaction!.buyerId)!
-            .displayName;
+    final _name = useMemoized<String?>(
+      () => isBuyer
+          ? transaction.shopName
+          : Provider.of<Users>(context, listen: false)
+              .findById(transaction.buyerId)
+              ?.displayName,
+    );
 
-    final displayPhoto = isBuyer
-        ? Provider.of<Shops>(context, listen: false)
-            .findById(transaction!.shopId)!
-            .profilePhoto
-        : Provider.of<Users>(context, listen: false)
-            .findById(transaction!.buyerId)!
-            .profilePhoto;
+    final _displayPhoto = useMemoized<String?>(
+      () => isBuyer
+          ? Provider.of<Shops>(context, listen: false)
+              .findById(transaction.shopId)
+              ?.profilePhoto
+          : Provider.of<Users>(context, listen: false)
+              .findById(transaction.buyerId)
+              ?.profilePhoto,
+    );
 
-    final price = this
-        .transaction!
-        .products
-        .fold(0.0, (double prev, product) => prev + product.price!);
+    final _price = useMemoized<double>(
+      () => this
+          .transaction
+          .products
+          .fold(0.0, (double prev, product) => prev + product.price!),
+    );
 
-    final isStatus = status != null && status!.isNotEmpty;
+    final _displayStatus = useMemoized<String?>(
+      () =>
+          (transaction.statusCode == 300 && transaction.paymentMethod == 'cod')
+              ? 'Cash on Delivery'
+              : this.status,
+    );
 
-    final displayStatus =
-        (transaction!.statusCode == 300 && transaction!.paymentMethod == "cod")
-            ? "Cash on Delivery"
-            : this.status;
+    final _avatar = useMemoized<Row>(() {
+      return Row(
+        children: [
+          ChatAvatar(
+            displayName: _name,
+            displayPhoto: _displayPhoto,
+            radius: 15.0.r,
+          ),
+          SizedBox(width: 5.0.w),
+          Text(
+            _name ?? '',
+            style: Theme.of(context).textTheme.bodyText1,
+          ),
+        ],
+      );
+    });
 
     return Container(
       child: Column(
         children: [
           Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              isStatus
-                  ? Text(
-                      displayStatus!,
-                      style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 16.0,
-                      ),
-                    )
-                  : _buildAvatar(context, name!, displayPhoto),
-              RichText(
-                maxLines: 1,
-                text: TextSpan(
-                  text: "For ",
-                  children: [
-                    TextSpan(
-                      text: DateFormat.MMMd().format(transaction!.deliveryDate),
-                      style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ],
-                  style: TextStyle(
-                    fontWeight: FontWeight.w500,
-                    fontSize: 16.0,
-                    color: Colors.black,
-                    fontFamily: "Goldplay",
-                  ),
-                ),
+              Expanded(
+                child: status?.isNotEmpty ?? false
+                    ? Text(
+                        _displayStatus!,
+                        style: Theme.of(context).textTheme.subtitle1,
+                      )
+                    : _avatar,
+              ),
+              Text(
+                'For ',
+                style: Theme.of(context).textTheme.bodyText1,
+              ),
+              Text(
+                DateFormat.MMMd().format(transaction.deliveryDate),
+                style: Theme.of(context).textTheme.subtitle1,
               ),
             ],
           ),
-          SizedBox(height: MediaQuery.of(context).size.height * 0.01),
-
-          // ------ dirty code, for cleanup
-          if (isStatus) _buildAvatar(context, name!, displayPhoto),
-          if (isStatus)
-            SizedBox(height: MediaQuery.of(context).size.height * 0.02),
-          // ------
-
+          SizedBox(height: 10.0.h),
+          if (status?.isNotEmpty ?? false) _avatar,
+          if (status?.isNotEmpty ?? false) SizedBox(height: 10.0.h),
           ListView.builder(
             shrinkWrap: true,
             physics: NeverScrollableScrollPhysics(),
-            itemCount: this.transaction!.products.length,
+            itemCount: this.transaction.products.length,
             itemBuilder: (ctx, index) {
-              final item = this.transaction!.products[index];
+              final item = this.transaction.products[index];
               final product = Provider.of<Products>(context, listen: false)
                   .findById(item.id);
 
@@ -124,70 +115,54 @@ class TransactionDetails extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Container(
-                      width: MediaQuery.of(context).size.width * 0.12,
-                      height: MediaQuery.of(context).size.width * 0.12,
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: NetworkImage(product!.gallery!.first.url),
-                          fit: BoxFit.cover,
-                        ),
-                      ),
+                    Image.network(
+                      product?.gallery?.first.url ?? '',
+                      width: 40.0.h,
+                      height: 40.0.h,
+                      fit: BoxFit.cover,
+                      errorBuilder: (_, __, ___) => Text('No Image'),
                     ),
                     Text(
                       item.name!,
-                      style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                      ),
+                      style: Theme.of(context).textTheme.subtitle1,
                     ),
-                    Text('x${item.quantity}'),
+                    Text(
+                      'x${item.quantity}',
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyText1
+                          ?.copyWith(fontWeight: FontWeight.w400),
+                    ),
                     Text(
                       'P ${item.quantity! * item.price!}',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w500,
-                      ),
+                      style: Theme.of(context).textTheme.bodyText1,
                     ),
                   ],
                 ),
               );
             },
           ),
-          SizedBox(
-            height: MediaQuery.of(context).size.height * 0.01,
-          ),
+          SizedBox(height: 10.0.h),
           Divider(
             color: Colors.grey,
             indent: 0,
           ),
-          SizedBox(
-            height: MediaQuery.of(context).size.height * 0.01,
-          ),
-          Container(
-            width: MediaQuery.of(context).size.width * 0.85,
-            child: Align(
-              alignment: Alignment.centerRight,
-              //child: Text('Order Total P$price'),
-              child: RichText(
-                text: TextSpan(
-                  text: "Order Total ",
-                  children: [
-                    TextSpan(
-                      text: "P $price",
-                      style: TextStyle(
-                        color: Colors.orange,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ],
-                  style: TextStyle(
-                    fontWeight: FontWeight.w500,
-                    fontFamily: "Goldplay",
-                    color: Colors.black,
-                  ),
-                ),
+          SizedBox(height: 10.0.h),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Text(
+                'Order Total ',
+                style: Theme.of(context).textTheme.bodyText1,
               ),
-            ),
-          ),
+              Text(
+                'P $_price',
+                style: Theme.of(context).textTheme.subtitle1?.copyWith(
+                    color: kOrangeColor, fontWeight: FontWeight.bold),
+              ),
+            ],
+          )
         ],
       ),
     );

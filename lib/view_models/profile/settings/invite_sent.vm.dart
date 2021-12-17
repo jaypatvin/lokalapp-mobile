@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:oktoast/oktoast.dart';
 
 import '../../../models/lokal_invite.dart';
 import '../../../state/view_model.dart';
@@ -13,11 +13,6 @@ class InviteSentViewModel extends ViewModel {
 
   void copyToClipboard() async {
     await Clipboard.setData(ClipboardData(text: inviteCode));
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Invite code copied to clipboard.'),
-      ),
-    );
+    showToast('Invite code copied to clipboard.');
   }
 }

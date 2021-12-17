@@ -26,12 +26,11 @@ class Status300Buttons extends StatelessWidget {
       return Container(
         child: Column(
           children: [
-            if (this.paymentMethod != "cod")
+            if (order.proofOfPayment?.isNotEmpty ?? false)
               Container(
                 width: double.infinity,
                 child: ViewPaymentButton(onPress: this.onPress),
               ),
-            SizedBox(height: MediaQuery.of(context).size.height * 0.01),
             Container(
               width: double.infinity,
               child: MessageSellerButton(order: this.order),
@@ -44,11 +43,10 @@ class Status300Buttons extends StatelessWidget {
     return Container(
       child: Column(
         children: [
-          if (this.paymentMethod != "cod")
+          if (order.proofOfPayment?.isNotEmpty ?? false)
             Container(
               child: ViewPaymentButton(onPress: this.onPress),
             ),
-          SizedBox(height: MediaQuery.of(context).size.height * 0.01),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [

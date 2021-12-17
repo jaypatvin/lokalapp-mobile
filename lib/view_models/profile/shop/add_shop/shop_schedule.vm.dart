@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../providers/auth.dart';
@@ -158,18 +159,12 @@ class ShopScheduleViewModel extends ViewModel {
     final startDates = operatingHours.startDates;
     final repeatUnit = operatingHours.repeatUnit;
     if (startDates == null || startDates.isEmpty) {
-      final snackBar = SnackBar(
-        content: Text("Select a start date"),
-      );
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      showToast('Select a start date.');
       return;
     }
 
     if (repeatUnit == null || repeatUnit <= 0) {
-      final snackBar = SnackBar(
-        content: Text("Enter a valid repeat number."),
-      );
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      showToast('Enter a valid repeat number.');
       return;
     }
     context.read<AppRouter>().navigateTo(
