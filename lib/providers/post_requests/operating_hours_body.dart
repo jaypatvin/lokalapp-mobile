@@ -19,6 +19,7 @@ class OperatingHoursBody extends ChangeNotifier {
     List<String>? startDates,
     List<String>? unavailableDates,
     List<CustomDates>? customDates,
+    bool notify = true,
   }) {
     _operatingHours = _operatingHours.copyWith(
       startTime: startTime,
@@ -29,12 +30,12 @@ class OperatingHoursBody extends ChangeNotifier {
       unavailableDates: unavailableDates,
       customDates: customDates,
     );
-    notifyListeners();
+    if (notify) notifyListeners();
   }
 
-  void clear() {
+  void clear({bool notify = true}) {
     _operatingHours = OperatingHours();
-    notifyListeners();
+    if (notify) notifyListeners();
   }
 
   factory OperatingHoursBody.fromMap(Map<String, dynamic> map) {

@@ -69,7 +69,6 @@ class ShopAPIService extends APIService<ShopModel> {
   }
 
   // --GET
-
   Future<ShopModel> getById({required String id}) async {
     try {
       final response = await this.getter(
@@ -101,7 +100,6 @@ class ShopAPIService extends APIService<ShopModel> {
 
   Future<List<ShopModel>> getByUserId({
     required String userId,
-    required String idToken,
   }) async {
     try {
       final response = await this.getter(
@@ -117,6 +115,70 @@ class ShopAPIService extends APIService<ShopModel> {
 
   Future<OperatingHours> getOperatingHours({required String shopId}) =>
       _operatingHoursService.getOperatingHours(shopId: shopId);
+
+  Future<List<ShopModel>> getAvailableShops(
+      {required String communityId}) async {
+    try {
+      final response = await this.getter(
+        api.baseUri(
+          pathSegments: ['availableShops'],
+          queryParameters: <String, String>{'community_id': communityId},
+        ),
+        headers: api.authHeader(),
+      );
+
+      return handleResponseList((map) => ShopModel.fromMap(map), response);
+    } catch (e) {
+      rethrow;
+    }
+
+    // the code below is for when the API endpoint follows the documentation
+
+    // try {
+    //   final response = await this.getter(
+    //     api.baseUri(
+    //       pathSegments: ['availableShops'],
+    //       queryParameters: <String, String>{'community_id': communityId},
+    //     ),
+    //     headers: api.authHeader(),
+    //   );
+
+    //   if (response.statusCode == 200) {
+    //     final map = json.decode(response.body);
+    //     final _availableShops = <ShopModel>[];
+    //     final _unavailableShops = <ShopModel>[];
+
+    //     for (final data in map['data']) {
+    //       final _shop = ShopModel.fromMap(data);
+    //       _availableShops.add(_shop);
+    //     }
+    //     for (final data in map['unavailable_shops']) {
+    //       final _shop = ShopModel.fromMap(data);
+    //       _unavailableShops.add(_shop);
+    //     }
+
+    //     return {
+    //       'available_shops': _availableShops,
+    //       'unavailable_shops': _unavailableShops,
+    //     };
+    //   } else {
+    //     final map = json.decode(response.body);
+    //     if (map['data'] != null) {
+    //       throw throw (FailureException(map['data']));
+    //     }
+
+    //     if (map['message'] != null) {
+    //       throw FailureException(map['message']);
+    //     }
+
+    //     throw FailureException(response.reasonPhrase ?? 'Error parsing data.');
+    //   }
+    // } on FormatException {
+    //   throw FailureException('Bad response format');
+    // } catch (e) {
+    //   rethrow;
+    // }
+  }
 }
 
 class _OperatingHoursAPIService extends APIService<OperatingHours> {

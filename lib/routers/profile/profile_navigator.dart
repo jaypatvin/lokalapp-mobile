@@ -4,6 +4,7 @@ import '../../models/app_navigator.dart';
 import '../../screens/profile/add_product/add_product.dart';
 import '../../screens/profile/add_shop/add_shop.dart';
 import '../../screens/profile/add_shop/customize_availability.dart';
+import '../../screens/profile/add_shop/edit_shop.dart';
 import '../../screens/profile/add_shop/payment_options.dart';
 import '../../screens/profile/add_shop/shop_confirmation.dart';
 import '../../screens/profile/add_shop/shop_schedule.dart';
@@ -94,6 +95,9 @@ class ProfileNavigator extends AppNavigator {
 
       case InviteAFriend.routeName:
         return CupertinoPageRoute(builder: (_) => InviteAFriend());
+
+      case EditShop.routeName:
+        return CupertinoPageRoute(builder: (_) => EditShop());
       default:
         // TODO: implement unknownRoute
         throw UnimplementedError();

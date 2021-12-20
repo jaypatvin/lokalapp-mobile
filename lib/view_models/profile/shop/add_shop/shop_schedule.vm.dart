@@ -60,6 +60,7 @@ class ShopScheduleViewModel extends ViewModel {
             startDates: operatingHours.startDates,
             unavailableDates: operatingHours.unavailableDates,
             customDates: operatingHours.customDates,
+            notify: false,
           );
       }
     } else {
@@ -69,6 +70,7 @@ class ShopScheduleViewModel extends ViewModel {
         ..update(
           startTime: getTimeOfDayString(_opening),
           endTime: getTimeOfDayString(_closing),
+          notify: false,
         );
     }
   }
