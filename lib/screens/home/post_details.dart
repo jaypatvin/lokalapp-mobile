@@ -7,8 +7,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:intl/intl.dart' show DateFormat;
 import 'package:keyboard_actions/keyboard_actions.dart';
-import 'package:lokalapp/providers/auth.dart';
-import 'package:lokalapp/services/database.dart';
 import 'package:lottie/lottie.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
@@ -16,6 +14,7 @@ import 'package:provider/provider.dart';
 import '../../models/activity_feed.dart';
 import '../../models/activity_feed_comment.dart';
 import '../../providers/activities.dart';
+import '../../providers/auth.dart';
 import '../../providers/users.dart';
 import '../../state/mvvm_builder.widget.dart';
 import '../../state/views/hook.view.dart';
@@ -27,9 +26,11 @@ import '../../widgets/custom_app_bar.dart';
 import '../../widgets/inputs/input_images_picker.dart';
 import '../../widgets/inputs/input_text_field.dart';
 import '../../widgets/keyboard_visibility_builder.dart';
+import '../../widgets/overlays/screen_loader.dart';
 import '../../widgets/photo_picker_gallery/image_gallery_picker.dart';
 import '../../widgets/photo_view_gallery/thumbnails/network_photo_thumbnail.dart';
 import 'components/comment_card.dart';
+import 'components/post_options.dart';
 
 class PostDetails extends StatelessWidget {
   static const routeName = '/home/post_details';
@@ -57,9 +58,10 @@ class PostDetails extends StatelessWidget {
   }
 }
 
-class _PostDetailsView extends HookView<PostDetailViewModel> {
+class _PostDetailsView extends HookView<PostDetailViewModel>
+    with HookScreenLoader {
   @override
-  Widget render(BuildContext context, PostDetailViewModel vm) {
+  Widget screen(BuildContext context, PostDetailViewModel vm) {
     final _scrollController = useScrollController();
     final _commentInputFocusNode = useFocusNode();
     final _showImagePicker = useState<bool>(false);
@@ -114,7 +116,6 @@ class _PostDetailsView extends HookView<PostDetailViewModel> {
             backgroundColor: kTealColor,
             titleText: "${user.firstName}'s Post",
             titleStyle: TextStyle(color: Colors.white),
-            onPressedLeading: () => Navigator.pop(context),
             actions: [
               IconButton(
                 icon: Icon(
@@ -122,7 +123,16 @@ class _PostDetailsView extends HookView<PostDetailViewModel> {
                   color: Colors.white,
                   size: 30.sp,
                 ),
-                onPressed: () => Navigator.pop(context),
+                onPressed: context.read<Auth>().user!.id == activity.userId
+                    ? () => vm.onPostOptionsPressed(
+                          PostOptions(
+                            onDeletePost: () async =>
+                                await performFuture<void>(vm.onDelete),
+                            onEditPost: null,
+                            onCopyLink: null,
+                          ),
+                        )
+                    : null,
               ),
             ],
           ),
