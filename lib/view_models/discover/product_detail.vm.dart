@@ -119,6 +119,5 @@ class ProductDetailViewModel extends ViewModel {
           UserShop.routeName,
           arguments: UserShopProps(product.userId, product.shopId),
         );
-    context.read<BottomNavBarHider>().isHidden = true;
   }
 }
