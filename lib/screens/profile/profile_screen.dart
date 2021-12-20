@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
@@ -36,23 +37,26 @@ class ProfileScreen extends StatelessWidget {
       screen: MainScreen.profile,
       child: Scaffold(
         backgroundColor: kInviteScreenColor,
-        body: SafeArea(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _ProfileHeader(
-                userId: this.userId,
-              ),
-              ShopBanner(userId: userId),
-              Expanded(
-                child: !isCurrentUser
-                    ? Container(
-                        color: kInviteScreenColor,
-                        child: Timeline(userId: userId),
-                      )
-                    : const CurrentUserProfile(),
-              ),
-            ],
+        body: AnnotatedRegion<SystemUiOverlayStyle>(
+          value: SystemUiOverlayStyle.light,
+          child: SafeArea(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                _ProfileHeader(
+                  userId: this.userId,
+                ),
+                ShopBanner(userId: userId),
+                Expanded(
+                  child: !isCurrentUser
+                      ? Container(
+                          color: kInviteScreenColor,
+                          child: Timeline(userId: userId),
+                        )
+                      : const CurrentUserProfile(),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -143,6 +147,7 @@ class _ProfileHeaderView extends StatelessView<ProfileHeaderViewModel> {
                       displayName: user.displayName,
                       displayPhoto: user.profilePhoto,
                       radius: 40.0.r,
+                      onTap: vm.onPhotoTap,
                     ),
                     SizedBox(height: 10.0.h),
                     Text(
@@ -158,7 +163,7 @@ class _ProfileHeaderView extends StatelessView<ProfileHeaderViewModel> {
                       SizedBox(
                         width: 140.w,
                         child: AppButton(
-                          "Send a Message",
+                          'Send a Message',
                           Colors.white,
                           false,
                           vm.onSendMessage,

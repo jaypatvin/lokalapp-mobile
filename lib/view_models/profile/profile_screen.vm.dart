@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:lokalapp/models/lokal_images.dart';
+import 'package:lokalapp/providers/users.dart';
+import 'package:lokalapp/utils/functions.utils.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
@@ -57,6 +60,18 @@ class ProfileHeaderViewModel extends ViewModel {
       );
     } else {
       showToast('Nothing to do here!');
+    }
+  }
+
+  void onPhotoTap() {
+    final user = context.read<Users>().findById(userId)!;
+    if (user.profilePhoto != null) {
+      openGallery(context, 0, [
+        LokalImages(
+          url: user.profilePhoto!,
+          order: 0,
+        ),
+      ]);
     }
   }
 }
