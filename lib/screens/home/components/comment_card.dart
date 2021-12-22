@@ -47,7 +47,6 @@ class CommentCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final user = context.read<Users>().findById(comment.userId)!;
-    print('rebuilding ${comment.id}');
     return ChangeNotifierProvider(
       create: (ctx) => CommentCardViewModel(
         context: context,
@@ -114,52 +113,64 @@ class CommentCard extends StatelessWidget {
 }
 
 class _CommentOptions extends StatelessWidget {
-  const _CommentOptions({Key? key}) : super(key: key);
+  const _CommentOptions({
+    Key? key,
+    this.onReply,
+    this.onHide,
+    this.onReport,
+  }) : super(key: key);
+
+  final void Function()? onReply;
+  final void Function()? onHide;
+  final void Function()? onReport;
 
   @override
   Widget build(BuildContext context) {
     return Wrap(
       children: [
-        ListTile(
-          onTap: () {},
-          leading: Icon(
-            MdiIcons.reply,
-            color: kTealColor,
+        if (onReply != null)
+          ListTile(
+            onTap: onReply,
+            leading: Icon(
+              MdiIcons.reply,
+              color: kTealColor,
+            ),
+            title: Text(
+              "Reply",
+              softWrap: true,
+              style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                    color: kTealColor,
+                  ),
+            ),
           ),
-          title: Text(
-            "Reply",
-            softWrap: true,
-            style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                  color: kTealColor,
-                ),
+        if (this.onHide != null)
+          ListTile(
+            onTap: onHide,
+            leading: Icon(
+              MdiIcons.eyeOffOutline,
+              color: Colors.black,
+            ),
+            title: Text(
+              "Hide Comment",
+              softWrap: true,
+              style: Theme.of(context).textTheme.subtitle1,
+            ),
           ),
-        ),
-        ListTile(
-          onTap: () {},
-          leading: Icon(
-            MdiIcons.eyeOffOutline,
-            color: Colors.black,
+        if (this.onReport != null)
+          ListTile(
+            onTap: this.onReport,
+            leading: Icon(
+              MdiIcons.alertCircleOutline,
+              color: kPinkColor,
+            ),
+            title: Text(
+              "Report Comment",
+              softWrap: true,
+              style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                    color: kPinkColor,
+                  ),
+            ),
           ),
-          title: Text(
-            "Hide Comment",
-            softWrap: true,
-            style: Theme.of(context).textTheme.subtitle1,
-          ),
-        ),
-        ListTile(
-          onTap: () {},
-          leading: Icon(
-            MdiIcons.alertCircleOutline,
-            color: kPinkColor,
-          ),
-          title: Text(
-            "Report Comment",
-            softWrap: true,
-            style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                  color: kPinkColor,
-                ),
-          ),
-        ),
       ],
     );
   }

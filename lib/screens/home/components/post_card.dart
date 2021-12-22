@@ -11,6 +11,7 @@ import '../../../state/views/stateless.view.dart';
 import '../../../view_models/home/post_card.vm.dart';
 import '../../../widgets/photo_view_gallery/thumbnails/network_photo_thumbnail.dart';
 import '../../chat/components/chat_avatar.dart';
+import 'post_options.dart';
 
 class PostCard extends StatelessWidget {
   const PostCard({Key? key, required this.activity}) : super(key: key);
@@ -72,9 +73,10 @@ class _PostCardView extends StatelessView<PostCardViewModel> {
           ? IconButton(
               icon: Icon(Icons.more_horiz, color: Colors.black),
               onPressed: () => vm.onPostOptionsPressed(
-                _PostOptions(
-                  isUser: vm.isCurrentUser(activity),
+                PostOptions(
                   onDeletePost: () => vm.onDeletePost(activity),
+                  onEditPost: null,
+                  onCopyLink: null,
                 ),
               ),
             )
@@ -206,80 +208,6 @@ class _PostCardView extends StatelessView<PostCardViewModel> {
           ),
         ),
       ),
-    );
-  }
-}
-
-class _PostOptions extends StatelessWidget {
-  const _PostOptions({
-    Key? key,
-    this.isUser = false,
-    this.onEditPost,
-    this.onDeletePost,
-  }) : super(key: key);
-
-  final bool isUser;
-  final void Function()? onEditPost;
-  final void Function()? onDeletePost;
-
-  @override
-  Widget build(BuildContext context) {
-    return Wrap(
-      children: [
-        // GestureDetector(
-        //   onTap: () {
-        //     if (this.onEditPost == null) return;
-        //     this.onEditPost!();
-        //     Navigator.pop(context);
-        //   },
-        //   child: ListTile(
-        //     leading: Icon(
-        //       MdiIcons.alertCircleOutline,
-        //       color: kPinkColor,
-        //     ),
-        //     title: Text(
-        //       isUser ? "Edit Post" : "Report Post",
-        //       softWrap: true,
-        //       style: Theme.of(context)
-        //           .textTheme
-        //           .subtitle1!
-        //           .copyWith(color: kPinkColor),
-        //     ),
-        //   ),
-        // ),
-        GestureDetector(
-          onTap: () {
-            if (this.onDeletePost == null) return;
-            this.onDeletePost!();
-            Navigator.pop(context);
-          },
-          child: ListTile(
-            leading: Icon(
-              MdiIcons.eyeOffOutline,
-              color: Colors.black,
-            ),
-            title: Text(
-              isUser ? "Delete Post" : "Hide Post",
-              softWrap: true,
-              style: Theme.of(context).textTheme.subtitle1,
-            ),
-          ),
-        ),
-        // GestureDetector(
-        //   onTap: () {},
-        //   child: ListTile(
-        //     leading: Icon(
-        //       MdiIcons.linkVariant,
-        //       color: Colors.black,
-        //     ),
-        //     title: Text(
-        //       "Copy Link",
-        //       softWrap: true,
-        //       style: Theme.of(context).textTheme.subtitle1,
-        //     ),
-        //   ),
-        // ),
-      ],
     );
   }
 }

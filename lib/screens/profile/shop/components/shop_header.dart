@@ -1,13 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
-import 'package:provider/provider.dart';
 
-import '../../../../routers/app_router.dart';
 import '../../../chat/components/chat_avatar.dart';
-import '../../add_shop/edit_shop.dart';
-import '../../settings/settings.dart';
 
 class ShopHeader extends StatelessWidget {
   const ShopHeader({
@@ -18,6 +13,7 @@ class ShopHeader extends StatelessWidget {
     this.shopCoverPhoto,
     this.onSettingsTap,
     this.onEditTap,
+    this.onShopPhotoTap,
     this.displaySettingsButton = true,
     this.displayEditButton = true,
   }) : super(key: key);
@@ -28,6 +24,7 @@ class ShopHeader extends StatelessWidget {
   final String? shopCoverPhoto;
   final void Function()? onSettingsTap;
   final void Function()? onEditTap;
+  final void Function()? onShopPhotoTap;
   final bool displaySettingsButton;
   final bool displayEditButton;
 
@@ -73,12 +70,7 @@ class ShopHeader extends StatelessWidget {
                 size: 30.0.r,
               ),
               color: Colors.white,
-              onPressed: () {
-                context.read<AppRouter>().navigateTo(
-                      AppRoute.profile,
-                      Settings.routeName,
-                    );
-              },
+              onPressed: onSettingsTap,
             ),
           ),
         Center(
@@ -93,6 +85,7 @@ class ShopHeader extends StatelessWidget {
                   displayName: shopName,
                   displayPhoto: shopProfilePhoto,
                   radius: 40.0.r,
+                  onTap: onShopPhotoTap,
                 ),
                 Text(
                   shopName,
@@ -116,14 +109,7 @@ class ShopHeader extends StatelessWidget {
                 size: 30.0.r,
               ),
               color: Colors.white,
-              onPressed: () {
-                AppRouter.pushNewScreenWithRouteSettings(
-                  context,
-                  screen: EditShop(),
-                  settings: RouteSettings(name: EditShop.routeName),
-                  pageTransitionAnimation: PageTransitionAnimation.cupertino,
-                );
-              },
+              onPressed: this.onEditTap,
             ),
           ),
       ],

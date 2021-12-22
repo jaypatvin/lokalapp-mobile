@@ -2,8 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 
-import 'operating_hours_body.dart';
 import '../../models/payment_options.dart';
+import 'operating_hours_body.dart';
 
 class ShopBody extends ChangeNotifier {
   String? name;
@@ -42,6 +42,7 @@ class ShopBody extends ChangeNotifier {
     String? userId,
     OperatingHoursBody? operatingHours,
     PaymentOptions? paymentOptions,
+    bool notify = true,
   }) {
     this.name = name ?? this.name;
     this.description = description ?? this.description;
@@ -53,10 +54,10 @@ class ShopBody extends ChangeNotifier {
     this.userId = userId ?? this.userId;
     this.operatingHours = operatingHours ?? this.operatingHours;
     this.paymentOptions = paymentOptions ?? this.paymentOptions;
-    notifyListeners();
+    if (notify) notifyListeners();
   }
 
-  void clear() => update(
+  void clear({bool notify = true}) => update(
         name: '',
         description: '',
         communityId: '',
@@ -69,6 +70,7 @@ class ShopBody extends ChangeNotifier {
         userId: '',
         operatingHours: OperatingHoursBody(),
         paymentOptions: PaymentOptions(),
+        notify: notify,
       );
 
   ShopBody copyWith({

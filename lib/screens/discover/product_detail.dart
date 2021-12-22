@@ -83,26 +83,29 @@ class _ProductDetailView extends HookView<ProductDetailViewModel> {
         leadingColor: kTealColor,
         backgroundColor: Colors.white,
         onPressedLeading: () => Navigator.pop(context),
-        title: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            SizedBox(
-              height: kToolbarHeight * 0.80,
-              child: ChatAvatar(
-                displayName: vm.shop.name,
-                displayPhoto: vm.shop.profilePhoto,
-                radius: 15.0.r,
+        title: GestureDetector(
+          onTap: vm.goToShop,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SizedBox(
+                height: kToolbarHeight * 0.80,
+                child: ChatAvatar(
+                  displayName: vm.shop.name,
+                  displayPhoto: vm.shop.profilePhoto,
+                  radius: 15.0.r,
+                ),
               ),
-            ),
-            SizedBox(width: 8.0),
-            Flexible(
-              child: Text(
-                vm.appBarTitle,
-                style: Theme.of(context).textTheme.headline5,
-                overflow: TextOverflow.ellipsis,
+              SizedBox(width: 8.0),
+              Flexible(
+                child: Text(
+                  vm.appBarTitle,
+                  style: Theme.of(context).textTheme.headline5,
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
         // actions: [
         //   IconButton(

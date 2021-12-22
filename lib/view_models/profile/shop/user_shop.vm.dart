@@ -2,15 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../models/failure_exception.dart';
+import '../../../models/lokal_images.dart';
 import '../../../models/lokal_user.dart';
 import '../../../models/user_shop.dart';
 import '../../../providers/auth.dart';
 import '../../../providers/shops.dart';
 import '../../../providers/users.dart';
 import '../../../routers/app_router.dart';
+import '../../../screens/profile/add_shop/edit_shop.dart';
 import '../../../screens/profile/profile_screen.dart';
+import '../../../screens/profile/settings/settings.dart';
 import '../../../state/view_model.dart';
 import '../../../utils/constants/themes.dart';
+import '../../../utils/functions.utils.dart';
 
 class UserShopViewModel extends ViewModel {
   UserShopViewModel(this.userId, [this.shopId]);
@@ -37,6 +41,7 @@ class UserShopViewModel extends ViewModel {
         ? context.read<Auth>().user!
         : context.read<Users>().findById(userId)!;
   }
+
   void _shopSetup() {
     ShopModel? _shop;
 
@@ -60,8 +65,28 @@ class UserShopViewModel extends ViewModel {
     notifyListeners();
   }
 
-  void onSettingsTap() {}
-  void onEditTap() {}
+  void onSettingsTap() {
+    AppRouter.profileNavigatorKey.currentState?.pushNamed(Settings.routeName);
+  }
+
+  void onEditTap() {
+    AppRouter.profileNavigatorKey.currentState?.pushNamed(EditShop.routeName);
+  }
+
+  void onShopPhotoTap() {
+    if (shop.profilePhoto != null) {
+      openGallery(
+        context,
+        0,
+        [
+          LokalImages(
+            url: shop.profilePhoto!,
+            order: 0,
+          ),
+        ],
+      );
+    }
+  }
 
   void goToProfile() {
     if (isCurrentUser) {

@@ -116,6 +116,22 @@ class PostCardViewModel extends ViewModel {
     }
   }
 
+  void onEditPost() {
+    showToast('Edit post not implemented!');
+  }
+
+  void onCopyLink() {
+    showToast('Copy link not implemented!');
+  }
+
+  void onHidePost() {
+    showToast('Hide post not implemented!');
+  }
+
+  void onReportPost() {
+    showToast('Report post not implemented!');
+  }
+
   void _showError(String message) {
     showToast(message);
   }

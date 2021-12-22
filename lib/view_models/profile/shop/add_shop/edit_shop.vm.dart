@@ -50,15 +50,16 @@ class EditShopViewModel extends ViewModel {
     _isShopOpen = shop.status == 'enabled';
 
     context.read<ShopBody>()
-      ..clear()
+      ..clear(notify: false)
       ..update(
         name: shop.name,
         description: shop.description,
         coverPhoto: shop.coverPhoto,
         profilePhoto: shop.profilePhoto,
         paymentOptions: shop.paymentOptions?.copyWith(),
+        notify: false,
       );
-    context.read<OperatingHoursBody>()..clear();
+    context.read<OperatingHoursBody>().clear(notify: false);
   }
 
   @override
@@ -111,8 +112,8 @@ class EditShopViewModel extends ViewModel {
     context
         .read<AppRouter>()
         .keyOf(AppRoute.profile)
-        .currentState!
-        .push(CupertinoPageRoute(
+        .currentState
+        ?.push(CupertinoPageRoute(
           builder: (_) => ShopSchedule(
             shopPhoto: shopPhoto,
             forEditing: true,

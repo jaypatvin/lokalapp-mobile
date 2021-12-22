@@ -57,6 +57,7 @@ class _UserShopView extends HookView<UserShopViewModel> {
               onEditTap: vm.onEditTap,
               displayEditButton: vm.displayEditButton,
               displaySettingsButton: vm.displaySettingsButton,
+              onShopPhotoTap: vm.onShopPhotoTap,
             ),
             UserBanner(
               displayName: vm.user.displayName!,

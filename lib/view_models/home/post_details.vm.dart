@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:lokalapp/services/database.dart';
+import 'package:flutter/material.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:provider/provider.dart';
@@ -8,6 +7,7 @@ import 'package:provider/provider.dart';
 import '../../models/lokal_images.dart';
 import '../../providers/activities.dart';
 import '../../providers/auth.dart';
+import '../../services/database.dart';
 import '../../services/local_image_service.dart';
 import '../../state/view_model.dart';
 import '../../widgets/photo_picker_gallery/provider/custom_photo_provider.dart';
@@ -28,6 +28,7 @@ class PostDetailViewModel extends ViewModel {
   final TextEditingController inputController = TextEditingController();
 
   bool _isCommentUploading = false;
+  bool _isPostDeleting = false;
 
   @override
   void init() {
@@ -102,6 +103,29 @@ class PostDetailViewModel extends ViewModel {
       _isCommentUploading = false;
       notifyListeners();
       showToast('Cannot create a comment: $e');
+    }
+  }
+
+  void onPostOptionsPressed(Widget? child) {
+    if (child == null) return;
+
+    showModalBottomSheet(
+      context: context,
+      useRootNavigator: true,
+      isScrollControlled: true,
+      builder: (_) => child,
+    );
+  }
+
+  Future<void> onDelete() async {
+    if (_isPostDeleting) return;
+    try {
+      _isPostDeleting = true;
+      await context.read<Activities>().deleteActivity(activityId);
+    } catch (e) {
+      showToast(e.toString());
+    } finally {
+      _isPostDeleting = false;
     }
   }
 }

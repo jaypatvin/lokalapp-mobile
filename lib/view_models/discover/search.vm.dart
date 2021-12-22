@@ -42,10 +42,14 @@ class SearchViewModel extends ChangeNotifier {
     _recentSearches = context.read<UserSharedPreferences>().getRecentSearches();
   }
 
-  void onChanged(String text) {
+  /// Will perform the search every 750ms
+  void onChanged({
+    required String text,
+    Duration duration = const Duration(milliseconds: 750),
+  }) {
     _timer?.cancel();
     this._timer = Timer(
-      const Duration(milliseconds: 750),
+      duration,
       () => _performSearch(text),
     );
   }
