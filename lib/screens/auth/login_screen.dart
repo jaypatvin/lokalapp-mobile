@@ -99,7 +99,7 @@ class _LoginScreenView extends HookView<LoginScreenViewModel>
                   passwordController: _passwordController,
                   passwordFocusNode: _passwordFocusNode,
                   submitButtonLabel: "SIGN IN",
-                  displaySignInError: vm.displayError,
+                  passwordInputError: vm.errorMessage,
                   onFormChanged: vm.onFormChanged,
                   onFormSubmit: () async => await performFuture(
                     () async => await vm.emailLogin(

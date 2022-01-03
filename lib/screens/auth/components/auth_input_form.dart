@@ -12,7 +12,6 @@ class AuthInputForm extends StatefulWidget {
   final TextEditingController? passwordController;
   final void Function()? onFormChanged;
   final void Function()? onFormSubmit;
-  final bool displaySignInError;
   final String? submitButtonLabel;
   final String? Function(String?)? passwordValidator;
   final FocusNode? emailFocusNode;
@@ -26,7 +25,6 @@ class AuthInputForm extends StatefulWidget {
     this.passwordController,
     this.onFormChanged,
     this.onFormSubmit,
-    this.displaySignInError = false,
     this.submitButtonLabel,
     this.passwordValidator,
     this.emailFocusNode,
@@ -164,10 +162,7 @@ class _AuthInputFormState extends State<AuthInputForm> {
                   hintText: "Password",
                   contentPadding: EdgeInsets.symmetric(horizontal: 16.0.w),
                   errorMaxLines: 3,
-                  errorText: widget.displaySignInError
-                      ? widget.passwordInputError ??
-                          "The email and password combination is incorrect."
-                      : null,
+                  errorText: widget.passwordInputError,
                 ),
               ),
             ),
