@@ -81,4 +81,9 @@ class InviteScreenViewModel extends ViewModel {
       },
     );
   }
+
+  Future<bool> onWillPop() async {
+    await context.read<Auth>().logOut();
+    return true;
+  }
 }
