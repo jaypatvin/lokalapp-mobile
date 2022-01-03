@@ -1,280 +1,214 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:keyboard_actions/keyboard_actions.dart';
-import 'package:oktoast/oktoast.dart';
-import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
-import 'package:provider/provider.dart';
 
-import '../../providers/auth.dart';
-import '../../providers/bank_codes.dart';
-import '../../providers/categories.dart';
-import '../../providers/post_requests/auth_body.dart';
-import '../../providers/products.dart';
-import '../../providers/shops.dart';
-import '../../providers/users.dart';
-import '../../services/api/api.dart';
-import '../../services/api/invite_api_service.dart';
-import '../../services/local_image_service.dart';
+import '../../state/mvvm_builder.widget.dart';
+import '../../state/views/hook.view.dart';
 import '../../utils/constants/themes.dart';
-import '../../utils/utility.dart';
+import '../../view_models/auth/profile_registration.vm.dart';
 import '../../widgets/app_button.dart';
 import '../../widgets/custom_app_bar.dart';
 import '../../widgets/overlays/screen_loader.dart';
 import '../../widgets/photo_box.dart';
-import '../../widgets/verification/verify_screen.dart';
 import 'components/checkbox_form_field.dart';
 
-class ProfileRegistration extends StatefulWidget {
+class ProfileRegistration extends StatelessWidget {
   static const routeName = '/register/profile';
+  const ProfileRegistration({Key? key}) : super(key: key);
+
   @override
-  _ProfileRegistrationState createState() => _ProfileRegistrationState();
+  Widget build(BuildContext context) {
+    return MVVM(
+      view: (_, __) => _ProfileRegistrationView(),
+      viewModel: ProfileRegistrationViewModel(),
+    );
+  }
 }
 
-class _ProfileRegistrationState extends State<ProfileRegistration>
-    with ScreenLoader {
-  final TextEditingController _firstNameController = TextEditingController();
-  final TextEditingController _lastNameController = TextEditingController();
-  final TextEditingController _streetController = TextEditingController();
-
-  final FocusNode _nodeFirstName = FocusNode();
-  final FocusNode _nodeLastName = FocusNode();
-  final FocusNode _nodeStreet = FocusNode();
-
-  File? profilePhoto;
-  bool _hasEmptyField = false;
-
-  final _formKey = GlobalKey<FormState>();
-
-  KeyboardActionsConfig _buildConfig(BuildContext context) {
-    return KeyboardActionsConfig(
-      keyboardActionsPlatform: KeyboardActionsPlatform.ALL,
-      keyboardBarColor: Colors.grey.shade200,
-      nextFocus: true,
-      actions: [
-        KeyboardActionsItem(
-          focusNode: _nodeFirstName,
-          toolbarButtons: [
-            (node) {
-              return TextButton(
-                onPressed: () => node.unfocus(),
-                child: Text(
-                  "Done",
-                  style: Theme.of(context).textTheme.bodyText1!.copyWith(
-                        color: Colors.black,
-                      ),
-                ),
-              );
-            },
-          ],
-        ),
-        KeyboardActionsItem(
-          focusNode: _nodeLastName,
-          toolbarButtons: [
-            (node) {
-              return TextButton(
-                onPressed: () => node.unfocus(),
-                child: Text(
-                  "Done",
-                  style: Theme.of(context).textTheme.bodyText1!.copyWith(
-                        color: Colors.black,
-                      ),
-                ),
-              );
-            },
-          ],
-        ),
-        KeyboardActionsItem(
-          focusNode: _nodeStreet,
-          toolbarButtons: [
-            (node) {
-              return TextButton(
-                onPressed: () => node.unfocus(),
-                child: Text(
-                  "Done",
-                  style: Theme.of(context).textTheme.bodyText1!.copyWith(
-                        color: Colors.black,
-                      ),
-                ),
-              );
-            },
-          ],
-        ),
-      ],
-    );
-  }
-
-  Future<bool> _registerUser() async {
-    LocalImageService _imageService =
-        Provider.of<LocalImageService>(context, listen: false);
-    String mediaUrl = "";
-    if (profilePhoto != null) {
-      mediaUrl = await _imageService.uploadImage(
-          file: profilePhoto!, name: 'profile_photo');
-    }
-
-    //UserAuth auth = Provider.of<UserAuth>(context, listen: false);
-    final auth = context.read<Auth>();
-    final AuthBody authBody = Provider.of<AuthBody>(context, listen: false);
-    final String inviteCode = authBody.inviteCode!;
-    final _apiService = InviteAPIService(context.read<API>());
-    authBody.update(
-      profilePhoto: mediaUrl,
-      firstName: _firstNameController.text,
-      lastName: _lastNameController.text,
-      address: _streetController.text,
-      userUid: auth.authUid,
-      email: auth.authEmail,
-    );
-
-    await auth.register(authBody.data);
-    bool inviteCodeClaimed = false;
-    if (auth.user != null) {
-      try {
-        inviteCodeClaimed = await _apiService.claim(
-          userId: auth.user!.id!,
-          code: inviteCode,
-        );
-      } catch (e) {
-        showToast(e.toString());
-        print(e.toString());
-      }
-    }
-    return inviteCodeClaimed;
-  }
-
-  Future<void> _registerHandler() async {
-    if (!_formKey.currentState!.validate()) return;
-    if (_firstNameController.text.isEmpty ||
-        _lastNameController.text.isEmpty ||
-        _streetController.text.isEmpty) {
-      setState(() {
-        _hasEmptyField = true;
-        return;
-      });
-    }
-    bool success = await _registerUser();
-    if (success) {
-      await context.read<Shops>().fetch();
-      await context.read<Products>().fetch();
-      await context.read<Users>().fetch();
-      await context.read<Categories>().fetch();
-      await context.read<BankCodes>().fetch();
-      Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(
-            builder: (context) => VerifyScreen(),
-          ),
-          (route) => false);
-    }
-  }
-
-  void _picturePickerHandler() async {
-    final photo = await context.read<MediaUtility>().showMediaDialog(context);
-    setState(() {
-      profilePhoto = photo;
-    });
-  }
-
+class _ProfileRegistrationView extends HookView<ProfileRegistrationViewModel>
+    with HookScreenLoader {
   @override
-  Widget screen(BuildContext context) {
-    return NestedWillPopScope(
-      onWillPop: () async {
-        print('Will pop!');
-        await context.read<Auth>().logOut();
-        return true;
+  Widget screen(BuildContext context, ProfileRegistrationViewModel vm) {
+    final _firstNameFocusNode = useFocusNode();
+    final _lastNameFocusNode = useFocusNode();
+    final _streetNameFocusNode = useFocusNode();
+
+    final _firstNameController = useTextEditingController();
+    final _lastNameController = useTextEditingController();
+    final _streetNameController = useTextEditingController();
+
+    useEffect(
+      () {
+        final void Function() _firstNameListener = () {
+          vm.onFirstNameChanged(_firstNameController.text);
+        };
+        final void Function() _lastNameListener = () {
+          vm.onLastNameChanged(_lastNameController.text);
+        };
+        final void Function() _streetNameListener = () {
+          vm.onStreetNameChanged(_streetNameController.text);
+        };
+
+        _firstNameController.addListener(_firstNameListener);
+        _lastNameController.addListener(_lastNameListener);
+        _streetNameController.addListener(_streetNameListener);
+
+        return () {
+          _firstNameController.removeListener(_firstNameListener);
+          _lastNameController.removeListener(_lastNameListener);
+          _streetNameController.removeListener(_streetNameListener);
+        };
       },
-      child: Scaffold(
-        backgroundColor: kInviteScreenColor,
-        appBar: CustomAppBar(
-          backgroundColor: kInviteScreenColor,
-          leadingColor: kTealColor,
-          onPressedLeading: () => Navigator.maybePop(context),
-        ),
-        body: KeyboardActions(
-          config: _buildConfig(context),
-          child: Column(
-            children: [
-              Text(
-                "Let's set up your profile",
-                style: TextStyle(
-                  fontWeight: FontWeight.w500,
-                  fontSize: 16.0.sp,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              SizedBox(height: 25.0.h),
-              GestureDetector(
-                onTap: _picturePickerHandler,
-                child: PhotoBox(
-                  file: profilePhoto,
-                  shape: BoxShape.circle,
-                  width: 120.0.w,
-                  height: 120.0.h,
-                ),
-              ),
-              SizedBox(
-                height: 20.0.h,
-              ),
-              if (_hasEmptyField)
-                Text(
-                  "You must fill out all field to proceed.",
-                  style: TextStyle(
-                    color: kPinkColor,
-                    fontWeight: FontWeight.w500,
-                    fontSize: 12.0.sp,
+    );
+
+    final _kbConfig = useMemoized<KeyboardActionsConfig>(() {
+      return KeyboardActionsConfig(
+        keyboardActionsPlatform: KeyboardActionsPlatform.ALL,
+        keyboardBarColor: Colors.grey.shade200,
+        nextFocus: true,
+        actions: [
+          KeyboardActionsItem(
+            focusNode: _firstNameFocusNode,
+            toolbarButtons: [
+              (node) {
+                return TextButton(
+                  onPressed: () => node.unfocus(),
+                  child: Text(
+                    "Done",
+                    style: Theme.of(context).textTheme.bodyText1!.copyWith(
+                          color: Colors.black,
+                        ),
                   ),
-                ),
-              SizedBox(height: 10.0.h),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 30.0.w),
-                child: _RegistrationForm(
-                  formKey: _formKey,
-                  firstNameController: _firstNameController,
-                  firstNameNode: _nodeFirstName,
-                  lastNameController: _lastNameController,
-                  lastNameNode: _nodeLastName,
-                  streetAddressController: _streetController,
-                  streetAdddressNode: _nodeStreet,
-                  onFormSubmit: () async => await performFuture<void>(
-                    () async => await _registerHandler(),
-                  ),
-                  formFieldDecoration: InputDecoration(
-                    filled: true,
-                    fillColor: Colors.white,
-                    alignLabelWithHint: true,
-                    contentPadding: EdgeInsets.symmetric(horizontal: 16.0.w),
-                    border: new OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(30.0.r)),
-                      borderSide: _hasEmptyField
-                          ? BorderSide(color: kPinkColor)
-                          : BorderSide.none,
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(30.0.r)),
-                      borderSide: _hasEmptyField
-                          ? BorderSide(color: kPinkColor)
-                          : BorderSide.none,
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(height: 30.0.h),
-              SizedBox(
-                width: 200.0.w,
-                child: AppButton(
-                  "CREATE PROFILE",
-                  kTealColor,
-                  true,
-                  () async => await performFuture<void>(
-                    () async => await _registerHandler(),
-                  ),
-                  textStyle: TextStyle(color: kNavyColor),
-                ),
-              ),
+                );
+              },
             ],
           ),
+          KeyboardActionsItem(
+            focusNode: _lastNameFocusNode,
+            toolbarButtons: [
+              (node) {
+                return TextButton(
+                  onPressed: () => node.unfocus(),
+                  child: Text(
+                    "Done",
+                    style: Theme.of(context).textTheme.bodyText1!.copyWith(
+                          color: Colors.black,
+                        ),
+                  ),
+                );
+              },
+            ],
+          ),
+          KeyboardActionsItem(
+            focusNode: _streetNameFocusNode,
+            toolbarButtons: [
+              (node) {
+                return TextButton(
+                  onPressed: () => node.unfocus(),
+                  child: Text(
+                    "Done",
+                    style: Theme.of(context).textTheme.bodyText1!.copyWith(
+                          color: Colors.black,
+                        ),
+                  ),
+                );
+              },
+            ],
+          ),
+        ],
+      );
+    });
+
+    return Scaffold(
+      backgroundColor: kInviteScreenColor,
+      appBar: CustomAppBar(
+        backgroundColor: kInviteScreenColor,
+        leadingColor: kTealColor,
+        onPressedLeading: () => Navigator.maybePop(context),
+      ),
+      body: KeyboardActions(
+        config: _kbConfig,
+        child: Column(
+          children: [
+            Text(
+              "Let's set up your profile",
+              style: TextStyle(
+                fontWeight: FontWeight.w500,
+                fontSize: 16.0.sp,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(height: 25.0.h),
+            GestureDetector(
+              onTap: vm.picturePickerHandler,
+              child: PhotoBox(
+                file: vm.profilePhoto,
+                shape: BoxShape.circle,
+                width: 120.0.w,
+                height: 120.0.h,
+              ),
+            ),
+            SizedBox(
+              height: 20.0.h,
+            ),
+            if (vm.hasEmptyField)
+              Text(
+                'You must fill out all field to proceed.',
+                style: TextStyle(
+                  color: kPinkColor,
+                  fontWeight: FontWeight.w500,
+                  fontSize: 12.0.sp,
+                ),
+              ),
+            SizedBox(height: 10.0.h),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 30.0.w),
+              child: _RegistrationForm(
+                formKey: vm.formKey,
+                firstNameController: _firstNameController,
+                firstNameNode: _firstNameFocusNode,
+                lastNameController: _lastNameController,
+                lastNameNode: _lastNameFocusNode,
+                streetAddressController: _streetNameController,
+                streetAdddressNode: _streetNameFocusNode,
+                onFormSubmit: () async => await performFuture<void>(
+                  () async => await vm.registerHandler(),
+                ),
+                formFieldDecoration: InputDecoration(
+                  filled: true,
+                  fillColor: Colors.white,
+                  alignLabelWithHint: true,
+                  contentPadding: EdgeInsets.symmetric(horizontal: 16.0.w),
+                  border: new OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(30.0.r)),
+                    borderSide: vm.hasEmptyField
+                        ? BorderSide(color: kPinkColor)
+                        : BorderSide.none,
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(30.0.r)),
+                    borderSide: vm.hasEmptyField
+                        ? BorderSide(color: kPinkColor)
+                        : BorderSide.none,
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(height: 30.0.h),
+            SizedBox(
+              width: 200.0.w,
+              child: AppButton(
+                'CREATE PROFILE',
+                kTealColor,
+                true,
+                () async => await performFuture<void>(
+                  () async => await vm.registerHandler(),
+                ),
+                textStyle: TextStyle(color: kNavyColor),
+              ),
+            ),
+          ],
         ),
       ),
     );
