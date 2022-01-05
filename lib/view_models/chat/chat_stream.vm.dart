@@ -7,11 +7,12 @@ import 'package:provider/provider.dart';
 import '../../models/chat_model.dart';
 import '../../providers/shops.dart';
 import '../../providers/users.dart';
+import '../../routers/app_router.dart';
 import '../../state/view_model.dart';
 
 class ChatStreamViewModel extends ViewModel {
   ChatStreamViewModel(this.chatStream);
-  final Stream<QuerySnapshot<Map<String, dynamic>>> chatStream;
+  final Stream<QuerySnapshot<Map<String, dynamic>>>? chatStream;
 
   String? _searchQuery;
   String? get searchQuery => _searchQuery;
@@ -55,5 +56,9 @@ class ChatStreamViewModel extends ViewModel {
     return _searchQuery?.isNotEmpty ?? false
         ? chats.where(_searchFilterHandler).toList()
         : chats;
+  }
+
+   void createShopHandler() {
+    context.read<AppRouter>().jumpToTab(AppRoute.profile);
   }
 }

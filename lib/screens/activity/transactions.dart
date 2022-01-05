@@ -5,6 +5,7 @@ import '../../state/mvvm_builder.widget.dart';
 import '../../state/views/hook.view.dart';
 import '../../utils/constants/themes.dart';
 import '../../view_models/activity/transactions.vm.dart';
+import '../../widgets/app_button.dart';
 import 'components/grouped_orders.dart';
 
 class Transactions extends StatelessWidget {
@@ -117,11 +118,22 @@ class _TransactionsView extends HookView<TransactionsViewModel> {
                 ),
               )
             : Expanded(
-                child: Center(
-                  child: Text(
-                    vm.noOrderMessage,
-                    style: Theme.of(context).textTheme.bodyText2,
-                  ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      vm.noOrderMessage,
+                      style: Theme.of(context).textTheme.bodyText2,
+                    ),
+                    SizedBox(height: 5.0.h),
+                    if (vm.shop == null && !vm.isBuyer)
+                      AppButton(
+                        'Create Shop',
+                        kPurpleColor,
+                        false,
+                        vm.createShopHandler,
+                      ),
+                  ],
                 ),
               ),
       ],
