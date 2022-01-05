@@ -33,78 +33,98 @@ class _SubscriptionsView extends StatelessView<SubscriptionsViewModel> {
   Widget render(BuildContext context, SubscriptionsViewModel vm) {
     return Scaffold(
       appBar: CustomAppBar(
-        titleText: vm.isBuyer ? "My Subscriptions" : "Subscription Orders",
+        titleText: vm.isBuyer ? 'My Subscriptions' : 'Subscription Orders',
         titleStyle: TextStyle(color: Colors.white),
         backgroundColor: vm.isBuyer ? kTealColor : kPurpleColor,
         onPressedLeading: () => Navigator.of(context).pop(),
       ),
-      body: StreamBuilder(
-        stream: vm.stream,
-        builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-          switch (snapshot.connectionState) {
-            case ConnectionState.waiting:
-              return Center(child: CircularProgressIndicator());
-            default:
-              if (snapshot.hasError)
-                return Text('Error: ${snapshot.error}');
-              else if (!snapshot.hasData || snapshot.data!.docs.length == 0)
-                return Center(
-                  child: Text(
-                    'No subscriptions yet!',
-                    style: Theme.of(context).textTheme.subtitle1,
-                  ),
-                );
-              else {
-                return GroupedListView(
-                  shrinkWrap: true,
-                  physics: AlwaysScrollableScrollPhysics(),
-                  elements: snapshot.data!.docs,
-                  groupBy: (QueryDocumentSnapshot snapshot) {
-                    final archived = snapshot["archived"] as bool?;
-                    return archived;
-                  },
-                  groupSeparatorBuilder: (dynamic archived) {
-                    return const SizedBox();
-                  },
-                  order: GroupedListOrder.DESC,
-                  itemBuilder: (context, QueryDocumentSnapshot snapshot) {
-                    final snapshotData =
-                        snapshot.data() as Map<String, dynamic>;
-                    final data = {
-                      ...snapshotData,
-                      "id": snapshot.id,
-                    };
-                    final subscriptionPlan =
-                        ProductSubscriptionPlan.fromMap(data);
-                    return _SubscriptionCard(
-                      subscriptionPlan: subscriptionPlan,
-                      isBuyer: vm.isBuyer,
-                      onDetailsPressed: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (_) => SubscriptionDetails(
-                              subscriptionPlan: subscriptionPlan,
-                            ),
-                          ),
-                        );
-                      },
-                    );
-                  },
-                  itemComparator:
-                      (QueryDocumentSnapshot a, QueryDocumentSnapshot b) {
-                    final subA = ProductSubscriptionPlan.fromMap(
-                        a.data() as Map<String, dynamic>);
-                    final subB = ProductSubscriptionPlan.fromMap(
-                        b.data() as Map<String, dynamic>);
+      body: vm.stream != null
+          ? StreamBuilder(
+              stream: vm.stream,
+              builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                switch (snapshot.connectionState) {
+                  case ConnectionState.waiting:
+                    return Center(child: CircularProgressIndicator());
+                  default:
+                    if (snapshot.hasError)
+                      return Text('Error: ${snapshot.error}');
+                    else if (!snapshot.hasData ||
+                        snapshot.data!.docs.length == 0)
+                      return Center(
+                        child: Text(
+                          'No subscriptions yet!',
+                          style: Theme.of(context).textTheme.subtitle1,
+                        ),
+                      );
+                    else {
+                      return GroupedListView(
+                        shrinkWrap: true,
+                        physics: AlwaysScrollableScrollPhysics(),
+                        elements: snapshot.data!.docs,
+                        groupBy: (QueryDocumentSnapshot snapshot) {
+                          final archived = snapshot['archived'] as bool?;
+                          return archived;
+                        },
+                        groupSeparatorBuilder: (dynamic archived) {
+                          return const SizedBox();
+                        },
+                        order: GroupedListOrder.DESC,
+                        itemBuilder: (context, QueryDocumentSnapshot snapshot) {
+                          final snapshotData =
+                              snapshot.data() as Map<String, dynamic>;
+                          final data = {
+                            ...snapshotData,
+                            'id': snapshot.id,
+                          };
+                          final subscriptionPlan =
+                              ProductSubscriptionPlan.fromMap(data);
+                          return _SubscriptionCard(
+                            subscriptionPlan: subscriptionPlan,
+                            isBuyer: vm.isBuyer,
+                            onDetailsPressed: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (_) => SubscriptionDetails(
+                                    subscriptionPlan: subscriptionPlan,
+                                  ),
+                                ),
+                              );
+                            },
+                          );
+                        },
+                        itemComparator:
+                            (QueryDocumentSnapshot a, QueryDocumentSnapshot b) {
+                          final subA = ProductSubscriptionPlan.fromMap(
+                              a.data() as Map<String, dynamic>);
+                          final subB = ProductSubscriptionPlan.fromMap(
+                              b.data() as Map<String, dynamic>);
 
-                    return subA.plan.startDates.first
-                        .compareTo(subB.plan.startDates.first);
-                  },
-                );
-              }
-          }
-        },
-      ),
+                          return subA.plan.startDates.first
+                              .compareTo(subB.plan.startDates.first);
+                        },
+                      );
+                    }
+                }
+              },
+            )
+          : Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'You have not created a shop yet!',
+                    style: Theme.of(context).textTheme.bodyText2,
+                  ),
+                  SizedBox(height: 5.0.h),
+                  AppButton(
+                    'Create Shop',
+                    kPurpleColor,
+                    false,
+                    vm.createShopHandler,
+                  ),
+                ],
+              ),
+            ),
     );
   }
 }
@@ -141,7 +161,7 @@ class _SubscriptionCard extends StatelessWidget {
             SizedBox(
               width: double.infinity,
               child: AppButton(
-                "Details",
+                'Details',
                 kTealColor,
                 false,
                 this.onDetailsPressed,

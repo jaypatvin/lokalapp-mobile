@@ -85,24 +85,43 @@ class TransactionsViewModel extends ViewModel {
 
   void _initializeStreams() {
     final userId = context.read<Auth>().user!.id;
+    if (!isBuyer) {
+      final shops = context.read<Shops>().findByUser(userId);
+      if (shops.isEmpty) {
+        context.read<Shops>().addListener(shopChangeListener);
+        return;
+      }
+
+      shopChangeListener(notify: false);
+    }
+
     for (final key in _statuses.keys) {
       final statusCode = (key == 1000 || key == 2000) ? key ~/ 100 : key;
-      if (isBuyer) {
-        _streams[key] = _db.getUserOrders(
-          userId,
-          statusCode: statusCode == 0 ? null : statusCode,
-        );
-      } else {
-        final shops = context.read<Shops>().findByUser(userId);
-        if (shops.isEmpty) return;
-
-        final shop = this.shop = shops.first;
-        _streams[key] = _db.getShopOrders(
-          shop.id,
-          statusCode: statusCode == 0 ? null : statusCode,
-        );
-      }
+      _streams[key] = _db.getUserOrders(
+        userId,
+        statusCode: statusCode == 0 ? null : statusCode,
+      );
     }
+  }
+
+  void shopChangeListener({bool notify = true}) {
+    final userId = context.read<Auth>().user!.id;
+    final shops = context.read<Shops>().findByUser(userId);
+    if (shops.isEmpty) return;
+
+    final shopId = shops.first.id;
+
+    for (final key in _statuses.keys) {
+      final statusCode = (key == 1000 || key == 2000) ? key ~/ 100 : key;
+
+      _streams[key] = _db.getShopOrders(
+        shopId,
+        statusCode: statusCode == 0 ? null : statusCode,
+      );
+    }
+
+    context.read<Shops>().removeListener(shopChangeListener);
+    if (notify) notifyListeners();
   }
 
   void changeIndex(int key) {

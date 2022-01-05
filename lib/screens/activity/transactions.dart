@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 
+import '../../providers/shops.dart';
 import '../../state/mvvm_builder.widget.dart';
 import '../../state/views/hook.view.dart';
 import '../../utils/constants/themes.dart';
@@ -78,7 +80,7 @@ class _TransactionsView extends HookView<TransactionsViewModel> {
         SizedBox(height: 10.0.h),
         if (vm.stream != null)
           Container(
-            height: 25.0.h, // MediaQuery.of(context).size.height * 0.04,
+            height: 25.0.h,
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
               shrinkWrap: true,
@@ -136,6 +138,38 @@ class _TransactionsView extends HookView<TransactionsViewModel> {
                   ],
                 ),
               ),
+        // Builder(
+        //   builder: (ctx) {
+        //     if (vm.stream != null) {
+        //       return Expanded(
+        //         child: GroupedOrders(
+        //           vm.stream,
+        //           vm.initialStatuses,
+        //           vm.isBuyer,
+        //         ),
+        //       );
+        //     }
+        //     return Expanded(
+        //       child: Column(
+        //         mainAxisAlignment: MainAxisAlignment.center,
+        //         children: [
+        //           Text(
+        //             vm.noOrderMessage,
+        //             style: Theme.of(context).textTheme.bodyText2,
+        //           ),
+        //           SizedBox(height: 5.0.h),
+        //           if (vm.shop == null && !vm.isBuyer)
+        //             AppButton(
+        //               'Create Shop',
+        //               kPurpleColor,
+        //               false,
+        //               vm.createShopHandler,
+        //             ),
+        //         ],
+        //       ),
+        //     );
+        //   },
+        // ),
       ],
     );
   }
