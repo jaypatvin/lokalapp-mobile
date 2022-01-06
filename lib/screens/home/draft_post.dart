@@ -103,24 +103,30 @@ class _DraftPostView extends HookView<DraftPostViewModel>
             children: [
               Visibility(
                 visible: vm.imageProvider.picked.length > 0,
-                child: StaggeredGridView.countBuilder(
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  itemCount: vm.imageProvider.picked.length,
+                child: StaggeredGrid.count(
                   crossAxisCount: 2,
-                  itemBuilder: (ctx, index) {
-                    return AssetPhotoThumbnail(
-                      galleryItem: vm.imageProvider.picked[index],
-                      onTap: () => vm.openGallery(index),
-                      onRemove: () => vm.imageProvider.picked.removeAt(index),
+                  mainAxisSpacing: 4.0.w,
+                  crossAxisSpacing: 4.0.h,
+                  children:
+                      vm.imageProvider.picked.map<StaggeredGridTile>((image) {
+                    final index = vm.imageProvider.picked.indexOf(image);
+                    final crossAxisCellCount =
+                        vm.imageProvider.picked.length % 2 != 0 && index == 0
+                            ? 2
+                            : 1;
+                    return StaggeredGridTile.count(
+                      crossAxisCellCount: crossAxisCellCount,
+                      mainAxisCellCount: 0.5,
+                      child: AssetPhotoThumbnail(
+                        key: Key(
+                          'post_details_${vm.imageProvider.picked[index].id}',
+                        ),
+                        galleryItem: vm.imageProvider.picked[index],
+                        onTap: () => vm.openGallery(index),
+                        onRemove: () => vm.imageProvider.picked.removeAt(index),
+                      ),
                     );
-                  },
-                  staggeredTileBuilder: (index) {
-                    if (vm.imageProvider.picked.length % 2 != 0 && index == 0) {
-                      return new StaggeredTile.count(2, 0.5);
-                    }
-                    return new StaggeredTile.count(1, 0.5);
-                  },
+                  }).toList(),
                 ),
               ),
               Expanded(

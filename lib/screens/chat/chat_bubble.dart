@@ -147,28 +147,23 @@ class _MessageImages extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var count = images.length;
-    return StaggeredGridView.countBuilder(
-      padding: EdgeInsets.zero,
-      shrinkWrap: true,
-      physics: NeverScrollableScrollPhysics(),
-      itemCount: count,
+    return StaggeredGrid.count(
       crossAxisCount: 2,
-      itemBuilder: (ctx, index) {
-        return NetworkPhotoThumbnail(
-          galleryItem: images[index],
-          fit: this.fit,
-          onTap: () => openGallery(context, index, images),
+      mainAxisSpacing: 4.0.w,
+      crossAxisSpacing: 4.0.h,
+      children: images.map<StaggeredGridTile>((image) {
+        final index = images.indexOf(image);
+        final crossAxisCellCount = images.length % 2 != 0 && index == 0 ? 2 : 1;
+        return StaggeredGridTile.count(
+          crossAxisCellCount: crossAxisCellCount,
+          mainAxisCellCount: 1,
+          child: NetworkPhotoThumbnail(
+            key: Key('post_details_${images[index].url}'),
+            galleryItem: images[index],
+            onTap: () => openGallery(context, index, images),
+          ),
         );
-      },
-      staggeredTileBuilder: (index) {
-        if (count % 2 != 0 && index == 0) {
-          return new StaggeredTile.count(2, 1);
-        }
-        return new StaggeredTile.count(1, 1);
-      },
-      mainAxisSpacing: 4.0,
-      crossAxisSpacing: 4.0,
+      }).toList(),
     );
   }
 }
