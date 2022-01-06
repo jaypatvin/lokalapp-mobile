@@ -15,7 +15,9 @@ import '../../../routers/chat/chat_view.props.dart';
 import '../../../state/mvvm_builder.widget.dart';
 import '../../../state/views/stateless.view.dart';
 import '../../../utils/constants/assets.dart';
+import '../../../utils/constants/themes.dart';
 import '../../../view_models/chat/chat_stream.vm.dart';
+import '../../../widgets/app_button.dart';
 import '../../../widgets/inputs/search_text_field.dart';
 import '../chat_view.dart';
 import 'chat_avatar.dart';
@@ -25,7 +27,7 @@ class ChatStream extends StatelessWidget {
     Key? key,
     required this.chatStream,
   }) : super(key: key);
-  final Stream<QuerySnapshot<Map<String, dynamic>>> chatStream;
+  final Stream<QuerySnapshot<Map<String, dynamic>>>? chatStream;
 
   @override
   Widget build(BuildContext context) {
@@ -39,38 +41,56 @@ class ChatStream extends StatelessWidget {
 class _ChatStreamView extends StatelessView<ChatStreamViewModel> {
   @override
   Widget render(BuildContext context, ChatStreamViewModel vm) {
-    return SingleChildScrollView(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
+
+    // the user chat stream is always not null, it can only be empty so no need
+    // for additional checks
+    if (vm.chatStream == null)
+      return Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          SizedBox(height: 10.0.h),
-          SearchTextField(
-            hintText: "Search Chats",
-            enabled: true,
-            onChanged: vm.onSearchQueryChanged,
-          ),
-          StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-            stream: vm.chatStream,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return Center(child: Lottie.asset(kAnimationLoading));
-              }
-              if (!snapshot.hasData || snapshot.data!.docs.length == 0) {
-                return Padding(
-                  padding: EdgeInsets.only(top: 24.0.h),
-                  child: Text(
-                    "It's lonely here. No Chats yet!",
-                    style: TextStyle(
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                );
-              }
-              return _ChatList(chats: vm.getChats(snapshot));
-            },
+          Text('You have not created a shop yet!'),
+          SizedBox(height: 5.0.h),
+          AppButton(
+            'Create Shop',
+            kPurpleColor,
+            false,
+            vm.createShopHandler,
           ),
         ],
-      ),
+      );
+
+    return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+      stream: vm.chatStream,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: Lottie.asset(kAnimationLoading));
+        }
+        if (!snapshot.hasData || snapshot.data!.docs.length == 0) {
+          return Center(
+            child: Text(
+              "It's lonely here. No Chats yet!",
+              style: TextStyle(
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          );
+        }
+
+        return SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SizedBox(height: 10.0.h),
+              SearchTextField(
+                hintText: 'Search Chats',
+                enabled: true,
+                onChanged: vm.onSearchQueryChanged,
+              ),
+              _ChatList(chats: vm.getChats(snapshot)),
+            ],
+          ),
+        );
+      },
     );
   }
 }
@@ -167,7 +187,7 @@ class _ChatList extends StatelessWidget {
       }).toList());
 
       final memberNames = members.map((user) => user.displayName).toList();
-      title = memberNames.join(", ");
+      title = memberNames.join(', ');
     }
 
     return GestureDetector(

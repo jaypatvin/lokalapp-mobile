@@ -47,13 +47,13 @@ class Shops extends ChangeNotifier {
 
       if (index >= 0) {
         _shops[index] = await _apiService.getById(id: id);
-        notifyListeners();
+        if (this.hasListeners) notifyListeners();
         return;
       }
 
       final shop = await _apiService.getById(id: id);
       _shops..add(shop);
-      notifyListeners();
+      if (this.hasListeners) notifyListeners();
     }
   }
 

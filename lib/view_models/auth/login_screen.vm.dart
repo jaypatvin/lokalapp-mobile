@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:oktoast/oktoast.dart';
@@ -20,8 +22,8 @@ class LoginScreenViewModel extends ViewModel {
 
   final formKey = GlobalKey<FormState>();
 
-  bool _displayError = false;
-  bool get displayError => _displayError;
+  String? _errorMessage;
+  String? get errorMessage => _errorMessage;
 
   Future<void> _loginHandler() async {
     if (context.read<Auth>().user != null) {
@@ -50,7 +52,8 @@ class LoginScreenViewModel extends ViewModel {
     required String password,
   }) async {
     try {
-      _displayError = false;
+      //_displayError = false;
+      _errorMessage = null;
       notifyListeners();
 
       if (!(formKey.currentState?.validate() ?? false)) return;
@@ -61,16 +64,25 @@ class LoginScreenViewModel extends ViewModel {
       switch (e.code) {
         case 'invalid-email':
         case 'wrong-password':
-          this._displayError = true;
+          _errorMessage = 'The email and password combination is incorrect.';
           notifyListeners();
           break;
         case 'user-not-found':
+          _errorMessage = 'There is no exisiting user with that email.';
+          notifyListeners();
+          break;
+        case 'user-disabled':
+          _errorMessage =
+              'The current account is disabled. Please contact support.';
+          notifyListeners();
           break;
         default:
-          throw FailureException(e.message ?? 'Error Logging In');
+          showToast(e.message ?? 'Error Logging In');
       }
-    } catch (e) {
+    } on SocketException catch (e) {
       showToast(e.toString());
+    } catch (e) {
+      throw FailureException(e.toString());
     }
   }
 

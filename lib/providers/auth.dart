@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -96,7 +97,7 @@ class Auth extends ChangeNotifier {
           return;
         }
 
-        print('API called by firebaseAuth changes');
+        debugPrint('API called by firebaseAuth changes');
         this._user = await _apiService.getById(userId: id);
 
         _userStreamSubscription?.cancel();
@@ -114,6 +115,7 @@ class Auth extends ChangeNotifier {
         );
       } else {
         this._user = null;
+        _idToken = null;
       }
 
       notifyListeners();
@@ -157,8 +159,10 @@ class Auth extends ChangeNotifier {
         password: password,
       );
       await _userChangeListener(credential.user);
+    } on SocketException {
+      throw FailureException('You are not connected to the internet!');
     } catch (e) {
-      throw e;
+      rethrow;
     }
   }
 
@@ -247,8 +251,8 @@ class Auth extends ChangeNotifier {
     _authChangesSubscription?.cancel();
     _idTokenChangesSubscription?.cancel();
     _userStreamSubscription?.cancel();
-
-    _userChangeListener(null);
+ 
+    await _userChangeListener(null);
     await _auth.signOut();
   }
 

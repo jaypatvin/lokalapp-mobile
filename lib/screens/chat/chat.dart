@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
+import '../../models/user_shop.dart';
 import '../../providers/auth.dart';
 import '../../providers/shops.dart';
 import '../../services/database.dart';
@@ -76,24 +77,8 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
     return Consumer<Shops>(
       builder: (ctx, shops, _) {
         final _shops = shops.findByUser(user.id);
-        if (_shops.isEmpty) {
-          return Onboarding(
-            screen: MainScreen.chats,
-            child: Scaffold(
-              appBar: PreferredSize(
-                child: _ChatAppBar(
-                  backgroundColor: kTealColor,
-                ),
-                preferredSize: Size.fromHeight(
-                  50.0,
-                ),
-              ),
-              body: ChatStream(chatStream: _userChatStream),
-            ),
-          );
-        }
 
-        if (_shopChatStream == null) {
+        if (_shopChatStream == null && _shops.isNotEmpty) {
           _shopChatStream = Database.instance.getUserChats(_shops.first.id);
         }
         return Onboarding(
@@ -111,7 +96,7 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
               controller: _tabController,
               children: [
                 ChatStream(chatStream: _userChatStream),
-                ChatStream(chatStream: _shopChatStream!),
+                ChatStream(chatStream: _shopChatStream),
               ],
             ),
           ),
@@ -164,7 +149,7 @@ class _ChatAppBarBottom extends StatelessWidget implements PreferredSizeWidget {
   Size get preferredSize => Size.fromHeight(height);
 
   Widget _tabChild({
-    required String? imgUrl,
+    String? imgUrl,
     required String name,
     required int index,
   }) {
@@ -198,7 +183,9 @@ class _ChatAppBarBottom extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     final user = context.read<Auth>().user!;
-    final shop = context.read<Shops>().findByUser(user.id).first;
+    final shops = context.watch<Shops>().findByUser(user.id);
+    final ShopModel? shop = shops.isNotEmpty ? shops.first : null;
+
     return Container(
       padding: EdgeInsets.only(bottom: 14.0.h, left: 14.0.w, right: 14.0.w),
       child: Container(
@@ -221,8 +208,8 @@ class _ChatAppBarBottom extends StatelessWidget implements PreferredSizeWidget {
               index: 0,
             ),
             _tabChild(
-              imgUrl: shop.profilePhoto,
-              name: shop.name!,
+              imgUrl: shop?.profilePhoto,
+              name: shop?.name ?? 'My Shop',
               index: 1,
             )
           ],

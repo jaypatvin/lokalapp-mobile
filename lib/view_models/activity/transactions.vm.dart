@@ -3,8 +3,10 @@ import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 
+import '../../models/user_shop.dart';
 import '../../providers/auth.dart';
 import '../../providers/shops.dart';
+import '../../routers/app_router.dart';
 import '../../screens/activity/subscriptions/subscriptions.dart';
 import '../../services/database.dart';
 import '../../state/view_model.dart';
@@ -36,7 +38,11 @@ class TransactionsViewModel extends ViewModel {
   late final String subscriptionSubtitle;
   late final String noOrderMessage;
 
+  // final String noOrderMessage = 'You have no orders yet!';
+
   final _db = Database.instance;
+
+  ShopModel? shop;
 
   @override
   void init() {
@@ -50,7 +56,7 @@ class TransactionsViewModel extends ViewModel {
         : 'These are the products other people ordered from your stores.';
     this.subscriptionSubtitle = isBuyer ? 'Subscriptions' : 'Subscriber Orders';
 
-    this.noOrderMessage = isBuyer
+    this.noOrderMessage = shop != null || isBuyer
         ? 'You have no orders yet!'
         : 'You have not created a shop yet!';
   }
@@ -79,21 +85,43 @@ class TransactionsViewModel extends ViewModel {
 
   void _initializeStreams() {
     final userId = context.read<Auth>().user!.id;
+    if (!isBuyer) {
+      final shops = context.read<Shops>().findByUser(userId);
+      if (shops.isEmpty) {
+        context.read<Shops>().addListener(shopChangeListener);
+        return;
+      }
+
+      shopChangeListener(notify: false);
+    }
+
     for (final key in _statuses.keys) {
       final statusCode = (key == 1000 || key == 2000) ? key ~/ 100 : key;
-      if (isBuyer) {
-        _streams[key] = _db.getUserOrders(
-          userId,
-          statusCode: statusCode == 0 ? null : statusCode,
-        );
-      } else {
-        final shop = context.read<Shops>().findByUser(userId).first;
-        _streams[key] = _db.getShopOrders(
-          shop.id,
-          statusCode: statusCode == 0 ? null : statusCode,
-        );
-      }
+      _streams[key] = _db.getUserOrders(
+        userId,
+        statusCode: statusCode == 0 ? null : statusCode,
+      );
     }
+  }
+
+  void shopChangeListener({bool notify = true}) {
+    final userId = context.read<Auth>().user!.id;
+    final shops = context.read<Shops>().findByUser(userId);
+    if (shops.isEmpty) return;
+
+    final shopId = shops.first.id;
+
+    for (final key in _statuses.keys) {
+      final statusCode = (key == 1000 || key == 2000) ? key ~/ 100 : key;
+
+      _streams[key] = _db.getShopOrders(
+        shopId,
+        statusCode: statusCode == 0 ? null : statusCode,
+      );
+    }
+
+    context.read<Shops>().removeListener(shopChangeListener);
+    if (notify) notifyListeners();
   }
 
   void changeIndex(int key) {
@@ -114,5 +142,9 @@ class TransactionsViewModel extends ViewModel {
         ),
       ),
     );
+  }
+
+  void createShopHandler() {
+    context.read<AppRouter>().jumpToTab(AppRoute.profile);
   }
 }
