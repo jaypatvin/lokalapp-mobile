@@ -8,20 +8,21 @@ import '../../providers/auth.dart';
 import '../../routers/app_router.dart';
 import '../../screens/profile/profile_screen.dart';
 import '../../services/database.dart';
+import '../../state/view_model.dart';
 
-class CommentCardViewModel extends ChangeNotifier {
+class CommentCardViewModel extends ViewModel {
   CommentCardViewModel({
-    required this.context,
     required this.activityId,
     required this.comment,
   });
   final ActivityFeedComment comment;
   final String activityId;
-  final BuildContext context;
 
   bool isLiked = false;
 
   final _db = Database.instance;
+
+  @override
   void init() {
     _setup();
   }
