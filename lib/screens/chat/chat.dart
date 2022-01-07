@@ -14,7 +14,7 @@ import 'components/chat_avatar.dart';
 import 'components/chat_stream.dart';
 
 class Chat extends StatefulWidget {
-  static const routeName = "/chat";
+  static const routeName = '/chat';
   const Chat({Key? key}) : super(key: key);
 
   @override
@@ -92,7 +92,7 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
               ),
             ),
             body: TabBarView(
-              physics: NeverScrollableScrollPhysics(),
+              physics: const NeverScrollableScrollPhysics(),
               controller: _tabController,
               children: [
                 ChatStream(chatStream: _userChatStream),
@@ -124,17 +124,17 @@ class _ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return AppBar(
       title: Text(
-        "Chats",
+        'Chats',
         style: TextStyle(
           color: Colors.white,
-          fontFamily: "Goldplay",
+          fontFamily: 'Goldplay',
           fontWeight: FontWeight.w600,
           fontSize: 22.0.sp,
         ),
       ),
       centerTitle: true,
-      backgroundColor: this.backgroundColor,
-      bottom: this.bottom,
+      backgroundColor: backgroundColor,
+      bottom: bottom,
     );
   }
 }

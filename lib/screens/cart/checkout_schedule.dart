@@ -9,7 +9,8 @@ import '../../providers/products.dart';
 import '../../providers/shops.dart';
 import '../../routers/app_router.dart';
 import '../../routers/discover/product_detail.props.dart';
-import '../../services/lokal_api_service.dart';
+import '../../services/api/api.dart';
+import '../../services/api/order_api_service.dart';
 import '../../utils/calendar_picker/calendar_picker.dart';
 import '../../utils/constants/themes.dart';
 import '../../utils/repeated_days_generator/schedule_generator.dart';
@@ -31,31 +32,38 @@ class CheckoutSchedule extends StatefulWidget {
 }
 
 class _CheckoutScheduleState extends State<CheckoutSchedule> with ScreenLoader {
-  Future<void> _placeOrderHandler(BuildContext context, String? shopId) async {
-    final auth = context.read<Auth>();
-    final user = auth.user!;
-    final order =
-        context.read<ShoppingCart>().orders[shopId]![widget.productId]!;
+  late final OrderAPIService _apiService;
 
-    // TODO: separate payload body into another class
-    final response = await LokalApiService.instance!.orders!.create(
-      idToken: auth.idToken,
-      data: {
-        "products": [
-          {
-            "id": widget.productId,
-            "quantity": order.quantity,
-          }
-        ],
-        "buyer_id": user.id,
-        "shop_id": shopId,
-        "delivery_option": order.deliveryOption.value,
-        "delivery_date": order.schedule!.toIso8601String(),
-        "instruction": order.notes,
-      },
-    );
+  @override
+  void initState() {
+    super.initState();
+    _apiService = OrderAPIService(context.read<API>());
+  }
 
-    if (response.statusCode == 200) {
+  Future<void> _placeOrderHandler(
+    String? shopId,
+  ) async {
+    try {
+      final auth = context.read<Auth>();
+      final user = auth.user!;
+      final order =
+          context.read<ShoppingCart>().orders[shopId]![widget.productId]!;
+      await _apiService.create(
+        body: {
+          'products': [
+            {
+              'id': widget.productId,
+              'quantity': order.quantity,
+            }
+          ],
+          'buyer_id': user.id,
+          'shop_id': shopId,
+          'delivery_option': order.deliveryOption.value,
+          'delivery_date': order.schedule!.toIso8601String(),
+          'instruction': order.notes,
+        },
+      );
+
       context
         ..read<ShoppingCart>().remove(widget.productId)
         ..read<AppRouter>()
@@ -67,8 +75,8 @@ class _CheckoutScheduleState extends State<CheckoutSchedule> with ScreenLoader {
                 Discover.routeName,
               ),
             );
-    } else {
-      showToast('Failed to place order.');
+    } catch (e) {
+      showToast('Failed to place order!');
     }
   }
 
@@ -78,28 +86,27 @@ class _CheckoutScheduleState extends State<CheckoutSchedule> with ScreenLoader {
     final shop = context.read<Shops>().findById(product!.shopId)!;
     return Scaffold(
       appBar: CustomAppBar(
-        titleText: "Checkout",
+        titleText: 'Checkout',
         backgroundColor: kTealColor,
-        titleStyle: TextStyle(color: Colors.white),
-        leadingColor: Colors.white,
+        titleStyle: const TextStyle(color: Colors.white),
         onPressedLeading: () => Navigator.pop(context),
       ),
       body: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            SizedBox(height: 24.0),
+            const SizedBox(height: 24.0),
             Text(
               shop.name!,
-              style: TextStyle(
+              style: const TextStyle(
                 color: kNavyColor,
-                fontFamily: "Goldplay",
+                fontFamily: 'Goldplay',
                 fontWeight: FontWeight.w800,
                 fontSize: 24.0,
               ),
             ),
             Container(
-              margin: EdgeInsets.all(16.0),
+              margin: const EdgeInsets.all(16.0),
               child: Consumer<ShoppingCart>(
                 builder: (_, cart, __) {
                   final order = cart.orders[shop.id]![widget.productId]!;
@@ -115,12 +122,11 @@ class _CheckoutScheduleState extends State<CheckoutSchedule> with ScreenLoader {
                         product: product,
                         quantity: order.quantity,
                         onEditTap: () {
-                          context.read<AppRouter>()
-                            ..navigateTo(
-                              AppRoute.discover,
-                              ProductDetail.routeName,
-                              arguments: ProductDetailProps(product),
-                            );
+                          context.read<AppRouter>().navigateTo(
+                                AppRoute.discover,
+                                ProductDetail.routeName,
+                                arguments: ProductDetailProps(product),
+                              );
                         },
                       ),
                     ),
@@ -128,17 +134,17 @@ class _CheckoutScheduleState extends State<CheckoutSchedule> with ScreenLoader {
                 },
               ),
             ),
-            Divider(),
-            SizedBox(height: 8.0),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            const Divider(),
+            const SizedBox(height: 8.0),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16.0),
               child: Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  "Delivery Schedule",
+                  'Delivery Schedule',
                   style: TextStyle(
                     fontWeight: FontWeight.w800,
-                    fontFamily: "Goldplay",
+                    fontFamily: 'Goldplay',
                     fontSize: 28,
                   ),
                 ),
@@ -154,26 +160,25 @@ class _CheckoutScheduleState extends State<CheckoutSchedule> with ScreenLoader {
                 children: [
                   Expanded(
                     child: AppButton(
-                      "Cancel",
+                      'Cancel',
                       kPinkColor,
                       false,
                       () => Navigator.pop(context),
                     ),
                   ),
-                  SizedBox(width: 16.0),
+                  const SizedBox(width: 16.0),
                   Expanded(
                     child: Consumer<ShoppingCart>(
                       builder: (ctx, cart, child) {
                         final order = cart.orders[shop.id]![product.id]!;
                         return AppButton(
-                          "Place Order",
+                          'Place Order',
                           kTealColor,
                           true,
                           order.schedule != null
                               ? () async {
                                   await performFuture<void>(
-                                    () async => await _placeOrderHandler(
-                                      context,
+                                    () async => _placeOrderHandler(
                                       shop.id,
                                     ),
                                   );
@@ -186,7 +191,7 @@ class _CheckoutScheduleState extends State<CheckoutSchedule> with ScreenLoader {
                 ],
               ),
             ),
-            SizedBox(height: 24.0),
+            const SizedBox(height: 24.0),
           ],
         ),
       ),
@@ -211,20 +216,22 @@ class _DeliverySchedule extends StatelessWidget {
         ScheduleGenerator().getSelectableDates(operatingHours);
 
     // copied from product_schedule (hey, it's repeated code -.-)
-    return Consumer<ShoppingCart>(builder: (_, cart, __) {
-      final delivery = cart.orders[shopId]![productId]!.schedule;
-      return CalendarCarousel(
-        onDayPressed: (date) {
-          final now = DateTime.now().subtract(Duration(days: 1));
-          if (date.isBefore(now)) return;
-          cart.updateOrder(productId: productId, schedule: date);
-        },
-        selectedDateTime: delivery,
-        markedDatesMap: [delivery],
-        height: 425.0.h,
-        width: MediaQuery.of(context).size.width * 0.9,
-        selectableDates: selectableDates,
-      );
-    });
+    return Consumer<ShoppingCart>(
+      builder: (_, cart, __) {
+        final delivery = cart.orders[shopId]![productId]!.schedule;
+        return CalendarCarousel(
+          onDayPressed: (date) {
+            final now = DateTime.now().subtract(const Duration(days: 1));
+            if (date.isBefore(now)) return;
+            cart.updateOrder(productId: productId, schedule: date);
+          },
+          selectedDateTime: delivery,
+          markedDatesMap: [delivery],
+          height: 425.0.h,
+          width: MediaQuery.of(context).size.width * 0.9,
+          selectableDates: selectableDates,
+        );
+      },
+    );
   }
 }

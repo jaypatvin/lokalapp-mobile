@@ -114,11 +114,11 @@ class OperatingHours {
   }
 
   factory OperatingHours.fromMap(Map<String, dynamic> map) {
-    var _customDates = <CustomDates>[];
-    var _unavailableDates = <String>[];
+    final _customDates = <CustomDates>[];
+    final _unavailableDates = <String>[];
 
     if (map['schedule'] != null && map['schedule']['custom'] != null) {
-      Map<String, dynamic> schedule = map['schedule']['custom'];
+      final Map<String, dynamic> schedule = map['schedule']['custom'];
       schedule.forEach((key, value) {
         if (value['unavailable'] != null && value['unavailable']) {
           _unavailableDates.add(key);

@@ -30,19 +30,19 @@ class PaymentOptionsWidget extends StatelessWidget {
         children: [
           ListTile(
             enabled: cashEnabled,
-            tileColor: this.tileColor,
+            tileColor: tileColor,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(30.0),
             ),
             leading: CircleAvatar(
               backgroundColor: Colors.white,
               child: SvgPicture.asset(
-                "assets/payment/cash.svg",
+                'assets/payment/cash.svg',
                 fit: BoxFit.cover,
               ),
             ),
             title: Text(
-              "Cash On Delivery",
+              'Cash On Delivery',
               style: Theme.of(context).textTheme.headline6!.copyWith(
                     fontWeight: FontWeight.w600,
                   ),
@@ -52,24 +52,24 @@ class PaymentOptionsWidget extends StatelessWidget {
               color: kTealColor,
               size: 18.0.r,
             ),
-            onTap: () => this.onPaymentPressed(PaymentMode.cash),
+            onTap: () => onPaymentPressed(PaymentMode.cash),
           ),
           const SizedBox(height: 10),
           ListTile(
             enabled: bankEnabled,
-            tileColor: bankEnabled ? this.tileColor : Colors.grey.shade200,
+            tileColor: bankEnabled ? tileColor : Colors.grey.shade200,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(30.0),
             ),
             leading: CircleAvatar(
               backgroundColor: Colors.white,
               child: SvgPicture.asset(
-                "assets/payment/bank.svg",
+                'assets/payment/bank.svg',
                 fit: BoxFit.cover,
               ),
             ),
             title: Text(
-              "Bank Transfer/Deposit",
+              'Bank Transfer/Deposit',
               style: Theme.of(context).textTheme.headline6!.copyWith(
                     fontWeight: FontWeight.w600,
                   ),
@@ -79,24 +79,23 @@ class PaymentOptionsWidget extends StatelessWidget {
               color: bankEnabled ? kTealColor : Colors.grey.shade200,
               size: 18.0.r,
             ),
-            onTap: () => this.onPaymentPressed(PaymentMode.bank),
+            onTap: () => onPaymentPressed(PaymentMode.bank),
           ),
           const SizedBox(height: 10),
           ListTile(
             enabled: walletEnabled,
-            tileColor: walletEnabled ? this.tileColor : Colors.grey.shade200,
+            tileColor: walletEnabled ? tileColor : Colors.grey.shade200,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(30.0),
             ),
             leading: CircleAvatar(
               backgroundColor: Colors.white,
               child: SvgPicture.asset(
-                "assets/payment/gcash.svg",
-                fit: BoxFit.contain,
+                'assets/payment/gcash.svg',
               ),
             ),
             title: Text(
-              "Gcash",
+              'Gcash',
               style: Theme.of(context).textTheme.headline6!.copyWith(
                     fontWeight: FontWeight.w600,
                   ),
@@ -106,7 +105,7 @@ class PaymentOptionsWidget extends StatelessWidget {
               color: walletEnabled ? kTealColor : Colors.grey.shade200,
               size: 18.0.r,
             ),
-            onTap: () => this.onPaymentPressed(PaymentMode.gCash),
+            onTap: () => onPaymentPressed(PaymentMode.gCash),
           ),
         ],
       ),

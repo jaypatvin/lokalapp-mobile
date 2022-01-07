@@ -56,10 +56,10 @@ class _OnboardingState extends State<Onboarding> with AfterLayoutMixin {
   bool _displayOnboarding = false;
 
   @override
-  void afterFirstLayout(BuildContext context) async {
+  Future<void> afterFirstLayout(BuildContext context) async {
     final _prefs = context.read<UserSharedPreferences>();
     if (!_prefs.getOnboardingStatus(widget.screen)) {
-      if (this.mounted) setState(() => _displayOnboarding = true);
+      if (mounted) setState(() => _displayOnboarding = true);
     }
   }
 
@@ -81,7 +81,6 @@ class _OnboardingState extends State<Onboarding> with AfterLayoutMixin {
                 children: [
                   SvgPicture.asset(
                     _onboardDetails[widget.screen]!['icon']!,
-                    fit: BoxFit.contain,
                     color: kPinkColor,
                     height: 75.0.h,
                   ),
@@ -106,7 +105,7 @@ class _OnboardingState extends State<Onboarding> with AfterLayoutMixin {
           SizedBox(
             width: MediaQuery.of(context).size.width * 0.5,
             child: AppButton(
-                _onboardDetails[widget.screen]!['label']!, kTealColor, true,
+                _onboardDetails[widget.screen]!['label'], kTealColor, true,
                 //() => Navigator.pop(ctx),
                 () async {
               setState(() {

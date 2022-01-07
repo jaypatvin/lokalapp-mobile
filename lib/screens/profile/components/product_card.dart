@@ -38,22 +38,26 @@ class _ProductCardView extends HookView<ProductCardViewModel> {
     final _cart =
         useMemoized<ShoppingCart>(() => context.read<ShoppingCart>(), []);
 
-    useEffect(() {
-      final void Function() _borderListener = () {
-        vm.updateDisplayBorder(
-          context.read<ShoppingCart>().contains(vm.productId),
-        );
-      };
-      _products.addListener(vm.onProductsUpdate);
-      _shops.addListener(vm.onProductsUpdate);
-      _cart.addListener(_borderListener);
+    useEffect(
+      () {
+        void _borderListener() {
+          vm.updateDisplayBorder(
+            displayBorder: context.read<ShoppingCart>().contains(vm.productId),
+          );
+        }
 
-      return () {
-        _products.removeListener(vm.onProductsUpdate);
-        _shops.removeListener(vm.onProductsUpdate);
-        _cart.removeListener(_borderListener);
-      };
-    }, [vm]);
+        _products.addListener(vm.onProductsUpdate);
+        _shops.addListener(vm.onProductsUpdate);
+        _cart.addListener(_borderListener);
+
+        return () {
+          _products.removeListener(vm.onProductsUpdate);
+          _shops.removeListener(vm.onProductsUpdate);
+          _cart.removeListener(_borderListener);
+        };
+      },
+      [vm],
+    );
 
     return Container(
       decoration: BoxDecoration(
@@ -62,20 +66,13 @@ class _ProductCardView extends HookView<ProductCardViewModel> {
             : Border.all(color: Colors.grey.shade300),
       ),
       child: GridTile(
-        child: Image.network(
-          vm.productImage ?? '',
-          fit: BoxFit.cover,
-          errorBuilder: (ctx, _, __) => SizedBox(
-            child: Text('No Image'),
-          ),
-        ),
         footer: Container(
           margin: EdgeInsets.zero,
           padding: EdgeInsets.symmetric(
             horizontal: 5.0.w,
             vertical: 2.0.h,
           ),
-          constraints: BoxConstraints(),
+          constraints: const BoxConstraints(),
           color: Colors.white,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -139,12 +136,10 @@ class _ProductCardView extends HookView<ProductCardViewModel> {
                   SizedBox(width: 5.0.w),
                   Row(
                     children: [
-                      Container(
-                        child: Icon(
-                          Icons.star,
-                          color: Colors.amber,
-                          size: 9.0.r,
-                        ),
+                      Icon(
+                        Icons.star,
+                        color: Colors.amber,
+                        size: 9.0.r,
                       ),
                       Text(
                         vm.productRating,
@@ -158,6 +153,13 @@ class _ProductCardView extends HookView<ProductCardViewModel> {
                 ],
               ),
             ],
+          ),
+        ),
+        child: Image.network(
+          vm.productImage ?? '',
+          fit: BoxFit.cover,
+          errorBuilder: (ctx, _, __) => const SizedBox(
+            child: Text('No Image'),
           ),
         ),
       ),

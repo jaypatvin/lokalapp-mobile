@@ -1,5 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:validators/validators.dart';
 
@@ -30,7 +29,7 @@ class InviteAFriendViewModel extends ViewModel {
     _emailAddress = '';
     _phoneNumber = '';
 
-    _inviteApiService = InviteAPIService(this._api);
+    _inviteApiService = InviteAPIService(_api);
   }
 
   void onEmailChanged(String value) {
@@ -46,13 +45,13 @@ class InviteAFriendViewModel extends ViewModel {
 
   Future<void> sendInviteCode() async {
     try {
-      if (_emailAddress.isEmpty && _phoneNumber.isEmpty)
-        // throw ('Email Address or Phone Number should not be empty.');
+      if (_emailAddress.isEmpty && _phoneNumber.isEmpty) {
         throw FailureException('Email Address should not be empty!');
+      }
 
       if (!isEmail(_emailAddress)) {
         _emailErrorText = 'Enter a valid email.';
-        print(_emailErrorText);
+        debugPrint(_emailErrorText);
         notifyListeners();
         return;
       }
@@ -68,7 +67,7 @@ class InviteAFriendViewModel extends ViewModel {
       } else if (_phoneNumber.isNotEmpty) {
         throw UnimplementedError('Phone number is not yet supported');
       }
-      if (invite.code == null) throw ('No Invite code Provided');
+      if (invite.code == null) throw 'No Invite code Provided';
 
       Navigator.of(context).pushReplacement(
         CupertinoPageRoute(builder: (_) => InviteSent(invite)),

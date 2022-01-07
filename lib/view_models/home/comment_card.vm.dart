@@ -37,7 +37,7 @@ class CommentCardViewModel extends ViewModel {
     notifyListeners();
   }
 
-  Future<void> refresh() async => await _setup();
+  Future<void> refresh() async => _setup();
 
   void onLongPress(Widget child) {
     showModalBottomSheet(
@@ -71,7 +71,7 @@ class CommentCardViewModel extends ViewModel {
             );
         isLiked = false;
         notifyListeners();
-        debugPrint("Unliked comment ${comment.id}");
+        debugPrint('Unliked comment ${comment.id}');
       } else {
         context.read<Activities>().likeComment(
               activityId: activityId,
@@ -80,7 +80,7 @@ class CommentCardViewModel extends ViewModel {
             );
         isLiked = true;
         notifyListeners();
-        debugPrint("Liked comment ${comment.id}");
+        debugPrint('Liked comment ${comment.id}');
       }
     } catch (e) {
       isLiked = !isLiked;

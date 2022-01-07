@@ -37,10 +37,10 @@ class SubscriptionDetailsViewModel extends ViewModel {
       repeatType: subscriptionPlan.plan.repeatType,
       repeatUnit: subscriptionPlan.plan.repeatUnit,
       startDates: subscriptionPlan.plan.startDates
-          .map<String>((date) => DateFormat("yyyy-MM-dd").format(date))
+          .map<String>((date) => DateFormat('yyyy-MM-dd').format(date))
           .toList(),
       unavailableDates: subscriptionPlan.plan.unavailableDates
-          .map<String>((date) => DateFormat("yyyy-MM-dd").format(date))
+          .map<String>((date) => DateFormat('yyyy-MM-dd').format(date))
           .toList(),
       customDates: [],
       startTime: shop.operatingHours!.startTime,
@@ -68,13 +68,14 @@ class SubscriptionDetailsViewModel extends ViewModel {
         .toList()
       ..sort();
 
-    subscriptionPlan.plan.overrideDates.forEach((overrideDate) {
+    for (final overrideDate in subscriptionPlan.plan.overrideDates) {
       final index = markedDates.indexWhere(
-          (date) => date.compareTo(overrideDate.originalDate!) == 0);
+        (date) => date.compareTo(overrideDate.originalDate!) == 0,
+      );
       if (index > -1) {
         markedDates[index] = overrideDate.newDate;
       }
-    });
+    }
 
     return !subscriptionPlan.plan.autoReschedule! &&
         markedDates
@@ -93,20 +94,20 @@ class SubscriptionDetailsViewModel extends ViewModel {
   }
 
   void onMessageSend() {
-    context
-      ..read<AppRouter>().navigateTo(
-        AppRoute.chat,
-        ChatView.routeName,
-        arguments: ChatViewProps(
-          true,
-          members: [
-            subscriptionPlan.buyerId!,
-            subscriptionPlan.shopId!,
-          ],
-          shopId: subscriptionPlan.shopId,
-        ),
-      );
+    context.read<AppRouter>().navigateTo(
+          AppRoute.chat,
+          ChatView.routeName,
+          arguments: ChatViewProps(
+            members: [
+              subscriptionPlan.buyerId!,
+              subscriptionPlan.shopId!,
+            ],
+            shopId: subscriptionPlan.shopId,
+          ),
+        );
   }
 
+  // TODO: add unsubscribe
+  // ignore: avoid_returning_null_for_void
   void onUnsubscribe() => null;
 }

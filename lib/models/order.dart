@@ -127,10 +127,10 @@ class ProductOrder {
   }) {
     return ProductOrder(
       instruction: instruction ?? this.instruction,
-      description: productDescription ?? this.description,
-      id: productId ?? this.id,
-      name: productName ?? this.name,
-      price: productPrice ?? this.price,
+      description: productDescription ?? description,
+      id: productId ?? id,
+      name: productName ?? name,
+      price: productPrice ?? price,
       quantity: quantity ?? this.quantity,
     );
   }
@@ -315,7 +315,8 @@ class Order {
       isPaid: map['is_paid'],
       productIds: List<String>.from(map['product_ids']),
       products: List<ProductOrder>.from(
-          map['products']?.map((x) => ProductOrder.fromMap(x))),
+        map['products']?.map((x) => ProductOrder.fromMap(x)),
+      ),
       sellerId: map['seller_id'],
       shopDescription: map['shop_description'],
       shopId: map['shop_id'],

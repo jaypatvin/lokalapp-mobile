@@ -25,31 +25,36 @@ class Root extends StatefulWidget {
 
 class _RootState extends State<Root> {
   @override
-  initState() {
+  void initState() {
     super.initState();
     _onStartUp();
   }
 
-  void _onStartUp() async {
+  Future<void> _onStartUp() async {
     final auth = context.read<Auth>();
 
     try {
       await auth.onStartUp();
       if (auth.user == null) throw 'user-not-registered';
-      context.read<Shops>().fetch();
-      context.read<Products>().fetch();
-      context.read<Categories>().fetch();
-      context.read<BankCodes>().fetch();
+
+      if (!mounted) return;
+      context
+        ..read<Shops>().fetch()
+        ..read<Products>().fetch()
+        ..read<Categories>().fetch()
+        ..read<BankCodes>().fetch();
       await context.read<Users>().fetch();
+      if (!mounted) return;
       Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute(
           builder: (_) => BottomNavigation(),
-          settings: RouteSettings(name: BottomNavigation.routeName),
+          settings: const RouteSettings(name: BottomNavigation.routeName),
         ),
         (route) => false,
       );
     } catch (e) {
       await auth.logOut();
+      if (!mounted) return;
       Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute(
           builder: (_) => WelcomeScreen(),
@@ -68,7 +73,6 @@ class _RootState extends State<Root> {
       child: Center(
         child: SvgPicture.asset(
           kSvgLokalLogo,
-          fit: BoxFit.contain,
         ),
       ),
     );

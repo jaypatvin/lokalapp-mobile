@@ -22,50 +22,44 @@ class Status300Buttons extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (this.isBuyer) {
-      return Container(
-        child: Column(
-          children: [
-            if (order.proofOfPayment?.isNotEmpty ?? false)
-              Container(
-                width: double.infinity,
-                child: ViewPaymentButton(onPress: this.onPress),
-              ),
-            Container(
+    if (isBuyer) {
+      return Column(
+        children: [
+          if (order.proofOfPayment?.isNotEmpty ?? false)
+            SizedBox(
               width: double.infinity,
-              child: MessageSellerButton(order: this.order),
+              child: ViewPaymentButton(onPress: onPress),
             ),
-          ],
-        ),
+          SizedBox(
+            width: double.infinity,
+            child: MessageSellerButton(order: order),
+          ),
+        ],
       );
     }
 
-    return Container(
-      child: Column(
-        children: [
-          if (order.proofOfPayment?.isNotEmpty ?? false)
-            Container(
-              child: ViewPaymentButton(onPress: this.onPress),
+    return Column(
+      children: [
+        if (order.proofOfPayment?.isNotEmpty ?? false)
+          ViewPaymentButton(onPress: onPress),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Expanded(
+              child: MessageBuyerButton(order: order),
             ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Expanded(
-                child: MessageBuyerButton(order: this.order),
+            SizedBox(width: MediaQuery.of(context).size.width * 0.01),
+            Expanded(
+              child: AppButton(
+                'Confirm Payment',
+                kOrangeColor,
+                true,
+                () => onPress(OrderAction.confirmPayment),
               ),
-              SizedBox(width: MediaQuery.of(context).size.width * 0.01),
-              Expanded(
-                child: AppButton(
-                  "Confirm Payment",
-                  kOrangeColor,
-                  true,
-                  () => this.onPress(OrderAction.confirmPayment),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
+            ),
+          ],
+        ),
+      ],
     );
   }
 }

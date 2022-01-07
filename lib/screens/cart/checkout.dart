@@ -28,28 +28,27 @@ class Checkout extends StatelessWidget {
     final shop = context.read<Shops>().findById(product!.shopId)!;
     return Scaffold(
       appBar: CustomAppBar(
-        titleText: "Checkout",
+        titleText: 'Checkout',
         backgroundColor: kTealColor,
-        titleStyle: TextStyle(color: Colors.white),
-        leadingColor: Colors.white,
+        titleStyle: const TextStyle(color: Colors.white),
         onPressedLeading: () => Navigator.pop(context),
       ),
       body: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            SizedBox(height: 24.0),
+            const SizedBox(height: 24.0),
             Text(
               shop.name!,
-              style: TextStyle(
+              style: const TextStyle(
                 color: kNavyColor,
-                fontFamily: "Goldplay",
+                fontFamily: 'Goldplay',
                 fontWeight: FontWeight.w800,
                 fontSize: 24.0,
               ),
             ),
             Container(
-              margin: EdgeInsets.all(16.0),
+              margin: const EdgeInsets.all(16.0),
               child: Consumer<ShoppingCart>(
                 builder: (_, cart, __) {
                   final order = cart.orders[shop.id]![productId]!;
@@ -65,12 +64,11 @@ class Checkout extends StatelessWidget {
                         product: product,
                         quantity: order.quantity,
                         onEditTap: () {
-                          context.read<AppRouter>()
-                            ..navigateTo(
-                              AppRoute.discover,
-                              ProductDetail.routeName,
-                              arguments: ProductDetailProps(product),
-                            );
+                          context.read<AppRouter>().navigateTo(
+                                AppRoute.discover,
+                                ProductDetail.routeName,
+                                arguments: ProductDetailProps(product),
+                              );
                         },
                       ),
                     ),
@@ -78,17 +76,17 @@ class Checkout extends StatelessWidget {
                 },
               ),
             ),
-            Divider(),
-            SizedBox(height: 16.0),
+            const Divider(),
+            const SizedBox(height: 16.0),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Row(
-                children: [
+                children: const [
                   Text(
-                    "Delivery Option",
+                    'Delivery Option',
                     style: TextStyle(
                       fontWeight: FontWeight.w800,
-                      fontFamily: "Goldplay",
+                      fontFamily: 'Goldplay',
                       fontSize: 28,
                     ),
                   ),
@@ -96,9 +94,9 @@ class Checkout extends StatelessWidget {
                     width: 10,
                   ),
                   Text(
-                    "Pick 1",
+                    'Pick 1',
                     style: TextStyle(
-                      fontFamily: "Goldplay",
+                      fontFamily: 'Goldplay',
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
                     ),
@@ -119,7 +117,7 @@ class Checkout extends StatelessWidget {
                         deliveryOption: value,
                       ),
                       selected: DeliveryOption.pickup == order.deliveryOption,
-                      title: Text("Customer Pick-up"),
+                      title: const Text('Customer Pick-up'),
                     ),
                     RadioListTile<DeliveryOption>(
                       value: DeliveryOption.delivery,
@@ -129,7 +127,7 @@ class Checkout extends StatelessWidget {
                         deliveryOption: value,
                       ),
                       selected: DeliveryOption.delivery == order.deliveryOption,
-                      title: Text("Delivery"),
+                      title: const Text('Delivery'),
                     ),
                   ],
                 );
@@ -142,32 +140,31 @@ class Checkout extends StatelessWidget {
                 children: [
                   Expanded(
                     child: AppButton(
-                      "Cancel",
+                      'Cancel',
                       kPinkColor,
                       false,
                       () => Navigator.pop(context),
                     ),
                   ),
-                  SizedBox(width: 8.0),
+                  const SizedBox(width: 8.0),
                   Expanded(
                     child: AppButton(
-                      "Continue",
+                      'Continue',
                       kTealColor,
                       true,
                       () {
-                        context.read<AppRouter>()
-                          ..navigateTo(
-                            AppRoute.discover,
-                            CheckoutSchedule.routeName,
-                            arguments: CheckoutScheduleProps(productId),
-                          );
+                        context.read<AppRouter>().navigateTo(
+                              AppRoute.discover,
+                              CheckoutSchedule.routeName,
+                              arguments: CheckoutScheduleProps(productId),
+                            );
                       },
                     ),
                   )
                 ],
               ),
             ),
-            SizedBox(height: 24.0)
+            const SizedBox(height: 24.0)
           ],
         ),
       ),

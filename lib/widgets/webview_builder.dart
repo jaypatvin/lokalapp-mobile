@@ -36,7 +36,7 @@ class _WebViewPageState extends State<WebViewPage> {
       appBar: CustomAppBar(
         backgroundColor: kTealColor,
         titleText: widget.title,
-        titleStyle: TextStyle(color: Colors.white),
+        titleStyle: const TextStyle(color: Colors.white),
         onPressedLeading: () => Navigator.pop(context),
       ),
       body: Builder(

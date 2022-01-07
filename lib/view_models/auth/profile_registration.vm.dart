@@ -38,26 +38,28 @@ class ProfileRegistrationViewModel extends ViewModel {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   void onFirstNameChanged(String firstName) {
-    this._firstName = firstName;
+    _firstName = firstName;
     notifyListeners();
   }
 
   void onLastNameChanged(String lastName) {
-    this._lastName = lastName;
+    _lastName = lastName;
     notifyListeners();
   }
 
   void onStreetNameChanged(String streetName) {
-    this._streetName = streetName;
+    _streetName = streetName;
     notifyListeners();
   }
 
   Future<bool> _registerUser() async {
     final _imageService = context.read<LocalImageService>();
-    String mediaUrl = "";
+    String mediaUrl = '';
     if (profilePhoto != null) {
       mediaUrl = await _imageService.uploadImage(
-          file: profilePhoto!, name: 'profile_photo');
+        file: profilePhoto!,
+        name: 'profile_photo',
+      );
     }
 
     final auth = context.read<Auth>();
@@ -95,7 +97,7 @@ class ProfileRegistrationViewModel extends ViewModel {
       notifyListeners();
       return;
     }
-    bool success = await _registerUser();
+    final bool success = await _registerUser();
     if (success) {
       await context.read<Shops>().fetch();
       await context.read<Products>().fetch();
@@ -104,14 +106,14 @@ class ProfileRegistrationViewModel extends ViewModel {
       await context.read<BankCodes>().fetch();
       AppRouter.rootNavigatorKey.currentState?.pushAndRemoveUntil(
         CupertinoPageRoute(
-          builder: (context) => VerifyScreen(),
+          builder: (context) => const VerifyScreen(),
         ),
         (route) => false,
       );
     }
   }
 
-  void picturePickerHandler() async {
+  Future<void> picturePickerHandler() async {
     _profilePhoto = await context.read<MediaUtility>().showMediaDialog(context);
     notifyListeners();
   }

@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
@@ -65,7 +64,7 @@ class EditShopViewModel extends ViewModel {
   @override
   void onBuild() {
     super.onBuild();
-    print('onBuild called');
+    debugPrint('onBuild called');
   }
 
   void toggleButton() {
@@ -74,13 +73,13 @@ class EditShopViewModel extends ViewModel {
     context.read<ShopBody>().update(status: status);
   }
 
-  void onShopPhotoPick() async {
+  Future<void> onShopPhotoPick() async {
     final photo = await context.read<MediaUtility>().showMediaDialog(context);
     _shopPhoto = photo;
     notifyListeners();
   }
 
-  void onCoverPhotoPick() async {
+  Future<void> onCoverPhotoPick() async {
     final photo = await context.read<MediaUtility>().showMediaDialog(context);
     _shopCoverPhoto = photo;
     notifyListeners();
@@ -88,7 +87,7 @@ class EditShopViewModel extends ViewModel {
 
   Future<bool> updateShopSchedule() async {
     final operatingHoursBody = context.read<OperatingHoursBody>();
-    return await context
+    return context
         .read<Shops>()
         .setOperatingHours(id: shop.id!, data: operatingHoursBody.data);
   }
@@ -109,25 +108,23 @@ class EditShopViewModel extends ViewModel {
   }
 
   void onChangeShopSchedule() {
-    context
-        .read<AppRouter>()
-        .keyOf(AppRoute.profile)
-        .currentState
-        ?.push(CupertinoPageRoute(
-          builder: (_) => ShopSchedule(
-            shopPhoto: shopPhoto,
-            forEditing: true,
-            onShopEdit: () {
-              _editedShopSchedule = true;
-              Navigator.popUntil(
-                context,
-                ModalRoute.withName(
-                  EditShop.routeName,
-                ),
-              );
-            },
+    context.read<AppRouter>().keyOf(AppRoute.profile).currentState?.push(
+          CupertinoPageRoute(
+            builder: (_) => ShopSchedule(
+              shopPhoto: shopPhoto,
+              forEditing: true,
+              onShopEdit: () {
+                _editedShopSchedule = true;
+                Navigator.popUntil(
+                  context,
+                  ModalRoute.withName(
+                    EditShop.routeName,
+                  ),
+                );
+              },
+            ),
           ),
-        ));
+        );
   }
 
   void onEditPaymentOptions() {
@@ -149,7 +146,7 @@ class EditShopViewModel extends ViewModel {
       try {
         shopPhotoUrl = await imageService.uploadImage(
           file: shopPhoto!,
-          name: "shop-photo",
+          name: 'shop-photo',
         );
       } catch (e) {
         shopPhotoUrl = shopBody.profilePhoto;
@@ -161,7 +158,7 @@ class EditShopViewModel extends ViewModel {
       try {
         shopCoverPhotoUrl = await imageService.uploadImage(
           file: shopCoverPhoto!,
-          name: "shop-cover-photo",
+          name: 'shop-cover-photo',
         );
       } catch (e) {
         shopCoverPhotoUrl = shopBody.coverPhoto;
@@ -173,18 +170,16 @@ class EditShopViewModel extends ViewModel {
       description: shopDescription,
       profilePhoto: shopPhotoUrl,
       coverPhoto: shopCoverPhotoUrl,
-      status: isShopOpen ? "enabled" : "disabled",
+      status: isShopOpen ? 'enabled' : 'disabled',
     );
 
-    return await context
-        .read<Shops>()
-        .update(id: shop.id!, data: shopBody.toMap());
+    return context.read<Shops>().update(id: shop.id!, data: shopBody.toMap());
   }
 
   Future<bool> _updateShopSchedule() async {
     final operatingHoursBody =
         Provider.of<OperatingHoursBody>(context, listen: false);
-    return await context
+    return context
         .read<Shops>()
         .setOperatingHours(id: shop.id!, data: operatingHoursBody.data);
   }
@@ -197,11 +192,11 @@ class EditShopViewModel extends ViewModel {
       }
 
       bool success = await _updateShop();
-      if (!success) throw "Update shop error";
+      if (!success) throw 'Update shop error';
 
       if (_editedShopSchedule) {
         success = await _updateShopSchedule();
-        if (!success) throw "Update operating hours error";
+        if (!success) throw 'Update operating hours error';
       }
     } catch (e) {
       showToast(e.toString());

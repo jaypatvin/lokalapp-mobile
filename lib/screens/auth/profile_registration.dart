@@ -40,15 +40,17 @@ class _ProfileRegistrationView extends HookView<ProfileRegistrationViewModel>
 
     useEffect(
       () {
-        final void Function() _firstNameListener = () {
+        void _firstNameListener() {
           vm.onFirstNameChanged(_firstNameController.text);
-        };
-        final void Function() _lastNameListener = () {
+        }
+
+        void _lastNameListener() {
           vm.onLastNameChanged(_lastNameController.text);
-        };
-        final void Function() _streetNameListener = () {
+        }
+
+        void _streetNameListener() {
           vm.onStreetNameChanged(_streetNameController.text);
-        };
+        }
 
         _firstNameController.addListener(_firstNameListener);
         _lastNameController.addListener(_lastNameListener);
@@ -64,9 +66,7 @@ class _ProfileRegistrationView extends HookView<ProfileRegistrationViewModel>
 
     final _kbConfig = useMemoized<KeyboardActionsConfig>(() {
       return KeyboardActionsConfig(
-        keyboardActionsPlatform: KeyboardActionsPlatform.ALL,
         keyboardBarColor: Colors.grey.shade200,
-        nextFocus: true,
         actions: [
           KeyboardActionsItem(
             focusNode: _firstNameFocusNode,
@@ -75,7 +75,7 @@ class _ProfileRegistrationView extends HookView<ProfileRegistrationViewModel>
                 return TextButton(
                   onPressed: () => node.unfocus(),
                   child: Text(
-                    "Done",
+                    'Done',
                     style: Theme.of(context).textTheme.bodyText1!.copyWith(
                           color: Colors.black,
                         ),
@@ -91,7 +91,7 @@ class _ProfileRegistrationView extends HookView<ProfileRegistrationViewModel>
                 return TextButton(
                   onPressed: () => node.unfocus(),
                   child: Text(
-                    "Done",
+                    'Done',
                     style: Theme.of(context).textTheme.bodyText1!.copyWith(
                           color: Colors.black,
                         ),
@@ -107,7 +107,7 @@ class _ProfileRegistrationView extends HookView<ProfileRegistrationViewModel>
                 return TextButton(
                   onPressed: () => node.unfocus(),
                   child: Text(
-                    "Done",
+                    'Done',
                     style: Theme.of(context).textTheme.bodyText1!.copyWith(
                           color: Colors.black,
                         ),
@@ -172,24 +172,24 @@ class _ProfileRegistrationView extends HookView<ProfileRegistrationViewModel>
                 lastNameNode: _lastNameFocusNode,
                 streetAddressController: _streetNameController,
                 streetAdddressNode: _streetNameFocusNode,
-                onFormSubmit: () async => await performFuture<void>(
-                  () async => await vm.registerHandler(),
+                onFormSubmit: () async => performFuture<void>(
+                  () async => vm.registerHandler(),
                 ),
                 formFieldDecoration: InputDecoration(
                   filled: true,
                   fillColor: Colors.white,
                   alignLabelWithHint: true,
                   contentPadding: EdgeInsets.symmetric(horizontal: 16.0.w),
-                  border: new OutlineInputBorder(
+                  border: OutlineInputBorder(
                     borderRadius: BorderRadius.all(Radius.circular(30.0.r)),
                     borderSide: vm.hasEmptyField
-                        ? BorderSide(color: kPinkColor)
+                        ? const BorderSide(color: kPinkColor)
                         : BorderSide.none,
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.all(Radius.circular(30.0.r)),
                     borderSide: vm.hasEmptyField
-                        ? BorderSide(color: kPinkColor)
+                        ? const BorderSide(color: kPinkColor)
                         : BorderSide.none,
                   ),
                 ),
@@ -202,10 +202,10 @@ class _ProfileRegistrationView extends HookView<ProfileRegistrationViewModel>
                 'CREATE PROFILE',
                 kTealColor,
                 true,
-                () async => await performFuture<void>(
-                  () async => await vm.registerHandler(),
+                () async => performFuture<void>(
+                  () async => vm.registerHandler(),
                 ),
-                textStyle: TextStyle(color: kNavyColor),
+                textStyle: const TextStyle(color: kNavyColor),
               ),
             ),
           ],
@@ -243,7 +243,7 @@ class _RegistrationForm extends StatelessWidget {
 
   final _checkBoxTextStyle = TextStyle(
     color: Colors.black,
-    fontFamily: "Goldplay",
+    fontFamily: 'Goldplay',
     fontWeight: FontWeight.w600,
     fontSize: 13.0.sp,
   );
@@ -266,7 +266,7 @@ class _RegistrationForm extends StatelessWidget {
                 fontWeight: FontWeight.w500,
                 fontSize: 16.0.sp,
               ),
-              decoration: formFieldDecoration!.copyWith(hintText: "First Name"),
+              decoration: formFieldDecoration!.copyWith(hintText: 'First Name'),
             ),
           ),
           SizedBox(height: 15.0.h),
@@ -280,29 +280,29 @@ class _RegistrationForm extends StatelessWidget {
                 fontWeight: FontWeight.w500,
                 fontSize: 16.0.sp,
               ),
-              decoration: formFieldDecoration!.copyWith(hintText: "Last Name"),
+              decoration: formFieldDecoration!.copyWith(hintText: 'Last Name'),
             ),
           ),
           SizedBox(height: 15.0.h),
           CheckboxFormField(
             validator: (checked) => checked!
                 ? null
-                : "You must accept the Terms & Conditions and Privacy Policy",
+                : 'You must accept the Terms & Conditions and Privacy Policy',
             title: RichText(
               text: TextSpan(
                 children: [
-                  TextSpan(text: "I have read the "),
+                  const TextSpan(text: 'I have read the '),
                   TextSpan(
-                    text: "Terms & Conditions",
+                    text: 'Terms & Conditions',
                     style: _checkBoxTextStyle.copyWith(
                       color: kTealColor,
                       decoration: TextDecoration.underline,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  TextSpan(text: " and "),
+                  const TextSpan(text: ' and '),
                   TextSpan(
-                    text: "Privacy Policy",
+                    text: 'Privacy Policy',
                     style: _checkBoxTextStyle.copyWith(
                       color: kTealColor,
                       decoration: TextDecoration.underline,
@@ -329,7 +329,7 @@ class _RegistrationForm extends StatelessWidget {
                 fontSize: 16.0.sp,
               ),
               decoration:
-                  formFieldDecoration!.copyWith(hintText: "Street Address"),
+                  formFieldDecoration!.copyWith(hintText: 'Street Address'),
             ),
           ),
         ],

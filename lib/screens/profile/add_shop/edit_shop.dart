@@ -44,7 +44,7 @@ class _EditShopView extends HookView<EditShopViewModel>
       : super(key: key, reactive: reactive);
 
   @override
-  Widget screen(context, vm) {
+  Widget screen(BuildContext context, EditShopViewModel vm) {
     final width = MediaQuery.of(context).size.width;
     final height = MediaQuery.of(context).size.height;
     final padding = height * 0.05;
@@ -57,33 +57,33 @@ class _EditShopView extends HookView<EditShopViewModel>
     final _shopNameController = useTextEditingController();
     final _shopDescController = useTextEditingController();
 
-    useEffect(() {
-      _shopNameController.text = vm.shopName;
-      _shopDescController.text = vm.shopDescription;
+    useEffect(
+      () {
+        _shopNameController.text = vm.shopName;
+        _shopDescController.text = vm.shopDescription;
 
-      final void Function() _nameListener =
-          () => vm.onShopNameChanged(_shopNameController.text);
+        void _nameListener() => vm.onShopNameChanged(_shopNameController.text);
 
-      final void Function() _descriptionListener =
-          () => vm.onShopDescriptionChange(_shopDescController.text);
+        void _descriptionListener() =>
+            vm.onShopDescriptionChange(_shopDescController.text);
 
-      _shopNameController.addListener(_nameListener);
-      _shopDescController.addListener(_descriptionListener);
+        _shopNameController.addListener(_nameListener);
+        _shopDescController.addListener(_descriptionListener);
 
-      return () {
-        _shopNameController.removeListener(_nameListener);
-        _shopDescController.removeListener(_descriptionListener);
-      };
-    }, []);
+        return () {
+          _shopNameController.removeListener(_nameListener);
+          _shopDescController.removeListener(_descriptionListener);
+        };
+      },
+      [],
+    );
 
     final _nameNode = useFocusNode();
     final _descriptionNode = useFocusNode();
 
     final _kbActionsRef = useRef(
       KeyboardActionsConfig(
-        keyboardActionsPlatform: KeyboardActionsPlatform.ALL,
         keyboardBarColor: Colors.grey.shade200,
-        nextFocus: true,
         actions: [
           KeyboardActionsItem(
             focusNode: _nameNode,
@@ -92,7 +92,7 @@ class _EditShopView extends HookView<EditShopViewModel>
                 return TextButton(
                   onPressed: () => node.unfocus(),
                   child: Text(
-                    "Done",
+                    'Done',
                     style: Theme.of(context)
                         .textTheme
                         .bodyText1!
@@ -109,7 +109,7 @@ class _EditShopView extends HookView<EditShopViewModel>
                 return TextButton(
                   onPressed: () => node.unfocus(),
                   child: Text(
-                    "Done",
+                    'Done',
                     style: Theme.of(context)
                         .textTheme
                         .bodyText1!
@@ -125,7 +125,7 @@ class _EditShopView extends HookView<EditShopViewModel>
 
     return Scaffold(
       appBar: CustomAppBar(
-        titleText: "Edit Shop",
+        titleText: 'Edit Shop',
         onPressedLeading: () {
           Navigator.pop(context);
         },
@@ -138,12 +138,12 @@ class _EditShopView extends HookView<EditShopViewModel>
               horizontal: 20.0.w,
               vertical: 10.0.h,
             ),
-            color: Color(0XFFF1FAFF),
+            color: const Color(0XFFF1FAFF),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  "Shop Status",
+                  'Shop Status',
                   style: Theme.of(context).textTheme.subtitle1,
                 ),
                 InkWell(
@@ -152,7 +152,7 @@ class _EditShopView extends HookView<EditShopViewModel>
                     vm.toggleButton();
                   },
                   child: AnimatedContainer(
-                    duration: Duration(milliseconds: 1),
+                    duration: const Duration(milliseconds: 1),
                     height: buttonHeight,
                     width: buttonWidth,
                     decoration: BoxDecoration(
@@ -172,7 +172,7 @@ class _EditShopView extends HookView<EditShopViewModel>
                                   ? Alignment.centerLeft
                                   : Alignment.centerRight,
                               child: Text(
-                                vm.isShopOpen ? "Open" : "Closed",
+                                vm.isShopOpen ? 'Open' : 'Closed',
                                 style: Theme.of(context)
                                     .textTheme
                                     .subtitle1
@@ -184,7 +184,6 @@ class _EditShopView extends HookView<EditShopViewModel>
                         AnimatedPositioned(
                           onEnd: () => _isAnimating.value = false,
                           duration: const Duration(milliseconds: 300),
-                          curve: Curves.linear,
                           height: buttonHeight,
                           left: vm.isShopOpen ? buttonWidth * 0.6 : 0.0,
                           right: vm.isShopOpen ? 0.0 : buttonWidth * 0.6,
@@ -211,7 +210,7 @@ class _EditShopView extends HookView<EditShopViewModel>
                 children: [
                   const SizedBox(height: 10),
                   Text(
-                    "Basic Information",
+                    'Basic Information',
                     style: Theme.of(context).textTheme.headline5,
                   ),
                   SizedBox(
@@ -228,6 +227,7 @@ class _EditShopView extends HookView<EditShopViewModel>
                     height: height * 0.02,
                   ),
                   InkWell(
+                    onTap: vm.onCoverPhotoPick,
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -237,17 +237,15 @@ class _EditShopView extends HookView<EditShopViewModel>
                           color: kTealColor,
                         ),
                         Text(
-                          "Edit Cover Photo",
-                          style: Theme.of(context)
-                              .textTheme
-                              .subtitle1!
-                              .copyWith(
-                                  decoration: TextDecoration.underline,
-                                  color: kTealColor),
+                          'Edit Cover Photo',
+                          style:
+                              Theme.of(context).textTheme.subtitle1!.copyWith(
+                                    decoration: TextDecoration.underline,
+                                    color: kTealColor,
+                                  ),
                         ),
                       ],
                     ),
-                    onTap: vm.onCoverPhotoPick,
                   ),
                   SizedBox(
                     height: height * 0.02,
@@ -256,7 +254,7 @@ class _EditShopView extends HookView<EditShopViewModel>
                     padding: EdgeInsets.symmetric(horizontal: padding),
                     child: InputNameField(
                       controller: _shopNameController,
-                      hintText: "Shop Name",
+                      hintText: 'Shop Name',
                       errorText: vm.errorNameText,
                       focusNode: _nameNode,
                     ),
@@ -268,7 +266,7 @@ class _EditShopView extends HookView<EditShopViewModel>
                     padding: EdgeInsets.symmetric(horizontal: padding),
                     child: InputDescriptionField(
                       controller: _shopDescController,
-                      hintText: "Shop Description",
+                      hintText: 'Shop Description',
                       focusNode: _descriptionNode,
                     ),
                   ),
@@ -278,7 +276,7 @@ class _EditShopView extends HookView<EditShopViewModel>
                   SizedBox(
                     width: width * 0.8,
                     child: AppButton(
-                      "Change Shop Schedule",
+                      'Change Shop Schedule',
                       kTealColor,
                       false,
                       vm.onChangeShopSchedule,
@@ -287,7 +285,7 @@ class _EditShopView extends HookView<EditShopViewModel>
                   SizedBox(
                     width: width * 0.8,
                     child: AppButton(
-                      "Edit Payment Options",
+                      'Edit Payment Options',
                       kTealColor,
                       false,
                       vm.onEditPaymentOptions,
@@ -297,10 +295,10 @@ class _EditShopView extends HookView<EditShopViewModel>
                   SizedBox(
                     width: width * 0.6,
                     child: AppButton(
-                      "Apply Changes",
+                      'Apply Changes',
                       kTealColor,
                       true,
-                      () async => await performFuture<void>(vm.onApplyChanges),
+                      () async => performFuture<void>(vm.onApplyChanges),
                     ),
                   ),
                 ],
@@ -331,7 +329,7 @@ class _ShopPhotoSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
-    return Container(
+    return SizedBox(
       height: height * 0.25,
       child: Stack(
         children: [
@@ -347,20 +345,19 @@ class _ShopPhotoSection extends StatelessWidget {
           ),
           Center(
             child: GestureDetector(
-              onTap: this.onShopPhotoPick,
+              onTap: onShopPhotoPick,
               child: Stack(
                 children: [
                   PhotoBox(
-                    width: 140.0,
                     height: 140.0,
-                    file: this.shopPhoto,
+                    file: shopPhoto,
                     shape: BoxShape.circle,
                     url: shopPhotoUrl,
                   ),
                   Container(
                     width: 140.0,
                     height: 140.0,
-                    decoration: new BoxDecoration(
+                    decoration: BoxDecoration(
                       color: Colors.black.withOpacity(0.30),
                       shape: BoxShape.circle,
                     ),
@@ -374,13 +371,12 @@ class _ShopPhotoSection extends StatelessWidget {
                             color: Colors.white,
                           ),
                           Text(
-                            "Edit Photo",
-                            style: Theme.of(context)
-                                .textTheme
-                                .subtitle1!
-                                .copyWith(
-                                    decoration: TextDecoration.underline,
-                                    color: Colors.white),
+                            'Edit Photo',
+                            style:
+                                Theme.of(context).textTheme.subtitle1!.copyWith(
+                                      decoration: TextDecoration.underline,
+                                      color: Colors.white,
+                                    ),
                           ),
                         ],
                       ),

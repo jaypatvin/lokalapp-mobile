@@ -26,32 +26,32 @@ class InputEmailField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      focusNode: this.focusNode,
+      focusNode: focusNode,
       autocorrect: false,
       keyboardType: TextInputType.emailAddress,
-      controller: this.controller,
-      onChanged: this.onChanged,
+      controller: controller,
+      onChanged: onChanged,
       style: TextStyle(
         fontWeight: FontWeight.w500,
         fontSize: 16.0.sp,
       ),
       decoration: InputDecoration(
-        fillColor: this.fillColor,
+        fillColor: fillColor,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.all(Radius.circular(30.0.r)),
           borderSide: displayErrorBorder
-              ? BorderSide(color: kPinkColor)
+              ? const BorderSide(color: kPinkColor)
               : BorderSide.none,
         ),
         isDense: false,
         filled: true,
         alignLabelWithHint: true,
-        hintText: "Email",
+        hintText: 'Email',
         contentPadding: EdgeInsets.symmetric(horizontal: 16.0.w),
       ),
-      validator: (email) => this.validate && isEmail(email!)
+      validator: (email) => validate && isEmail(email!)
           ? null
-          : errorMessage ?? "Enter a valid email",
+          : errorMessage ?? 'Enter a valid email',
     );
   }
 }

@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 
 import 'lokal_images.dart';
@@ -70,7 +69,8 @@ class UserProductPost extends ChangeNotifier {
       productCategory: map['product_category'],
       status: map['status'],
       gallery: List<LokalImages>.from(
-          map['gallery']?.map((x) => LokalImages.fromMap(x))),
+        map['gallery']?.map((x) => LokalImages.fromMap(x)),
+      ),
     );
   }
 

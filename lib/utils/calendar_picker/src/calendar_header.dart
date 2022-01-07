@@ -3,19 +3,20 @@ import 'default_styles.dart' show defaultHeaderTextStyle;
 
 class CalendarHeader extends StatelessWidget {
   /// Passing in values for [leftButtonIcon] or [rightButtonIcon] will override [headerIconColor]
-  CalendarHeader(
-      {required this.headerTitle,
-      this.headerMargin,
-      this.showHeader = true,
-      this.headerTextStyle,
-      this.showHeaderButtons = true,
-      this.headerIconColor,
-      this.leftButtonIcon,
-      this.rightButtonIcon,
-      required this.onLeftButtonPressed,
-      required this.onRightButtonPressed,
-      this.isTitleTouchable,
-      required this.onHeaderTitlePressed});
+  const CalendarHeader({
+    required this.headerTitle,
+    this.headerMargin,
+    this.showHeader = true,
+    this.headerTextStyle,
+    this.showHeaderButtons = true,
+    this.headerIconColor,
+    this.leftButtonIcon,
+    this.rightButtonIcon,
+    required this.onLeftButtonPressed,
+    required this.onRightButtonPressed,
+    this.isTitleTouchable,
+    required this.onHeaderTitlePressed,
+  });
 
   final String headerTitle;
   final EdgeInsetsGeometry? headerMargin;
@@ -30,8 +31,7 @@ class CalendarHeader extends StatelessWidget {
   final bool? isTitleTouchable;
   final VoidCallback onHeaderTitlePressed;
 
-  TextStyle? get getTextStyle =>
-      headerTextStyle != null ? headerTextStyle : defaultHeaderTextStyle;
+  TextStyle? get getTextStyle => headerTextStyle ?? defaultHeaderTextStyle;
 
   Widget _leftButton() => IconButton(
         onPressed: onLeftButtonPressed,
@@ -59,16 +59,19 @@ class CalendarHeader extends StatelessWidget {
       ? Container(
           margin: headerMargin,
           child: DefaultTextStyle(
-              style: getTextStyle!,
-              child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    showHeaderButtons ? _leftButton() : Container(),
-                    isTitleTouchable!
-                        ? _headerTouchable()
-                        : Text(headerTitle, style: getTextStyle),
-                    showHeaderButtons ? _rightButton() : Container(),
-                  ])),
+            style: getTextStyle!,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                if (showHeaderButtons) _leftButton() else Container(),
+                if (isTitleTouchable!)
+                  _headerTouchable()
+                else
+                  Text(headerTitle, style: getTextStyle),
+                if (showHeaderButtons) _rightButton() else Container(),
+              ],
+            ),
+          ),
         )
       : Container();
 }

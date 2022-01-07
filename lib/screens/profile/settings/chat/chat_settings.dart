@@ -15,13 +15,12 @@ class ChatSettings extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xffF1FAFF),
+      backgroundColor: const Color(0xffF1FAFF),
       resizeToAvoidBottomInset: true,
       appBar: CustomAppBar(
         titleText: 'Chat Settings',
         backgroundColor: kTealColor,
-        leadingColor: Colors.white,
-        titleStyle: TextStyle(color: Colors.white),
+        titleStyle: const TextStyle(color: Colors.white),
         onPressedLeading: () => Navigator.pop(context),
       ),
       body: ChangeNotifierProvider(
@@ -37,12 +36,14 @@ class ChatSettings extends StatelessWidget {
                   ListTile(
                     tileColor: Colors.white,
                     leading: Text(
-                      "Show Read Receipients",
+                      'Show Read Receipients',
                       style: Theme.of(context).textTheme.bodyText1,
                     ),
                     trailing: CupertinoSwitch(
                       value: viewModel.showReadReceipts,
-                      onChanged: (value) => viewModel.toggleReadReceipt(value),
+                      onChanged: (value) => viewModel.toggleReadReceipt(
+                        value: value,
+                      ),
                       activeColor: kTealColor,
                     ),
                   ),

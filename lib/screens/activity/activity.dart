@@ -10,7 +10,7 @@ import '../../widgets/overlays/onboarding.dart';
 import 'transactions.dart';
 
 class Activity extends StatefulWidget {
-  static const routeName = "/activity";
+  static const routeName = '/activity';
   @override
   _ActivityState createState() => _ActivityState();
 }
@@ -70,15 +70,15 @@ class _ActivityState extends State<Activity> with TickerProviderStateMixin {
       controller: _tabController,
       unselectedLabelColor: Colors.black,
       indicator: BoxDecoration(
-        borderRadius: BorderRadius.vertical(
+        borderRadius: const BorderRadius.vertical(
           top: Radius.circular(30.0),
         ),
         color: _colorAnimation.value,
       ),
       labelStyle: Theme.of(context).textTheme.headline6,
-      tabs: [
-        Tab(text: "My Orders"),
-        Tab(text: "My Shop"),
+      tabs: const [
+        Tab(text: 'My Orders'),
+        Tab(text: 'My Shop'),
       ],
     );
   }
@@ -103,12 +103,13 @@ class _ActivityState extends State<Activity> with TickerProviderStateMixin {
               ),
             );
           }
-          snapshot.data!.docs.forEach((doc) {
+
+          for (final doc in snapshot.data!.docs) {
             final statusCode = int.parse(doc.id);
-            final dataMap = doc.data() as Map<String, dynamic>;
-            buyerStatuses[statusCode] = dataMap["buyer_status"];
-            sellerStatuses[statusCode] = dataMap["seller_status"];
-          });
+            final dataMap = doc.data()! as Map<String, dynamic>;
+            buyerStatuses[statusCode] = dataMap['buyer_status'];
+            sellerStatuses[statusCode] = dataMap['seller_status'];
+          }
           return DefaultTabController(
             length: 2,
             child: Scaffold(
@@ -130,11 +131,11 @@ class _ActivityState extends State<Activity> with TickerProviderStateMixin {
                 ),
               ),
               body: TabBarView(
-                physics: NeverScrollableScrollPhysics(),
+                physics: const NeverScrollableScrollPhysics(),
                 controller: _tabController,
                 children: [
-                  Transactions(buyerStatuses, true, _colorAnimation),
-                  Transactions(sellerStatuses, false, _colorAnimation),
+                  Transactions.isBuyer(buyerStatuses, _colorAnimation),
+                  Transactions.isSeller(sellerStatuses, _colorAnimation),
                 ],
               ),
             ),

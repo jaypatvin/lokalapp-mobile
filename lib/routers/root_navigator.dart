@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
-import 'package:lokalapp/screens/auth/invite_screen.dart';
-import 'package:lokalapp/screens/auth/profile_registration.dart';
-import 'package:lokalapp/screens/bottom_navigation.dart';
 
 import '../models/app_navigator.dart';
+import '../screens/auth/invite_screen.dart';
+import '../screens/auth/profile_registration.dart';
+import '../screens/bottom_navigation.dart';
 import '../screens/home/draft_post.dart';
 
 /// Handles named routes globally.
@@ -19,11 +19,11 @@ class RootNavigator extends AppNavigator {
       case BottomNavigation.routeName:
         return CupertinoPageRoute(builder: (_) => BottomNavigation());
       case DraftPost.routeName:
-        return CupertinoPageRoute(builder: (_) => DraftPost());
+        return CupertinoPageRoute(builder: (_) => const DraftPost());
       case InvitePage.routeName:
-        return CupertinoPageRoute(builder: (_) => InvitePage());
+        return CupertinoPageRoute(builder: (_) => const InvitePage());
       case ProfileRegistration.routeName:
-        return CupertinoPageRoute(builder: (_) => ProfileRegistration());
+        return CupertinoPageRoute(builder: (_) => const ProfileRegistration());
       default:
         // TODO: implement unknownRoute
         throw UnimplementedError();

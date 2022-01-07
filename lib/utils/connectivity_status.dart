@@ -60,7 +60,7 @@ class _ConnectivityStatusState extends State<ConnectivityStatus>
     try {
       result = await _connectivity.checkConnectivity();
     } on PlatformException catch (e) {
-      developer.log('Couldn\'t check connectivity status', error: e);
+      developer.log("Couldn't check connectivity status", error: e);
       return;
     }
 
@@ -122,7 +122,7 @@ class _ConnectivityStatusState extends State<ConnectivityStatus>
             child: Container(
               width: double.infinity,
               color: Colors.red.shade300,
-              child: Text(
+              child: const Text(
                 'No internet connection!',
                 textAlign: TextAlign.center,
               ),

@@ -21,7 +21,7 @@ class _DeleteAccountState extends State<DeleteAccount> {
       appBar: CustomAppBar(
         titleText: 'Delete Account',
         backgroundColor: kTealColor,
-        titleStyle: TextStyle(
+        titleStyle: const TextStyle(
           color: Colors.white,
         ),
         onPressedLeading: () => Navigator.pop(context),

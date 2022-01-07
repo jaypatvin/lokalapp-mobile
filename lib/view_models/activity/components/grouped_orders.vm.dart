@@ -27,7 +27,7 @@ class GroupedOrdersViewModel extends ViewModel {
 
   Future<void> onSecondButtonPress(Order order) async {
     try {
-      if (this.isBuyer) {
+      if (isBuyer) {
         switch (order.statusCode) {
           case 200:
             // AppRouter.pushNewScreen(
@@ -62,13 +62,13 @@ class GroupedOrdersViewModel extends ViewModel {
                 context,
                 screen: OrderConfirmed(
                   order: order,
-                  isBuyer: this.isBuyer,
+                  isBuyer: isBuyer,
                 ),
               );
             }
             break;
           case 300:
-            if (order.paymentMethod == "cod") {
+            if (order.paymentMethod == 'cod') {
               final success =
                   await _apiService.confirmPayment(orderId: order.id!);
               if (success) {
@@ -82,7 +82,7 @@ class GroupedOrdersViewModel extends ViewModel {
                 context,
                 screen: OrderDetails(
                   order: order,
-                  isBuyer: this.isBuyer,
+                  isBuyer: isBuyer,
                 ),
               );
             }

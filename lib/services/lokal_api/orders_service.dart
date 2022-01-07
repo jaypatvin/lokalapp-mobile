@@ -8,10 +8,7 @@ class OrdersService {
   static OrdersService? _instance;
 
   static OrdersService? get instance {
-    if (_instance == null) {
-      _instance = OrdersService();
-    }
-    return _instance;
+    return _instance ??= OrdersService();
   }
 
   // --GET
@@ -22,11 +19,11 @@ class OrdersService {
     required Map data,
   }) async {
     final body = json.encode(data);
-    return await http.post(
+    return http.post(
       Uri.parse(ordersUrl),
       headers: {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer $idToken"
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $idToken'
       },
       body: body,
     );
@@ -40,11 +37,11 @@ class OrdersService {
     required String? idToken,
     required String? orderId,
   }) async {
-    return await http.put(
-      Uri.parse("$ordersUrl/$orderId/cancel"),
+    return http.put(
+      Uri.parse('$ordersUrl/$orderId/cancel'),
       headers: {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer $idToken"
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $idToken'
       },
     );
   }
@@ -53,11 +50,11 @@ class OrdersService {
     required String? idToken,
     required String? orderId,
   }) async {
-    return await http.put(
-      Uri.parse("$ordersUrl/$orderId/confirm"),
+    return http.put(
+      Uri.parse('$ordersUrl/$orderId/confirm'),
       headers: {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer $idToken"
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $idToken'
       },
     );
   }
@@ -66,11 +63,11 @@ class OrdersService {
     required String? idToken,
     required String? orderId,
   }) async {
-    return await http.put(
-      Uri.parse("$ordersUrl/$orderId/confirmPayment"),
+    return http.put(
+      Uri.parse('$ordersUrl/$orderId/confirmPayment'),
       headers: {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer $idToken"
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $idToken'
       },
     );
   }
@@ -79,11 +76,11 @@ class OrdersService {
     required String? idToken,
     required String? orderId,
   }) async {
-    return await http.put(
-      Uri.parse("$ordersUrl/$orderId/decline"),
+    return http.put(
+      Uri.parse('$ordersUrl/$orderId/decline'),
       headers: {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer $idToken"
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $idToken'
       },
     );
   }
@@ -94,11 +91,11 @@ class OrdersService {
     required Map data,
   }) async {
     final body = json.encode(data);
-    return await http.put(
-      Uri.parse("$ordersUrl/$orderId/pay"),
+    return http.put(
+      Uri.parse('$ordersUrl/$orderId/pay'),
       headers: {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer $idToken"
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $idToken'
       },
       body: body,
     );
@@ -108,11 +105,11 @@ class OrdersService {
     required String? idToken,
     required String? orderId,
   }) async {
-    return await http.put(
-      Uri.parse("$ordersUrl/$orderId/receive"),
+    return http.put(
+      Uri.parse('$ordersUrl/$orderId/receive'),
       headers: {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer $idToken"
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $idToken'
       },
     );
   }
@@ -121,11 +118,11 @@ class OrdersService {
     required String? idToken,
     required String? orderId,
   }) async {
-    return await http.put(
-      Uri.parse("$ordersUrl/$orderId/shipOut"),
+    return http.put(
+      Uri.parse('$ordersUrl/$orderId/shipOut'),
       headers: {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer $idToken"
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $idToken'
       },
     );
   }

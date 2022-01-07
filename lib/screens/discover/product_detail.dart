@@ -31,9 +31,9 @@ class ProductDetail extends StatelessWidget {
     return MVVM(
       view: (_, __) => _ProductDetailView(),
       viewModel: ProductDetailViewModel(
-        product: this.product,
+        product: product,
         cart: context.read<ShoppingCart>(),
-        shop: context.read<Shops>().findById(this.product.shopId)!,
+        shop: context.read<Shops>().findById(product.shopId)!,
       ),
     );
   }
@@ -50,36 +50,39 @@ class _ProductDetailView extends HookView<ProductDetailViewModel> {
       () => context.read<BottomNavBarHider>(),
     );
 
-    useEffect(() {
-      Future.delayed(const Duration(milliseconds: 100), () {
-        _navBarHider.isHidden = true;
-      });
-      final void Function() listener = () {
-        vm.onInstructionsChanged(_instructionsController.text);
-      };
-      _instructionsController.addListener(listener);
-      final cart = context.read<ShoppingCart>();
-      if (cart.contains(vm.product.id)) {
-        final order = cart.getProductOrder(vm.product.id)!;
-        _instructionsController.value = TextEditingValue(
-          text: order.notes!,
-          selection: TextSelection.fromPosition(
-            TextPosition(offset: order.notes!.length),
-          ),
-        );
-      }
-      return () {
+    useEffect(
+      () {
         Future.delayed(const Duration(milliseconds: 100), () {
-          _navBarHider.isHidden = false;
+          _navBarHider.isHidden = true;
         });
-        _instructionsController.removeListener(listener);
-      };
-    }, []);
+        void listener() {
+          vm.onInstructionsChanged(_instructionsController.text);
+        }
+
+        _instructionsController.addListener(listener);
+        final cart = context.read<ShoppingCart>();
+        if (cart.contains(vm.product.id)) {
+          final order = cart.getProductOrder(vm.product.id)!;
+          _instructionsController.value = TextEditingValue(
+            text: order.notes!,
+            selection: TextSelection.fromPosition(
+              TextPosition(offset: order.notes!.length),
+            ),
+          );
+        }
+        return () {
+          Future.delayed(const Duration(milliseconds: 100), () {
+            _navBarHider.isHidden = false;
+          });
+          _instructionsController.removeListener(listener);
+        };
+      },
+      [],
+    );
 
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: CustomAppBar(
-        buildLeading: true,
         leadingColor: kTealColor,
         backgroundColor: Colors.white,
         onPressedLeading: () => Navigator.pop(context),
@@ -96,7 +99,7 @@ class _ProductDetailView extends HookView<ProductDetailViewModel> {
                   radius: 15.0.r,
                 ),
               ),
-              SizedBox(width: 8.0),
+              const SizedBox(width: 8.0),
               Flexible(
                 child: Text(
                   vm.appBarTitle,
@@ -130,7 +133,7 @@ class _ProductDetailView extends HookView<ProductDetailViewModel> {
                   return TextButton(
                     onPressed: () => node.unfocus(),
                     child: Text(
-                      "Done",
+                      'Done',
                       style: Theme.of(context)
                           .textTheme
                           .bodyText1!
@@ -170,21 +173,20 @@ class _ProductDetailView extends HookView<ProductDetailViewModel> {
                         allowHalfRating: true,
                         unratedColor: Colors.grey.shade300,
                         itemBuilder: (ctx, _) {
-                          return Icon(
+                          return const Icon(
                             Icons.star,
                             color: Colors.amber,
                           );
                         },
+                        // ignore: avoid_returning_null_for_void
                         onRatingUpdate: (rating) => null,
                         ignoreGestures: true,
                         itemSize: 24.0.h,
                       ),
-                      Container(
-                        child: Text(
-                          vm.product.avgRating.toString(),
-                          textAlign: TextAlign.center,
-                          style: TextStyle(color: Colors.amber),
-                        ),
+                      Text(
+                        vm.product.avgRating.toString(),
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(color: Colors.amber),
                       )
                     ],
                   ),
@@ -210,7 +212,7 @@ class _ProductDetailView extends HookView<ProductDetailViewModel> {
                       Consumer<UserWishlist>(
                         builder: (ctx, wishlist, __) {
                           if (wishlist.isLoading) {
-                            return Center(
+                            return const Center(
                               child: CircularProgressIndicator(),
                             );
                           }
@@ -283,7 +285,7 @@ class _ProductDetailView extends HookView<ProductDetailViewModel> {
               RichText(
                 text: TextSpan(
                   children: [
-                    TextSpan(text: "Quantity\t\t"),
+                    const TextSpan(text: 'Quantity\t\t'),
                     TextSpan(
                       text: vm.quantity.toString(),
                       style: Theme.of(context)
@@ -343,11 +345,12 @@ class _ProductGallery extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final gallery = product!.gallery;
-    if (gallery == null || gallery.length <= 0)
+    if (gallery == null || gallery.isEmpty) {
       return SizedBox(
         height: MediaQuery.of(context).size.height / 3,
-        child: Center(child: Text("No Images")),
+        child: const Center(child: Text('No Images')),
       );
+    }
     return SizedBox(
       height: MediaQuery.of(context).size.height / 3,
       child: Stack(
@@ -367,13 +370,13 @@ class _ProductGallery extends StatelessWidget {
                 errorBuilder: (ctx, _, __) => const SizedBox.shrink(),
               );
             },
-            scrollPhysics: BouncingScrollPhysics(),
+            scrollPhysics: const BouncingScrollPhysics(),
             backgroundDecoration: BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(20)),
+              borderRadius: const BorderRadius.all(Radius.circular(20)),
               color: Theme.of(context).canvasColor,
             ),
             loadingBuilder: (context, event) => Center(
-              child: Container(
+              child: SizedBox(
                 width: 30.0,
                 height: 30.0,
                 child: CircularProgressIndicator(
@@ -390,16 +393,19 @@ class _ProductGallery extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: gallery.map((url) {
-                int index = gallery.indexOf(url);
+                final int index = gallery.indexOf(url);
                 return Container(
                   width: 9.0,
                   height: 10.0,
-                  margin: EdgeInsets.symmetric(vertical: 20.0, horizontal: 5.0),
+                  margin: const EdgeInsets.symmetric(
+                    vertical: 20.0,
+                    horizontal: 5.0,
+                  ),
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    border: Border.all(width: 1, color: Colors.black),
+                    border: Border.all(),
                     color: currentIndex == index
-                        ? Color.fromRGBO(0, 0, 0, 0.9)
+                        ? const Color.fromRGBO(0, 0, 0, 0.9)
                         : Colors.grey,
                   ),
                 );
@@ -430,7 +436,6 @@ class _ProductItemAndPrice extends StatelessWidget {
         Expanded(
           child: Text(
             productName!,
-            maxLines: null,
             style: Theme.of(context)
                 .textTheme
                 .headline5
@@ -451,21 +456,23 @@ class _ProductItemAndPrice extends StatelessWidget {
 }
 
 class _SpecialInstructionsTextField extends StatelessWidget {
-  final maxLines = 10;
+  final int maxLines;
   final TextEditingController controller;
   final FocusNode? focusNode;
-  const _SpecialInstructionsTextField(
-      {Key? key, required this.controller, this.focusNode})
-      : super(key: key);
+  const _SpecialInstructionsTextField({
+    Key? key,
+    required this.controller,
+    this.focusNode,
+    this.maxLines = 10,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       height: maxLines * 15.0,
       child: TextField(
-        focusNode: this.focusNode,
+        focusNode: focusNode,
         controller: controller,
-        onChanged: null,
         cursorColor: Colors.black,
         keyboardType: TextInputType.multiline,
         maxLines: maxLines,
@@ -476,21 +483,18 @@ class _SpecialInstructionsTextField extends StatelessWidget {
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10.0.r),
             borderSide: BorderSide(
-              width: 1,
               color: Colors.grey.shade300,
             ),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10.0.r),
             borderSide: BorderSide(
-              width: 1,
               color: Colors.grey.shade300,
             ),
           ),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10.0.r),
             borderSide: BorderSide(
-              width: 1,
               color: Colors.grey.shade300,
             ),
           ),
@@ -500,11 +504,11 @@ class _SpecialInstructionsTextField extends StatelessWidget {
             horizontal: 24.0.w,
             vertical: 24.0.w,
           ),
-          hintText: "e.g no bell peppers, please.",
+          hintText: 'e.g no bell peppers, please.',
           hintStyle: TextStyle(
-            color: Color(0xFFBDBDBD),
+            color: const Color(0xFFBDBDBD),
             fontSize: 16.0.sp,
-            fontFamily: "Goldplay",
+            fontFamily: 'Goldplay',
             fontWeight: FontWeight.w500,
             // fontWeight: FontWeight.w500,
           ),
@@ -528,37 +532,36 @@ class _QuantityController extends StatelessWidget {
     final double dimension = 50.0.w;
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         ElevatedButton(
           onPressed: onSubtract,
+          style: ElevatedButton.styleFrom(
+            minimumSize: Size(dimension, dimension),
+            shape: const CircleBorder(),
+            primary: Colors.white,
+            elevation: 0.0,
+            side: const BorderSide(),
+          ),
           child: Icon(
             Icons.remove,
             size: 35.0.r,
             color: Colors.black,
           ),
-          style: ElevatedButton.styleFrom(
-            minimumSize: Size(dimension, dimension),
-            shape: CircleBorder(),
-            primary: Colors.white,
-            elevation: 0.0,
-            side: BorderSide(color: Colors.black),
-          ),
         ),
         SizedBox(width: 15.0.w),
         ElevatedButton(
           onPressed: onAdd,
+          style: ElevatedButton.styleFrom(
+            minimumSize: Size(dimension, dimension),
+            shape: const CircleBorder(),
+            primary: Colors.white,
+            elevation: 0.0,
+            side: const BorderSide(),
+          ),
           child: Icon(
             Icons.add,
             size: 35.0.r,
             color: Colors.black,
-          ),
-          style: ElevatedButton.styleFrom(
-            minimumSize: Size(dimension, dimension),
-            shape: CircleBorder(),
-            primary: Colors.white,
-            elevation: 0.0,
-            side: BorderSide(color: Colors.black),
           ),
         ),
       ],

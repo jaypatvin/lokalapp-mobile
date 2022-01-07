@@ -63,22 +63,23 @@ class ShopModel {
           : OperatingHours(),
       paymentOptions: map['payment_options'] != null
           ? PaymentOptions.fromMap(map['payment_options'])
-          : PaymentOptions(),
+          : const PaymentOptions(),
     );
   }
   factory ShopModel.fromDocument(DocumentSnapshot doc) {
-    final map = doc.data() as Map<String, dynamic>;
+    final map = doc.data() as Map<String, dynamic>?;
     return ShopModel(
-        id: map['id'],
-        name: map['name'],
-        userId: map['user_id'],
-        communityId: map['community_id'],
-        description: map['description'],
-        profilePhoto: map['profile_photo'],
-        coverPhoto: map['cover_photo'],
-        isClosed: map['is_closed'],
-        status: map['status'],
-        operatingHours: map['operating_hours']);
+      id: map!['id'],
+      name: map['name'],
+      userId: map['user_id'],
+      communityId: map['community_id'],
+      description: map['description'],
+      profilePhoto: map['profile_photo'],
+      coverPhoto: map['cover_photo'],
+      isClosed: map['is_closed'],
+      status: map['status'],
+      operatingHours: map['operating_hours'],
+    );
   }
   String toJson() => json.encode(toMap());
 

@@ -110,29 +110,32 @@ class _ShopProductFieldView extends HookView<ShopProductFieldViewModel> {
   Widget render(BuildContext context, ShopProductFieldViewModel vm) {
     final _products = useMemoized<Products>(() => context.read<Products>());
 
-    useEffect(() {
-      final _listener = () {
-        vm.onSearchTermChanged(searchController?.text);
-      };
+    useEffect(
+      () {
+        void _listener() {
+          vm.onSearchTermChanged(searchController?.text);
+        }
 
-      searchController?.addListener(_listener);
-      _products.addListener(vm.updateProducts);
+        searchController?.addListener(_listener);
+        _products.addListener(vm.updateProducts);
 
-      return () => _products.removeListener(vm.updateProducts);
-    }, [searchController, vm]);
+        return () => _products.removeListener(vm.updateProducts);
+      },
+      [searchController, vm],
+    );
     if (vm.products.isEmpty && (vm.searchTerm?.isNotEmpty ?? false)) {
       return Center(
         child: Text('No products with term: ${vm.searchTerm}'),
       );
     } else if (vm.products.isEmpty) {
-      return Container(
+      return SizedBox(
         width: MediaQuery.of(context).size.width * 0.5,
         child: ListView(
           shrinkWrap: true,
           children: [
             const SizedBox(height: 10),
             Text(
-              "No products added",
+              'No products added',
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: Colors.grey,
@@ -143,7 +146,7 @@ class _ShopProductFieldView extends HookView<ShopProductFieldViewModel> {
             SizedBox(height: 10.0.h),
             if (vm.isCurrentUser)
               AppButton(
-                "ADD PRODUCTS",
+                'ADD PRODUCTS',
                 kTealColor,
                 true,
                 vm.addProduct,
@@ -156,12 +159,12 @@ class _ShopProductFieldView extends HookView<ShopProductFieldViewModel> {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 8.0.w),
       child: ListView(
-        physics: NeverScrollableScrollPhysics(),
+        physics: const NeverScrollableScrollPhysics(),
         shrinkWrap: true,
         children: [
           if (vm.isCurrentUser)
             AppButton(
-              "+ Add a new Product",
+              '+ Add a new Product',
               kTealColor,
               false,
               vm.addProduct,

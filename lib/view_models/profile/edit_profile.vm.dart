@@ -1,16 +1,16 @@
 import 'dart:io';
 
-import '../../routers/app_router.dart';
-import '../../services/api/api.dart';
-import '../../services/api/user_api_service.dart';
-import '../../utils/utility.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/auth.dart';
 import '../../providers/post_requests/auth_body.dart';
+import '../../routers/app_router.dart';
+import '../../services/api/api.dart';
+import '../../services/api/user_api_service.dart';
 import '../../services/local_image_service.dart';
 import '../../state/view_model.dart';
+import '../../utils/utility.dart';
 
 class EditProfileViewModel extends ViewModel {
   late String _firstName;
@@ -32,9 +32,9 @@ class EditProfileViewModel extends ViewModel {
     _apiService = UserAPIService(context.read<API>());
     final user = context.read<Auth>().user!;
 
-    this._firstName = user.firstName!;
-    this._lastName = user.lastName!;
-    this._street = user.address!.street;
+    _firstName = user.firstName!;
+    _lastName = user.lastName!;
+    _street = user.address!.street;
 
     context.read<AuthBody>().update(
           firstName: user.firstName,
@@ -56,7 +56,7 @@ class EditProfileViewModel extends ViewModel {
     try {
       userPhotoUrl = await imageService.uploadImage(
         file: _profilePhoto!,
-        name: "profile-photo",
+        name: 'profile-photo',
       );
     } catch (e) {
       showToast('Error changing the image');

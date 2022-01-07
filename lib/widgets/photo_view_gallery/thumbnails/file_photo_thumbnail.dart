@@ -15,16 +15,14 @@ class FilePhotoThumbnail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: GestureDetector(
-        onTap: onTap,
-        child: Hero(
-          tag: galleryItem.absolute,
-          child: Image.file(
-            galleryItem,
-            alignment: Alignment.topCenter,
-            fit: BoxFit.cover,
-          ),
+    return GestureDetector(
+      onTap: onTap,
+      child: Hero(
+        tag: galleryItem.absolute,
+        child: Image.file(
+          galleryItem,
+          alignment: Alignment.topCenter,
+          fit: BoxFit.cover,
         ),
       ),
     );

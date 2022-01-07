@@ -66,61 +66,64 @@ class _OrderDetailsView extends HookView<OrderDetailsViewModel>
       }
     });
 
-    final _textInfo = useMemoized<Container>(() {
-      return Container(
-        width: double.infinity,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Notes:',
-              style: Theme.of(context).textTheme.subtitle1,
-            ),
-            Text(
-              _instructions,
-              style: Theme.of(context).textTheme.bodyText1,
-            ),
-            SizedBox(height: 16.0.h),
-            Text(
-              "Delivery Address:",
-              style: Theme.of(context).textTheme.subtitle1,
-            ),
-            Text(
-              _address,
-              style: Theme.of(context).textTheme.bodyText1,
-            ),
-            SizedBox(height: 16.0.h),
-            if (vm.order.statusCode! >= 300)
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Mode of Payment: ',
-                    style: Theme.of(context).textTheme.subtitle1,
-                  ),
-                  Expanded(
-                    child: Text(
-                      _modeOfPayment,
-                      style: Theme.of(context).textTheme.bodyText1,
-                      // maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                ],
+    final _textInfo = useMemoized<SizedBox>(
+      () {
+        return SizedBox(
+          width: double.infinity,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Notes:',
+                style: Theme.of(context).textTheme.subtitle1,
               ),
-          ],
-        ),
-      );
-    }, [_address]);
+              Text(
+                _instructions,
+                style: Theme.of(context).textTheme.bodyText1,
+              ),
+              SizedBox(height: 16.0.h),
+              Text(
+                'Delivery Address:',
+                style: Theme.of(context).textTheme.subtitle1,
+              ),
+              Text(
+                _address,
+                style: Theme.of(context).textTheme.bodyText1,
+              ),
+              SizedBox(height: 16.0.h),
+              if (vm.order.statusCode! >= 300)
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Mode of Payment: ',
+                      style: Theme.of(context).textTheme.subtitle1,
+                    ),
+                    Expanded(
+                      child: Text(
+                        _modeOfPayment,
+                        style: Theme.of(context).textTheme.bodyText1,
+                        // maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
+                ),
+            ],
+          ),
+        );
+      },
+      [_address],
+    );
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: vm.isBuyer ? kTealColor : Color(0xFF57183F),
+        backgroundColor: vm.isBuyer ? kTealColor : const Color(0xFF57183F),
         centerTitle: true,
         title: Column(
           children: [
             Text(
-              "Order Details",
+              'Order Details',
               style: Theme.of(context).textTheme.subtitle1!.copyWith(
                     color: Colors.white,
                   ),
@@ -157,8 +160,8 @@ class _OrderDetailsView extends HookView<OrderDetailsViewModel>
                 statusCode: vm.order.statusCode!,
                 isBuyer: vm.isBuyer,
                 order: vm.order,
-                onPress: (action) async => await performFuture(
-                  () async => await vm.onPress(action),
+                onPress: (action) async => performFuture(
+                  () => vm.onPress(action),
                 ),
               ),
             ],

@@ -8,10 +8,7 @@ class MediaUtility {
   final _picker = ImagePicker();
 
   static MediaUtility? get instance {
-    if (_utility == null) {
-      _utility = MediaUtility();
-    }
-    return _utility;
+    return _utility ??= MediaUtility();
   }
 
   Future<File?> _pickFile(ImageSource source) async {
@@ -23,28 +20,28 @@ class MediaUtility {
   }
 
   Future<File?> showMediaDialog(BuildContext parentContext) async {
-    return await showDialog<File>(
+    return showDialog<File>(
       context: parentContext,
       builder: (context) {
         return SimpleDialog(
-          title: Text("Upload Picture"),
+          title: const Text('Upload Picture'),
           children: [
             SimpleDialogOption(
-              child: Text("Camera"),
+              child: const Text('Camera'),
               onPressed: () async {
-                var file = await _pickFile(ImageSource.camera);
+                final file = await _pickFile(ImageSource.camera);
                 Navigator.pop(context, file);
               },
             ),
             SimpleDialogOption(
-              child: Text("Gallery"),
+              child: const Text('Gallery'),
               onPressed: () async {
-                var file = await _pickFile(ImageSource.gallery);
+                final file = await _pickFile(ImageSource.gallery);
                 Navigator.pop(context, file);
               },
             ),
             SimpleDialogOption(
-              child: Text("Cancel"),
+              child: const Text('Cancel'),
               onPressed: () => Navigator.pop(context, null),
             )
           ],

@@ -1,4 +1,4 @@
-import 'package:lokalapp/state/view_model.dart';
+import '../../../../state/view_model.dart';
 
 class CustomizeAvailabilityViewModel extends ViewModel {
   @override

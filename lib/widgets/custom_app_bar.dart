@@ -23,7 +23,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   const CustomAppBar({
     this.height = kToolbarHeight,
-    this.titleText = "",
+    this.titleText = '',
     this.title,
     this.leading,
     this.buildLeading = true,
@@ -104,9 +104,9 @@ class _Title extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       titleText!,
-      style: TextStyle(
+      style: const TextStyle(
         color: Color(0xFFFFC700),
-        fontFamily: "Goldplay",
+        fontFamily: 'Goldplay',
         fontWeight: FontWeight.w600,
       ).merge(titleStyle),
     );

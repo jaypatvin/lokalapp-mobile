@@ -28,7 +28,7 @@ class _SearchState extends State<Search> {
                 leadingColor: kTealColor,
                 backgroundColor: Colors.white,
                 title: Hero(
-                  tag: "search_field",
+                  tag: 'search_field',
                   child: SearchTextField(
                     controller: vm.searchController,
                     enabled: true,
@@ -45,17 +45,17 @@ class _SearchState extends State<Search> {
                         Container(
                           padding: const EdgeInsets.all(12),
                           child: Text(
-                            "Recent Searches",
+                            'Recent Searches',
                             style: TextStyle(
                               fontSize: 20.0.sp,
-                              fontFamily: "Goldplay",
+                              fontFamily: 'Goldplay',
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                         ),
                         ListView.builder(
                           shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
+                          physics: const NeverScrollableScrollPhysics(),
                           itemCount: vm.recentSearches.length,
                           itemBuilder: (ctx, index) {
                             return ListTile(
@@ -63,7 +63,7 @@ class _SearchState extends State<Search> {
                               title: Text(vm.recentSearches[index]),
                               trailing: IconButton(
                                 onPressed: () => vm.onSearchDelete(index),
-                                icon: Icon(Icons.close),
+                                icon: const Icon(Icons.close),
                               ),
                             );
                           },
@@ -71,13 +71,15 @@ class _SearchState extends State<Search> {
                       ],
                     );
 
-                    if (vm.isSearching)
-                      return Center(
+                    if (vm.isSearching) {
+                      return const Center(
                         child: CircularProgressIndicator(),
                       );
+                    }
 
-                    if (vm.searchController.text.isEmpty)
+                    if (vm.searchController.text.isEmpty) {
                       return _recentSearchesWidget;
+                    }
 
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -85,7 +87,7 @@ class _SearchState extends State<Search> {
                         Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Text(
-                            "${vm.searchResults.length} results for "
+                            '${vm.searchResults.length} results for '
                             "'${vm.searchController.text}'",
                             style: Theme.of(context).textTheme.headline6,
                           ),
@@ -93,10 +95,10 @@ class _SearchState extends State<Search> {
                         if (vm.searchResults.isNotEmpty)
                           GridView.builder(
                             shrinkWrap: true,
-                            physics: NeverScrollableScrollPhysics(),
+                            physics: const NeverScrollableScrollPhysics(),
                             itemCount: vm.searchResults.length,
                             gridDelegate:
-                                SliverGridDelegateWithFixedCrossAxisCount(
+                                const SliverGridDelegateWithFixedCrossAxisCount(
                               childAspectRatio: 2 / 3,
                               crossAxisCount: 2,
                             ),

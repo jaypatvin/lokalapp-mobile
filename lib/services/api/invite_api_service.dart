@@ -8,11 +8,11 @@ class InviteAPIService extends APIService<LokalInvite> {
   const InviteAPIService(this.api);
 
   final API api;
-  final Endpoint endpoint = Endpoint.invite;
+  Endpoint get endpoint => Endpoint.invite;
 
   Future<LokalInvite> inviteAFriend(Map<String, dynamic> body) async {
     try {
-      final response = await this.poster(
+      final response = await poster(
         api.endpointUri(endpoint),
         headers: api.withBodyHeader(),
         body: json.encode(body),
@@ -26,7 +26,7 @@ class InviteAPIService extends APIService<LokalInvite> {
 
   Future<LokalInvite> check(String code) async {
     try {
-      final response = await this.getter(
+      final response = await getter(
         api.endpointUri(
           endpoint,
           pathSegments: ['check', code],
@@ -45,7 +45,7 @@ class InviteAPIService extends APIService<LokalInvite> {
     required String code,
   }) async {
     try {
-      final response = await this.poster(
+      final response = await poster(
         api.endpointUri(endpoint, pathSegments: ['claim']),
         headers: api.withBodyHeader(),
         body: json.encode({

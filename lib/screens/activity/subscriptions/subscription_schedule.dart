@@ -91,7 +91,7 @@ class _SubscriptionScheduleState extends State<SubscriptionSchedule>
   // confirms or cancels the picking of dates.
   List<DateTime?> _selectedDates = [];
   // Will hold the `original_date` and `new_date` for the manual schedul set.
-  Map<DateTime?, DateTime> _overridenDates = {};
+  final Map<DateTime?, DateTime> _overridenDates = {};
 
   // Since the calendar picker will give the DateTime of the date pressed,
   // we will hold the value the user wants to change.
@@ -105,7 +105,7 @@ class _SubscriptionScheduleState extends State<SubscriptionSchedule>
     super.initState();
 
     if (widget.subscriptionPlan == null && widget.productId == null) {
-      throw "The parameter subscriptionPlan or productId must not be null.";
+      throw 'The parameter subscriptionPlan or productId must not be null.';
     }
 
     //#region Manually Resolve Conflicts
@@ -117,30 +117,30 @@ class _SubscriptionScheduleState extends State<SubscriptionSchedule>
       // only needed for operating hours
       final shop = context.read<Shops>().findById(subscriptionPlan.shopId)!;
 
-      this._quantity = subscriptionPlan.quantity;
-      this._product = context.read<Products>().findById(
+      _quantity = subscriptionPlan.quantity;
+      _product = context.read<Products>().findById(
             subscriptionPlan.productId,
           );
-      this._operatingHours = OperatingHours(
+      _operatingHours = OperatingHours(
         repeatType: subscriptionPlan.plan.repeatType,
         repeatUnit: subscriptionPlan.plan.repeatUnit,
         startDates: subscriptionPlan.plan.startDates
-            .map<String>((date) => DateFormat("yyyy-MM-dd").format(date))
+            .map<String>((date) => DateFormat('yyyy-MM-dd').format(date))
             .toList(),
         unavailableDates: subscriptionPlan.plan.unavailableDates
-            .map<String>((date) => DateFormat("yyyy-MM-dd").format(date))
+            .map<String>((date) => DateFormat('yyyy-MM-dd').format(date))
             .toList(),
         customDates: [],
         startTime: shop.operatingHours!.startTime,
         endTime: shop.operatingHours!.endTime,
       );
 
-      this._startDate = DateFormat("yyyy-MM-dd")
-          .parse(this._operatingHours!.startDates!.first);
+      _startDate =
+          DateFormat('yyyy-MM-dd').parse(_operatingHours!.startDates!.first);
 
       // Product initialization. We get the available dates the of the product's
       // schedule. Will look into 45 days in the future.
-      this._productSelectableDates = _generator
+      _productSelectableDates = _generator
           .getSelectableDates(product!.availability!)
           .where(
             (date) =>
@@ -153,7 +153,7 @@ class _SubscriptionScheduleState extends State<SubscriptionSchedule>
       // Subscription Schedule. Same as above where we will get the available
       // dates 45 days in the future.
       _markedDates = _generator
-          .getSelectableDates(this._operatingHours!)
+          .getSelectableDates(_operatingHours!)
           .where(
             (date) =>
                 date.difference(DateTime.now()).inDays <= 45 &&
@@ -162,16 +162,17 @@ class _SubscriptionScheduleState extends State<SubscriptionSchedule>
           .toList()
         ..sort();
 
-      subscriptionPlan.plan.overrideDates.forEach((overrideDate) {
+      for (final overrideDate in subscriptionPlan.plan.overrideDates) {
         final index = _markedDates.indexWhere(
-            (date) => date!.compareTo(overrideDate.originalDate!) == 0);
+          (date) => date!.compareTo(overrideDate.originalDate!) == 0,
+        );
         if (index > -1) {
           _markedDates[index] = overrideDate.newDate;
         }
-      });
+      }
       _selectedDates = [..._markedDates];
 
-      this._displayWarning = !subscriptionPlan.plan.autoReschedule! &&
+      _displayWarning = !subscriptionPlan.plan.autoReschedule! &&
           _isConflict(_markedDates, _productSelectableDates);
 
       return;
@@ -186,15 +187,15 @@ class _SubscriptionScheduleState extends State<SubscriptionSchedule>
           context.read<ShoppingCart>().getProductOrder(productId);
 
       if (orderDetails == null) {
-        throw "Shopping cart does not contain the product order.";
+        throw 'Shopping cart does not contain the product order.';
       }
 
-      this._quantity = orderDetails.quantity;
-      this._product = context.read<Products>().findById(productId);
-      this._operatingHours = _product!.availability;
+      _quantity = orderDetails.quantity;
+      _product = context.read<Products>().findById(productId);
+      _operatingHours = _product!.availability;
 
       // no need to display the warning since we won't be checking for conflicts
-      this._displayWarning = false;
+      _displayWarning = false;
     }
     //#endregion
   }
@@ -202,18 +203,20 @@ class _SubscriptionScheduleState extends State<SubscriptionSchedule>
   //#region Schedule Creation
 
   // only used when weekday picker is used
+  // ignore: use_setters_to_change_properties
   void _onSelectableDaysChanged(List<int> selectableDays) {
-    this._selectableDays = selectableDays;
+    _selectableDays = selectableDays;
   }
 
   void _onStartDatesChanged(List<DateTime>? startDates, String? repeatType) {
-    if (startDates!.isNotEmpty)
-      this._startDate = startDates.first;
-    else
-      this._startDate = null;
+    if (startDates!.isNotEmpty) {
+      _startDate = startDates.first;
+    } else {
+      _startDate = null;
+    }
 
-    this._repeatType = repeatType;
-    this._startDates = startDates;
+    _repeatType = repeatType;
+    _startDates = startDates;
   }
 
   // We only want to have subscriptions when the product is available.
@@ -264,7 +267,7 @@ class _SubscriptionScheduleState extends State<SubscriptionSchedule>
     final difference =
         dates.toSet().difference(productSchedule.toSet()).toList();
     if (difference.isNotEmpty) {
-      final setAutomatically = await this._displayNotification();
+      final setAutomatically = await _displayNotification();
 
       // We then return what the user chose, to set manually or automatically.
       return setAutomatically != null && setAutomatically;
@@ -276,7 +279,7 @@ class _SubscriptionScheduleState extends State<SubscriptionSchedule>
 
   // The notification to display when there are conflicts.
   Future<bool?> _displayNotification() async {
-    return await showDialog<bool>(
+    return showDialog<bool>(
       context: context,
       barrierDismissible: false,
       builder: (BuildContext ctx) {
@@ -298,9 +301,9 @@ class _SubscriptionScheduleState extends State<SubscriptionSchedule>
       overridenDates.add(OverrideDate(originalDate: key, newDate: value));
     });
 
-    return await context.read<SubscriptionProvider>().manualReschedulePlan(
+    return context.read<SubscriptionProvider>().manualReschedulePlan(
       widget.subscriptionPlan!.id,
-      {"override_dates": overridenDates.map((data) => data.toMap()).toList()},
+      {'override_dates': overridenDates.map((data) => data.toMap()).toList()},
     );
   }
 
@@ -338,7 +341,7 @@ class _SubscriptionScheduleState extends State<SubscriptionSchedule>
 
   // The user chose a date to replace.
   void _onNonSelectableDayPressedHandler(DateTime date) {
-    if (this._originalDate == date) {
+    if (_originalDate == date) {
       _originalDate = null;
     } else {
       _originalDate = date;
@@ -358,7 +361,7 @@ class _SubscriptionScheduleState extends State<SubscriptionSchedule>
   }
 
   Future<void> _displayCalendar() async {
-    return await showDialog<void>(
+    return showDialog<void>(
       context: context,
       barrierDismissible: false,
       builder: (BuildContext ctx) {
@@ -398,7 +401,7 @@ class _SubscriptionScheduleState extends State<SubscriptionSchedule>
         showToast('Failed to update schedule.');
         return;
       }
-
+      if (!mounted) return;
       Navigator.popUntil(context, ModalRoute.withName(Activity.routeName));
       return;
     }
@@ -410,6 +413,7 @@ class _SubscriptionScheduleState extends State<SubscriptionSchedule>
 
     final reschedule = await _onCreateSubscriptionPlan();
 
+    if (!mounted) return;
     // create subscription plan body for API endpoint
     final subscriptionPlanBody = SubscriptionPlanBody(
       productId: _product!.id,
@@ -457,7 +461,7 @@ class _SubscriptionScheduleState extends State<SubscriptionSchedule>
                   return TextButton(
                     onPressed: () => node.unfocus(),
                     child: Text(
-                      "Done",
+                      'Done',
                       style: Theme.of(context).textTheme.bodyText1!.copyWith(
                             color: Colors.black,
                           ),
@@ -474,8 +478,8 @@ class _SubscriptionScheduleState extends State<SubscriptionSchedule>
             mainAxisSize: MainAxisSize.min,
             children: [
               _ProductCard(
-                product: this._product,
-                quantity: this._quantity,
+                product: _product,
+                quantity: _quantity,
                 onEditTap: widget.subscriptionPlan == null
                     ? () => Navigator.of(context).push(
                           MaterialPageRoute(
@@ -486,9 +490,9 @@ class _SubscriptionScheduleState extends State<SubscriptionSchedule>
               ),
               SizedBox(height: 10.0.h),
               SchedulePicker(
-                header: "Schedule",
-                description: "Which dates do you want this product "
-                    "to be delivered?",
+                header: 'Schedule',
+                description: 'Which dates do you want this product '
+                    'to be delivered?',
                 repeatUnitFocusNode: _repeatUnitFocusNode,
                 onRepeatTypeChanged: (choice) => _repeatType = choice,
                 onStartDatesChanged: _onStartDatesChanged,
@@ -500,10 +504,10 @@ class _SubscriptionScheduleState extends State<SubscriptionSchedule>
                 limitSelectableDates: widget.subscriptionPlan == null,
               ),
               SizedBox(height: 10.0.h),
-              if (this._displayWarning)
+              if (_displayWarning)
                 Row(
                   children: [
-                    Icon(
+                    const Icon(
                       MdiIcons.alertCircle,
                       color: kPinkColor,
                     ),
@@ -511,15 +515,14 @@ class _SubscriptionScheduleState extends State<SubscriptionSchedule>
                     Expanded(
                       child: Text(
                         "This shop won't be able to deliver on the date/s "
-                        "you set. Please manually re-schedule these orders "
+                        'you set. Please manually re-schedule these orders '
                         "or else they won't be placed.",
-                        maxLines: null,
                         style: Theme.of(context).textTheme.bodyText1,
                       ),
                     )
                   ],
                 ),
-              if (this._displayWarning) SizedBox(height: 20.0.h),
+              if (_displayWarning) SizedBox(height: 20.0.h),
               if (widget.subscriptionPlan != null)
                 FlatButton(
                   minWidth: double.infinity,
@@ -527,18 +530,20 @@ class _SubscriptionScheduleState extends State<SubscriptionSchedule>
                   color: Colors.transparent,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20.0),
-                    side: BorderSide(color: kTealColor),
+                    side: const BorderSide(color: kTealColor),
                   ),
                   textColor: kTealColor,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        "See Calendar",
+                        'See Calendar',
                         style: Theme.of(context).textTheme.headline6!.copyWith(
-                            color: kTealColor, fontWeight: FontWeight.w600),
+                              color: kTealColor,
+                              fontWeight: FontWeight.w600,
+                            ),
                       ),
-                      if (this._displayWarning)
+                      if (_displayWarning)
                         Icon(
                           MdiIcons.alertCircle,
                           color: kPinkColor,
@@ -546,18 +551,18 @@ class _SubscriptionScheduleState extends State<SubscriptionSchedule>
                         )
                     ],
                   ),
-                  onPressed: () async => await _displayCalendar(),
+                  onPressed: () async => _displayCalendar(),
                 ),
               SizedBox(height: 10.0.h),
               SizedBox(
                 height: 50.0.h,
                 width: double.infinity,
                 child: AppButton(
-                  widget.subscriptionPlan == null ? "Next" : "Apply",
+                  widget.subscriptionPlan == null ? 'Next' : 'Apply',
                   kTealColor,
                   true,
-                  () async => await performFuture<void>(
-                    () async => await _onSubmitHandler(),
+                  () async => performFuture<void>(
+                    () async => _onSubmitHandler(),
                   ),
                   textStyle: TextStyle(fontSize: 20.0.sp),
                 ),
@@ -596,7 +601,6 @@ class _ProductCard extends StatelessWidget {
       child: Padding(
         padding: EdgeInsets.all(8.0.w),
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Expanded(
@@ -610,14 +614,13 @@ class _ProductCard extends StatelessWidget {
                         product!.gallery!.first.url,
                         fit: BoxFit.cover,
                         errorBuilder: (ctx, obj, stack) {
-                          return Text("No Image");
+                          return const Text('No Image');
                         },
                       ),
                     ),
                   SizedBox(width: 8.0.w),
                   Expanded(
                     child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -642,7 +645,7 @@ class _ProductCard extends StatelessWidget {
                                   style: Theme.of(context).textTheme.bodyText1,
                                 ),
                                 Text(
-                                  "x$quantity",
+                                  'x$quantity',
                                   // textAlign: TextAlign.end,
                                   style: Theme.of(context).textTheme.subtitle1,
                                 ),
@@ -651,19 +654,19 @@ class _ProductCard extends StatelessWidget {
                           ],
                         ),
                         SizedBox(height: 5.0.h),
-                        if (this.onEditTap != null)
+                        if (onEditTap != null)
                           InkWell(
+                            onTap: onEditTap,
                             child: Text(
-                              "Edit",
+                              'Edit',
                               style: TextStyle(
                                 fontSize: 16.0.sp,
-                                fontFamily: "Goldplay",
+                                fontFamily: 'Goldplay',
                                 fontWeight: FontWeight.w300,
                                 decoration: TextDecoration.underline,
                                 color: kTealColor,
                               ),
                             ),
-                            onTap: onEditTap,
                           ),
                       ],
                     ),
@@ -701,13 +704,13 @@ class _ScheduleConflictsNotification extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(
+              const Icon(
                 MdiIcons.alertCircle,
                 color: Colors.red,
               ),
               SizedBox(height: 10.0.h),
-              Text(
-                "There will be days on the schedule that you set that this "
+              const Text(
+                'There will be days on the schedule that you set that this '
                 "shop won't be able to deliver.",
                 textAlign: TextAlign.center,
               ),
@@ -717,16 +720,16 @@ class _ScheduleConflictsNotification extends StatelessWidget {
                 text: TextSpan(
                   children: [
                     TextSpan(
-                      text: "You can either let us automatically re-schedule "
-                          "your order to the next available date",
+                      text: 'You can either let us automatically re-schedule '
+                          'your order to the next available date',
                       style: Theme.of(context).textTheme.subtitle1!.copyWith(
                             color: kTealColor,
                           ),
                     ),
-                    TextSpan(text: " or "),
+                    const TextSpan(text: ' or '),
                     TextSpan(
-                      text: "you can manually re-schedule the unavailable "
-                          "dates in the Activities screen.",
+                      text: 'you can manually re-schedule the unavailable '
+                          'dates in the Activities screen.',
                       style: Theme.of(context).textTheme.subtitle1!.copyWith(
                             color: kOrangeColor,
                           ),
@@ -743,19 +746,19 @@ class _ScheduleConflictsNotification extends StatelessWidget {
                 children: <Widget>[
                   Expanded(
                     child: AppButton(
-                      "Set Manually",
+                      'Set Manually',
                       kOrangeColor,
                       true,
-                      this.onManual,
+                      onManual,
                     ),
                   ),
                   SizedBox(width: 5.0.w),
                   Expanded(
                     child: AppButton(
-                      "Set Automatically",
+                      'Set Automatically',
                       kTealColor,
                       true,
-                      this.onAutomatic,
+                      onAutomatic,
                     ),
                   ),
                 ],
@@ -802,34 +805,34 @@ class _CalendarPicker extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                "Subscription Calendar",
+                'Subscription Calendar',
                 style: Theme.of(context).textTheme.headline5,
               ),
-              Container(
+              SizedBox(
                 width: MediaQuery.of(context).size.width * 0.95,
                 height: MediaQuery.of(context).size.height * 0.63,
                 child: CalendarCarousel(
                   width: MediaQuery.of(context).size.width * 0.95,
-                  onDayPressed: this.onDayPressed,
-                  onNonSelectableDayPressed: this.onNonSelectableDayPressed,
-                  markedDatesMap: this.markedDates,
-                  selectableDates: this.selectableDates,
+                  onDayPressed: onDayPressed,
+                  onNonSelectableDayPressed: onNonSelectableDayPressed,
+                  markedDatesMap: markedDates,
+                  selectableDates: selectableDates,
                 ),
               ),
-              if (this.displayWarning)
+              if (displayWarning)
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 10.0.w),
                   child: Row(
                     children: [
-                      Icon(
+                      const Icon(
                         MdiIcons.alertCircle,
                         color: kPinkColor,
                       ),
                       SizedBox(width: 2.0.w),
-                      Expanded(
+                      const Expanded(
                         child: Text(
-                          "This shop will be closed on the date you selected. "
-                          "Please pick a different date to have your orders delivered.",
+                          'This shop will be closed on the date you selected. '
+                          'Please pick a different date to have your orders delivered.',
                           maxLines: 3,
                         ),
                       ),
@@ -845,7 +848,7 @@ class _CalendarPicker extends StatelessWidget {
                     children: [
                       Expanded(
                         child: AppButton(
-                          "Cancel",
+                          'Cancel',
                           kTealColor,
                           false,
                           onCancel,
@@ -854,7 +857,7 @@ class _CalendarPicker extends StatelessWidget {
                       SizedBox(width: 5.0.w),
                       Expanded(
                         child: AppButton(
-                          "Confirm",
+                          'Confirm',
                           kTealColor,
                           true,
                           onConfirm,

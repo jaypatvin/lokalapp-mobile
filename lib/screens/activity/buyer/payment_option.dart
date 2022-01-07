@@ -23,10 +23,10 @@ class PaymentOption extends StatelessWidget {
 class _PaymentOptionView extends StatelessView<PaymentOptionViewModel> {
   @override
   Widget render(BuildContext context, PaymentOptionViewModel vm) {
-    print(vm.bankEnabled);
+    debugPrint(vm.bankEnabled.toString());
     return Scaffold(
-      appBar: CustomAppBar(
-        titleText: "Choose a Payment Option",
+      appBar: const CustomAppBar(
+        titleText: 'Choose a Payment Option',
         titleStyle: TextStyle(color: Colors.black),
         backgroundColor: Colors.white,
         leadingColor: kTealColor,

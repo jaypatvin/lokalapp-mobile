@@ -6,7 +6,6 @@ class CheckboxFormField extends FormField<bool> {
     FormFieldSetter<bool>? onSaved,
     FormFieldValidator<bool>? validator,
     bool initialValue = false,
-    bool autovalidate = false,
   }) : super(
           onSaved: onSaved,
           validator: validator,

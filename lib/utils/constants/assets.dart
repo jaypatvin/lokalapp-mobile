@@ -19,7 +19,7 @@ const kAnimationShopOpen = 'assets/animations/shop_open.json';
 // Payment Modes
 const kSvgCashPayment = 'assets/payment/cash.svg';
 const kSvgGCashPayment = 'assets/payment/gcash.svg';
-const kSvgBankPayment = "assets/payment/bank.svg";
+const kSvgBankPayment = 'assets/payment/bank.svg';
 
 // Rating
 const kSvg1StarRating = 'assets/rating/star-1.svg';

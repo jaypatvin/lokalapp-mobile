@@ -1,5 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 
 /// The base class for any `view models`. To be used with the [MVVM] builder.
 class ViewModel extends ChangeNotifier {

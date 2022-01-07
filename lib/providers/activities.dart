@@ -11,13 +11,13 @@ import '../services/api/comment_api_service.dart';
 import '../services/database.dart';
 
 class Activities extends ChangeNotifier {
-  Activities._(this._activityService, this._commentService);
-
   factory Activities(API api) {
     final _activityService = ActivityAPIService(api);
     final _commentService = CommentsAPIService(api);
     return Activities._(_activityService, _commentService);
   }
+
+  Activities._(this._activityService, this._commentService);
 
   final ActivityAPIService _activityService;
   final CommentsAPIService _commentService;
@@ -51,7 +51,7 @@ class Activities extends ChangeNotifier {
     super.dispose();
   }
 
-  void setUserCredentials({String? userId, String? communityId}) async {
+  Future<void> setUserCredentials({String? userId, String? communityId}) async {
     if (userId != null && communityId != null) {
       if (communityId == _communityId) return;
       _isLoading = true;
@@ -67,7 +67,7 @@ class Activities extends ChangeNotifier {
     }
   }
 
-  void _subscriptionListener(
+  Future<void> _subscriptionListener(
     QuerySnapshot<Map<String, dynamic>> snapshot,
   ) async {
     await Future.delayed(const Duration(milliseconds: 100));
@@ -132,7 +132,7 @@ class Activities extends ChangeNotifier {
     } catch (e) {
       _feed[index].liked = false;
       notifyListeners();
-      throw e;
+      rethrow;
     }
   }
 
@@ -151,7 +151,7 @@ class Activities extends ChangeNotifier {
     } catch (e) {
       _feed[index].liked = true;
       notifyListeners();
-      throw e;
+      rethrow;
     }
   }
 
@@ -167,7 +167,7 @@ class Activities extends ChangeNotifier {
         userId: userId,
       );
     } catch (e) {
-      throw e;
+      rethrow;
     }
   }
 
@@ -183,7 +183,7 @@ class Activities extends ChangeNotifier {
         userId: userId,
       );
     } catch (e) {
-      throw e;
+      rethrow;
     }
   }
 
@@ -197,7 +197,7 @@ class Activities extends ChangeNotifier {
         body: body,
       );
     } catch (e) {
-      throw e;
+      rethrow;
     }
   }
 
@@ -205,7 +205,7 @@ class Activities extends ChangeNotifier {
     try {
       await _activityService.create(data: data);
     } catch (e) {
-      throw e;
+      rethrow;
     }
   }
 
@@ -218,7 +218,7 @@ class Activities extends ChangeNotifier {
     } catch (e) {
       _feed[index].archived = false;
       notifyListeners();
-      throw e;
+      rethrow;
     }
   }
 }

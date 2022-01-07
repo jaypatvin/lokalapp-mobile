@@ -16,15 +16,15 @@ class OverrideDate {
 
   Map<String, dynamic> toMap() {
     return {
-      'original_date': DateFormat("yyyy-MM-dd").format(originalDate!),
-      'new_date': DateFormat("yyyy-MM-dd").format(newDate),
+      'original_date': DateFormat('yyyy-MM-dd').format(originalDate!),
+      'new_date': DateFormat('yyyy-MM-dd').format(newDate),
     };
   }
 
   factory OverrideDate.fromMap(Map<String, dynamic> map) {
     return OverrideDate(
-      originalDate: DateFormat("yyyy-MM-dd").parse(map['original_date']),
-      newDate: DateFormat("yyyy-MM-dd").parse(map['new_date']),
+      originalDate: DateFormat('yyyy-MM-dd').parse(map['original_date']),
+      newDate: DateFormat('yyyy-MM-dd').parse(map['new_date']),
     );
   }
 
@@ -234,32 +234,34 @@ class ProductSubscriptionSchedule {
   }
 
   factory ProductSubscriptionSchedule.fromMap(Map<String, dynamic> map) {
-    var _customDates = <DateTime>[];
-    var _unavailableDates = <DateTime>[];
-    var _startDates = <DateTime>[];
-    var _overrideDates = <OverrideDate>[];
+    final _customDates = <DateTime>[];
+    final _unavailableDates = <DateTime>[];
+    final _startDates = <DateTime>[];
+    final _overrideDates = <OverrideDate>[];
 
     if (map['custom_dates'] != null) {
-      List<String> customDates = List<String>.from(map['custom_dates']);
-      customDates.forEach((element) {
-        _customDates.add(DateFormat("yyyy-MM-dd").parse(element));
-      });
+      final List<String> customDates = List<String>.from(map['custom_dates']);
+
+      for (final date in customDates) {
+        _customDates.add(DateFormat('yyyy-MM-dd').parse(date));
+      }
     }
     if (map['unavailable_dates'] != null) {
-      List<String> unavailableDates =
+      final List<String> unavailableDates =
           List<String>.from(map['unavailable_dates']);
-      unavailableDates.forEach((element) {
-        _unavailableDates.add(DateFormat("yyyy-MM-dd").parse(element));
-      });
+
+      for (final date in unavailableDates) {
+        _unavailableDates.add(DateFormat('yyyy-MM-dd').parse(date));
+      }
     }
 
     if (map['override_dates'] != null) {
-      Map<String, String> overrideDates = Map.from(map['override_dates']);
+      final Map<String, String> overrideDates = Map.from(map['override_dates']);
       overrideDates.forEach((key, value) {
         _overrideDates.add(
           OverrideDate(
-            originalDate: DateFormat("yyyy-MM-dd").parse(key),
-            newDate: DateFormat("yyyy-MM-dd").parse(value),
+            originalDate: DateFormat('yyyy-MM-dd').parse(key),
+            newDate: DateFormat('yyyy-MM-dd').parse(value),
           ),
         );
       });
@@ -267,15 +269,15 @@ class ProductSubscriptionSchedule {
 
     if (map['start_dates'] != null) {
       final startDates = List<String>.from(map['start_dates']);
-      startDates.forEach((element) {
-        _startDates.add(DateFormat("yyyy-MM-dd").parse(element));
-      });
+      for (final date in startDates) {
+        _startDates.add(DateFormat('yyyy-MM-dd').parse(date));
+      }
     }
 
     return ProductSubscriptionSchedule(
       startDates: _startDates,
-      lastDate: map["last_date"] != null && map["last_date"].isNotEmpty
-          ? DateFormat("yyyy-MM-dd").parse(map["last_date"])
+      lastDate: map['last_date'] != null && map['last_date'].isNotEmpty
+          ? DateFormat('yyyy-MM-dd').parse(map['last_date'])
           : null,
       repeatUnit: map['repeat_unit'],
       repeatType: map['repeat_type'],
@@ -381,17 +383,18 @@ class ProductSubscriptionPlan {
 
   factory ProductSubscriptionPlan.fromMap(Map<String, dynamic> map) {
     return ProductSubscriptionPlan(
-        id: map['id'],
-        productId: map['product_id'],
-        shopId: map['shop_id'],
-        buyerId: map['buyer_id'],
-        sellerId: map['seller_id'],
-        quantity: map['quantity'],
-        instruction: map['instruction'],
-        status: map['status'],
-        plan: ProductSubscriptionSchedule.fromMap(map['plan']),
-        product: SubscriptionProductDetails.fromMap(map['product']),
-        shop: SubscriptionShopDetails.fromMap(map['shop']));
+      id: map['id'],
+      productId: map['product_id'],
+      shopId: map['shop_id'],
+      buyerId: map['buyer_id'],
+      sellerId: map['seller_id'],
+      quantity: map['quantity'],
+      instruction: map['instruction'],
+      status: map['status'],
+      plan: ProductSubscriptionSchedule.fromMap(map['plan']),
+      product: SubscriptionProductDetails.fromMap(map['product']),
+      shop: SubscriptionShopDetails.fromMap(map['shop']),
+    );
   }
 
   factory ProductSubscriptionPlan.fromJson(String source) =>

@@ -20,7 +20,7 @@ class UserBanner extends StatelessWidget {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 10.0.h, horizontal: 5.0.w),
       child: ListTile(
-        onTap: this.onTap,
+        onTap: onTap,
         leading: ChatAvatar(
           displayName: displayName,
           displayPhoto: profilePhoto,
@@ -33,8 +33,8 @@ class UserBanner extends StatelessWidget {
             fontSize: 14.0.sp,
           ),
         ),
-        trailing: Text(
-          "No reviews yet",
+        trailing: const Text(
+          'No reviews yet',
           style: TextStyle(
             color: Colors.grey,
           ),

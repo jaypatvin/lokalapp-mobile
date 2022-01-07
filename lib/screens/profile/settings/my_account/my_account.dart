@@ -30,7 +30,7 @@ class _MyAccountState extends State<MyAccount> {
     _viewModel = MyAccountViewModel(context.read<Auth>());
     _errorSubscription = _viewModel.errorStream.listen(
       (event) {
-        if (this.mounted) {
+        if (mounted) {
           showToast(event);
         }
       },
@@ -51,8 +51,7 @@ class _MyAccountState extends State<MyAccount> {
       appBar: CustomAppBar(
         titleText: 'My Account',
         backgroundColor: kTealColor,
-        leadingColor: Colors.white,
-        titleStyle: TextStyle(color: Colors.white),
+        titleStyle: const TextStyle(color: Colors.white),
         onPressedLeading: () => Navigator.pop(context),
       ),
       body: Provider<MyAccountViewModel>.value(
@@ -60,21 +59,22 @@ class _MyAccountState extends State<MyAccount> {
         builder: (ctx, _) {
           final viewModel = ctx.read<MyAccountViewModel>();
           return ListView(
-            physics: NeverScrollableScrollPhysics(),
+            physics: const NeverScrollableScrollPhysics(),
             children: [
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               ListTile(
                 tileColor: Colors.white,
                 onTap: () {
                   final isEmailAuth = viewModel.ifEmailAuth();
-                  if (isEmailAuth)
+                  if (isEmailAuth) {
                     AppRouter.pushNewScreen(context, screen: ChangeEmail());
+                  }
                 },
                 leading: Text(
                   'Change Email Address',
                   style: Theme.of(context).textTheme.bodyText1,
                 ),
-                trailing: Icon(
+                trailing: const Icon(
                   Icons.arrow_forward_ios,
                   size: 15,
                   color: kTealColor,
@@ -85,14 +85,15 @@ class _MyAccountState extends State<MyAccount> {
                 tileColor: Colors.white,
                 onTap: () {
                   final isEmailAuth = viewModel.ifEmailAuth();
-                  if (isEmailAuth)
+                  if (isEmailAuth) {
                     AppRouter.pushNewScreen(context, screen: ChangePassword());
+                  }
                 },
                 leading: Text(
                   'Change Password',
                   style: Theme.of(context).textTheme.bodyText1,
                 ),
-                trailing: Icon(
+                trailing: const Icon(
                   Icons.arrow_forward_ios,
                   size: 15,
                   color: kTealColor,
@@ -102,7 +103,7 @@ class _MyAccountState extends State<MyAccount> {
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 20.0.w),
                 child: AppButton(
-                  "Delete Account",
+                  'Delete Account',
                   kPinkColor,
                   false,
                   () =>

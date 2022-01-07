@@ -1,5 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/widgets.dart';
 
 import '../../models/app_navigator.dart';
 import '../../screens/chat/chat.dart';
@@ -17,9 +16,9 @@ class ChatNavigator extends AppNavigator {
   Route onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
       case Chat.routeName:
-        return CupertinoPageRoute(builder: (_) => Chat());
+        return CupertinoPageRoute(builder: (_) => const Chat());
       case ChatView.routeName:
-        final props = settings.arguments as ChatViewProps;
+        final props = settings.arguments! as ChatViewProps;
         return CupertinoPageRoute(
           builder: (_) => ChatView(
             props.createMessage,
@@ -30,7 +29,7 @@ class ChatNavigator extends AppNavigator {
           ),
         );
       case ChatProfile.routeName:
-        final props = settings.arguments as ChatProfileProps;
+        final props = settings.arguments! as ChatProfileProps;
         return CupertinoPageRoute(
           builder: (_) => ChatProfile(
             props.chat,
@@ -39,7 +38,7 @@ class ChatNavigator extends AppNavigator {
         );
       case SharedMedia.routeName:
         final conversations =
-            (settings.arguments as Map<String, dynamic>)['conversations']!;
+            (settings.arguments! as Map<String, dynamic>)['conversations'];
         return CupertinoPageRoute(
           builder: (_) => SharedMedia(
             conversations: conversations,

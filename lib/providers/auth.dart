@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:crypto/crypto.dart';
@@ -18,12 +17,12 @@ import '../services/api/user_api_service.dart';
 import '../services/database.dart';
 
 class Auth extends ChangeNotifier {
-  Auth._(this._api, this._apiService);
-
   factory Auth(API api) {
     final apiService = UserAPIService(api);
     return Auth._(api, apiService);
   }
+
+  Auth._(this._api, this._apiService);
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final Database _db = Database.instance;
@@ -35,7 +34,7 @@ class Auth extends ChangeNotifier {
   StreamSubscription<DocumentSnapshot<Map<String, dynamic>>>?
       _userStreamSubscription;
 
-  Stream<DocumentSnapshot<Map<String, dynamic>>>? _userStream;
+  late Stream<DocumentSnapshot<Map<String, dynamic>>>? _userStream;
 
   LokalUser? _user;
   LokalUser? get user => _user;
@@ -70,7 +69,7 @@ class Auth extends ChangeNotifier {
           }
           notifyListeners();
         } catch (e) {
-          throw (e);
+          rethrow;
         }
       },
     );
@@ -87,7 +86,7 @@ class Auth extends ChangeNotifier {
 
         final id = await _db.getUserDocId(user.uid);
         if (id.isEmpty) {
-          this._user = null;
+          _user = null;
 
           notifyListeners();
           return;
@@ -98,30 +97,30 @@ class Auth extends ChangeNotifier {
         }
 
         debugPrint('API called by firebaseAuth changes');
-        this._user = await _apiService.getById(userId: id);
+        _user = await _apiService.getById(userId: id);
 
         _userStreamSubscription?.cancel();
         _userStream = FirebaseFirestore.instance
-            .collection("users")
+            .collection('users')
             .doc(_user!.id)
             .snapshots();
 
         _userStreamSubscription = _userStream!.listen(
           (_) async {
-            print('API called by firestore changes');
-            this._user = await _apiService.getById(userId: id);
+            debugPrint('API called by firestore changes');
+            _user = await _apiService.getById(userId: id);
             notifyListeners();
           },
         );
       } else {
-        this._user = null;
+        _user = null;
         _idToken = null;
       }
 
       notifyListeners();
     } catch (e) {
-      print(e.toString());
-      throw e;
+      debugPrint(e.toString());
+      rethrow;
     }
   }
 
@@ -133,8 +132,8 @@ class Auth extends ChangeNotifier {
         await _userChangeListener(_firebaseUser);
       }
     } catch (e) {
-      print(e.toString());
-      throw e;
+      debugPrint(e.toString());
+      rethrow;
     } finally {
       notifyListeners();
     }
@@ -148,7 +147,7 @@ class Auth extends ChangeNotifier {
       );
       await _userChangeListener(credential.user);
     } catch (e) {
-      throw e;
+      rethrow;
     }
   }
 
@@ -185,7 +184,7 @@ class Auth extends ChangeNotifier {
       final credential = await _auth.signInWithCredential(_credential);
       await _userChangeListener(credential.user);
     } catch (e) {
-      throw e;
+      rethrow;
     }
   }
 
@@ -199,7 +198,7 @@ class Auth extends ChangeNotifier {
       final credential = await _auth.signInWithCredential(_credential);
       await _userChangeListener(credential.user);
     } catch (e) {
-      throw e;
+      rethrow;
     }
   }
 
@@ -243,7 +242,7 @@ class Auth extends ChangeNotifier {
       await firebaseUser?.updateEmail(userEmail);
       await _userChangeListener(credential.user);
     } catch (e) {
-      throw e;
+      rethrow;
     }
   }
 
@@ -251,7 +250,7 @@ class Auth extends ChangeNotifier {
     _authChangesSubscription?.cancel();
     _idTokenChangesSubscription?.cancel();
     _userStreamSubscription?.cancel();
- 
+
     await _userChangeListener(null);
     await _auth.signOut();
   }
@@ -295,9 +294,9 @@ class Auth extends ChangeNotifier {
       );
       return await _auth.currentUser!.updateEmail(newEmail);
     } on FirebaseAuthException catch (e) {
-      throw (e.code);
+      throw e.code;
     } catch (e) {
-      throw (e);
+      rethrow;
     }
   }
 
@@ -317,9 +316,9 @@ class Auth extends ChangeNotifier {
       );
       return await _auth.currentUser!.updatePassword(newPassword);
     } on FirebaseAuthException catch (e) {
-      throw (e.code);
+      throw e.code;
     } catch (e) {
-      throw (e);
+      rethrow;
     }
   }
 
@@ -327,21 +326,21 @@ class Auth extends ChangeNotifier {
 
   Future<void> register(Map<String, dynamic> body) async {
     try {
-      this._user = await _apiService.create(body: body);
+      _user = await _apiService.create(body: body);
       notifyListeners();
     } catch (e) {
-      throw (e);
+      rethrow;
     }
   }
 
-  String _generateNonce([int length = 32]) {
-    final charset =
-        '0123456789ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvwxyz-._';
-    final random = Random.secure();
+  // String _generateNonce([int length = 32]) {
+  //   final charset =
+  //       '0123456789ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvwxyz-._';
+  //   final random = Random.secure();
 
-    return List.generate(length, (_) => charset[random.nextInt(charset.length)])
-        .join();
-  }
+  //   return List.generate(length, (_) => charset[random.nextInt(charset.length)])
+  //       .join();
+  // }
 
   String _sha256ofString(String input) {
     final bytes = utf8.encode(input);

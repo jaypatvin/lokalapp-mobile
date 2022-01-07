@@ -13,16 +13,16 @@ import 'new_add_on.dart';
 
 class ProductAddOn extends StatefulWidget {
   final AddProductGallery gallery;
-  ProductAddOn({required this.gallery});
+  const ProductAddOn({required this.gallery});
   @override
   _ProductAddOnState createState() => _ProductAddOnState();
 }
 
 class _ProductAddOnState extends State<ProductAddOn> {
   Widget buildBody() {
-    var horizontalPadding = MediaQuery.of(context).size.width * 0.05;
-    var topPadding = MediaQuery.of(context).size.height * 0.03;
-    var image = widget.gallery.photoBoxes.first;
+    final horizontalPadding = MediaQuery.of(context).size.width * 0.05;
+    final topPadding = MediaQuery.of(context).size.height * 0.03;
+    final image = widget.gallery.photoBoxes.first;
 
     return Container(
       padding: EdgeInsets.fromLTRB(
@@ -32,32 +32,35 @@ class _ProductAddOnState extends State<ProductAddOn> {
         0,
       ),
       child: SingleChildScrollView(
-        physics: NeverScrollableScrollPhysics(),
-        scrollDirection: Axis.vertical,
+        physics: const NeverScrollableScrollPhysics(),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Consumer<ProductBody>(builder: (context, product, child) {
-              return ProductHeader(
-                photoBox: image,
-                productName: product.name,
-                productPrice: product.basePrice,
-                productStock: product.quantity,
-              );
-            }),
+            Consumer<ProductBody>(
+              builder: (context, product, child) {
+                return ProductHeader(
+                  photoBox: image,
+                  productName: product.name,
+                  productPrice: product.basePrice,
+                  productStock: product.quantity,
+                );
+              },
+            ),
             SizedBox(
               height: MediaQuery.of(context).size.height * 0.05,
             ),
-            Text(
-              "Add-ons",
+            const Text(
+              'Add-ons',
               style: TextStyle(
-                  fontFamily: "Goldplay", fontWeight: FontWeight.w600),
+                fontFamily: 'Goldplay',
+                fontWeight: FontWeight.w600,
+              ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 20,
             ),
             AppButton(
-              "New Add-on",
+              'New Add-on',
               kTealColor,
               true,
               () {
@@ -72,7 +75,7 @@ class _ProductAddOnState extends State<ProductAddOn> {
               height: MediaQuery.of(context).size.height / 3,
             ),
             AppButton(
-              "Skip",
+              'Skip',
               kTealColor,
               true,
               () {
@@ -94,7 +97,7 @@ class _ProductAddOnState extends State<ProductAddOn> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: CustomAppBar(
-        titleText: "Product Add-ons",
+        titleText: 'Product Add-ons',
         onPressedLeading: () {
           Navigator.pop(context);
         },

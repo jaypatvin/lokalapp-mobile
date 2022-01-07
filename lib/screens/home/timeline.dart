@@ -11,7 +11,7 @@ class Timeline extends StatelessWidget {
   final String? userId;
   final double firstIndexPadding;
 
-  Timeline({
+  const Timeline({
     this.scrollController,
     this.userId,
     this.firstIndexPadding = 0,
@@ -21,7 +21,7 @@ class Timeline extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<Activities>(
       builder: (_, activities, __) {
-        if (activities.isLoading)
+        if (activities.isLoading) {
           return SizedBox.expand(
             child: Lottie.asset(
               kAnimationLoading,
@@ -29,11 +29,12 @@ class Timeline extends StatelessWidget {
               repeat: true,
             ),
           );
+        }
 
         final activityFeed =
             userId != null ? activities.findByUser(userId) : activities.feed;
         if (activityFeed.isEmpty) {
-          return Center(
+          return const Center(
             child: Text(
               'No posts yet! Be the first one to post.',
               style: TextStyle(
@@ -43,8 +44,8 @@ class Timeline extends StatelessWidget {
           );
         }
         return ListView.builder(
-          physics: ScrollPhysics(),
-          controller: this.scrollController,
+          physics: const ScrollPhysics(),
+          controller: scrollController,
           shrinkWrap: true,
           itemCount: activityFeed.length, //snapshot.data!.length,
           itemBuilder: (context, index) {
@@ -52,7 +53,7 @@ class Timeline extends StatelessWidget {
             return Container(
               key: Key(activity.id),
               margin: index == 0
-                  ? EdgeInsets.only(top: this.firstIndexPadding)
+                  ? EdgeInsets.only(top: firstIndexPadding)
                   : EdgeInsets.zero,
               child: PostCard(activity: activity),
             );

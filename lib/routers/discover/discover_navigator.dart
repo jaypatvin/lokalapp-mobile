@@ -1,5 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/widgets.dart';
 
 import '../../models/app_navigator.dart';
 import '../../screens/cart/cart_confirmation.dart';
@@ -29,35 +28,35 @@ class DiscoverNavigator extends AppNavigator {
     switch (settings.name) {
       // DISCOVER SCREENS
       case Discover.routeName:
-        return CupertinoPageRoute(builder: (_) => Discover());
+        return CupertinoPageRoute(builder: (_) => const Discover());
       case ExploreCategories.routeName:
         return CupertinoPageRoute(builder: (_) => ExploreCategories());
       case ProductDetail.routeName:
-        final props = settings.arguments as ProductDetailProps;
+        final props = settings.arguments! as ProductDetailProps;
         return CupertinoPageRoute(builder: (_) => ProductDetail(props.product));
       case Search.routeName:
         return CupertinoPageRoute(builder: (_) => Search());
 
       // CART SCREENS
       case CheckoutCart.routeName:
-        return CupertinoPageRoute(builder: (_) => CheckoutCart());
+        return CupertinoPageRoute(builder: (_) => const CheckoutCart());
       case ShopCheckout.routeName:
-        final props = settings.arguments as ShopCheckoutProps;
+        final props = settings.arguments! as ShopCheckoutProps;
         return CupertinoPageRoute(
           builder: (_) => ShopCheckout(shop: props.shop),
         );
       case Checkout.routeName:
-        final props = settings.arguments as CheckoutProps;
+        final props = settings.arguments! as CheckoutProps;
         return CupertinoPageRoute(
           builder: (_) => Checkout(productId: props.productId),
         );
       case CheckoutSchedule.routeName:
-        final props = settings.arguments as CheckoutScheduleProps;
+        final props = settings.arguments! as CheckoutScheduleProps;
         return CupertinoPageRoute(
           builder: (_) => CheckoutSchedule(productId: props.productId),
         );
       case CartConfirmation.routeName:
-        return CupertinoPageRoute(builder: (_) => CartConfirmation());
+        return CupertinoPageRoute(builder: (_) => const CartConfirmation());
       default:
         throw UnimplementedError();
     }

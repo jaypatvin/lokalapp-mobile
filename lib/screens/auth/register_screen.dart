@@ -38,24 +38,22 @@ class _RegisterScreenView extends HookView<RegisterScreenViewModel>
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
-          mainAxisAlignment: MainAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
             AnimatedContainer(
               width: double.infinity,
               height: bottom == 0 ? 280.0.h : 150.h,
               color: kYellowColor,
-              duration: Duration(milliseconds: 100),
+              duration: const Duration(milliseconds: 100),
               child: SafeArea(
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Hero(
-                      tag: "Welcome",
+                      tag: 'Welcome',
                       child: Center(
                         child: Text(
-                          "Welcome to",
+                          'Welcome to',
                           style: TextStyle(
                             fontSize: 25.0.sp,
                             fontWeight: FontWeight.w500,
@@ -64,7 +62,7 @@ class _RegisterScreenView extends HookView<RegisterScreenViewModel>
                       ),
                     ),
                     Hero(
-                      tag: "Community",
+                      tag: 'Community',
                       child: Center(
                         child: Text(
                           context.watch<CommunityProvider>().community?.name ??
@@ -83,7 +81,7 @@ class _RegisterScreenView extends HookView<RegisterScreenViewModel>
             SizedBox(height: 30.0.h),
             Center(
               child: Text(
-                "Create an account below",
+                'Create an account below',
                 style: TextStyle(
                   fontWeight: FontWeight.w500,
                   fontSize: 17.0.sp,
@@ -98,11 +96,11 @@ class _RegisterScreenView extends HookView<RegisterScreenViewModel>
                 emailController: _emailController,
                 passwordController: _passwordController,
                 passwordValidator: vm.passwordValidator,
-                submitButtonLabel: "REGISTER",
+                submitButtonLabel: 'REGISTER',
                 onFormChanged: vm.onFormChanged,
                 emailInputError: vm.errorMessage,
                 onFormSubmit: () async => performFuture(
-                  () async => await vm.emailSignUp(
+                  () async => vm.emailSignUp(
                     email: _emailController.text.trim(),
                     password: _passwordController.text.trim(),
                   ),
@@ -111,9 +109,9 @@ class _RegisterScreenView extends HookView<RegisterScreenViewModel>
             ),
             SizedBox(height: 20.0.h),
             SocialBlock(
-              appleLogin: () async => await performFuture(vm.appleSignUp),
-              fbLogin: () async => await performFuture(vm.facebookSignUp),
-              googleLogin: () async => await performFuture(vm.googleSignUp),
+              appleLogin: () async => performFuture(vm.appleSignUp),
+              fbLogin: () async => performFuture(vm.facebookSignUp),
+              googleLogin: () async => performFuture(vm.googleSignUp),
               buttonWidth: 50.0.w,
             ),
             //SizedBox(height: 30.0.h)

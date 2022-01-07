@@ -35,14 +35,14 @@ class ShopTile extends StatelessWidget {
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
+        children: const [
           Icon(Icons.star, color: Colors.amber, size: 20),
           SizedBox(
             width: 3,
           ),
           // TODO: ask for shop rating ????
           Text(
-            "0",
+            '0',
             style: TextStyle(color: Colors.amber, fontSize: 14),
           ),
           SizedBox(

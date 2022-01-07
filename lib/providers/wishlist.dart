@@ -4,12 +4,11 @@ import '../services/api/api.dart';
 import '../services/api/product_api_service.dart';
 
 class UserWishlist extends ChangeNotifier {
-  UserWishlist._(this._apiService);
-
   factory UserWishlist(API api) {
     return UserWishlist._(ProductApiService(api));
   }
-  // UserWishlist(this._apiService);
+  UserWishlist._(this._apiService);
+
   final ProductApiService _apiService;
 
   List<String> _wishList = [];
@@ -51,8 +50,9 @@ class UserWishlist extends ChangeNotifier {
 
   Future<bool> addToWishlist({required String productId}) async {
     try {
-      if (_wishList.contains(productId))
+      if (_wishList.contains(productId)) {
         throw 'Product already added to wishlist!';
+      }
       _wishList.add(productId);
       notifyListeners();
 
@@ -67,8 +67,9 @@ class UserWishlist extends ChangeNotifier {
 
   Future<bool> removeFromWishlist({required String productId}) async {
     try {
-      if (!_wishList.contains(productId))
+      if (!_wishList.contains(productId)) {
         throw 'Product not found in wishlist!';
+      }
 
       _wishList.remove(productId);
       notifyListeners();

@@ -25,12 +25,12 @@ class Settings extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xffF1FAFF),
+      backgroundColor: const Color(0xffF1FAFF),
       resizeToAvoidBottomInset: true,
       appBar: CustomAppBar(
         backgroundColor: kTealColor,
         titleText: 'Settings',
-        titleStyle: TextStyle(color: Colors.white),
+        titleStyle: const TextStyle(color: Colors.white),
         onPressedLeading: () => Navigator.pop(context),
       ),
       body: SafeArea(
@@ -53,38 +53,42 @@ class Settings extends StatelessWidget {
                   AppRouter.pushNewScreen(context, screen: MyAccount()),
               tileColor: Colors.white,
               leading: Text(
-                "My Account",
+                'My Account',
                 style: Theme.of(context).textTheme.bodyText1,
               ),
-              trailing: Icon(
+              trailing: const Icon(
                 Icons.arrow_forward_ios,
                 size: 14,
                 color: kTealColor,
               ),
             ),
             ListTile(
-              onTap: () =>
-                  AppRouter.pushNewScreen(context, screen: ChatSettings()),
+              onTap: () => AppRouter.pushNewScreen(
+                context,
+                screen: const ChatSettings(),
+              ),
               tileColor: Colors.white,
               leading: Text(
-                "Chat Settings",
+                'Chat Settings',
                 style: Theme.of(context).textTheme.bodyText1,
               ),
-              trailing: Icon(
+              trailing: const Icon(
                 Icons.arrow_forward_ios,
                 size: 14,
                 color: kTealColor,
               ),
             ),
             ListTile(
-              onTap: () => AppRouter.pushNewScreen(context,
-                  screen: NotificationSetting()),
+              onTap: () => AppRouter.pushNewScreen(
+                context,
+                screen: NotificationSetting(),
+              ),
               tileColor: Colors.white,
               leading: Text(
-                "Notification Settings",
+                'Notification Settings',
                 style: Theme.of(context).textTheme.bodyText1,
               ),
-              trailing: Icon(
+              trailing: const Icon(
                 Icons.arrow_forward_ios,
                 size: 14,
                 color: kTealColor,
@@ -95,24 +99,26 @@ class Settings extends StatelessWidget {
                   AppRouter.pushNewScreen(context, screen: PrivacySetting()),
               tileColor: Colors.white,
               leading: Text(
-                "Privacy Settings",
+                'Privacy Settings',
                 style: Theme.of(context).textTheme.bodyText1,
               ),
-              trailing: Icon(
+              trailing: const Icon(
                 Icons.arrow_forward_ios,
                 size: 14,
                 color: kTealColor,
               ),
             ),
             ListTile(
-              onTap: () =>
-                  AppRouter.pushNewScreen(context, screen: InviteAFriend()),
+              onTap: () => AppRouter.pushNewScreen(
+                context,
+                screen: const InviteAFriend(),
+              ),
               tileColor: Colors.white,
               leading: Text(
-                "Invite a friend",
+                'Invite a friend',
                 style: Theme.of(context).textTheme.bodyText1,
               ),
-              trailing: Icon(
+              trailing: const Icon(
                 Icons.arrow_forward_ios,
                 size: 14,
                 color: kTealColor,
@@ -135,10 +141,10 @@ class Settings extends StatelessWidget {
                   AppRouter.pushNewScreen(context, screen: HelpCenter()),
               tileColor: Colors.white,
               leading: Text(
-                "Help Center",
+                'Help Center',
                 style: Theme.of(context).textTheme.bodyText1,
               ),
-              trailing: Icon(
+              trailing: const Icon(
                 Icons.arrow_forward_ios,
                 size: 14,
                 color: kTealColor,
@@ -149,24 +155,26 @@ class Settings extends StatelessWidget {
                   AppRouter.pushNewScreen(context, screen: TermsOfService()),
               tileColor: Colors.white,
               leading: Text(
-                "Terms of Service",
+                'Terms of Service',
                 style: Theme.of(context).textTheme.bodyText1,
               ),
-              trailing: Icon(
+              trailing: const Icon(
                 Icons.arrow_forward_ios,
                 size: 14,
                 color: kTealColor,
               ),
             ),
             ListTile(
-              onTap: () =>
-                  AppRouter.pushNewScreen(context, screen: PrivacyPolicy()),
+              onTap: () => AppRouter.pushNewScreen(
+                context,
+                screen: const PrivacyPolicy(),
+              ),
               tileColor: Colors.white,
               leading: Text(
-                "Privacy Policy",
+                'Privacy Policy',
                 style: Theme.of(context).textTheme.bodyText1,
               ),
-              trailing: Icon(
+              trailing: const Icon(
                 Icons.arrow_forward_ios,
                 size: 14,
                 color: kTealColor,
@@ -176,10 +184,10 @@ class Settings extends StatelessWidget {
               onTap: () => AppRouter.pushNewScreen(context, screen: About()),
               tileColor: Colors.white,
               leading: Text(
-                "About",
+                'About',
                 style: Theme.of(context).textTheme.bodyText1,
               ),
-              trailing: Icon(
+              trailing: const Icon(
                 Icons.arrow_forward_ios,
                 size: 14,
                 color: kTealColor,
@@ -192,7 +200,7 @@ class Settings extends StatelessWidget {
                   SizedBox(
                     width: MediaQuery.of(context).size.width * 0.3,
                     child: AppButton(
-                      "Log Out",
+                      'Log Out',
                       kPinkColor,
                       true,
                       () async {

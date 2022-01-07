@@ -8,10 +8,10 @@ import '../models/operating_hours.dart';
 import '../utils/calendar_picker/calendar_picker.dart';
 import '../utils/calendar_picker/day_of_month_picker.dart';
 import '../utils/calendar_picker/weekday_picker.dart';
+import '../utils/constants/themes.dart';
 import '../utils/functions.utils.dart';
 import '../utils/repeated_days_generator/repeated_days_generator.dart';
 import '../utils/repeated_days_generator/schedule_generator.dart';
-import '../utils/constants/themes.dart';
 import 'app_button.dart';
 
 /// The user can choose to repeat the schedule/subscription by day, week, or months
@@ -130,7 +130,7 @@ class _SchedulePickerState extends State<SchedulePicker> {
   String? _monthDayChoice;
 
   RepeatChoices _repeatChoice = RepeatChoices.day;
-  String _repeatUnit = "";
+  String _repeatUnit = '';
 
   bool _usedDatePicker = true;
 
@@ -141,7 +141,7 @@ class _SchedulePickerState extends State<SchedulePicker> {
     super.initState();
 
     // efficient way of removing repeated choices
-    this._repeatabilityChoices = [
+    _repeatabilityChoices = [
       ...{...widget.repeatabilityChoices}
     ];
 
@@ -150,11 +150,10 @@ class _SchedulePickerState extends State<SchedulePicker> {
       _onOperatingHoursInit();
     } else {
       _onNonOperatingHoursInit();
-      if (!this._repeatabilityChoices!.contains(RepeatChoices.day)) {
-        this._repeatChoice =
-            this._repeatabilityChoices!.contains(RepeatChoices.week)
-                ? RepeatChoices.week
-                : RepeatChoices.month;
+      if (!_repeatabilityChoices!.contains(RepeatChoices.day)) {
+        _repeatChoice = _repeatabilityChoices!.contains(RepeatChoices.week)
+            ? RepeatChoices.week
+            : RepeatChoices.month;
       }
     }
   }
@@ -172,39 +171,41 @@ class _SchedulePickerState extends State<SchedulePicker> {
           indexDay = indexDay.add(
         const Duration(days: 1),
       ),) {
-        this._startDate = indexDay;
+        _startDate = indexDay;
         if (_schedule.repeatType == RepeatChoices.week) {
           if (_schedule.selectableDays.contains(_startDate!.day)) {
             break;
           }
         } else {
-          if (_schedule.selectableDates.any((date) =>
-              date.year == _startDate!.year &&
-              date.month == _startDate!.month &&
-              date.day == _startDate!.day)) {
+          if (_schedule.selectableDates.any(
+            (date) =>
+                date.year == _startDate!.year &&
+                date.month == _startDate!.month &&
+                date.day == _startDate!.day,
+          )) {
             break;
           }
         }
       }
 
-      this._startDates = [_startDate!];
+      _startDates = [_startDate!];
     }
 
-    this._repeatUnit = _schedule.repeatUnit.toString();
-    this._repeatUnitController.text = this._repeatUnit;
-    this._repeatChoice = _schedule.repeatType;
-    this._markedStartDates = _schedule.startDates;
-    this._selectableDays = _schedule.selectableDays;
-    this._startDate ??= _schedule.startDate;
-    this._startDayOfMonth = _schedule.startDayOfMonth;
-    this._selectableDates = _schedule.selectableDates;
+    _repeatUnit = _schedule.repeatUnit.toString();
+    _repeatUnitController.text = _repeatUnit;
+    _repeatChoice = _schedule.repeatType;
+    _markedStartDates = _schedule.startDates;
+    _selectableDays = _schedule.selectableDays;
+    _startDate ??= _schedule.startDate;
+    _startDayOfMonth = _schedule.startDayOfMonth;
+    _selectableDates = _schedule.selectableDates;
 
     // Month:
     var _ordinal = 0;
     _markedStartDayOfMonth = _startDayOfMonth;
-    for (DateTime indexDay = DateTime(_startDate!.year, _startDate!.month, 1);
+    for (DateTime indexDay = DateTime(_startDate!.year, _startDate!.month);
         indexDay.day <= _startDate!.day;
-        indexDay = indexDay.add(Duration(days: 1))) {
+        indexDay = indexDay.add(const Duration(days: 1))) {
       if (indexDay.weekday == _startDate!.weekday) {
         _ordinal++;
       }
@@ -231,7 +232,7 @@ class _SchedulePickerState extends State<SchedulePicker> {
   // opening and closing time picker are displayed.
   void _onNonOperatingHoursInit() {
     _repeatChoice = RepeatChoices.day;
-    _repeatUnitController.text = _repeatUnit = "1";
+    _repeatUnitController.text = _repeatUnit = '1';
     _ordinalChoice = Schedule.ordinalNumbers[0];
     var day = DateTime.now().weekday;
     if (day == 7) day = 0;
@@ -244,45 +245,45 @@ class _SchedulePickerState extends State<SchedulePicker> {
 
   void _onWeekDayPickerDayPressedHandler(int? index) {
     setState(() {
-      if (this._selectableDays.contains(index)) {
-        this._selectableDays.remove(index);
-        widget.onSelectableDaysChanged(this._selectableDays);
-        if (this._markedStartDates.isEmpty) return;
-        final markedStart = this._markedStartDates.first;
+      if (_selectableDays.contains(index)) {
+        _selectableDays.remove(index);
+        widget.onSelectableDaysChanged(_selectableDays);
+        if (_markedStartDates.isEmpty) return;
+        final markedStart = _markedStartDates.first;
         var startDay = markedStart.weekday;
         if (startDay == 7) startDay = 0;
-        if (startDay == index) this._markedStartDates.clear();
+        if (startDay == index) _markedStartDates.clear();
 
-        var day = this._startDate!.weekday;
+        var day = _startDate!.weekday;
         if (day == 7) day = 0;
         if (day == index) {
           final now = DateTime.now();
           for (DateTime indexDay = DateTime(now.year, now.month, now.day);
               indexDay.month <= now.month + 1;
-              indexDay = indexDay.add(Duration(days: 1)),) {
+              indexDay = indexDay.add(const Duration(days: 1)),) {
             var day = indexDay.weekday;
             if (day == 7) day = 0;
-            if (this._selectableDays.contains(day)) {
-              this._startDate = indexDay;
+            if (_selectableDays.contains(day)) {
+              _startDate = indexDay;
               break;
             } else {
-              this._startDate = null;
+              _startDate = null;
             }
           }
         }
       } else {
-        this._selectableDays.add(index!);
-        widget.onSelectableDaysChanged(this._selectableDays);
-        if (this._markedStartDates.isNotEmpty) return;
+        _selectableDays.add(index!);
+        widget.onSelectableDaysChanged(_selectableDays);
+        if (_markedStartDates.isNotEmpty) return;
         final now = DateTime.now();
         for (DateTime indexDay = DateTime(now.year, now.month, now.day);
             indexDay.month <= DateTime.now().month + 1;
-            indexDay = indexDay.add(Duration(days: 1))) {
+            indexDay = indexDay.add(const Duration(days: 1))) {
           int day = indexDay.weekday;
           if (day == 7) day = 0;
           if (day == index) {
-            this._startDate = indexDay;
-            this._markedStartDates.add(indexDay);
+            _startDate = indexDay;
+            _markedStartDates.add(indexDay);
             // widget.onStartDateChanged(_startDate);
             break;
           }
@@ -295,7 +296,7 @@ class _SchedulePickerState extends State<SchedulePicker> {
   // MONTH STATE:
   /* ------------------------------------------------------------------------ */
   Future<int?> showDayOfMonthPicker() async {
-    return await showDialog<int>(
+    return showDialog<int>(
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
@@ -315,12 +316,12 @@ class _SchedulePickerState extends State<SchedulePicker> {
             Navigator.pop(context, _startDayOfMonth);
           },
           onConfirm: () {
-            this.setState(() {
+            setState(() {
               _startDayOfMonth = _markedStartDayOfMonth;
             });
             _usedDatePicker = true;
             setMonthStartDate(day: _startDayOfMonth);
-            Navigator.pop(context, this._startDayOfMonth);
+            Navigator.pop(context, _startDayOfMonth);
           },
         );
       },
@@ -363,7 +364,7 @@ class _SchedulePickerState extends State<SchedulePicker> {
   /* ------------------------------------------------------------------------ */
 
   Future<DateTime?> showCalendarPicker() async {
-    return await showDialog<DateTime>(
+    return showDialog<DateTime>(
       context: context,
       barrierDismissible: false,
       useSafeArea: false,
@@ -373,31 +374,33 @@ class _SchedulePickerState extends State<SchedulePicker> {
           repeatChoice: _repeatChoice,
           startDates: _markedStartDates,
           selectableDays: _selectableDays,
-          selectableDates:
-              widget.limitSelectableDates ? this._selectableDates : [],
+          selectableDates: widget.limitSelectableDates ? _selectableDates : [],
           onDayPressed: (day) {
             setState(() {
-              if (_markedStartDates.contains(day))
+              if (_markedStartDates.contains(day)) {
                 _markedStartDates.clear();
-              else
+              } else {
                 _markedStartDates
                   ..clear()
                   ..add(day);
+              }
             });
           },
           onCancel: () {
-            if (_startDate != null)
+            if (_startDate != null) {
               _markedStartDates
                 ..clear()
                 ..add(_startDate!);
+            }
             Navigator.pop(context, _startDate);
           },
           onConfirm: () {
             setState(() {
-              if (_markedStartDates.isNotEmpty)
+              if (_markedStartDates.isNotEmpty) {
                 _startDate = _markedStartDates.first;
-              else
+              } else {
                 _startDate = null;
+              }
             });
             // startDate has changed!
             //widget.onStartDateChanged(_startDate);
@@ -420,7 +423,7 @@ class _SchedulePickerState extends State<SchedulePicker> {
         SizedBox(height: 10.0.h),
         if (_selectableDays.isEmpty)
           Text(
-            "Select a day or days to repeat every week",
+            'Select a day or days to repeat every week',
             style: Theme.of(context).textTheme.bodyText1!.copyWith(
                   color: Colors.red,
                   fontWeight: FontWeight.normal,
@@ -437,7 +440,7 @@ class _SchedulePickerState extends State<SchedulePicker> {
       final weekdayIndex = en_USSymbols.WEEKDAYS.indexOf(_monthDayChoice!);
       final weekday = en_USSymbols.SHORTWEEKDAYS[weekdayIndex].toLowerCase();
       final ordinalNumber = Schedule.ordinalNumbers.indexOf(_ordinalChoice) + 1;
-      final _repeatType = "$ordinalNumber-$weekday";
+      final _repeatType = '$ordinalNumber-$weekday';
       return _repeatType;
     } else {
       final _repeatType = _repeatChoice.value.toLowerCase();
@@ -447,7 +450,7 @@ class _SchedulePickerState extends State<SchedulePicker> {
 
   void _onStartDateChanged() {
     if (_repeatChoice == RepeatChoices.week) {
-      int everyNWeeks = int.tryParse(_repeatUnit) ?? 0;
+      final int everyNWeeks = int.tryParse(_repeatUnit) ?? 0;
       if (everyNWeeks <= 0) return;
       _startDates = _scheduleGenerator.getWeekDayStartDates(
         _startDate,
@@ -459,7 +462,7 @@ class _SchedulePickerState extends State<SchedulePicker> {
       _markedStartDates = _startDates;
     }
 
-    print(_startDates);
+    debugPrint(_startDates.toString());
     final _repeatType = _getRepeatType();
     widget.onStartDatesChanged(_startDates, _repeatType);
   }
@@ -476,12 +479,13 @@ class _SchedulePickerState extends State<SchedulePicker> {
 
   void _onRepeatChoiceChanged(RepeatChoices? choice) {
     if (choice == _repeatChoice) return;
-    if (this.mounted)
+    if (mounted) {
       setState(() {
-        this._repeatChoice = choice!;
+        _repeatChoice = choice!;
       });
+    }
 
-    _usedDatePicker = choice == RepeatChoices.month ? false : true;
+    _usedDatePicker = !(choice == RepeatChoices.month);
     final repeatType = _getRepeatType();
     widget.onRepeatTypeChanged(repeatType);
 
@@ -531,7 +535,6 @@ class _SchedulePickerState extends State<SchedulePicker> {
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment: MainAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
         Text(
@@ -560,7 +563,7 @@ class _SchedulePickerState extends State<SchedulePicker> {
         if (_repeatChoice == RepeatChoices.week) _weekdayPicker(),
         if (_repeatChoice != RepeatChoices.month)
           _StartDatePicker(
-            startDate: this._startDate,
+            startDate: _startDate,
             onSelectStartDate: _selectStartDateHandler(),
             editable: widget.editable,
           ),
@@ -603,7 +606,7 @@ class _DayOfMonthPickerBody extends StatelessWidget {
         shape:
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0)),
         child: SingleChildScrollView(
-          physics: NeverScrollableScrollPhysics(),
+          physics: const NeverScrollableScrollPhysics(),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -611,14 +614,14 @@ class _DayOfMonthPickerBody extends StatelessWidget {
                 height: MediaQuery.of(context).size.height * 0.02,
               ),
               Text(
-                "Start Date",
+                'Start Date',
                 style: Theme.of(context).textTheme.headline5,
               ),
               DayOfMonthPicker(
                 width: MediaQuery.of(context).size.width * 0.95,
-                padding: EdgeInsets.all(5.0),
-                onDayPressed: this.onDayPressed,
-                markedDay: this.markedStartDayOfMonth,
+                padding: const EdgeInsets.all(5.0),
+                onDayPressed: onDayPressed,
+                markedDay: markedStartDayOfMonth,
               ),
               Container(
                 padding:
@@ -626,8 +629,8 @@ class _DayOfMonthPickerBody extends StatelessWidget {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    AppButton("Cancel", kTealColor, false, onCancel),
-                    AppButton("Confirm", kTealColor, true, onConfirm),
+                    AppButton('Cancel', kTealColor, false, onCancel),
+                    AppButton('Confirm', kTealColor, true, onConfirm),
                   ],
                 ),
               ),
@@ -668,7 +671,7 @@ class _CalendarPickerBody extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(30.0),
         ),
-        child: Container(
+        child: SizedBox(
           height: MediaQuery.of(context).size.height * 0.85,
           child: Column(
             children: [
@@ -676,49 +679,47 @@ class _CalendarPickerBody extends StatelessWidget {
                 height: MediaQuery.of(context).size.height * 0.02,
               ),
               Text(
-                "Start Date",
+                'Start Date',
                 style: Theme.of(context).textTheme.headline5,
               ),
               Container(
                 width: MediaQuery.of(context).size.width * 0.95,
                 height: MediaQuery.of(context).size.height * 0.65,
-                padding: EdgeInsets.all(5.0),
+                padding: const EdgeInsets.all(5.0),
                 child: CalendarCarousel(
                   width: MediaQuery.of(context).size.width * 0.95,
-                  onDayPressed: this.onDayPressed,
-                  markedDatesMap: this.startDates,
-                  selectableDaysMap: this.repeatChoice == RepeatChoices.week
-                      ? this.selectableDays
+                  onDayPressed: onDayPressed,
+                  markedDatesMap: startDates,
+                  selectableDaysMap: repeatChoice == RepeatChoices.week
+                      ? selectableDays
                       : [1, 2, 3, 4, 5, 6, 0],
-                  selectableDates: this.selectableDates,
+                  selectableDates: selectableDates,
                 ),
               ),
               Flexible(
-                child: Container(
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width * 0.3,
-                        child: AppButton(
-                          "Cancel",
-                          kTealColor,
-                          false,
-                          onCancel,
-                        ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.3,
+                      child: AppButton(
+                        'Cancel',
+                        kTealColor,
+                        false,
+                        onCancel,
                       ),
-                      SizedBox(width: 5.0.h),
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width * 0.3,
-                        child: AppButton(
-                          "Confirm",
-                          kTealColor,
-                          true,
-                          onConfirm,
-                        ),
+                    ),
+                    SizedBox(width: 5.0.h),
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.3,
+                      child: AppButton(
+                        'Confirm',
+                        kTealColor,
+                        true,
+                        onConfirm,
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
             ],
@@ -756,21 +757,21 @@ class _DayOfMonth extends StatelessWidget {
 
   // change state functions
   String getOrdinal(int input) {
-    int value = input % 100;
+    final int value = input % 100;
 
     if (3 < value && value < 21) {
-      return "${input}th";
+      return '${input}th';
     }
 
     switch (input % 10) {
       case 1:
-        return "${input}st";
+        return '${input}st';
       case 2:
-        return "${input}nd";
+        return '${input}nd';
       case 3:
-        return "${input}rd";
+        return '${input}rd';
       default:
-        return "${input}th";
+        return '${input}th';
     }
   }
 
@@ -779,24 +780,22 @@ class _DayOfMonth extends StatelessWidget {
     final height = MediaQuery.of(context).size.height;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment: MainAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
         SizedBox(
           height: 50.0.h,
           width: double.infinity,
           child: AppButton(
-            this.startDayOfMonth == 0
+            startDayOfMonth == 0
                 ? 'Select Start Day'
-                : '${getOrdinal(this.startDayOfMonth)} of the month',
+                : '${getOrdinal(startDayOfMonth)} of the month',
             kTealColor,
             true,
-            this.editable ? this.onShowDayOfMonthPicker : null,
+            editable ? onShowDayOfMonthPicker : null,
             textStyle: TextStyle(fontSize: 20.0.sp),
           ),
         ),
         Align(
-          alignment: Alignment.center,
           child: Padding(
             padding: EdgeInsets.symmetric(vertical: height * 0.01),
             child: Text(
@@ -821,15 +820,14 @@ class _DayOfMonth extends StatelessWidget {
                 ),
                 child: DropdownButtonHideUnderline(
                   child: DropdownButton<String>(
-                    items: this.ordinalNumbers.map((String? choice) {
+                    items: ordinalNumbers.map((String? choice) {
                       return DropdownMenuItem<String>(
                         value: choice,
                         child: Text(choice!),
                       );
                     }).toList(),
-                    value: this.ordinalChoice,
-                    onChanged:
-                        this.editable ? this.onOrdinalChoiceChanged : null,
+                    value: ordinalChoice,
+                    onChanged: editable ? onOrdinalChoiceChanged : null,
                     style: Theme.of(context).textTheme.bodyText1!.copyWith(
                           color: Colors.black,
                           fontWeight: FontWeight.normal,
@@ -861,9 +859,8 @@ class _DayOfMonth extends StatelessWidget {
                         child: Text(choice),
                       );
                     }).toList(),
-                    value: this.monthDayChoice,
-                    onChanged:
-                        this.editable ? this.onMonthDayChoiceChanged : null,
+                    value: monthDayChoice,
+                    onChanged: editable ? onMonthDayChoiceChanged : null,
                     style: Theme.of(context).textTheme.bodyText1!.copyWith(
                           color: Colors.black,
                           fontWeight: FontWeight.normal,
@@ -907,8 +904,8 @@ class _DayOfMonth extends StatelessWidget {
                         child: Text(choice),
                       );
                     }).toList(),
-                    value: this.monthChoice,
-                    onChanged: this.editable ? this.onMonthChoiceChanged : null,
+                    value: monthChoice,
+                    onChanged: editable ? onMonthChoiceChanged : null,
                     style: Theme.of(context).textTheme.bodyText1!.copyWith(
                           color: Colors.black,
                           fontWeight: FontWeight.normal,
@@ -942,7 +939,7 @@ class _StartDatePicker extends StatelessWidget {
     return Row(
       children: [
         Text(
-          "Start date",
+          'Start date',
           style: Theme.of(context)
               .textTheme
               .bodyText1!
@@ -953,12 +950,12 @@ class _StartDatePicker extends StatelessWidget {
           child: SizedBox(
             height: 50.0.h,
             child: AppButton(
-              this.startDate != null
-                  ? DateFormat.MMMMd().format(this.startDate!)
-                  : "Select Start Date",
+              startDate != null
+                  ? DateFormat.MMMMd().format(startDate!)
+                  : 'Select Start Date',
               kTealColor,
               true,
-              this.editable ? this.onSelectStartDate : null,
+              editable ? onSelectStartDate : null,
               textStyle: TextStyle(
                 fontSize: 20.0.sp,
               ),
@@ -998,32 +995,26 @@ class _RepeatabilityPicker extends StatelessWidget {
         Row(
           children: [
             Text(
-              "Every",
+              'Every',
               style: Theme.of(context).textTheme.bodyText1!.copyWith(
                     fontWeight: FontWeight.normal,
                     fontSize: 20.0.sp,
                   ),
             ),
             SizedBox(width: 30.0.w),
-            Container(
+            SizedBox(
               width: 60.0.w,
               child: TextField(
-                enabled: this.editable,
-                onChanged: this.onRepeatUnitChanged,
-                controller: this.repeatUnitController,
-                focusNode: this.repeatUnitFocusNode,
+                enabled: editable,
+                onChanged: onRepeatUnitChanged,
+                controller: repeatUnitController,
+                focusNode: repeatUnitFocusNode,
                 keyboardType: TextInputType.number,
                 inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                decoration: InputDecoration(
-                  enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.black),
-                  ),
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.black),
-                  ),
-                  border: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.black),
-                  ),
+                decoration: const InputDecoration(
+                  enabledBorder: UnderlineInputBorder(),
+                  focusedBorder: UnderlineInputBorder(),
+                  border: UnderlineInputBorder(),
                 ),
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.headline4!.copyWith(
@@ -1044,20 +1035,18 @@ class _RepeatabilityPicker extends StatelessWidget {
                 ),
                 child: DropdownButtonHideUnderline(
                   child: DropdownButton<RepeatChoices>(
-                    items:
-                        this.repeatabilityChoices!.map((RepeatChoices choice) {
+                    items: repeatabilityChoices!.map((RepeatChoices choice) {
                       return DropdownMenuItem<RepeatChoices>(
                         value: choice,
                         child: Text(
-                          int.tryParse(this.repeatUnit) == 1
+                          int.tryParse(repeatUnit) == 1
                               ? choice.value
-                              : choice.value + "s",
+                              : '${choice.value}s',
                         ),
                       );
                     }).toList(),
-                    value: this.repeatChoice,
-                    onChanged:
-                        this.editable ? this.onRepeatChoiceChanged : null,
+                    value: repeatChoice,
+                    onChanged: editable ? onRepeatChoiceChanged : null,
                     style: Theme.of(context).textTheme.bodyText1!.copyWith(
                           color: Colors.black,
                           fontWeight: FontWeight.normal,
@@ -1072,8 +1061,8 @@ class _RepeatabilityPicker extends StatelessWidget {
         ),
         SizedBox(height: 5.0.h),
         if ((int.tryParse(repeatUnit) ?? 0) <= 0)
-          Text(
-            "Please enter a valid repeat value.",
+          const Text(
+            'Please enter a valid repeat value.',
             style: TextStyle(
               color: Colors.red,
             ),

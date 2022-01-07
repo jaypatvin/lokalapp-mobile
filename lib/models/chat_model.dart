@@ -154,10 +154,10 @@ class ChatModel {
   factory ChatModel.fromMap(Map<String, dynamic> map) {
     ChatType chatType;
     switch (map['chat_type']) {
-      case "product":
+      case 'product':
         chatType = ChatType.product;
         break;
-      case "shop":
+      case 'shop':
         chatType = ChatType.shop;
         break;
       default:
@@ -187,13 +187,13 @@ class ChatModel {
   }
 
   factory ChatModel.fromDocument(QueryDocumentSnapshot doc) {
-    final map = doc.data() as Map<String, dynamic>;
+    final map = doc.data() as Map<String, dynamic>?;
     ChatType chatType;
-    switch (map['chat_type']) {
-      case "product":
+    switch (map!['chat_type']) {
+      case 'product':
         chatType = ChatType.product;
         break;
-      case "shop":
+      case 'shop':
         chatType = ChatType.shop;
         break;
       default:

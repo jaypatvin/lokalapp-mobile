@@ -52,7 +52,7 @@ class OrderDetailsViewModel extends ViewModel {
       case OrderAction.pay:
         AppRouter.pushNewScreen(
           context,
-          screen: PaymentOption(order: this.order),
+          screen: PaymentOption(order: order),
         );
         break;
       case OrderAction.viewPayment:
@@ -69,7 +69,7 @@ class OrderDetailsViewModel extends ViewModel {
         if (success) {
           AppRouter.pushNewScreen(
             context,
-            screen: PaymentConfirmed(order: this.order),
+            screen: PaymentConfirmed(order: order),
           );
         }
         break;
@@ -86,7 +86,7 @@ class OrderDetailsViewModel extends ViewModel {
         if (success) {
           AppRouter.pushNewScreen(
             context,
-            screen: OrderReceived(order: this.order),
+            screen: OrderReceived(order: order),
           );
         }
 

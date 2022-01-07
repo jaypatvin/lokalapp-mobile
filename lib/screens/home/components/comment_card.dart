@@ -46,30 +46,33 @@ class _CommentCardView extends HookView<CommentCardViewModel> {
       [vm.comment],
     );
 
-    final _images = useMemoized<SizedBox>(() {
-      final images = vm.comment.images;
-      return SizedBox(
-        height: images.length > 0 ? 95.h : 0,
-        child: ListView.builder(
-          scrollDirection: Axis.horizontal,
-          physics: NeverScrollableScrollPhysics(),
-          itemCount: images.length,
-          itemBuilder: (context, index) {
-            return Container(
-              height: 95.h,
-              width: 95.h,
-              child: NetworkPhotoThumbnail(
-                galleryItem: images[index],
-                onTap: () => openGallery(context, index, images),
-              ),
-            );
-          },
-        ),
-      );
-    }, [vm.comment, vm.activityId]);
+    final _images = useMemoized<SizedBox>(
+      () {
+        final images = vm.comment.images;
+        return SizedBox(
+          height: images.isNotEmpty ? 95.h : 0,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: images.length,
+            itemBuilder: (context, index) {
+              return SizedBox(
+                height: 95.h,
+                width: 95.h,
+                child: NetworkPhotoThumbnail(
+                  galleryItem: images[index],
+                  onTap: () => openGallery(context, index, images),
+                ),
+              );
+            },
+          ),
+        );
+      },
+      [vm.comment, vm.activityId],
+    );
 
     return InkWell(
-      onLongPress: () => vm.onLongPress(_CommentOptions()),
+      onLongPress: () => vm.onLongPress(const _CommentOptions()),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -85,7 +88,7 @@ class _CommentCardView extends HookView<CommentCardViewModel> {
               text: TextSpan(
                 children: [
                   TextSpan(
-                    text: "${user.firstName} ${user.lastName}",
+                    text: '${user.firstName} ${user.lastName}',
                     style: Theme.of(context)
                         .textTheme
                         .subtitle2!
@@ -94,7 +97,7 @@ class _CommentCardView extends HookView<CommentCardViewModel> {
                       ..onTap = vm.onUserPressed,
                   ),
                   TextSpan(
-                    text: " ${vm.comment.message}",
+                    text: ' ${vm.comment.message}',
                     style: Theme.of(context)
                         .textTheme
                         .bodyText2!
@@ -105,7 +108,7 @@ class _CommentCardView extends HookView<CommentCardViewModel> {
             ),
             trailing: IconButton(
               padding: EdgeInsets.zero,
-              constraints: BoxConstraints(),
+              constraints: const BoxConstraints(),
               icon: Icon(
                 vm.isLiked ? MdiIcons.heart : MdiIcons.heartOutline,
                 color: vm.isLiked ? Colors.red : Colors.black,
@@ -139,40 +142,40 @@ class _CommentOptions extends StatelessWidget {
         if (onReply != null)
           ListTile(
             onTap: onReply,
-            leading: Icon(
+            leading: const Icon(
               MdiIcons.reply,
               color: kTealColor,
             ),
             title: Text(
-              "Reply",
+              'Reply',
               softWrap: true,
               style: Theme.of(context).textTheme.subtitle1!.copyWith(
                     color: kTealColor,
                   ),
             ),
           ),
-        if (this.onHide != null)
+        if (onHide != null)
           ListTile(
             onTap: onHide,
-            leading: Icon(
+            leading: const Icon(
               MdiIcons.eyeOffOutline,
               color: Colors.black,
             ),
             title: Text(
-              "Hide Comment",
+              'Hide Comment',
               softWrap: true,
               style: Theme.of(context).textTheme.subtitle1,
             ),
           ),
-        if (this.onReport != null)
+        if (onReport != null)
           ListTile(
-            onTap: this.onReport,
-            leading: Icon(
+            onTap: onReport,
+            leading: const Icon(
               MdiIcons.alertCircleOutline,
               color: kPinkColor,
             ),
             title: Text(
-              "Report Comment",
+              'Report Comment',
               softWrap: true,
               style: Theme.of(context).textTheme.subtitle1!.copyWith(
                     color: kPinkColor,

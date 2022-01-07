@@ -9,12 +9,12 @@ class ActivityAPIService extends APIService<ActivityFeed> {
   const ActivityAPIService(this.api);
 
   final API api;
-  final Endpoint endpoint = Endpoint.activity;
+  Endpoint get endpoint => Endpoint.activity;
 
   //#region -- GET
   Future<ActivityFeed> getById({required String activityId}) async {
     try {
-      final response = await this.getter(
+      final response = await getter(
         api.endpointUri(endpoint, pathSegments: [activityId]),
         headers: api.authHeader(),
       );
@@ -30,7 +30,7 @@ class ActivityAPIService extends APIService<ActivityFeed> {
 
   Future<List<ActivityFeed>> getAll() async {
     try {
-      final response = await this.getter(
+      final response = await getter(
         api.endpointUri(endpoint),
         headers: api.authHeader(),
       );
@@ -50,7 +50,7 @@ class ActivityAPIService extends APIService<ActivityFeed> {
         Endpoint.user,
         pathSegments: [userId, 'activities'],
       );
-      final response = await this.getter(
+      final response = await getter(
         uri,
         headers: api.authHeader(),
       );
@@ -72,7 +72,7 @@ class ActivityAPIService extends APIService<ActivityFeed> {
         Endpoint.community,
         pathSegments: [communityId, 'activities'],
       );
-      final response = await this.getter(
+      final response = await getter(
         uri,
         headers: api.authHeader(),
       );
@@ -93,7 +93,7 @@ class ActivityAPIService extends APIService<ActivityFeed> {
   }) async {
     try {
       final body = json.encode(data);
-      final response = await this.poster(
+      final response = await poster(
         api.endpointUri(endpoint),
         headers: api.withBodyHeader(),
         body: body,
@@ -117,10 +117,10 @@ class ActivityAPIService extends APIService<ActivityFeed> {
         endpoint,
         pathSegments: [activityId, 'like'],
       );
-      final response = await this.poster(
+      final response = await poster(
         uri,
         headers: api.withBodyHeader(),
-        body: json.encode({"user_id": userId}),
+        body: json.encode({'user_id': userId}),
       );
 
       return handleGenericResponse(response);
@@ -134,7 +134,7 @@ class ActivityAPIService extends APIService<ActivityFeed> {
   Future<bool> delete({required String activityId}) async {
     try {
       final uri = api.endpointUri(endpoint, pathSegments: [activityId]);
-      final response = await this.deleter(
+      final response = await deleter(
         uri,
         headers: api.authHeader(),
       );
@@ -145,15 +145,18 @@ class ActivityAPIService extends APIService<ActivityFeed> {
     }
   }
 
-  Future<bool> unlike({required String activityId, required userId}) async {
+  Future<bool> unlike({
+    required String activityId,
+    required String userId,
+  }) async {
     try {
       final uri =
           api.endpointUri(endpoint, pathSegments: [activityId, 'unlike']);
 
-      final response = await this.deleter(
+      final response = await deleter(
         uri,
         headers: api.withBodyHeader(),
-        body: jsonEncode({"user_id": userId}),
+        body: jsonEncode({'user_id': userId}),
       );
 
       return handleGenericResponse(response);
@@ -171,7 +174,7 @@ class ActivityAPIService extends APIService<ActivityFeed> {
     try {
       final uri = api.endpointUri(endpoint, pathSegments: [activityId]);
 
-      final response = await this.putter(
+      final response = await putter(
         uri,
         headers: api.withBodyHeader(),
         body: jsonEncode(udpateData),

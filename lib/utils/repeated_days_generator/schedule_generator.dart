@@ -9,11 +9,11 @@ import 'repeated_days_generator.dart';
 
 class Schedule {
   static const List<String?> ordinalNumbers = [
-    "First",
-    "Second",
-    "Third",
-    "Fourth",
-    "Fifth"
+    'First',
+    'Second',
+    'Third',
+    'Fourth',
+    'Fifth'
   ];
 
   final RepeatChoices repeatType;
@@ -99,12 +99,12 @@ class ScheduleGenerator {
   /// `"unit"-"type"`
   RepeatChoices getRepeatChoicesFromString(String repeatType) {
     var repeatChoice = RepeatChoices.month;
-    if (repeatType.split("-").length <= 1) {
-      RepeatChoices.values.forEach((choice) {
+    if (repeatType.split('-').length <= 1) {
+      for (final choice in RepeatChoices.values) {
         if (choice.value.toLowerCase() == repeatType) {
           repeatChoice = choice;
         }
-      });
+      }
     }
     return repeatChoice;
   }
@@ -137,7 +137,7 @@ class ScheduleGenerator {
             .toList()
           ..sort();
       case RepeatChoices.month:
-        final type = repeatType!.split("-");
+        final type = repeatType!.split('-');
         // The user used the ordinal picker
         if (type.length > 1) {
           final _ordinal = int.tryParse(type[0]);
@@ -165,18 +165,18 @@ class ScheduleGenerator {
     RepeatChoices? repeatChoice;
     late bool isNDays;
     final repeatType = operatingHours.repeatType!;
-    if (repeatType.split("-").length > 1) {
+    if (repeatType.split('-').length > 1) {
       isNDays = true;
       repeatChoice = RepeatChoices.month;
     }
-    RepeatChoices.values.forEach((element) {
+    for (final element in RepeatChoices.values) {
       if (element.value.toLowerCase() == operatingHours.repeatType) {
         repeatChoice = element;
       }
-    });
+    }
 
     final repeatUnit = operatingHours.repeatUnit;
-    final startDate = DateFormat("yyyy-MM-dd").parse(
+    final startDate = DateFormat('yyyy-MM-dd').parse(
       operatingHours.startDates!.first,
     );
 
@@ -189,27 +189,27 @@ class ScheduleGenerator {
         );
         break;
       case RepeatChoices.week:
-        var selectableDays = <int>[];
-        operatingHours.startDates!.forEach((element) {
-          var date = DateFormat("yyyy-MM-dd").parse(element);
+        final selectableDays = <int>[];
+        for (final element in operatingHours.startDates!) {
+          final date = DateFormat('yyyy-MM-dd').parse(element);
           var weekday = date.weekday;
           if (weekday == 7) weekday = 0;
           selectableDays.add(weekday);
-        });
+        }
         selectableDates = _generator.getRepeatedWeekDays(
           startDate: startDate,
           everyNWeeks: repeatUnit!,
           selectedDays: selectableDays,
           validate: false,
         );
-        var startDates = <String>[];
+        final startDates = <String>[];
         for (int i = 0; i < selectableDays.length; i++) {
-          startDates.add(DateFormat("yyyy-MM-dd").format(selectableDates[i]));
+          startDates.add(DateFormat('yyyy-MM-dd').format(selectableDates[i]));
         }
         break;
       case RepeatChoices.month:
         if (isNDays) {
-          var type = operatingHours.repeatType!.split("-");
+          final type = operatingHours.repeatType!.split('-');
           selectableDates = _generator.getRepeatedMonthDaysByNthDay(
             everyNMonths: operatingHours.repeatUnit!,
             ordinal: int.parse(type[0]),
@@ -231,18 +231,18 @@ class ScheduleGenerator {
     }
 
     final unavailableDates = <DateTime>[];
-    operatingHours.unavailableDates!.forEach((element) {
-      unavailableDates.add(DateFormat("yyyy-MM-dd").parse(element));
-    });
+    for (final element in operatingHours.unavailableDates!) {
+      unavailableDates.add(DateFormat('yyyy-MM-dd').parse(element));
+    }
     selectableDates
         .removeWhere((element) => unavailableDates.contains(element));
 
-    operatingHours.customDates!.forEach((element) {
-      final date = DateFormat("yyyy-MM-dd").parse(element.date!);
+    for (final element in operatingHours.customDates!) {
+      final date = DateFormat('yyyy-MM-dd').parse(element.date!);
       if (!selectableDates.contains(date)) {
         selectableDates.add(date);
       }
-    });
+    }
 
     return selectableDates;
   }
@@ -254,14 +254,14 @@ class ScheduleGenerator {
     final _startDates = <DateTime>[];
 
     // Day and week:
-    operatingHours.startDates!.forEach((element) {
-      final date = DateFormat("yyyy-MM-dd").parse(element);
+    for (final element in operatingHours.startDates!) {
+      final date = DateFormat('yyyy-MM-dd').parse(element);
       int weekday = date.weekday;
       if (weekday == 7) weekday = 0;
       _selectableDays.add(weekday);
       _startDates.add(date);
-    });
-    final _startDate = DateFormat("yyyy-MM-dd").parse(
+    }
+    final _startDate = DateFormat('yyyy-MM-dd').parse(
       operatingHours.startDates!.first,
     );
 
@@ -270,14 +270,14 @@ class ScheduleGenerator {
 
     final repeatType = operatingHours.repeatType!;
     var _repeatChoice = RepeatChoices.day;
-    if (repeatType.split("-").length > 1) {
+    if (repeatType.split('-').length > 1) {
       _repeatChoice = RepeatChoices.month;
     } else {
-      RepeatChoices.values.forEach((element) {
+      for (final element in RepeatChoices.values) {
         if (element.value.toLowerCase() == operatingHours.repeatType) {
           _repeatChoice = element;
         }
-      });
+      }
       _startDayOfMonth = _startDate.day;
     }
 

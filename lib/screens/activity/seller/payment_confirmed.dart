@@ -28,11 +28,11 @@ class PaymentConfirmed extends StatelessWidget {
           children: [
             SizedBox(height: 20.0.h),
             Text(
-              "Payment Confirmed!",
+              'Payment Confirmed!',
               style: Theme.of(context).textTheme.headline5,
             ),
             SizedBox(height: 20.0.h),
-            Container(
+            SizedBox(
               height: 100.0.h,
               width: double.infinity,
               child: Stack(
@@ -60,16 +60,15 @@ class PaymentConfirmed extends StatelessWidget {
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 24.0.w),
               child: TransactionDetails(
-                transaction: this.order,
+                transaction: order,
                 isBuyer: false,
               ),
             ),
-            Spacer(),
+            const Spacer(),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 16.0.w),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   SizedBox(
                     width: double.infinity,
@@ -78,7 +77,7 @@ class PaymentConfirmed extends StatelessWidget {
                   SizedBox(
                     width: double.infinity,
                     child: AppButton(
-                      "Back to Activity",
+                      'Back to Activity',
                       kTealColor,
                       true,
                       () {

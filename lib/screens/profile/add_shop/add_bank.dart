@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -34,7 +33,7 @@ class _AddBankView extends StatelessView<AddBankViewModel> {
   @override
   Widget render(BuildContext context, AddBankViewModel vm) {
     return Scaffold(
-      appBar: CustomAppBar(
+      appBar: const CustomAppBar(
         titleText: 'Add Shop',
       ),
       body: Padding(
@@ -95,7 +94,7 @@ class _AddBankView extends StatelessView<AddBankViewModel> {
                                       .iconUrl,
                                   fit: BoxFit.contain,
                                   errorBuilder: (_, __, ___) =>
-                                      Text('No image'),
+                                      const Text('No image'),
                                 ),
                               ),
                             ),
@@ -109,7 +108,8 @@ class _AddBankView extends StatelessView<AddBankViewModel> {
                                           .textTheme
                                           .subtitle2
                                           ?.copyWith(
-                                              fontWeight: FontWeight.bold),
+                                            fontWeight: FontWeight.bold,
+                                          ),
                                     ),
                                     TextSpan(
                                       text: '${item.accountName}\n'
@@ -125,7 +125,7 @@ class _AddBankView extends StatelessView<AddBankViewModel> {
                             ),
                             Container(
                               margin: const EdgeInsets.only(right: 16.0),
-                              child: Icon(
+                              child: const Icon(
                                 MdiIcons.squareEditOutline,
                                 color: kTealColor,
                               ),
@@ -138,20 +138,24 @@ class _AddBankView extends StatelessView<AddBankViewModel> {
                 );
               },
             ),
-            Spacer(),
+            const Spacer(),
             SizedBox(
               width: double.infinity,
-              child: Consumer<ShopBody>(builder: (_, shopBody, __) {
-                final isBankEmpty =
-                    shopBody.paymentOptions?.bankAccounts.isEmpty ?? true;
+              child: Consumer<ShopBody>(
+                builder: (_, shopBody, __) {
+                  final isBankEmpty =
+                      shopBody.paymentOptions?.bankAccounts.isEmpty ?? true;
 
-                return AppButton(
-                  isBankEmpty ? 'Next' : 'Back to Payment Options',
-                  kTealColor,
-                  true,
-                  isBankEmpty ? vm.onAddBankDetails : vm.onBackToPaymentOptions,
-                );
-              }),
+                  return AppButton(
+                    isBankEmpty ? 'Next' : 'Back to Payment Options',
+                    kTealColor,
+                    true,
+                    isBankEmpty
+                        ? vm.onAddBankDetails
+                        : vm.onBackToPaymentOptions,
+                  );
+                },
+              ),
             ),
           ],
         ),

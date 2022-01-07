@@ -14,6 +14,7 @@ class ActivityFeedComment {
   DateTime createdAt;
   bool archived;
   bool liked;
+
   ActivityFeedComment({
     required this.id,
     required this.userId,
@@ -58,16 +59,18 @@ class ActivityFeedComment {
 
   factory ActivityFeedComment.fromMap(Map<String, dynamic> map) {
     return ActivityFeedComment(
-      id: map['id'] ?? "",
-      userId: map['user_id'] ?? "",
-      message: map['message'] ?? "",
+      id: map['id'] ?? '',
+      userId: map['user_id'] ?? '',
+      message: map['message'] ?? '',
       images: map['images'] != null
           ? List<LokalImages>.from(
-              map['images']?.map((x) => LokalImages.fromMap(x)))
+              map['images']?.map((x) => LokalImages.fromMap(x)),
+            )
           : const [],
       createdAt: DateTime.fromMicrosecondsSinceEpoch(
-          TimestampObject.fromMap(map['created_at']).seconds! * 1000000 +
-              TimestampObject.fromMap(map['created_at']).nanoseconds! ~/ 1000),
+        TimestampObject.fromMap(map['created_at']).seconds! * 1000000 +
+            TimestampObject.fromMap(map['created_at']).nanoseconds! ~/ 1000,
+      ),
       archived: map['archived'] ?? false,
       liked: map['liked'] ?? false,
     );
@@ -79,10 +82,11 @@ class ActivityFeedComment {
     final map = snapshot.data()!;
     return ActivityFeedComment(
       id: snapshot.id,
-      userId: map['user_id'] ?? "",
-      message: map['message'] ?? "",
+      userId: map['user_id'] ?? '',
+      message: map['message'] ?? '',
       images: List<LokalImages>.from(
-          map['images']?.map((x) => LokalImages.fromMap(x)) ?? []),
+        map['images']?.map((x) => LokalImages.fromMap(x)) ?? [],
+      ),
       createdAt: (map['created_at'] as Timestamp).toDate(),
       archived: map['archived'] ?? false,
       liked: map['liked'] ?? false,

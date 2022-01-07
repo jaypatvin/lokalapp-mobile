@@ -40,7 +40,7 @@ class AddBankDetailsViewModel extends ViewModel {
   @override
   void init() {
     if (initialAccount != null) {
-      final accounts = this.type == BankType.bank
+      final accounts = type == BankType.bank
           ? _shopBody.paymentOptions!.bankAccounts
           : _shopBody.paymentOptions!.gCashAccounts;
 
@@ -68,7 +68,7 @@ class AddBankDetailsViewModel extends ViewModel {
   }
 
   void _onAddWalletAccount() {
-    final _paymentOptions = _shopBody.paymentOptions ?? PaymentOptions();
+    final _paymentOptions = _shopBody.paymentOptions ?? const PaymentOptions();
     final _gCashAccounts = [..._paymentOptions.gCashAccounts];
     final _newAccount = WalletAccount(
       bank: _bank!.id,
@@ -95,7 +95,7 @@ class AddBankDetailsViewModel extends ViewModel {
   }
 
   void _onAddBankAccount() {
-    final _paymentOptions = _shopBody.paymentOptions ?? PaymentOptions();
+    final _paymentOptions = _shopBody.paymentOptions ?? const PaymentOptions();
     final _bankAccounts = [..._paymentOptions.bankAccounts];
     final _newAccount = BankAccount(
       bank: _bank!.id,
@@ -130,16 +130,17 @@ class AddBankDetailsViewModel extends ViewModel {
       return;
     }
 
-    if (this.type == BankType.bank)
+    if (type == BankType.bank) {
       _onAddBankAccount();
-    else
+    } else {
       _onAddWalletAccount();
+    }
 
     AppRouter.profileNavigatorKey.currentState?.pop();
   }
 
   void _onDeleteBankAccount() {
-    final _paymentOptions = _shopBody.paymentOptions ?? PaymentOptions();
+    final _paymentOptions = _shopBody.paymentOptions ?? const PaymentOptions();
     final _bankAccounts = [..._paymentOptions.bankAccounts];
     _bankAccounts.removeWhere((account) => account == initialAccount);
     final _newPaymentOptions = _paymentOptions.copyWith(
@@ -149,7 +150,7 @@ class AddBankDetailsViewModel extends ViewModel {
   }
 
   void _onDeleteWalletAccount() {
-    final _paymentOptions = _shopBody.paymentOptions ?? PaymentOptions();
+    final _paymentOptions = _shopBody.paymentOptions ?? const PaymentOptions();
     final _gCashAccounts = [..._paymentOptions.gCashAccounts];
     _gCashAccounts.removeWhere((account) => account == initialAccount);
     final _newPaymentOptions = _paymentOptions.copyWith(
@@ -164,10 +165,11 @@ class AddBankDetailsViewModel extends ViewModel {
       return;
     }
 
-    if (type == BankType.bank)
+    if (type == BankType.bank) {
       _onDeleteBankAccount();
-    else
+    } else {
       _onDeleteWalletAccount();
+    }
 
     AppRouter.profileNavigatorKey.currentState?.pop();
   }

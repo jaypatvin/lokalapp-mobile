@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:photo_manager/photo_manager.dart';
 import 'package:wechat_camera_picker/wechat_camera_picker.dart';
 
 import 'asset_gallery_widget.dart';
@@ -16,7 +15,7 @@ class ImageGalleryPicker extends StatelessWidget {
   final WidgetBuilder? specialItemBuilder;
   final int thumbSize;
 
-  ImageGalleryPicker(
+  const ImageGalleryPicker(
     this.provider, {
     this.pickerHeight = 100,
     this.assetHeight = 100,
@@ -31,7 +30,7 @@ class ImageGalleryPicker extends StatelessWidget {
     return SizedBox(
       height: 150,
       child: AnimatedBuilder(
-        animation: this.provider!.currentPathNotifier,
+        animation: provider!.currentPathNotifier,
         builder: (_, __) => _buildPath(),
       ),
     );
@@ -43,7 +42,6 @@ class ImageGalleryPicker extends StatelessWidget {
       onTap: () async {
         final AssetEntity? result = await CameraPicker.pickFromCamera(
           context,
-          enableRecording: false,
           // maximumRecordingDuration: const Duration(seconds: 30),
           // textDelegate: EnglishCameraPickerTextDelegateWithRecording(),
           textDelegate: EnglishCameraPickerTextDelegate(),
@@ -61,18 +59,18 @@ class ImageGalleryPicker extends StatelessWidget {
 
   Widget _buildPath() {
     return AssetGalleryWidget(
-      path: this.provider?.currentPath,
-      assetHeight: this.assetHeight,
-      assetWidth: this.assetWidth,
-      thumbSize: this.thumbSize,
+      path: provider?.currentPath,
+      assetHeight: assetHeight,
+      assetWidth: assetWidth,
+      thumbSize: thumbSize,
       loadWhenScrolling: true,
-      specialItemBuilder: this.enableSpecialItemBuilder
+      specialItemBuilder: enableSpecialItemBuilder
           ? specialItemBuilder ?? _cameraPickerBuilder
           : null,
       buildItem: (context, asset, size) {
         return CustomPickAssetWidget(
           asset: asset,
-          provider: this.provider,
+          provider: provider,
           thumbSize: size,
         );
         // return AssetWidget(asset: asset);

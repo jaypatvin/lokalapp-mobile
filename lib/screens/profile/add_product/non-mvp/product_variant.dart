@@ -12,16 +12,16 @@ import 'add_a_variant.dart';
 
 class ProductVariant extends StatefulWidget {
   final AddProductGallery gallery;
-  ProductVariant({required this.gallery});
+  const ProductVariant({required this.gallery});
   @override
   _ProductVariantState createState() => _ProductVariantState();
 }
 
 class _ProductVariantState extends State<ProductVariant> {
   Widget buildBody() {
-    var horizontalPadding = MediaQuery.of(context).size.width * 0.05;
-    var topPadding = MediaQuery.of(context).size.height * 0.03;
-    var image = widget.gallery.photoBoxes.first;
+    final horizontalPadding = MediaQuery.of(context).size.width * 0.05;
+    final topPadding = MediaQuery.of(context).size.height * 0.03;
+    final image = widget.gallery.photoBoxes.first;
 
     return Container(
       padding: EdgeInsets.fromLTRB(
@@ -31,32 +31,35 @@ class _ProductVariantState extends State<ProductVariant> {
         0,
       ),
       child: SingleChildScrollView(
-        physics: NeverScrollableScrollPhysics(),
-        scrollDirection: Axis.vertical,
+        physics: const NeverScrollableScrollPhysics(),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Consumer<ProductBody>(builder: (context, product, child) {
-              return ProductHeader(
-                photoBox: image,
-                productName: product.name,
-                productPrice: product.basePrice,
-                productStock: product.quantity,
-              );
-            }),
+            Consumer<ProductBody>(
+              builder: (context, product, child) {
+                return ProductHeader(
+                  photoBox: image,
+                  productName: product.name,
+                  productPrice: product.basePrice,
+                  productStock: product.quantity,
+                );
+              },
+            ),
             SizedBox(
               height: MediaQuery.of(context).size.height * 0.05,
             ),
-            Text(
-              "Variants",
+            const Text(
+              'Variants',
               style: TextStyle(
-                  fontFamily: "Goldplay", fontWeight: FontWeight.w600),
+                fontFamily: 'Goldplay',
+                fontWeight: FontWeight.w600,
+              ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 20,
             ),
             AppButton(
-              "Add a Variant",
+              'Add a Variant',
               kTealColor,
               true,
               () {
@@ -70,7 +73,7 @@ class _ProductVariantState extends State<ProductVariant> {
               height: MediaQuery.of(context).size.height / 3,
             ),
             AppButton(
-              "Skip",
+              'Skip',
               kTealColor,
               true,
               () {},
@@ -86,7 +89,7 @@ class _ProductVariantState extends State<ProductVariant> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: CustomAppBar(
-        titleText: "Product Variant",
+        titleText: 'Product Variant',
         onPressedLeading: () {
           Navigator.pop(context);
         },

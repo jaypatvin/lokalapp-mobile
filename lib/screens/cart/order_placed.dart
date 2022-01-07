@@ -11,7 +11,7 @@ import '../discover/discover.dart';
 import 'checkout_cart.dart';
 
 class OrderPlaced extends StatelessWidget {
-  static const routeName = "/cart/orderPlaced";
+  static const routeName = '/cart/orderPlaced';
   const OrderPlaced({Key? key}) : super(key: key);
 
   @override
@@ -19,7 +19,7 @@ class OrderPlaced extends StatelessWidget {
     final width = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      backgroundColor: Color(0XFFF1FAFF),
+      backgroundColor: const Color(0XFFF1FAFF),
       appBar: CustomAppBar(
         buildLeading: false,
         backgroundColor: Colors.transparent,
@@ -29,13 +29,13 @@ class OrderPlaced extends StatelessWidget {
               context,
               ModalRoute.withName(Discover.routeName),
             ),
-            child: Text(
-              "Done",
+            child: const Text(
+              'Done',
               style: TextStyle(
                 color: kTealColor,
                 fontSize: 18.0,
                 fontWeight: FontWeight.bold,
-                fontFamily: "GoldPlay",
+                fontFamily: 'GoldPlay',
               ),
             ),
           ),
@@ -46,40 +46,40 @@ class OrderPlaced extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Container(
+            SizedBox(
               height: 140.0,
               width: double.infinity,
               child: Lottie.asset(
                 kAnimationOk,
               ),
             ),
-            SizedBox(height: 32),
-            Text(
-              "Order Placed!",
+            const SizedBox(height: 32),
+            const Text(
+              'Order Placed!',
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: kTealColor,
-                fontFamily: "GoldplayBold",
+                fontFamily: 'GoldplayBold',
                 fontWeight: FontWeight.bold,
                 fontSize: 36.0,
               ),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 48.0),
               child: RichText(
-                text: TextSpan(
+                text: const TextSpan(
                   children: [
-                    TextSpan(text: "You can track your order using the "),
+                    TextSpan(text: 'You can track your order using the '),
                     TextSpan(
-                      text: "My Activity",
+                      text: 'My Activity',
                       style: TextStyle(
                         color: Colors.black,
                         fontWeight: FontWeight.bold,
                         fontSize: 16.0,
                       ),
                     ),
-                    TextSpan(text: " page."),
+                    TextSpan(text: ' page.'),
                   ],
                   style: TextStyle(
                     color: Colors.black,
@@ -90,7 +90,7 @@ class OrderPlaced extends StatelessWidget {
                 textAlign: TextAlign.center,
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 24.0,
             ),
             Row(
@@ -98,13 +98,13 @@ class OrderPlaced extends StatelessWidget {
               children: [
                 Expanded(
                   child: AppButton(
-                    "BACK TO MY CART",
+                    'BACK TO MY CART',
                     kTealColor,
                     false,
                     () => Navigator.pushAndRemoveUntil(
                       context,
                       MaterialPageRoute(
-                        builder: (BuildContext context) => CheckoutCart(),
+                        builder: (BuildContext context) => const CheckoutCart(),
                       ),
                       ModalRoute.withName(Discover.routeName),
                     ),
@@ -117,7 +117,7 @@ class OrderPlaced extends StatelessWidget {
               children: [
                 Expanded(
                   child: AppButton(
-                    "GO TO MY ACTIVITY",
+                    'GO TO MY ACTIVITY',
                     kTealColor,
                     true,
                     () {

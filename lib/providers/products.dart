@@ -10,11 +10,11 @@ import '../services/api/product_api_service.dart';
 import '../services/database.dart';
 
 class Products extends ChangeNotifier {
-  Products._(this._apiService);
-
   factory Products(API api) {
     return Products._(ProductApiService(api));
   }
+
+  Products._(this._apiService);
 
   final Database _db = Database.instance;
   final ProductApiService _apiService;
@@ -43,7 +43,9 @@ class Products extends ChangeNotifier {
     }
   }
 
-  void _productListener(QuerySnapshot<Map<String, dynamic>> query) async {
+  Future<void> _productListener(
+    QuerySnapshot<Map<String, dynamic>> query,
+  ) async {
     final length = query.docChanges.length;
     if (_isLoading || length > 1) return;
     for (final change in query.docChanges) {
@@ -57,7 +59,7 @@ class Products extends ChangeNotifier {
       }
 
       final product = await _apiService.getById(productId: id);
-      _products..add(product);
+      _products.add(product);
       notifyListeners();
     }
   }
@@ -95,7 +97,7 @@ class Products extends ChangeNotifier {
     } catch (e) {
       _isLoading = false;
       notifyListeners();
-      throw e;
+      rethrow;
     }
   }
 
@@ -105,7 +107,7 @@ class Products extends ChangeNotifier {
       _products.add(_product);
       notifyListeners();
     } catch (e) {
-      throw e;
+      rethrow;
     }
   }
 
@@ -116,7 +118,7 @@ class Products extends ChangeNotifier {
     try {
       return await _apiService.update(productId: id, body: data);
     } catch (e) {
-      throw e;
+      rethrow;
     }
   }
 
@@ -130,7 +132,7 @@ class Products extends ChangeNotifier {
         body: data,
       );
     } catch (e) {
-      throw e;
+      rethrow;
     }
   }
 
@@ -138,7 +140,7 @@ class Products extends ChangeNotifier {
     try {
       await _apiService.deleteProduct(productId: productId);
     } catch (e) {
-      throw e;
+      rethrow;
     }
   }
 
@@ -146,7 +148,7 @@ class Products extends ChangeNotifier {
     try {
       return await _apiService.getById(productId: productId);
     } catch (e) {
-      throw e;
+      rethrow;
     }
   }
 
@@ -154,7 +156,7 @@ class Products extends ChangeNotifier {
     required String productId,
     required String userId,
   }) async {
-    final product = this.findById(productId);
+    final product = findById(productId);
     product!.likes.add(userId);
     notifyListeners();
 
@@ -163,7 +165,7 @@ class Products extends ChangeNotifier {
     } catch (e) {
       product.likes.remove(userId);
       notifyListeners();
-      throw e;
+      rethrow;
     }
   }
 
@@ -171,7 +173,7 @@ class Products extends ChangeNotifier {
     required String productId,
     required String userId,
   }) async {
-    final product = this.findById(productId);
+    final product = findById(productId);
     product!.likes.remove(userId);
     notifyListeners();
 
@@ -180,7 +182,7 @@ class Products extends ChangeNotifier {
     } catch (e) {
       product.likes.add(userId);
       notifyListeners();
-      throw e;
+      rethrow;
     }
   }
 }

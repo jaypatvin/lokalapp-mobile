@@ -57,7 +57,7 @@ class _AddProductState extends State<AddProduct> with ScreenLoader {
         _nameController.text = product.name;
         _priceController.text = product.basePrice.toString();
         _descriptionController.text = product.description!;
-        _title = "Edit Product";
+        _title = 'Edit Product';
 
         List<LokalImages>? _productGallery = <LokalImages>[];
         if (product.gallery != null) {
@@ -82,14 +82,12 @@ class _AddProductState extends State<AddProduct> with ScreenLoader {
     }
 
     _gallery = AddProductGallery();
-    _title = "Add a New Product";
+    _title = 'Add a New Product';
   }
 
   KeyboardActionsConfig _buildConfig() {
     return KeyboardActionsConfig(
-      keyboardActionsPlatform: KeyboardActionsPlatform.ALL,
       keyboardBarColor: Colors.grey.shade200,
-      nextFocus: true,
       actions: [
         KeyboardActionsItem(
           focusNode: _nameFocusNode,
@@ -98,7 +96,7 @@ class _AddProductState extends State<AddProduct> with ScreenLoader {
               return TextButton(
                 onPressed: () => node.unfocus(),
                 child: Text(
-                  "Done",
+                  'Done',
                   style: Theme.of(context).textTheme.bodyText1!.copyWith(
                         color: Colors.black,
                       ),
@@ -114,7 +112,7 @@ class _AddProductState extends State<AddProduct> with ScreenLoader {
               return TextButton(
                 onPressed: () => node.unfocus(),
                 child: Text(
-                  "Done",
+                  'Done',
                   style: Theme.of(context).textTheme.bodyText1!.copyWith(
                         color: Colors.black,
                       ),
@@ -130,7 +128,7 @@ class _AddProductState extends State<AddProduct> with ScreenLoader {
               return TextButton(
                 onPressed: () => node.unfocus(),
                 child: Text(
-                  "Done",
+                  'Done',
                   style: Theme.of(context).textTheme.bodyText1!.copyWith(
                         color: Colors.black,
                       ),
@@ -147,21 +145,21 @@ class _AddProductState extends State<AddProduct> with ScreenLoader {
     return Row(
       children: [
         Text(
-          "Product Price",
+          'Product Price',
           style: Theme.of(context).textTheme.headline6,
         ),
         const SizedBox(width: 10),
         Expanded(
           child: InputNameField(
-            controller: this._priceController,
-            focusNode: this._priceFocusNode,
-            errorText: this._errorTextPrice,
+            controller: _priceController,
+            focusNode: _priceFocusNode,
+            errorText: _errorTextPrice,
             keyboardType: TextInputType.number,
-            hintText: "PHP",
+            hintText: 'PHP',
             onChanged: (value) {
-              if (this._errorTextPrice != null) {
+              if (_errorTextPrice != null) {
                 setState(() {
-                  this._errorTextPrice = null;
+                  _errorTextPrice = null;
                 });
               }
             },
@@ -172,25 +170,25 @@ class _AddProductState extends State<AddProduct> with ScreenLoader {
   }
 
   void _onSubmitHandler() {
-    if (this._nameController.text.isEmpty) {
+    if (_nameController.text.isEmpty) {
       setState(() {
-        _errorTextName = "Enter a valid name.";
+        _errorTextName = 'Enter a valid name.';
       });
       return;
     }
 
-    if (this._priceController.text.isEmpty ||
-        double.tryParse(this._priceController.text)! <= 0) {
+    if (_priceController.text.isEmpty ||
+        double.tryParse(_priceController.text)! <= 0) {
       setState(() {
-        _errorTextPrice = "Enter a valid price.";
+        _errorTextPrice = 'Enter a valid price.';
       });
       return;
     }
 
     context.read<ProductBody>().update(
-          basePrice: double.tryParse(this._priceController.text) ?? 0,
-          name: this._nameController.text,
-          description: this._descriptionController.text,
+          basePrice: double.tryParse(_priceController.text) ?? 0,
+          name: _nameController.text,
+          description: _descriptionController.text,
         );
 
     AppRouter.pushNewScreen(
@@ -203,7 +201,7 @@ class _AddProductState extends State<AddProduct> with ScreenLoader {
   }
 
   Future<bool?> _onDeleteNotify() async {
-    return await showDialog<bool>(
+    return showDialog<bool>(
       context: context,
       builder: (ctx) {
         return Center(
@@ -219,7 +217,7 @@ class _AddProductState extends State<AddProduct> with ScreenLoader {
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 40.0.w),
                   child: Text(
-                    "Are you sure you want to delete this product?",
+                    'Are you sure you want to delete this product?',
                     style: Theme.of(context).textTheme.headline6,
                     textAlign: TextAlign.center,
                   ),
@@ -227,11 +225,11 @@ class _AddProductState extends State<AddProduct> with ScreenLoader {
                 SizedBox(height: 15.0.h),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 40.0.w),
-                  child: Text(
-                    "All active orders of this product will still push "
-                    "through but they will not be able to order again. "
-                    "We will notify subscribers that their next order will "
-                    "be their last.",
+                  child: const Text(
+                    'All active orders of this product will still push '
+                    'through but they will not be able to order again. '
+                    'We will notify subscribers that their next order will '
+                    'be their last.',
                     textAlign: TextAlign.center,
                   ),
                 ),
@@ -244,7 +242,7 @@ class _AddProductState extends State<AddProduct> with ScreenLoader {
                       children: [
                         Expanded(
                           child: AppButton(
-                            "Cancel",
+                            'Cancel',
                             kTealColor,
                             false,
                             () => Navigator.pop(ctx, false),
@@ -253,7 +251,7 @@ class _AddProductState extends State<AddProduct> with ScreenLoader {
                         SizedBox(width: 5.0.w),
                         Expanded(
                           child: AppButton(
-                            "Confirm",
+                            'Confirm',
                             kPinkColor,
                             true,
                             () => Navigator.pop(ctx, true),
@@ -277,8 +275,10 @@ class _AddProductState extends State<AddProduct> with ScreenLoader {
       final delete = await _onDeleteNotify() ?? false;
 
       if (delete) {
-        await performFuture(() async =>
-            await context.read<Products>().deleteProduct(widget.productId!));
+        await performFuture(
+          () async => context.read<Products>().deleteProduct(widget.productId!),
+        );
+        if (!mounted) return;
         Navigator.popUntil(
           context,
           ModalRoute.withName(UserShop.routeName),
@@ -302,14 +302,14 @@ class _AddProductState extends State<AddProduct> with ScreenLoader {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: CustomAppBar(
-        titleText: this._title,
+        titleText: _title,
         onPressedLeading: () {
           Navigator.pop(context);
         },
-        actions: this._title == "Edit Product"
+        actions: _title == 'Edit Product'
             ? [
                 IconButton(
-                  icon: Icon(
+                  icon: const Icon(
                     MdiIcons.trashCanOutline,
                   ),
                   onPressed: _onDeleteHandler,
@@ -331,7 +331,7 @@ class _AddProductState extends State<AddProduct> with ScreenLoader {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                "Product Photos",
+                'Product Photos',
                 style: Theme.of(context).textTheme.headline6,
               ),
               SizedBox(
@@ -342,21 +342,21 @@ class _AddProductState extends State<AddProduct> with ScreenLoader {
                 height: MediaQuery.of(context).size.height * 0.02,
               ),
               Text(
-                "Product Name",
+                'Product Name',
                 style: Theme.of(context).textTheme.headline6,
               ),
               SizedBox(
                 height: MediaQuery.of(context).size.height * 0.005,
               ),
               InputNameField(
-                controller: this._nameController,
-                focusNode: this._nameFocusNode,
-                hintText: "Item Name",
-                errorText: this._errorTextName,
+                controller: _nameController,
+                focusNode: _nameFocusNode,
+                hintText: 'Item Name',
+                errorText: _errorTextName,
                 onChanged: (value) {
-                  if (this._errorTextName != null) {
+                  if (_errorTextName != null) {
                     setState(() {
-                      this._errorTextName = null;
+                      _errorTextName = null;
                     });
                   }
                 },
@@ -365,13 +365,13 @@ class _AddProductState extends State<AddProduct> with ScreenLoader {
                 height: MediaQuery.of(context).size.height * 0.02,
               ),
               Text(
-                "Description",
+                'Description',
                 style: Theme.of(context).textTheme.headline6,
               ),
               InputDescriptionField(
-                controller: this._descriptionController,
-                focusNode: this._descriptionFocusNode,
-                hintText: "Product Description",
+                controller: _descriptionController,
+                focusNode: _descriptionFocusNode,
+                hintText: 'Product Description',
               ),
               const SizedBox(height: 20),
               _buildProductPrice(),
@@ -379,7 +379,7 @@ class _AddProductState extends State<AddProduct> with ScreenLoader {
               SizedBox(
                 width: double.infinity,
                 child: AppButton(
-                  "Next",
+                  'Next',
                   kTealColor,
                   true,
                   _onSubmitHandler,

@@ -8,14 +8,14 @@ class ProductApiService extends APIService<Product> {
   const ProductApiService(this.api);
 
   final API api;
-  final Endpoint endpoint = Endpoint.product;
+  Endpoint get endpoint => Endpoint.product;
 
   // --POST
   Future<Product> create({
     required Map<String, dynamic> body,
   }) async {
     try {
-      final response = await this.poster(
+      final response = await poster(
         api.endpointUri(endpoint),
         headers: api.withBodyHeader(),
         body: json.encode(body),
@@ -32,7 +32,7 @@ class ProductApiService extends APIService<Product> {
     required Map<String, dynamic> body,
   }) async {
     try {
-      final response = await this.poster(
+      final response = await poster(
         api.endpointUri(
           endpoint,
           pathSegments: [productId, 'ratings'],
@@ -49,7 +49,7 @@ class ProductApiService extends APIService<Product> {
 
   Future<bool> like({required String productId}) async {
     try {
-      final response = await this.poster(
+      final response = await poster(
         api.endpointUri(
           endpoint,
           pathSegments: [productId, 'like'],
@@ -65,7 +65,7 @@ class ProductApiService extends APIService<Product> {
 
   Future<bool> addToWishlist({required String productId}) async {
     try {
-      final response = await this.poster(
+      final response = await poster(
         api.endpointUri(
           endpoint,
           pathSegments: [productId, 'wishlist'],
@@ -85,7 +85,7 @@ class ProductApiService extends APIService<Product> {
     required Map body,
   }) async {
     try {
-      final response = await this.putter(
+      final response = await putter(
         api.endpointUri(
           endpoint,
           pathSegments: [
@@ -107,7 +107,7 @@ class ProductApiService extends APIService<Product> {
     required Map body,
   }) async {
     try {
-      final response = await this.putter(
+      final response = await putter(
         api.endpointUri(
           endpoint,
           pathSegments: [
@@ -130,7 +130,7 @@ class ProductApiService extends APIService<Product> {
     required String communityId,
   }) async {
     try {
-      final response = await this.getter(
+      final response = await getter(
         api.endpointUri(
           Endpoint.community,
           pathSegments: [
@@ -149,7 +149,7 @@ class ProductApiService extends APIService<Product> {
 
   Future<List<Product>> getAvailableProducts() async {
     try {
-      final response = await this.getter(
+      final response = await getter(
         api.baseUri(pathSegments: const ['availableProducts']),
         headers: api.authHeader(),
       );
@@ -164,7 +164,7 @@ class ProductApiService extends APIService<Product> {
     required String userId,
   }) async {
     try {
-      final response = await this.getter(
+      final response = await getter(
         api.endpointUri(
           Endpoint.community,
           pathSegments: [
@@ -186,7 +186,7 @@ class ProductApiService extends APIService<Product> {
     required String communityId,
   }) async {
     try {
-      final response = await this.getter(
+      final response = await getter(
         api.baseUri(
           pathSegments: ['recommendedProducts'],
           queryParameters: {
@@ -207,7 +207,7 @@ class ProductApiService extends APIService<Product> {
     required String userId,
   }) async {
     try {
-      final response = await this.getter(
+      final response = await getter(
         api.endpointUri(Endpoint.user, pathSegments: [userId, 'wishlist']),
         headers: api.authHeader(),
       );
@@ -222,7 +222,7 @@ class ProductApiService extends APIService<Product> {
     required String productId,
   }) async {
     try {
-      final response = await this.getter(
+      final response = await getter(
         api.endpointUri(endpoint, pathSegments: [productId]),
         headers: api.authHeader(),
       );
@@ -237,7 +237,7 @@ class ProductApiService extends APIService<Product> {
     required String productId,
   }) async {
     try {
-      final response = await this.getter(
+      final response = await getter(
         api.endpointUri(endpoint, pathSegments: [productId, 'availability']),
         headers: api.authHeader(),
       );
@@ -253,7 +253,7 @@ class ProductApiService extends APIService<Product> {
     required String productId,
   }) async {
     try {
-      final response = await this.deleter(
+      final response = await deleter(
         api.endpointUri(endpoint, pathSegments: [productId]),
         headers: api.authHeader(),
       );
@@ -264,9 +264,9 @@ class ProductApiService extends APIService<Product> {
     }
   }
 
-  Future<bool> unlike({required productId}) async {
+  Future<bool> unlike({required String productId}) async {
     try {
-      final response = await this.deleter(
+      final response = await deleter(
         api.endpointUri(
           endpoint,
           pathSegments: [productId, 'unlike'],
@@ -280,14 +280,15 @@ class ProductApiService extends APIService<Product> {
     }
   }
 
-  Future<bool> removeFromWishlist({required productId}) async {
+  Future<bool> removeFromWishlist({required String productId}) async {
     try {
-      final response = await this.deleter(
-          api.endpointUri(
-            endpoint,
-            pathSegments: [productId, 'wishlist'],
-          ),
-          headers: api.authHeader());
+      final response = await deleter(
+        api.endpointUri(
+          endpoint,
+          pathSegments: [productId, 'wishlist'],
+        ),
+        headers: api.authHeader(),
+      );
 
       return handleGenericResponse(response);
     } catch (e) {

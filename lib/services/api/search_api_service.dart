@@ -10,7 +10,7 @@ class SearchAPIService extends APIService {
   const SearchAPIService(this.api);
 
   final API api;
-  final Endpoint endpoint = Endpoint.search;
+  Endpoint get endpoint => Endpoint.search;
 
   Future<Map<String, List<String>>> search({
     required String query,
@@ -39,8 +39,9 @@ class SearchAPIService extends APIService {
         final map = json.decode(response.body);
         final data = map['data'] as Map<String, dynamic>;
 
-        if (data['products'] == null && data['shops'] == null)
+        if (data['products'] == null && data['shops'] == null) {
           throw 'no-results';
+        }
 
         if (data['products'] != null) {
           final products = List<String>.from(
@@ -62,7 +63,7 @@ class SearchAPIService extends APIService {
       } else {
         final map = json.decode(response.body);
         if (map['data'] != null) {
-          throw throw (FailureException(map['data']));
+          throw throw FailureException(map['data']);
         }
 
         if (map['message'] != null) {

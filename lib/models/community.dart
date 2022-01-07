@@ -39,7 +39,7 @@ class Community {
       name: name ?? this.name,
       address: address ?? this.address,
       profilePhoto: profilePhoto ?? this.profilePhoto,
-      archived: archivedAt ?? this.archived,
+      archived: archivedAt ?? archived,
       coverPhoto: coverPhoto ?? this.coverPhoto,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,

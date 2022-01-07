@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import '../../../models/lokal_category.dart';
 import '../../../providers/categories.dart';
 import '../../../providers/post_requests/product_body.dart';
+import '../../../routers/app_router.dart';
 import '../../../utils/constants/themes.dart';
 import '../../../widgets/app_button.dart';
 import '../../../widgets/app_checkbox.dart';
@@ -20,18 +21,16 @@ class ProductDetails extends StatefulWidget {
   final AddProductGallery? gallery;
   final String? productId;
 
-  ProductDetails({required this.gallery, this.productId});
+  const ProductDetails({required this.gallery, this.productId});
   @override
   _ProductDetailsState createState() => _ProductDetailsState();
 }
 
 class _ProductDetailsState extends State<ProductDetails> {
-  bool _forDelivery = true;
-  bool _forPickup = true;
+  final bool _forDelivery = true;
+  final bool _forPickup = true;
   final _stockController = TextEditingController();
   final FocusNode _stockFocusNode = FocusNode();
-
-  get AppRouter => null;
 
   @override
   void initState() {
@@ -52,7 +51,7 @@ class _ProductDetailsState extends State<ProductDetails> {
         SizedBox(
           width: MediaQuery.of(context).size.width * 0.45,
           child: Text(
-            "Product Category",
+            'Product Category',
             style: Theme.of(context).textTheme.headline6,
           ),
         ),
@@ -70,45 +69,47 @@ class _ProductDetailsState extends State<ProductDetails> {
                 horizontal: 20.w,
                 vertical: 13.h,
               ),
-              child: Consumer<Categories>(builder: (ctx, provider, _) {
-                if (provider.isLoading || provider.categories.isEmpty) {
-                  return const SizedBox();
-                }
+              child: Consumer<Categories>(
+                builder: (ctx, provider, _) {
+                  if (provider.isLoading || provider.categories.isEmpty) {
+                    return const SizedBox();
+                  }
 
-                if (productBody.productCategory != null &&
-                        productBody.productCategory!.isEmpty ||
-                    !provider.categories
-                        .any((c) => c.id == productBody.productCategory!)) {
-                  productBody.update(
-                    productCategory: provider.categories.first.id,
-                  );
-                }
-
-                return DropdownButton<String>(
-                  isExpanded: true,
-                  iconEnabledColor: kTealColor,
-                  iconDisabledColor: kTealColor,
-                  iconSize: 24.0.sp,
-                  icon: Icon(MdiIcons.chevronDown),
-                  underline: SizedBox(),
-                  value: productBody.productCategory,
-                  hint: Text(
-                    "Select",
-                    style: Theme.of(context).textTheme.bodyText1,
-                  ),
-                  items: provider.categories.map((LokalCategory category) {
-                    return DropdownMenuItem<String>(
-                      value: category.id,
-                      child: new Text(category.name),
+                  if (productBody.productCategory != null &&
+                          productBody.productCategory!.isEmpty ||
+                      !provider.categories
+                          .any((c) => c.id == productBody.productCategory!)) {
+                    productBody.update(
+                      productCategory: provider.categories.first.id,
                     );
-                  }).toList(),
-                  onChanged: (value) {
-                    productBody.update(productCategory: value);
-                    setState(() {});
-                  },
-                  style: Theme.of(context).textTheme.bodyText1,
-                );
-              }),
+                  }
+
+                  return DropdownButton<String>(
+                    isExpanded: true,
+                    iconEnabledColor: kTealColor,
+                    iconDisabledColor: kTealColor,
+                    iconSize: 24.0.sp,
+                    icon: const Icon(MdiIcons.chevronDown),
+                    underline: const SizedBox(),
+                    value: productBody.productCategory,
+                    hint: Text(
+                      'Select',
+                      style: Theme.of(context).textTheme.bodyText1,
+                    ),
+                    items: provider.categories.map((LokalCategory category) {
+                      return DropdownMenuItem<String>(
+                        value: category.id,
+                        child: Text(category.name),
+                      );
+                    }).toList(),
+                    onChanged: (value) {
+                      productBody.update(productCategory: value);
+                      setState(() {});
+                    },
+                    style: Theme.of(context).textTheme.bodyText1,
+                  );
+                },
+              ),
             ),
           ),
         ),
@@ -122,7 +123,7 @@ class _ProductDetailsState extends State<ProductDetails> {
         SizedBox(
           width: MediaQuery.of(context).size.width * 0.45,
           child: Text(
-            "Current Stock",
+            'Current Stock',
             style: Theme.of(context).textTheme.headline6,
           ),
         ),
@@ -132,9 +133,9 @@ class _ProductDetailsState extends State<ProductDetails> {
             builder: (context, productBody, child) {
               return InputNameField(
                 keyboardType: TextInputType.number,
-                focusNode: this._stockFocusNode,
+                focusNode: _stockFocusNode,
                 controller: _stockController,
-                hintText: "Quantity",
+                hintText: 'Quantity',
                 style: Theme.of(context).textTheme.bodyText1,
                 onChanged: (value) {
                   context
@@ -142,7 +143,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                       .update(quantity: int.tryParse(value) ?? 0);
                 },
                 errorText:
-                    productBody.quantity! < 0 ? "Enter a valid number." : null,
+                    productBody.quantity! < 0 ? 'Enter a valid number.' : null,
               );
             },
           ),
@@ -159,14 +160,14 @@ class _ProductDetailsState extends State<ProductDetails> {
           child: AppCheckBox(
             value: _forPickup,
             onTap: () {}, // () => setState(() => _forPickup = !_forPickup),
-            title: Text("Customer Pick-up"),
+            title: const Text('Customer Pick-up'),
           ),
         ),
         Expanded(
           child: AppCheckBox(
             value: _forDelivery,
             onTap: () {}, //() => setState(() => _forDelivery = !_forDelivery),
-            title: Text("Delivery"),
+            title: const Text('Delivery'),
           ),
         ),
       ],
@@ -179,22 +180,24 @@ class _ProductDetailsState extends State<ProductDetails> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          "Subscription",
+          'Subscription',
           style: Theme.of(context).textTheme.headline6,
         ),
         const SizedBox(height: 10),
-        Consumer<ProductBody>(builder: (ctx, productBody, child) {
-          return AppCheckBox(
-            value: productBody.canSubscribe,
-            onTap: () => productBody.update(
-              canSubscribe: !productBody.canSubscribe,
-            ),
-            title: Text(
-              "Available for Subscription",
-              style: Theme.of(context).textTheme.headline6,
-            ),
-          );
-        }),
+        Consumer<ProductBody>(
+          builder: (ctx, productBody, child) {
+            return AppCheckBox(
+              value: productBody.canSubscribe,
+              onTap: () => productBody.update(
+                canSubscribe: !productBody.canSubscribe,
+              ),
+              title: Text(
+                'Available for Subscription',
+                style: Theme.of(context).textTheme.headline6,
+              ),
+            );
+          },
+        ),
       ],
     );
   }
@@ -213,7 +216,7 @@ class _ProductDetailsState extends State<ProductDetails> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: CustomAppBar(
-        titleText: "Product Details",
+        titleText: 'Product Details',
         onPressedLeading: () {
           Navigator.pop(context);
         },
@@ -237,7 +240,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                     return TextButton(
                       onPressed: () => node.unfocus(),
                       child: Text(
-                        "Done",
+                        'Done',
                         style: Theme.of(context).textTheme.bodyText1!.copyWith(
                               color: Colors.black,
                             ),
@@ -251,7 +254,7 @@ class _ProductDetailsState extends State<ProductDetails> {
           disableScroll: true,
           tapOutsideBehavior: TapOutsideBehavior.translucentDismiss,
           child: SingleChildScrollView(
-            physics: NeverScrollableScrollPhysics(),
+            physics: const NeverScrollableScrollPhysics(),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
@@ -278,7 +281,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                   height: MediaQuery.of(context).size.height * 0.05,
                 ),
                 Text(
-                  "Delivery Options",
+                  'Delivery Options',
                   style: Theme.of(context).textTheme.headline6,
                 ),
                 const SizedBox(height: 10),
@@ -289,7 +292,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                 SizedBox(
                   width: double.infinity,
                   child: AppButton(
-                    "Next",
+                    'Next',
                     kTealColor,
                     true,
                     valid

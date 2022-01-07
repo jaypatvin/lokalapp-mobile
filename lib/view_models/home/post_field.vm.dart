@@ -20,6 +20,7 @@ class PostFieldViewModel extends ViewModel {
   double _currentForwardOffset = 0.0;
   double _currentReverseOffset = 0.0;
 
+  @override
   void init() {
     scrollController.addListener(_scrollListener);
   }

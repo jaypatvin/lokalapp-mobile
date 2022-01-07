@@ -8,14 +8,14 @@ class UserAPIService extends APIService<LokalUser> {
   const UserAPIService(this.api);
 
   final API api;
-  final Endpoint endpoint = Endpoint.user;
+  Endpoint get endpoint => Endpoint.user;
 
   // --POST
   Future<LokalUser> create({
     required Map<String, dynamic> body,
   }) async {
     try {
-      final response = await this.poster(
+      final response = await poster(
         api.endpointUri(endpoint),
         headers: api.withBodyHeader(),
         body: json.encode(body),
@@ -32,7 +32,7 @@ class UserAPIService extends APIService<LokalUser> {
     required String userId,
   }) async {
     try {
-      final response = await this.getter(
+      final response = await getter(
         api.endpointUri(endpoint, pathSegments: [userId]),
         headers: api.authHeader(),
       );
@@ -47,9 +47,11 @@ class UserAPIService extends APIService<LokalUser> {
     required String communityId,
   }) async {
     try {
-      final response = await this.getter(
-        api.endpointUri(Endpoint.community,
-            pathSegments: [communityId, 'users']),
+      final response = await getter(
+        api.endpointUri(
+          Endpoint.community,
+          pathSegments: [communityId, 'users'],
+        ),
         headers: api.authHeader(),
       );
 
@@ -65,7 +67,7 @@ class UserAPIService extends APIService<LokalUser> {
     required String userId,
   }) async {
     try {
-      final response = await this.putter(
+      final response = await putter(
         api.endpointUri(endpoint, pathSegments: [userId]),
         headers: api.withBodyHeader(),
         body: json.encode(body),
@@ -82,7 +84,7 @@ class UserAPIService extends APIService<LokalUser> {
     required Map<String, bool> body,
   }) async {
     try {
-      final response = await this.putter(
+      final response = await putter(
         api.endpointUri(
           endpoint,
           pathSegments: [userId, 'toggleNotificationSetting'],
@@ -101,7 +103,7 @@ class UserAPIService extends APIService<LokalUser> {
     required Map<String, bool> body,
   }) async {
     try {
-      final response = await this.putter(
+      final response = await putter(
         api.endpointUri(
           endpoint,
           pathSegments: [userId, 'chatSettings'],
@@ -118,7 +120,7 @@ class UserAPIService extends APIService<LokalUser> {
   // --DELETE
   Future<bool> delete({required String userId, required String idToken}) async {
     try {
-      final response = await this.deleter(
+      final response = await deleter(
         api.endpointUri(endpoint, pathSegments: [userId]),
         headers: api.authHeader(),
       );

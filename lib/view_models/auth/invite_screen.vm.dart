@@ -42,6 +42,7 @@ class InviteScreenViewModel extends ViewModel {
       if (communityId.isEmpty) throw 'No Community ID returned.';
 
       final fireUser = auth.firebaseUser;
+
       context.read<AuthBody>()
         ..update(communityId: communityId)
         ..setInviteCode(_inviteCode);
@@ -56,13 +57,13 @@ class InviteScreenViewModel extends ViewModel {
       if (fireUser != null) {
         AppRouter.rootNavigatorKey.currentState?.push(
           CupertinoPageRoute(
-            builder: (_) => ProfileRegistration(),
+            builder: (_) => const ProfileRegistration(),
           ),
         );
       } else {
         AppRouter.rootNavigatorKey.currentState?.push(
           CupertinoPageRoute(
-            builder: (_) => RegisterScreen(),
+            builder: (_) => const RegisterScreen(),
           ),
         );
       }
@@ -74,7 +75,7 @@ class InviteScreenViewModel extends ViewModel {
   }
 
   Future<void> showInviteCodeDescription(Widget dialog) async {
-    return await showDialog<void>(
+    return showDialog<void>(
       context: context,
       builder: (ctx) {
         return dialog;

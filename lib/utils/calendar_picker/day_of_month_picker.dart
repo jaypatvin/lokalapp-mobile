@@ -29,27 +29,26 @@ class _DayOfMonthPickerState extends State<DayOfMonthPicker> {
   void initState() {
     super.initState();
 
-    this._markedDay = widget.markedDay;
+    _markedDay = widget.markedDay;
   }
 
   Widget _dayContainer(int day) {
     return Container(
-      margin: EdgeInsets.all(2.0),
+      margin: const EdgeInsets.all(2.0),
       child: GestureDetector(
         child: Container(
           padding: const EdgeInsets.all(2.0),
           decoration: BoxDecoration(
             border: Border.all(
-                color:
-                    this._markedDay == day ? Colors.orange : Colors.grey[300]!),
-            shape: BoxShape.rectangle,
-            borderRadius: BorderRadius.all(
+              color: _markedDay == day ? Colors.orange : Colors.grey[300]!,
+            ),
+            borderRadius: const BorderRadius.all(
               Radius.circular(15.0),
             ),
           ),
           child: FlatButton(
             padding: EdgeInsets.zero,
-            color: this._markedDay == day ? Colors.orange : Colors.transparent,
+            color: _markedDay == day ? Colors.orange : Colors.transparent,
             onPressed: () {
               // the calling method should handle the logic of the day press
               setState(() {
@@ -62,15 +61,13 @@ class _DayOfMonthPickerState extends State<DayOfMonthPicker> {
               widget.onDayPressed(day);
             },
             shape: RoundedRectangleBorder(
-              side: BorderSide(
-                  color: Colors.transparent, style: BorderStyle.solid),
+              side: const BorderSide(color: Colors.transparent),
               borderRadius: BorderRadius.circular(13.0),
             ),
-            child: Container(
+            child: SizedBox(
               width: double.infinity,
               height: double.infinity,
               child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   DefaultTextStyle(
@@ -93,7 +90,7 @@ class _DayOfMonthPickerState extends State<DayOfMonthPicker> {
 
   List<Widget> _renderDays() {
     final weekDays = _renderWeekDays();
-    List<Widget> list = [...weekDays];
+    final List<Widget> list = [...weekDays];
 
     /// because of number of days in a week is 7, so it would be easier to count it til 7.
     for (var index = 1; index <= 31; index++) {
@@ -106,7 +103,7 @@ class _DayOfMonthPickerState extends State<DayOfMonthPicker> {
   Widget _weekdayContainer(String weekDayName) {
     return Container(
       margin: const EdgeInsets.only(bottom: 4.0),
-      padding: const EdgeInsets.all(0.0),
+      padding: EdgeInsets.zero,
       child: Center(
         child: DefaultTextStyle(
           style: defaultWeekdayTextStyle,
@@ -121,10 +118,10 @@ class _DayOfMonthPickerState extends State<DayOfMonthPicker> {
   }
 
   List<Widget> _renderWeekDays() {
-    List<Widget> list = [];
+    final List<Widget> list = [];
 
-    var days = ["S", "M", "T", "W", "T", "F", "S"];
-    for (var day in days) {
+    final days = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+    for (final day in days) {
       list.add(_weekdayContainer(day));
     }
 
@@ -138,7 +135,7 @@ class _DayOfMonthPickerState extends State<DayOfMonthPicker> {
       width: widget.width,
       padding: widget.padding,
       child: GridView.count(
-        physics: NeverScrollableScrollPhysics(),
+        physics: const NeverScrollableScrollPhysics(),
         crossAxisCount: 7,
         shrinkWrap: true,
         children: _renderDays(),

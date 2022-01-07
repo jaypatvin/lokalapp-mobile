@@ -2,7 +2,8 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:http/http.dart' as http;
-import 'package:lokalapp/models/failure_exception.dart';
+
+import '../../models/failure_exception.dart';
 
 /// Class that supports handling of responses.
 ///
@@ -119,7 +120,7 @@ abstract class APIService<T> {
       try {
         final map = json.decode(response.body);
         if (map['data'] != null) {
-          throw throw (FailureException(map['data']));
+          throw throw FailureException(map['data']);
         }
 
         if (map['message'] != null) {
@@ -145,7 +146,7 @@ abstract class APIService<T> {
   ) {
     if (response.statusCode == 200) {
       final map = json.decode(response.body);
-      List<T> objects = [];
+      final List<T> objects = [];
 
       for (final data in map['data']) {
         final _activity = fromMap(data);
@@ -156,7 +157,7 @@ abstract class APIService<T> {
       try {
         final map = json.decode(response.body);
         if (map['data'] != null) {
-          throw throw (FailureException(map['data']));
+          throw throw FailureException(map['data']);
         }
 
         if (map['message'] != null) {
@@ -184,7 +185,7 @@ abstract class APIService<T> {
       try {
         final map = json.decode(response.body);
         if (map['data'] != null) {
-          throw throw (FailureException(map['data']));
+          throw throw FailureException(map['data']);
         }
 
         if (map['message'] != null) {

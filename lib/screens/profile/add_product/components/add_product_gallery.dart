@@ -27,7 +27,7 @@ class _AddProductGalleryState extends State<AddProductGallery> {
     super.initState();
 
     if (widget.images != null && widget.images!.isNotEmpty) {
-      widget.images!.forEach((image) {
+      for (final image in widget.images!) {
         widget._photoBoxes.add(
           PhotoBox(
             shape: boxShape,
@@ -36,13 +36,12 @@ class _AddProductGalleryState extends State<AddProductGallery> {
             height: height,
           ),
         );
-      });
+      }
     }
 
     widget._photoBoxes.add(
       PhotoBox(
         shape: boxShape,
-        file: null,
         width: width,
         height: height,
       ),
@@ -50,7 +49,7 @@ class _AddProductGalleryState extends State<AddProductGallery> {
   }
 
   Future<void> _selectImage(int index) async {
-    var file = await MediaUtility.instance!.showMediaDialog(context);
+    final file = await MediaUtility.instance!.showMediaDialog(context);
     if (file != null) {
       setState(() {
         widget._photoBoxes[index] = PhotoBox(
@@ -62,14 +61,13 @@ class _AddProductGalleryState extends State<AddProductGallery> {
         if (widget._photoBoxes.last.file != null &&
             widget._photoBoxes.length < 4) {
           widget._photoBoxes.removeWhere((p) => p.file == null);
-          var _pb = List<PhotoBox>.from(widget._photoBoxes);
+          final _pb = List<PhotoBox>.from(widget._photoBoxes);
           widget._photoBoxes
             ..clear()
             ..addAll(
               {
                 ..._pb,
                 PhotoBox(
-                  file: null,
                   shape: boxShape,
                   width: width,
                   height: height,
@@ -85,16 +83,18 @@ class _AddProductGalleryState extends State<AddProductGallery> {
   Widget build(BuildContext context) {
     return GridView.builder(
       shrinkWrap: true,
-      physics: NeverScrollableScrollPhysics(),
+      physics: const NeverScrollableScrollPhysics(),
       itemCount: widget._photoBoxes.length,
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 4,
       ),
       itemBuilder: (BuildContext context, int index) {
         return GestureDetector(
-          onTap: () async => await _selectImage(index),
+          onTap: () async => _selectImage(index),
           child: Card(
-              margin: EdgeInsets.all(5.0), child: widget._photoBoxes[index]),
+            margin: const EdgeInsets.all(5.0),
+            child: widget._photoBoxes[index],
+          ),
         );
       },
     );

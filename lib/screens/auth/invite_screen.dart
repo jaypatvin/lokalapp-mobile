@@ -36,7 +36,6 @@ class _InvitePageView extends HookView<InviteScreenViewModel>
     final _inviteFocusNode = useFocusNode();
     final _keyboardConfig = useMemoized<KeyboardActionsConfig>(
       () => KeyboardActionsConfig(
-        keyboardActionsPlatform: KeyboardActionsPlatform.ALL,
         keyboardBarColor: Colors.grey.shade200,
         nextFocus: false,
         actions: [
@@ -76,7 +75,6 @@ class _InvitePageView extends HookView<InviteScreenViewModel>
           ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
                 'Enter invite code',
@@ -99,7 +97,7 @@ class _InvitePageView extends HookView<InviteScreenViewModel>
                 child: TextField(
                   focusNode: _inviteFocusNode,
                   onChanged: vm.onInviteCodeChanged,
-                  style: TextStyle(fontWeight: FontWeight.w500),
+                  style: const TextStyle(fontWeight: FontWeight.w500),
                   decoration: kInputDecoration.copyWith(
                     hintText: 'Invite Code',
                     errorText: vm.displayError ? kErrorInviteCode : null,
@@ -114,10 +112,10 @@ class _InvitePageView extends HookView<InviteScreenViewModel>
                   'JOIN',
                   kTealColor,
                   true,
-                  () async => await performFuture<void>(
-                    () async => await vm.validateInviteCode(),
+                  () async => performFuture<void>(
+                    () async => vm.validateInviteCode(),
                   ),
-                  textStyle: TextStyle(color: kNavyColor),
+                  textStyle: const TextStyle(color: kNavyColor),
                 ),
               ),
               SizedBox(height: 18.0.h),
@@ -127,7 +125,7 @@ class _InvitePageView extends HookView<InviteScreenViewModel>
                   style: Theme.of(context).textTheme.subtitle2,
                 ),
                 onTap: () => vm.showInviteCodeDescription(
-                  _InviteCodeDescription(),
+                  const _InviteCodeDescription(),
                 ),
               ),
             ],

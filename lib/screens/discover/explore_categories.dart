@@ -13,9 +13,8 @@ class ExploreCategories extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(
-        leadingColor: Colors.white,
         backgroundColor: kOrangeColor,
-        titleText: "Explore Categories",
+        titleText: 'Explore Categories',
         onPressedLeading: () => Navigator.of(context).pop(),
       ),
       body: SingleChildScrollView(
@@ -27,66 +26,69 @@ class ExploreCategories extends StatelessWidget {
             children: [
               SizedBox(height: 20.0.h),
               Text(
-                "Explore Categories",
+                'Explore Categories',
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
-                  fontFamily: "Goldplay",
+                  fontFamily: 'Goldplay',
                   fontSize: 20.0.sp,
                 ),
               ),
               SizedBox(height: 10.0.h),
-              Consumer<Categories>(builder: (ctx, provider, _) {
-                if (provider.isLoading || provider.categories.isEmpty) {
-                  return CircularProgressIndicator();
-                }
-                final categories = provider.categories;
-                return Row(
-                  children: [
-                    Expanded(
-                      child: GridView.builder(
-                        shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics(),
-                        itemCount: categories.length,
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          childAspectRatio: 0.55.r,
-                          crossAxisCount: 4,
-                        ),
-                        itemBuilder: (BuildContext context, int index) {
-                          return GestureDetector(
-                            onTap: () {},
-                            child: SizedBox(
-                              width: 100.0.w,
-                              child: Column(
-                                children: [
-                                  CircleAvatar(
-                                    radius: 35.0.r,
-                                    backgroundColor: Color(0XFFF1FAFF),
-                                    foregroundImage: NetworkImage(
-                                      categories[index].iconUrl,
+              Consumer<Categories>(
+                builder: (ctx, provider, _) {
+                  if (provider.isLoading || provider.categories.isEmpty) {
+                    return const CircularProgressIndicator();
+                  }
+                  final categories = provider.categories;
+                  return Row(
+                    children: [
+                      Expanded(
+                        child: GridView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: categories.length,
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                            childAspectRatio: 0.55.r,
+                            crossAxisCount: 4,
+                          ),
+                          itemBuilder: (BuildContext context, int index) {
+                            return GestureDetector(
+                              onTap: () {},
+                              child: SizedBox(
+                                width: 100.0.w,
+                                child: Column(
+                                  children: [
+                                    CircleAvatar(
+                                      radius: 35.0.r,
+                                      backgroundColor: const Color(0XFFF1FAFF),
+                                      foregroundImage: NetworkImage(
+                                        categories[index].iconUrl,
+                                      ),
+                                      onForegroundImageError: (obj, stack) {},
                                     ),
-                                    onForegroundImageError: (obj, stack) {},
-                                  ),
-                                  SizedBox(height: 10.0.h),
-                                  Text(
-                                    categories[index].name,
-                                    maxLines: 2,
-                                    softWrap: true,
-                                    overflow: TextOverflow.ellipsis,
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w600,
+                                    SizedBox(height: 10.0.h),
+                                    Text(
+                                      categories[index].name,
+                                      maxLines: 2,
+                                      softWrap: true,
+                                      overflow: TextOverflow.ellipsis,
+                                      textAlign: TextAlign.center,
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.w600,
+                                      ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
-                            ),
-                          );
-                        },
+                            );
+                          },
+                        ),
                       ),
-                    ),
-                  ],
-                );
-              }),
+                    ],
+                  );
+                },
+              ),
             ],
           ),
         ),

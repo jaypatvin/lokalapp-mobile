@@ -39,10 +39,12 @@ class _OrderReceivedView extends StatelessView<OrderReceivedViewModel> {
                 'Order Received!',
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.headline5?.copyWith(
-                    color: Colors.black, fontWeight: FontWeight.w600),
+                      color: Colors.black,
+                      fontWeight: FontWeight.w600,
+                    ),
               ),
               SizedBox(height: 20.0.h),
-              Container(
+              SizedBox(
                 height: 100.0.h,
                 width: double.infinity,
                 child: Stack(
@@ -71,45 +73,43 @@ class _OrderReceivedView extends StatelessView<OrderReceivedViewModel> {
                 ),
               ),
               SizedBox(height: 16.0.h),
-              !vm.ratingSubmitted
-                  ? Column(
-                      children: [
-                        Text(
-                          'Rate your experience',
-                          style: Theme.of(context)
-                              .textTheme
-                              .headline6!
-                              .copyWith(fontWeight: FontWeight.bold),
-                        ),
-                        RatingBar.builder(
-                          initialRating: 0,
-                          minRating: 1,
-                          itemCount: 5,
-                          itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
-                          itemBuilder: (context, _) => Icon(
-                            Icons.star,
-                            color: Colors.amber,
-                          ),
-                          onRatingUpdate: vm.onRatingUpdate,
-                        ),
-                      ],
-                    )
-                  : Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16.0,
-                      ),
-                      child: _RatingMessage(
-                        assetName: vm.assetName,
-                        ratingTitle: vm.ratingTitle,
-                        ratingMessage: vm.ratingMessage,
-                      ),
+              if (!vm.ratingSubmitted)
+                Column(
+                  children: [
+                    Text(
+                      'Rate your experience',
+                      style: Theme.of(context)
+                          .textTheme
+                          .headline6!
+                          .copyWith(fontWeight: FontWeight.bold),
                     ),
+                    RatingBar.builder(
+                      minRating: 1,
+                      itemPadding: const EdgeInsets.symmetric(horizontal: 4.0),
+                      itemBuilder: (context, _) => const Icon(
+                        Icons.star,
+                        color: Colors.amber,
+                      ),
+                      onRatingUpdate: vm.onRatingUpdate,
+                    ),
+                  ],
+                ),
+              if (vm.ratingSubmitted)
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16.0,
+                  ),
+                  child: _RatingMessage(
+                    assetName: vm.assetName,
+                    ratingTitle: vm.ratingTitle,
+                    ratingMessage: vm.ratingMessage,
+                  ),
+                ),
               SizedBox(height: 16.0.h),
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16.0.w),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     SizedBox(
                       width: double.infinity,
@@ -118,7 +118,7 @@ class _OrderReceivedView extends StatelessView<OrderReceivedViewModel> {
                     SizedBox(
                       width: double.infinity,
                       child: AppButton(
-                        "Back to Activity",
+                        'Back to Activity',
                         kTealColor,
                         true,
                         vm.onBackToActivity,

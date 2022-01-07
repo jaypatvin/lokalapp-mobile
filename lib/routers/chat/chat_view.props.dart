@@ -1,9 +1,9 @@
 import '../../models/chat_model.dart';
 
 class ChatViewProps {
-  const ChatViewProps(
-    this.createMessage, {
+  const ChatViewProps({
     this.chat,
+    this.createMessage = true,
     this.members,
     this.shopId,
     this.productId,

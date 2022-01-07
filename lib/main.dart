@@ -39,17 +39,19 @@ import 'utils/utility.dart';
 import 'widgets/overlays/screen_loader.dart';
 import 'widgets/photo_picker_gallery/provider/custom_photo_provider.dart';
 
-void main() async {
+Future<void> main() async {
   runZonedGuarded(() async {
     WidgetsFlutterBinding.ensureInitialized();
     await Firebase.initializeApp();
     runApp(MyApp());
   }, (error, stack) {
     // do something with error like logging or sending to backend
-    FlutterError.presentError(FlutterErrorDetails(
-      exception: error,
-      stack: stack,
-    ));
+    FlutterError.presentError(
+      FlutterErrorDetails(
+        exception: error,
+        stack: stack,
+      ),
+    );
 
     if (error is SocketException) {
       showToast('Failed to communicate to the server!');
@@ -73,7 +75,7 @@ class _MyAppState extends State<MyApp> {
   late final PageController _profilePageController;
 
   @override
-  initState() {
+  void initState() {
     super.initState();
 
     _prefs = UserSharedPreferences();
@@ -85,7 +87,7 @@ class _MyAppState extends State<MyApp> {
   }
 
   @override
-  dispose() {
+  void dispose() {
     _prefs.dispose();
     _profilePageController.dispose();
 
@@ -219,7 +221,7 @@ class _MyAppState extends State<MyApp> {
                       primarySwatch: Colors.teal,
                       accentColor: const Color(0xFFFF7A00),
                     ),
-                    fontFamily: "Goldplay",
+                    fontFamily: 'Goldplay',
                     textTheme: TextTheme(
                       headline1: TextStyle(
                         fontSize: 96.sp,
@@ -274,15 +276,16 @@ class _MyAppState extends State<MyApp> {
                     ),
                     scaffoldBackgroundColor: Colors.white,
                   ),
-                  home: Root(),
+                  home: const Root(),
                   navigatorKey: _router.keyOf(AppRoute.root),
                   initialRoute: '/',
                   onGenerateRoute:
                       _router.navigatorOf(AppRoute.root).onGenerateRoute,
                   builder: (context, widget) {
-                    Widget error = Text('Error in displaying the screen');
-                    if (widget is Scaffold || widget is Navigator)
+                    Widget error = const Text('Error in displaying the screen');
+                    if (widget is Scaffold || widget is Navigator) {
                       error = Scaffold(body: Center(child: error));
+                    }
                     ErrorWidget.builder = (errorDetails) => error;
 
                     return widget!;

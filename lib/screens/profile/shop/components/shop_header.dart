@@ -44,7 +44,7 @@ class ShopHeader extends StatelessWidget {
                   gradient: LinearGradient(
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
-                    colors: this.linearGradientColors,
+                    colors: linearGradientColors,
                   ),
                 ),
               ),
@@ -60,7 +60,7 @@ class ShopHeader extends StatelessWidget {
             ),
           ),
         ),
-        if (this.displaySettingsButton)
+        if (displaySettingsButton)
           Positioned(
             left: 10.0.w,
             child: IconButton(
@@ -99,7 +99,7 @@ class ShopHeader extends StatelessWidget {
             ),
           ),
         ),
-        if (this.displayEditButton)
+        if (displayEditButton)
           Positioned(
             right: 10.0.w,
             child: IconButton(
@@ -109,7 +109,7 @@ class ShopHeader extends StatelessWidget {
                 size: 30.0.r,
               ),
               color: Colors.white,
-              onPressed: this.onEditTap,
+              onPressed: onEditTap,
             ),
           ),
       ],

@@ -14,7 +14,7 @@ class AccountDeleted extends StatelessWidget {
       backgroundColor: kYellowColor,
       body: Column(
         children: [
-          Container(
+          SizedBox(
             width: MediaQuery.of(context).size.width,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -23,7 +23,7 @@ class AccountDeleted extends StatelessWidget {
                   height: MediaQuery.of(context).size.height * 0.2,
                 ),
                 Hero(
-                  tag: "home",
+                  tag: 'home',
                   child: SvgPicture.asset(
                     kSvgLokalLogo,
                     color: kOrangeColor,
@@ -31,9 +31,9 @@ class AccountDeleted extends StatelessWidget {
                   ),
                 ),
                 Hero(
-                  tag: "plaza",
+                  tag: 'plaza',
                   child: Text(
-                    "Your neighborhood plaza",
+                    'Your neighborhood plaza',
                     style: Theme.of(context)
                         .textTheme
                         .headline6!
@@ -46,16 +46,16 @@ class AccountDeleted extends StatelessWidget {
           SizedBox(height: 30.h),
           Container(
             padding: const EdgeInsets.all(8),
-            child: Text(
-              "Account Deleted!",
+            child: const Text(
+              'Account Deleted!',
               style: TextStyle(
                 fontSize: 20,
-                fontFamily: "Goldplay",
+                fontFamily: 'Goldplay',
                 fontWeight: FontWeight.w600,
               ),
             ),
           ),
-          Text(
+          const Text(
             "We're sad to see you go :(\n"
             'If you change your mind, you can\n'
             'log back in again within 30 days!',

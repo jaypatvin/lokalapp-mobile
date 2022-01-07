@@ -27,20 +27,21 @@ class VerifyScreen extends StatefulWidget {
 class _VerifyScreenState extends State<VerifyScreen> {
   final _ids = <String>[
     "Driver's License",
-    "Old Philippine Passport (Issued before 15 Aug 2016)",
-    "New Philippine Passport",
-    "Unified Multipurpose ID",
+    'Old Philippine Passport (Issued before 15 Aug 2016)',
+    'New Philippine Passport',
+    'Unified Multipurpose ID',
   ];
 
   String? _chosenIdType;
   File? _file;
 
   Widget androidDropDown() {
-    List<DropdownMenuItem<String>> dropDownItems = [];
+    final List<DropdownMenuItem<String>> dropDownItems = [];
 
-    for (var id in _ids) {
+    for (final id in _ids) {
       dropDownItems.add(
         DropdownMenuItem(
+          value: id,
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 16.0.w),
             child: Text(
@@ -48,7 +49,6 @@ class _VerifyScreenState extends State<VerifyScreen> {
               overflow: TextOverflow.ellipsis,
             ),
           ),
-          value: id,
         ),
       );
     }
@@ -57,8 +57,8 @@ class _VerifyScreenState extends State<VerifyScreen> {
       child: DropdownButton<String>(
         hint: Padding(
           padding: EdgeInsets.symmetric(horizontal: 16.0.w),
-          child: Text(
-            "Select type of ID",
+          child: const Text(
+            'Select type of ID',
             style: TextStyle(color: Colors.grey),
           ),
         ),
@@ -66,7 +66,7 @@ class _VerifyScreenState extends State<VerifyScreen> {
         isExpanded: true,
         items: dropDownItems,
         focusColor: Colors.white,
-        icon: Icon(
+        icon: const Icon(
           Icons.arrow_drop_down,
           color: kTealColor,
         ),
@@ -79,8 +79,7 @@ class _VerifyScreenState extends State<VerifyScreen> {
   }
 
   Widget iOSPicker() {
-    final pickerItems = this
-        ._ids
+    final pickerItems = _ids
         .map<Widget>(
           (id) => Center(
             child: Text(
@@ -116,7 +115,7 @@ class _VerifyScreenState extends State<VerifyScreen> {
                 overflow: TextOverflow.ellipsis,
               ),
             ),
-          Icon(
+          const Icon(
             Icons.arrow_drop_down,
             color: kTealColor,
           ),
@@ -155,11 +154,11 @@ class _VerifyScreenState extends State<VerifyScreen> {
     );
   }
 
-  void _onSubmitHandler() async {
-    LocalImageService picker =
+  Future<void> _onSubmitHandler() async {
+    final LocalImageService picker =
         Provider.of<LocalImageService>(context, listen: false);
     if (_file != null) {
-      String mediaUrl =
+      final String mediaUrl =
           await picker.uploadImage(file: _file!, name: 'verification');
 
       if (mediaUrl.isNotEmpty) {
@@ -216,7 +215,7 @@ class _VerifyScreenState extends State<VerifyScreen> {
             );
           },
           child: Text(
-            "Skip",
+            'Skip',
             style: TextStyle(
               color: kTealColor,
               fontSize: 18.0.sp,
@@ -259,7 +258,7 @@ class _VerifyScreenState extends State<VerifyScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                "Verify Your Account",
+                'Verify Your Account',
                 style: TextStyle(
                   fontSize: 30.0.sp,
                   color: kNavyColor,
@@ -267,9 +266,9 @@ class _VerifyScreenState extends State<VerifyScreen> {
                 ),
               ),
               SizedBox(height: 10.0.h),
-              Text(
+              const Text(
                 "In order to access all of Lokal's features, "
-                "we need to verify your identity",
+                'we need to verify your identity',
                 style: TextStyle(
                   fontSize: 16.0,
                   color: kNavyColor,
@@ -280,7 +279,7 @@ class _VerifyScreenState extends State<VerifyScreen> {
               SizedBox(height: 75.0.h),
               Container(
                 width: double.infinity,
-                decoration: ShapeDecoration(
+                decoration: const ShapeDecoration(
                   color: Colors.white,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(30.0)),
@@ -293,23 +292,23 @@ class _VerifyScreenState extends State<VerifyScreen> {
                 SizedBox(
                   height: 150.h,
                   child: Image.file(
-                    this._file!,
+                    _file!,
                     fit: BoxFit.cover,
                   ),
                 ),
               SizedBox(
                 width: double.infinity,
                 child: AppButton(
-                  this._file != null
+                  _file != null
                       ? 'Choose a different photo'
                       : 'UPLOAD PHOTO OF ID',
                   kTealColor,
                   false,
                   () async {
-                    this._file = await context
+                    _file = await context
                             .read<MediaUtility>()
                             .showMediaDialog(context) ??
-                        this._file;
+                        _file;
                     setState(() {});
                   },
                 ),
@@ -318,12 +317,12 @@ class _VerifyScreenState extends State<VerifyScreen> {
               SizedBox(
                 width: 120.0.w,
                 child: AppButton(
-                  "SUBMIT",
+                  'SUBMIT',
                   kTealColor,
                   true,
                   _file != null ? _onSubmitHandler : null,
                   textStyle: _file != null
-                      ? TextStyle(
+                      ? const TextStyle(
                           color: kNavyColor,
                         )
                       : null,

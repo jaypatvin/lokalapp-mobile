@@ -27,7 +27,7 @@ class InputTextField extends StatelessWidget {
       controller: inputController,
       focusNode: inputFocusNode,
       textAlignVertical: TextAlignVertical.center,
-      onTap: this.onTap,
+      onTap: onTap,
       decoration: InputDecoration(
         border: InputBorder.none,
         focusedBorder: InputBorder.none,
@@ -39,14 +39,14 @@ class InputTextField extends StatelessWidget {
         contentPadding: EdgeInsets.symmetric(
           horizontal: 15.0.w,
         ),
-        hintText: this.hintText,
+        hintText: hintText,
         hintStyle: Theme.of(context).textTheme.subtitle1!.copyWith(
               fontWeight: FontWeight.normal,
               color: Colors.grey[400],
             ),
         alignLabelWithHint: true,
         suffixIcon: IconButton(
-          icon: Icon(MdiIcons.sendOutline),
+          icon: const Icon(MdiIcons.sendOutline),
           onPressed: onSend,
           color: kTealColor,
         ),

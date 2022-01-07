@@ -25,56 +25,56 @@ class OrderDetailsButtons extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    switch (this.statusCode) {
+    switch (statusCode) {
       case 100:
         return Status100Buttons(
-          isBuyer: this.isBuyer,
-          order: this.order,
-          onPress: this.onPress,
+          isBuyer: isBuyer,
+          order: order,
+          onPress: onPress,
         );
       case 200:
         return Status200Buttons(
-          isBuyer: this.isBuyer,
-          order: this.order,
-          onPress: this.onPress,
+          isBuyer: isBuyer,
+          order: order,
+          onPress: onPress,
         );
       case 300:
         return Status300Buttons(
-          isBuyer: this.isBuyer,
-          order: this.order,
-          onPress: this.onPress,
-          paymentMethod: this.order.paymentMethod,
+          isBuyer: isBuyer,
+          order: order,
+          onPress: onPress,
+          paymentMethod: order.paymentMethod,
         );
       case 400:
         return Status400Buttons(
-          isBuyer: this.isBuyer,
-          order: this.order,
-          onPress: this.onPress,
-          paymentMethod: this.order.paymentMethod,
+          isBuyer: isBuyer,
+          order: order,
+          onPress: onPress,
+          paymentMethod: order.paymentMethod,
         );
       case 500:
         return Status500Buttons(
-          isBuyer: this.isBuyer,
-          order: this.order,
-          onPress: this.onPress,
-          paymentMethod: this.order.paymentMethod,
+          isBuyer: isBuyer,
+          order: order,
+          onPress: onPress,
+          paymentMethod: order.paymentMethod,
         );
       case 600:
         return Status600Buttons(
-          isBuyer: this.isBuyer,
-          order: this.order,
-          onPress: this.onPress,
-          paymentMethod: this.order.paymentMethod,
+          isBuyer: isBuyer,
+          order: order,
+          onPress: onPress,
+          paymentMethod: order.paymentMethod,
         );
       default:
-        return this.isBuyer
-            ? Container(
+        return isBuyer
+            ? SizedBox(
                 width: double.infinity,
-                child: MessageSellerButton(order: this.order),
+                child: MessageSellerButton(order: order),
               )
-            : Container(
+            : SizedBox(
                 width: double.infinity,
-                child: MessageBuyerButton(order: this.order),
+                child: MessageBuyerButton(order: order),
               );
     }
   }

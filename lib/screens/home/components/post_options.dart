@@ -27,7 +27,7 @@ class PostOptions extends StatelessWidget {
           GestureDetector(
             onTap: onReportPost,
             child: ListTile(
-              leading: Icon(
+              leading: const Icon(
                 MdiIcons.alertCircleOutline,
                 color: kPinkColor,
               ),
@@ -45,7 +45,7 @@ class PostOptions extends StatelessWidget {
           GestureDetector(
             onTap: onEditPost,
             child: ListTile(
-              leading: Icon(
+              leading: const Icon(
                 MdiIcons.squareEditOutline,
                 color: Colors.black,
               ),
@@ -60,7 +60,7 @@ class PostOptions extends StatelessWidget {
           GestureDetector(
             onTap: onHidePost,
             child: ListTile(
-              leading: Icon(
+              leading: const Icon(
                 MdiIcons.eyeOffOutline,
                 color: Colors.black,
               ),
@@ -80,7 +80,7 @@ class PostOptions extends StatelessWidget {
               });
             },
             child: ListTile(
-              leading: Icon(
+              leading: const Icon(
                 MdiIcons.trashCanOutline,
                 color: kPinkColor,
               ),
@@ -98,12 +98,12 @@ class PostOptions extends StatelessWidget {
           GestureDetector(
             onTap: onCopyLink,
             child: ListTile(
-              leading: Icon(
+              leading: const Icon(
                 MdiIcons.linkVariant,
                 color: Colors.black,
               ),
               title: Text(
-                "Copy Link",
+                'Copy Link',
                 softWrap: true,
                 style: Theme.of(context).textTheme.subtitle1,
               ),

@@ -30,7 +30,7 @@ enum Endpoint {
   shop,
 
   /// API endpoint for different productSubscriptionPlan operations
-  subscription_plan,
+  subscriptionPlan,
 
   /// API endpoint for different user operations
   user,
@@ -59,7 +59,7 @@ extension EndpointPath on Endpoint {
         return 'search';
       case Endpoint.shop:
         return 'shops';
-      case Endpoint.subscription_plan:
+      case Endpoint.subscriptionPlan:
         return 'productSubscriptionPlans';
       case Endpoint.user:
         return 'users';
@@ -79,7 +79,7 @@ class API extends ChangeNotifier {
   static const String host = 'us-central1-lokal-1baac.cloudfunctions.net';
 
   void setIdToken(String token) {
-    this.idToken = token;
+    idToken = token;
     notifyListeners();
   }
 

@@ -42,16 +42,15 @@ class _WalletDetailsView extends HookView<BankDetailsViewModel>
   @override
   Widget screen(BuildContext context, BankDetailsViewModel vm) {
     final numberFormat = useMemoized<NumberFormat>(
-      () => NumberFormat("#,###.0#", "en_US"),
+      () => NumberFormat('#,###.0#', 'en_US'),
     );
 
     return Scaffold(
       appBar: CustomAppBar(
         titleText: '${vm.paymentMode == PaymentMode.gCash ? "Wallet" : "Bank"} '
             'Transfer/Deposit',
-        titleStyle: TextStyle(color: Colors.white),
+        titleStyle: const TextStyle(color: Colors.white),
         backgroundColor: kTealColor,
-        leadingColor: Colors.white,
       ),
       body: Column(
         children: [
@@ -60,11 +59,13 @@ class _WalletDetailsView extends HookView<BankDetailsViewModel>
             child: RichText(
               text: TextSpan(
                 children: [
-                  TextSpan(text: 'Please deposit '),
+                  const TextSpan(text: 'Please deposit '),
                   TextSpan(
-                    text: "P ${numberFormat.format(vm.price)}",
+                    text: 'P ${numberFormat.format(vm.price)}',
                     style: Theme.of(context).textTheme.bodyText1?.copyWith(
-                        color: Colors.orange, fontWeight: FontWeight.bold),
+                          color: Colors.orange,
+                          fontWeight: FontWeight.bold,
+                        ),
                   ),
                   TextSpan(
                     text:
@@ -126,7 +127,7 @@ class _WalletDetailsView extends HookView<BankDetailsViewModel>
                             Flexible(
                               flex: 4,
                               child: Text(
-                                '${_account.accountName}',
+                                _account.accountName,
                                 style: Theme.of(context).textTheme.subtitle1,
                               ),
                             ),
@@ -139,7 +140,7 @@ class _WalletDetailsView extends HookView<BankDetailsViewModel>
               ),
             ),
           ),
-          SizedBox(height: 16.0),
+          const SizedBox(height: 16.0),
           if (vm.proofOfPayment != null)
             PhotoBox(
               shape: BoxShape.rectangle,
@@ -151,9 +152,9 @@ class _WalletDetailsView extends HookView<BankDetailsViewModel>
             padding: EdgeInsets.symmetric(horizontal: 8.0.w, vertical: 4.0.h),
             child: AppButton(
               "${vm.proofOfPayment != null ? 'Re-u' : 'U'}"
-              "pload proof of payment",
+              'pload proof of payment',
               kTealColor,
-              vm.proofOfPayment != null ? false : true,
+              !(vm.proofOfPayment != null),
               vm.onImagePick,
             ),
           ),
@@ -161,11 +162,11 @@ class _WalletDetailsView extends HookView<BankDetailsViewModel>
             width: double.infinity,
             padding: EdgeInsets.symmetric(horizontal: 8.0.w, vertical: 4.0.h),
             child: AppButton(
-              "Submit",
+              'Submit',
               vm.proofOfPayment != null ? kTealColor : Colors.grey,
               true,
               vm.proofOfPayment != null
-                  ? () async => await performFuture<void>(vm.onSubmit)
+                  ? () async => performFuture<void>(vm.onSubmit)
                   : null,
             ),
           ),

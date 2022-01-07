@@ -19,59 +19,55 @@ class Status100Buttons extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (this.isBuyer) {
-      return Container(
-        child: Row(
+    if (isBuyer) {
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Expanded(
+            child: AppButton(
+              'Cancel Order',
+              kPinkColor,
+              false,
+              () => onPress(OrderAction.cancel),
+            ),
+          ),
+          SizedBox(width: MediaQuery.of(context).size.width * 0.01),
+          Expanded(
+            child: MessageSellerButton(order: order),
+          ),
+        ],
+      );
+    }
+
+    return Column(
+      children: [
+        SizedBox(
+          width: double.infinity,
+          child: MessageBuyerButton(order: order),
+        ),
+        Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Expanded(
               child: AppButton(
-                "Cancel Order",
+                'Decline Order',
                 kPinkColor,
                 false,
-                () => this.onPress(OrderAction.cancel),
+                () => onPress(OrderAction.decline),
               ),
             ),
             SizedBox(width: MediaQuery.of(context).size.width * 0.01),
             Expanded(
-              child: MessageSellerButton(order: this.order),
-            ),
+              child: AppButton(
+                'Confirm Order',
+                kOrangeColor,
+                true,
+                () => onPress(OrderAction.confirm),
+              ),
+            )
           ],
         ),
-      );
-    }
-
-    return Container(
-      child: Column(
-        children: [
-          Container(
-            width: double.infinity,
-            child: MessageBuyerButton(order: this.order),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Expanded(
-                child: AppButton(
-                  "Decline Order",
-                  kPinkColor,
-                  false,
-                  () => this.onPress(OrderAction.decline),
-                ),
-              ),
-              SizedBox(width: MediaQuery.of(context).size.width * 0.01),
-              Expanded(
-                child: AppButton(
-                  "Confirm Order",
-                  kOrangeColor,
-                  true,
-                  () => this.onPress(OrderAction.confirm),
-                ),
-              )
-            ],
-          ),
-        ],
-      ),
+      ],
     );
   }
 }

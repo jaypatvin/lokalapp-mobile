@@ -16,9 +16,9 @@ import 'transaction_card.dart';
 class GroupedOrders extends StatelessWidget {
   const GroupedOrders(
     this.stream,
-    this.statuses,
-    this.isBuyer, {
+    this.statuses, {
     Key? key,
+    required this.isBuyer,
   }) : super(key: key);
 
   final Stream<QuerySnapshot>? stream;
@@ -44,7 +44,7 @@ class _GroupedOrdersView extends HookView<GroupedOrdersViewModel>
   @override
   Widget screen(BuildContext context, GroupedOrdersViewModel vm) {
     return StreamBuilder(
-      stream: this.stream,
+      stream: stream,
       builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
         switch (snapshot.connectionState) {
           case ConnectionState.waiting:
@@ -59,12 +59,12 @@ class _GroupedOrdersView extends HookView<GroupedOrdersViewModel>
               ),
             );
           default:
-            if (snapshot.hasError)
+            if (snapshot.hasError) {
               return Center(
                 child: Text('Error: ${snapshot.error}'),
               );
-            else if (!snapshot.hasData || snapshot.data!.docs.length == 0)
-              return Center(
+            } else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+              return const Center(
                 child: Text(
                   'No orders yet!',
                   style: TextStyle(
@@ -72,15 +72,14 @@ class _GroupedOrdersView extends HookView<GroupedOrdersViewModel>
                   ),
                 ),
               );
-            else
-              // This uses ListView.builder under the hood so is performant.
+            } else {
               return GroupedListView(
                 shrinkWrap: true,
                 padding: EdgeInsets.symmetric(horizontal: 16.0.w),
-                physics: AlwaysScrollableScrollPhysics(),
+                physics: const AlwaysScrollableScrollPhysics(),
                 elements: snapshot.data!.docs,
                 groupBy: (QueryDocumentSnapshot element) {
-                  final date = (element["created_at"] as Timestamp).toDate();
+                  final date = (element['created_at'] as Timestamp).toDate();
                   return DateTime(date.year, date.month, date.day);
                 },
                 groupSeparatorBuilder: (DateTime value) {
@@ -97,16 +96,16 @@ class _GroupedOrdersView extends HookView<GroupedOrdersViewModel>
                 },
                 order: GroupedListOrder.DESC,
                 itemBuilder: (context, QueryDocumentSnapshot snapshot) {
-                  final snapshotData = snapshot.data() as Map<String, dynamic>;
-                  final int? code = snapshotData["status_code"];
-                  final data = {...snapshotData, "id": snapshot.id};
+                  final snapshotData = snapshot.data()! as Map<String, dynamic>;
+                  final int? code = snapshotData['status_code'];
+                  final data = {...snapshotData, 'id': snapshot.id};
                   final order = Order.fromMap(data);
                   return TransactionCard(
                     order: order,
                     isBuyer: vm.isBuyer,
-                    status: this.statuses[code]!,
-                    onSecondButtonPress: () async => await performFuture<void>(
-                      () async => await vm.onSecondButtonPress(order),
+                    status: statuses[code],
+                    onSecondButtonPress: () => performFuture<void>(
+                      () => vm.onSecondButtonPress(order),
                     ),
                   );
                 },
@@ -114,8 +113,8 @@ class _GroupedOrdersView extends HookView<GroupedOrdersViewModel>
                   QueryDocumentSnapshot a,
                   QueryDocumentSnapshot b,
                 ) {
-                  final _statusCodeA = a.get("status_code");
-                  final _statusCodeB = b.get("status_code");
+                  final _statusCodeA = a.get('status_code');
+                  final _statusCodeB = b.get('status_code');
                   final statusCodeA = (_statusCodeA == 10 || _statusCodeA == 20)
                       ? _statusCodeA * 100
                       : _statusCodeA;
@@ -126,6 +125,7 @@ class _GroupedOrdersView extends HookView<GroupedOrdersViewModel>
                   return statusCodeA.compareTo(statusCodeB);
                 },
               );
+            }
         }
       },
     );

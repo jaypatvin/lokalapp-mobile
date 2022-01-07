@@ -37,7 +37,7 @@ class BankDetailsViewModel extends ViewModel {
   void init() {
     _apiService = OrderAPIService(context.read<API>());
 
-    final shop = context.read<Shops>().findById(order.shopId!);
+    final shop = context.read<Shops>().findById(order.shopId);
     if (paymentMode == PaymentMode.gCash) {
       paymentAccounts =
           shop?.paymentOptions?.gCashAccounts ?? <WalletAccount>[];
@@ -60,12 +60,12 @@ class BankDetailsViewModel extends ViewModel {
       if (proofOfPayment == null) throw 'No image selected!';
 
       final _url = await _imageService.uploadImage(
-        file: this.proofOfPayment!,
-        name: "proof_of_payment",
+        file: proofOfPayment!,
+        name: 'proof_of_payment',
       );
 
       final success = await _apiService.pay(
-        orderId: this.order.id!,
+        orderId: order.id!,
         body: <String, String>{
           'payment_method': paymentMode.value,
           'proof_of_payment': _url,

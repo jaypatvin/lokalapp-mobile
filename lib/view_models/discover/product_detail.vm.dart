@@ -1,5 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:lokalapp/services/bottom_nav_bar_hider.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
@@ -10,6 +9,7 @@ import '../../providers/wishlist.dart';
 import '../../routers/app_router.dart';
 import '../../routers/profile/user_shop.props.dart';
 import '../../screens/profile/shop/user_shop.dart';
+import '../../services/bottom_nav_bar_hider.dart';
 import '../../state/view_model.dart';
 
 class ProductDetailViewModel extends ViewModel {
@@ -37,13 +37,13 @@ class ProductDetailViewModel extends ViewModel {
     super.init();
     if (cart.contains(product.id)) {
       final order = cart.getProductOrder(product.id)!;
-      this._instructions = order.notes ?? '';
-      this._quantity = order.quantity;
-      this.appBarTitle = 'Edit Order';
-      this.buttonLabel = 'UPDATE CART';
+      _instructions = order.notes ?? '';
+      _quantity = order.quantity;
+      appBarTitle = 'Edit Order';
+      buttonLabel = 'UPDATE CART';
     } else {
-      this.appBarTitle = shop.name!;
-      this.buttonLabel = 'ADD TO CART';
+      appBarTitle = shop.name!;
+      buttonLabel = 'ADD TO CART';
     }
   }
 
@@ -53,13 +53,13 @@ class ProductDetailViewModel extends ViewModel {
   }
 
   void increase() {
-    this._quantity++;
+    _quantity++;
     notifyListeners();
   }
 
   void decrease() {
     if (quantity <= 0) return;
-    this._quantity--;
+    _quantity--;
     notifyListeners();
   }
 
@@ -112,7 +112,7 @@ class ProductDetailViewModel extends ViewModel {
     }
   }
 
-  void goToShop() async {
+  Future<void> goToShop() async {
     context.read<BottomNavBarHider>().isHidden = false;
     await context.read<AppRouter>().navigateTo(
           AppRoute.profile,

@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -31,12 +29,12 @@ class Home extends HookWidget {
     return Onboarding(
       screen: MainScreen.home,
       child: Scaffold(
-        backgroundColor: Color(0xffF1FAFF),
+        backgroundColor: const Color(0xffF1FAFF),
         resizeToAvoidBottomInset: true,
         appBar: CustomAppBar(
           titleText:
               context.watch<CommunityProvider>().community?.name ?? 'Community',
-          titleStyle: TextStyle(color: Colors.white),
+          titleStyle: const TextStyle(color: Colors.white),
           backgroundColor: kTealColor,
           buildLeading: false,
           actions: [
@@ -46,7 +44,7 @@ class Home extends HookWidget {
                   .keyOf(AppRoute.home)
                   .currentState!
                   .pushNamed(Notifications.routeName),
-              icon: Icon(Icons.notifications_outlined),
+              icon: const Icon(Icons.notifications_outlined),
             )
           ],
         ),
@@ -73,9 +71,11 @@ class Home extends HookWidget {
 }
 
 class _PostField extends StatelessWidget {
-  const _PostField(
-      {Key? key, this.height = 75.0, required this.scrollController})
-      : super(key: key);
+  const _PostField({
+    Key? key,
+    this.height = 75.0,
+    required this.scrollController,
+  }) : super(key: key);
 
   final double height;
   final ScrollController scrollController;
@@ -85,8 +85,8 @@ class _PostField extends StatelessWidget {
     return MVVM(
       view: (_, __) => _PostFieldView(),
       viewModel: PostFieldViewModel(
-        scrollController: this.scrollController,
-        height: this.height,
+        scrollController: scrollController,
+        height: height,
       ),
     );
   }
@@ -128,7 +128,7 @@ class _PostFieldView extends StatelessView<PostFieldViewModel> {
                       fontWeight: FontWeight.w500,
                     ),
                   ),
-                  Icon(
+                  const Icon(
                     MdiIcons.squareEditOutline,
                     color: Color(0xffE0E0E0),
                   ),

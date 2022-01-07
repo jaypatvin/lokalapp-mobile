@@ -1,10 +1,12 @@
+// ignore_for_file: unnecessary_const
+
 import 'dart:ui' as ui;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:photo_manager/photo_manager.dart';
 
-typedef Widget AssetWidgetBuilder(
+typedef AssetWidgetBuilder = Widget Function(
   BuildContext context,
   AssetEntity asset,
   int thumbSize,
@@ -21,7 +23,10 @@ class CustomAssetWidget extends StatelessWidget {
   }) : super(key: key);
 
   static CustomAssetWidget buildWidget(
-      BuildContext context, AssetEntity asset, int thumbSize) {
+    BuildContext context,
+    AssetEntity asset,
+    int thumbSize,
+  ) {
     return CustomAssetWidget(
       asset: asset,
       thumbSize: thumbSize,
@@ -39,17 +44,18 @@ class CustomAssetWidget extends StatelessWidget {
           children: <Widget>[
             Positioned.fill(
               child: Image(
-                  image: AssetEntityThumbImage(
-                    entity: asset,
-                    width: thumbSize,
-                    height: thumbSize,
-                  ),
-                  fit: BoxFit.cover),
+                image: AssetEntityThumbImage(
+                  entity: asset,
+                  width: thumbSize,
+                  height: thumbSize,
+                ),
+                fit: BoxFit.cover,
+              ),
             ),
             ColoredBox(
               color: Colors.black.withOpacity(0.3),
-              child: Center(
-                child: Icon(
+              child: const Center(
+                child: const Icon(
                   Icons.video_library,
                   color: Colors.white,
                 ),
@@ -84,7 +90,10 @@ class AssetBigPreviewWidget extends StatelessWidget {
   }) : super(key: key);
 
   static CustomAssetWidget buildWidget(
-      BuildContext context, AssetEntity asset, int thumbSize) {
+    BuildContext context,
+    AssetEntity asset,
+    int thumbSize,
+  ) {
     return CustomAssetWidget(
       asset: asset,
       thumbSize: thumbSize,
@@ -118,7 +127,9 @@ class AssetEntityFileImage extends ImageProvider<AssetEntityFileImage> {
   }
 
   Future<ui.Codec> _loadAsync(
-      AssetEntityFileImage key, DecoderCallback decode) async {
+    AssetEntityFileImage key,
+    DecoderCallback decode,
+  ) async {
     assert(key == this);
     final bytes = (await entity.file)!.readAsBytesSync();
     return decode(bytes);
@@ -129,7 +140,8 @@ class AssetEntityFileImage extends ImageProvider<AssetEntityFileImage> {
     return SynchronousFuture<AssetEntityFileImage>(this);
   }
 
-  bool operator ==(other) {
+  @override
+  bool operator ==(Object other) {
     if (identical(other, this)) {
       return true;
     }
@@ -137,7 +149,7 @@ class AssetEntityFileImage extends ImageProvider<AssetEntityFileImage> {
       return false;
     }
     final AssetEntityFileImage o = other;
-    return o.entity == entity && o.scale == this.scale;
+    return o.entity == entity && o.scale == scale;
   }
 
   @override
@@ -167,7 +179,9 @@ class AssetEntityThumbImage extends ImageProvider<AssetEntityThumbImage> {
   }
 
   Future<ui.Codec> _loadAsync(
-      AssetEntityThumbImage key, DecoderCallback decode) async {
+    AssetEntityThumbImage key,
+    DecoderCallback decode,
+  ) async {
     assert(key == this);
     final bytes = await entity.thumbDataWithSize(width, height);
     return decode(bytes!);
@@ -175,11 +189,13 @@ class AssetEntityThumbImage extends ImageProvider<AssetEntityThumbImage> {
 
   @override
   Future<AssetEntityThumbImage> obtainKey(
-      ImageConfiguration configuration) async {
+    ImageConfiguration configuration,
+  ) async {
     return this;
   }
 
-  bool operator ==(other) {
+  @override
+  bool operator ==(Object other) {
     if (identical(other, this)) {
       return true;
     }
@@ -187,10 +203,10 @@ class AssetEntityThumbImage extends ImageProvider<AssetEntityThumbImage> {
       return false;
     }
     final AssetEntityThumbImage o = other;
-    return (o.entity == entity &&
+    return o.entity == entity &&
         o.scale == scale &&
         o.width == width &&
-        o.height == height);
+        o.height == height;
   }
 
   @override

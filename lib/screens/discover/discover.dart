@@ -1,6 +1,4 @@
-
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
@@ -38,7 +36,7 @@ class _DiscoverView extends StatelessView<DiscoverViewModel> {
     return Consumer<Categories>(
       builder: (ctx, provider, _) {
         if (provider.isLoading) {
-          return Center(
+          return const Center(
             child: CircularProgressIndicator(),
           );
         }
@@ -54,7 +52,7 @@ class _DiscoverView extends StatelessView<DiscoverViewModel> {
                 children: [
                   CircleAvatar(
                     radius: 35.0.r,
-                    backgroundColor: Color(0XFFF1FAFF),
+                    backgroundColor: const Color(0XFFF1FAFF),
                     foregroundImage: NetworkImage(categories[index].iconUrl),
                     onForegroundImageError: (obj, stack) {},
                   ),
@@ -81,8 +79,8 @@ class _DiscoverView extends StatelessView<DiscoverViewModel> {
     return Onboarding(
       screen: MainScreen.discover,
       child: Scaffold(
-        appBar: CustomAppBar(
-          titleText: "Discover",
+        appBar: const CustomAppBar(
+          titleText: 'Discover',
           backgroundColor: kOrangeColor,
           buildLeading: false,
         ),
@@ -97,19 +95,17 @@ class _DiscoverView extends StatelessView<DiscoverViewModel> {
                 children: [
                   SizedBox(height: 10.0.h),
                   GestureDetector(
-                    child: Hero(
-                      tag: "search_field",
-                      child: SearchTextField(
-                        enabled: false,
-                      ),
-                    ),
                     onTap: vm.onSearch,
+                    child: const Hero(
+                      tag: 'search_field',
+                      child: SearchTextField(),
+                    ),
                   ),
                   SizedBox(height: 10.0.h),
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 16.0.w),
                     child: Text(
-                      "Recommended",
+                      'Recommended',
                       style: Theme.of(context).textTheme.headline5,
                     ),
                   ),
@@ -139,16 +135,16 @@ class _DiscoverView extends StatelessView<DiscoverViewModel> {
                     child: Row(
                       children: [
                         Text(
-                          "Explore Categories",
+                          'Explore Categories',
                           style: Theme.of(context).textTheme.headline5,
                         ),
-                        Spacer(),
+                        const Spacer(),
                         GestureDetector(
                           onTap: vm.onExploreCategories,
                           child: Row(
                             children: [
                               Text(
-                                "View All",
+                                'View All',
                                 style: Theme.of(context).textTheme.subtitle1,
                               ),
                               Icon(
@@ -180,7 +176,7 @@ class _DiscoverView extends StatelessView<DiscoverViewModel> {
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 16.0.w),
                     child: Text(
-                      "Recent",
+                      'Recent',
                       style: Theme.of(context).textTheme.headline5,
                     ),
                   ),
@@ -228,14 +224,14 @@ class _RecommendedProducts extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       height: 250.0.h,
       width: MediaQuery.of(context).size.width,
       child: GridView.builder(
         shrinkWrap: true,
         scrollDirection: Axis.horizontal,
         itemCount: products.length,
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           childAspectRatio: 3 / 2,
           crossAxisCount: 1,
         ),
@@ -247,7 +243,7 @@ class _RecommendedProducts extends StatelessWidget {
                     ? EdgeInsets.only(left: 2.5.w, right: 16.0.w)
                     : EdgeInsets.symmetric(horizontal: 2.5.w),
             child: GestureDetector(
-              onTap: () => this.onProductTap(products[index].id),
+              onTap: () => onProductTap(products[index].id),
               child: ProductCard(products[index].id),
             ),
           );

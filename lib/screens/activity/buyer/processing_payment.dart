@@ -18,13 +18,13 @@ extension PaymentModeExtension on PaymentMode {
   String get value {
     switch (this) {
       case PaymentMode.cash:
-        return "cod";
+        return 'cod';
       case PaymentMode.bank:
-        return "bank";
+        return 'bank';
       case PaymentMode.gCash:
-        return "e-wallet";
+        return 'e-wallet';
       default:
-        return "";
+        return '';
     }
   }
 }
@@ -40,15 +40,15 @@ class ProcessingPayment extends StatelessWidget {
   }) : super(key: key);
 
   String _getTitleText() {
-    switch (this.paymentMode) {
+    switch (paymentMode) {
       case PaymentMode.bank:
-        return "Processing Payment!";
+        return 'Processing Payment!';
       case PaymentMode.cash:
-        return "Cash on Delivery!";
+        return 'Cash on Delivery!';
       case PaymentMode.gCash:
-        return "GCash!";
+        return 'GCash!';
       default:
-        return "";
+        return '';
     }
   }
 
@@ -63,10 +63,12 @@ class ProcessingPayment extends StatelessWidget {
               Text(
                 _getTitleText(),
                 style: Theme.of(context).textTheme.headline5?.copyWith(
-                    color: Colors.black, fontWeight: FontWeight.w600),
+                      color: Colors.black,
+                      fontWeight: FontWeight.w600,
+                    ),
               ),
               SizedBox(height: 20.0.h),
-              Container(
+              SizedBox(
                 height: 100.0.h,
                 width: double.infinity,
                 child: Stack(
@@ -104,7 +106,7 @@ class ProcessingPayment extends StatelessWidget {
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 24.0.w),
                 child: TransactionDetails(
-                  transaction: this.order,
+                  transaction: order,
                   isBuyer: true,
                 ),
               ),
@@ -113,7 +115,6 @@ class ProcessingPayment extends StatelessWidget {
                 padding: EdgeInsets.symmetric(horizontal: 16.0.w),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Container(
                       width: double.infinity,
@@ -123,7 +124,7 @@ class ProcessingPayment extends StatelessWidget {
                     SizedBox(
                       width: double.infinity,
                       child: AppButton(
-                        "Back to Activity",
+                        'Back to Activity',
                         kTealColor,
                         true,
                         () {

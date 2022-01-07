@@ -39,16 +39,15 @@ class _LoginScreenView extends HookView<LoginScreenViewModel>
       resizeToAvoidBottomInset: false,
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
-        mainAxisAlignment: MainAxisAlignment.start,
         children: [
           AnimatedContainer(
             color: kYellowColor,
             height: bottom == 0 ? 280.0.h : 150.h,
-            duration: Duration(milliseconds: 100),
+            duration: const Duration(milliseconds: 100),
             child: SafeArea(
               child: Center(
                 child: SingleChildScrollView(
-                  physics: NeverScrollableScrollPhysics(),
+                  physics: const NeverScrollableScrollPhysics(),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -74,7 +73,7 @@ class _LoginScreenView extends HookView<LoginScreenViewModel>
                           style: TextStyle(
                             fontSize: 14.0.sp,
                             color: kTealColor,
-                            fontFamily: "Goldplay",
+                            fontFamily: 'Goldplay',
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -98,11 +97,11 @@ class _LoginScreenView extends HookView<LoginScreenViewModel>
                   emailFocusNode: _emailFocusNode,
                   passwordController: _passwordController,
                   passwordFocusNode: _passwordFocusNode,
-                  submitButtonLabel: "SIGN IN",
+                  submitButtonLabel: 'SIGN IN',
                   passwordInputError: vm.errorMessage,
                   onFormChanged: vm.onFormChanged,
-                  onFormSubmit: () async => await performFuture(
-                    () async => await vm.emailLogin(
+                  onFormSubmit: () async => performFuture(
+                    () async => vm.emailLogin(
                       email: _emailController.text.trim(),
                       password: _passwordController.text.trim(),
                     ),
@@ -111,16 +110,16 @@ class _LoginScreenView extends HookView<LoginScreenViewModel>
                 SizedBox(height: 10.0.h),
                 InkWell(
                   child: Text(
-                    "FORGOT PASSWORD?",
+                    'FORGOT PASSWORD?',
                     style: Theme.of(context).textTheme.subtitle2,
                   ),
                   onTap: () {},
                 ),
                 SizedBox(height: 20.0.h),
                 SocialBlock(
-                  fbLogin: () async => await performFuture(vm.facebookLogin),
-                  googleLogin: () async => await performFuture(vm.googleLogin),
-                  appleLogin: () async => await performFuture(vm.appleLogin),
+                  fbLogin: () async => performFuture(vm.facebookLogin),
+                  googleLogin: () async => performFuture(vm.googleLogin),
+                  appleLogin: () async => performFuture(vm.appleLogin),
                   buttonWidth: 50.0.w,
                 )
               ],

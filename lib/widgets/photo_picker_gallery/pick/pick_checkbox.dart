@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 
 /// If [checkIndex] is -1 , then it not be checked
-typedef Widget PickedCheckboxBuilder(BuildContext context, int checkIndex);
+typedef PickedCheckboxBuilder = Widget Function(
+  BuildContext context,
+  int checkIndex,
+);
 
 class PickedCheckbox extends StatelessWidget {
   final int checkIndex;
@@ -32,12 +35,11 @@ class PickedCheckbox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final checked = checkIndex != -1;
-    final checkText = !checked ? "" : (checkIndex + 1).toString();
+    final checkText = !checked ? '' : (checkIndex + 1).toString();
     final borderRadius = BorderRadius.circular(radius);
     final decoration = !checked
         ? BoxDecoration(
             border: Border.all(
-              width: 1,
               color: unpickColor,
             ),
             borderRadius: borderRadius,
@@ -62,7 +64,7 @@ class PickedCheckbox extends StatelessWidget {
             child: Center(
               child: Text(
                 checkText,
-                style: TextStyle(
+                style: const TextStyle(
                   color: Colors.white,
                 ),
               ),

@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:provider/provider.dart';
 
-import '../../providers/shops.dart';
 import '../../state/mvvm_builder.widget.dart';
 import '../../state/views/hook.view.dart';
 import '../../utils/constants/themes.dart';
@@ -11,12 +9,33 @@ import '../../widgets/app_button.dart';
 import 'components/grouped_orders.dart';
 
 class Transactions extends StatelessWidget {
-  const Transactions(
+  factory Transactions.isBuyer(
+    Map<int, String?> statuses,
+    Animation<Color?> colorAnimation,
+  ) {
+    return Transactions._(
+      statuses,
+      true,
+      colorAnimation,
+    );
+  }
+
+  factory Transactions.isSeller(
+    Map<int, String?> _statuses,
+    Animation<Color?> _colorAnimation,
+  ) {
+    return Transactions._(
+      _statuses,
+      false,
+      _colorAnimation,
+    );
+  }
+
+  const Transactions._(
     this._statuses,
     this._isBuyer,
-    this._colorAnimation, {
-    Key? key,
-  }) : super(key: key);
+    this._colorAnimation,
+  );
 
   final Map<int, String?> _statuses;
   final bool _isBuyer;
@@ -79,7 +98,7 @@ class _TransactionsView extends HookView<TransactionsViewModel> {
         ),
         SizedBox(height: 10.0.h),
         if (vm.stream != null)
-          Container(
+          SizedBox(
             height: 25.0.h,
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
@@ -110,66 +129,35 @@ class _TransactionsView extends HookView<TransactionsViewModel> {
               },
             ),
           ),
-        SizedBox(height: 10.0),
-        vm.stream != null
-            ? Expanded(
-                child: GroupedOrders(
-                  vm.stream,
-                  vm.initialStatuses,
-                  vm.isBuyer,
+        const SizedBox(height: 10.0),
+        if (vm.stream != null)
+          Expanded(
+            child: GroupedOrders(
+              vm.stream,
+              vm.initialStatuses,
+              isBuyer: vm.isBuyer,
+            ),
+          ),
+        if (vm.stream == null)
+          Expanded(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  vm.noOrderMessage,
+                  style: Theme.of(context).textTheme.bodyText2,
                 ),
-              )
-            : Expanded(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      vm.noOrderMessage,
-                      style: Theme.of(context).textTheme.bodyText2,
-                    ),
-                    SizedBox(height: 5.0.h),
-                    if (vm.shop == null && !vm.isBuyer)
-                      AppButton(
-                        'Create Shop',
-                        kPurpleColor,
-                        false,
-                        vm.createShopHandler,
-                      ),
-                  ],
-                ),
-              ),
-        // Builder(
-        //   builder: (ctx) {
-        //     if (vm.stream != null) {
-        //       return Expanded(
-        //         child: GroupedOrders(
-        //           vm.stream,
-        //           vm.initialStatuses,
-        //           vm.isBuyer,
-        //         ),
-        //       );
-        //     }
-        //     return Expanded(
-        //       child: Column(
-        //         mainAxisAlignment: MainAxisAlignment.center,
-        //         children: [
-        //           Text(
-        //             vm.noOrderMessage,
-        //             style: Theme.of(context).textTheme.bodyText2,
-        //           ),
-        //           SizedBox(height: 5.0.h),
-        //           if (vm.shop == null && !vm.isBuyer)
-        //             AppButton(
-        //               'Create Shop',
-        //               kPurpleColor,
-        //               false,
-        //               vm.createShopHandler,
-        //             ),
-        //         ],
-        //       ),
-        //     );
-        //   },
-        // ),
+                SizedBox(height: 5.0.h),
+                if (vm.shop == null && !vm.isBuyer)
+                  AppButton(
+                    'Create Shop',
+                    kPurpleColor,
+                    false,
+                    vm.createShopHandler,
+                  ),
+              ],
+            ),
+          ),
       ],
     );
   }

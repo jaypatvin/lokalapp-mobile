@@ -15,17 +15,15 @@ class MessageBuyerButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // TODO: ADD MESSAGE BUYER FUNCTION
-    return AppButton("Message Buyer", kTealColor, false, () {
-      context
-        ..read<AppRouter>().navigateTo(
-          AppRoute.chat,
-          ChatView.routeName,
-          arguments: ChatViewProps(
-            true,
-            members: [order!.buyerId!, order!.shopId!],
-            shopId: order!.shopId,
-          ),
-        );
+    return AppButton('Message Buyer', kTealColor, false, () {
+      context.read<AppRouter>().navigateTo(
+            AppRoute.chat,
+            ChatView.routeName,
+            arguments: ChatViewProps(
+              members: [order!.buyerId!, order!.shopId!],
+              shopId: order!.shopId,
+            ),
+          );
     });
   }
 }
@@ -36,17 +34,15 @@ class MessageSellerButton extends StatelessWidget {
   const MessageSellerButton({Key? key, required this.order}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return AppButton("Message Seller", kTealColor, false, () {
-      context
-        ..read<AppRouter>().navigateTo(
-          AppRoute.chat,
-          ChatView.routeName,
-          arguments: ChatViewProps(
-            true,
-            members: [order.buyerId!, order.shopId!],
-            shopId: order.shopId,
-          ),
-        );
+    return AppButton('Message Seller', kTealColor, false, () {
+      context.read<AppRouter>().navigateTo(
+            AppRoute.chat,
+            ChatView.routeName,
+            arguments: ChatViewProps(
+              members: [order.buyerId!, order.shopId!],
+              shopId: order.shopId,
+            ),
+          );
     });
   }
 }

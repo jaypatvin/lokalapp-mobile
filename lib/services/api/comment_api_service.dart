@@ -8,7 +8,7 @@ class CommentsAPIService extends APIService<ActivityFeedComment> {
   const CommentsAPIService(this.api);
 
   final API api;
-  final endpoint = Endpoint.activity;
+  Endpoint get endpoint => Endpoint.activity;
 
   //#region -- GET
   Future<ActivityFeedComment> getById({
@@ -16,7 +16,7 @@ class CommentsAPIService extends APIService<ActivityFeedComment> {
     required String commentId,
   }) async {
     try {
-      final response = await this.getter(
+      final response = await getter(
         api.endpointUri(
           endpoint,
           pathSegments: [activityId, 'comments', commentId],
@@ -33,10 +33,11 @@ class CommentsAPIService extends APIService<ActivityFeedComment> {
     }
   }
 
-  Future<List<ActivityFeedComment>> getActivityComments(
-      {required String activityId}) async {
+  Future<List<ActivityFeedComment>> getActivityComments({
+    required String activityId,
+  }) async {
     try {
-      final response = await this.getter(
+      final response = await getter(
         api.endpointUri(endpoint, pathSegments: [activityId, 'comments']),
         headers: api.authHeader(),
       );
@@ -54,7 +55,7 @@ class CommentsAPIService extends APIService<ActivityFeedComment> {
     required String userId,
   }) async {
     try {
-      final response = await this.getter(
+      final response = await getter(
         api.endpointUri(Endpoint.user, pathSegments: [userId, 'comments']),
         headers: api.authHeader(),
       );
@@ -75,7 +76,7 @@ class CommentsAPIService extends APIService<ActivityFeedComment> {
     required Map<String, dynamic> body,
   }) async {
     try {
-      final response = await this.poster(
+      final response = await poster(
         api.endpointUri(endpoint, pathSegments: [activityId, 'comments']),
         headers: api.withBodyHeader(),
         body: json.encode(body),
@@ -96,7 +97,7 @@ class CommentsAPIService extends APIService<ActivityFeedComment> {
     required String userId,
   }) async {
     try {
-      final response = await this.poster(
+      final response = await poster(
         api.endpointUri(
           endpoint,
           pathSegments: [activityId, 'comments', commentId, 'like'],
@@ -119,7 +120,7 @@ class CommentsAPIService extends APIService<ActivityFeedComment> {
     required Map<String, dynamic> body,
   }) async {
     try {
-      final response = await this.poster(
+      final response = await poster(
         api.endpointUri(
           endpoint,
           pathSegments: [activityId, 'comments', commentId],
@@ -141,7 +142,7 @@ class CommentsAPIService extends APIService<ActivityFeedComment> {
     required String commentId,
   }) async {
     try {
-      final response = await this.deleter(
+      final response = await deleter(
         api.endpointUri(
           endpoint,
           pathSegments: [activityId, 'comments', commentId],
@@ -161,13 +162,13 @@ class CommentsAPIService extends APIService<ActivityFeedComment> {
     required String userId,
   }) async {
     try {
-      final response = await this.deleter(
+      final response = await deleter(
         api.endpointUri(
           endpoint,
           pathSegments: [activityId, 'comments', commentId, 'unlike'],
         ),
         headers: api.withBodyHeader(),
-        body: json.encode({"user_id": userId}),
+        body: json.encode({'user_id': userId}),
       );
 
       return handleGenericResponse(response);

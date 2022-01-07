@@ -10,12 +10,12 @@ import '../services/api/user_api_service.dart';
 import '../services/database.dart';
 
 class Users extends ChangeNotifier {
-  Users._(this._apiService);
-
   factory Users(API api) {
     final _apiService = UserAPIService(api);
     return Users._(_apiService);
   }
+
+  Users._(this._apiService);
 
   final UserAPIService _apiService;
   final _db = Database.instance;
@@ -43,7 +43,9 @@ class Users extends ChangeNotifier {
     }
   }
 
-  void _userChangesListener(QuerySnapshot<Map<String, dynamic>> query) async {
+  Future<void> _userChangesListener(
+    QuerySnapshot<Map<String, dynamic>> query,
+  ) async {
     final length = query.docChanges.length;
     if (_isLoading || length > 1) return;
     for (final change in query.docChanges) {
@@ -71,7 +73,7 @@ class Users extends ChangeNotifier {
     _isLoading = true;
     notifyListeners();
     try {
-      this._users = await _apiService.getCommunityUsers(
+      _users = await _apiService.getCommunityUsers(
         communityId: _communityId!,
       );
       _isLoading = false;
@@ -79,7 +81,7 @@ class Users extends ChangeNotifier {
     } catch (e) {
       _isLoading = false;
       notifyListeners();
-      throw e;
+      rethrow;
     }
   }
 

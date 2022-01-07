@@ -33,7 +33,7 @@ class ShopBannerViewModel extends ViewModel {
 
   @override
   void init() {
-    this.isCurrentUser = context.read<Auth>().user!.id == userId;
+    isCurrentUser = context.read<Auth>().user!.id == userId;
     if (isCurrentUser) {
       _userSetup();
     } else {
@@ -44,7 +44,7 @@ class ShopBannerViewModel extends ViewModel {
 
   void _shopSetup() {
     final shops = context.read<Shops>().findByUser(userId);
-    if (shops.isNotEmpty) this.shop = shops.first;
+    if (shops.isNotEmpty) shop = shops.first;
 
     if (!isCurrentUser) {
       if (shops.isEmpty) {
@@ -58,7 +58,7 @@ class ShopBannerViewModel extends ViewModel {
   }
 
   void _userSetup() {
-    this._user = context.read<Auth>().user!;
+    _user = context.read<Auth>().user!;
   }
 
   void onAddShop() {
@@ -72,7 +72,7 @@ class ShopBannerViewModel extends ViewModel {
   void onVerify() {
     AppRouter.profileNavigatorKey.currentState?.push(
       CupertinoPageRoute(
-        builder: (_) => VerifyScreen(
+        builder: (_) => const VerifyScreen(
           skippable: false,
         ),
       ),

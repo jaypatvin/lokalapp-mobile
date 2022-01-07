@@ -27,34 +27,34 @@ class InputPasswordField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      focusNode: this.focusNode,
+      focusNode: focusNode,
       autocorrect: false,
-      obscureText: !this.isPasswordVisible,
-      controller: this.controller,
-      onChanged: this.onChanged,
+      obscureText: !isPasswordVisible,
+      controller: controller,
+      onChanged: onChanged,
       style: TextStyle(
         fontWeight: FontWeight.w500,
         fontSize: 16.0.sp,
       ),
-      decoration: new InputDecoration(
-        fillColor: this.fillColor,
-        border: new OutlineInputBorder(
+      decoration: InputDecoration(
+        fillColor: fillColor,
+        border: OutlineInputBorder(
           borderRadius: BorderRadius.all(Radius.circular(30.0.r)),
           borderSide: BorderSide.none,
         ),
         suffixIcon: IconButton(
           icon: Icon(
-            !this.isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+            !isPasswordVisible ? Icons.visibility : Icons.visibility_off,
             color: kOrangeColor,
           ),
-          onPressed: this.onPasswordVisibilityChanged,
+          onPressed: onPasswordVisibilityChanged,
         ),
         isDense: false,
         filled: true,
         alignLabelWithHint: true,
         hintText: 'Password',
         contentPadding: EdgeInsets.symmetric(horizontal: 16.0.w),
-        errorText: this.displaySignInError ? this.errorMessage : null,
+        errorText: displaySignInError ? errorMessage : null,
       ),
     );
   }

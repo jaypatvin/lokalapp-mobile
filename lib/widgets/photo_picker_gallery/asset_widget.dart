@@ -4,7 +4,7 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:photo_manager/photo_manager.dart';
 
-typedef Widget AssetWidgetBuilder(
+typedef AssetWidgetBuilder = Widget Function(
   BuildContext context,
   AssetEntity asset,
   int thumbSize,
@@ -21,7 +21,10 @@ class AssetWidget extends StatelessWidget {
   }) : super(key: key);
 
   static AssetWidget buildWidget(
-      BuildContext context, AssetEntity asset, int thumbSize) {
+    BuildContext context,
+    AssetEntity asset,
+    int thumbSize,
+  ) {
     return AssetWidget(
       asset: asset,
       thumbSize: thumbSize,
@@ -50,7 +53,10 @@ class AssetBigPreviewWidget extends StatelessWidget {
   }) : super(key: key);
 
   static AssetWidget buildWidget(
-      BuildContext context, AssetEntity asset, int thumbSize) {
+    BuildContext context,
+    AssetEntity asset,
+    int thumbSize,
+  ) {
     return AssetWidget(
       asset: asset,
       thumbSize: thumbSize,
@@ -84,7 +90,9 @@ class AssetEntityFileImage extends ImageProvider<AssetEntityFileImage> {
   }
 
   Future<ui.Codec> _loadAsync(
-      AssetEntityFileImage key, DecoderCallback decode) async {
+    AssetEntityFileImage key,
+    DecoderCallback decode,
+  ) async {
     assert(key == this);
     if (Platform.isIOS) {
       final asset = await entity.thumbDataWithSize(entity.width, entity.height);
@@ -97,11 +105,13 @@ class AssetEntityFileImage extends ImageProvider<AssetEntityFileImage> {
 
   @override
   Future<AssetEntityFileImage> obtainKey(
-      ImageConfiguration configuration) async {
+    ImageConfiguration configuration,
+  ) async {
     return this;
   }
 
-  bool operator ==(other) {
+  @override
+  bool operator ==(Object other) {
     if (identical(other, this)) {
       return true;
     }
@@ -109,7 +119,7 @@ class AssetEntityFileImage extends ImageProvider<AssetEntityFileImage> {
       return false;
     }
     final AssetEntityFileImage o = other;
-    return o.entity == entity && o.scale == this.scale;
+    return o.entity == entity && o.scale == scale;
   }
 
   @override
@@ -139,7 +149,9 @@ class AssetEntityThumbImage extends ImageProvider<AssetEntityThumbImage> {
   }
 
   Future<ui.Codec> _loadAsync(
-      AssetEntityThumbImage key, DecoderCallback decode) async {
+    AssetEntityThumbImage key,
+    DecoderCallback decode,
+  ) async {
     assert(key == this);
     final bytes = await entity.thumbDataWithSize(width, height);
     return decode(bytes!);
@@ -147,11 +159,13 @@ class AssetEntityThumbImage extends ImageProvider<AssetEntityThumbImage> {
 
   @override
   Future<AssetEntityThumbImage> obtainKey(
-      ImageConfiguration configuration) async {
+    ImageConfiguration configuration,
+  ) async {
     return this;
   }
 
-  bool operator ==(other) {
+  @override
+  bool operator ==(Object other) {
     if (identical(other, this)) {
       return true;
     }
@@ -159,10 +173,10 @@ class AssetEntityThumbImage extends ImageProvider<AssetEntityThumbImage> {
       return false;
     }
     final AssetEntityThumbImage o = other;
-    return (o.entity == entity &&
+    return o.entity == entity &&
         o.scale == scale &&
         o.width == width &&
-        o.height == height);
+        o.height == height;
   }
 
   @override
@@ -194,8 +208,8 @@ class PathItemImageProvider extends ImageProvider<PathItemImageProvider> {
 
   Future<ui.Codec?> _loadAsync(PathItemImageProvider key, decode) async {
     assert(key == this);
-    var assets = await path.getAssetListRange(start: index, end: index + 1);
-    var asset = assets[0];
+    final assets = await path.getAssetListRange(start: index, end: index + 1);
+    final asset = assets[0];
     var w = width;
     if (w == double.infinity) {
       w = asset.width / 2;
@@ -217,7 +231,8 @@ class PathItemImageProvider extends ImageProvider<PathItemImageProvider> {
 
   @override
   Future<PathItemImageProvider> obtainKey(
-      ImageConfiguration configuration) async {
+    ImageConfiguration configuration,
+  ) async {
     return this;
   }
 
@@ -225,7 +240,7 @@ class PathItemImageProvider extends ImageProvider<PathItemImageProvider> {
   int get hashCode => hashValues(path, index, width, height, scale);
 
   @override
-  bool operator ==(other) {
+  bool operator ==(Object other) {
     if (identical(other, this)) {
       return true;
     }
@@ -233,7 +248,7 @@ class PathItemImageProvider extends ImageProvider<PathItemImageProvider> {
       return false;
     }
 
-    PathItemImageProvider o = other;
+    final PathItemImageProvider o = other;
 
     return o.index == index &&
         o.path == path &&

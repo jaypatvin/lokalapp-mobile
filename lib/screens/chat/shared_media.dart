@@ -21,7 +21,7 @@ class _SharedMediaState extends State<SharedMedia> {
   List<LokalImages>? _sharedMedia;
 
   @override
-  initState() {
+  void initState() {
     super.initState();
 
     _sharedMedia = _getAllChatMedia();
@@ -52,7 +52,6 @@ class _SharedMediaState extends State<SharedMedia> {
             color: Colors.black,
           ),
           initialIndex: index,
-          scrollDirection: Axis.horizontal,
         ),
       ),
     );
@@ -62,8 +61,8 @@ class _SharedMediaState extends State<SharedMedia> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(
-        titleText: "Shared Media",
-        titleStyle: TextStyle(color: Colors.black),
+        titleText: 'Shared Media',
+        titleStyle: const TextStyle(color: Colors.black),
         leadingColor: Colors.black,
         backgroundColor: Colors.white,
         onPressedLeading: () => Navigator.pop(context),
@@ -77,9 +76,8 @@ class _SharedMediaState extends State<SharedMedia> {
               color: Colors.white30,
               child: GridView.builder(
                 itemCount: _sharedMedia!.length,
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 3,
-                  childAspectRatio: 1.0,
                 ),
                 itemBuilder: (ctx, index) {
                   return NetworkPhotoThumbnail(

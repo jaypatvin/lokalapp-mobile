@@ -16,11 +16,11 @@ class HomeNavigator extends AppNavigator {
   Route<dynamic> onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
       case Home.routeName:
-        return CupertinoPageRoute(builder: (_) => Home());
+        return CupertinoPageRoute(builder: (_) => const Home());
       case DraftPost.routeName:
-        return CupertinoPageRoute(builder: (_) => DraftPost());
+        return CupertinoPageRoute(builder: (_) => const DraftPost());
       case PostDetails.routeName:
-        final props = settings.arguments as PostDetailsProps;
+        final props = settings.arguments! as PostDetailsProps;
         return CupertinoPageRoute(
           builder: (_) => PostDetails(
             activityId: props.activityId,
@@ -29,7 +29,7 @@ class HomeNavigator extends AppNavigator {
           ),
         );
       case Notifications.routeName:
-        return CupertinoPageRoute(builder: (_) => Notifications());
+        return CupertinoPageRoute(builder: (_) => const Notifications());
       default:
         // TODO: implement unknownRoute
         throw UnimplementedError();

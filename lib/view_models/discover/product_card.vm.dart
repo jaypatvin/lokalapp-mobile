@@ -35,8 +35,8 @@ class ProductCardViewModel extends ViewModel {
     shop = context.read<Shops>().findById(product.shopId)!;
   }
 
-  void updateDisplayBorder(bool displayBorder) {
-    this._displayBorder = displayBorder;
+  void updateDisplayBorder({required bool displayBorder}) {
+    _displayBorder = displayBorder;
     notifyListeners();
   }
 
@@ -67,11 +67,10 @@ class ProductCardViewModel extends ViewModel {
   }
 
   void onShopTap() {
-    context.read<AppRouter>()
-      ..navigateTo(
-        AppRoute.profile,
-        UserShop.routeName,
-        arguments: UserShopProps(product.userId, product.shopId),
-      );
+    context.read<AppRouter>().navigateTo(
+          AppRoute.profile,
+          UserShop.routeName,
+          arguments: UserShopProps(product.userId, product.shopId),
+        );
   }
 }

@@ -27,7 +27,7 @@ class ProfileScreen extends StatelessWidget {
     final user = context.watch<Users>().findById(userId);
 
     if (user == null) {
-      return Center(
+      return const Center(
         child: Text('Error in displaying the user!'),
       );
     }
@@ -44,7 +44,7 @@ class ProfileScreen extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 _ProfileHeader(
-                  userId: this.userId,
+                  userId: userId,
                 ),
                 ShopBanner(userId: userId),
                 Expanded(
@@ -99,20 +99,21 @@ class _ProfileHeaderView extends StatelessView<ProfileHeaderViewModel> {
         final user = users.findById(vm.userId)!;
         return Stack(
           children: [
-            user.profilePhoto != null
-                ? Positioned.fill(
-                    child: Image(
-                      image: NetworkImage(
-                        user.profilePhoto ?? '',
-                      ),
-                      fit: BoxFit.cover,
-                      errorBuilder: (ctx, obj, trace) =>
-                          _backgroundBuilder(vm.profileHeaderColors),
-                    ),
-                  )
-                : Positioned.fill(
-                    child: _backgroundBuilder(vm.profileHeaderColors),
+            if (user.profilePhoto != null)
+              Positioned.fill(
+                child: Image(
+                  image: NetworkImage(
+                    user.profilePhoto ?? '',
                   ),
+                  fit: BoxFit.cover,
+                  errorBuilder: (ctx, obj, trace) =>
+                      _backgroundBuilder(vm.profileHeaderColors),
+                ),
+              )
+            else
+              Positioned.fill(
+                child: _backgroundBuilder(vm.profileHeaderColors),
+              ),
             Positioned.fill(
               child: SizedBox(
                 child: DecoratedBox(
@@ -167,7 +168,7 @@ class _ProfileHeaderView extends StatelessView<ProfileHeaderViewModel> {
                           Colors.white,
                           false,
                           vm.onSendMessage,
-                          textStyle: TextStyle(
+                          textStyle: const TextStyle(
                             color: Colors.white,
                           ),
                         ),

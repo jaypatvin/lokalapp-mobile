@@ -1,17 +1,17 @@
 import 'package:flutter/foundation.dart';
 
 class ProductBody extends ChangeNotifier {
-  Map<String, dynamic> _productBody = {
-    "name": "",
-    "description": "",
-    "shop_id": "",
-    "base_price": 0.0,
-    "quantity": 0,
-    "gallery": <Map<String, dynamic>>[],
-    "product_category": "",
-    "status": "enabled",
-    "can_subscribe": true,
-    "availability": <String, dynamic>{},
+  final Map<String, dynamic> _productBody = {
+    'name': '',
+    'description': '',
+    'shop_id': '',
+    'base_price': 0.0,
+    'quantity': 0,
+    'gallery': <Map<String, dynamic>>[],
+    'product_category': '',
+    'status': 'enabled',
+    'can_subscribe': true,
+    'availability': <String, dynamic>{},
   };
   Map<String, dynamic> get data => _productBody;
 
@@ -54,13 +54,13 @@ class ProductBody extends ChangeNotifier {
   }
 
   void clear() => update(
-        name: "",
-        description: "",
-        shopId: "",
+        name: '',
+        description: '',
+        shopId: '',
         basePrice: 0.0,
         quantity: 0,
-        productCategory: "A",
-        status: "enabled",
+        productCategory: 'A',
+        status: 'enabled',
         gallery: [],
       );
 }

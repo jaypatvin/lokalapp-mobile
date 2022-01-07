@@ -53,18 +53,18 @@ class _SubscriptionDetailsView extends HookView<SubscriptionDetailsViewModel> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: vm.isBuyer ? kTealColor : Color(0xFF57183F),
+        backgroundColor: vm.isBuyer ? kTealColor : const Color(0xFF57183F),
         centerTitle: true,
         title: Column(
           children: [
             Text(
-              "Order Details",
+              'Order Details',
               style: Theme.of(context).textTheme.headline6!.copyWith(
                     color: Colors.white,
                   ),
             ),
             Text(
-              "Subscription",
+              'Subscription',
               style: Theme.of(context).textTheme.subtitle1!.copyWith(
                     color: Colors.white,
                   ),
@@ -83,8 +83,8 @@ class _SubscriptionDetailsView extends HookView<SubscriptionDetailsViewModel> {
               displayHeader: false,
               subscriptionPlan: vm.subscriptionPlan,
             ),
-            Divider(),
-            Container(
+            const Divider(),
+            SizedBox(
               width: double.infinity,
               child: Align(
                 alignment: Alignment.centerRight,
@@ -106,13 +106,13 @@ class _SubscriptionDetailsView extends HookView<SubscriptionDetailsViewModel> {
               ),
             ),
             SizedBox(height: 16.0.h),
-            Container(
+            SizedBox(
               width: double.infinity,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "Notes:",
+                    'Notes:',
                     style: Theme.of(context).textTheme.subtitle1,
                   ),
                   Text(
@@ -121,7 +121,7 @@ class _SubscriptionDetailsView extends HookView<SubscriptionDetailsViewModel> {
                   ),
                   SizedBox(height: 16.0.h),
                   Text(
-                    "Delivery Address:",
+                    'Delivery Address:',
                     style: Theme.of(context).textTheme.subtitle1,
                   ),
                   Text(
@@ -133,7 +133,7 @@ class _SubscriptionDetailsView extends HookView<SubscriptionDetailsViewModel> {
               ),
             ),
             //SizedBox(height: 16.0.h),
-            Spacer(),
+            const Spacer(),
             _SubscriptionDetailsButtons(
               isBuyer: vm.isBuyer,
               displayWarning: vm.checkForConflicts(),
@@ -170,12 +170,19 @@ class _SubscriptionDetailsButtons extends StatelessWidget {
         SizedBox(
           width: double.infinity,
           child: ElevatedButton(
-            onPressed: this.onSeeSchedule,
+            onPressed: onSeeSchedule,
+            style: ElevatedButton.styleFrom(
+              shape: const StadiumBorder(),
+              elevation: 0.0,
+              primary: Colors.transparent,
+              minimumSize: Size(0, 40.0.h),
+              side: const BorderSide(color: kTealColor),
+            ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  "See Schedule",
+                  'See Schedule',
                   style: Theme.of(context)
                       .textTheme
                       .subtitle1!
@@ -189,32 +196,25 @@ class _SubscriptionDetailsButtons extends StatelessWidget {
                   )
               ],
             ),
-            style: ElevatedButton.styleFrom(
-              shape: StadiumBorder(),
-              elevation: 0.0,
-              primary: Colors.transparent,
-              minimumSize: Size(0, 40.0.h),
-              side: BorderSide(color: kTealColor),
-            ),
           ),
         ),
         Row(
           children: [
             Expanded(
               child: AppButton(
-                "Unsubscribe",
+                'Unsubscribe',
                 kPinkColor,
                 false,
-                this.onUnsubscribe,
+                onUnsubscribe,
               ),
             ),
             SizedBox(width: 10.0.w),
             Expanded(
               child: AppButton(
-                this.isBuyer ? "Message Seller" : "Message Buyer",
+                isBuyer ? 'Message Seller' : 'Message Buyer',
                 kTealColor,
                 false,
-                this.onMessageHandler,
+                onMessageHandler,
               ),
             )
           ],

@@ -18,7 +18,7 @@ class ChatAvatar extends StatelessWidget {
   final double radius;
   const ChatAvatar({
     required this.displayName,
-    this.displayPhoto = "",
+    this.displayPhoto = '',
     this.onTap,
     this.radius = 25.0,
   });
@@ -26,14 +26,14 @@ class ChatAvatar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: this.onTap,
+      onTap: onTap,
       child: Container(
         decoration: BoxDecoration(
           border: Border.all(color: Colors.grey[600]!),
           shape: BoxShape.circle,
         ),
         child: CircleAvatar(
-          radius: this.radius,
+          radius: radius,
           backgroundColor: Colors.transparent,
           child: displayPhoto != null && displayPhoto!.isNotEmpty
               ? Container(

@@ -8,14 +8,14 @@ class ConversationAPIService extends APIService<Conversation> {
   const ConversationAPIService(this.api);
 
   final API api;
-  final Endpoint endpoint = Endpoint.chat;
+  Endpoint get endpoint => Endpoint.chat;
 
   Future<Conversation> createConversation({
-    required chatId,
+    required String chatId,
     required Map<String, dynamic> body,
   }) async {
     try {
-      final response = await this.poster(
+      final response = await poster(
         api.endpointUri(
           endpoint,
           pathSegments: [chatId, 'conversation'],
@@ -34,11 +34,11 @@ class ConversationAPIService extends APIService<Conversation> {
   }
 
   Future<bool> deleteConversation({
-    required chatId,
-    required messageId,
+    required String chatId,
+    required String messageId,
   }) async {
     try {
-      final response = await this.deleter(
+      final response = await deleter(
         api.endpointUri(
           endpoint,
           pathSegments: [

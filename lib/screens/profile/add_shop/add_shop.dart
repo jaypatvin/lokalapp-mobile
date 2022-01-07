@@ -30,9 +30,7 @@ class _AddShopState extends State<AddShop> {
 
   KeyboardActionsConfig _buildConfig() {
     return KeyboardActionsConfig(
-      keyboardActionsPlatform: KeyboardActionsPlatform.ALL,
       keyboardBarColor: Colors.grey.shade200,
-      nextFocus: true,
       actions: [
         KeyboardActionsItem(
           focusNode: _nameFocusNode,
@@ -41,7 +39,7 @@ class _AddShopState extends State<AddShop> {
               return TextButton(
                 onPressed: () => node.unfocus(),
                 child: Text(
-                  "Done",
+                  'Done',
                   style: Theme.of(context).textTheme.bodyText1!.copyWith(
                         color: Colors.black,
                       ),
@@ -57,7 +55,7 @@ class _AddShopState extends State<AddShop> {
               return TextButton(
                 onPressed: () => node.unfocus(),
                 child: Text(
-                  "Done",
+                  'Done',
                   style: Theme.of(context).textTheme.bodyText1!.copyWith(
                         color: Colors.black,
                       ),
@@ -77,19 +75,17 @@ class _AddShopState extends State<AddShop> {
     final padding = height * 0.05;
     return Scaffold(
       appBar: CustomAppBar(
-        titleText: "Add Shop",
+        titleText: 'Add Shop',
         onPressedLeading: () => Navigator.pop(context),
       ),
       body: KeyboardActions(
         config: _buildConfig(),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
             const SizedBox(height: 10),
             Text(
-              "Basic Information",
+              'Basic Information',
               style: Theme.of(context).textTheme.headline5,
             ),
             SizedBox(
@@ -97,7 +93,7 @@ class _AddShopState extends State<AddShop> {
             ),
             GestureDetector(
               onTap: () async {
-                var photo =
+                final photo =
                     await Provider.of<MediaUtility>(context, listen: false)
                         .showMediaDialog(context);
                 setState(() {
@@ -117,8 +113,8 @@ class _AddShopState extends State<AddShop> {
             Padding(
               padding: EdgeInsets.symmetric(horizontal: padding),
               child: InputNameField(
-                hintText: "Shop Name",
-                focusNode: this._nameFocusNode,
+                hintText: 'Shop Name',
+                focusNode: _nameFocusNode,
                 onChanged: (value) =>
                     context.read<ShopBody>().update(name: value),
               ),
@@ -129,33 +125,35 @@ class _AddShopState extends State<AddShop> {
             Padding(
               padding: EdgeInsets.symmetric(horizontal: padding),
               child: InputDescriptionField(
-                hintText: "Shop Description",
-                focusNode: this._descriptionFocusNode,
+                hintText: 'Shop Description',
+                focusNode: _descriptionFocusNode,
                 onChanged: (value) {
                   context.read<ShopBody>().update(description: value);
                 },
               ),
             ),
             SizedBox(height: 20.0.h),
-            Consumer<ShopBody>(builder: (context, shop, child) {
-              bool isNotEmpty = (shop.name?.isNotEmpty ?? false) &&
-                  (shop.description?.isNotEmpty ?? false);
-              return SizedBox(
-                width: width * 0.8,
-                child: AppButton(
-                  "Set Shop Schedule",
-                  kTealColor,
-                  true,
-                  isNotEmpty
-                      ? () => context.read<AppRouter>().navigateTo(
-                            AppRoute.profile,
-                            ShopSchedule.routeName,
-                            arguments: ShopScheduleProps(shopPhoto),
-                          )
-                      : null,
-                ),
-              );
-            }),
+            Consumer<ShopBody>(
+              builder: (context, shop, child) {
+                final bool isNotEmpty = (shop.name?.isNotEmpty ?? false) &&
+                    (shop.description?.isNotEmpty ?? false);
+                return SizedBox(
+                  width: width * 0.8,
+                  child: AppButton(
+                    'Set Shop Schedule',
+                    kTealColor,
+                    true,
+                    isNotEmpty
+                        ? () => context.read<AppRouter>().navigateTo(
+                              AppRoute.profile,
+                              ShopSchedule.routeName,
+                              arguments: ShopScheduleProps(shopPhoto),
+                            )
+                        : null,
+                  ),
+                );
+              },
+            ),
           ],
         ),
       ),

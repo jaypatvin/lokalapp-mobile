@@ -97,27 +97,27 @@ class RegisterScreenViewModel extends ViewModel {
   String? passwordValidator(String? input) {
     String? error;
 
-    final String numCharacterError = 'Must have at least 8 characters.';
-    final String numberError = 'Must have at least one number.';
-    final String specialError = 'Must have at least one special character.';
+    const String numCharacterError = 'Must have at least 8 characters.';
+    const String numberError = 'Must have at least one number.';
+    const String specialError = 'Must have at least one special character.';
 
     if (input == null || input.isEmpty) {
       return '$numCharacterError\n$numberError\n$specialError';
     }
 
     if (input.length < 8) {
-      if (error == null) error = '';
+      error ??= '';
       error += '$numCharacterError\n';
     }
 
-    if (!input.contains(RegExp(r'[0-9]'))) {
-      if (error == null) error = '';
+    if (!input.contains(RegExp('[0-9]'))) {
+      error ??= '';
       error += '$numberError\n';
     }
 
-    final pattern = r"[ `!@#$%^&*()_+\-=\[\]{};'" + r':"\\|,.<>\/?~]';
+    const pattern = r"[ `!@#$%^&*()_+\-=\[\]{};'" + r':"\\|,.<>\/?~]';
     if (!input.contains(RegExp(pattern))) {
-      if (error == null) error = '';
+      error ??= '';
       error += '$specialError\n';
     }
 
