@@ -73,7 +73,7 @@ class ShoppingCart extends ChangeNotifier {
     DeliveryOption deliveryOption = DeliveryOption.pickup,
     DateTime? schedule,
   }) {
-    if (_orders[shopId] == null) {
+    if (_orders[shopId] == null && quantity > 0) {
       _orders[shopId] = <String?, ProductOrderDetails>{};
     }
 
@@ -133,6 +133,7 @@ class ShoppingCart extends ChangeNotifier {
   void remove(String? productId) {
     final order = _getOrderEntry(productId);
     if (order == null) return;
+    debugPrint('reached here!');
     _orders[order.key]!.remove(productId);
 
     if (_orders[order.key]!.isEmpty) {
