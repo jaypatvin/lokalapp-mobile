@@ -66,6 +66,7 @@ class _ProductCardView extends HookView<ProductCardViewModel> {
             : Border.all(color: Colors.grey.shade300),
       ),
       child: GridTile(
+        key: Key(vm.productId),
         footer: Container(
           margin: EdgeInsets.zero,
           padding: EdgeInsets.symmetric(

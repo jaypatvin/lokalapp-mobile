@@ -237,12 +237,14 @@ class _RecommendedProducts extends StatelessWidget {
         ),
         itemBuilder: (ctx, index) {
           return Container(
+            key: Key(products[index].id),
             padding: index == 0
                 ? EdgeInsets.only(left: 16.0.w, right: 2.5.w)
                 : index == products.length - 1
                     ? EdgeInsets.only(left: 2.5.w, right: 16.0.w)
                     : EdgeInsets.symmetric(horizontal: 2.5.w),
             child: GestureDetector(
+              key: Key(products[index].id),
               onTap: () => onProductTap(products[index].id),
               child: ProductCard(products[index].id),
             ),
