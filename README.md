@@ -1,5 +1,7 @@
 # LOKAL APP:
 
+This project uses the open-source, community-driven collection of lint rules from: https://pub.dev/packages/lint with some exceptions.
+
 ## Folder Structure
 
 ```
@@ -51,7 +53,7 @@
 - [x] Edit Product
 - [x] Chat
 - [x] Discovery
-- [ ] Search
+- [x] Search
 - [x] Purchasing/Ordering
 - [x] Product Details
 - [x] Cart
