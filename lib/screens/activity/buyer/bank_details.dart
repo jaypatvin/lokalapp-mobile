@@ -154,7 +154,7 @@ class _WalletDetailsView extends HookView<BankDetailsViewModel>
               "${vm.proofOfPayment != null ? 'Re-u' : 'U'}"
               'pload proof of payment',
               kTealColor,
-              !(vm.proofOfPayment != null),
+              vm.proofOfPayment == null,
               vm.onImagePick,
             ),
           ),

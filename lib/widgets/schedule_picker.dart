@@ -485,7 +485,7 @@ class _SchedulePickerState extends State<SchedulePicker> {
       });
     }
 
-    _usedDatePicker = !(choice == RepeatChoices.month);
+    _usedDatePicker = choice != RepeatChoices.month;
     final repeatType = _getRepeatType();
     widget.onRepeatTypeChanged(repeatType);
 

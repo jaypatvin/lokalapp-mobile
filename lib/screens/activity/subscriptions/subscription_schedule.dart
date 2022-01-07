@@ -524,15 +524,17 @@ class _SubscriptionScheduleState extends State<SubscriptionSchedule>
                 ),
               if (_displayWarning) SizedBox(height: 20.0.h),
               if (widget.subscriptionPlan != null)
-                FlatButton(
-                  minWidth: double.infinity,
-                  height: 50.0.h,
-                  color: Colors.transparent,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20.0),
-                    side: const BorderSide(color: kTealColor),
+                TextButton(
+                  onPressed: () => _displayCalendar(),
+                  style: TextButton.styleFrom(
+                    minimumSize: Size(double.infinity, 50.0.h),
+                    backgroundColor: Colors.transparent,
+                    primary: kTealColor,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30.0.r),
+                      side: const BorderSide(color: kTealColor),
+                    ),
                   ),
-                  textColor: kTealColor,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -551,7 +553,6 @@ class _SubscriptionScheduleState extends State<SubscriptionSchedule>
                         )
                     ],
                   ),
-                  onPressed: () async => _displayCalendar(),
                 ),
               SizedBox(height: 10.0.h),
               SizedBox(

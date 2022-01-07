@@ -29,9 +29,9 @@ mixin ScreenLoader<T extends StatefulWidget> on State<T> {
   /// DO NOT use this method in FutureBuilder because this methods
   /// updates the state which will make future builder to call
   /// this function again and it will go in loop
-  Future<T?> performFuture<T>(Function futureCallback) async {
+  Future<U?> performFuture<U>(Function futureCallback) async {
     startLoading();
-    final T? data = await futureCallback();
+    final U? data = await futureCallback();
     stopLoading();
     return data;
   }
@@ -106,9 +106,9 @@ mixin HookScreenLoader<T extends ViewModel> on HookView<T> {
   /// DO NOT use this method in FutureBuilder because this methods
   /// updates the state which will make future builder to call
   /// this function again and it will go in loop
-  Future<T?> performFuture<T>(Function futureCallback) async {
+  Future<U?> performFuture<U>(Function futureCallback) async {
     startLoading();
-    final T? data = await futureCallback();
+    final U? data = await futureCallback();
     stopLoading();
     return data;
   }

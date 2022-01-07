@@ -12,6 +12,7 @@ class InputPasswordField extends StatelessWidget {
   final void Function(String)? onChanged;
   final String errorMessage;
   final Color fillColor;
+  final String hintText;
   const InputPasswordField({
     Key? key,
     this.focusNode,
@@ -22,6 +23,7 @@ class InputPasswordField extends StatelessWidget {
     this.errorMessage = 'Password is incorrect.',
     this.onPasswordVisibilityChanged,
     this.fillColor = Colors.white,
+    this.hintText = 'Password',
   }) : super(key: key);
 
   @override
@@ -52,7 +54,7 @@ class InputPasswordField extends StatelessWidget {
         isDense: false,
         filled: true,
         alignLabelWithHint: true,
-        hintText: 'Password',
+        hintText: hintText,
         contentPadding: EdgeInsets.symmetric(horizontal: 16.0.w),
         errorText: displaySignInError ? errorMessage : null,
       ),

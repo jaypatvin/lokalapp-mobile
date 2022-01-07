@@ -69,25 +69,22 @@ class _WeekdayPickerState extends State<WeekdayPicker> {
                     Radius.circular(15.0),
                   ),
           ),
-          child: FlatButton(
-            padding: EdgeInsets.zero,
-            color: isMarked ? Colors.orange : Colors.transparent,
-            onPressed: () {
-              // the calling method should handle the logic of the day press
-              widget.onDayPressed?.call(weekday);
-            },
-            shape: widget.daysHaveCircularBorder
-                ? const CircleBorder(
-                    side: BorderSide(
-                      color: Colors.transparent,
+          child: TextButton(
+            onPressed: () => widget.onDayPressed?.call(weekday),
+            style: TextButton.styleFrom(
+              padding: EdgeInsets.zero,
+              backgroundColor: isMarked ? Colors.orange : Colors.transparent,
+              shape: widget.daysHaveCircularBorder
+                  ? const CircleBorder(
+                      side: BorderSide(color: Colors.transparent),
+                    )
+                  : RoundedRectangleBorder(
+                      side: const BorderSide(
+                        color: Colors.transparent,
+                      ),
+                      borderRadius: BorderRadius.circular(13.0),
                     ),
-                  )
-                : RoundedRectangleBorder(
-                    side: const BorderSide(
-                      color: Colors.transparent,
-                    ),
-                    borderRadius: BorderRadius.circular(13.0),
-                  ),
+            ),
             child: SizedBox(
               width: double.infinity,
               height: double.infinity,

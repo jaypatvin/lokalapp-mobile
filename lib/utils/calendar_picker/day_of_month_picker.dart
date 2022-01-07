@@ -46,9 +46,16 @@ class _DayOfMonthPickerState extends State<DayOfMonthPicker> {
               Radius.circular(15.0),
             ),
           ),
-          child: FlatButton(
-            padding: EdgeInsets.zero,
-            color: _markedDay == day ? Colors.orange : Colors.transparent,
+          child: TextButton(
+            style: TextButton.styleFrom(
+              padding: EdgeInsets.zero,
+              backgroundColor:
+                  _markedDay == day ? Colors.orange : Colors.transparent,
+              shape: RoundedRectangleBorder(
+                side: const BorderSide(color: Colors.transparent),
+                borderRadius: BorderRadius.circular(13.0),
+              ),
+            ),
             onPressed: () {
               // the calling method should handle the logic of the day press
               setState(() {
@@ -60,10 +67,6 @@ class _DayOfMonthPickerState extends State<DayOfMonthPicker> {
               });
               widget.onDayPressed(day);
             },
-            shape: RoundedRectangleBorder(
-              side: const BorderSide(color: Colors.transparent),
-              borderRadius: BorderRadius.circular(13.0),
-            ),
             child: SizedBox(
               width: double.infinity,
               height: double.infinity,

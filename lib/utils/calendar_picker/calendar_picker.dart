@@ -227,15 +227,20 @@ class _CalendarState extends State<CalendarCarousel> {
             Radius.circular(20.0.r),
           ),
         ),
-        child: FlatButton(
-          padding: EdgeInsets.zero,
-          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-          color: buttonColor,
+        child: TextButton(
+          style: TextButton.styleFrom(
+            padding: EdgeInsets.zero,
+            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            backgroundColor: buttonColor,
+            shape: RoundedRectangleBorder(
+              side: const BorderSide(color: Colors.transparent),
+              borderRadius: BorderRadius.circular(18.0.r),
+            ),
+          ),
           onPressed: () {
             if (widget.onNonSelectableDayPressed != null && !isSelectable) {
               widget.onNonSelectableDayPressed!(now);
             }
-
             setState(() {
               if (_selectedDate == now) {
                 _selectedDate = null;
@@ -250,10 +255,6 @@ class _CalendarState extends State<CalendarCarousel> {
             // this is to avoid bloating the calendar picker
             widget.onDayPressed?.call(now);
           },
-          shape: RoundedRectangleBorder(
-            side: const BorderSide(color: Colors.transparent),
-            borderRadius: BorderRadius.circular(18.0.r),
-          ),
           child: SizedBox(
             width: double.infinity,
             height: double.infinity,
