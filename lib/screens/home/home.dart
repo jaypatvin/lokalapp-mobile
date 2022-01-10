@@ -9,10 +9,8 @@ import '../../routers/app_router.dart';
 import '../../state/mvvm_builder.widget.dart';
 import '../../state/views/stateless.view.dart';
 import '../../utils/constants/themes.dart';
-import '../../utils/shared_preference.dart';
 import '../../view_models/home/post_field.vm.dart';
 import '../../widgets/custom_app_bar.dart';
-import '../../widgets/overlays/onboarding.dart';
 import '../cart/cart_container.dart';
 import 'notifications.dart';
 import 'timeline.dart';
@@ -26,43 +24,40 @@ class Home extends HookWidget {
     final _scrollController = useScrollController();
     final _postFieldHeight = useMemoized(() => 75.0.h, []);
 
-    return Onboarding(
-      screen: MainScreen.home,
-      child: Scaffold(
-        backgroundColor: const Color(0xffF1FAFF),
-        resizeToAvoidBottomInset: true,
-        appBar: CustomAppBar(
-          titleText:
-              context.watch<CommunityProvider>().community?.name ?? 'Community',
-          titleStyle: const TextStyle(color: Colors.white),
-          backgroundColor: kTealColor,
-          buildLeading: false,
-          actions: [
-            IconButton(
-              onPressed: () => context
-                  .read<AppRouter>()
-                  .keyOf(AppRoute.home)
-                  .currentState!
-                  .pushNamed(Notifications.routeName),
-              icon: const Icon(Icons.notifications_outlined),
-            )
-          ],
-        ),
-        body: CartContainer(
-          child: SizedBox(
-            height: MediaQuery.of(context).size.height,
-            child: Stack(
-              children: [
-                Timeline(
-                  scrollController: _scrollController,
-                  firstIndexPadding: _postFieldHeight,
-                ),
-                _PostField(
-                  scrollController: _scrollController,
-                  height: _postFieldHeight,
-                ),
-              ],
-            ),
+    return Scaffold(
+      backgroundColor: const Color(0xffF1FAFF),
+      resizeToAvoidBottomInset: true,
+      appBar: CustomAppBar(
+        titleText:
+            context.watch<CommunityProvider>().community?.name ?? 'Community',
+        titleStyle: const TextStyle(color: Colors.white),
+        backgroundColor: kTealColor,
+        buildLeading: false,
+        actions: [
+          IconButton(
+            onPressed: () => context
+                .read<AppRouter>()
+                .keyOf(AppRoute.home)
+                .currentState!
+                .pushNamed(Notifications.routeName),
+            icon: const Icon(Icons.notifications_outlined),
+          )
+        ],
+      ),
+      body: CartContainer(
+        child: SizedBox(
+          height: MediaQuery.of(context).size.height,
+          child: Stack(
+            children: [
+              Timeline(
+                scrollController: _scrollController,
+                firstIndexPadding: _postFieldHeight,
+              ),
+              _PostField(
+                scrollController: _scrollController,
+                height: _postFieldHeight,
+              ),
+            ],
           ),
         ),
       ),

@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 
-import '../providers/auth.dart';
 import '../routers/app_router.dart';
 import '../services/bottom_nav_bar_hider.dart';
 import '../utils/constants/assets.dart';
+import '../utils/shared_preference.dart';
+import '../widgets/overlays/onboarding.dart';
 import 'activity/activity.dart';
 import 'chat/chat.dart';
 import 'discover/discover.dart';
@@ -19,16 +20,6 @@ class BottomNavigation extends StatefulWidget {
 }
 
 class _BottomNavigationState extends State<BottomNavigation> {
-  List<Widget> _buildScreens() {
-    return [
-      const Home(),
-      const Discover(),
-      const Chat(),
-      Activity(),
-      ProfileScreen(userId: context.read<Auth>().user!.id!),
-    ];
-  }
-
   List<PersistentBottomNavBarItem> _navBarsItems() {
     return [
       PersistentBottomNavBarItem(
@@ -126,7 +117,6 @@ class _BottomNavigationState extends State<BottomNavigation> {
       body: PersistentTabView(
         context,
         controller: context.read<PersistentTabController>(),
-        screens: _buildScreens(),
         items: _navBarsItems(),
         resizeToAvoidBottomInset: true,
         hideNavigationBar: context.watch<BottomNavBarHider>().isHidden,
@@ -139,6 +129,33 @@ class _BottomNavigationState extends State<BottomNavigation> {
           animateTabTransition: true,
         ),
         onItemSelected: _onItemSelected,
+        screens: const [
+          Onboarding(
+            key: Key('home_screen'),
+            screen: MainScreen.home,
+            child: Home(),
+          ),
+          Onboarding(
+            key: Key('discover_screen'),
+            screen: MainScreen.discover,
+            child: Discover(),
+          ),
+          Onboarding(
+            key: Key('chat_screen'),
+            screen: MainScreen.chats,
+            child: Chat(),
+          ),
+          Onboarding(
+            key: Key('activity_screen'),
+            screen: MainScreen.activity,
+            child: Activity(),
+          ),
+          Onboarding(
+            key: Key('profile_screen'),
+            screen: MainScreen.profile,
+            child: ProfileScreen(),
+          ),
+        ],
       ),
     );
   }

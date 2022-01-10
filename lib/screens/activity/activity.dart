@@ -5,12 +5,11 @@ import 'package:lottie/lottie.dart';
 import '../../services/database.dart';
 import '../../utils/constants/assets.dart';
 import '../../utils/constants/themes.dart';
-import '../../utils/shared_preference.dart';
-import '../../widgets/overlays/onboarding.dart';
 import 'transactions.dart';
 
 class Activity extends StatefulWidget {
   static const routeName = '/activity';
+  const Activity({Key? key}) : super(key: key);
   @override
   _ActivityState createState() => _ActivityState();
 }
@@ -85,63 +84,60 @@ class _ActivityState extends State<Activity> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    return Onboarding(
-      screen: MainScreen.activity,
-      child: FutureBuilder(
-        future: _statuses,
-        builder: (ctx, AsyncSnapshot<QuerySnapshot> snapshot) {
-          if (snapshot.connectionState != ConnectionState.done ||
-              snapshot.hasError) {
-            return SizedBox(
-              width: double.infinity,
-              height: double.infinity,
-              child: DecoratedBox(
-                decoration: const BoxDecoration(
-                  color: Colors.white,
-                ),
-                child: Lottie.asset(kAnimationLoading),
+    return FutureBuilder(
+      future: _statuses,
+      builder: (ctx, AsyncSnapshot<QuerySnapshot> snapshot) {
+        if (snapshot.connectionState != ConnectionState.done ||
+            snapshot.hasError) {
+          return SizedBox(
+            width: double.infinity,
+            height: double.infinity,
+            child: DecoratedBox(
+              decoration: const BoxDecoration(
+                color: Colors.white,
               ),
-            );
-          }
-
-          for (final doc in snapshot.data!.docs) {
-            final statusCode = int.parse(doc.id);
-            final dataMap = doc.data()! as Map<String, dynamic>;
-            buyerStatuses[statusCode] = dataMap['buyer_status'];
-            sellerStatuses[statusCode] = dataMap['seller_status'];
-          }
-          return DefaultTabController(
-            length: 2,
-            child: Scaffold(
-              appBar: AppBar(
-                elevation: 0,
-                backgroundColor: const Color(0xFFF1FAFF),
-                bottom: PreferredSize(
-                  preferredSize: _tabBar.preferredSize,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                    child: _tabBar,
-                  ),
-                ),
-                title: Center(
-                  child: Text(
-                    'Activity',
-                    style: Theme.of(context).textTheme.headline5,
-                  ),
-                ),
-              ),
-              body: TabBarView(
-                physics: const NeverScrollableScrollPhysics(),
-                controller: _tabController,
-                children: [
-                  Transactions.isBuyer(buyerStatuses, _colorAnimation),
-                  Transactions.isSeller(sellerStatuses, _colorAnimation),
-                ],
-              ),
+              child: Lottie.asset(kAnimationLoading),
             ),
           );
-        },
-      ),
+        }
+
+        for (final doc in snapshot.data!.docs) {
+          final statusCode = int.parse(doc.id);
+          final dataMap = doc.data()! as Map<String, dynamic>;
+          buyerStatuses[statusCode] = dataMap['buyer_status'];
+          sellerStatuses[statusCode] = dataMap['seller_status'];
+        }
+        return DefaultTabController(
+          length: 2,
+          child: Scaffold(
+            appBar: AppBar(
+              elevation: 0,
+              backgroundColor: const Color(0xFFF1FAFF),
+              bottom: PreferredSize(
+                preferredSize: _tabBar.preferredSize,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: _tabBar,
+                ),
+              ),
+              title: Center(
+                child: Text(
+                  'Activity',
+                  style: Theme.of(context).textTheme.headline5,
+                ),
+              ),
+            ),
+            body: TabBarView(
+              physics: const NeverScrollableScrollPhysics(),
+              controller: _tabController,
+              children: [
+                Transactions.isBuyer(buyerStatuses, _colorAnimation),
+                Transactions.isSeller(sellerStatuses, _colorAnimation),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }

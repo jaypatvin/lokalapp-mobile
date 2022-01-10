@@ -2,6 +2,7 @@ import 'package:after_layout/after_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 
 import '../../utils/constants/assets.dart';
@@ -10,21 +11,27 @@ import '../../utils/constants/themes.dart';
 import '../../utils/shared_preference.dart';
 import '../app_button.dart';
 
-class Onboarding extends StatefulWidget {
-  final Widget child;
-  final MainScreen screen;
-  const Onboarding({
+/// An alternate to `Onboarding` where the widget lies on top of the
+/// `BottomNavigationBar`.
+class BottomNavigationOnboarding extends StatefulWidget {
+  const BottomNavigationOnboarding({
     Key? key,
-    required this.screen,
     required this.child,
   }) : super(key: key);
 
+  final Widget child;
+
   @override
-  _OnboardingState createState() => _OnboardingState();
+  _BottomNavigationOnboardingState createState() =>
+      _BottomNavigationOnboardingState();
 }
 
-class _OnboardingState extends State<Onboarding> with AfterLayoutMixin {
-  static const _onboardDetails = <MainScreen, Map<String, String>>{
+class _BottomNavigationOnboardingState extends State<BottomNavigationOnboarding>
+    with AfterLayoutMixin {
+  late MainScreen _screen;
+  bool _displayOnboarding = false;
+
+  final _onboardDetails = <MainScreen, Map<String, String>>{
     MainScreen.home: {
       'icon': kBottomIconHome,
       'title': 'Home',
@@ -57,12 +64,49 @@ class _OnboardingState extends State<Onboarding> with AfterLayoutMixin {
     },
   };
 
-  bool _displayOnboarding = false;
+  @override
+  void initState() {
+    super.initState();
+    _setScreen();
+    context.read<PersistentTabController>().addListener(_setScreen);
+  }
+
+  @override
+  void dispose() {
+    context.read<PersistentTabController>().removeListener(_setScreen);
+    super.dispose();
+  }
 
   @override
   Future<void> afterFirstLayout(BuildContext context) async {
     final _prefs = context.read<UserSharedPreferences>();
-    if (!_prefs.getOnboardingStatus(widget.screen)) {
+    if (!_prefs.getOnboardingStatus(_screen)) {
+      if (mounted) setState(() => _displayOnboarding = true);
+    }
+  }
+
+  void _setScreen() {
+    final _tabController = context.read<PersistentTabController>();
+    switch (_tabController.index) {
+      case 1:
+        _screen = MainScreen.discover;
+        break;
+      case 2:
+        _screen = MainScreen.chats;
+        break;
+      case 3:
+        _screen = MainScreen.activity;
+        break;
+      case 4:
+        _screen = MainScreen.profile;
+        break;
+      default:
+        _screen = MainScreen.home;
+        break;
+    }
+
+    final _prefs = context.read<UserSharedPreferences>();
+    if (!_prefs.getOnboardingStatus(_screen)) {
       if (mounted) setState(() => _displayOnboarding = true);
     }
   }
@@ -84,12 +128,12 @@ class _OnboardingState extends State<Onboarding> with AfterLayoutMixin {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   SvgPicture.asset(
-                    _onboardDetails[widget.screen]!['icon']!,
+                    _onboardDetails[_screen]!['icon']!,
                     color: kPinkColor,
                     height: 75.0.h,
                   ),
                   Text(
-                    _onboardDetails[widget.screen]!['title']!,
+                    _onboardDetails[_screen]!['title']!,
                     style: Theme.of(context).textTheme.bodyText1!.copyWith(
                           color: kPinkColor,
                         ),
@@ -99,7 +143,7 @@ class _OnboardingState extends State<Onboarding> with AfterLayoutMixin {
               SizedBox(width: 20.0.w),
               Expanded(
                 child: Text(
-                  _onboardDetails[widget.screen]!['description']!,
+                  _onboardDetails[_screen]!['description']!,
                   style: Theme.of(context).textTheme.bodyText1,
                 ),
               )
@@ -108,16 +152,16 @@ class _OnboardingState extends State<Onboarding> with AfterLayoutMixin {
           const SizedBox(height: 15),
           SizedBox(
             width: MediaQuery.of(context).size.width * 0.5,
-            child: AppButton(
-                _onboardDetails[widget.screen]!['label'], kTealColor, true,
-                //() => Navigator.pop(ctx),
-                () async {
+            child:
+                AppButton(_onboardDetails[_screen]!['label'], kTealColor, true,
+                    //() => Navigator.pop(ctx),
+                    () async {
               setState(() {
                 _displayOnboarding = false;
               });
               await context
                   .read<UserSharedPreferences>()
-                  .updateOnboardingStatus(widget.screen);
+                  .updateOnboardingStatus(_screen);
             }),
           ),
         ],

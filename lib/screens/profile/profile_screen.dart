@@ -8,10 +8,8 @@ import '../../providers/users.dart';
 import '../../state/mvvm_builder.widget.dart';
 import '../../state/views/stateless.view.dart';
 import '../../utils/constants/themes.dart';
-import '../../utils/shared_preference.dart';
 import '../../view_models/profile/profile_screen.vm.dart';
 import '../../widgets/app_button.dart';
-import '../../widgets/overlays/onboarding.dart';
 import '../chat/components/chat_avatar.dart';
 import '../home/timeline.dart';
 import 'components/current_user_profile.dart';
@@ -19,44 +17,45 @@ import 'components/shop_banner.dart';
 
 class ProfileScreen extends StatelessWidget {
   static const routeName = '/profile';
-  const ProfileScreen({Key? key, required this.userId}) : super(key: key);
-  final String userId;
+
+  const ProfileScreen({Key? key, this.userId}) : super(key: key);
+  final String? userId;
 
   @override
   Widget build(BuildContext context) {
-    final user = context.watch<Users>().findById(userId);
+    if (userId != null) {
+      final user = context.watch<Users>().findById(userId);
 
-    if (user == null) {
-      return const Center(
-        child: Text('Error in displaying the user!'),
-      );
+      if (user == null) {
+        return const Center(
+          child: Text('Error in displaying the user!'),
+        );
+      }
     }
 
-    final isCurrentUser = context.read<Auth>().user!.id == userId;
-    return Onboarding(
-      screen: MainScreen.profile,
-      child: Scaffold(
-        backgroundColor: kInviteScreenColor,
-        body: AnnotatedRegion<SystemUiOverlayStyle>(
-          value: SystemUiOverlayStyle.light,
-          child: SafeArea(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                _ProfileHeader(
-                  userId: userId,
-                ),
-                ShopBanner(userId: userId),
-                Expanded(
-                  child: !isCurrentUser
-                      ? Container(
-                          color: kInviteScreenColor,
-                          child: Timeline(userId: userId),
-                        )
-                      : const CurrentUserProfile(),
-                ),
-              ],
-            ),
+    final isCurrentUser =
+        context.read<Auth>().user!.id == userId || userId == null;
+    return Scaffold(
+      backgroundColor: kInviteScreenColor,
+      body: AnnotatedRegion<SystemUiOverlayStyle>(
+        value: SystemUiOverlayStyle.light,
+        child: SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _ProfileHeader(
+                userId: userId ?? context.read<Auth>().user!.id!,
+              ),
+              ShopBanner(userId: userId ?? context.read<Auth>().user!.id!),
+              Expanded(
+                child: !isCurrentUser
+                    ? Container(
+                        color: kInviteScreenColor,
+                        child: Timeline(userId: userId),
+                      )
+                    : const CurrentUserProfile(),
+              ),
+            ],
           ),
         ),
       ),

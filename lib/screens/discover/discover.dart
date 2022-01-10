@@ -76,134 +76,131 @@ class _DiscoverView extends StatelessView<DiscoverViewModel> {
 
   @override
   Widget render(BuildContext context, DiscoverViewModel vm) {
-    return Onboarding(
-      screen: MainScreen.discover,
-      child: Scaffold(
-        appBar: const CustomAppBar(
-          titleText: 'Discover',
-          backgroundColor: kOrangeColor,
-          buildLeading: false,
-        ),
-        body: CartContainer(
-          alwaysDisplayButton: true,
-          child: RefreshIndicator(
-            onRefresh: vm.fetchRecommendedProducts,
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(height: 10.0.h),
-                  GestureDetector(
-                    onTap: vm.onSearch,
-                    child: const Hero(
-                      tag: 'search_field',
-                      child: SearchTextField(),
+    return Scaffold(
+      appBar: const CustomAppBar(
+        titleText: 'Discover',
+        backgroundColor: kOrangeColor,
+        buildLeading: false,
+      ),
+      body: CartContainer(
+        alwaysDisplayButton: true,
+        child: RefreshIndicator(
+          onRefresh: vm.fetchRecommendedProducts,
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(height: 10.0.h),
+                GestureDetector(
+                  onTap: vm.onSearch,
+                  child: const Hero(
+                    tag: 'search_field',
+                    child: SearchTextField(),
+                  ),
+                ),
+                SizedBox(height: 10.0.h),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16.0.w),
+                  child: Text(
+                    'Recommended',
+                    style: Theme.of(context).textTheme.headline5,
+                  ),
+                ),
+                SizedBox(height: 5.0.h),
+                if (vm.isLoading)
+                  Center(
+                    child: Lottie.asset(
+                      kAnimationLoading,
+                      fit: BoxFit.contain,
                     ),
                   ),
-                  SizedBox(height: 10.0.h),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16.0.w),
-                    child: Text(
-                      'Recommended',
-                      style: Theme.of(context).textTheme.headline5,
-                    ),
+                if (!vm.isLoading)
+                  _RecommendedProducts(
+                    products: vm.recommendedProducts,
+                    onProductTap: vm.onProductTap,
                   ),
-                  SizedBox(height: 5.0.h),
-                  if (vm.isLoading)
-                    Center(
-                      child: Lottie.asset(
-                        kAnimationLoading,
-                        fit: BoxFit.contain,
+
+                SizedBox(height: 15.0.h),
+                Divider(
+                  color: Colors.grey.shade300,
+                  indent: 16.0.w,
+                  endIndent: 16.0.w,
+                ),
+
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16.0.w),
+                  child: Row(
+                    children: [
+                      Text(
+                        'Explore Categories',
+                        style: Theme.of(context).textTheme.headline5,
                       ),
-                    ),
-                  if (!vm.isLoading)
-                    _RecommendedProducts(
-                      products: vm.recommendedProducts,
-                      onProductTap: vm.onProductTap,
-                    ),
-
-                  SizedBox(height: 15.0.h),
-                  Divider(
-                    color: Colors.grey.shade300,
-                    indent: 16.0.w,
-                    endIndent: 16.0.w,
-                  ),
-
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16.0.w),
-                    child: Row(
-                      children: [
-                        Text(
-                          'Explore Categories',
-                          style: Theme.of(context).textTheme.headline5,
+                      const Spacer(),
+                      GestureDetector(
+                        onTap: vm.onExploreCategories,
+                        child: Row(
+                          children: [
+                            Text(
+                              'View All',
+                              style: Theme.of(context).textTheme.subtitle1,
+                            ),
+                            Icon(
+                              Icons.arrow_forward_ios,
+                              color: kTealColor,
+                              size: 16.0.sp,
+                            ),
+                          ],
                         ),
-                        const Spacer(),
-                        GestureDetector(
-                          onTap: vm.onExploreCategories,
-                          child: Row(
-                            children: [
-                              Text(
-                                'View All',
-                                style: Theme.of(context).textTheme.subtitle1,
-                              ),
-                              Icon(
-                                Icons.arrow_forward_ios,
-                                color: kTealColor,
-                                size: 16.0.sp,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                  SizedBox(height: 10.0.h),
-                  SizedBox(
-                    height: 125.0.h,
-                    child: _buildCategories(),
+                ),
+                SizedBox(height: 10.0.h),
+                SizedBox(
+                  height: 125.0.h,
+                  child: _buildCategories(),
+                ),
+                // Divider(
+                //   thickness: 0.5,
+                //   color: Colors.grey.shade300,
+                // ),
+                // SizedBox(height: 10.0.h),
+                Divider(
+                  color: Colors.grey.shade300,
+                  indent: 16.0.w,
+                  endIndent: 16.0.w,
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16.0.w),
+                  child: Text(
+                    'Recent',
+                    style: Theme.of(context).textTheme.headline5,
                   ),
-                  // Divider(
-                  //   thickness: 0.5,
-                  //   color: Colors.grey.shade300,
-                  // ),
-                  // SizedBox(height: 10.0.h),
-                  Divider(
-                    color: Colors.grey.shade300,
-                    indent: 16.0.w,
-                    endIndent: 16.0.w,
-                  ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16.0.w),
-                    child: Text(
-                      'Recent',
-                      style: Theme.of(context).textTheme.headline5,
-                    ),
-                  ),
-                  SizedBox(height: 10.0.h),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 13.5.w),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Expanded(
-                          child: vm.isProductsLoading
-                              ? Center(
-                                  child: Lottie.asset(
-                                    kAnimationLoading,
-                                    fit: BoxFit.contain,
-                                  ),
-                                )
-                              : ProductsList(
-                                  items: vm.otherUserProducts,
-                                  onProductTap: vm.onProductTap,
+                ),
+                SizedBox(height: 10.0.h),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 13.5.w),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Expanded(
+                        child: vm.isProductsLoading
+                            ? Center(
+                                child: Lottie.asset(
+                                  kAnimationLoading,
+                                  fit: BoxFit.contain,
                                 ),
-                        ),
-                      ],
-                    ),
+                              )
+                            : ProductsList(
+                                items: vm.otherUserProducts,
+                                onProductTap: vm.onProductTap,
+                              ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ),

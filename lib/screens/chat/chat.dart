@@ -81,24 +81,21 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
         if (_shopChatStream == null && _shops.isNotEmpty) {
           _shopChatStream = Database.instance.getUserChats(_shops.first.id);
         }
-        return Onboarding(
-          screen: MainScreen.chats,
-          child: Scaffold(
-            appBar: _ChatAppBar(
-              height: 120.0.h,
-              backgroundColor: _colorAnimation.value,
-              bottom: _ChatAppBarBottom(
-                tabController: _tabController,
-              ),
+        return Scaffold(
+          appBar: _ChatAppBar(
+            height: 120.0.h,
+            backgroundColor: _colorAnimation.value,
+            bottom: _ChatAppBarBottom(
+              tabController: _tabController,
             ),
-            body: TabBarView(
-              physics: const NeverScrollableScrollPhysics(),
-              controller: _tabController,
-              children: [
-                ChatStream(chatStream: _userChatStream),
-                ChatStream(chatStream: _shopChatStream),
-              ],
-            ),
+          ),
+          body: TabBarView(
+            physics: const NeverScrollableScrollPhysics(),
+            controller: _tabController,
+            children: [
+              ChatStream(chatStream: _userChatStream),
+              ChatStream(chatStream: _shopChatStream),
+            ],
           ),
         );
       },
