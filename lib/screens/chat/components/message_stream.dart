@@ -35,10 +35,10 @@ class MessageStream extends StatelessWidget {
     return [
       FocusedMenuItem(
         title: Text(
-          "Repy",
+          'Repy',
           style: Theme.of(context).textTheme.subtitle1,
         ),
-        trailingIcon: Icon(
+        trailingIcon: const Icon(
           MdiIcons.replyOutline,
           color: kTealColor,
         ),
@@ -46,10 +46,10 @@ class MessageStream extends StatelessWidget {
       ),
       FocusedMenuItem(
         title: Text(
-          "Copy Message",
+          'Copy Message',
           style: Theme.of(context).textTheme.subtitle1,
         ),
-        trailingIcon: Icon(
+        trailingIcon: const Icon(
           Icons.copy,
           color: kTealColor,
         ),
@@ -63,18 +63,18 @@ class MessageStream extends StatelessWidget {
       if (isUser)
         FocusedMenuItem(
           title: Text(
-            "Delete",
+            'Delete',
             style: Theme.of(context).textTheme.subtitle1!.copyWith(
                   color: kPinkColor,
                 ),
           ),
-          trailingIcon: Icon(
+          trailingIcon: const Icon(
             MdiIcons.trashCanOutline,
             color: kPinkColor,
           ),
           onPressed: () {
-            debugPrint("Pressed Delete: $messageId");
-            this.onDelete(messageId);
+            debugPrint('Pressed Delete: $messageId');
+            onDelete(messageId);
           },
         ),
     ];
@@ -116,17 +116,17 @@ class MessageStream extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
-      stream: this.messageStream,
+      stream: messageStream,
       builder: (ctx, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator());
+          return const Center(child: CircularProgressIndicator());
         } else if (snapshot.hasError) {
-          return _buildText("Something went wrong, try again.");
+          return _buildText('Something went wrong, try again.');
         } else {
           final messages = snapshot.data!.docs;
-          if (messages.isEmpty) return _buildText("Say Hi...");
+          if (messages.isEmpty) return _buildText('Say Hi...');
           return ListView.builder(
-            physics: BouncingScrollPhysics(),
+            physics: const BouncingScrollPhysics(),
             reverse: true,
             itemCount: messages.length,
             itemBuilder: (ctx2, index) {

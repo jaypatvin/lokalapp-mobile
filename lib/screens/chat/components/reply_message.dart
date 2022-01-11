@@ -35,8 +35,7 @@ class ReplyMessageWidget extends StatelessWidget {
                 return NetworkPhotoThumbnail(
                   heroTag: '${message.media![index].url}_reply',
                   galleryItem: message.media![index],
-                  fit: BoxFit.cover,
-                  onTap: () => openGallery(context, index, message.media!),
+                  onTap: () => openGallery(context, index, message.media),
                 );
               },
             ),
@@ -47,7 +46,7 @@ class ReplyMessageWidget extends StatelessWidget {
             style: Theme.of(context).textTheme.bodyText2!.copyWith(
                   color: isRepliedByUser
                       ? Colors.black.withOpacity(0.7)
-                      : Color(0xFFF1FAFF).withOpacity(0.7),
+                      : const Color(0xFFF1FAFF).withOpacity(0.7),
                   fontStyle: FontStyle.italic,
                 ),
           ),

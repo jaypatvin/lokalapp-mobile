@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:provider/provider.dart';
@@ -21,8 +20,8 @@ import '../../widgets/photo_picker_gallery/provider/custom_photo_provider.dart';
 
 class ChatViewViewModel extends ChangeNotifier {
   ChatViewViewModel(
-    this.context,
-    this.createMessage, {
+    this.context, {
+    required this.createMessage,
     this.chat,
     this.members,
     this.shopId,
@@ -49,7 +48,7 @@ class ChatViewViewModel extends ChangeNotifier {
   late final Color indicatorColor;
   late final CustomPickerDataProvider provider;
 
-  String _chatTitle = "New message";
+  String _chatTitle = 'New message';
   String get chatTitle => _chatTitle;
 
   bool _sendingMessage = false;
@@ -61,7 +60,7 @@ class ChatViewViewModel extends ChangeNotifier {
   bool _userSentLastMessage = false;
   bool get userSentLastMessage => _userSentLastMessage;
 
-  String _replyId = "";
+  String _replyId = '';
 
   Conversation? _replyMessage;
   Conversation? get replyMessage => _replyMessage;
@@ -94,31 +93,29 @@ class ChatViewViewModel extends ChangeNotifier {
 
     _providerInit();
     final userId = context.read<Auth>().user!.id;
-    if (!this.createMessage) {
-      this._chatTitle = this.chat!.title;
-      this._chat = this.chat;
-      messageStream = _db.getConversations(this._chat!.id);
-      this._messageSubscription =
-          this.messageStream!.listen(_messageStreamListener);
+    if (!createMessage) {
+      _chatTitle = chat!.title;
+      _chat = chat;
+      messageStream = _db.getConversations(_chat!.id);
+      _messageSubscription = messageStream!.listen(_messageStreamListener);
 
       indicatorColor =
-          this.chat!.members.contains(userId) ? kTealColor : kPurpleColor;
+          chat!.members.contains(userId) ? kTealColor : kPurpleColor;
     } else {
-      indicatorColor =
-          this.members!.contains(userId) ? kTealColor : kPurpleColor;
+      indicatorColor = members!.contains(userId) ? kTealColor : kPurpleColor;
       _checkExistingChat();
     }
-    _createNewMessage = this.createMessage;
+    _createNewMessage = createMessage;
   }
 
   @override
   void dispose() {
-    print('called dispose');
+    debugPrint('called dispose');
     // we need to clear and remove the picked images and listeners
     // so that we can use it in its initial state on other screens
     provider.picked.clear();
     provider.removeListener(_showMaxAssetsText);
-    this._messageSubscription?.cancel();
+    _messageSubscription?.cancel();
 
     super.dispose();
   }
@@ -126,13 +123,13 @@ class ChatViewViewModel extends ChangeNotifier {
   void _messageStreamListener(QuerySnapshot snapshot) {
     final conversation = Conversation.fromDocument(snapshot.docs.first);
     final user = context.read<Auth>().user!;
-    this._conversations = snapshot.docs;
+    _conversations = snapshot.docs;
     if (conversation.senderId == user.id) {
-      this._sendingMessage = false;
-      this._currentlySendingMessage = null;
-      this._userSentLastMessage = true;
+      _sendingMessage = false;
+      _currentlySendingMessage = null;
+      _userSentLastMessage = true;
     } else {
-      this._userSentLastMessage = false;
+      _userSentLastMessage = false;
     }
     notifyListeners();
   }
@@ -148,24 +145,23 @@ class ChatViewViewModel extends ChangeNotifier {
   Future<void> _checkExistingChat() async {
     try {
       if (members == null) return;
-      this._loading = true;
+      _loading = true;
       notifyListeners();
 
-      this._chat = await _chatApiService.getChatByMembers(
-        members: this.members!,
+      _chat = await _chatApiService.getChatByMembers(
+        members: members!,
       );
-      this._chatTitle = this._chat!.title;
-      this.messageStream = _db.getConversations(this._chat!.id);
+      _chatTitle = _chat!.title;
+      messageStream = _db.getConversations(_chat!.id);
       _createNewMessage = false;
-      this._messageSubscription =
-          this.messageStream?.listen(_messageStreamListener);
+      _messageSubscription = messageStream?.listen(_messageStreamListener);
 
-      this._loading = false;
+      _loading = false;
       notifyListeners();
     } catch (e) {
       // do nothing as it means there are no chat by these members
-      print(e.toString());
-      this._loading = false;
+      debugPrint(e.toString());
+      _loading = false;
       notifyListeners();
     }
   }
@@ -174,7 +170,7 @@ class ChatViewViewModel extends ChangeNotifier {
     showToast('You have reached the limit of 5 media per message.');
   }
 
-  void onSendMessage() async {
+  Future<void> onSendMessage() async {
     final message = chatInputController.text;
     final picked = provider.picked;
     final showImagePicker = _showImagePicker;
@@ -182,8 +178,8 @@ class ChatViewViewModel extends ChangeNotifier {
     final replyId = _replyId;
     try {
       final user = context.read<Auth>().user!;
-      this._sendingMessage = true;
-      this._currentlySendingMessage = Conversation(
+      _sendingMessage = true;
+      _currentlySendingMessage = Conversation(
         archived: false,
         createdAt: DateTime.now(),
         message: chatInputController.text,
@@ -193,7 +189,7 @@ class ChatViewViewModel extends ChangeNotifier {
       );
       notifyListeners();
 
-      if (this._createNewMessage) {
+      if (_createNewMessage) {
         final media = await _getMedia(provider.picked);
         final chat = await _chatApiService.createChat(
           body: {
@@ -207,18 +203,18 @@ class ChatViewViewModel extends ChangeNotifier {
           },
         );
 
-        this._chat = chat;
-        this._chatTitle = chat.title;
-        this._createNewMessage = false;
-        this.messageStream = _db.getConversations(chat.id);
-        this._messageSubscription = this.messageStream!.listen(
-              _messageStreamListener,
-            );
+        _chat = chat;
+        _chatTitle = chat.title;
+        _createNewMessage = false;
+        messageStream = _db.getConversations(chat.id);
+        _messageSubscription = messageStream!.listen(
+          _messageStreamListener,
+        );
         notifyListeners();
       } else {
         final media = _getMedia(provider.picked);
         _conversationAPIService.createConversation(
-          chatId: this._chat!.id,
+          chatId: _chat!.id,
           body: {
             'user_id': user.id,
             'reply_to': _replyId,
@@ -227,29 +223,29 @@ class ChatViewViewModel extends ChangeNotifier {
           },
         );
       }
-      this.chatInputController.clear();
-      this.provider.picked.clear();
-      this._showImagePicker = false;
-      this._replyMessage = null;
-      this._replyId = "";
+      chatInputController.clear();
+      provider.picked.clear();
+      _showImagePicker = false;
+      _replyMessage = null;
+      _replyId = '';
       notifyListeners();
     } catch (e) {
       showToast(e.toString());
-      this.chatInputController.text = message;
-      this.provider.picked = picked;
-      this._showImagePicker = showImagePicker;
-      this._replyMessage = replyMessage;
-      this._replyId = replyId;
-      this._sendingMessage = false;
-      this._currentlySendingMessage = null;
+      chatInputController.text = message;
+      provider.picked = picked;
+      _showImagePicker = showImagePicker;
+      _replyMessage = replyMessage;
+      _replyId = replyId;
+      _sendingMessage = false;
+      _currentlySendingMessage = null;
       notifyListeners();
     }
   }
 
-  void onDeleteMessage(String id) async {
+  Future<void> onDeleteMessage(String id) async {
     try {
       await _conversationAPIService.deleteConversation(
-        chatId: this._chat!.id,
+        chatId: _chat!.id,
         messageId: id,
       );
       showToast('Message deleted succesfully.');
@@ -264,8 +260,8 @@ class ChatViewViewModel extends ChangeNotifier {
       context,
       CupertinoPageRoute(
         builder: (ctx) => ChatProfile(
-          this._chat,
-          this._conversations,
+          _chat,
+          _conversations,
         ),
       ),
     );
@@ -277,8 +273,8 @@ class ChatViewViewModel extends ChangeNotifier {
   }
 
   void onReply(String id, Conversation conversation) {
-    this._replyId = id;
-    this._replyMessage = conversation;
+    _replyId = id;
+    _replyMessage = conversation;
     notifyListeners();
   }
 
@@ -311,9 +307,9 @@ class ChatViewViewModel extends ChangeNotifier {
         name: 'post_photo',
       );
       media.add({
-        "url": url,
-        "type": "image",
-        "order": index,
+        'url': url,
+        'type': 'image',
+        'order': index,
       });
     }
     return media;

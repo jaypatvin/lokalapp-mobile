@@ -22,50 +22,46 @@ class Status500Buttons extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (this.isBuyer) {
-      return Container(
-        child: Column(
-          children: [
-            if (order.proofOfPayment?.isNotEmpty ?? false)
-              Container(
-                width: double.infinity,
-                child: ViewPaymentButton(onPress: this.onPress),
-              ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Expanded(
-                  child: MessageSellerButton(order: this.order),
-                ),
-                SizedBox(width: MediaQuery.of(context).size.width * 0.01),
-                Expanded(
-                  child: AppButton(
-                    "Order Received",
-                    kOrangeColor,
-                    true,
-                    () => this.onPress(OrderAction.received),
-                  ),
-                )
-              ],
+    if (isBuyer) {
+      return Column(
+        children: [
+          if (order.proofOfPayment?.isNotEmpty ?? false)
+            SizedBox(
+              width: double.infinity,
+              child: ViewPaymentButton(onPress: onPress),
             ),
-          ],
-        ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Expanded(
+                child: MessageSellerButton(order: order),
+              ),
+              SizedBox(width: MediaQuery.of(context).size.width * 0.01),
+              Expanded(
+                child: AppButton(
+                  'Order Received',
+                  kOrangeColor,
+                  true,
+                  () => onPress(OrderAction.received),
+                ),
+              )
+            ],
+          ),
+        ],
       );
     }
 
-    return Container(
-      child: Column(
-        children: [
-          Container(
-            width: double.infinity,
-            child: ViewPaymentButton(onPress: this.onPress),
-          ),
-          Container(
-            width: double.infinity,
-            child: MessageBuyerButton(order: this.order),
-          ),
-        ],
-      ),
+    return Column(
+      children: [
+        SizedBox(
+          width: double.infinity,
+          child: ViewPaymentButton(onPress: onPress),
+        ),
+        SizedBox(
+          width: double.infinity,
+          child: MessageBuyerButton(order: order),
+        ),
+      ],
     );
   }
 }

@@ -14,7 +14,7 @@ class AppCheckBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: this.onTap,
+      onTap: onTap,
       child: Row(
         children: [
           SizedBox(
@@ -23,7 +23,6 @@ class AppCheckBox extends StatelessWidget {
             child: DecoratedBox(
               decoration: BoxDecoration(
                 border: Border.all(
-                  color: Colors.black,
                   width: 2,
                 ),
               ),
@@ -35,8 +34,8 @@ class AppCheckBox extends StatelessWidget {
                 ),
                 child: Checkbox(
                   checkColor: Colors.black,
-                  value: this.value,
-                  onChanged: (_) => this.onTap(),
+                  value: value,
+                  onChanged: (_) => onTap(),
                 ),
               ),
             ),

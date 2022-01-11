@@ -72,9 +72,9 @@ class UserShopPost extends ChangeNotifier {
       UserShopPost.fromMap(json.decode(source));
 
   factory UserShopPost.fromDocument(DocumentSnapshot doc) {
-    final map = doc.data() as Map<String, dynamic>;
+    final map = doc.data() as Map<String, dynamic>?;
     return UserShopPost(
-      userId: map['user_id'],
+      userId: map!['user_id'],
       communityId: map['community_id'],
       name: map['name'],
       description: map['description'],

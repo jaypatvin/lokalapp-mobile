@@ -12,7 +12,7 @@ import '../discover/discover.dart';
 import 'checkout_cart.dart';
 
 class CartConfirmation extends StatelessWidget {
-  static const routeName = "/cart/confirmation";
+  static const routeName = '/cart/confirmation';
   final bool isSubscription;
   const CartConfirmation({
     Key? key,
@@ -22,7 +22,7 @@ class CartConfirmation extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0XFFF1FAFF),
+      backgroundColor: const Color(0XFFF1FAFF),
       appBar: CustomAppBar(
         buildLeading: false,
         backgroundColor: Colors.transparent,
@@ -36,7 +36,7 @@ class CartConfirmation extends StatelessWidget {
                   .popUntil(ModalRoute.withName(Discover.routeName));
             },
             child: Text(
-              "Done",
+              'Done',
               style: Theme.of(context).textTheme.subtitle1,
             ),
           ),
@@ -47,39 +47,37 @@ class CartConfirmation extends StatelessWidget {
         child: Column(
           //mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Container(
+            SizedBox(
               height: 140.0.h,
               width: double.infinity,
               child: Lottie.asset(kAnimationOk, fit: BoxFit.contain),
             ),
             SizedBox(height: 32.h),
             Text(
-              this.isSubscription
-                  ? "Subscription for Review!"
-                  : "Order Placed!",
+              isSubscription ? 'Subscription for Review!' : 'Order Placed!',
               textAlign: TextAlign.center,
               style: Theme.of(context)
                   .textTheme
                   .headline4!
                   .copyWith(color: kTealColor),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 48.0),
               child: RichText(
                 text: TextSpan(
                   children: [
                     TextSpan(
-                      text: this.isSubscription
-                          ? "You can check the status of "
-                              "your subscription using the "
-                          : "You can track your order using the ",
+                      text: isSubscription
+                          ? 'You can check the status of '
+                              'your subscription using the '
+                          : 'You can track your order using the ',
                     ),
                     TextSpan(
-                      text: "My Activity",
+                      text: 'My Activity',
                       style: Theme.of(context).textTheme.subtitle1,
                     ),
-                    TextSpan(text: " page."),
+                    const TextSpan(text: ' page.'),
                   ],
                   style: Theme.of(context).textTheme.bodyText1,
                 ),
@@ -90,7 +88,7 @@ class CartConfirmation extends StatelessWidget {
             SizedBox(
               width: MediaQuery.of(context).size.width * 0.75,
               child: AppButton(
-                "BACK TO MY CART",
+                'BACK TO MY CART',
                 kTealColor,
                 false,
                 () {
@@ -106,7 +104,7 @@ class CartConfirmation extends StatelessWidget {
             SizedBox(
               width: MediaQuery.of(context).size.width * 0.75,
               child: AppButton(
-                "GO TO MY ACTIVITY",
+                'GO TO MY ACTIVITY',
                 kTealColor,
                 true,
                 () {

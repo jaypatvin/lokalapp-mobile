@@ -20,7 +20,7 @@ class InviteSent extends StatelessWidget {
   Widget build(BuildContext context) {
     return MVVM(
       view: (_, __) => _InviteSentView(),
-      viewModel: InviteSentViewModel(this.invite),
+      viewModel: InviteSentViewModel(invite),
     );
   }
 }
@@ -29,7 +29,7 @@ class _InviteSentView extends StatelessView<InviteSentViewModel> {
   @override
   Widget render(BuildContext context, InviteSentViewModel vm) {
     return Scaffold(
-      backgroundColor: Color(0XFFF1FAFF),
+      backgroundColor: const Color(0XFFF1FAFF),
       appBar: CustomAppBar(
         buildLeading: false,
         backgroundColor: Colors.transparent,
@@ -57,28 +57,26 @@ class _InviteSentView extends StatelessView<InviteSentViewModel> {
           children: [
             Lottie.asset(kAnimationOk, fit: BoxFit.cover),
             SizedBox(height: 15.h),
-            Container(
-              child: Text(
-                'Invite Sent!',
-                style: Theme.of(context)
-                    .textTheme
-                    .headline4!
-                    .copyWith(color: kTealColor),
-              ),
+            Text(
+              'Invite Sent!',
+              style: Theme.of(context)
+                  .textTheme
+                  .headline4!
+                  .copyWith(color: kTealColor),
             ),
             SizedBox(height: 15.h),
-            Text(
+            const Text(
               'Your friend should receive this invite code within a '
               'few minutes.',
               textAlign: TextAlign.center,
             ),
             SizedBox(height: 30.h),
-            Text('The invite code is:'),
+            const Text('The invite code is:'),
             Text(
               vm.inviteCode,
               style: Theme.of(context).textTheme.headline3,
             ),
-            Spacer(),
+            const Spacer(),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 40.0.w),
               child: SizedBox(

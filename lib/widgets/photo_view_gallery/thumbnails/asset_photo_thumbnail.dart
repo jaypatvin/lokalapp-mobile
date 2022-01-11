@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
-import '../../photo_picker_gallery/custom_asset_widget.dart';
 import 'package:photo_manager/photo_manager.dart';
 
+import '../../photo_picker_gallery/custom_asset_widget.dart';
+
 class AssetPhotoThumbnail extends StatelessWidget {
-  const AssetPhotoThumbnail(
-      {Key? key,
-      required this.galleryItem,
-      required this.onTap,
-      this.onRemove,
-      this.fit = BoxFit.cover,
-      this.decoration})
-      : super(key: key);
+  const AssetPhotoThumbnail({
+    Key? key,
+    required this.galleryItem,
+    required this.onTap,
+    this.onRemove,
+    this.fit = BoxFit.cover,
+    this.decoration,
+  }) : super(key: key);
 
   final AssetEntity galleryItem;
   final GestureTapCallback onTap;
@@ -21,7 +22,7 @@ class AssetPhotoThumbnail extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: this.decoration,
+      decoration: decoration,
       child: Stack(
         children: [
           Positioned.fill(
@@ -34,7 +35,7 @@ class AssetPhotoThumbnail extends StatelessWidget {
                   image: AssetEntityThumbImage(
                     entity: galleryItem,
                   ),
-                  fit: this.fit,
+                  fit: fit,
                 ),
               ),
             ),
@@ -43,13 +44,13 @@ class AssetPhotoThumbnail extends StatelessWidget {
             top: 6.0,
             right: 6.0,
             child: GestureDetector(
-              onTap: this.onRemove,
+              onTap: onRemove,
               child: Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10.0),
                   color: Colors.black.withOpacity(0.3),
                 ),
-                child: Icon(
+                child: const Icon(
                   Icons.close,
                   color: Colors.white,
                   size: 18.0,

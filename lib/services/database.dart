@@ -8,13 +8,13 @@ import '../models/activity_feed.dart';
 import '../models/lokal_user.dart';
 
 final activitiesRef = FirebaseFirestore.instance.collection('activities');
-final usersRef = FirebaseFirestore.instance.collection("users");
-final inviteRef = FirebaseFirestore.instance.collection("invites");
-final shopRef = FirebaseFirestore.instance.collection("shops");
-final chatsRef = FirebaseFirestore.instance.collection("chats");
-final ordersRef = FirebaseFirestore.instance.collection("orders");
+final usersRef = FirebaseFirestore.instance.collection('users');
+final inviteRef = FirebaseFirestore.instance.collection('invites');
+final shopRef = FirebaseFirestore.instance.collection('shops');
+final chatsRef = FirebaseFirestore.instance.collection('chats');
+final ordersRef = FirebaseFirestore.instance.collection('orders');
 final subscriptionPlansRef =
-    FirebaseFirestore.instance.collection("product_subscription_plans");
+    FirebaseFirestore.instance.collection('product_subscription_plans');
 
 final Reference storageRef = FirebaseStorage.instance.ref();
 
@@ -22,10 +22,7 @@ final Reference storageRef = FirebaseStorage.instance.ref();
 class Database {
   static Database? _database;
   static Database get instance {
-    if (_database == null) {
-      _database = Database();
-    }
-    return _database!;
+    return _database ??= Database();
   }
 
   Future<QuerySnapshot<Map<String, dynamic>>> getBankCodes() {
@@ -70,7 +67,8 @@ class Database {
   }
 
   Stream<QuerySnapshot<Map<String, dynamic>>> getCommentFeed(
-      String activityId) {
+    String activityId,
+  ) {
     return activitiesRef
         .doc(activityId)
         .collection('comments')
@@ -83,9 +81,11 @@ class Database {
         .where('user_id', isEqualTo: userId)
         .orderBy('created_at', descending: true)
         .snapshots()
-        .map<List<ActivityFeed>>((snapshot) => snapshot.docs
-            .map((doc) => ActivityFeed.fromDocument(doc))
-            .toList());
+        .map<List<ActivityFeed>>(
+          (snapshot) => snapshot.docs
+              .map((doc) => ActivityFeed.fromDocument(doc))
+              .toList(),
+        );
   }
 
   Stream<List<ActivityFeed>> getUserFeedStream(String userId) {
@@ -93,9 +93,11 @@ class Database {
         .where('user_id', isEqualTo: userId)
         .orderBy('created_at', descending: true)
         .snapshots()
-        .map<List<ActivityFeed>>((snapshot) => snapshot.docs
-            .map((doc) => ActivityFeed.fromDocument(doc))
-            .toList());
+        .map<List<ActivityFeed>>(
+          (snapshot) => snapshot.docs
+              .map((doc) => ActivityFeed.fromDocument(doc))
+              .toList(),
+        );
   }
 
   Stream<List<ActivityFeed>> getCommunityFeedStream(
@@ -105,9 +107,11 @@ class Database {
         .where('community_id', isEqualTo: communityId)
         .orderBy('created_at', descending: true)
         .snapshots()
-        .map<List<ActivityFeed>>((snapshot) => snapshot.docs
-            .map((doc) => ActivityFeed.fromDocument(doc))
-            .toList());
+        .map<List<ActivityFeed>>(
+          (snapshot) => snapshot.docs
+              .map((doc) => ActivityFeed.fromDocument(doc))
+              .toList(),
+        );
   }
 
   Stream<QuerySnapshot<Map<String, dynamic>>> getCommunityFeed(
@@ -175,47 +179,48 @@ class Database {
   }
 
   CollectionReference getOrderStatuses() {
-    return FirebaseFirestore.instance.collection("order_status");
+    return FirebaseFirestore.instance.collection('order_status');
   }
 
   Stream<QuerySnapshot<Map<String, dynamic>>> getUserSubscriptions(
     String? userId,
   ) {
     return subscriptionPlansRef
-        .where("buyer_id", isEqualTo: userId)
+        .where('buyer_id', isEqualTo: userId)
         // .orderBy("created_at", descending: true)
         .snapshots();
   }
 
   Stream<QuerySnapshot<Map<String, dynamic>>> getShopSubscribers(
-      String? shopId) {
+    String? shopId,
+  ) {
     return subscriptionPlansRef
-        .where("shop_id", isEqualTo: shopId)
+        .where('shop_id', isEqualTo: shopId)
         // .orderBy("created_at", descending: true)
         .snapshots();
   }
 
-  Future<Map<String, dynamic>?> getChatById(id) async {
+  Future<Map<String, dynamic>?> getChatById(String id) async {
     final chat =
-        await FirebaseFirestore.instance.collection("chats").doc(id).get();
+        await FirebaseFirestore.instance.collection('chats').doc(id).get();
 
     final data = chat.data();
 
     if (data != null) {
-      return {"id": chat.id, ...data};
+      return {'id': chat.id, ...data};
     }
     return data;
   }
 
   Future<Map<String, dynamic>?> getGroupChatByHash(String groupHash) async {
     final chat = await FirebaseFirestore.instance
-        .collection("chats")
-        .where("group_hash", isEqualTo: groupHash)
+        .collection('chats')
+        .where('group_hash', isEqualTo: groupHash)
         .limit(1)
         .get();
 
-    Map<String, dynamic>? data = chat.docs.length > 0
-        ? {"id": chat.docs[0].id, ...chat.docs[0].data()}
+    final Map<String, dynamic>? data = chat.docs.isNotEmpty
+        ? {'id': chat.docs[0].id, ...chat.docs[0].data()}
         : null;
 
     return data;
@@ -224,55 +229,55 @@ class Database {
   Stream<QuerySnapshot> getUserOrders(String? userId, {int? statusCode}) {
     if (statusCode != null) {
       return ordersRef
-          .where("buyer_id", isEqualTo: userId)
-          .where("status_code", isEqualTo: statusCode)
-          .orderBy("created_at", descending: true)
+          .where('buyer_id', isEqualTo: userId)
+          .where('status_code', isEqualTo: statusCode)
+          .orderBy('created_at', descending: true)
           .snapshots();
     }
 
     return ordersRef
-        .where("buyer_id", isEqualTo: userId)
-        .orderBy("created_at", descending: true)
+        .where('buyer_id', isEqualTo: userId)
+        .orderBy('created_at', descending: true)
         .snapshots();
   }
 
   Stream<QuerySnapshot> getShopOrders(String? shopId, {int? statusCode}) {
     if (statusCode != null) {
       return ordersRef
-          .where("shop_id", isEqualTo: shopId)
-          .where("status_code", isEqualTo: statusCode)
-          .orderBy("created_at", descending: true)
+          .where('shop_id', isEqualTo: shopId)
+          .where('status_code', isEqualTo: statusCode)
+          .orderBy('created_at', descending: true)
           .snapshots();
     }
     return ordersRef
-        .where("shop_id", isEqualTo: shopId)
-        .orderBy("created_at", descending: true)
+        .where('shop_id', isEqualTo: shopId)
+        .orderBy('created_at', descending: true)
         .snapshots();
   }
 
   Stream<QuerySnapshot<Map<String, dynamic>>> getUserChats(String? userId) {
     return chatsRef
-        .where("members", arrayContains: userId)
-        .orderBy("last_message.created_at", descending: true)
+        .where('members', arrayContains: userId)
+        .orderBy('last_message.created_at', descending: true)
         .snapshots();
   }
 
   Stream<QuerySnapshot<Map<String, dynamic>>> getConversations(String? chatId) {
     return chatsRef
         .doc(chatId)
-        .collection("conversation")
-        .orderBy("archived")
-        .where("archived", isNotEqualTo: true)
-        .orderBy("created_at", descending: true)
+        .collection('conversation')
+        .orderBy('archived')
+        .where('archived', isNotEqualTo: true)
+        .orderBy('created_at', descending: true)
         .snapshots();
   }
 
   Stream<QuerySnapshot> getConversationsWithMedia(String chatId) {
     return chatsRef
         .doc(chatId)
-        .collection("conversation")
-        .where("media", isNotEqualTo: [])
-        .orderBy("created_at", descending: true)
+        .collection('conversation')
+        .where('media', isNotEqualTo: [])
+        .orderBy('created_at', descending: true)
         .snapshots();
   }
 
@@ -282,13 +287,14 @@ class Database {
   ) {
     return chatsRef
         .doc(chatId)
-        .collection("conversation")
+        .collection('conversation')
         .doc(conversationId)
         .get();
   }
 
   Future<DocumentSnapshot> getConversationByReference(
-      DocumentReference reference) {
+    DocumentReference reference,
+  ) {
     return reference.get();
   }
 
@@ -300,8 +306,9 @@ class Database {
     Map? data;
     try {
       final String documentId = await getUserDocId(uid);
-      if (documentId != null && documentId.isNotEmpty) {
-        DocumentSnapshot _docSnapshot = await usersRef.doc(documentId).get();
+      if (documentId.isNotEmpty) {
+        final DocumentSnapshot _docSnapshot =
+            await usersRef.doc(documentId).get();
         if (_docSnapshot.exists) {
           data = _docSnapshot.data() as Map<dynamic, dynamic>?;
         }
@@ -316,12 +323,10 @@ class Database {
     List? data;
     try {
       final String documentId = await getUserDocId(uid);
-      if (documentId != null && documentId.isNotEmpty) {
-        QuerySnapshot _docSnapshot =
+      if (documentId.isNotEmpty) {
+        final QuerySnapshot _docSnapshot =
             await shopRef.where('user_id', isEqualTo: documentId).get();
-        if (_docSnapshot != null) {
-          data = _docSnapshot.docs;
-        }
+        data = _docSnapshot.docs;
       }
     } catch (e) {
       debugPrint(e.toString());
@@ -330,12 +335,15 @@ class Database {
   }
 
   Future<String> updateShopById(
-      LokalUser user, String key, dynamic value) async {
-    String retVal = "error";
+    LokalUser user,
+    String key,
+    dynamic value,
+  ) async {
+    String retVal = 'error';
     try {
       final String docId = await getUserDocId(user.userUids!.first);
       await shopRef.doc(docId).update({});
-      retVal = "success";
+      retVal = 'success';
     } catch (e) {
       retVal = e.toString();
     }
@@ -343,21 +351,21 @@ class Database {
   }
 
   Future<String> getUserDocId(String userUid) async {
-    String retVal = "";
+    String retVal = '';
     final QuerySnapshot snapshot =
-        await usersRef.where("user_uids", arrayContains: userUid).get();
+        await usersRef.where('user_uids', arrayContains: userUid).get();
 
-    var uids = <String>[];
+    final uids = <String>[];
 
-    snapshot.docs.forEach((doc) {
+    for (final doc in snapshot.docs) {
       uids.add(doc.id);
-    });
+    }
 
     if (uids.length > 1) {
       // this should not happen
-      throw Exception("Multiple users with the same UID have been found.");
-    } else if (uids.length < 1) {
-      retVal = "";
+      throw Exception('Multiple users with the same UID have been found.');
+    } else if (uids.isEmpty) {
+      retVal = '';
     } else {
       retVal = uids.first;
     }
@@ -366,11 +374,11 @@ class Database {
   }
 
   Future<String> updateUser(LokalUser user, String key, dynamic value) async {
-    String retVal = "error";
+    String retVal = 'error';
     try {
       final String docId = await getUserDocId(user.userUids!.first);
       await usersRef.doc(docId).update({key: value});
-      retVal = "success";
+      retVal = 'success';
     } catch (e) {
       retVal = e.toString();
     }
@@ -378,23 +386,23 @@ class Database {
   }
 
   Future<String> uploadImage(File imageFile, String fileName) async {
-    UploadTask uploadTask =
-        storageRef.child("$fileName.jpg").putFile(imageFile);
-    TaskSnapshot storageSnap = await uploadTask;
-    String downloadUrl = await storageSnap.ref.getDownloadURL();
+    final UploadTask uploadTask =
+        storageRef.child('$fileName.jpg').putFile(imageFile);
+    final TaskSnapshot storageSnap = await uploadTask;
+    final String downloadUrl = await storageSnap.ref.getDownloadURL();
     return downloadUrl;
   }
 
-  Future<bool> checkIfDocExists(id) async {
+  Future<bool> checkIfDocExists(String id) async {
     try {
-      var collectionRef = FirebaseFirestore.instance
+      final collectionRef = FirebaseFirestore.instance
           .collection('chats')
           .doc(id)
           .collection('conversations');
-      var doc = await collectionRef.doc(id).get();
+      final doc = await collectionRef.doc(id).get();
       return doc.exists;
     } catch (e) {
-      throw e;
+      rethrow;
     }
   }
 }

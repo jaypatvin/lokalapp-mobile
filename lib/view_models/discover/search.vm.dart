@@ -27,7 +27,7 @@ class SearchViewModel extends ChangeNotifier {
   bool _isSearching = false;
   bool get isSearching => _isSearching;
 
-  List<Product> _searchResults = [];
+  final List<Product> _searchResults = [];
   UnmodifiableListView<Product> get searchResults =>
       UnmodifiableListView(_searchResults);
 
@@ -48,13 +48,13 @@ class SearchViewModel extends ChangeNotifier {
     Duration duration = const Duration(milliseconds: 750),
   }) {
     _timer?.cancel();
-    this._timer = Timer(
+    _timer = Timer(
       duration,
       () => _performSearch(text),
     );
   }
 
-  void _performSearch(String query) async {
+  Future<void> _performSearch(String query) async {
     if (query.isEmpty) return;
 
     _isSearching = true;
@@ -72,7 +72,7 @@ class SearchViewModel extends ChangeNotifier {
       );
 
       if (response['products']!.isEmpty) {
-        throw ('Result is empty');
+        throw 'Result is empty';
       }
 
       for (final id in response['products']!) {
@@ -104,12 +104,11 @@ class SearchViewModel extends ChangeNotifier {
 
   void onProductTap(int index) {
     final product = searchResults[index];
-    context.read<AppRouter>()
-      ..navigateTo(
-        AppRoute.discover,
-        ProductDetail.routeName,
-        arguments: ProductDetailProps(product),
-      );
+    context.read<AppRouter>().navigateTo(
+          AppRoute.discover,
+          ProductDetail.routeName,
+          arguments: ProductDetailProps(product),
+        );
   }
 
   void _showError(String message) {

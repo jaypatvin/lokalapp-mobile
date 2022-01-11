@@ -6,14 +6,14 @@ import 'api.dart';
 import 'api_service.dart';
 
 class ShopAPIService extends APIService<ShopModel> {
-  const ShopAPIService._(this.api, this._operatingHoursService);
-
   factory ShopAPIService(API api) {
     return ShopAPIService._(api, _OperatingHoursAPIService(api));
   }
 
+  const ShopAPIService._(this.api, this._operatingHoursService);
+
   final API api;
-  final Endpoint endpoint = Endpoint.shop;
+  Endpoint get endpoint => Endpoint.shop;
   final _OperatingHoursAPIService _operatingHoursService;
 
   // --POST
@@ -21,7 +21,7 @@ class ShopAPIService extends APIService<ShopModel> {
     required Map body,
   }) async {
     try {
-      final response = await this.poster(
+      final response = await poster(
         api.endpointUri(endpoint),
         headers: api.withBodyHeader(),
         body: json.encode(body),
@@ -39,7 +39,7 @@ class ShopAPIService extends APIService<ShopModel> {
     required String id,
   }) async {
     try {
-      final response = await this.putter(
+      final response = await putter(
         api.endpointUri(endpoint, pathSegments: [id]),
         headers: api.withBodyHeader(),
         body: json.encode(body),
@@ -56,7 +56,7 @@ class ShopAPIService extends APIService<ShopModel> {
     required String id,
   }) async {
     try {
-      final response = await this.putter(
+      final response = await putter(
         api.endpointUri(endpoint, pathSegments: [id, 'operatingHours']),
         headers: api.withBodyHeader(),
         body: json.encode(body),
@@ -71,7 +71,7 @@ class ShopAPIService extends APIService<ShopModel> {
   // --GET
   Future<ShopModel> getById({required String id}) async {
     try {
-      final response = await this.getter(
+      final response = await getter(
         api.endpointUri(endpoint, pathSegments: [id]),
         headers: api.authHeader(),
       );
@@ -86,9 +86,11 @@ class ShopAPIService extends APIService<ShopModel> {
     required String communityId,
   }) async {
     try {
-      final response = await this.getter(
-        api.endpointUri(Endpoint.community,
-            pathSegments: [communityId, 'shops']),
+      final response = await getter(
+        api.endpointUri(
+          Endpoint.community,
+          pathSegments: [communityId, 'shops'],
+        ),
         headers: api.authHeader(),
       );
 
@@ -102,7 +104,7 @@ class ShopAPIService extends APIService<ShopModel> {
     required String userId,
   }) async {
     try {
-      final response = await this.getter(
+      final response = await getter(
         api.endpointUri(Endpoint.user, pathSegments: [userId, 'shops']),
         headers: api.authHeader(),
       );
@@ -116,10 +118,11 @@ class ShopAPIService extends APIService<ShopModel> {
   Future<OperatingHours> getOperatingHours({required String shopId}) =>
       _operatingHoursService.getOperatingHours(shopId: shopId);
 
-  Future<List<ShopModel>> getAvailableShops(
-      {required String communityId}) async {
+  Future<List<ShopModel>> getAvailableShops({
+    required String communityId,
+  }) async {
     try {
-      final response = await this.getter(
+      final response = await getter(
         api.baseUri(
           pathSegments: ['availableShops'],
           queryParameters: <String, String>{'community_id': communityId},
@@ -189,7 +192,7 @@ class _OperatingHoursAPIService extends APIService<OperatingHours> {
     required String shopId,
   }) async {
     try {
-      final response = await this.getter(
+      final response = await getter(
         api.endpointUri(
           Endpoint.shop,
           pathSegments: [

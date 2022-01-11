@@ -9,7 +9,7 @@ class InputDescriptionField extends StatelessWidget {
   final TextEditingController? controller;
   final FocusNode? focusNode;
 
-  InputDescriptionField({
+  const InputDescriptionField({
     this.maxLines = 10,
     this.onChanged,
     this.errorText,
@@ -25,9 +25,9 @@ class InputDescriptionField extends StatelessWidget {
       height: maxLines * 12.0.sp,
       color: Colors.transparent,
       child: TextField(
-        focusNode: this.focusNode,
-        controller: this.controller,
-        onChanged: this.onChanged,
+        focusNode: focusNode,
+        controller: controller,
+        onChanged: onChanged,
         cursorColor: Colors.black,
         keyboardType: TextInputType.multiline,
         maxLines: maxLines,
@@ -35,27 +35,26 @@ class InputDescriptionField extends StatelessWidget {
         decoration: InputDecoration(
           fillColor: Colors.white,
           filled: true,
-          errorText: this.errorText,
+          errorText: errorText,
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
             borderSide: BorderSide(
-              width: 1,
               color: Colors.grey.shade400,
             ),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
-            borderSide: BorderSide(width: 1, color: Colors.grey.shade400),
+            borderSide: BorderSide(color: Colors.grey.shade400),
           ),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
-            borderSide: BorderSide(width: 1, color: Colors.grey.shade400),
+            borderSide: BorderSide(color: Colors.grey.shade400),
           ),
           contentPadding: EdgeInsets.symmetric(
             horizontal: 20.0.w,
             vertical: 20.0.h,
           ),
-          hintText: this.hintText,
+          hintText: hintText,
           hintStyle: Theme.of(context)
               .textTheme
               .bodyText2

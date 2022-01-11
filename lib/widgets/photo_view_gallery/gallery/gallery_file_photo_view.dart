@@ -35,7 +35,7 @@ class _GalleryFilePhotoView extends State<GalleryFilePhotoView> {
   @override
   void initState() {
     super.initState();
-    this.currentIndex = widget.initialIndex;
+    currentIndex = widget.initialIndex;
   }
 
   void onPageChanged(int index) {
@@ -68,11 +68,10 @@ class _GalleryFilePhotoView extends State<GalleryFilePhotoView> {
             Container(
               padding: const EdgeInsets.all(20.0),
               child: Text(
-                "Image ${currentIndex + 1}",
+                'Image ${currentIndex + 1}',
                 style: const TextStyle(
                   color: Colors.white,
                   fontSize: 17.0,
-                  decoration: null,
                 ),
               ),
             ),

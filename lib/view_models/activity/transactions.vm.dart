@@ -46,23 +46,23 @@ class TransactionsViewModel extends ViewModel {
 
   @override
   void init() {
-    this._initializeStatuses();
-    this._selectedIndex = _statuses.keys.first;
-    this._initializeStreams();
+    _initializeStatuses();
+    _selectedIndex = _statuses.keys.first;
+    _initializeStreams();
     _stream = _streams[_selectedIndex];
 
-    this.subHeader = isBuyer
+    subHeader = isBuyer
         ? 'These are the products you ordered from other stores.'
         : 'These are the products other people ordered from your stores.';
-    this.subscriptionSubtitle = isBuyer ? 'Subscriptions' : 'Subscriber Orders';
+    subscriptionSubtitle = isBuyer ? 'Subscriptions' : 'Subscriber Orders';
 
-    this.noOrderMessage = shop != null || isBuyer
+    noOrderMessage = shop != null || isBuyer
         ? 'You have no orders yet!'
         : 'You have not created a shop yet!';
   }
 
   void _initializeStatuses() {
-    final _statusCodes = this.initialStatuses.keys.toList().map((key) {
+    final _statusCodes = initialStatuses.keys.toList().map((key) {
       if (key == 10 || key == 20) {
         // We're multiplying statuses 10 and 20 (cancelled & declined orders)
         // by 100 to put them in the bottom of the list (after sorting).
@@ -74,13 +74,13 @@ class TransactionsViewModel extends ViewModel {
     }).toList()
       ..sort();
 
-    this._statuses[0] = "All";
-    _statusCodes.forEach((code) {
+    _statuses[0] = 'All';
+    for (final code in _statusCodes) {
       // Reverse the multiplication from above to get the correct string value
       // from the firestore collection of statuses
       final _key = (code == 1000 || code == 2000) ? code ~/ 100 : code;
-      this._statuses[code] = this.initialStatuses[_key];
-    });
+      _statuses[code] = initialStatuses[_key];
+    }
   }
 
   void _initializeStreams() {
@@ -125,10 +125,10 @@ class TransactionsViewModel extends ViewModel {
   }
 
   void changeIndex(int key) {
-    if (key == this.selectedIndex) return;
+    if (key == selectedIndex) return;
 
-    this._selectedIndex = key;
-    this._stream = _streams[key];
+    _selectedIndex = key;
+    _stream = _streams[key];
 
     notifyListeners();
   }

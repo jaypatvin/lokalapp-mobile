@@ -51,33 +51,26 @@ class ShopScheduleViewModel extends ViewModel {
         final operatingHours = shop.operatingHours!;
         _opening = stringToTimeOfDay(operatingHours.startTime!);
         _closing = stringToTimeOfDay(operatingHours.endTime!);
-        context.read<OperatingHoursBody>()
-          ..update(
-            startTime: getTimeOfDayString(_opening),
-            endTime: getTimeOfDayString(_closing),
-            repeatType: operatingHours.repeatType,
-            repeatUnit: operatingHours.repeatUnit,
-            startDates: operatingHours.startDates,
-            unavailableDates: operatingHours.unavailableDates,
-            customDates: operatingHours.customDates,
-            notify: false,
-          );
+        context.read<OperatingHoursBody>().update(
+              startTime: getTimeOfDayString(_opening),
+              endTime: getTimeOfDayString(_closing),
+              repeatType: operatingHours.repeatType,
+              repeatUnit: operatingHours.repeatUnit,
+              startDates: operatingHours.startDates,
+              unavailableDates: operatingHours.unavailableDates,
+              customDates: operatingHours.customDates,
+              notify: false,
+            );
       }
     } else {
-      _opening = TimeOfDay(hour: 8, minute: 0);
-      _closing = TimeOfDay(hour: 17, minute: 0);
-      context.read<OperatingHoursBody>()
-        ..update(
-          startTime: getTimeOfDayString(_opening),
-          endTime: getTimeOfDayString(_closing),
-          notify: false,
-        );
+      _opening = const TimeOfDay(hour: 8, minute: 0);
+      _closing = const TimeOfDay(hour: 17, minute: 0);
+      context.read<OperatingHoursBody>().update(
+            startTime: getTimeOfDayString(_opening),
+            endTime: getTimeOfDayString(_closing),
+            notify: false,
+          );
     }
-  }
-
-  @override
-  void onBuild() {
-    super.onBuild();
   }
 
   void onStartDatesChangedHandler(
@@ -85,18 +78,17 @@ class ShopScheduleViewModel extends ViewModel {
     String repeatType,
   ) {
     if (dates.isEmpty) {
-      this._startDate = null;
+      _startDate = null;
     } else {
-      this._startDate = dates.first;
+      _startDate = dates.first;
     }
 
-    context.read<OperatingHoursBody>()
-      ..update(
-        startDates: dates
-            .map<String>((date) => DateFormat("yyyy-MM-dd").format(date))
-            .toList(),
-        repeatType: repeatType,
-      );
+    context.read<OperatingHoursBody>().update(
+          startDates: dates
+              .map<String>((date) => DateFormat('yyyy-MM-dd').format(date))
+              .toList(),
+          repeatType: repeatType,
+        );
   }
 
   Future<void> _selectTime(
@@ -118,24 +110,24 @@ class ShopScheduleViewModel extends ViewModel {
   }
 
   void onSelectableDaysChanged(List<int> selectableDays) =>
-      this._selectableDays = selectableDays;
+      _selectableDays = selectableDays;
 
   RepeatChoices _getRepeatChoice() {
     final repeatType =
         context.read<OperatingHoursBody>().operatingHours.repeatType!;
     var repeatChoice = RepeatChoices.month;
-    if (repeatType.split("-").length <= 1) {
-      RepeatChoices.values.forEach((choice) {
+    if (repeatType.split('-').length <= 1) {
+      for (final choice in RepeatChoices.values) {
         if (choice.value.toLowerCase() == repeatType) {
           repeatChoice = choice;
         }
-      });
+      }
     }
     return repeatChoice;
   }
 
   void onSelectOpening() {
-    _selectTime(this._opening, (pickedTime) {
+    _selectTime(_opening, (pickedTime) {
       if (pickedTime == _opening) return;
       _opening = pickedTime;
       context
@@ -145,8 +137,8 @@ class ShopScheduleViewModel extends ViewModel {
     });
   }
 
-  void onSelectClosing() async {
-    await _selectTime(this._closing, (pickedTime) {
+  Future<void> onSelectClosing() async {
+    await _selectTime(_closing, (pickedTime) {
       if (pickedTime == _closing) return;
       _closing = pickedTime;
       context
@@ -173,21 +165,21 @@ class ShopScheduleViewModel extends ViewModel {
           AppRoute.profile,
           CustomizeAvailability.routeName,
           arguments: CustomizeAvailabilityProps(
-            repeatChoice: this._getRepeatChoice(),
+            repeatChoice: _getRepeatChoice(),
             repeatEvery:
                 context.read<OperatingHoursBody>().operatingHours.repeatUnit,
-            selectableDays: this._selectableDays,
-            startDate: this._startDate ?? DateTime.now(),
-            shopPhoto: this.shopPhoto,
+            selectableDays: _selectableDays,
+            startDate: _startDate ?? DateTime.now(),
+            shopPhoto: shopPhoto,
             usedDatePicker: context
                     .read<OperatingHoursBody>()
                     .operatingHours
                     .repeatType!
-                    .split("-")
+                    .split('-')
                     .length <=
                 1,
-            forEditing: this.forEditing,
-            onShopEdit: this.onShopEdit,
+            forEditing: forEditing,
+            onShopEdit: onShopEdit,
           ),
         );
   }

@@ -18,13 +18,12 @@ class AddShopConfirmation extends StatelessWidget {
   static const routeName = '/profile/addShop/confirmation';
   @override
   Widget build(BuildContext context) {
-    double height = MediaQuery.of(context).size.height;
-    double width = MediaQuery.of(context).size.width;
+    final double height = MediaQuery.of(context).size.height;
+    final double width = MediaQuery.of(context).size.width;
     return Scaffold(
-      appBar: CustomAppBar(
-        titleText: "Shop Added!",
+      appBar: const CustomAppBar(
+        titleText: 'Shop Added!',
         backgroundColor: Colors.white,
-        elevation: 0,
         titleStyle: TextStyle(color: Colors.black),
         buildLeading: false,
       ),
@@ -34,10 +33,10 @@ class AddShopConfirmation extends StatelessWidget {
         height: height * 0.8,
         child: Column(
           children: [
-            Spacer(),
+            const Spacer(),
             Container(
               height: height * 0.3,
-              constraints: BoxConstraints(),
+              constraints: const BoxConstraints(),
               child: Stack(
                 alignment: Alignment.center,
                 children: [
@@ -53,16 +52,16 @@ class AddShopConfirmation extends StatelessWidget {
               ),
             ),
             Text(
-              "Your Shop is now open for business!\n"
-              "Get ready to add products to your shop.",
+              'Your Shop is now open for business!\n'
+              'Get ready to add products to your shop.',
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.bodyText1,
             ),
-            Spacer(),
+            const Spacer(),
             SizedBox(
               width: double.infinity,
               child: AppButton(
-                "+ Add a New Product",
+                '+ Add a New Product',
                 kTealColor,
                 false,
                 () {
@@ -77,7 +76,7 @@ class AddShopConfirmation extends StatelessWidget {
             SizedBox(
               width: double.infinity,
               child: AppButton(
-                "Back to My Shop",
+                'Back to My Shop',
                 kTealColor,
                 true,
                 () {

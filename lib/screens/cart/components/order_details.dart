@@ -30,7 +30,7 @@ class OrderDetails extends StatelessWidget {
                   child: Image(
                     image: NetworkImage(product.gallery!.first.url),
                     fit: BoxFit.cover,
-                    errorBuilder: (ctx, obj, stk) => SizedBox(),
+                    errorBuilder: (ctx, obj, stk) => const SizedBox(),
                   ),
                 ),
               if (product.gallery == null || product.gallery!.isEmpty)
@@ -43,20 +43,19 @@ class OrderDetails extends StatelessWidget {
                         color: Colors.grey,
                       ),
                     ),
-                    child: Center(
+                    child: const Center(
                       child: Text(
-                        "No image",
+                        'No image',
                         textAlign: TextAlign.center,
                       ),
                     ),
                   ),
                 ),
-              SizedBox(
+              const SizedBox(
                 width: 10.0,
               ),
               Expanded(
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -65,27 +64,27 @@ class OrderDetails extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                       maxLines: 1,
                       softWrap: false,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 16,
-                        fontFamily: "Goldplay",
+                        fontFamily: 'Goldplay',
                         fontWeight: FontWeight.w700,
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 5,
                     ),
                     InkWell(
-                      child: Text(
-                        "Edit",
+                      onTap: onEditTap,
+                      child: const Text(
+                        'Edit',
                         style: TextStyle(
                           fontSize: 16.0,
-                          fontFamily: "Goldplay",
+                          fontFamily: 'Goldplay',
                           fontWeight: FontWeight.w300,
                           decoration: TextDecoration.underline,
                           color: kTealColor,
                         ),
                       ),
-                      onTap: onEditTap,
                     ),
                   ],
                 ),
@@ -96,30 +95,25 @@ class OrderDetails extends StatelessWidget {
         const SizedBox(width: 8.0),
         Column(
           mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               'x$quantity',
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 16,
-                fontFamily: "GoldplayBold",
+                fontFamily: 'GoldplayBold',
                 fontWeight: FontWeight.w700,
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 5.0,
             ),
-            Container(
-              // padding: const EdgeInsets.all(0.0),
-              child: Text(
-                product.basePrice.toString(),
-                // textAlign: TextAlign.end,
-                style: TextStyle(
-                  fontSize: 16.0,
-                  fontFamily: "GoldplayBold",
-                  fontWeight: FontWeight.w300,
-                ),
+            Text(
+              product.basePrice.toString(),
+              style: const TextStyle(
+                fontSize: 16.0,
+                fontFamily: 'GoldplayBold',
+                fontWeight: FontWeight.w300,
               ),
             ),
           ],

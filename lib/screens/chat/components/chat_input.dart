@@ -38,35 +38,34 @@ class ChatInput extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        replyMessage != null
-            ? _ReplyToWidget(
-                message: replyMessage!,
-                onCancelReply: onCancelReply,
-              )
-            : const SizedBox(),
+        if (replyMessage != null)
+          _ReplyToWidget(
+            message: replyMessage!,
+            onCancelReply: onCancelReply,
+          ),
         Row(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             GestureDetector(
+              onTap: onShowImagePicker,
               child: Container(
-                padding: EdgeInsets.all(10),
+                padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(100),
-                  border: Border.all(width: 1, color: kTealColor),
+                  border: Border.all(color: kTealColor),
                 ),
-                child: Icon(
+                child: const Icon(
                   MdiIcons.fileImageOutline,
                   color: kTealColor,
                 ),
               ),
-              onTap: onShowImagePicker,
             ),
             SizedBox(width: MediaQuery.of(context).size.width * 0.02),
             Expanded(
               child: AnimatedContainer(
                 duration: const Duration(milliseconds: 200),
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.all(
+                  borderRadius: const BorderRadius.all(
                     Radius.circular(30.0),
                   ),
                   border: Border.all(color: kTealColor),
@@ -78,19 +77,19 @@ class ChatInput extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       AnimatedContainer(
-                        height: this.images.length > 0 ? 100 : 0.0,
+                        height: images.isNotEmpty ? 100 : 0.0,
                         duration: const Duration(milliseconds: 200),
                         child: InputImagesPicker(
-                          pickedImages: this.images,
-                          onImageRemove: this.onImageRemove,
+                          pickedImages: images,
+                          onImageRemove: onImageRemove,
                         ),
                       ),
                       InputTextField(
-                        inputController: this.chatInputController,
-                        onSend: this.onMessageSend,
-                        hintText: "Type a Message",
+                        inputController: chatInputController,
+                        onSend: onMessageSend,
+                        hintText: 'Type a Message',
                         onTap: onTextFieldTap,
-                        inputFocusNode: this.chatFocusNode,
+                        inputFocusNode: chatFocusNode,
                       ),
                     ],
                   ),
@@ -129,9 +128,9 @@ class _ReplyToWidget extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      Expanded(
+                      const Expanded(
                         child: Text(
-                          "Replying to",
+                          'Replying to',
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontStyle: FontStyle.italic,
@@ -141,8 +140,8 @@ class _ReplyToWidget extends StatelessWidget {
                       ),
                       if (onCancelReply != null)
                         GestureDetector(
-                          child: Icon(Icons.close, size: 16.0.r),
                           onTap: onCancelReply,
+                          child: Icon(Icons.close, size: 16.0.r),
                         )
                     ],
                   ),
@@ -157,9 +156,8 @@ class _ReplyToWidget extends StatelessWidget {
                         itemBuilder: (ctx, index) {
                           return NetworkPhotoThumbnail(
                             galleryItem: message.media![index],
-                            fit: BoxFit.cover,
                             onTap: () =>
-                                openGallery(context, index, message.media!),
+                                openGallery(context, index, message.media),
                           );
                         },
                       ),

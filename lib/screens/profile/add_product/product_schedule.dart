@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart' show DateFormat;
-import '../../../routers/app_router.dart';
-import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 
 import '../../../models/operating_hours.dart';
@@ -11,6 +9,7 @@ import '../../../providers/post_requests/operating_hours_body.dart';
 import '../../../providers/post_requests/product_body.dart';
 import '../../../providers/products.dart';
 import '../../../providers/shops.dart';
+import '../../../routers/app_router.dart';
 import '../../../utils/calendar_picker/calendar_picker.dart';
 import '../../../utils/constants/themes.dart';
 import '../../../utils/repeated_days_generator/schedule_generator.dart';
@@ -23,7 +22,7 @@ import 'product_preview.dart';
 class ProductSchedule extends StatefulWidget {
   final AddProductGallery? gallery;
   final String? productId;
-  ProductSchedule({required this.gallery, this.productId});
+  const ProductSchedule({required this.gallery, this.productId});
   @override
   _ProductScheduleState createState() => _ProductScheduleState();
 }
@@ -41,7 +40,7 @@ class _ProductScheduleState extends State<ProductSchedule> {
         Container(
           decoration: BoxDecoration(
             border: Border.all(color: kTealColor),
-            borderRadius: BorderRadius.only(
+            borderRadius: const BorderRadius.only(
               topLeft: Radius.circular(20.0),
               topRight: Radius.circular(20.0),
             ),
@@ -52,7 +51,7 @@ class _ProductScheduleState extends State<ProductSchedule> {
           child: RadioListTile<ProductScheduleState>(
             dense: true,
             title: Text(
-              "Follow Shop Schedule",
+              'Follow Shop Schedule',
               style: Theme.of(context).textTheme.headline6!.copyWith(
                     color: _productSchedule == ProductScheduleState.shop
                         ? Colors.white
@@ -82,7 +81,7 @@ class _ProductScheduleState extends State<ProductSchedule> {
           child: RadioListTile<ProductScheduleState>(
             dense: true,
             title: Text(
-              "Set Custom Schedule",
+              'Set Custom Schedule',
               style: Theme.of(context).textTheme.headline6!.copyWith(
                     color: _productSchedule == ProductScheduleState.custom
                         ? Colors.white
@@ -103,9 +102,9 @@ class _ProductScheduleState extends State<ProductSchedule> {
   }
 
   Widget buildBody() {
-    var horizontalPadding = MediaQuery.of(context).size.width * 0.05;
-    var topPadding = MediaQuery.of(context).size.height * 0.03;
-    var image = widget.gallery!.photoBoxes.first;
+    final horizontalPadding = MediaQuery.of(context).size.width * 0.05;
+    final topPadding = MediaQuery.of(context).size.height * 0.03;
+    final image = widget.gallery!.photoBoxes.first;
 
     return Container(
       padding: EdgeInsets.fromLTRB(
@@ -115,19 +114,19 @@ class _ProductScheduleState extends State<ProductSchedule> {
         0,
       ),
       child: SingleChildScrollView(
-        //physics: NeverScrollableScrollPhysics(),
-        scrollDirection: Axis.vertical,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Consumer<ProductBody>(builder: (context, product, child) {
-              return ProductHeader(
-                photoBox: image,
-                productName: product.name,
-                productPrice: product.basePrice,
-                productStock: product.quantity,
-              );
-            }),
+            Consumer<ProductBody>(
+              builder: (context, product, child) {
+                return ProductHeader(
+                  photoBox: image,
+                  productName: product.name,
+                  productPrice: product.basePrice,
+                  productStock: product.quantity,
+                );
+              },
+            ),
             SizedBox(
               height: MediaQuery.of(context).size.height * 0.02,
             ),
@@ -138,7 +137,7 @@ class _ProductScheduleState extends State<ProductSchedule> {
             Visibility(
               visible: _productSchedule == ProductScheduleState.custom,
               child: Text(
-                "You can only select the dates that your shop is open.",
+                'You can only select the dates that your shop is open.',
                 style: Theme.of(context).textTheme.bodyText1,
               ),
             ),
@@ -154,9 +153,9 @@ class _ProductScheduleState extends State<ProductSchedule> {
                   : 0,
               child: CalendarCarousel(
                 onDayPressed: (date) {
-                  var now = DateTime.now().subtract(Duration(days: 1));
+                  final now = DateTime.now().subtract(const Duration(days: 1));
                   if (date.isBefore(now)) return;
-                  this.setState(() {
+                  setState(() {
                     if (_markedDatesMap.contains(date)) {
                       _markedDatesMap.remove(date);
                     } else {
@@ -172,7 +171,7 @@ class _ProductScheduleState extends State<ProductSchedule> {
             SizedBox(
               width: double.infinity,
               child: AppButton(
-                "Confirm",
+                'Confirm',
                 kTealColor,
                 true,
                 () {
@@ -217,7 +216,7 @@ class _ProductScheduleState extends State<ProductSchedule> {
         ...{
           ...shopSchedule.unavailableDates!,
           ...unavailableDates
-              .map((date) => DateFormat("yyyy-MM-dd").format(date!))
+              .map((date) => DateFormat('yyyy-MM-dd').format(date!))
               .toList(),
         }
       ],
@@ -225,7 +224,7 @@ class _ProductScheduleState extends State<ProductSchedule> {
   }
 
   @override
-  initState() {
+  void initState() {
     super.initState();
     final _generator = ScheduleGenerator();
     OperatingHours? _operatingHours;
@@ -236,7 +235,7 @@ class _ProductScheduleState extends State<ProductSchedule> {
     final _selectableDates = _generator.getSelectableDates(_operatingHours!);
 
     this._selectableDates = _selectableDates;
-    this._markedDatesMap = [..._selectableDates];
+    _markedDatesMap = [..._selectableDates];
 
     if (widget.productId != null && widget.productId!.isNotEmpty) {
       final product = context.read<Products>().findById(widget.productId);
@@ -245,14 +244,14 @@ class _ProductScheduleState extends State<ProductSchedule> {
         final _productSelectableDates =
             _generator.getSelectableDates(_productSched);
 
-        this._markedDatesMap = [..._productSelectableDates];
+        _markedDatesMap = [..._productSelectableDates];
         if (_selectableDates
             .toSet()
             .difference(_productSelectableDates.toSet())
             .isEmpty) {
-          this._productSchedule = ProductScheduleState.shop;
+          _productSchedule = ProductScheduleState.shop;
         } else {
-          this._productSchedule = ProductScheduleState.custom;
+          _productSchedule = ProductScheduleState.custom;
         }
       }
     }
@@ -263,7 +262,7 @@ class _ProductScheduleState extends State<ProductSchedule> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: CustomAppBar(
-        titleText: "Product Schedule",
+        titleText: 'Product Schedule',
         onPressedLeading: () {
           Navigator.pop(context);
         },

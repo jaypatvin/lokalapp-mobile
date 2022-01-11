@@ -11,13 +11,13 @@ class SetupPaymentOptionsViewModel extends ViewModel {
 
   void onAddBank() {
     AppRouter.profileNavigatorKey.currentState
-        ?.push(CupertinoPageRoute(builder: (_) => AddBank()));
+        ?.push(CupertinoPageRoute(builder: (_) => const AddBank()));
   }
 
   void onAddWallet() {
     AppRouter.profileNavigatorKey.currentState?.push(
       CupertinoPageRoute(
-        builder: (_) => AddBank(
+        builder: (_) => const AddBank(
           type: BankType.wallet,
         ),
       ),

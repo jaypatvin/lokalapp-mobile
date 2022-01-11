@@ -15,7 +15,7 @@ mixin PhotoDataProvider on ChangeNotifier {
 
   final currentPathNotifier = ValueNotifier<AssetPathEntity?>(null);
 
-  Map<String, PickerPathCache> _cacheMap = {};
+  final Map<String, PickerPathCache> _cacheMap = {};
 
   final pathListNotifier = ValueNotifier<List<AssetPathEntity>>([]);
   List<AssetPathEntity> pathList = [];
@@ -36,24 +36,25 @@ mixin PhotoDataProvider on ChangeNotifier {
   void resetPathList(
     List<AssetPathEntity> list, {
     int defaultIndex = 0,
-    int sortBy(
+    int Function(
       AssetPathEntity a,
       AssetPathEntity b,
-    ) = _defaultSort,
+    )
+        sortBy = _defaultSort,
   }) {
     if (list.isEmpty) return;
     list.sort(sortBy);
 
-    this.pathList.clear();
-    this.pathList.addAll(list);
+    pathList.clear();
+    pathList.addAll(list);
     _cacheMap.clear();
     currentPath = list[defaultIndex];
-    pathListNotifier.value = this.pathList;
+    pathListNotifier.value = pathList;
     notifyListeners();
   }
 
   PickerPathCache? getPickerCache(AssetPathEntity path) {
-    var cache = _cacheMap[path.id];
+    final cache = _cacheMap[path.id];
     if (cache == null) {
       _cacheMap[path.id] = PickerPathCache(path: path);
     }
@@ -67,7 +68,7 @@ class CustomPickerDataProvider extends ChangeNotifier with PhotoDataProvider {
       this.pathList.addAll(pathList);
     }
     pickedNotifier.value = picked;
-    this.maxNotifier.value = max;
+    maxNotifier.value = max;
   }
 
   /// Notification when max is modified.
@@ -129,11 +130,6 @@ class CustomPickerDataProvider extends ChangeNotifier with PhotoDataProvider {
 
   int pickIndex(AssetEntity entity) {
     return picked.indexOf(entity);
-  }
-
-  @override
-  void notifyListeners() {
-    super.notifyListeners();
   }
 }
 

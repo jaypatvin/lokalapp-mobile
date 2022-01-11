@@ -24,23 +24,22 @@ class PhotoBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: this.width,
-      height: this.height,
+      width: width,
+      height: height,
       decoration: BoxDecoration(
-        image: file == null && (this.url?.isEmpty ?? true)
+        image: file == null && (url?.isEmpty ?? true)
             ? null
             : DecorationImage(
                 fit: BoxFit.cover,
-                image: (file != null
-                    ? FileImage(file!)
-                    : NetworkImage(this.url!)) as ImageProvider<Object>,
+                image: (file != null ? FileImage(file!) : NetworkImage(url!))
+                    as ImageProvider<Object>,
               ),
         shape: shape,
-        border: displayBorder ? Border.all(width: 1, color: kTealColor) : null,
+        border: displayBorder ? Border.all(color: kTealColor) : null,
         color: Colors.transparent,
       ),
-      child: file == null && (this.url?.isEmpty ?? true)
-          ? Icon(
+      child: file == null && (url?.isEmpty ?? true)
+          ? const Icon(
               Icons.add,
               color: kTealColor,
               size: 15,

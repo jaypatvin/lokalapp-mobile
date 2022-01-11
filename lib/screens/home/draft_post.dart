@@ -38,7 +38,6 @@ class _DraftPostView extends HookView<DraftPostViewModel>
 
     final _kbConfig = useMemoized<KeyboardActionsConfig>(() {
       return KeyboardActionsConfig(
-        keyboardActionsPlatform: KeyboardActionsPlatform.ALL,
         keyboardBarColor: Colors.grey.shade200,
         nextFocus: false,
         actions: [
@@ -49,7 +48,7 @@ class _DraftPostView extends HookView<DraftPostViewModel>
                 return TextButton(
                   onPressed: () => node.unfocus(),
                   child: Text(
-                    "Done",
+                    'Done',
                     style: Theme.of(context).textTheme.bodyText1!.copyWith(
                           color: Colors.black,
                         ),
@@ -63,7 +62,7 @@ class _DraftPostView extends HookView<DraftPostViewModel>
     });
 
     return NestedWillPopScope(
-      onWillPop: () => vm.onWillPop(_ExitNotification()),
+      onWillPop: () => vm.onWillPop(const _ExitNotification()),
       child: Scaffold(
         backgroundColor: Colors.white,
         appBar: CustomAppBar(
@@ -76,7 +75,7 @@ class _DraftPostView extends HookView<DraftPostViewModel>
                   padding: EdgeInsets.only(left: 15.0.w),
                   child: Center(
                     child: Text(
-                      "Cancel",
+                      'Cancel',
                       style: Theme.of(context)
                           .textTheme
                           .subtitle2!
@@ -90,7 +89,7 @@ class _DraftPostView extends HookView<DraftPostViewModel>
               );
             },
           ),
-          titleText: "Write a Post",
+          titleText: 'Write a Post',
           titleStyle: Theme.of(context).textTheme.headline6!.copyWith(
                 color: Colors.black,
                 fontSize: 16.0.sp,
@@ -102,30 +101,36 @@ class _DraftPostView extends HookView<DraftPostViewModel>
           child: Column(
             children: [
               Visibility(
-                visible: vm.imageProvider.picked.length > 0,
-                child: StaggeredGridView.countBuilder(
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  itemCount: vm.imageProvider.picked.length,
+                visible: vm.imageProvider.picked.isNotEmpty,
+                child: StaggeredGrid.count(
                   crossAxisCount: 2,
-                  itemBuilder: (ctx, index) {
-                    return AssetPhotoThumbnail(
-                      galleryItem: vm.imageProvider.picked[index],
-                      onTap: () => vm.openGallery(index),
-                      onRemove: () => vm.imageProvider.picked.removeAt(index),
+                  mainAxisSpacing: 4.0.w,
+                  crossAxisSpacing: 4.0.h,
+                  children:
+                      vm.imageProvider.picked.map<StaggeredGridTile>((image) {
+                    final index = vm.imageProvider.picked.indexOf(image);
+                    final crossAxisCellCount =
+                        vm.imageProvider.picked.length % 2 != 0 && index == 0
+                            ? 2
+                            : 1;
+                    return StaggeredGridTile.count(
+                      crossAxisCellCount: crossAxisCellCount,
+                      mainAxisCellCount: 0.5,
+                      child: AssetPhotoThumbnail(
+                        key: Key(
+                          'post_details_${vm.imageProvider.picked[index].id}',
+                        ),
+                        galleryItem: vm.imageProvider.picked[index],
+                        onTap: () => vm.openGallery(index),
+                        onRemove: () => vm.imageProvider.picked.removeAt(index),
+                      ),
                     );
-                  },
-                  staggeredTileBuilder: (index) {
-                    if (vm.imageProvider.picked.length % 2 != 0 && index == 0) {
-                      return new StaggeredTile.count(2, 0.5);
-                    }
-                    return new StaggeredTile.count(1, 0.5);
-                  },
+                  }).toList(),
                 ),
               ),
               Expanded(
                 child: Padding(
-                  padding: EdgeInsets.only(top: 10, bottom: 0),
+                  padding: const EdgeInsets.only(top: 10),
                   child: TextField(
                     focusNode: _nodePostText,
                     onChanged: vm.onPostMessageChanged,
@@ -139,7 +144,7 @@ class _DraftPostView extends HookView<DraftPostViewModel>
                       enabledBorder: InputBorder.none,
                       errorBorder: InputBorder.none,
                       disabledBorder: InputBorder.none,
-                      contentPadding: EdgeInsets.symmetric(
+                      contentPadding: const EdgeInsets.symmetric(
                         horizontal: 15.0,
                         vertical: 11.0,
                       ),
@@ -161,15 +166,14 @@ class _DraftPostView extends HookView<DraftPostViewModel>
                   children: [
                     GestureDetector(
                       child: Container(
-                        padding: EdgeInsets.all(10),
+                        padding: const EdgeInsets.all(10),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(100.r),
                           border: Border.all(
-                            width: 1,
                             color: kTealColor,
                           ),
                         ),
-                        child: Icon(
+                        child: const Icon(
                           MdiIcons.fileImageOutline,
                           color: kTealColor,
                         ),
@@ -177,15 +181,15 @@ class _DraftPostView extends HookView<DraftPostViewModel>
                       onTap: () =>
                           _showImagePicker.value = !_showImagePicker.value,
                     ),
-                    Spacer(),
+                    const Spacer(),
                     SizedBox(
                       height: 40.0.h,
                       width: 100.0.w,
                       child: AppButton(
-                        "POST",
+                        'POST',
                         kTealColor,
                         true,
-                        () async => await performFuture<void>(vm.postHandler),
+                        () async => performFuture<void>(vm.postHandler),
                       ),
                     ),
                   ],
@@ -226,7 +230,7 @@ class _ExitNotification extends StatelessWidget {
 
     return Wrap(
       children: [
-        Container(
+        SizedBox(
           height: 200.0.h,
           child: Container(
             margin: EdgeInsets.fromLTRB(20.0.w, 30.0.h, 20.0.w, 0),
@@ -234,13 +238,13 @@ class _ExitNotification extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  "Leave post?",
+                  'Leave post?',
                   style: Theme.of(context).textTheme.headline5,
                 ),
                 Container(
                   margin: EdgeInsets.symmetric(horizontal: 70.0.w),
                   child: Text(
-                    "Any progress you made will not be saved.",
+                    'Any progress you made will not be saved.',
                     style: Theme.of(context).textTheme.bodyText1,
                     textAlign: TextAlign.center,
                   ),
@@ -249,7 +253,7 @@ class _ExitNotification extends StatelessWidget {
                   children: [
                     Expanded(
                       child: AppButton(
-                        "Exit",
+                        'Exit',
                         kTealColor,
                         false,
                         () => Navigator.of(context).pop(true),
@@ -258,7 +262,7 @@ class _ExitNotification extends StatelessWidget {
                     SizedBox(width: width * 0.02),
                     Expanded(
                       child: AppButton(
-                        "Continue Editing",
+                        'Continue Editing',
                         kTealColor,
                         true,
                         () => Navigator.of(context).pop(false),

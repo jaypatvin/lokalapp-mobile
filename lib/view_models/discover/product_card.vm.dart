@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../../models/product.dart';
 import '../../models/user_shop.dart';
 import '../../providers/auth.dart';
+import '../../providers/cart.dart';
 import '../../providers/products.dart';
 import '../../providers/shops.dart';
 import '../../routers/app_router.dart';
@@ -33,10 +34,11 @@ class ProductCardViewModel extends ViewModel {
   void init() {
     product = context.read<Products>().findById(productId)!;
     shop = context.read<Shops>().findById(product.shopId)!;
+    _displayBorder = context.read<ShoppingCart>().contains(productId);
   }
 
-  void updateDisplayBorder(bool displayBorder) {
-    this._displayBorder = displayBorder;
+  void updateDisplayBorder({required bool displayBorder}) {
+    _displayBorder = displayBorder;
     notifyListeners();
   }
 
@@ -67,11 +69,10 @@ class ProductCardViewModel extends ViewModel {
   }
 
   void onShopTap() {
-    context.read<AppRouter>()
-      ..navigateTo(
-        AppRoute.profile,
-        UserShop.routeName,
-        arguments: UserShopProps(product.userId, product.shopId),
-      );
+    context.read<AppRouter>().navigateTo(
+          AppRoute.profile,
+          UserShop.routeName,
+          arguments: UserShopProps(product.userId, product.shopId),
+        );
   }
 }

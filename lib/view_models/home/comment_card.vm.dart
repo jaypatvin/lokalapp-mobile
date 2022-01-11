@@ -8,20 +8,21 @@ import '../../providers/auth.dart';
 import '../../routers/app_router.dart';
 import '../../screens/profile/profile_screen.dart';
 import '../../services/database.dart';
+import '../../state/view_model.dart';
 
-class CommentCardViewModel extends ChangeNotifier {
+class CommentCardViewModel extends ViewModel {
   CommentCardViewModel({
-    required this.context,
     required this.activityId,
     required this.comment,
   });
   final ActivityFeedComment comment;
   final String activityId;
-  final BuildContext context;
 
   bool isLiked = false;
 
   final _db = Database.instance;
+
+  @override
   void init() {
     _setup();
   }
@@ -36,7 +37,7 @@ class CommentCardViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> refresh() async => await _setup();
+  Future<void> refresh() async => _setup();
 
   void onLongPress(Widget child) {
     showModalBottomSheet(
@@ -70,7 +71,7 @@ class CommentCardViewModel extends ChangeNotifier {
             );
         isLiked = false;
         notifyListeners();
-        debugPrint("Unliked comment ${comment.id}");
+        debugPrint('Unliked comment ${comment.id}');
       } else {
         context.read<Activities>().likeComment(
               activityId: activityId,
@@ -79,7 +80,7 @@ class CommentCardViewModel extends ChangeNotifier {
             );
         isLiked = true;
         notifyListeners();
-        debugPrint("Liked comment ${comment.id}");
+        debugPrint('Liked comment ${comment.id}');
       }
     } catch (e) {
       isLiked = !isLiked;

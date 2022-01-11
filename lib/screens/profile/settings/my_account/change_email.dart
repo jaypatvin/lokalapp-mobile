@@ -5,7 +5,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../providers/auth.dart';
 import '../../../../utils/constants/themes.dart';
 import '../../../../view_models/profile/settings/my_account/change_email.vm.dart';
 import '../../../../widgets/app_button.dart';
@@ -28,14 +27,12 @@ class _ChangeEmailState extends State<ChangeEmail> {
   @override
   void initState() {
     super.initState();
-    _viewModel = ChangeEmailViewModel(
-      context.read<Auth>(),
-    );
+    _viewModel = ChangeEmailViewModel();
     _email.addListener(_onEmailChanged);
     _newEmail.addListener(_onNewEmailChanged);
     _password.addListener(_onPasswordChanged);
     _errorSubscription = _viewModel.errorStream.listen((event) {
-      if (this.mounted) {
+      if (mounted) {
         showToast(event);
       }
     });
@@ -63,58 +60,59 @@ class _ChangeEmailState extends State<ChangeEmail> {
       appBar: CustomAppBar(
         titleText: 'Change Email Address',
         backgroundColor: kTealColor,
-        leadingColor: Colors.white,
-        titleStyle: TextStyle(color: Colors.white),
+        titleStyle: const TextStyle(color: Colors.white),
         onPressedLeading: () => Navigator.pop(context),
       ),
       body: ChangeNotifierProvider<ChangeEmailViewModel>.value(
         value: _viewModel,
         builder: (ctx, _) {
-          return Consumer<ChangeEmailViewModel>(builder: (ctx2, viewModel, _) {
-            return Padding(
-              padding: EdgeInsets.fromLTRB(20.0.w, 20.0.h, 20.0.w, 0),
-              child: Column(
-                children: [
-                  Expanded(
-                    child: EmailInputForm(
-                      formKey: _formKey,
-                      onEmailChanged: viewModel.onEmailChanged,
-                      displayEmailMatchError: viewModel.displayEmailError,
-                      emailController: _email,
-                      newEmailController: _newEmail,
-                      passwordController: _password,
-                      onFormSubmit: viewModel.onFormSubmit,
+          return Consumer<ChangeEmailViewModel>(
+            builder: (ctx2, viewModel, _) {
+              return Padding(
+                padding: EdgeInsets.fromLTRB(20.0.w, 20.0.h, 20.0.w, 0),
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: EmailInputForm(
+                        formKey: _formKey,
+                        onEmailChanged: viewModel.onEmailChanged,
+                        displayEmailMatchError: viewModel.displayEmailError,
+                        emailController: _email,
+                        newEmailController: _newEmail,
+                        passwordController: _password,
+                        onFormSubmit: viewModel.onFormSubmit,
+                      ),
                     ),
-                  ),
-                  if (viewModel.displayEmailError)
-                    Text(
-                      'Email addresses do not match!',
-                      style: Theme.of(context)
-                          .textTheme
-                          .subtitle1!
-                          .copyWith(color: kPinkColor),
+                    if (viewModel.displayEmailError)
+                      Text(
+                        'Email addresses do not match!',
+                        style: Theme.of(context)
+                            .textTheme
+                            .subtitle1!
+                            .copyWith(color: kPinkColor),
+                      ),
+                    SizedBox(height: 20.0.h),
+                    SizedBox(
+                      width: double.maxFinite,
+                      child: AppButton(
+                        'Confirm',
+                        kTealColor,
+                        true,
+                        viewModel.onFormSubmit,
+                      ),
                     ),
-                  SizedBox(height: 20.0.h),
-                  SizedBox(
-                    width: double.maxFinite,
-                    child: AppButton(
-                      "Confirm",
-                      kTealColor,
-                      true,
-                      viewModel.onFormSubmit,
-                    ),
-                  ),
-                  // AnimatedContainer(
-                  //   duration: const Duration(milliseconds: 200),
-                  //   height: MediaQuery.of(context).viewInsets.bottom > 0
-                  //       ? kKeyboardActionHeight
-                  //       : 0,
-                  // ),
-                  const SizedBox(height: kKeyboardActionHeight),
-                ],
-              ),
-            );
-          });
+                    // AnimatedContainer(
+                    //   duration: const Duration(milliseconds: 200),
+                    //   height: MediaQuery.of(context).viewInsets.bottom > 0
+                    //       ? kKeyboardActionHeight
+                    //       : 0,
+                    // ),
+                    const SizedBox(height: kKeyboardActionHeight),
+                  ],
+                ),
+              );
+            },
+          );
         },
       ),
     );

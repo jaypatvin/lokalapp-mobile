@@ -1,11 +1,15 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
 
 import '../../../models/activity_feed_comment.dart';
+import '../../../models/lokal_user.dart';
 import '../../../providers/users.dart';
+import '../../../state/mvvm_builder.widget.dart';
+import '../../../state/views/hook.view.dart';
 import '../../../utils/constants/themes.dart';
 import '../../../utils/functions.utils.dart';
 import '../../../view_models/home/comment_card.vm.dart';
@@ -13,101 +17,108 @@ import '../../../widgets/photo_view_gallery/thumbnails/network_photo_thumbnail.d
 import '../../chat/components/chat_avatar.dart';
 
 class CommentCard extends StatelessWidget {
-  final String activityId;
-  final ActivityFeedComment comment;
-
   const CommentCard({
     Key? key,
     required this.activityId,
     required this.comment,
   }) : super(key: key);
 
-  Widget _buildImages() {
-    final images = comment.images;
-    return Container(
-      height: images.length > 0 ? 95.h : 0,
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        physics: NeverScrollableScrollPhysics(),
-        itemCount: images.length,
-        itemBuilder: (context, index) {
-          return Container(
-            height: 95.h,
-            width: 95.h,
-            child: NetworkPhotoThumbnail(
-              galleryItem: images[index],
-              onTap: () => openGallery(context, index, images),
-            ),
-          );
-        },
-      ),
-    );
-  }
+  final String activityId;
+  final ActivityFeedComment comment;
 
   @override
   Widget build(BuildContext context) {
-    final user = context.read<Users>().findById(comment.userId)!;
-    return ChangeNotifierProvider(
-      create: (ctx) => CommentCardViewModel(
-        context: context,
+    return MVVM(
+      view: (_, __) => _CommentCardView(),
+      viewModel: CommentCardViewModel(
         activityId: activityId,
         comment: comment,
-      )..init(),
-      builder: (_, __) {
-        return Consumer<CommentCardViewModel>(
-          builder: (ctx, vm, _) {
-            return InkWell(
-              onLongPress: () => vm.onLongPress(_CommentOptions()),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  ListTile(
-                    contentPadding: EdgeInsets.zero,
-                    leading: ChatAvatar(
-                      displayName: user.displayName,
-                      displayPhoto: user.profilePhoto,
-                      radius: 18.0.r,
-                      onTap: vm.onUserPressed,
-                    ),
-                    title: RichText(
-                      text: TextSpan(
-                        children: [
-                          TextSpan(
-                            text: "${user.firstName} ${user.lastName}",
-                            style: Theme.of(context)
-                                .textTheme
-                                .subtitle2!
-                                .copyWith(color: Colors.black),
-                            recognizer: TapGestureRecognizer()
-                              ..onTap = vm.onUserPressed,
-                          ),
-                          TextSpan(
-                            text: " ${comment.message}",
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyText2!
-                                .copyWith(color: Colors.black),
-                          ),
-                        ],
-                      ),
-                    ),
-                    trailing: IconButton(
-                      padding: EdgeInsets.zero,
-                      constraints: BoxConstraints(),
-                      icon: Icon(
-                        vm.isLiked ? MdiIcons.heart : MdiIcons.heartOutline,
-                        color: vm.isLiked ? Colors.red : Colors.black,
-                      ),
-                      onPressed: vm.onLike,
-                    ),
-                  ),
-                  _buildImages(),
-                ],
-              ),
-            );
-          },
+      ),
+    );
+  }
+}
+
+class _CommentCardView extends HookView<CommentCardViewModel> {
+  @override
+  Widget render(BuildContext context, CommentCardViewModel vm) {
+    final user = useMemoized<LokalUser>(
+      () => context.read<Users>().findById(vm.comment.userId)!,
+      [vm.comment],
+    );
+
+    final _images = useMemoized<SizedBox>(
+      () {
+        final images = vm.comment.images;
+        return SizedBox(
+          height: images.isNotEmpty ? 95.h : 0,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: images.length,
+            itemBuilder: (context, index) {
+              return SizedBox(
+                height: 95.h,
+                width: 95.h,
+                child: NetworkPhotoThumbnail(
+                  galleryItem: images[index],
+                  onTap: () => openGallery(context, index, images),
+                ),
+              );
+            },
+          ),
         );
       },
+      [vm.comment, vm.activityId],
+    );
+
+    return InkWell(
+      onLongPress: () => vm.onLongPress(const _CommentOptions()),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            leading: ChatAvatar(
+              displayName: user.displayName,
+              displayPhoto: user.profilePhoto,
+              radius: 18.0.r,
+              onTap: vm.onUserPressed,
+            ),
+            title: RichText(
+              text: TextSpan(
+                children: [
+                  TextSpan(
+                    text: '${user.firstName} ${user.lastName}',
+                    style: Theme.of(context)
+                        .textTheme
+                        .subtitle2!
+                        .copyWith(color: Colors.black),
+                    recognizer: TapGestureRecognizer()
+                      ..onTap = vm.onUserPressed,
+                  ),
+                  TextSpan(
+                    text: ' ${vm.comment.message}',
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyText2!
+                        .copyWith(color: Colors.black),
+                  ),
+                ],
+              ),
+            ),
+            trailing: IconButton(
+              padding: EdgeInsets.zero,
+              constraints: const BoxConstraints(),
+              icon: Icon(
+                vm.isLiked ? MdiIcons.heart : MdiIcons.heartOutline,
+                color: vm.isLiked ? Colors.red : Colors.black,
+              ),
+              onPressed: vm.onLike,
+            ),
+          ),
+          _images,
+        ],
+      ),
     );
   }
 }
@@ -131,40 +142,40 @@ class _CommentOptions extends StatelessWidget {
         if (onReply != null)
           ListTile(
             onTap: onReply,
-            leading: Icon(
+            leading: const Icon(
               MdiIcons.reply,
               color: kTealColor,
             ),
             title: Text(
-              "Reply",
+              'Reply',
               softWrap: true,
               style: Theme.of(context).textTheme.subtitle1!.copyWith(
                     color: kTealColor,
                   ),
             ),
           ),
-        if (this.onHide != null)
+        if (onHide != null)
           ListTile(
             onTap: onHide,
-            leading: Icon(
+            leading: const Icon(
               MdiIcons.eyeOffOutline,
               color: Colors.black,
             ),
             title: Text(
-              "Hide Comment",
+              'Hide Comment',
               softWrap: true,
               style: Theme.of(context).textTheme.subtitle1,
             ),
           ),
-        if (this.onReport != null)
+        if (onReport != null)
           ListTile(
-            onTap: this.onReport,
-            leading: Icon(
+            onTap: onReport,
+            leading: const Icon(
               MdiIcons.alertCircleOutline,
               color: kPinkColor,
             ),
             title: Text(
-              "Report Comment",
+              'Report Comment',
               softWrap: true,
               style: Theme.of(context).textTheme.subtitle1!.copyWith(
                     color: kPinkColor,

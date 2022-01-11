@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
-import 'asset_widget.dart';
-
 import 'package:photo_manager/photo_manager.dart';
 
-typedef Widget AssetPathWidgetBuilder(
-    BuildContext context, AssetPathEntity path);
+import 'asset_widget.dart';
 
-typedef void OnAssetItemClick(
-    BuildContext context, AssetEntity entity, int index);
+typedef AssetPathWidgetBuilder = Widget Function(
+  BuildContext context,
+  AssetPathEntity path,
+);
+
+typedef OnAssetItemClick = void Function(
+  BuildContext context,
+  AssetEntity entity,
+  int index,
+);
 
 class AssetGalleryWidget extends StatefulWidget {
   final AssetPathEntity? path;
@@ -54,12 +59,11 @@ class _AssetGalleryWidgetState extends State<AssetGalleryWidget> {
         shrinkWrap: true,
         scrollDirection: Axis.horizontal,
         itemCount: widget.path?.assetCount ?? 1,
-        itemBuilder: (context, index) => Container(
+        itemBuilder: (context, index) => SizedBox(
           height: widget.assetHeight,
           width: widget.assetWidth,
           child: _buildItem(context, index),
         ),
-        addRepaintBoundaries: true,
       ),
     );
   }
@@ -102,7 +106,9 @@ class _AssetGalleryWidgetState extends State<AssetGalleryWidget> {
           var asset = cacheMap[currentIndex];
           if (asset == null) {
             asset = (await widget.path!.getAssetListRange(
-                start: currentIndex, end: currentIndex + 1))[0];
+              start: currentIndex,
+              end: currentIndex + 1,
+            ))[0];
             cacheMap[currentIndex] = asset;
           }
           widget.onAssetItemClick?.call(context, asset, currentIndex);
@@ -115,7 +121,9 @@ class _AssetGalleryWidgetState extends State<AssetGalleryWidget> {
         var asset = cacheMap[currentIndex];
         if (asset == null) {
           asset = (await widget.path!.getAssetListRange(
-              start: currentIndex, end: currentIndex + 1))[0];
+            start: currentIndex,
+            end: currentIndex + 1,
+          ))[0];
           cacheMap[currentIndex] = asset;
         }
         widget.onAssetItemClick?.call(context, asset, currentIndex);
@@ -256,9 +264,9 @@ class _ScrollingWidget extends StatelessWidget {
     return const SizedBox(
       width: double.infinity,
       height: double.infinity,
-      child: const DecoratedBox(
-        decoration: const BoxDecoration(
-          color: const Color(0xFF4A4748),
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: Color(0xFF4A4748),
         ),
       ),
     );

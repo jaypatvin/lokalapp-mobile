@@ -33,7 +33,7 @@ class ChatStream extends StatelessWidget {
   Widget build(BuildContext context) {
     return MVVM(
       view: (_, __) => _ChatStreamView(),
-      viewModel: ChatStreamViewModel(this.chatStream),
+      viewModel: ChatStreamViewModel(chatStream),
     );
   }
 }
@@ -41,14 +41,13 @@ class ChatStream extends StatelessWidget {
 class _ChatStreamView extends StatelessView<ChatStreamViewModel> {
   @override
   Widget render(BuildContext context, ChatStreamViewModel vm) {
-
     // the user chat stream is always not null, it can only be empty so no need
     // for additional checks
-    if (vm.chatStream == null)
+    if (vm.chatStream == null) {
       return Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text('You have not created a shop yet!'),
+          const Text('You have not created a shop yet!'),
           SizedBox(height: 5.0.h),
           AppButton(
             'Create Shop',
@@ -58,6 +57,7 @@ class _ChatStreamView extends StatelessView<ChatStreamViewModel> {
           ),
         ],
       );
+    }
 
     return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
       stream: vm.chatStream,
@@ -65,8 +65,8 @@ class _ChatStreamView extends StatelessView<ChatStreamViewModel> {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(child: Lottie.asset(kAnimationLoading));
         }
-        if (!snapshot.hasData || snapshot.data!.docs.length == 0) {
-          return Center(
+        if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+          return const Center(
             child: Text(
               "It's lonely here. No Chats yet!",
               style: TextStyle(
@@ -104,11 +104,11 @@ class _ChatList extends StatelessWidget {
     return Container(
       height: 45.0.h,
       width: 45.0.w,
-      decoration: BoxDecoration(shape: BoxShape.circle),
+      decoration: const BoxDecoration(shape: BoxShape.circle),
       clipBehavior: Clip.hardEdge,
       child: Stack(
         alignment: multUsers ? Alignment.bottomLeft : Alignment.center,
-        children: new List<Widget>.generate(members.length, (index) {
+        children: List<Widget>.generate(members.length, (index) {
           final member = members[index];
           if (multUsers) {
             return Positioned(
@@ -145,16 +145,18 @@ class _ChatList extends StatelessWidget {
       if (shop.userId == cUserId) {
         final ids = [...chat.members];
         ids.retainWhere((id) => shop.id != id);
-        members.addAll(ids.map((id) {
-          final user = context.read<Users>().findById(id)!;
-          return ChatMember(
-            displayName: user.displayName,
-            displayPhoto: user.profilePhoto,
-            type: chat.chatType,
-          );
-        }).toList());
+        members.addAll(
+          ids.map((id) {
+            final user = context.read<Users>().findById(id)!;
+            return ChatMember(
+              displayName: user.displayName,
+              displayPhoto: user.profilePhoto,
+              type: chat.chatType,
+            );
+          }).toList(),
+        );
         final memberNames = members.map((user) => user.displayName).toList();
-        title = memberNames.join(", ");
+        title = memberNames.join(', ');
       } else {
         members.add(
           ChatMember(
@@ -177,14 +179,16 @@ class _ChatList extends StatelessWidget {
       final ids = [...chat.members];
       ids.retainWhere((id) => cUserId != id);
 
-      members.addAll(ids.map((id) {
-        final user = context.read<Users>().findById(id)!;
-        return ChatMember(
-          displayName: user.displayName,
-          displayPhoto: user.profilePhoto,
-          type: chat.chatType,
-        );
-      }).toList());
+      members.addAll(
+        ids.map((id) {
+          final user = context.read<Users>().findById(id)!;
+          return ChatMember(
+            displayName: user.displayName,
+            displayPhoto: user.profilePhoto,
+            type: chat.chatType,
+          );
+        }).toList(),
+      );
 
       final memberNames = members.map((user) => user.displayName).toList();
       title = memberNames.join(', ');
@@ -192,12 +196,11 @@ class _ChatList extends StatelessWidget {
 
     return GestureDetector(
       onTap: () {
-        context
-          ..read<AppRouter>().navigateTo(
-            AppRoute.chat,
-            ChatView.routeName,
-            arguments: ChatViewProps(false, chat: chat),
-          );
+        context.read<AppRouter>().navigateTo(
+              AppRoute.chat,
+              ChatView.routeName,
+              arguments: ChatViewProps(createMessage: false, chat: chat),
+            );
       },
       child: ListTile(
         leading: _buildCircleAvatar(members),
@@ -227,7 +230,7 @@ class _ChatList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-      physics: NeverScrollableScrollPhysics(),
+      physics: const NeverScrollableScrollPhysics(),
       padding: EdgeInsets.all(5.0.r),
       shrinkWrap: true,
       itemCount: chats.length, //chatSnapshot!.data!.docs.length,

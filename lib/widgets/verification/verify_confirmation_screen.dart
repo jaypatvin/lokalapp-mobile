@@ -12,7 +12,7 @@ class VerifyConfirmationScreen extends StatelessWidget {
       : super(key: key);
 
   Future<bool> _onWillPop(BuildContext context) async {
-    if (this.skippable) {
+    if (skippable) {
       Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(builder: (context) => BottomNavigation()),
@@ -35,7 +35,7 @@ class VerifyConfirmationScreen extends StatelessWidget {
             TextButton(
               onPressed: () => Navigator.of(context).maybePop<bool>(true),
               child: Text(
-                "Done",
+                'Done',
                 style: TextStyle(
                   color: kTealColor,
                   fontSize: 18.0.sp,
@@ -53,29 +53,29 @@ class VerifyConfirmationScreen extends StatelessWidget {
               Icon(
                 Icons.check_circle_outline_rounded,
                 size: 120.0.h,
-                color: Color(0xFFFFC700),
+                color: const Color(0xFFFFC700),
               ),
               SizedBox(
                 height: 20.0.h,
               ),
               Text(
-                "Thank you!",
+                'Thank you!',
                 style: TextStyle(
                   fontSize: 35.0.sp,
                   color: kNavyColor,
                   fontWeight: FontWeight.bold,
-                  fontFamily: "Goldplay",
+                  fontFamily: 'Goldplay',
                 ),
               ),
               SizedBox(
                 height: 15.0.h,
               ),
               Text(
-                "We will notify you when your account has been verified.",
+                'We will notify you when your account has been verified.',
                 style: TextStyle(
                   fontSize: 18.0.sp,
                   color: kNavyColor,
-                  fontFamily: "Goldplay",
+                  fontFamily: 'Goldplay',
                   fontWeight: FontWeight.normal,
                 ),
                 textAlign: TextAlign.center,

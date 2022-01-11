@@ -12,6 +12,7 @@ class InputPasswordField extends StatelessWidget {
   final void Function(String)? onChanged;
   final String errorMessage;
   final Color fillColor;
+  final String hintText;
   const InputPasswordField({
     Key? key,
     this.focusNode,
@@ -22,39 +23,40 @@ class InputPasswordField extends StatelessWidget {
     this.errorMessage = 'Password is incorrect.',
     this.onPasswordVisibilityChanged,
     this.fillColor = Colors.white,
+    this.hintText = 'Password',
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      focusNode: this.focusNode,
+      focusNode: focusNode,
       autocorrect: false,
-      obscureText: !this.isPasswordVisible,
-      controller: this.controller,
-      onChanged: this.onChanged,
+      obscureText: !isPasswordVisible,
+      controller: controller,
+      onChanged: onChanged,
       style: TextStyle(
         fontWeight: FontWeight.w500,
         fontSize: 16.0.sp,
       ),
-      decoration: new InputDecoration(
-        fillColor: this.fillColor,
-        border: new OutlineInputBorder(
+      decoration: InputDecoration(
+        fillColor: fillColor,
+        border: OutlineInputBorder(
           borderRadius: BorderRadius.all(Radius.circular(30.0.r)),
           borderSide: BorderSide.none,
         ),
         suffixIcon: IconButton(
           icon: Icon(
-            !this.isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+            !isPasswordVisible ? Icons.visibility : Icons.visibility_off,
             color: kOrangeColor,
           ),
-          onPressed: this.onPasswordVisibilityChanged,
+          onPressed: onPasswordVisibilityChanged,
         ),
         isDense: false,
         filled: true,
         alignLabelWithHint: true,
-        hintText: 'Password',
+        hintText: hintText,
         contentPadding: EdgeInsets.symmetric(horizontal: 16.0.w),
-        errorText: this.displaySignInError ? this.errorMessage : null,
+        errorText: displaySignInError ? errorMessage : null,
       ),
     );
   }

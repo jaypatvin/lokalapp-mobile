@@ -19,44 +19,42 @@ class Status200Buttons extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (this.isBuyer) {
-      return Container(
-        child: Column(
-          children: [
-            SizedBox(
-              width: double.infinity,
-              child: MessageSellerButton(order: this.order),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Expanded(
-                  child: AppButton(
-                    "Cancel Order",
-                    kPinkColor,
-                    false,
-                    () => this.onPress(OrderAction.cancel),
-                  ),
+    if (isBuyer) {
+      return Column(
+        children: [
+          SizedBox(
+            width: double.infinity,
+            child: MessageSellerButton(order: order),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Expanded(
+                child: AppButton(
+                  'Cancel Order',
+                  kPinkColor,
+                  false,
+                  () => onPress(OrderAction.cancel),
                 ),
-                SizedBox(width: MediaQuery.of(context).size.width * 0.01),
-                Expanded(
-                  child: AppButton(
-                    "Pay Now",
-                    kOrangeColor,
-                    true,
-                    () => this.onPress(OrderAction.pay),
-                  ),
+              ),
+              SizedBox(width: MediaQuery.of(context).size.width * 0.01),
+              Expanded(
+                child: AppButton(
+                  'Pay Now',
+                  kOrangeColor,
+                  true,
+                  () => onPress(OrderAction.pay),
                 ),
-              ],
-            ),
-          ],
-        ),
+              ),
+            ],
+          ),
+        ],
       );
     }
 
     return SizedBox(
       width: double.infinity,
-      child: MessageBuyerButton(order: this.order),
+      child: MessageBuyerButton(order: order),
     );
   }
 }

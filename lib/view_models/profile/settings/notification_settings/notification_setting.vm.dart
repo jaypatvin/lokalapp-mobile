@@ -4,9 +4,9 @@ import 'package:flutter/foundation.dart';
 import 'package:recase/recase.dart';
 
 import '../../../../models/lokal_user.dart';
+import '../../../../screens/profile/settings/notification_settings/model/notification_setting.model.dart';
 import '../../../../services/api/user_api_service.dart';
 import '../../../../services/database.dart';
-import '../../../../screens/profile/settings/notification_settings/model/notification_setting.model.dart';
 
 class NotificationSettingViewModel extends ChangeNotifier {
   NotificationSettingViewModel(this.user, this._userAPIService);
@@ -21,7 +21,7 @@ class NotificationSettingViewModel extends ChangeNotifier {
       UnmodifiableMapView(_notificationTypes);
   bool get isLoading => _isLoading;
 
-  void init() async {
+  Future<void> init() async {
     _isLoading = true;
     notifyListeners();
     final querySnapshots = await Database.instance.getNotificationTypes();
@@ -30,7 +30,7 @@ class NotificationSettingViewModel extends ChangeNotifier {
         key: doc.id,
         name: doc.id.titleCase,
         description: doc.data()['description'] ?? '',
-        value: this.user.notificationSettings[doc.id] ?? true,
+        value: user.notificationSettings[doc.id] ?? true,
       );
     }
     _isLoading = false;
@@ -38,13 +38,13 @@ class NotificationSettingViewModel extends ChangeNotifier {
   }
 
   Future<bool> toggleNotifications(
-    String key,
-    bool value,
-  ) async {
+    String key, {
+    required bool value,
+  }) async {
     final body = {key: value};
     try {
       _notificationTypes[key]!.value = value;
-      this.user.notificationSettings[key] = value;
+      user.notificationSettings[key] = value;
       notifyListeners();
       final success = await _userAPIService.updateNotficationSettings(
         userId: user.id!,
@@ -55,7 +55,7 @@ class NotificationSettingViewModel extends ChangeNotifier {
     } catch (e) {
       _notificationTypes[key]!.value = !value;
       notifyListeners();
-      throw e;
+      rethrow;
     }
   }
 }

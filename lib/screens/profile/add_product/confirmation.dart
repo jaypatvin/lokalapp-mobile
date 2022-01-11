@@ -11,23 +11,21 @@ import '../shop/user_shop.dart';
 class AddProductConfirmation extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    double height = MediaQuery.of(context).size.height;
+    final double height = MediaQuery.of(context).size.height;
     return Scaffold(
-      appBar: CustomAppBar(
-        titleText: "Product Added!",
+      appBar: const CustomAppBar(
+        titleText: 'Product Added!',
         backgroundColor: Colors.white,
-        elevation: 0,
         titleStyle: TextStyle(color: Colors.black),
         buildLeading: false,
       ),
       body: Padding(
         padding: const EdgeInsets.all(10.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Spacer(),
-            Container(
+            const Spacer(),
+            SizedBox(
               height: height * 0.3,
               child: Stack(
                 alignment: Alignment.center,
@@ -41,7 +39,7 @@ class AddProductConfirmation extends StatelessWidget {
                     child: Align(
                       alignment: Alignment.bottomCenter,
                       child: Text(
-                        "Your new product has now been added to your store!",
+                        'Your new product has now been added to your store!',
                         textAlign: TextAlign.center,
                         style: Theme.of(context).textTheme.bodyText1,
                       ),
@@ -50,11 +48,11 @@ class AddProductConfirmation extends StatelessWidget {
                 ],
               ),
             ),
-            Spacer(),
+            const Spacer(),
             SizedBox(
               width: double.infinity,
               child: AppButton(
-                "Go to Listing",
+                'Go to Listing',
                 kTealColor,
                 false,
                 () {
@@ -65,7 +63,7 @@ class AddProductConfirmation extends StatelessWidget {
             SizedBox(
               width: double.infinity,
               child: AppButton(
-                "Back to my Shop",
+                'Back to my Shop',
                 kTealColor,
                 true,
                 () {

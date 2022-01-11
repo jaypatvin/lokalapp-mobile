@@ -3,13 +3,10 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../models/lokal_user.dart';
-import '../../../../providers/auth.dart';
-
 class ChangeEmailViewModel extends ChangeNotifier {
-  ChangeEmailViewModel(this._userAuth);
+  ChangeEmailViewModel();
 
-  final Auth _userAuth;
+  // final Auth _userAuth;
   final StreamController<String> _errorStream = StreamController.broadcast();
 
   bool _displayEmailError = false;
@@ -49,7 +46,7 @@ class ChangeEmailViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void onFormSubmit() async {
+  Future<void> onFormSubmit() async {
     if (_email != _newEmail) {
       _displayEmailError = true;
       notifyListeners();
@@ -59,11 +56,11 @@ class ChangeEmailViewModel extends ChangeNotifier {
       // TODO: implement change Email
       throw UnimplementedError('No API to change the email in user documents.');
 
-      await _userAuth.changeEmail(
-        _email,
-        _password,
-        _newEmail,
-      );
+      // await _userAuth.changeEmail(
+      //   _email,
+      //   _password,
+      //   _newEmail,
+      // );
     } catch (e) {
       _errorStream.add(e.toString());
     }

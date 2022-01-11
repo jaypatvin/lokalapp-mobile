@@ -27,9 +27,12 @@ class CartContainer extends StatelessWidget {
     return Stack(
       alignment: Alignment.topCenter,
       children: [
-        this.child,
+        child,
         ChangeNotifierProxyProvider<ShoppingCart, CartContainerViewModel>(
-          create: (_) => CartContainerViewModel(context, alwaysDisplayButton),
+          create: (_) => CartContainerViewModel(
+            context,
+            alwaysDisplayButton: alwaysDisplayButton,
+          ),
           update: (ctx, cart, vm) {
             final quantity = cart.orders.values
                 .map<int>((orders) => orders.length)
@@ -46,6 +49,7 @@ class CartContainer extends StatelessWidget {
                     bottom: 20.0,
                     child: FloatingActionButton(
                       backgroundColor: kYellowColor,
+                      onPressed: vm.onPressed,
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -53,13 +57,12 @@ class CartContainer extends StatelessWidget {
                             vm.numberOfItems,
                             style: Theme.of(context).textTheme.bodyText2,
                           ),
-                          Icon(
+                          const Icon(
                             Icons.shopping_cart_outlined,
                             color: kNavyColor,
                           ),
                         ],
                       ),
-                      onPressed: vm.onPressed,
                     ),
                   ),
                 );

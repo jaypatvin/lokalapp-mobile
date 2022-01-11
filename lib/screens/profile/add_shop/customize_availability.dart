@@ -57,7 +57,7 @@ class _CustomizeAvailabilityState extends State<CustomizeAvailability>
   bool _customized = false;
 
   @override
-  initState() {
+  void initState() {
     super.initState();
     final _generator = ScheduleGenerator();
 
@@ -86,18 +86,19 @@ class _CustomizeAvailabilityState extends State<CustomizeAvailability>
   }
 
   Future<List<DateTime?>?> _showCalendarPicker() async {
-    List<DateTime?> selectedDates = [...markedDates];
-    return await showDialog<List<DateTime?>?>(
+    final List<DateTime?> selectedDates = [...markedDates];
+    return showDialog<List<DateTime?>?>(
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
         return _CalendarPicker(
           onDayPressed: (day) {
             setState(() {
-              if (selectedDates.contains(day))
+              if (selectedDates.contains(day)) {
                 selectedDates.remove(day);
-              else
+              } else {
                 selectedDates.add(day);
+              }
             });
           },
           onCancel: () {
@@ -124,46 +125,48 @@ class _CustomizeAvailabilityState extends State<CustomizeAvailability>
   void setUpShotSchedule() {
     markedDates.sort();
     initialDates.sort();
-    var operatingHours =
+    final operatingHours =
         Provider.of<OperatingHoursBody>(context, listen: false);
 
-    var customDates =
+    final customDates =
         markedDates.where((date) => !initialDates.contains(date)).toList();
-    var unavailableDates =
+    final unavailableDates =
         initialDates.where((date) => !markedDates.contains(date)).toList();
 
     operatingHours.update(
       customDates: customDates
-          .map((date) =>
-              CustomDates(date: DateFormat("yyyy-MM-dd").format(date!)))
+          .map(
+            (date) => CustomDates(date: DateFormat('yyyy-MM-dd').format(date!)),
+          )
           .toList(),
       unavailableDates: unavailableDates
-          .map((date) => DateFormat("yyyy-MM-dd").format(date!))
+          .map((date) => DateFormat('yyyy-MM-dd').format(date!))
           .toList(),
     );
   }
 
   Future<bool> updateShopSchedule() async {
     final user = context.read<Auth>().user!;
-    var shops = context.read<Shops>();
-    var userShop = shops.findByUser(user.id).first;
-    var operatingHours = context.read<OperatingHoursBody>();
-    return await shops.setOperatingHours(
+    final shops = context.read<Shops>();
+    final userShop = shops.findByUser(user.id).first;
+    final operatingHours = context.read<OperatingHoursBody>();
+    return shops.setOperatingHours(
       id: userShop.id!,
       data: operatingHours.data,
     );
   }
 
   Future<void> _createShop() async {
-    var file = widget.shopPhoto;
-    String mediaUrl = "";
+    final file = widget.shopPhoto;
+    String mediaUrl = '';
     if (file != null) {
       mediaUrl = await Provider.of<LocalImageService>(context, listen: false)
           .uploadImage(file: file, name: 'shop_photo');
     }
+    if (!mounted) return;
     final user = context.read<Auth>().user!;
-    ShopBody shopBody = Provider.of<ShopBody>(context, listen: false);
-    Shops shops = Provider.of<Shops>(context, listen: false);
+    final ShopBody shopBody = Provider.of<ShopBody>(context, listen: false);
+    final Shops shops = Provider.of<Shops>(context, listen: false);
 
     shopBody.update(
       profilePhoto: mediaUrl,
@@ -176,18 +179,19 @@ class _CustomizeAvailabilityState extends State<CustomizeAvailability>
       await shops.create(shopBody.toMap());
     } on Exception catch (e) {
       debugPrint(e.toString());
-      throw e;
+      rethrow;
     }
   }
 
   Future<void> _onSubmit() async {
     try {
       await _createShop();
-      context.read<AppRouter>()
-        ..navigateTo(
-          AppRoute.profile,
-          AddShopConfirmation.routeName,
-        );
+      if (!mounted) return;
+
+      context.read<AppRouter>().navigateTo(
+            AppRoute.profile,
+            AddShopConfirmation.routeName,
+          );
     } catch (e) {
       showToast('Failed to create shop. Try again.');
     }
@@ -197,36 +201,35 @@ class _CustomizeAvailabilityState extends State<CustomizeAvailability>
     setUpShotSchedule();
 
     if (widget.forEditing) {
-      if (widget.onShopEdit != null) widget.onShopEdit!();
+      widget.onShopEdit?.call();
       return;
     }
 
-    context.read<AppRouter>()
-      ..navigateTo(
-        AppRoute.profile,
-        SetUpPaymentOptions.routeName,
-        arguments: {'onSubmit': _onSubmit},
-      );
+    context.read<AppRouter>().navigateTo(
+      AppRoute.profile,
+      SetUpPaymentOptions.routeName,
+      arguments: {'onSubmit': _onSubmit},
+    );
   }
 
   @override
   Widget screen(BuildContext context) {
-    double height = MediaQuery.of(context).size.height;
-    double width = MediaQuery.of(context).size.width;
+    final double height = MediaQuery.of(context).size.height;
+    final double width = MediaQuery.of(context).size.width;
     return Scaffold(
       backgroundColor: Colors.white,
       resizeToAvoidBottomInset: false,
       appBar: CustomAppBar(
-          titleText: "Shop Schedule",
-          titleStyle: TextStyle(
-            color: Colors.black,
-          ),
-          backgroundColor: Colors.white,
-          leadingColor: Colors.black,
-          elevation: 0.0,
-          onPressedLeading: () {
-            Navigator.pop(context);
-          }),
+        titleText: 'Shop Schedule',
+        titleStyle: const TextStyle(
+          color: Colors.black,
+        ),
+        backgroundColor: Colors.white,
+        leadingColor: Colors.black,
+        onPressedLeading: () {
+          Navigator.pop(context);
+        },
+      ),
       body: Container(
         padding: EdgeInsets.symmetric(
           horizontal: width * 0.05,
@@ -234,15 +237,14 @@ class _CustomizeAvailabilityState extends State<CustomizeAvailability>
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              "Customize Availability",
+              'Customize Availability',
               style: Theme.of(context).textTheme.headline5,
             ),
             Text(
-              "Customize which days your shop will be available",
+              'Customize which days your shop will be available',
               style: Theme.of(context).textTheme.bodyText1,
             ),
             SizedBox(
@@ -251,17 +253,17 @@ class _CustomizeAvailabilityState extends State<CustomizeAvailability>
             SizedBox(
               width: double.infinity,
               child: AppButton(
-                "Customize Availability",
+                'Customize Availability',
                 kTealColor,
                 false,
                 _showCalendarPicker,
               ),
             ),
-            Spacer(),
+            const Spacer(),
             SizedBox(
               width: double.infinity,
               child: AppButton(
-                _customized ? "Confirm" : "Next",
+                _customized ? 'Confirm' : 'Next',
                 kTealColor,
                 true,
                 _onConfirm,
@@ -299,7 +301,7 @@ class _CalendarPicker extends StatelessWidget {
         shape:
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0)),
         child: SingleChildScrollView(
-          physics: NeverScrollableScrollPhysics(),
+          physics: const NeverScrollableScrollPhysics(),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -307,19 +309,19 @@ class _CalendarPicker extends StatelessWidget {
                 height: MediaQuery.of(context).size.height * 0.02,
               ),
               Text(
-                "Set Availability Exceptions",
+                'Set Availability Exceptions',
                 style: Theme.of(context).textTheme.headline5,
               ),
               Container(
                 width: MediaQuery.of(context).size.width * 0.95,
                 height: MediaQuery.of(context).size.height * 0.63,
-                padding: EdgeInsets.all(5.0),
+                padding: const EdgeInsets.all(5.0),
                 child: CalendarCarousel(
                   width: MediaQuery.of(context).size.width * 0.95,
-                  startDate: this.startDate,
-                  onDayPressed: this.onDayPressed,
-                  markedDatesMap: this.markedDates,
-                  selectableDaysMap: this.selectableDays,
+                  startDate: startDate,
+                  onDayPressed: onDayPressed,
+                  markedDatesMap: markedDates,
+                  selectableDaysMap: selectableDays,
                 ),
               ),
               Flexible(
@@ -331,7 +333,7 @@ class _CalendarPicker extends StatelessWidget {
                     children: [
                       Expanded(
                         child: AppButton(
-                          "Cancel",
+                          'Cancel',
                           kTealColor,
                           false,
                           onCancel,
@@ -340,7 +342,7 @@ class _CalendarPicker extends StatelessWidget {
                       SizedBox(width: 5.0.w),
                       Expanded(
                         child: AppButton(
-                          "Confirm",
+                          'Confirm',
                           kTealColor,
                           true,
                           onConfirm,

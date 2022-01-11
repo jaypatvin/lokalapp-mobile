@@ -69,7 +69,7 @@ class ShopBody extends ChangeNotifier {
         status: 'enabled',
         userId: '',
         operatingHours: OperatingHoursBody(),
-        paymentOptions: PaymentOptions(),
+        paymentOptions: const PaymentOptions(),
         notify: notify,
       );
 
@@ -118,14 +118,14 @@ class ShopBody extends ChangeNotifier {
 
   factory ShopBody.fromMap(Map<String, dynamic> map) {
     return ShopBody(
-      name: map['name'] != null ? map['name'] : null,
-      description: map['description'] != null ? map['description'] : null,
-      communityId: map['community_id'] != null ? map['community_id'] : null,
-      profilePhoto: map['profile_hoto'] != null ? map['profile_hoto'] : null,
-      coverPhoto: map['cover_photo'] != null ? map['cover_photo'] : null,
-      isClose: map['is_close'] != null ? map['is_close'] : null,
-      status: map['status'] != null ? map['status'] : null,
-      userId: map['user_id'] != null ? map['user_id'] : null,
+      name: map['name'],
+      description: map['description'],
+      communityId: map['community_id'],
+      profilePhoto: map['profile_hoto'],
+      coverPhoto: map['cover_photo'],
+      isClose: map['is_close'],
+      status: map['status'],
+      userId: map['user_id'],
       operatingHours: map['operating_hours'] != null
           ? OperatingHoursBody.fromMap(map['operating_hours'])
           : null,

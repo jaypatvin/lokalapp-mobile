@@ -28,7 +28,7 @@ class ProductPreview extends StatefulWidget {
   final AddProductGallery? gallery;
   final ProductScheduleState? scheduleState;
   final String? productId;
-  ProductPreview({
+  const ProductPreview({
     required this.gallery,
     required this.scheduleState,
     this.productId,
@@ -45,7 +45,7 @@ class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
   late List<String?> _urlImages;
 
   @override
-  initState() {
+  void initState() {
     images = widget.gallery!.photoBoxes.map((image) {
       if (image.file != null) return image.file;
     }).toList()
@@ -61,14 +61,14 @@ class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: images.map((file) {
-        int index = images.indexOf(file);
+        final int index = images.indexOf(file);
         return Container(
           width: 9.0,
           height: 10.0,
-          margin: EdgeInsets.symmetric(vertical: 20.0, horizontal: 5.0),
+          margin: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 5.0),
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            border: Border.all(width: 1.sp, color: Colors.black),
+            border: Border.all(width: 1.sp),
             color:
                 _current == index ? Colors.black.withOpacity(0.5) : Colors.grey,
           ),
@@ -81,7 +81,7 @@ class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
     return PhotoViewGallery.builder(
       itemCount: images.length + _urlImages.length,
       onPageChanged: (index) {
-        if (this.mounted) {
+        if (mounted) {
           setState(() {
             _current = index;
           });
@@ -115,14 +115,14 @@ class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
           );
         }
       },
-      scrollPhysics: BouncingScrollPhysics(),
-      backgroundDecoration: BoxDecoration(
+      scrollPhysics: const BouncingScrollPhysics(),
+      backgroundDecoration: const BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(20)),
         color: Colors.transparent,
       ),
       enableRotation: true,
       loadingBuilder: (context, event) => Center(
-        child: Container(
+        child: SizedBox(
           width: 30.0,
           height: 30.0,
           child: CircularProgressIndicator(
@@ -142,7 +142,7 @@ class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
       child: Row(
         children: [
           Expanded(
-            child: Container(
+            child: SizedBox(
               height: MediaQuery.of(context).size.height / 2,
               child: Stack(
                 children: [
@@ -162,19 +162,20 @@ class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
   }
 
   Future<void> _createProduct() async {
-    List<LokalImages> gallery = [];
-    for (var image in images) {
-      var mediaUrl =
+    final List<LokalImages> gallery = [];
+    for (final image in images) {
+      final mediaUrl =
           await Provider.of<LocalImageService>(context, listen: false)
               .uploadImage(file: image!, name: 'productPhoto');
       gallery.add(LokalImages(url: mediaUrl, order: gallery.length));
     }
 
-    var user = context.read<Auth>().user!;
-    var shop =
+    if (!mounted) return;
+    final user = context.read<Auth>().user!;
+    final shop =
         Provider.of<Shops>(context, listen: false).findByUser(user.id).first;
-    var products = Provider.of<Products>(context, listen: false);
-    var productBody = Provider.of<ProductBody>(context, listen: false);
+    final products = Provider.of<Products>(context, listen: false);
+    final productBody = Provider.of<ProductBody>(context, listen: false);
     try {
       productBody.update(
         gallery: gallery.map((image) => image.toMap()).toList(),
@@ -183,10 +184,10 @@ class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
       );
       return await products.create(productBody.data);
     } on Exception catch (e) {
-      print(e);
-      return null;
+      debugPrint(e.toString());
+      return;
     } catch (e) {
-      throw e;
+      rethrow;
     }
   }
 
@@ -194,7 +195,7 @@ class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
     final _productBody = context.read<ProductBody>();
     final _product = context.read<Products>().findById(widget.productId);
     final updateBody = ProductBody()..update(shopId: _product!.id);
-    updateBody.data.remove("gallery");
+    updateBody.data.remove('gallery');
 
     if (_productBody.name != _product.name) {
       updateBody.update(name: _productBody.name);
@@ -232,7 +233,7 @@ class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
     }
 
     final updateData = updateBody.data;
-    updateData.remove("shop_id");
+    updateData.remove('shop_id');
     updateData.remove('availability');
 
     ProductBody().data.forEach((key, value) {
@@ -242,6 +243,8 @@ class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
     });
 
     bool updateSchedule = false;
+    if (!mounted) return false;
+
     if (widget.scheduleState == ProductScheduleState.shop) {
       final shop = context.read<Shops>().findById(_product.shopId)!;
       if (shop.operatingHours != _product.availability) {
@@ -252,8 +255,10 @@ class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
     } else {
       final body = context.read<OperatingHoursBody>().operatingHours;
       final availability = _product.availability!;
-      if (!listEquals(body.unavailableDates!..sort(),
-          availability.unavailableDates!..sort())) {
+      if (!listEquals(
+        body.unavailableDates!..sort(),
+        availability.unavailableDates!..sort(),
+      )) {
         // We update the availability of the product.
         updateSchedule = true;
       }
@@ -261,7 +266,7 @@ class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
 
     if (updateData.isEmpty && !updateSchedule) {
       // this would mean that there is nothing to update
-      throw ("There is nothing to update");
+      throw 'There is nothing to update';
     }
 
     bool updatedProductDetails = false;
@@ -276,6 +281,7 @@ class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
       }
 
       if (updateSchedule) {
+        if (!mounted) return false;
         updatedProductSchedule = await context.read<Products>().setAvailability(
               id: _product.id,
               data: context.read<OperatingHoursBody>().data,
@@ -285,7 +291,7 @@ class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
       return (updateData.isNotEmpty && updatedProductDetails) ||
           (updateSchedule && updatedProductSchedule);
     } catch (e) {
-      throw e;
+      rethrow;
     }
   }
 
@@ -294,6 +300,7 @@ class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
       try {
         final success = await _updateProduct();
         if (success) {
+          if (!mounted) return;
           Navigator.popUntil(
             context,
             ModalRoute.withName(UserShop.routeName),
@@ -309,6 +316,8 @@ class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
 
     try {
       await _createProduct();
+      if (!mounted) return;
+
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -325,7 +334,7 @@ class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
     final height = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: CustomAppBar(
-        titleText: "Product Preview",
+        titleText: 'Product Preview',
         onPressedLeading: () {
           Navigator.pop(context);
         },
@@ -351,15 +360,15 @@ class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
                   product.description!,
                   style: Theme.of(context).textTheme.subtitle1,
                 ),
-                Spacer(),
+                const Spacer(),
                 SizedBox(
                   width: double.infinity,
                   child: AppButton(
-                    "Confirm",
+                    'Confirm',
                     kTealColor,
                     true,
-                    () async => await performFuture<void>(
-                      () async => await _onConfirm(),
+                    () async => performFuture<void>(
+                      () async => _onConfirm(),
                     ),
                   ),
                 ),

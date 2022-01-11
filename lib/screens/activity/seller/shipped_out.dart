@@ -29,7 +29,7 @@ class ShippedOut extends StatelessWidget {
               style: Theme.of(context).textTheme.headline5,
             ),
             SizedBox(height: 20.h),
-            Container(
+            SizedBox(
               height: 100.0.h,
               width: double.infinity,
               child: Stack(
@@ -53,16 +53,15 @@ class ShippedOut extends StatelessWidget {
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 24.0.h),
               child: TransactionDetails(
-                transaction: this.order,
+                transaction: order,
                 isBuyer: false,
               ),
             ),
-            Spacer(),
+            const Spacer(),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 16.0.w),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   SizedBox(
                     width: double.infinity,
@@ -71,7 +70,7 @@ class ShippedOut extends StatelessWidget {
                   SizedBox(
                     width: double.infinity,
                     child: AppButton(
-                      "Back to Activity",
+                      'Back to Activity',
                       kTealColor,
                       true,
                       () {

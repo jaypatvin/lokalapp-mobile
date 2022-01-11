@@ -21,8 +21,9 @@ class DiscoverViewModel extends ViewModel {
 
   List<Product> _recommendedProducts = [];
   UnmodifiableListView<Product> get recommendedProducts {
-    if (_recommendedProducts.isNotEmpty)
+    if (_recommendedProducts.isNotEmpty) {
       return UnmodifiableListView(_recommendedProducts);
+    }
 
     final items = [...context.read<Products>().items];
     return UnmodifiableListView(items..shuffle());
@@ -67,27 +68,24 @@ class DiscoverViewModel extends ViewModel {
 
   void onProductTap(String id) {
     final product = context.read<Products>().findById(id);
-    context.read<AppRouter>()
-      ..navigateTo(
-        AppRoute.discover,
-        ProductDetail.routeName,
-        arguments: ProductDetailProps(product!),
-      );
+    context.read<AppRouter>().navigateTo(
+          AppRoute.discover,
+          ProductDetail.routeName,
+          arguments: ProductDetailProps(product!),
+        );
   }
 
   void onExploreCategories() {
-    context.read<AppRouter>()
-      ..navigateTo(
-        AppRoute.discover,
-        ExploreCategories.routeName,
-      );
+    context.read<AppRouter>().navigateTo(
+          AppRoute.discover,
+          ExploreCategories.routeName,
+        );
   }
 
   void onSearch() {
-    context.read<AppRouter>()
-      ..navigateTo(
-        AppRoute.discover,
-        Search.routeName,
-      );
+    context.read<AppRouter>().navigateTo(
+          AppRoute.discover,
+          Search.routeName,
+        );
   }
 }

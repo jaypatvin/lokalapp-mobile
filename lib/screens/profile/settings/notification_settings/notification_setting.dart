@@ -32,13 +32,12 @@ class _NotificationSettingState extends State<NotificationSetting> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xffF1FAFF),
+      backgroundColor: const Color(0xffF1FAFF),
       resizeToAvoidBottomInset: true,
       appBar: CustomAppBar(
         titleText: 'Notification Settings',
         backgroundColor: kTealColor,
-        leadingColor: Colors.white,
-        titleStyle: TextStyle(color: Colors.white),
+        titleStyle: const TextStyle(color: Colors.white),
         onPressedLeading: () => Navigator.pop(context),
       ),
       body: ChangeNotifierProvider.value(
@@ -90,8 +89,10 @@ class _NotificationSettingState extends State<NotificationSetting> {
                           ),
                           trailing: CupertinoSwitch(
                             value: notificationType.value,
-                            onChanged: (value) =>
-                                viewModel.toggleNotifications(key, value),
+                            onChanged: (value) => viewModel.toggleNotifications(
+                              key,
+                              value: value,
+                            ),
                             activeColor: kTealColor,
                           ),
                         );

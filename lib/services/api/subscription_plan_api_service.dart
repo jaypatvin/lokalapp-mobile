@@ -8,7 +8,7 @@ class SubscriptionPlanAPIService extends APIService<ProductSubscriptionPlan> {
   const SubscriptionPlanAPIService(this.api);
 
   final API api;
-  final Endpoint endpoint = Endpoint.subscription_plan;
+  Endpoint get endpoint => Endpoint.subscriptionPlan;
 
   // -- GET
   Future<List<String>> getAvailableDates({
@@ -26,7 +26,7 @@ class SubscriptionPlanAPIService extends APIService<ProductSubscriptionPlan> {
     required Map<String, dynamic> body,
   }) async {
     try {
-      final response = await this.poster(
+      final response = await poster(
         api.endpointUri(endpoint),
         headers: api.withBodyHeader(),
         body: json.encode(body),
@@ -45,7 +45,7 @@ class SubscriptionPlanAPIService extends APIService<ProductSubscriptionPlan> {
     required String planId,
   }) async {
     try {
-      final response = await this.poster(
+      final response = await poster(
         api.endpointUri(
           endpoint,
           pathSegments: [
@@ -67,7 +67,7 @@ class SubscriptionPlanAPIService extends APIService<ProductSubscriptionPlan> {
     required String planId,
   }) async {
     try {
-      final response = await this.putter(
+      final response = await putter(
         api.endpointUri(
           endpoint,
           pathSegments: [
@@ -89,7 +89,7 @@ class SubscriptionPlanAPIService extends APIService<ProductSubscriptionPlan> {
     required Map body,
   }) async {
     try {
-      final response = await this.putter(
+      final response = await putter(
         api.endpointUri(
           endpoint,
           pathSegments: [

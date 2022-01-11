@@ -73,9 +73,9 @@ class PostDetailViewModel extends ViewModel {
     final cUser = context.read<Auth>().user!;
     final service = context.read<LocalImageService>();
     final gallery = <LokalImages>[];
-    for (var asset in imageProvider.picked) {
-      var file = await asset.file;
-      var url = await service.uploadImage(file: file!, name: 'post_photo');
+    for (final asset in imageProvider.picked) {
+      final file = await asset.file;
+      final url = await service.uploadImage(file: file!, name: 'post_photo');
       gallery.add(
         LokalImages(
           url: url,
@@ -84,16 +84,16 @@ class PostDetailViewModel extends ViewModel {
       );
     }
 
-    Map<String, dynamic> body = {
-      "user_id": cUser.id,
-      "message": inputController.text,
-      "images": gallery.map((x) => x.toMap()).toList(),
+    final Map<String, dynamic> body = {
+      'user_id': cUser.id,
+      'message': inputController.text,
+      'images': gallery.map((x) => x.toMap()).toList(),
     };
 
     try {
       await context
           .read<Activities>()
-          .createComment(activityId: this.activityId, body: body);
+          .createComment(activityId: activityId, body: body);
 
       _isCommentUploading = false;
       inputController.clear();

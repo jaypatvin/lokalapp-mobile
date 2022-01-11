@@ -18,16 +18,14 @@ class NetworkPhotoThumbnail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: GestureDetector(
-        onTap: onTap,
-        child: Hero(
-          tag: heroTag ?? galleryItem.url,
-          child: Image.network(
-            galleryItem.url,
-            alignment: Alignment.topCenter,
-            fit: this.fit,
-          ),
+    return GestureDetector(
+      onTap: onTap,
+      child: Hero(
+        tag: heroTag ?? galleryItem.url,
+        child: Image.network(
+          galleryItem.url,
+          alignment: Alignment.topCenter,
+          fit: fit,
         ),
       ),
     );

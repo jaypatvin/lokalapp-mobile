@@ -9,10 +9,10 @@ extension DeliveryOptionExtension on DeliveryOption {
   String get value {
     switch (this) {
       case DeliveryOption.delivery:
-        return "delivery";
+        return 'delivery';
       case DeliveryOption.pickup:
       default:
-        return "pickup";
+        return 'pickup';
     }
   }
 }
@@ -73,12 +73,12 @@ class ShoppingCart extends ChangeNotifier {
     DeliveryOption deliveryOption = DeliveryOption.pickup,
     DateTime? schedule,
   }) {
-    if (_orders[shopId] == null) {
+    if (_orders[shopId] == null && quantity > 0) {
       _orders[shopId] = <String?, ProductOrderDetails>{};
     }
 
     if (quantity == 0) {
-      this.remove(productId);
+      remove(productId);
       return;
     }
 
@@ -112,7 +112,7 @@ class ShoppingCart extends ChangeNotifier {
     }
 
     if (quantity == 0) {
-      this.remove(productId);
+      remove(productId);
       return;
     }
 
@@ -133,6 +133,7 @@ class ShoppingCart extends ChangeNotifier {
   void remove(String? productId) {
     final order = _getOrderEntry(productId);
     if (order == null) return;
+    debugPrint('reached here!');
     _orders[order.key]!.remove(productId);
 
     if (_orders[order.key]!.isEmpty) {

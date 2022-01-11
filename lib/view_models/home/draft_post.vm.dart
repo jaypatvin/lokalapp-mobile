@@ -58,13 +58,13 @@ class DraftPostViewModel extends ViewModel {
     AppRouter.rootNavigatorKey.currentState?.push(
       CupertinoPageRoute(
         builder: (context) => GalleryAssetPhotoView(
-          loadingBuilder: (_, __) => Center(child: CircularProgressIndicator()),
+          loadingBuilder: (_, __) =>
+              const Center(child: CircularProgressIndicator()),
           galleryItems: imageProvider.picked,
           backgroundDecoration: const BoxDecoration(
             color: Colors.black,
           ),
           initialIndex: index,
-          scrollDirection: Axis.horizontal,
         ),
       ),
     );
@@ -75,10 +75,10 @@ class DraftPostViewModel extends ViewModel {
     final activities = context.read<Activities>();
     final user = context.read<Auth>().user!;
 
-    var gallery = <LokalImages>[];
-    for (var asset in imageProvider.picked) {
-      var file = await asset.file;
-      var url = await service.uploadImage(file: file!, name: 'post_photo');
+    final gallery = <LokalImages>[];
+    for (final asset in imageProvider.picked) {
+      final file = await asset.file;
+      final url = await service.uploadImage(file: file!, name: 'post_photo');
       gallery.add(
         LokalImages(
           url: url,

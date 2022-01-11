@@ -11,7 +11,7 @@ class InviteSentViewModel extends ViewModel {
 
   String get inviteCode => _invite.code!;
 
-  void copyToClipboard() async {
+  Future<void> copyToClipboard() async {
     await Clipboard.setData(ClipboardData(text: inviteCode));
     showToast('Invite code copied to clipboard.');
   }

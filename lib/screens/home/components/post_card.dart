@@ -20,7 +20,7 @@ class PostCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MVVM(
-      view: (_, __) => _PostCardView(this.activity),
+      view: (_, __) => _PostCardView(activity),
       viewModel: PostCardViewModel(),
     );
   }
@@ -35,19 +35,19 @@ class _PostCardView extends StatelessView<PostCardViewModel> {
   final ActivityFeed activity;
 
   Widget _buildHeader(PostCardViewModel vm) {
-    final difference = DateTime.now().difference(this.activity.createdAt);
-    String createdSince = " • ";
+    final difference = DateTime.now().difference(activity.createdAt);
+    String createdSince = ' • ';
     if (difference.inDays >= 1) {
-      createdSince += "${difference.inDays}d";
+      createdSince += '${difference.inDays}d';
     } else if (difference.inHours >= 1) {
-      createdSince += "${difference.inHours}h";
+      createdSince += '${difference.inHours}h';
     } else if (difference.inMinutes >= 1) {
-      createdSince += "${difference.inMinutes}m";
+      createdSince += '${difference.inMinutes}m';
     } else {
-      createdSince += "${difference.inSeconds}s";
+      createdSince += '${difference.inSeconds}s';
     }
 
-    final user = vm.context.read<Users>().findById(this.activity.userId)!;
+    final user = vm.context.read<Users>().findById(activity.userId)!;
 
     return ListTile(
       onTap: () => vm.onUserPressed(activity),
@@ -59,7 +59,7 @@ class _PostCardView extends StatelessView<PostCardViewModel> {
       title: Row(
         children: [
           Text(
-            "${user.firstName} ${user.lastName}",
+            '${user.firstName} ${user.lastName}',
             style: Theme.of(vm.context).textTheme.subtitle2,
           ),
           Text(
@@ -71,12 +71,10 @@ class _PostCardView extends StatelessView<PostCardViewModel> {
       ),
       trailing: vm.isCurrentUser(activity)
           ? IconButton(
-              icon: Icon(Icons.more_horiz, color: Colors.black),
+              icon: const Icon(Icons.more_horiz, color: Colors.black),
               onPressed: () => vm.onPostOptionsPressed(
                 PostOptions(
                   onDeletePost: () => vm.onDeletePost(activity),
-                  onEditPost: null,
-                  onCopyLink: null,
                 ),
               ),
             )
@@ -93,9 +91,9 @@ class _PostCardView extends StatelessView<PostCardViewModel> {
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
         child: Text(
-          this.activity.message,
+          activity.message,
           style: TextStyle(
-            fontFamily: "Goldplay",
+            fontFamily: 'Goldplay',
             fontSize: 14.0.sp,
             fontWeight: FontWeight.w500,
           ),
@@ -108,27 +106,24 @@ class _PostCardView extends StatelessView<PostCardViewModel> {
   }
 
   Widget _buildPostImages(PostCardViewModel vm) {
-    final images = this.activity.images;
-    final count = images.length;
-    return StaggeredGridView.countBuilder(
-      shrinkWrap: true,
-      physics: NeverScrollableScrollPhysics(),
-      itemCount: count,
+    final images = activity.images;
+    return StaggeredGrid.count(
       crossAxisCount: 2,
-      itemBuilder: (ctx, index) {
-        return NetworkPhotoThumbnail(
-          galleryItem: images[index],
-          onTap: () => vm.openGallery(activity, index),
+      mainAxisSpacing: 4.0.w,
+      crossAxisSpacing: 4.0.h,
+      children: images.map<StaggeredGridTile>((image) {
+        final index = images.indexOf(image);
+        final crossAxisCellCount = images.length % 2 != 0 && index == 0 ? 2 : 1;
+        return StaggeredGridTile.count(
+          crossAxisCellCount: crossAxisCellCount,
+          mainAxisCellCount: 1,
+          child: NetworkPhotoThumbnail(
+            key: Key('post_details_${images[index].url}'),
+            galleryItem: images[index],
+            onTap: () => vm.openGallery(activity, index),
+          ),
         );
-      },
-      staggeredTileBuilder: (index) {
-        if (count % 2 != 0 && index == 0) {
-          return new StaggeredTile.count(2, 1);
-        }
-        return new StaggeredTile.count(1, 1);
-      },
-      mainAxisSpacing: 4.0,
-      crossAxisSpacing: 4.0,
+      }).toList(),
     );
   }
 
@@ -139,7 +134,7 @@ class _PostCardView extends StatelessView<PostCardViewModel> {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: width * 0.05),
       child: GestureDetector(
-        onTap: () => vm.goToPostDetails(this.activity),
+        onTap: () => vm.goToPostDetails(activity),
         child: Card(
           margin: EdgeInsets.only(top: height * 0.02),
           shape: RoundedRectangleBorder(
@@ -173,30 +168,27 @@ class _PostCardView extends StatelessView<PostCardViewModel> {
                   right: 20.0.w,
                 ),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     IconButton(
                       icon: Icon(
-                        this.activity.liked
-                            ? MdiIcons.heart
-                            : MdiIcons.heartOutline,
-                        color: this.activity.liked ? Colors.red : Colors.black,
+                        activity.liked ? MdiIcons.heart : MdiIcons.heartOutline,
+                        color: activity.liked ? Colors.red : Colors.black,
                       ),
-                      onPressed: () => vm.onLike(this.activity),
+                      onPressed: () => vm.onLike(activity),
                     ),
                     Text(
-                      this.activity.likedCount.toString(),
+                      activity.likedCount.toString(),
                       style: Theme.of(context).textTheme.subtitle1,
                     ),
-                    Spacer(),
+                    const Spacer(),
                     Row(
                       children: [
                         IconButton(
-                          icon: Icon(MdiIcons.commentOutline),
-                          onPressed: () => vm.goToPostDetails(this.activity),
+                          icon: const Icon(MdiIcons.commentOutline),
+                          onPressed: () => vm.goToPostDetails(activity),
                         ),
                         Text(
-                          this.activity.commentCount.toString(),
+                          activity.commentCount.toString(),
                           style: Theme.of(context).textTheme.subtitle1,
                         ),
                       ],

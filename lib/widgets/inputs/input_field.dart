@@ -39,35 +39,34 @@ class InputField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      enabled: this.enabled,
+      enabled: enabled,
       autocorrect: false,
-      focusNode: this.focusNode,
-      keyboardType: this.keyboardType,
-      initialValue: this.initialValue,
-      controller: this.controller,
-      onChanged: this.onChanged,
+      focusNode: focusNode,
+      keyboardType: keyboardType,
+      initialValue: initialValue,
+      controller: controller,
+      onChanged: onChanged,
       style: TextStyle(
         fontWeight: FontWeight.w500,
         fontSize: 16.0.sp,
-      ).merge(this.style),
+      ).merge(style),
       decoration: InputDecoration(
-        fillColor: this.fillColor,
+        fillColor: fillColor,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.all(Radius.circular(30.0.r)),
           borderSide: displayErrorBorder
-              ? BorderSide(color: kPinkColor)
+              ? const BorderSide(color: kPinkColor)
               : BorderSide.none,
         ),
         isDense: false,
         filled: true,
         alignLabelWithHint: true,
-        hintText: this.hintText,
-        errorText: this.errorText,
+        hintText: hintText,
+        errorText: errorText,
         contentPadding: EdgeInsets.symmetric(horizontal: 16.0.w),
-        hintStyle: this.hintStyle,
+        hintStyle: hintStyle,
       ),
-      
-      validator: this.validator,
+      validator: validator,
     );
   }
 }

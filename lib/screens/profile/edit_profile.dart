@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -49,9 +48,7 @@ class _EditProfileView extends HookView<EditProfileViewModel>
 
     final _kbConfig = useMemoized<KeyboardActionsConfig>(() {
       return KeyboardActionsConfig(
-        keyboardActionsPlatform: KeyboardActionsPlatform.ALL,
         keyboardBarColor: Colors.grey.shade200,
-        nextFocus: true,
         actions: [
           KeyboardActionsItem(
             focusNode: _fNameFocusNode,
@@ -60,7 +57,7 @@ class _EditProfileView extends HookView<EditProfileViewModel>
                 return TextButton(
                   onPressed: () => node.unfocus(),
                   child: Text(
-                    "Done",
+                    'Done',
                     style: Theme.of(context)
                         .textTheme
                         .bodyText1!
@@ -77,7 +74,7 @@ class _EditProfileView extends HookView<EditProfileViewModel>
                 return TextButton(
                   onPressed: () => node.unfocus(),
                   child: Text(
-                    "Done",
+                    'Done',
                     style: Theme.of(context)
                         .textTheme
                         .bodyText1!
@@ -94,7 +91,7 @@ class _EditProfileView extends HookView<EditProfileViewModel>
                 return TextButton(
                   onPressed: () => node.unfocus(),
                   child: Text(
-                    "Done",
+                    'Done',
                     style: Theme.of(context)
                         .textTheme
                         .bodyText1!
@@ -109,10 +106,10 @@ class _EditProfileView extends HookView<EditProfileViewModel>
     });
 
     return Scaffold(
-      backgroundColor: Color(0xffF1FAFF),
+      backgroundColor: const Color(0xffF1FAFF),
       resizeToAvoidBottomInset: true,
       appBar: CustomAppBar(
-        titleText: "Edit My Profile",
+        titleText: 'Edit My Profile',
         backgroundColor: kTealColor,
         onPressedLeading: () => Navigator.pop(context),
       ),
@@ -123,13 +120,11 @@ class _EditProfileView extends HookView<EditProfileViewModel>
             KeyboardActions(
               config: _kbConfig,
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   GestureDetector(
                     onTap: vm.onPhotoPick,
-                    child: Container(
+                    child: SizedBox(
                       height: height * 0.2,
                       child: Stack(
                         children: [
@@ -155,7 +150,7 @@ class _EditProfileView extends HookView<EditProfileViewModel>
                                       false)) {
                                 return Center(
                                   child: Text(
-                                    "Edit Photo",
+                                    'Edit Photo',
                                     style: Theme.of(context)
                                         .textTheme
                                         .subtitle1!
@@ -173,7 +168,7 @@ class _EditProfileView extends HookView<EditProfileViewModel>
                                   width: 140.0.h,
                                   child: Center(
                                     child: Text(
-                                      "Add Photo",
+                                      'Add Photo',
                                       style: Theme.of(context)
                                           .textTheme
                                           .subtitle1!
@@ -194,7 +189,7 @@ class _EditProfileView extends HookView<EditProfileViewModel>
                   InputNameField(
                     onChanged: vm.onFirstNameChanged,
                     controller: _fNameController,
-                    hintText: "First Name",
+                    hintText: 'First Name',
                     fillColor: Colors.white,
                   ),
                   SizedBox(
@@ -203,7 +198,7 @@ class _EditProfileView extends HookView<EditProfileViewModel>
                   InputNameField(
                     onChanged: vm.onLastNameChanged,
                     controller: _lNameController,
-                    hintText: "Last Name",
+                    hintText: 'Last Name',
                     fillColor: Colors.white,
                   ),
                   SizedBox(
@@ -212,17 +207,17 @@ class _EditProfileView extends HookView<EditProfileViewModel>
                   InputNameField(
                     onChanged: vm.onStreetChanged,
                     controller: _streetController,
-                    hintText: "Street",
+                    hintText: 'Street',
                     fillColor: Colors.white,
                   ),
                   SizedBox(height: height * 0.15),
                   SizedBox(
                     width: width * 0.6,
                     child: AppButton(
-                      "Apply Changes",
+                      'Apply Changes',
                       kTealColor,
                       true,
-                      () async => await performFuture<void>(vm.updateUser),
+                      () async => performFuture<void>(vm.updateUser),
                     ),
                   ),
                 ],

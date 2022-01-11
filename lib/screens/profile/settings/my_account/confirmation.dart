@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:lokalapp/utils/constants/assets.dart';
-import 'package:lokalapp/widgets/app_button.dart';
 import 'package:lottie/lottie.dart';
-import '../settings.dart';
+
+import '../../../../utils/constants/assets.dart';
 import '../../../../utils/constants/themes.dart';
+import '../../../../widgets/app_button.dart';
+import '../settings.dart';
 
 class MyAccountConfirmation extends StatelessWidget {
   const MyAccountConfirmation({this.isPassword = false});
@@ -14,11 +15,10 @@ class MyAccountConfirmation extends StatelessWidget {
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              this.isPassword ? 'Password Changed!' : 'Email Address Changed!',
+              isPassword ? 'Password Changed!' : 'Email Address Changed!',
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.headline5,
             ),

@@ -14,7 +14,7 @@ import '../../state/view_model.dart';
 import '../../widgets/photo_view_gallery/gallery/gallery_network_photo_view.dart';
 
 class PostCardViewModel extends ViewModel {
-  bool _isUserLoading = false;
+  final bool _isUserLoading = false;
   bool get isUserLoading => _isUserLoading;
 
   bool isCurrentUser(ActivityFeed activity) =>
@@ -27,21 +27,19 @@ class PostCardViewModel extends ViewModel {
   void init() {}
 
   void goToPostDetails(ActivityFeed activity) {
-    context
-      ..read<AppRouter>().navigateTo(
-        AppRoute.home,
-        PostDetails.routeName,
-        arguments: PostDetailsProps(
-          activityId: activity.id,
-          onUserPressed: (_) => this.onUserPressed(activity),
-          onLike: () => onLike(activity),
-        ),
-      );
+    context.read<AppRouter>().navigateTo(
+          AppRoute.home,
+          PostDetails.routeName,
+          arguments: PostDetailsProps(
+            activityId: activity.id,
+            onUserPressed: (_) => onUserPressed(activity),
+            onLike: () => onLike(activity),
+          ),
+        );
   }
 
   Future<void> onLike(ActivityFeed activity) async {
     if (_isLiking) return;
-    print('I got called');
     final user = context.read<Auth>().user!;
     try {
       _isLiking = true;
@@ -51,7 +49,6 @@ class PostCardViewModel extends ViewModel {
               userId: user.id!,
             );
       } else {
-        print('liking...');
         await context.read<Activities>().likePost(
               activityId: activity.id,
               userId: user.id!,
@@ -98,7 +95,6 @@ class PostCardViewModel extends ViewModel {
             color: Colors.black,
           ),
           initialIndex: index,
-          scrollDirection: Axis.horizontal,
         ),
       ),
     );

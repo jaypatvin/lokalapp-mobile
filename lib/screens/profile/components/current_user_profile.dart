@@ -34,7 +34,7 @@ class _CurrentUserProfileView
       onWillPop: vm.onWillPop,
       child: PageView(
         controller: context.read<PageController>(),
-        physics: NeverScrollableScrollPhysics(),
+        physics: const NeverScrollableScrollPhysics(),
         children: [
           Column(
             children: [
@@ -47,8 +47,8 @@ class _CurrentUserProfileView
                   10.0.w,
                 ),
                 width: double.infinity,
-                child: Text(
-                  "My Profile",
+                child: const Text(
+                  'My Profile',
                   style: TextStyle(
                     color: kTealColor,
                     fontWeight: FontWeight.w600,

@@ -25,7 +25,7 @@ class SubscriptionPaymentMethodViewModel extends ViewModel {
     final _productId = subscriptionPlanBody.productId;
     final _quantity = subscriptionPlanBody.quantity!;
     final _product = context.read<Products>().findById(_productId);
-    this.totalPrice = _quantity * _product!.basePrice;
+    totalPrice = _quantity * _product!.basePrice;
   }
 
   Future<void> onSubmitHandler(PaymentMode paymentMode) async {
@@ -44,7 +44,7 @@ class SubscriptionPaymentMethodViewModel extends ViewModel {
         context.read<ShoppingCart>().remove(subscriptionPlanBody.productId);
         AppRouter.pushNewScreen(
           context,
-          screen: CartConfirmation(
+          screen: const CartConfirmation(
             isSubscription: true,
           ),
         );

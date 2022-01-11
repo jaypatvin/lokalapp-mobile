@@ -16,7 +16,7 @@ class UserSharedPreferences {
   final _streamController = StreamController<UserSharedPreferences>.broadcast();
   final _storage = LocalStorage('session');
 
-  static const _onboardingKeys = const <MainScreen, String>{
+  static const _onboardingKeys = <MainScreen, String>{
     MainScreen.home: 'onboard_home',
     MainScreen.discover: 'onboard_discover',
     MainScreen.chats: 'onboard_chats',
@@ -61,9 +61,9 @@ class UserSharedPreferences {
       _getBoolValue(_onboardingKeys[screen]!);
 
   Future<void> updateOnboardingStatus(
-    MainScreen screen, [
+    MainScreen screen, {
     bool status = true,
-  ]) =>
+  }) =>
       _setBoolValue(_onboardingKeys[screen]!, status);
 
   List<String> getRecentSearches() =>

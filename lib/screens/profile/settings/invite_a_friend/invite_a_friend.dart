@@ -45,9 +45,7 @@ class _InviteAFriendView extends HookView<InviteAFriendViewModel>
 
     final _kbActionsRef = useRef(
       KeyboardActionsConfig(
-        keyboardActionsPlatform: KeyboardActionsPlatform.ALL,
         keyboardBarColor: Colors.grey.shade200,
-        nextFocus: true,
         actions: [
           KeyboardActionsItem(
             focusNode: _emailNode,
@@ -56,7 +54,7 @@ class _InviteAFriendView extends HookView<InviteAFriendViewModel>
                 return TextButton(
                   onPressed: () => node.unfocus(),
                   child: Text(
-                    "Done",
+                    'Done',
                     style: Theme.of(context)
                         .textTheme
                         .bodyText1!
@@ -73,7 +71,7 @@ class _InviteAFriendView extends HookView<InviteAFriendViewModel>
                 return TextButton(
                   onPressed: () => node.unfocus(),
                   child: Text(
-                    "Done",
+                    'Done',
                     style: Theme.of(context)
                         .textTheme
                         .bodyText1!
@@ -87,29 +85,30 @@ class _InviteAFriendView extends HookView<InviteAFriendViewModel>
       ),
     );
 
-    useEffect(() {
-      final void Function() _emailListener =
-          () => vm.onEmailChanged(_emailController.text);
+    useEffect(
+      () {
+        void _emailListener() => vm.onEmailChanged(_emailController.text);
 
-      final void Function() _phoneListener =
-          () => vm.onPhoneNumberChange(_phoneController.text);
+        void _phoneListener() => vm.onPhoneNumberChange(_phoneController.text);
 
-      _emailController.addListener(_emailListener);
-      _phoneController.addListener(_phoneListener);
+        _emailController.addListener(_emailListener);
+        _phoneController.addListener(_phoneListener);
 
-      return () {
-        _emailController.removeListener(_emailListener);
-        _phoneController.removeListener(_phoneListener);
-      };
-    }, []);
+        return () {
+          _emailController.removeListener(_emailListener);
+          _phoneController.removeListener(_phoneListener);
+        };
+      },
+      [],
+    );
 
     return Scaffold(
-      backgroundColor: Color(0xffF1FAFF),
+      backgroundColor: const Color(0xffF1FAFF),
       resizeToAvoidBottomInset: false,
       appBar: CustomAppBar(
         titleText: 'Invite a Friend',
         backgroundColor: kTealColor,
-        titleStyle: TextStyle(
+        titleStyle: const TextStyle(
           color: Colors.white,
         ),
         onPressedLeading: () => Navigator.pop(context),
@@ -122,27 +121,23 @@ class _InviteAFriendView extends HookView<InviteAFriendViewModel>
             tapOutsideBehavior: TapOutsideBehavior.translucentDismiss,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Container(
-                      child: Text(
-                        'Expand your Community!',
-                        style: Theme.of(context)
-                            .textTheme
-                            .headline5!
-                            .copyWith(color: kTealColor),
-                      ),
+                    Text(
+                      'Expand your Community!',
+                      style: Theme.of(context)
+                          .textTheme
+                          .headline5!
+                          .copyWith(color: kTealColor),
                     ),
                   ],
                 ),
                 SizedBox(height: 10.h),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 36.0.w),
-                  child: Text(
+                  child: const Text(
                     "Share an invite code by entering the recipient's email "
                     'address below.',
                     textAlign: TextAlign.center,
@@ -175,7 +170,7 @@ class _InviteAFriendView extends HookView<InviteAFriendViewModel>
                     'SEND INVITE CODE',
                     kTealColor,
                     true,
-                    () async => await performFuture<void>(vm.sendInviteCode),
+                    () async => performFuture<void>(vm.sendInviteCode),
                   ),
                 ),
               ],

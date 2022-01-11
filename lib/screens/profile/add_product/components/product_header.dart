@@ -8,7 +8,7 @@ class ProductHeader extends StatelessWidget {
   final String? productName;
   final double? productPrice;
   final int? productStock;
-  ProductHeader({
+  const ProductHeader({
     required this.photoBox,
     required this.productName,
     required this.productPrice,
@@ -19,16 +19,17 @@ class ProductHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        photoBox.file != null || photoBox.url != null
-            ? photoBox
-            : Container(
-                height: 75.0,
-                width: 75.0,
-                color: Colors.grey,
-                child: Center(
-                  child: Text("No Image"),
-                ),
-              ),
+        if (photoBox.file != null || photoBox.url != null)
+          photoBox
+        else
+          Container(
+            height: 75.0,
+            width: 75.0,
+            color: Colors.grey,
+            child: const Center(
+              child: Text('No Image'),
+            ),
+          ),
         const SizedBox(width: 10.0),
         Expanded(
           child: Column(
@@ -50,7 +51,7 @@ class ProductHeader extends StatelessWidget {
                   Visibility(
                     visible: productStock != null,
                     child: Text(
-                      "In Stock: $productStock",
+                      'In Stock: $productStock',
                       style: Theme.of(context).textTheme.bodyText1!.copyWith(
                             fontSize: MediaQuery.of(context).size.width * 0.04,
                             fontWeight: FontWeight.w400,

@@ -23,7 +23,7 @@ class PaymentOptionViewModel extends ViewModel {
   void init() {
     _paymentOptions =
         context.read<Shops>().findById(order.shopId)?.paymentOptions ??
-            PaymentOptions();
+            const PaymentOptions();
   }
 
   void onPaymentPressed(PaymentMode paymentMode) {
@@ -34,7 +34,7 @@ class PaymentOptionViewModel extends ViewModel {
           CupertinoPageRoute(
             builder: (context) => BankDetails(
               paymentMode: paymentMode,
-              order: this.order,
+              order: order,
             ),
           ),
         );
@@ -44,7 +44,7 @@ class PaymentOptionViewModel extends ViewModel {
         AppRouter.activityNavigatorKey.currentState?.push<bool?>(
           CupertinoPageRoute(
             builder: (context) => CashOnDelivery(
-              order: this.order,
+              order: order,
             ),
           ),
         );

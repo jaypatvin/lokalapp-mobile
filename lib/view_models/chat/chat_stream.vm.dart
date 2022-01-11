@@ -37,7 +37,7 @@ class ChatStreamViewModel extends ViewModel {
       if (isMatch) break;
     }
 
-    print('returning $isMatch for search $_searchQuery');
+    debugPrint('returning $isMatch for search $_searchQuery');
     return isMatch;
   }
 
@@ -48,7 +48,8 @@ class ChatStreamViewModel extends ViewModel {
   }
 
   List<ChatModel> getChats(
-      AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
+    AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot,
+  ) {
     final chats = snapshot.data!.docs.map<ChatModel>((doc) {
       return ChatModel.fromMap({'id': doc.id, ...doc.data()});
     }).toList();
@@ -58,7 +59,7 @@ class ChatStreamViewModel extends ViewModel {
         : chats;
   }
 
-   void createShopHandler() {
+  void createShopHandler() {
     context.read<AppRouter>().jumpToTab(AppRoute.profile);
   }
 }

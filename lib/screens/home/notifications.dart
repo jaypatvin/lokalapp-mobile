@@ -13,7 +13,7 @@ class Notifications extends StatelessWidget {
       appBar: CustomAppBar(
         titleText: 'Notifications',
         backgroundColor: kTealColor,
-        titleStyle: TextStyle(color: Colors.white),
+        titleStyle: const TextStyle(color: Colors.white),
         onPressedLeading: () => Navigator.pop(context),
       ),
       body: const SizedBox(),

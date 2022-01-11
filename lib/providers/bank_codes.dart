@@ -11,7 +11,8 @@ class BankCodes extends ChangeNotifier {
   UnmodifiableListView<BankCode> get bankCodes =>
       UnmodifiableListView(_codes.where((bank) => bank.type == BankType.bank));
   UnmodifiableListView<BankCode> get walletCodes => UnmodifiableListView(
-      _codes.where((bank) => bank.type == BankType.wallet));
+        _codes.where((bank) => bank.type == BankType.wallet),
+      );
   UnmodifiableListView<BankCode> get codes => UnmodifiableListView(_codes);
 
   bool _isLoading = false;
@@ -24,16 +25,16 @@ class BankCodes extends ChangeNotifier {
       final _snapshots = await _db.getBankCodes();
       final _codes = <BankCode>[];
 
-      _snapshots.docs.forEach((doc) {
+      for (final doc in _snapshots.docs) {
         _codes.add(BankCode.fromDocument(doc));
-      });
+      }
       this._codes = _codes;
       _isLoading = false;
       notifyListeners();
     } catch (e) {
       _isLoading = false;
       notifyListeners();
-      throw e;
+      rethrow;
     }
   }
 

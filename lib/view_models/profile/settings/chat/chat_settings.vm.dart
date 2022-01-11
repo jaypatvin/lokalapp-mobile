@@ -11,10 +11,10 @@ class ChatSettingsViewModel extends ChangeNotifier {
 
   bool get showReadReceipts => user.showReadReceipts;
 
-  Future<bool> toggleReadReceipt(bool value) async {
+  Future<bool> toggleReadReceipt({required bool value}) async {
     final body = {'show_read_receipts': value};
     try {
-      this.user.showReadReceipts = value;
+      user.showReadReceipts = value;
       notifyListeners();
       final success = await _userAPIService.updateChatSettings(
         userId: user.id!,
@@ -22,9 +22,9 @@ class ChatSettingsViewModel extends ChangeNotifier {
       );
       return success;
     } catch (e) {
-      this.user.showReadReceipts = !value;
+      user.showReadReceipts = !value;
       notifyListeners();
-      throw e;
+      rethrow;
     }
   }
 }

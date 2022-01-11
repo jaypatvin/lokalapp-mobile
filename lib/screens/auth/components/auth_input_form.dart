@@ -52,9 +52,7 @@ class _AuthInputFormState extends State<AuthInputForm> {
 
   KeyboardActionsConfig _buildConfig(BuildContext context) {
     return KeyboardActionsConfig(
-      keyboardActionsPlatform: KeyboardActionsPlatform.ALL,
       keyboardBarColor: Colors.grey.shade200,
-      nextFocus: true,
       actions: [
         KeyboardActionsItem(
           focusNode: _nodeTextEmail,
@@ -63,7 +61,7 @@ class _AuthInputFormState extends State<AuthInputForm> {
               return TextButton(
                 onPressed: () => node.unfocus(),
                 child: Text(
-                  "Done",
+                  'Done',
                   style: Theme.of(context).textTheme.bodyText1!.copyWith(
                         color: Colors.black,
                       ),
@@ -79,7 +77,7 @@ class _AuthInputFormState extends State<AuthInputForm> {
               return TextButton(
                 onPressed: () => node.unfocus(),
                 child: Text(
-                  "Done",
+                  'Done',
                   style: Theme.of(context).textTheme.bodyText1!.copyWith(
                         color: Colors.black,
                       ),
@@ -120,12 +118,12 @@ class _AuthInputFormState extends State<AuthInputForm> {
                   isDense: false,
                   filled: true,
                   alignLabelWithHint: true,
-                  hintText: "Email",
+                  hintText: 'Email',
                   contentPadding: EdgeInsets.symmetric(horizontal: 16.0.w),
                   errorText: widget.emailInputError,
                 ),
                 validator: (email) =>
-                    isEmail(email!) ? null : "Enter a valid email",
+                    isEmail(email!) ? null : 'Enter a valid email',
               ),
             ),
             SizedBox(height: 15.0.h),
@@ -140,8 +138,8 @@ class _AuthInputFormState extends State<AuthInputForm> {
                   fontWeight: FontWeight.w500,
                   fontSize: 16.0.sp,
                 ),
-                decoration: new InputDecoration(
-                  border: new OutlineInputBorder(
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(
                     borderRadius: BorderRadius.all(Radius.circular(30.0.r)),
                     borderSide: BorderSide.none,
                   ),
@@ -159,7 +157,7 @@ class _AuthInputFormState extends State<AuthInputForm> {
                   isDense: false,
                   filled: true,
                   alignLabelWithHint: true,
-                  hintText: "Password",
+                  hintText: 'Password',
                   contentPadding: EdgeInsets.symmetric(horizontal: 16.0.w),
                   errorMaxLines: 3,
                   errorText: widget.passwordInputError,
@@ -179,9 +177,9 @@ class _AuthInputFormState extends State<AuthInputForm> {
                 () {
                   _nodeTextEmail.unfocus();
                   _nodeTextPassword.unfocus();
-                  if (widget.onFormSubmit != null) widget.onFormSubmit!();
+                  widget.onFormSubmit?.call();
                 },
-                textStyle: TextStyle(color: kNavyColor),
+                textStyle: const TextStyle(color: kNavyColor),
               ),
             )
           ],

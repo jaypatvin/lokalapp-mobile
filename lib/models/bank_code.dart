@@ -5,7 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 enum BankType { bank, wallet }
 
 extension BankTypeExtension on BankType {
-  String get value => this.toString().split('.').last;
+  String get value => toString().split('.').last;
 
   BankType getFromValue() {
     return BankType.bank;

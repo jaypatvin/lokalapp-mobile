@@ -10,11 +10,11 @@ import '../services/api/shop_api_service.dart';
 import '../services/database.dart';
 
 class Shops extends ChangeNotifier {
-  Shops._(this._apiService);
-
   factory Shops(API api) {
     return Shops._(ShopAPIService(api));
   }
+
+  Shops._(this._apiService);
 
   final ShopAPIService _apiService;
   final Database _db = Database.instance;
@@ -38,7 +38,7 @@ class Shops extends ChangeNotifier {
     }
   }
 
-  void _shopListener(QuerySnapshot<Map<String, dynamic>> query) async {
+  Future<void> _shopListener(QuerySnapshot<Map<String, dynamic>> query) async {
     final length = query.docChanges.length;
     if (_isLoading || length > 1) return;
     for (final change in query.docChanges) {
@@ -47,13 +47,13 @@ class Shops extends ChangeNotifier {
 
       if (index >= 0) {
         _shops[index] = await _apiService.getById(id: id);
-        if (this.hasListeners) notifyListeners();
+        if (hasListeners) notifyListeners();
         return;
       }
 
       final shop = await _apiService.getById(id: id);
-      _shops..add(shop);
-      if (this.hasListeners) notifyListeners();
+      _shops.add(shop);
+      if (hasListeners) notifyListeners();
     }
   }
 
@@ -78,7 +78,7 @@ class Shops extends ChangeNotifier {
     } catch (e) {
       _isLoading = false;
       notifyListeners();
-      throw e;
+      rethrow;
     }
   }
 
@@ -88,7 +88,7 @@ class Shops extends ChangeNotifier {
       _shops.add(_shop);
       notifyListeners();
     } catch (e) {
-      throw e;
+      rethrow;
     }
   }
 
@@ -99,7 +99,7 @@ class Shops extends ChangeNotifier {
     try {
       return await _apiService.update(id: id, body: data);
     } catch (e) {
-      throw e;
+      rethrow;
     }
   }
 
@@ -110,7 +110,7 @@ class Shops extends ChangeNotifier {
     try {
       return await _apiService.setOperatingHours(id: id, body: data);
     } catch (e) {
-      throw e;
+      rethrow;
     }
   }
 }

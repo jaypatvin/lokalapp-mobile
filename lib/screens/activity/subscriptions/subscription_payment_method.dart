@@ -40,7 +40,7 @@ class _SubscriptionPaymentMethodView
   Widget screen(BuildContext context, SubscriptionPaymentMethodViewModel vm) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: CustomAppBar(
+      appBar: const CustomAppBar(
         backgroundColor: Colors.transparent,
         titleText: 'Choose a Payment Option',
         leadingColor: kTealColor,
@@ -61,7 +61,6 @@ class _SubscriptionPaymentMethodView
                     ),
                   ),
                   Align(
-                    alignment: Alignment.center,
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -85,7 +84,7 @@ class _SubscriptionPaymentMethodView
             SizedBox(height: 30.0.h),
             PaymentOptionsWidget(
               onPaymentPressed: (mode) async => performFuture<void>(
-                () async => await vm.onSubmitHandler(mode),
+                () async => vm.onSubmitHandler(mode),
               ),
             ),
           ],

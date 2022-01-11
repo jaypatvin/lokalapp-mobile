@@ -2,9 +2,9 @@ import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
-import 'timestamp_time_object.dart';
 
 import 'lokal_images.dart';
+import 'timestamp_time_object.dart';
 
 class Conversation {
   bool archived;
@@ -69,7 +69,7 @@ class Conversation {
     return Conversation(
       archived: map['archived'] ?? false,
       message: map['message'],
-      senderId: map['sender_id'] ?? "",
+      senderId: map['sender_id'] ?? '',
       sentAt: TimestampObject.fromMap(map['sent_at']).toDateTime(),
       createdAt: TimestampObject.fromMap(map['created_at']).toDateTime(),
       replyTo: map['reply_to'],
@@ -83,10 +83,10 @@ class Conversation {
       Conversation.fromMap(json.decode(source));
 
   factory Conversation.fromDocument(DocumentSnapshot doc) {
-    final data = doc.data() as Map<String, dynamic>;
+    final data = doc.data() as Map<String, dynamic>?;
     return Conversation(
-      archived: data['archived'],
-      message: data['message'] ?? "",
+      archived: data!['archived'],
+      message: data['message'] ?? '',
       sentAt: (data['sent_at'] as Timestamp?)?.toDate(),
       senderId: data['sender_id'],
       createdAt: (data['created_at'] as Timestamp?)?.toDate(),

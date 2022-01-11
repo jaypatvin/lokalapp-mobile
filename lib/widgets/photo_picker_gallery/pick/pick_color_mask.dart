@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 
-typedef Widget PickColorMaskBuilder(BuildContext context, bool picked);
+typedef PickColorMaskBuilder = Widget Function(
+  BuildContext context,
+  bool picked,
+);
 
 class PickColorMask extends StatelessWidget {
   final Color maskColor;

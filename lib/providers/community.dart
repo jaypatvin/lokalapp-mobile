@@ -6,12 +6,12 @@ import '../services/api/api.dart';
 import '../services/api/community_api_service.dart';
 
 class CommunityProvider extends ChangeNotifier {
-  CommunityProvider._(this._apiService);
-
   factory CommunityProvider(API api) {
     final apiService = CommunityAPIService(api);
     return CommunityProvider._(apiService);
   }
+
+  CommunityProvider._(this._apiService);
 
   final CommunityAPIService _apiService;
 

@@ -46,16 +46,15 @@ class _CashOnDeliveryView extends HookView<CashOnDeliveryViewModel>
     final _termsConditionHandler = useMemoized<TapGestureRecognizer>(
       () => TapGestureRecognizer()
         ..onTap = () {
-          print('Terms & Conditions tapped');
+          debugPrint('Terms & Conditions tapped');
         },
     );
 
     return Scaffold(
       appBar: CustomAppBar(
         titleText: 'Cash on Delivery',
-        titleStyle: TextStyle(color: Colors.white),
+        titleStyle: const TextStyle(color: Colors.white),
         backgroundColor: kTealColor,
-        leadingColor: Colors.white,
         onPressedLeading: () => Navigator.pop(context),
       ),
       body: Column(
@@ -66,13 +65,15 @@ class _CashOnDeliveryView extends HookView<CashOnDeliveryViewModel>
             child: RichText(
               text: TextSpan(
                 children: [
-                  TextSpan(text: 'Please prepare '),
+                  const TextSpan(text: 'Please prepare '),
                   TextSpan(
                     text: 'P $_price',
                     style: Theme.of(context).textTheme.bodyText2?.copyWith(
-                        color: kOrangeColor, fontWeight: FontWeight.bold),
+                          color: kOrangeColor,
+                          fontWeight: FontWeight.bold,
+                        ),
                   ),
-                  TextSpan(text: ' for when the courier arrives.')
+                  const TextSpan(text: ' for when the courier arrives.')
                 ],
                 style: Theme.of(context)
                     .textTheme
@@ -81,37 +82,41 @@ class _CashOnDeliveryView extends HookView<CashOnDeliveryViewModel>
               ),
             ),
           ),
-          SizedBox(height: 16.0),
+          const SizedBox(height: 16.0),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 36.0.w),
             child: RichText(
               text: TextSpan(
-                  children: [
-                    TextSpan(
-                        text: 'By completing this order, you agree to all '),
-                    TextSpan(
-                      text: 'Terms & Conditions',
-                      recognizer: _termsConditionHandler,
-                      style: Theme.of(context).textTheme.bodyText2?.copyWith(
-                          color: kTealColor, fontWeight: FontWeight.bold),
-                    ),
-                  ],
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyText2
-                      ?.copyWith(color: Colors.black)),
+                children: [
+                  const TextSpan(
+                    text: 'By completing this order, you agree to all ',
+                  ),
+                  TextSpan(
+                    text: 'Terms & Conditions',
+                    recognizer: _termsConditionHandler,
+                    style: Theme.of(context).textTheme.bodyText2?.copyWith(
+                          color: kTealColor,
+                          fontWeight: FontWeight.bold,
+                        ),
+                  ),
+                ],
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyText2
+                    ?.copyWith(color: Colors.black),
+              ),
             ),
           ),
-          Spacer(),
+          const Spacer(),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 12.0.w),
-            child: Container(
+            child: SizedBox(
               width: double.infinity,
               child: AppButton(
                 'Continue with Cash on Delivery',
                 kTealColor,
                 true,
-                () async => await performFuture<void>(vm.onSubmitHandler),
+                () => performFuture<void>(vm.onSubmitHandler),
               ),
             ),
           ),

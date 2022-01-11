@@ -2,16 +2,14 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 
-import 'lokal_api_constants.dart';
-
 class SubscriptionService {
   static SubscriptionService? _instance;
   static SubscriptionService? get instance {
-    if (_instance == null) {
-      _instance = SubscriptionService();
-    }
-    return _instance;
+    return _instance ??= SubscriptionService();
   }
+
+  String get _url =>
+      'https://us-central1-lokal-1baac.cloudfunctions.net/api/v1/productSubscriptionPlans';
 
   // --POST
   Future<http.Response> createSubscriptionPlan({
@@ -20,10 +18,10 @@ class SubscriptionService {
   }) async {
     final body = json.encode(data);
     final response = await http.post(
-      Uri.parse(subscriptionPlansUrl),
+      Uri.parse(_url),
       headers: {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer $idToken"
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $idToken'
       },
       body: body,
     );
@@ -36,10 +34,10 @@ class SubscriptionService {
     required String? planId,
   }) async {
     final response = await http.post(
-      Uri.parse("$subscriptionPlansUrl/$planId/autoRescheduleConflicts"),
+      Uri.parse('$_url/$planId/autoRescheduleConflicts'),
       headers: {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer $idToken"
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $idToken'
       },
     );
 
@@ -52,10 +50,10 @@ class SubscriptionService {
     required String planId,
   }) async {
     final response = await http.put(
-      Uri.parse("$subscriptionPlansUrl/$planId/confirm"),
+      Uri.parse('$_url/$planId/confirm'),
       headers: {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer $idToken"
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $idToken'
       },
     );
 
@@ -70,10 +68,10 @@ class SubscriptionService {
     final body = json.encode(data);
 
     final response = await http.put(
-      Uri.parse("$subscriptionPlansUrl/$planId/overrideDates"),
+      Uri.parse('$_url/$planId/overrideDates'),
       headers: {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer $idToken"
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $idToken'
       },
       body: body,
     );

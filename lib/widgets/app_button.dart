@@ -2,6 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class AppButton extends StatelessWidget {
+  factory AppButton.filled(
+    String? text, {
+    Color color = Colors.black,
+    void Function()? onPressed,
+    TextStyle? textStyle,
+  }) {
+    return AppButton._(text, color, true, onPressed, textStyle);
+  }
+
+  factory AppButton.transparent(
+    String? text, {
+    Color color = Colors.black,
+    void Function()? onPressed,
+    TextStyle? textStyle,
+  }) {
+    return AppButton._(text, color, false, onPressed, textStyle);
+  }
+
   /// Button Label
   final String? text;
 
@@ -27,6 +45,7 @@ class AppButton extends StatelessWidget {
   /// fontWeight: FontWeight.w600,
   /// ) ```
   final TextStyle? textStyle;
+
   const AppButton(
     this.text,
     this.color,
@@ -35,26 +54,34 @@ class AppButton extends StatelessWidget {
     this.textStyle,
   });
 
+  const AppButton._(
+    this.text,
+    this.color,
+    this.isFilled,
+    this.onPressed,
+    this.textStyle,
+  );
+
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-      onPressed: this.onPressed,
+      onPressed: onPressed,
+      style: ElevatedButton.styleFrom(
+        shape: const StadiumBorder(),
+        elevation: 0.0,
+        primary: isFilled ? color : Colors.transparent,
+        minimumSize: Size(0, 40.0.h),
+        side: BorderSide(color: color),
+      ),
       child: Text(
         text!,
         textAlign: TextAlign.center,
         style: TextStyle(
-          fontFamily: "Goldplay",
+          fontFamily: 'Goldplay',
           fontSize: 16.0.sp,
           fontWeight: FontWeight.w600,
-          color: isFilled ? Colors.white : this.color,
-        ).merge(this.textStyle),
-      ),
-      style: ElevatedButton.styleFrom(
-        shape: StadiumBorder(),
-        elevation: 0.0,
-        primary: isFilled ? this.color : Colors.transparent,
-        minimumSize: Size(0, 40.0.h),
-        side: BorderSide(color: this.color),
+          color: isFilled ? Colors.white : color,
+        ).merge(textStyle),
       ),
     );
   }

@@ -21,7 +21,6 @@ void openInputGallery(
           color: Colors.black,
         ),
         initialIndex: index,
-        scrollDirection: Axis.horizontal,
       ),
     ),
   );
@@ -41,7 +40,6 @@ void openGallery(
           color: Colors.black,
         ),
         initialIndex: index,
-        scrollDirection: Axis.horizontal,
       ),
     ),
   );
@@ -61,7 +59,7 @@ String getTimeOfDayString(TimeOfDay time) {
     time.hour,
     time.minute,
   );
-  final timeOfDay = DateFormat("hh:mm a").format(date);
+  final timeOfDay = DateFormat('hh:mm a').format(date);
 
   return timeOfDay;
 }
@@ -77,7 +75,7 @@ bool isValidOperatingHours(OperatingHours? operatingHours) {
 
 extension StringExtension on String {
   String capitalize() {
-    if (this == "null" || isEmpty) return this;
-    return "${this[0].toUpperCase()}${this.substring(1).toLowerCase()}";
+    if (this == 'null' || isEmpty) return this;
+    return '${this[0].toUpperCase()}${substring(1).toLowerCase()}';
   }
 }

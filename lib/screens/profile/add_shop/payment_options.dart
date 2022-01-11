@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -24,7 +23,7 @@ class SetUpPaymentOptions extends StatelessWidget {
   Widget build(BuildContext context) {
     return MVVM(
       view: (_, __) => _SetupPaymentOptionsView(),
-      viewModel: SetupPaymentOptionsViewModel(onSubmit: this.onSubmit),
+      viewModel: SetupPaymentOptionsViewModel(onSubmit: onSubmit),
     );
   }
 }
@@ -88,58 +87,62 @@ class _SetupPaymentOptionsView extends HookView<SetupPaymentOptionsViewModel>
               },
             ),
             const SizedBox(height: 10),
-            Consumer<ShopBody>(builder: (_, shopBody, __) {
-              return ListTile(
-                tileColor:
-                    shopBody.paymentOptions?.gCashAccounts.isEmpty ?? true
-                        ? Colors.grey[300]
-                        : kInviteScreenColor,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30.0),
-                ),
-                leading: CircleAvatar(
-                  backgroundColor: Colors.white,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: SvgPicture.asset(
-                      kSvgGCashPayment,
-                      fit: BoxFit.contain,
+            Consumer<ShopBody>(
+              builder: (_, shopBody, __) {
+                return ListTile(
+                  tileColor:
+                      shopBody.paymentOptions?.gCashAccounts.isEmpty ?? true
+                          ? Colors.grey[300]
+                          : kInviteScreenColor,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30.0),
+                  ),
+                  leading: CircleAvatar(
+                    backgroundColor: Colors.white,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: SvgPicture.asset(
+                        kSvgGCashPayment,
+                      ),
                     ),
                   ),
-                ),
-                title: Text(
-                  'Wallet',
-                  style: Theme.of(context)
-                      .textTheme
-                      .headline6!
-                      .copyWith(fontWeight: FontWeight.w600),
-                ),
-                trailing: Icon(
-                  shopBody.paymentOptions?.gCashAccounts.isEmpty ?? true
-                      ? Icons.add
-                      : Icons.arrow_forward_ios,
-                  color: kTealColor,
-                  size: 18.0.r,
-                ),
-                onTap: vm.onAddWallet,
-              );
-            }),
+                  title: Text(
+                    'Wallet',
+                    style: Theme.of(context)
+                        .textTheme
+                        .headline6!
+                        .copyWith(fontWeight: FontWeight.w600),
+                  ),
+                  trailing: Icon(
+                    shopBody.paymentOptions?.gCashAccounts.isEmpty ?? true
+                        ? Icons.add
+                        : Icons.arrow_forward_ios,
+                    color: kTealColor,
+                    size: 18.0.r,
+                  ),
+                  onTap: vm.onAddWallet,
+                );
+              },
+            ),
             const Spacer(),
-            Consumer<ShopBody>(builder: (_, shopBody, __) {
-              final hasPayment =
-                  (shopBody.paymentOptions?.bankAccounts.isNotEmpty ?? false) ||
-                      (shopBody.paymentOptions?.gCashAccounts.isNotEmpty ??
-                          false);
-              return SizedBox(
-                width: double.infinity,
-                child: AppButton(
-                  hasPayment ? 'Finish Set-up' : 'Skip',
-                  kTealColor,
-                  hasPayment,
-                  () async => await performFuture(vm.onSubmit),
-                ),
-              );
-            }),
+            Consumer<ShopBody>(
+              builder: (_, shopBody, __) {
+                final hasPayment =
+                    (shopBody.paymentOptions?.bankAccounts.isNotEmpty ??
+                            false) ||
+                        (shopBody.paymentOptions?.gCashAccounts.isNotEmpty ??
+                            false);
+                return SizedBox(
+                  width: double.infinity,
+                  child: AppButton(
+                    hasPayment ? 'Finish Set-up' : 'Skip',
+                    kTealColor,
+                    hasPayment,
+                    () async => performFuture(vm.onSubmit),
+                  ),
+                );
+              },
+            ),
           ],
         ),
       ),

@@ -57,6 +57,7 @@ class CustomPickAssetWidget extends StatelessWidget {
     }
 
     return GestureDetector(
+      onTap: onTap as void Function()?,
       child: Stack(
         children: <Widget>[
           Positioned.fill(
@@ -72,7 +73,6 @@ class CustomPickAssetWidget extends StatelessWidget {
           checkWidget,
         ],
       ),
-      onTap: onTap as void Function()?,
     );
   }
 }

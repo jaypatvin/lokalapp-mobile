@@ -27,14 +27,14 @@ class OrderConfirmed extends StatelessWidget {
           children: [
             SizedBox(height: 90.0.h),
             Text(
-              "Order Confirmed!",
+              'Order Confirmed!',
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.headline5,
             ),
-            SizedBox(
+            const SizedBox(
               height: 20,
             ),
-            Container(
+            SizedBox(
               height: 140.0,
               width: double.infinity,
               child: Stack(
@@ -54,24 +54,23 @@ class OrderConfirmed extends StatelessWidget {
                 ],
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 16.0,
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: TransactionDetails(
-                transaction: this.order,
-                isBuyer: this.isBuyer,
+                transaction: order,
+                isBuyer: isBuyer,
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 24.0,
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   SizedBox(
                     width: double.infinity,
@@ -80,7 +79,7 @@ class OrderConfirmed extends StatelessWidget {
                   SizedBox(
                     width: double.infinity,
                     child: AppButton(
-                      "Back to Activity",
+                      'Back to Activity',
                       kTealColor,
                       true,
                       () => Navigator.pop(context),

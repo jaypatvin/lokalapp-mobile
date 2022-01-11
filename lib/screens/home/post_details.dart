@@ -66,19 +66,23 @@ class _PostDetailsView extends HookView<PostDetailViewModel>
     final _commentInputFocusNode = useFocusNode();
     final _showImagePicker = useState<bool>(false);
 
-    useEffect(() {
-      final listener = () {
-        Timer(Duration(milliseconds: 300), () {
-          _scrollController.animateTo(
-            _scrollController.position.maxScrollExtent,
-            duration: Duration(milliseconds: 200),
-            curve: Curves.ease,
-          );
-        });
-      };
-      vm.imageProvider.addListener(listener);
-      return () => vm.imageProvider.removeListener(listener);
-    }, [vm.imageProvider]);
+    useEffect(
+      () {
+        void listener() {
+          Timer(const Duration(milliseconds: 300), () {
+            _scrollController.animateTo(
+              _scrollController.position.maxScrollExtent,
+              duration: const Duration(milliseconds: 200),
+              curve: Curves.ease,
+            );
+          });
+        }
+
+        vm.imageProvider.addListener(listener);
+        return () => vm.imageProvider.removeListener(listener);
+      },
+      [vm.imageProvider],
+    );
 
     final _kbConfig = useMemoized<KeyboardActionsConfig>(() {
       return KeyboardActionsConfig(
@@ -92,10 +96,11 @@ class _PostDetailsView extends HookView<PostDetailViewModel>
                 return TextButton(
                   onPressed: () => node.unfocus(),
                   child: Text(
-                    "Done",
-                    style: Theme.of(context).textTheme.bodyText1!.copyWith(
-                          color: Colors.black,
-                        ),
+                    'Done',
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyText1!
+                        .copyWith(color: Colors.black),
                   ),
                 );
               },
@@ -115,7 +120,7 @@ class _PostDetailsView extends HookView<PostDetailViewModel>
           appBar: CustomAppBar(
             backgroundColor: kTealColor,
             titleText: "${user.firstName}'s Post",
-            titleStyle: TextStyle(color: Colors.white),
+            titleStyle: const TextStyle(color: Colors.white),
             actions: [
               IconButton(
                 icon: Icon(
@@ -127,9 +132,7 @@ class _PostDetailsView extends HookView<PostDetailViewModel>
                     ? () => vm.onPostOptionsPressed(
                           PostOptions(
                             onDeletePost: () async =>
-                                await performFuture<void>(vm.onDelete),
-                            onEditPost: null,
-                            onCopyLink: null,
+                                performFuture<void>(vm.onDelete),
                           ),
                         )
                     : null,
@@ -145,7 +148,7 @@ class _PostDetailsView extends HookView<PostDetailViewModel>
                 Expanded(
                   child: SingleChildScrollView(
                     controller: _scrollController,
-                    physics: AlwaysScrollableScrollPhysics(),
+                    physics: const AlwaysScrollableScrollPhysics(),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -163,7 +166,7 @@ class _PostDetailsView extends HookView<PostDetailViewModel>
                                   onTap: () => vm.onUserPressed(user.id!),
                                   firstName: user.firstName!,
                                   lastName: user.lastName!,
-                                  photo: user.profilePhoto!,
+                                  photo: user.profilePhoto,
                                   spacing: 10.0.w,
                                 ),
                               ),
@@ -179,7 +182,7 @@ class _PostDetailsView extends HookView<PostDetailViewModel>
                               _PostDetailsImages(activity),
                               SizedBox(height: 15.0.h),
                               Text(
-                                DateFormat("hh:mm a • dd MMMM yyyy")
+                                DateFormat('hh:mm a • dd MMMM yyyy')
                                     .format(activity.createdAt),
                                 style: Theme.of(context)
                                     .textTheme
@@ -220,12 +223,12 @@ class _PostDetailsView extends HookView<PostDetailViewModel>
                     children: [
                       GestureDetector(
                         child: Container(
-                          padding: EdgeInsets.all(10),
+                          padding: const EdgeInsets.all(10),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(100),
-                            border: Border.all(width: 1, color: kTealColor),
+                            border: Border.all(color: kTealColor),
                           ),
-                          child: Icon(
+                          child: const Icon(
                             MdiIcons.fileImageOutline,
                             color: kTealColor,
                           ),
@@ -235,7 +238,7 @@ class _PostDetailsView extends HookView<PostDetailViewModel>
                           Future.delayed(const Duration(milliseconds: 300), () {
                             _scrollController.animateTo(
                               _scrollController.position.maxScrollExtent,
-                              duration: Duration(milliseconds: 200),
+                              duration: const Duration(milliseconds: 200),
                               curve: Curves.ease,
                             );
                           });
@@ -246,7 +249,7 @@ class _PostDetailsView extends HookView<PostDetailViewModel>
                         child: AnimatedContainer(
                           duration: const Duration(milliseconds: 200),
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.all(
+                            borderRadius: const BorderRadius.all(
                               Radius.circular(30.0),
                             ),
                             border: Border.all(color: kTealColor),
@@ -258,7 +261,7 @@ class _PostDetailsView extends HookView<PostDetailViewModel>
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 AnimatedContainer(
-                                  height: vm.imageProvider.picked.length > 0
+                                  height: vm.imageProvider.picked.isNotEmpty
                                       ? 100
                                       : 0.0,
                                   duration: const Duration(milliseconds: 200),
@@ -272,7 +275,7 @@ class _PostDetailsView extends HookView<PostDetailViewModel>
                                   inputFocusNode: _commentInputFocusNode,
                                   onSend: vm.createComment,
                                   onTap: () => _showImagePicker.value = false,
-                                  hintText: "Add a comment...",
+                                  hintText: 'Add a comment...',
                                 ),
                               ],
                             ),
@@ -349,7 +352,7 @@ class _PostDetailsHeader extends StatelessWidget {
           ),
           SizedBox(width: spacing),
           Text(
-            "$firstName $lastName",
+            '$firstName $lastName',
             style: Theme.of(context)
                 .textTheme
                 .subtitle1!
@@ -372,26 +375,23 @@ class _PostDetailsImages extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final images = activity.images;
-    final count = images.length;
-    return StaggeredGridView.countBuilder(
-      shrinkWrap: true,
-      physics: NeverScrollableScrollPhysics(),
-      itemCount: count,
+    return StaggeredGrid.count(
       crossAxisCount: 2,
-      itemBuilder: (ctx, index) {
-        return NetworkPhotoThumbnail(
-          galleryItem: images[index],
-          onTap: () => openGallery(context, index, images),
-        );
-      },
-      staggeredTileBuilder: (index) {
-        if (count % 2 != 0 && index == 0) {
-          return new StaggeredTile.count(2, 1);
-        }
-        return new StaggeredTile.count(1, 1);
-      },
       mainAxisSpacing: 4.0.w,
       crossAxisSpacing: 4.0.h,
+      children: images.map<StaggeredGridTile>((image) {
+        final index = images.indexOf(image);
+        final crossAxisCellCount = images.length % 2 != 0 && index == 0 ? 2 : 1;
+        return StaggeredGridTile.count(
+          crossAxisCellCount: crossAxisCellCount,
+          mainAxisCellCount: 1,
+          child: NetworkPhotoThumbnail(
+            key: Key('post_details_${images[index].url}'),
+            galleryItem: images[index],
+            onTap: () => openGallery(context, index, images),
+          ),
+        );
+      }).toList(),
     );
   }
 }
@@ -412,15 +412,13 @@ class _CommentAndLikeRow extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal: 20.0.w, vertical: 10.0.h),
       decoration: BoxDecoration(
         border: Border.all(
-          color: Color(0xffE0E0E0),
-          width: 1,
+          color: const Color(0xffE0E0E0),
         ),
       ),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
         children: [
           IconButton(
-            constraints: BoxConstraints(),
+            constraints: const BoxConstraints(),
             padding: EdgeInsets.zero,
             icon: Icon(
               activity.liked ? MdiIcons.heart : MdiIcons.heartOutline,
@@ -433,11 +431,11 @@ class _CommentAndLikeRow extends StatelessWidget {
             activity.likedCount.toString(),
             style: Theme.of(context).textTheme.subtitle1,
           ),
-          Spacer(),
+          const Spacer(),
           IconButton(
-            constraints: BoxConstraints(),
+            constraints: const BoxConstraints(),
             padding: EdgeInsets.zero,
-            icon: Icon(MdiIcons.commentOutline),
+            icon: const Icon(MdiIcons.commentOutline),
             onPressed: () {},
           ),
           SizedBox(width: 8.0.w),
@@ -477,18 +475,18 @@ class _CommentFeed extends StatelessWidget {
               ),
             );
           default:
-            if (snapshot.hasError)
+            if (snapshot.hasError) {
               return Text('Error: ${snapshot.error}');
-            else if (!snapshot.hasData || snapshot.data!.docs.length == 0)
-              return Text(
+            } else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+              return const Text(
                 'No posts yet! Be the first one to post.',
                 style: TextStyle(
                   fontWeight: FontWeight.w500,
                 ),
               );
-            else {
+            } else {
               return ListView.builder(
-                physics: NeverScrollableScrollPhysics(),
+                physics: const NeverScrollableScrollPhysics(),
                 itemCount: snapshot.data!.docs.length,
                 shrinkWrap: true,
                 itemBuilder: (ctx, index) {
@@ -499,10 +497,11 @@ class _CommentFeed extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       CommentCard(
-                        activityId: this._activityId,
+                        key: Key(comment.id),
+                        activityId: _activityId,
                         comment: comment,
                       ),
-                      Divider(),
+                      const Divider(),
                     ],
                   );
                 },

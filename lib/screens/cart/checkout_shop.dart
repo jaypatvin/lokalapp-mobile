@@ -26,9 +26,8 @@ class ShopCheckout extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(
-        titleText: this.shop.name,
-        titleStyle: TextStyle(color: Colors.white),
-        buildLeading: true,
+        titleText: shop.name,
+        titleStyle: const TextStyle(color: Colors.white),
         backgroundColor: kTealColor,
         onPressedLeading: () => Navigator.pop(context),
       ),
@@ -77,38 +76,37 @@ class _OrdersCard extends StatelessWidget {
               product: product!,
               quantity: order.quantity,
               onEditTap: () {
-                context.read<AppRouter>()
-                  ..navigateTo(
-                    AppRoute.discover,
-                    ProductDetail.routeName,
-                    arguments: ProductDetailProps(product),
-                  );
+                context.read<AppRouter>().navigateTo(
+                      AppRoute.discover,
+                      ProductDetail.routeName,
+                      arguments: ProductDetailProps(product),
+                    );
               },
             ),
-            Divider(),
+            const Divider(),
             Align(
               alignment: Alignment.centerRight,
               child: RichText(
                 text: TextSpan(
-                  text: "Order Total\t",
-                  style: TextStyle(color: Color(0xFF828282)),
+                  text: 'Order Total\t',
+                  style: const TextStyle(color: Color(0xFF828282)),
                   children: [
                     TextSpan(
                       text: (product.basePrice * order.quantity).toString(),
-                      style: TextStyle(color: Colors.orange),
+                      style: const TextStyle(color: Colors.orange),
                     )
                   ],
                 ),
               ),
             ),
-            SizedBox(height: 8.0),
+            const SizedBox(height: 8.0),
             Row(
               // TODO: ADD ON PRESS FUNCTIONS
               children: [
                 if (context.read<Products>().findById(productId)!.canSubscribe)
                   Expanded(
                     child: AppButton(
-                      "Subscribe",
+                      'Subscribe',
                       kTealColor,
                       false,
                       () => Navigator.of(context).push(
@@ -121,19 +119,18 @@ class _OrdersCard extends StatelessWidget {
                     ),
                   ),
                 if (context.read<Products>().findById(productId)!.canSubscribe)
-                  SizedBox(width: 8.0),
+                  const SizedBox(width: 8.0),
                 Expanded(
                   child: AppButton(
-                    "Checkout",
+                    'Checkout',
                     kTealColor,
                     true,
                     () {
-                      context.read<AppRouter>()
-                        ..navigateTo(
-                          AppRoute.discover,
-                          Checkout.routeName,
-                          arguments: CheckoutProps(productId),
-                        );
+                      context.read<AppRouter>().navigateTo(
+                            AppRoute.discover,
+                            Checkout.routeName,
+                            arguments: CheckoutProps(productId),
+                          );
                     },
                   ),
                 )

@@ -78,11 +78,14 @@ class AppRouter {
   }
 
   void jumpToTab(AppRoute appRoute) {
-    if (appRoute == AppRoute.root || _tabController.index == appRoute.index - 1)
+    if (appRoute == AppRoute.root ||
+        _tabController.index == appRoute.index - 1) {
       return;
+    }
 
-    if (keyOf(appRoute).currentState != null)
+    if (keyOf(appRoute).currentState != null) {
       keyOf(appRoute).currentState!.popUntil((route) => route.isFirst);
+    }
 
     _tabController.jumpToTab(appRoute.index - 1);
   }
@@ -103,12 +106,12 @@ class AppRouter {
         PageTransitionAnimation.cupertino,
     PageRoute? customPageRoute,
   }) {
-    if (withNavBar == null) {
-      withNavBar = true;
-    }
+    withNavBar ??= true;
+
     return Navigator.of(context, rootNavigator: !withNavBar).push<T>(
-        customPageRoute as Route<T>? ??
-            getPageRoute(pageTransitionAnimation, enterPage: screen));
+      customPageRoute as Route<T>? ??
+          getPageRoute(pageTransitionAnimation, enterPage: screen),
+    );
   }
 
   /// Push a dynamic (non-widget) screen without NavigatorKeys.
@@ -120,9 +123,7 @@ class AppRouter {
     required dynamic screen,
     bool? withNavBar,
   }) {
-    if (withNavBar == null) {
-      withNavBar = true;
-    }
+    withNavBar ??= true;
     return Navigator.of(context, rootNavigator: !withNavBar).push<T>(screen);
   }
 
@@ -140,13 +141,14 @@ class AppRouter {
         PageTransitionAnimation.cupertino,
     PageRoute? customPageRoute,
   }) {
-    if (withNavBar == null) {
-      withNavBar = true;
-    }
-
+    withNavBar ??= true;
     return Navigator.of(context, rootNavigator: !withNavBar).push<T>(
-        customPageRoute as Route<T>? ??
-            getPageRoute(pageTransitionAnimation,
-                enterPage: screen, settings: settings));
+      customPageRoute as Route<T>? ??
+          getPageRoute(
+            pageTransitionAnimation,
+            enterPage: screen,
+            settings: settings,
+          ),
+    );
   }
 }

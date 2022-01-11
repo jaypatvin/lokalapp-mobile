@@ -26,7 +26,7 @@ class SocialBlock extends StatelessWidget {
       child: Column(
         children: [
           Text(
-            "Sign in with",
+            'Sign in with',
             style: TextStyle(
               fontSize: 18.0.sp,
               fontWeight: FontWeight.w500,
@@ -36,25 +36,24 @@ class SocialBlock extends StatelessWidget {
             height: 10.0.h,
           ),
           Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               _SocialButton(
-                image: AssetImage(kPngFbLogo),
-                onTap: this.fbLogin,
-                width: this.buttonWidth,
+                image: const AssetImage(kPngFbLogo),
+                onTap: fbLogin,
+                width: buttonWidth,
               ),
               SizedBox(width: 10.0.w),
               _SocialButton(
-                image: AssetImage(kPngAppleLogo),
-                onTap: this.appleLogin,
-                width: this.buttonWidth,
+                image: const AssetImage(kPngAppleLogo),
+                onTap: appleLogin,
+                width: buttonWidth,
               ),
               SizedBox(width: 10.0.w),
               _SocialButton(
-                image: AssetImage(kPngGoogleLogo),
-                onTap: this.googleLogin,
-                width: this.buttonWidth,
+                image: const AssetImage(kPngGoogleLogo),
+                onTap: googleLogin,
+                width: buttonWidth,
               ),
             ],
           ),
@@ -80,10 +79,10 @@ class _SocialButton extends StatelessWidget {
       child: Ink.image(
         image: image!,
         fit: BoxFit.fill,
-        height: this.width,
-        width: this.width,
+        height: width,
+        width: width,
         child: InkWell(
-          onTap: this.onTap as void Function()?,
+          onTap: onTap as void Function()?,
         ),
       ),
     );

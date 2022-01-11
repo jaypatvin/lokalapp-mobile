@@ -11,10 +11,10 @@ class ViewPaymentButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AppButton(
-      "View Proof of Payment",
+      'View Proof of Payment',
       kTealColor,
       false,
-      () => this.onPress(OrderAction.viewPayment),
+      () => onPress(OrderAction.viewPayment),
     );
   }
 }

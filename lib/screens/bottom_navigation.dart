@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:lokalapp/services/bottom_nav_bar_hider.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 
-import '../providers/auth.dart';
 import '../routers/app_router.dart';
+import '../services/bottom_nav_bar_hider.dart';
 import '../utils/constants/assets.dart';
+import '../utils/shared_preference.dart';
+import '../widgets/overlays/onboarding.dart';
 import 'activity/activity.dart';
 import 'chat/chat.dart';
 import 'discover/discover.dart';
@@ -19,24 +20,14 @@ class BottomNavigation extends StatefulWidget {
 }
 
 class _BottomNavigationState extends State<BottomNavigation> {
-  List<Widget> _buildScreens() {
-    return [
-      Home(),
-      Discover(),
-      Chat(),
-      Activity(),
-      ProfileScreen(userId: context.read<Auth>().user!.id!),
-    ];
-  }
-
   List<PersistentBottomNavBarItem> _navBarsItems() {
     return [
       PersistentBottomNavBarItem(
         assetName: kBottomIconHome,
-        title: ("Home"),
+        title: 'Home',
         iconSize: 34,
-        activeColorPrimary: Color(0xFFCC3752),
-        inactiveColorPrimary: Color(0xFF103045),
+        activeColorPrimary: const Color(0xFFCC3752),
+        inactiveColorPrimary: const Color(0xFF103045),
         routeAndNavigatorSettings: RouteAndNavigatorSettings(
           navigatorKey: AppRouter.homeNavigatorKey,
           initialRoute: Home.routeName,
@@ -48,10 +39,10 @@ class _BottomNavigationState extends State<BottomNavigation> {
       ),
       PersistentBottomNavBarItem(
         assetName: kBottomIconDiscover,
-        title: ("Discover"),
+        title: 'Discover',
         iconSize: 34,
-        activeColorPrimary: Color(0xFFCC3752),
-        inactiveColorPrimary: Color(0xFF103045),
+        activeColorPrimary: const Color(0xFFCC3752),
+        inactiveColorPrimary: const Color(0xFF103045),
         routeAndNavigatorSettings: RouteAndNavigatorSettings(
           navigatorKey: AppRouter.discoverNavigatorKey,
           initialRoute: Discover.routeName,
@@ -63,10 +54,10 @@ class _BottomNavigationState extends State<BottomNavigation> {
       ),
       PersistentBottomNavBarItem(
         assetName: kBottomIconChat,
-        title: ("Chat"),
+        title: 'Chat',
         iconSize: 34,
-        activeColorPrimary: Color(0xFFCC3752),
-        inactiveColorPrimary: Color(0xFF103045),
+        activeColorPrimary: const Color(0xFFCC3752),
+        inactiveColorPrimary: const Color(0xFF103045),
         routeAndNavigatorSettings: RouteAndNavigatorSettings(
           navigatorKey: AppRouter.chatNavigatorKey,
           initialRoute: Chat.routeName,
@@ -78,10 +69,10 @@ class _BottomNavigationState extends State<BottomNavigation> {
       ),
       PersistentBottomNavBarItem(
         assetName: kBottomIconActivity,
-        title: ("Activity"),
+        title: 'Activity',
         iconSize: 34,
-        activeColorPrimary: Color(0xFFCC3752),
-        inactiveColorPrimary: Color(0xFF103045),
+        activeColorPrimary: const Color(0xFFCC3752),
+        inactiveColorPrimary: const Color(0xFF103045),
         routeAndNavigatorSettings: RouteAndNavigatorSettings(
           navigatorKey: AppRouter.activityNavigatorKey,
           initialRoute: Activity.routeName,
@@ -93,10 +84,10 @@ class _BottomNavigationState extends State<BottomNavigation> {
       ),
       PersistentBottomNavBarItem(
         assetName: kBottomIconProfile,
-        title: ("Profile"),
+        title: 'Profile',
         iconSize: 34,
-        activeColorPrimary: Color(0xFFCC3752),
-        inactiveColorPrimary: Color(0xFF103045),
+        activeColorPrimary: const Color(0xFFCC3752),
+        inactiveColorPrimary: const Color(0xFF103045),
         routeAndNavigatorSettings: RouteAndNavigatorSettings(
           navigatorKey: AppRouter.profileNavigatorKey,
           initialRoute: ProfileScreen.routeName,
@@ -126,19 +117,45 @@ class _BottomNavigationState extends State<BottomNavigation> {
       body: PersistentTabView(
         context,
         controller: context.read<PersistentTabController>(),
-        screens: _buildScreens(),
         items: _navBarsItems(),
         resizeToAvoidBottomInset: true,
         hideNavigationBar: context.watch<BottomNavBarHider>().isHidden,
         navBarStyle: NavBarStyle.svg,
-        itemAnimationProperties: ItemAnimationProperties(
+        itemAnimationProperties: const ItemAnimationProperties(
           duration: Duration(milliseconds: 200),
           curve: Curves.ease,
         ),
-        screenTransitionAnimation: ScreenTransitionAnimation(
+        screenTransitionAnimation: const ScreenTransitionAnimation(
           animateTabTransition: true,
         ),
         onItemSelected: _onItemSelected,
+        screens: const [
+          Onboarding(
+            key: Key('home_screen'),
+            screen: MainScreen.home,
+            child: Home(),
+          ),
+          Onboarding(
+            key: Key('discover_screen'),
+            screen: MainScreen.discover,
+            child: Discover(),
+          ),
+          Onboarding(
+            key: Key('chat_screen'),
+            screen: MainScreen.chats,
+            child: Chat(),
+          ),
+          Onboarding(
+            key: Key('activity_screen'),
+            screen: MainScreen.activity,
+            child: Activity(),
+          ),
+          Onboarding(
+            key: Key('profile_screen'),
+            screen: MainScreen.profile,
+            child: ProfileScreen(),
+          ),
+        ],
       ),
     );
   }

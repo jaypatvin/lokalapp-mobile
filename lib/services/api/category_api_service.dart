@@ -8,12 +8,12 @@ class CategoryAPIService extends APIService<LokalCategory> {
   const CategoryAPIService(this.api);
 
   final API api;
-  final Endpoint endpoint = Endpoint.category;
+  Endpoint get endpoint => Endpoint.category;
 
   //#region --GET
   Future<List<LokalCategory>> getAll() async {
     try {
-      final response = await this.getter(
+      final response = await getter(
         api.endpointUri(endpoint),
         headers: api.authHeader(),
       );
@@ -26,7 +26,7 @@ class CategoryAPIService extends APIService<LokalCategory> {
 
   Future<LokalCategory> getById({required String id}) async {
     try {
-      final response = await this.getter(
+      final response = await getter(
         api.endpointUri(endpoint, pathSegments: [id]),
         headers: api.authHeader(),
       );
@@ -40,7 +40,7 @@ class CategoryAPIService extends APIService<LokalCategory> {
   //#region --POST
   Future<bool> create({required Map<String, dynamic> body}) async {
     try {
-      final response = await this.poster(
+      final response = await poster(
         api.endpointUri(endpoint),
         headers: api.withBodyHeader(),
         body: json.encode(body),
@@ -59,7 +59,7 @@ class CategoryAPIService extends APIService<LokalCategory> {
     required Map<String, dynamic> body,
   }) async {
     try {
-      final response = await this.putter(
+      final response = await putter(
         api.endpointUri(endpoint, pathSegments: [id]),
         headers: api.withBodyHeader(),
         body: json.encode(body),
@@ -75,7 +75,7 @@ class CategoryAPIService extends APIService<LokalCategory> {
   //#region --DELETE
   Future<bool> delete({required String id}) async {
     try {
-      final response = await this.deleter(
+      final response = await deleter(
         api.endpointUri(endpoint, pathSegments: [id]),
         headers: api.authHeader(),
       );

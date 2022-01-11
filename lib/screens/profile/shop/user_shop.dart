@@ -13,7 +13,7 @@ import 'components/shop_product_field.dart';
 import 'components/user_banner.dart';
 
 class UserShop extends StatelessWidget {
-  static const String routeName = "/profile/shop";
+  static const String routeName = '/profile/shop';
   const UserShop({
     Key? key,
     required this.userId,
@@ -36,10 +36,13 @@ class _UserShopView extends HookView<UserShopViewModel> {
   Widget render(BuildContext context, UserShopViewModel vm) {
     final _shops = useMemoized(() => context.read<Shops>());
 
-    useEffect(() {
-      _shops.addListener(vm.refresh);
-      return () => _shops.removeListener(vm.refresh);
-    }, [vm]);
+    useEffect(
+      () {
+        _shops.addListener(vm.refresh);
+        return () => _shops.removeListener(vm.refresh);
+      },
+      [vm],
+    );
 
     final _searchController = useTextEditingController();
 
@@ -68,7 +71,7 @@ class _UserShopView extends HookView<UserShopViewModel> {
               child: SizedBox(
                 height: MediaQuery.of(context).size.height,
                 child: ListView(
-                  physics: BouncingScrollPhysics(),
+                  physics: const BouncingScrollPhysics(),
                   shrinkWrap: true,
                   children: [
                     SearchTextField(

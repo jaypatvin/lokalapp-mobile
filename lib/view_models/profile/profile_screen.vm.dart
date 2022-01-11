@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:lokalapp/models/lokal_images.dart';
-import 'package:lokalapp/providers/users.dart';
-import 'package:lokalapp/utils/functions.utils.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
+import '../../models/lokal_images.dart';
 import '../../providers/auth.dart';
+import '../../providers/users.dart';
 import '../../routers/app_router.dart';
 import '../../routers/chat/chat_view.props.dart';
 import '../../screens/chat/chat_view.dart';
@@ -13,6 +12,7 @@ import '../../screens/profile/edit_profile.dart';
 import '../../screens/profile/settings/settings.dart';
 import '../../state/view_model.dart';
 import '../../utils/constants/themes.dart';
+import '../../utils/functions.utils.dart';
 
 class ProfileHeaderViewModel extends ViewModel {
   ProfileHeaderViewModel(this.userId);
@@ -27,22 +27,20 @@ class ProfileHeaderViewModel extends ViewModel {
 
   @override
   void init() {
-    this._authProvider = context.read<Auth>();
+    _authProvider = context.read<Auth>();
   }
 
   void onSendMessage() {
-    if (_authProvider.user?.id == this.userId) {
+    if (_authProvider.user?.id == userId) {
       throw 'Cannot send message to self.';
     }
-    context
-      ..read<AppRouter>().navigateTo(
-        AppRoute.chat,
-        ChatView.routeName,
-        arguments: ChatViewProps(
-          true,
-          members: [context.read<Auth>().user!.id!, userId],
-        ),
-      );
+    context.read<AppRouter>().navigateTo(
+          AppRoute.chat,
+          ChatView.routeName,
+          arguments: ChatViewProps(
+            members: [context.read<Auth>().user!.id!, userId],
+          ),
+        );
   }
 
   void onSettingsPressed() {

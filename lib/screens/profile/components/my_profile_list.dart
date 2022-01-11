@@ -23,36 +23,36 @@ class MyProfileList extends StatelessWidget {
         tiles: [
           ListTile(
             tileColor: Colors.white,
-            title: Text("My Posts"),
+            title: const Text('My Posts'),
             trailing: Icon(
               Icons.arrow_forward_ios,
               color: kTealColor,
               size: 14.0.r,
             ),
-            onTap: this.onMyPostsTap,
+            onTap: onMyPostsTap,
             enableFeedback: true,
-            enabled: true,
           ),
           ListTile(
-              tileColor: Colors.white,
-              title: Text("Wishlist"),
-              trailing: Icon(
-                Icons.arrow_forward_ios,
-                color: kTealColor,
-                size: 14.0.r,
-              ),
-              onTap: this.onWishlistTap,
-              enabled: this.onWishlistTap != null),
-          ListTile(
             tileColor: Colors.white,
-            title: Text("Invite a Friend"),
+            title: const Text('Wishlist'),
             trailing: Icon(
               Icons.arrow_forward_ios,
               color: kTealColor,
               size: 14.0.r,
             ),
-            onTap: this.onInviteFriend,
-            enabled: this.onInviteFriend != null,
+            onTap: onWishlistTap,
+            enabled: onWishlistTap != null,
+          ),
+          ListTile(
+            tileColor: Colors.white,
+            title: const Text('Invite a Friend'),
+            trailing: Icon(
+              Icons.arrow_forward_ios,
+              color: kTealColor,
+              size: 14.0.r,
+            ),
+            onTap: onInviteFriend,
+            enabled: onInviteFriend != null,
           ),
         ],
       ).toList(),

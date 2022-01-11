@@ -36,8 +36,8 @@ class UserShopViewModel extends ViewModel {
   @override
   void init() {
     _shopSetup();
-    this.isCurrentUser = context.read<Auth>().user!.id! == this.userId;
-    this.user = isCurrentUser
+    isCurrentUser = context.read<Auth>().user!.id! == userId;
+    user = isCurrentUser
         ? context.read<Auth>().user!
         : context.read<Users>().findById(userId)!;
   }
@@ -57,7 +57,7 @@ class UserShopViewModel extends ViewModel {
     }
 
     if (_shop == null) throw FailureException('Error: no shop found.');
-    this.shop = _shop;
+    shop = _shop;
   }
 
   void refresh() {

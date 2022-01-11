@@ -6,7 +6,7 @@ import '../../../../widgets/webview_builder.dart';
 class TermsOfService extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return WebViewPage(
+    return const WebViewPage(
       url: kTermsOfServiceUrl,
       title: 'Terms of Service',
     );

@@ -151,10 +151,9 @@ class LokalUser {
       communityId: map['community_id'],
       birthDate: map['birth_date'],
       status: map['status'],
-      address: Address.fromMap(map['address'] ?? Map()),
-      registration:
-          UserRegistrationStatus.fromMap(map['registration'] ?? Map()),
-      roles: UserRoles.fromMap(map['roles'] ?? Map()),
+      address: Address.fromMap(map['address'] ?? {}),
+      registration: UserRegistrationStatus.fromMap(map['registration'] ?? {}),
+      roles: UserRoles.fromMap(map['roles'] ?? {}),
       createdAt: _createdAt,
       notificationSettings: map['notification_settings'] ?? {},
       showReadReceipts: map['chat_settings']?['show_read_receipts'] ?? true,

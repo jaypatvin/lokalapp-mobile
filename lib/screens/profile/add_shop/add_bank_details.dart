@@ -34,11 +34,11 @@ class AddBankDetails extends StatelessWidget {
     return MVVM(
       view: (_, __) => _AddBankDetailsView(),
       viewModel: AddBankDetailsViewModel(
-        this.bankType,
+        bankType,
         context.read<ShopBody>(),
         context.read<BankCodes>(),
         GlobalKey<FormState>(),
-        this.bankAccount,
+        bankAccount,
       ),
     );
   }
@@ -52,135 +52,142 @@ class _AddBankDetailsView extends HookView<AddBankDetailsViewModel> {
     final _nameFocusNode = useFocusNode();
     final _numberFocusNode = useFocusNode();
 
-    useEffect(() {
-      final _bankListener = () => vm.onBankChanged(_chosenCode.value);
-      _chosenCode.addListener(_bankListener);
+    useEffect(
+      () {
+        void _bankListener() => vm.onBankChanged(_chosenCode.value);
+        _chosenCode.addListener(_bankListener);
 
-      return () {
-        _chosenCode..removeListener(_bankListener);
-      };
-    }, [_chosenCode]);
+        return () {
+          _chosenCode.removeListener(_bankListener);
+        };
+      },
+      [_chosenCode],
+    );
 
-    final _androidDropDown = useMemoized<Widget>(() {
-      List<DropdownMenuItem<BankCode>> dropDownItems = [];
+    final _androidDropDown = useMemoized<Widget>(
+      () {
+        final List<DropdownMenuItem<BankCode>> dropDownItems = [];
 
-      for (var code in vm.codes) {
-        dropDownItems.add(
-          DropdownMenuItem(
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.0.w),
-              child: Text(
-                code.name,
-                overflow: TextOverflow.ellipsis,
+        for (final code in vm.codes) {
+          dropDownItems.add(
+            DropdownMenuItem(
+              value: code,
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16.0.w),
+                child: Text(
+                  code.name,
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
             ),
-            value: code,
+          );
+        }
+
+        return DropdownButtonHideUnderline(
+          child: DropdownButton<BankCode>(
+            hint: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16.0.w),
+              child: const Text(
+                'Select a Bank',
+                style: TextStyle(color: Colors.grey),
+              ),
+            ),
+            value: _chosenCode.value,
+            isExpanded: true,
+            items: dropDownItems,
+            focusColor: Colors.white,
+            icon: const Padding(
+              padding: EdgeInsets.only(right: 2.0),
+              child: Icon(
+                MdiIcons.chevronDown,
+                color: kTealColor,
+              ),
+            ),
+            iconSize: 24.0.sp,
+            onChanged: (value) => _chosenCode.value = value,
           ),
         );
-      }
+      },
+      [_chosenCode.value],
+    );
 
-      return DropdownButtonHideUnderline(
-        child: DropdownButton<BankCode>(
-          hint: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16.0.w),
-            child: Text(
-              'Select a Bank',
-              style: TextStyle(color: Colors.grey),
-            ),
-          ),
-          value: _chosenCode.value,
-          isExpanded: true,
-          items: dropDownItems,
-          focusColor: Colors.white,
-          icon: Padding(
-            padding: const EdgeInsets.only(right: 2.0),
-            child: Icon(
-              MdiIcons.chevronDown,
-              color: kTealColor,
-            ),
-          ),
-          iconSize: 24.0.sp,
-          onChanged: (value) => _chosenCode.value = value,
-        ),
-      );
-    }, [_chosenCode.value]);
-
-    final _iOSPicker = useMemoized<Widget>(() {
-      final pickerItems = vm.codes
-          .map<Widget>(
-            (code) => Center(
-              child: Text(
-                code.name,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-          )
-          .toList();
-
-      return CupertinoButton(
-        child: Row(
-          children: [
-            if (_chosenCode.value == null)
-              Expanded(
+    final _iOSPicker = useMemoized<Widget>(
+      () {
+        final pickerItems = vm.codes
+            .map<Widget>(
+              (code) => Center(
                 child: Text(
-                  'Select a Bank',
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyText2!
-                      .copyWith(color: Colors.grey),
+                  code.name,
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
-            if (_chosenCode.value != null)
-              Expanded(
-                child: Text(
-                  _chosenCode.value!.name,
-                  style: Theme.of(context).textTheme.bodyText2,
-                  overflow: TextOverflow.ellipsis,
+            )
+            .toList();
+
+        return CupertinoButton(
+          child: Row(
+            children: [
+              if (_chosenCode.value == null)
+                Expanded(
+                  child: Text(
+                    'Select a Bank',
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyText2!
+                        .copyWith(color: Colors.grey),
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
+              if (_chosenCode.value != null)
+                Expanded(
+                  child: Text(
+                    _chosenCode.value!.name,
+                    style: Theme.of(context).textTheme.bodyText2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              const Icon(
+                MdiIcons.chevronDown,
+                color: kTealColor,
               ),
-            Icon(
-              MdiIcons.chevronDown,
-              color: kTealColor,
-            ),
-          ],
-        ),
-        onPressed: () {
-          showModalBottomSheet(
-            context: context,
-            builder: (ctx) {
-              return SizedBox(
-                height: 200.h,
-                child: CupertinoTheme(
-                  data: CupertinoThemeData(
-                    textTheme: CupertinoTextThemeData(
-                      textStyle: Theme.of(context).textTheme.bodyText2,
-                      actionTextStyle: Theme.of(context).textTheme.bodyText2,
-                      pickerTextStyle: Theme.of(context)
-                          .textTheme
-                          .bodyText1!
-                          .copyWith(color: Colors.black, fontSize: 18.0.sp),
+            ],
+          ),
+          onPressed: () {
+            showModalBottomSheet(
+              context: context,
+              builder: (ctx) {
+                return SizedBox(
+                  height: 200.h,
+                  child: CupertinoTheme(
+                    data: CupertinoThemeData(
+                      textTheme: CupertinoTextThemeData(
+                        textStyle: Theme.of(context).textTheme.bodyText2,
+                        actionTextStyle: Theme.of(context).textTheme.bodyText2,
+                        pickerTextStyle: Theme.of(context)
+                            .textTheme
+                            .bodyText1!
+                            .copyWith(color: Colors.black, fontSize: 18.0.sp),
+                      ),
+                    ),
+                    child: CupertinoPicker(
+                      itemExtent: 32.0.h,
+                      onSelectedItemChanged: (index) =>
+                          _chosenCode.value = vm.codes[index],
+                      children: pickerItems,
                     ),
                   ),
-                  child: CupertinoPicker(
-                    itemExtent: 32.0.h,
-                    onSelectedItemChanged: (index) =>
-                        _chosenCode.value = vm.codes[index],
-                    children: pickerItems,
-                  ),
-                ),
-              );
-            },
-          );
-        },
-      );
-    }, [_chosenCode.value]);
+                );
+              },
+            );
+          },
+        );
+      },
+      [_chosenCode.value],
+    );
 
     final _kbActionsConfig = useMemoized<KeyboardActionsConfig>(
       () => KeyboardActionsConfig(
-        keyboardActionsPlatform: KeyboardActionsPlatform.ALL,
         keyboardBarColor: Colors.grey.shade200,
-        nextFocus: true,
         actions: [
           KeyboardActionsItem(
             focusNode: _nameFocusNode,
@@ -189,7 +196,7 @@ class _AddBankDetailsView extends HookView<AddBankDetailsViewModel> {
                 return TextButton(
                   onPressed: () => node.unfocus(),
                   child: Text(
-                    "Done",
+                    'Done',
                     style: Theme.of(context)
                         .textTheme
                         .bodyText1!
@@ -206,7 +213,7 @@ class _AddBankDetailsView extends HookView<AddBankDetailsViewModel> {
                 return TextButton(
                   onPressed: () => node.unfocus(),
                   child: Text(
-                    "Done",
+                    'Done',
                     style: Theme.of(context)
                         .textTheme
                         .bodyText1!
@@ -228,7 +235,7 @@ class _AddBankDetailsView extends HookView<AddBankDetailsViewModel> {
             ? [
                 IconButton(
                   onPressed: vm.onDeleteAccount,
-                  icon: Icon(MdiIcons.trashCanOutline),
+                  icon: const Icon(MdiIcons.trashCanOutline),
                 ),
               ]
             : null,
@@ -257,8 +264,8 @@ class _AddBankDetailsView extends HookView<AddBankDetailsViewModel> {
                       ),
                       Container(
                         width: double.infinity,
-                        decoration: ShapeDecoration(
-                          color: const Color(0xFFF2F2F2),
+                        decoration: const ShapeDecoration(
+                          color: Color(0xFFF2F2F2),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.all(
                               Radius.circular(30.0),
@@ -283,7 +290,7 @@ class _AddBankDetailsView extends HookView<AddBankDetailsViewModel> {
                       InputField(
                         initialValue: vm.accountName,
                         focusNode: _nameFocusNode,
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                        style: const TextStyle(fontWeight: FontWeight.bold),
                         onChanged: vm.onAccountNameChanged,
                         validator: vm.accountNameValidator,
                       ),
@@ -296,7 +303,7 @@ class _AddBankDetailsView extends HookView<AddBankDetailsViewModel> {
                         initialValue: vm.accountNumber,
                         focusNode: _numberFocusNode,
                         keyboardType: TextInputType.number,
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                        style: const TextStyle(fontWeight: FontWeight.bold),
                         onChanged: vm.onAccountNumberChanged,
                         validator: vm.accountNumberValidator,
                       ),

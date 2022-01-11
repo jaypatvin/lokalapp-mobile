@@ -34,7 +34,7 @@ class _SubscriptionsView extends StatelessView<SubscriptionsViewModel> {
     return Scaffold(
       appBar: CustomAppBar(
         titleText: vm.isBuyer ? 'My Subscriptions' : 'Subscription Orders',
-        titleStyle: TextStyle(color: Colors.white),
+        titleStyle: const TextStyle(color: Colors.white),
         backgroundColor: vm.isBuyer ? kTealColor : kPurpleColor,
         onPressedLeading: () => Navigator.of(context).pop(),
       ),
@@ -44,22 +44,24 @@ class _SubscriptionsView extends StatelessView<SubscriptionsViewModel> {
               builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
                 switch (snapshot.connectionState) {
                   case ConnectionState.waiting:
-                    return Center(child: CircularProgressIndicator());
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
                   default:
-                    if (snapshot.hasError)
+                    if (snapshot.hasError) {
                       return Text('Error: ${snapshot.error}');
-                    else if (!snapshot.hasData ||
-                        snapshot.data!.docs.length == 0)
+                    } else if (!snapshot.hasData ||
+                        snapshot.data!.docs.isEmpty) {
                       return Center(
                         child: Text(
                           'No subscriptions yet!',
                           style: Theme.of(context).textTheme.subtitle1,
                         ),
                       );
-                    else {
+                    } else {
                       return GroupedListView(
                         shrinkWrap: true,
-                        physics: AlwaysScrollableScrollPhysics(),
+                        physics: const AlwaysScrollableScrollPhysics(),
                         elements: snapshot.data!.docs,
                         groupBy: (QueryDocumentSnapshot snapshot) {
                           final archived = snapshot['archived'] as bool?;
@@ -71,7 +73,7 @@ class _SubscriptionsView extends StatelessView<SubscriptionsViewModel> {
                         order: GroupedListOrder.DESC,
                         itemBuilder: (context, QueryDocumentSnapshot snapshot) {
                           final snapshotData =
-                              snapshot.data() as Map<String, dynamic>;
+                              snapshot.data()! as Map<String, dynamic>;
                           final data = {
                             ...snapshotData,
                             'id': snapshot.id,
@@ -95,9 +97,11 @@ class _SubscriptionsView extends StatelessView<SubscriptionsViewModel> {
                         itemComparator:
                             (QueryDocumentSnapshot a, QueryDocumentSnapshot b) {
                           final subA = ProductSubscriptionPlan.fromMap(
-                              a.data() as Map<String, dynamic>);
+                            a.data()! as Map<String, dynamic>,
+                          );
                           final subB = ProductSubscriptionPlan.fromMap(
-                              b.data() as Map<String, dynamic>);
+                            b.data()! as Map<String, dynamic>,
+                          );
 
                           return subA.plan.startDates.first
                               .compareTo(subB.plan.startDates.first);
@@ -148,14 +152,14 @@ class _SubscriptionCard extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20.0.r),
       ),
-      color: Color(0xFFF1FAFF),
+      color: const Color(0xFFF1FAFF),
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: 20.0.w, vertical: 10.0.h),
         child: Column(
           children: [
             SubscriptionPlanDetails(
-              subscriptionPlan: this.subscriptionPlan,
-              isBuyer: this.isBuyer,
+              subscriptionPlan: subscriptionPlan,
+              isBuyer: isBuyer,
             ),
             SizedBox(height: 15.0.h),
             SizedBox(
@@ -164,7 +168,7 @@ class _SubscriptionCard extends StatelessWidget {
                 'Details',
                 kTealColor,
                 false,
-                this.onDetailsPressed,
+                onDetailsPressed,
               ),
             ),
           ],

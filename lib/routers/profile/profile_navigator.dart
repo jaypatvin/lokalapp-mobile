@@ -26,19 +26,19 @@ class ProfileNavigator extends AppNavigator {
   Route onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
       case ProfileScreen.routeName:
-        final userId = (settings.arguments as Map<String, String>)['userId']!;
+        final userId = (settings.arguments! as Map<String, String>)['userId']!;
         return CupertinoPageRoute(
           builder: (_) => ProfileScreen(
             userId: userId,
           ),
         );
       case EditProfile.routeName:
-        return CupertinoPageRoute(builder: (_) => EditProfile());
+        return CupertinoPageRoute(builder: (_) => const EditProfile());
       case Settings.routeName:
         return CupertinoPageRoute(builder: (_) => Settings());
 
       case UserShop.routeName:
-        final props = settings.arguments as UserShopProps;
+        final props = settings.arguments! as UserShopProps;
         return CupertinoPageRoute(
           builder: (_) => UserShop(
             userId: props.userId,
@@ -49,7 +49,7 @@ class ProfileNavigator extends AppNavigator {
       case AddShop.routeName:
         return CupertinoPageRoute(builder: (_) => AddShop());
       case ShopSchedule.routeName:
-        final props = settings.arguments as ShopScheduleProps;
+        final props = settings.arguments! as ShopScheduleProps;
         return CupertinoPageRoute(
           builder: (_) => ShopSchedule(
             shopPhoto: props.shopPhoto,
@@ -58,7 +58,7 @@ class ProfileNavigator extends AppNavigator {
           ),
         );
       case CustomizeAvailability.routeName:
-        final props = settings.arguments as CustomizeAvailabilityProps;
+        final props = settings.arguments! as CustomizeAvailabilityProps;
         return CupertinoPageRoute(
           builder: (_) => CustomizeAvailability(
             repeatChoice: props.repeatChoice,
@@ -73,7 +73,7 @@ class ProfileNavigator extends AppNavigator {
         );
       case SetUpPaymentOptions.routeName:
         final onSubmit =
-            (settings.arguments as Map<String, void Function()>)['onSubmit']!;
+            (settings.arguments! as Map<String, void Function()>)['onSubmit']!;
         return CupertinoPageRoute(
           builder: (_) => SetUpPaymentOptions(onSubmit: onSubmit),
         );
@@ -82,7 +82,7 @@ class ProfileNavigator extends AppNavigator {
 
       case AddProduct.routeName:
         final productId = settings.arguments != null
-            ? (settings.arguments as Map<String, String>)['productId']
+            ? (settings.arguments! as Map<String, String>)['productId']
             : null;
         return CupertinoPageRoute(
           builder: (_) => AddProduct(
@@ -91,13 +91,13 @@ class ProfileNavigator extends AppNavigator {
         );
 
       case WishlistScreen.routeName:
-        return CupertinoPageRoute(builder: (_) => WishlistScreen());
+        return CupertinoPageRoute(builder: (_) => const WishlistScreen());
 
       case InviteAFriend.routeName:
-        return CupertinoPageRoute(builder: (_) => InviteAFriend());
+        return CupertinoPageRoute(builder: (_) => const InviteAFriend());
 
       case EditShop.routeName:
-        return CupertinoPageRoute(builder: (_) => EditShop());
+        return CupertinoPageRoute(builder: (_) => const EditShop());
       default:
         // TODO: implement unknownRoute
         throw UnimplementedError();

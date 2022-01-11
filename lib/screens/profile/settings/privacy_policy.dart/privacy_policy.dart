@@ -8,7 +8,7 @@ class PrivacyPolicy extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return WebViewPage(
+    return const WebViewPage(
       url: kPrivacyPolicyUrl,
       title: 'Privacy Policy',
     );

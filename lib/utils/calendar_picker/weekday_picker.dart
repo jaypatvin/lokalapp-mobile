@@ -17,12 +17,12 @@ class WeekdayPicker extends StatefulWidget {
   final void Function(int?)? onDayPressed;
   final List<int> markedDaysMap;
 
-  WeekdayPicker({
+  const WeekdayPicker({
     this.weekdayFormat = WeekdayFormat.narrow,
-    this.locale = "en",
+    this.locale = 'en',
     this.firstDayOfWeek,
-    this.weekdayMargin = const EdgeInsets.all(0.0),
-    this.weekdayPadding = const EdgeInsets.all(0.0),
+    this.weekdayMargin = EdgeInsets.zero,
+    this.weekdayPadding = EdgeInsets.zero,
     this.weekdayBackgroundColor = Colors.transparent,
     this.weekdayTextStyle,
     this.daysHaveCircularBorder = true,
@@ -38,22 +38,23 @@ class _WeekdayPickerState extends State<WeekdayPicker> {
   int? firstDayOfWeek;
 
   @override
-  initState() {
+  void initState() {
     initializeDateFormatting();
     _localeDate = DateFormat.yMMMM(widget.locale);
-    if (widget.firstDayOfWeek == null)
+    if (widget.firstDayOfWeek == null) {
       firstDayOfWeek = (_localeDate.dateSymbols.FIRSTDAYOFWEEK + 1) % 7;
-    else
+    } else {
       firstDayOfWeek = widget.firstDayOfWeek;
+    }
 
     super.initState();
   }
 
   Widget _weekdayContainer(bool isMarked, int? weekday, String weekDayName) {
     return Container(
-      margin: EdgeInsets.all(2.0),
+      margin: const EdgeInsets.all(2.0),
       child: GestureDetector(
-        onLongPress: () => print(weekDayName),
+        onLongPress: () => debugPrint(weekDayName),
         child: Container(
           padding: const EdgeInsets.all(2.0),
           decoration: BoxDecoration(
@@ -64,34 +65,30 @@ class _WeekdayPickerState extends State<WeekdayPicker> {
                 : BoxShape.rectangle,
             borderRadius: widget.daysHaveCircularBorder
                 ? null
-                : BorderRadius.all(
+                : const BorderRadius.all(
                     Radius.circular(15.0),
                   ),
           ),
-          child: FlatButton(
-            padding: EdgeInsets.zero,
-            color: isMarked ? Colors.orange : Colors.transparent,
-            onPressed: () {
-              // the calling method should handle the logic of the day press
-              if (widget.onDayPressed != null) {
-                widget.onDayPressed!(weekday);
-              }
-            },
-            shape: widget.daysHaveCircularBorder
-                ? CircleBorder(
-                    side: BorderSide(
-                        color: Colors.transparent, style: BorderStyle.solid),
-                  )
-                : RoundedRectangleBorder(
-                    side: BorderSide(
-                        color: Colors.transparent, style: BorderStyle.solid),
-                    borderRadius: BorderRadius.circular(13.0),
-                  ),
-            child: Container(
+          child: TextButton(
+            onPressed: () => widget.onDayPressed?.call(weekday),
+            style: TextButton.styleFrom(
+              padding: EdgeInsets.zero,
+              backgroundColor: isMarked ? Colors.orange : Colors.transparent,
+              shape: widget.daysHaveCircularBorder
+                  ? const CircleBorder(
+                      side: BorderSide(color: Colors.transparent),
+                    )
+                  : RoundedRectangleBorder(
+                      side: const BorderSide(
+                        color: Colors.transparent,
+                      ),
+                      borderRadius: BorderRadius.circular(13.0),
+                    ),
+            ),
+            child: SizedBox(
               width: double.infinity,
               height: double.infinity,
               child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   DefaultTextStyle(
@@ -113,7 +110,7 @@ class _WeekdayPickerState extends State<WeekdayPicker> {
   }
 
   List<Widget> _renderWeekDays() {
-    List<Widget> list = [];
+    final List<Widget> list = [];
 
     /// because of number of days in a week is 7, so it would be easier to count it til 7.
     for (int? i = firstDayOfWeek, count = 0;
@@ -144,7 +141,7 @@ class _WeekdayPickerState extends State<WeekdayPicker> {
           weekDay = _localeDate.dateSymbols.STANDALONEWEEKDAYS[i!];
           break;
       }
-      bool isMarked = widget.markedDaysMap.contains(count);
+      final bool isMarked = widget.markedDaysMap.contains(count);
       list.add(_weekdayContainer(isMarked, count, weekDay));
     }
 
@@ -154,7 +151,7 @@ class _WeekdayPickerState extends State<WeekdayPicker> {
   @override
   Widget build(BuildContext context) {
     return GridView.count(
-      physics: NeverScrollableScrollPhysics(),
+      physics: const NeverScrollableScrollPhysics(),
       crossAxisCount: 7,
       shrinkWrap: true,
       children: _renderWeekDays(),

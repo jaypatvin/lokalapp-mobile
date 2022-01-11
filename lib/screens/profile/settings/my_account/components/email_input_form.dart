@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:keyboard_actions/keyboard_actions.dart';
-import 'package:lokalapp/utils/constants/themes.dart';
 
+import '../../../../../utils/constants/themes.dart';
 import '../../../../../widgets/inputs/input_email_field.dart';
 import '../../../../../widgets/inputs/input_password_field.dart';
 
@@ -51,9 +51,7 @@ class _EmailInputFormState extends State<EmailInputForm> {
 
   KeyboardActionsConfig _buildConfig(BuildContext context) {
     return KeyboardActionsConfig(
-      keyboardActionsPlatform: KeyboardActionsPlatform.ALL,
       keyboardBarColor: Colors.grey.shade200,
-      nextFocus: true,
       actions: [
         KeyboardActionsItem(
           focusNode: _nodeEmail,
@@ -62,7 +60,7 @@ class _EmailInputFormState extends State<EmailInputForm> {
               return TextButton(
                 onPressed: () => node.unfocus(),
                 child: Text(
-                  "Done",
+                  'Done',
                   style: Theme.of(context).textTheme.bodyText1!.copyWith(
                         color: Colors.black,
                       ),
@@ -78,7 +76,7 @@ class _EmailInputFormState extends State<EmailInputForm> {
               return TextButton(
                 onPressed: () => node.unfocus(),
                 child: Text(
-                  "Done",
+                  'Done',
                   style: Theme.of(context).textTheme.bodyText1!.copyWith(
                         color: Colors.black,
                       ),
@@ -94,7 +92,7 @@ class _EmailInputFormState extends State<EmailInputForm> {
               return TextButton(
                 onPressed: () => node.unfocus(),
                 child: Text(
-                  "Done",
+                  'Done',
                   style: Theme.of(context).textTheme.bodyText1!.copyWith(
                         color: Colors.black,
                       ),
@@ -110,7 +108,7 @@ class _EmailInputFormState extends State<EmailInputForm> {
   @override
   Widget build(BuildContext context) {
     return KeyboardActions(
-      bottomAvoiderScrollPhysics: ScrollPhysics(),
+      bottomAvoiderScrollPhysics: const ScrollPhysics(),
       config: _buildConfig(context),
       child: Form(
         onChanged: widget.onFormChanged,

@@ -13,16 +13,16 @@ import 'product_add_on.dart';
 
 class ProductVariant2 extends StatefulWidget {
   final AddProductGallery gallery;
-  ProductVariant2({required this.gallery});
+  const ProductVariant2({required this.gallery});
   @override
   _ProductVariant2State createState() => _ProductVariant2State();
 }
 
 class _ProductVariant2State extends State<ProductVariant2> {
   Widget buildBody() {
-    var horizontalPadding = MediaQuery.of(context).size.width * 0.05;
-    var topPadding = MediaQuery.of(context).size.height * 0.03;
-    var image = widget.gallery.photoBoxes.first;
+    final horizontalPadding = MediaQuery.of(context).size.width * 0.05;
+    final topPadding = MediaQuery.of(context).size.height * 0.03;
+    final image = widget.gallery.photoBoxes.first;
 
     return Container(
       padding: EdgeInsets.fromLTRB(
@@ -32,40 +32,45 @@ class _ProductVariant2State extends State<ProductVariant2> {
         0,
       ),
       child: SingleChildScrollView(
-        physics: NeverScrollableScrollPhysics(),
-        scrollDirection: Axis.vertical,
+        physics: const NeverScrollableScrollPhysics(),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Consumer<ProductBody>(builder: (context, product, child) {
-              return ProductHeader(
-                photoBox: image,
-                productName: product.name,
-                productPrice: product.basePrice,
-                productStock: product.quantity,
-              );
-            }),
+            Consumer<ProductBody>(
+              builder: (context, product, child) {
+                return ProductHeader(
+                  photoBox: image,
+                  productName: product.name,
+                  productPrice: product.basePrice,
+                  productStock: product.quantity,
+                );
+              },
+            ),
             SizedBox(
               height: MediaQuery.of(context).size.height * 0.05,
             ),
-            Text(
-              "Variants",
+            const Text(
+              'Variants',
               style: TextStyle(
-                  fontFamily: "Goldplay", fontWeight: FontWeight.w600),
+                fontFamily: 'Goldplay',
+                fontWeight: FontWeight.w600,
+              ),
             ),
-            Consumer<ProductBody>(builder: (context, product, child) {
-              return ProductHeader(
-                photoBox: image,
-                productName: product.name,
-                productPrice: product.basePrice,
-                productStock: product.quantity,
-              );
-            }),
-            SizedBox(
+            Consumer<ProductBody>(
+              builder: (context, product, child) {
+                return ProductHeader(
+                  photoBox: image,
+                  productName: product.name,
+                  productPrice: product.basePrice,
+                  productStock: product.quantity,
+                );
+              },
+            ),
+            const SizedBox(
               height: 20,
             ),
             AppButton(
-              "Add another variant",
+              'Add another variant',
               kTealColor,
               true,
               () {
@@ -79,7 +84,7 @@ class _ProductVariant2State extends State<ProductVariant2> {
               height: MediaQuery.of(context).size.height / 3,
             ),
             AppButton(
-              "Next",
+              'Next',
               kTealColor,
               true,
               () {
@@ -100,7 +105,7 @@ class _ProductVariant2State extends State<ProductVariant2> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: CustomAppBar(
-        titleText: "Product Variant",
+        titleText: 'Product Variant',
         onPressedLeading: () {
           Navigator.pop(context);
         },

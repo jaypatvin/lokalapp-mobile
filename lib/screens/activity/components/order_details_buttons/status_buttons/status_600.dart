@@ -22,54 +22,50 @@ class Status600Buttons extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (this.isBuyer) {
-      return Container(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            if (order.proofOfPayment?.isNotEmpty ?? false)
-              Container(
-                margin: const EdgeInsets.only(bottom: 5),
-                width: double.infinity,
-                child: ViewPaymentButton(onPress: this.onPress),
-              ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Expanded(
-                  child: MessageSellerButton(order: this.order),
-                ),
-                SizedBox(width: MediaQuery.of(context).size.width * 0.01),
-                Expanded(
-                  child: AppButton(
-                    "Order Again",
-                    kTealColor,
-                    true,
-                    () => this.onPress(OrderAction.orderAgain),
-                  ),
-                )
-              ],
-            ),
-          ],
-        ),
-      );
-    }
-
-    return Container(
-      child: Column(
+    if (isBuyer) {
+      return Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
           if (order.proofOfPayment?.isNotEmpty ?? false)
             Container(
-              margin: const EdgeInsets.only(bottom: 5.0),
+              margin: const EdgeInsets.only(bottom: 5),
               width: double.infinity,
-              child: ViewPaymentButton(onPress: this.onPress),
+              child: ViewPaymentButton(onPress: onPress),
             ),
-          Container(
-            width: double.infinity,
-            child: MessageBuyerButton(order: this.order),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Expanded(
+                child: MessageSellerButton(order: order),
+              ),
+              SizedBox(width: MediaQuery.of(context).size.width * 0.01),
+              Expanded(
+                child: AppButton(
+                  'Order Again',
+                  kTealColor,
+                  true,
+                  () => onPress(OrderAction.orderAgain),
+                ),
+              )
+            ],
           ),
         ],
-      ),
+      );
+    }
+
+    return Column(
+      children: [
+        if (order.proofOfPayment?.isNotEmpty ?? false)
+          Container(
+            margin: const EdgeInsets.only(bottom: 5.0),
+            width: double.infinity,
+            child: ViewPaymentButton(onPress: onPress),
+          ),
+        SizedBox(
+          width: double.infinity,
+          child: MessageBuyerButton(order: order),
+        ),
+      ],
     );
   }
 }

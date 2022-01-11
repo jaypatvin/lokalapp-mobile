@@ -13,15 +13,15 @@ mixin ScreenLoader<T extends StatefulWidget> on State<T> {
   static double? _globalLoadingBgBlur = 5.0;
 
   /// starts the [loader]
-  startLoading() {
-    this.setState(() {
+  void startLoading() {
+    setState(() {
       isLoading = true;
     });
   }
 
   /// stops the [loader]
-  stopLoading() {
-    this.setState(() {
+  void stopLoading() {
+    setState(() {
       isLoading = false;
     });
   }
@@ -29,10 +29,10 @@ mixin ScreenLoader<T extends StatefulWidget> on State<T> {
   /// DO NOT use this method in FutureBuilder because this methods
   /// updates the state which will make future builder to call
   /// this function again and it will go in loop
-  Future<T?> performFuture<T>(Function futureCallback) async {
-    this.startLoading();
-    T? data = await futureCallback();
-    this.stopLoading();
+  Future<U?> performFuture<U>(Function futureCallback) async {
+    startLoading();
+    final U? data = await futureCallback();
+    stopLoading();
     return data;
   }
 
@@ -42,7 +42,7 @@ mixin ScreenLoader<T extends StatefulWidget> on State<T> {
   }
 
   double _loadingBgBlur() {
-    return this.loadingBgBlur() ?? ScreenLoader._globalLoadingBgBlur ?? 5.0;
+    return loadingBgBlur() ?? ScreenLoader._globalLoadingBgBlur ?? 5.0;
   }
 
   /// override [loader] if you wish to add custom loader in specific view
@@ -51,17 +51,17 @@ mixin ScreenLoader<T extends StatefulWidget> on State<T> {
   }
 
   Widget _loader() {
-    return this.loader() ??
+    return loader() ??
         ScreenLoader._globalLoader ??
-        CircularProgressIndicator();
+        const CircularProgressIndicator();
   }
 
   Widget _buildLoader() {
-    if (this.isLoading) {
+    if (isLoading) {
       return Container(
         color: Colors.transparent,
         child: Center(
-          child: this._loader(),
+          child: _loader(),
         ),
       );
     } else {
@@ -77,11 +77,11 @@ mixin ScreenLoader<T extends StatefulWidget> on State<T> {
       children: <Widget>[
         screen(context),
         BackdropFilter(
-          child: _buildLoader(),
           filter: ImageFilter.blur(
-            sigmaX: this._loadingBgBlur(),
-            sigmaY: this._loadingBgBlur(),
+            sigmaX: _loadingBgBlur(),
+            sigmaY: _loadingBgBlur(),
           ),
+          child: _buildLoader(),
         ),
       ],
     );
@@ -94,22 +94,22 @@ mixin HookScreenLoader<T extends ViewModel> on HookView<T> {
   final ValueNotifier<bool> isLoading = ValueNotifier(false);
 
   /// starts the [loader]
-  startLoading() {
+  void startLoading() {
     isLoading.value = true;
   }
 
   /// stops the [loader]
-  stopLoading() {
+  void stopLoading() {
     isLoading.value = false;
   }
 
   /// DO NOT use this method in FutureBuilder because this methods
   /// updates the state which will make future builder to call
   /// this function again and it will go in loop
-  Future<T?> performFuture<T>(Function futureCallback) async {
-    this.startLoading();
-    T? data = await futureCallback();
-    this.stopLoading();
+  Future<U?> performFuture<U>(Function futureCallback) async {
+    startLoading();
+    final U? data = await futureCallback();
+    stopLoading();
     return data;
   }
 
@@ -119,7 +119,7 @@ mixin HookScreenLoader<T extends ViewModel> on HookView<T> {
   }
 
   double _loadingBgBlur() {
-    return this.loadingBgBlur() ?? HookScreenLoader._globalLoadingBgBlur ?? 5.0;
+    return loadingBgBlur() ?? HookScreenLoader._globalLoadingBgBlur ?? 5.0;
   }
 
   /// override [loader] if you wish to add custom loader in specific view
@@ -128,9 +128,9 @@ mixin HookScreenLoader<T extends ViewModel> on HookView<T> {
   }
 
   Widget _loader() {
-    return this.loader() ??
+    return loader() ??
         HookScreenLoader._globalLoader ??
-        CircularProgressIndicator();
+        const CircularProgressIndicator();
   }
 
   Widget _buildLoader(bool isLoading) {
@@ -138,7 +138,7 @@ mixin HookScreenLoader<T extends ViewModel> on HookView<T> {
       return Container(
         color: Colors.transparent,
         child: Center(
-          child: this._loader(),
+          child: _loader(),
         ),
       );
     } else {
@@ -152,25 +152,28 @@ mixin HookScreenLoader<T extends ViewModel> on HookView<T> {
   Widget render(BuildContext context, T viewModel) {
     final isLoading = useState(this.isLoading.value);
 
-    useEffect(() {
-      final void Function() listener = () {
-        isLoading.value = this.isLoading.value;
-      };
+    useEffect(
+      () {
+        void listener() {
+          isLoading.value = this.isLoading.value;
+        }
 
-      this.isLoading.addListener(listener);
+        this.isLoading.addListener(listener);
 
-      return () => this.isLoading.removeListener(listener);
-    }, [this.isLoading]);
+        return () => this.isLoading.removeListener(listener);
+      },
+      [this.isLoading],
+    );
 
     return Stack(
       children: <Widget>[
         screen(context, viewModel),
         BackdropFilter(
-          child: _buildLoader(isLoading.value),
           filter: ImageFilter.blur(
-            sigmaX: this._loadingBgBlur(),
-            sigmaY: this._loadingBgBlur(),
+            sigmaX: _loadingBgBlur(),
+            sigmaY: _loadingBgBlur(),
           ),
+          child: _buildLoader(isLoading.value),
         ),
       ],
     );
@@ -191,10 +194,10 @@ class ScreenLoaderApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    ScreenLoader._globalLoader = this.globalLoader;
-    HookScreenLoader._globalLoader = this.globalLoader;
-    ScreenLoader._globalLoadingBgBlur = this.globalLoadingBgBlur;
-    HookScreenLoader._globalLoadingBgBlur = this.globalLoadingBgBlur;
+    ScreenLoader._globalLoader = globalLoader;
+    HookScreenLoader._globalLoader = globalLoader;
+    ScreenLoader._globalLoadingBgBlur = globalLoadingBgBlur;
+    HookScreenLoader._globalLoadingBgBlur = globalLoadingBgBlur;
     return app;
   }
 }

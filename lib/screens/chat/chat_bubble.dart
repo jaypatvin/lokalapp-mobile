@@ -33,7 +33,7 @@ class ChatBubble extends StatelessWidget {
     final bool isUserReplyMessage = replyMessage != null &&
         replyMessage.senderId == context.read<Auth>().user!.id;
 
-    if (conversation!.media != null && conversation!.media!.length > 0) {
+    if (conversation!.media != null && conversation!.media!.isNotEmpty) {
       messageWidgets.add(_MessageImages(images: conversation!.media!));
       messageWidgets.add(space);
     }
@@ -61,7 +61,7 @@ class ChatBubble extends StatelessWidget {
                 padding: EdgeInsets.all(10.0.r),
                 decoration: BoxDecoration(
                   color: isUserReplyMessage
-                      ? Color(0xFFF1FAFF).withOpacity(0.7)
+                      ? const Color(0xFFF1FAFF).withOpacity(0.7)
                       : kTealColor.withOpacity(0.7),
                   borderRadius: borderRadius,
                 ),
@@ -74,7 +74,7 @@ class ChatBubble extends StatelessWidget {
           Container(
             padding: EdgeInsets.all(10.0.r),
             decoration: BoxDecoration(
-              color: isUser ? Color(0xFFF1FAFF) : kTealColor,
+              color: isUser ? const Color(0xFFF1FAFF) : kTealColor,
               borderRadius: borderRadius,
             ),
             child: Column(
@@ -93,11 +93,13 @@ class ChatBubble extends StatelessWidget {
     final isUser = conversation!.senderId == cUser.id;
     final width = MediaQuery.of(context).size.width;
 
-    if (replyMessage != null)
+    if (replyMessage != null) {
       return FutureBuilder<DocumentSnapshot>(
-        future: this.replyMessage!.get(),
+        future: replyMessage!.get(),
         builder: (ctx, snapshot) {
-          if (snapshot.hasError) return Text("Error, cannot retrieve message");
+          if (snapshot.hasError) {
+            return const Text('Error, cannot retrieve message');
+          }
           if (snapshot.hasData && snapshot.data!.data() != null) {
             final conversation = Conversation.fromDocument(snapshot.data!);
             return Row(
@@ -115,9 +117,10 @@ class ChatBubble extends StatelessWidget {
               ],
             );
           }
-          return Center(child: CircularProgressIndicator());
+          return const Center(child: CircularProgressIndicator());
         },
       );
+    }
 
     return Row(
       mainAxisAlignment:
@@ -147,28 +150,23 @@ class _MessageImages extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var count = images.length;
-    return StaggeredGridView.countBuilder(
-      padding: EdgeInsets.zero,
-      shrinkWrap: true,
-      physics: NeverScrollableScrollPhysics(),
-      itemCount: count,
+    return StaggeredGrid.count(
       crossAxisCount: 2,
-      itemBuilder: (ctx, index) {
-        return NetworkPhotoThumbnail(
-          galleryItem: images[index],
-          fit: this.fit,
-          onTap: () => openGallery(context, index, images),
+      mainAxisSpacing: 4.0.w,
+      crossAxisSpacing: 4.0.h,
+      children: images.map<StaggeredGridTile>((image) {
+        final index = images.indexOf(image);
+        final crossAxisCellCount = images.length % 2 != 0 && index == 0 ? 2 : 1;
+        return StaggeredGridTile.count(
+          crossAxisCellCount: crossAxisCellCount,
+          mainAxisCellCount: 1,
+          child: NetworkPhotoThumbnail(
+            key: Key('post_details_${images[index].url}'),
+            galleryItem: images[index],
+            onTap: () => openGallery(context, index, images),
+          ),
         );
-      },
-      staggeredTileBuilder: (index) {
-        if (count % 2 != 0 && index == 0) {
-          return new StaggeredTile.count(2, 1);
-        }
-        return new StaggeredTile.count(1, 1);
-      },
-      mainAxisSpacing: 4.0,
-      crossAxisSpacing: 4.0,
+      }).toList(),
     );
   }
 }

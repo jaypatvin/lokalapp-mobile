@@ -30,9 +30,11 @@ class PaymentOptions {
   factory PaymentOptions.fromMap(Map<String, dynamic> map) {
     return PaymentOptions(
       bankAccounts: List<BankAccount>.from(
-          map['bank_accounts']?.map((x) => BankAccount.fromMap(x)) ?? []),
+        map['bank_accounts']?.map((x) => BankAccount.fromMap(x)) ?? [],
+      ),
       gCashAccounts: List<WalletAccount>.from(
-          map['gcash_accounts']?.map((x) => WalletAccount.fromMap(x)) ?? []),
+        map['gcash_accounts']?.map((x) => WalletAccount.fromMap(x)) ?? [],
+      ),
     );
   }
 

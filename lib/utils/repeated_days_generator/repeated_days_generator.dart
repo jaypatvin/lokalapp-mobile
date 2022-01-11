@@ -4,8 +4,7 @@ class RepeatedDaysGenerator {
   static RepeatedDaysGenerator? _generator;
 
   static RepeatedDaysGenerator? get instance {
-    _generator ??= RepeatedDaysGenerator();
-    return _generator;
+    return _generator ??= RepeatedDaysGenerator();
   }
 
   bool _isValidDate(DateTime date) {
@@ -54,7 +53,7 @@ class RepeatedDaysGenerator {
     int? maxLength,
   }) {
     assert(everyNWeeks > 0);
-    startDate ??= DateTime.now();
+    DateTime _startDate = startDate ?? DateTime.now();
     // we need to make sure that the selectedDays are sorted from 0-6 (Sunday to Saturday)
     final _selectedDays = [
       ...{...selectedDays}
@@ -68,24 +67,24 @@ class RepeatedDaysGenerator {
     // if the user chooses MWF and its start-date starts at tuesday,
     // we need to make sure to start at monday for the iteration or
     // else we'll be skipping Monday since we iterate every week (7 days)
-    DateTime? initialDate = startDate;
-    var weekDay = startDate.weekday;
+    final DateTime initialDate = _startDate;
+    var weekDay = _startDate.weekday;
     if (weekDay == 7) weekDay = 0;
-    startDate = startDate.subtract(
+    _startDate = _startDate.subtract(
       Duration(days: (_selectedDays.first - weekDay).abs()),
     );
 
     // we'll need to iterate through everyweek from the startDate (by adding 7 days every iteration)
     // we'll do this for every week until next year for the same startDate
     for (var indexWeekDay =
-            DateTime(startDate.year, startDate.month, startDate.day);
+            DateTime(_startDate.year, _startDate.month, _startDate.day);
         true; // this will be handled by the break check for exactly 1 year
         indexWeekDay = indexWeekDay.add(Duration(days: 7 * everyNWeeks))) {
       // we'll loop through every days of the week PER WEEK
       for (var indexDay =
               DateTime(indexWeekDay.year, indexWeekDay.month, indexWeekDay.day);
           true;
-          indexDay = indexDay.add(Duration(days: 1))) {
+          indexDay = indexDay.add(const Duration(days: 1))) {
         // check that the days (esp. for starting date) is at least today
         if (!_isValidDate(indexDay) && validate) continue;
         if (indexDay.difference(initialDate).inDays < 0) continue;
@@ -104,8 +103,8 @@ class RepeatedDaysGenerator {
       }
 
       // for exactly 1 year from startDate
-      if ((startDate.month == indexWeekDay.month &&
-              startDate.year + 1 == indexWeekDay.year) ||
+      if ((_startDate.month == indexWeekDay.month &&
+              _startDate.year + 1 == indexWeekDay.year) ||
           (maxLength != null && repeatedDays.length == maxLength)) break;
     }
 
@@ -166,8 +165,9 @@ class RepeatedDaysGenerator {
     assert(everyNMonths > 0);
     final repeatedDays = <DateTime>[];
 
-    if (weekday == 0) weekday = 7;
-    var startDate = DateTime(DateTime.now().year, month, 1);
+    // if (weekday == 0) weekday = 7;
+    final _weekday = weekday == 0 ? 7 : weekday;
+    final startDate = DateTime(DateTime.now().year, month);
 
     // we need to start at the first day of the month to be able to determine
     // the "nth day" of the month
@@ -191,12 +191,12 @@ class RepeatedDaysGenerator {
             nextMonth = true;
             break start;
           }
-          if (now.weekday == weekday) {
+          if (now.weekday == _weekday) {
             count++;
-            if (count < ordinal) now = now.add(Duration(days: 1));
+            if (count < ordinal) now = now.add(const Duration(days: 1));
             break;
           }
-          now = now.add(Duration(days: 1));
+          now = now.add(const Duration(days: 1));
         }
       }
 

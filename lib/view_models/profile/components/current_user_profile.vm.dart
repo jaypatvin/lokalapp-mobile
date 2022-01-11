@@ -13,9 +13,9 @@ class CurrentUserProfileViewModel extends ViewModel {
   final PageController _pageController;
 
   Future<bool> onWillPop() async {
-    if (_pageController.page == 0)
+    if (_pageController.page == 0) {
       return true;
-    else {
+    } else {
       _pageController.animateToPage(
         0,
         duration: const Duration(milliseconds: 250),

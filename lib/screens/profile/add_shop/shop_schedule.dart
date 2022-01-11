@@ -35,9 +35,9 @@ class ShopSchedule extends StatelessWidget {
     return MVVM(
       view: (_, __) => _ShopScheduleView(),
       viewModel: ShopScheduleViewModel(
-        shopPhoto: this.shopPhoto,
-        forEditing: this.forEditing,
-        onShopEdit: this.onShopEdit,
+        shopPhoto: shopPhoto,
+        forEditing: forEditing,
+        onShopEdit: onShopEdit,
       ),
     );
   }
@@ -54,19 +54,18 @@ class _ShopScheduleView extends HookView<ShopScheduleViewModel> {
     final user = context.read<Auth>().user!;
     final shops = context.read<Shops>().findByUser(user.id);
 
-    double height = MediaQuery.of(context).size.height;
-    double width = MediaQuery.of(context).size.width;
+    final double height = MediaQuery.of(context).size.height;
+    final double width = MediaQuery.of(context).size.width;
     return Scaffold(
       backgroundColor: Colors.white,
       resizeToAvoidBottomInset: false,
       appBar: CustomAppBar(
-        titleText: "Shop Schedule",
-        titleStyle: TextStyle(
+        titleText: 'Shop Schedule',
+        titleStyle: const TextStyle(
           color: Colors.black,
         ),
         backgroundColor: Colors.white,
         leadingColor: Colors.black,
-        elevation: 0.0,
         onPressedLeading: () => Navigator.pop(context),
       ),
       body: Container(
@@ -85,7 +84,7 @@ class _ShopScheduleView extends HookView<ShopScheduleViewModel> {
                     return TextButton(
                       onPressed: () => node.unfocus(),
                       child: Text(
-                        "Done",
+                        'Done',
                         style: Theme.of(context)
                             .textTheme
                             .bodyText1!
@@ -99,11 +98,10 @@ class _ShopScheduleView extends HookView<ShopScheduleViewModel> {
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
               SchedulePicker(
-                header: "Days Available",
+                header: 'Days Available',
                 description: "Set your shop's availability",
                 repeatUnitFocusNode: _repeatUnitFocusNode,
                 operatingHours:
@@ -119,7 +117,7 @@ class _ShopScheduleView extends HookView<ShopScheduleViewModel> {
               ),
               const SizedBox(height: 15),
               Text(
-                "Hours",
+                'Hours',
                 style: Theme.of(context).textTheme.headline5,
               ),
               const SizedBox(height: 10),
@@ -133,7 +131,7 @@ class _ShopScheduleView extends HookView<ShopScheduleViewModel> {
               SizedBox(
                 width: double.infinity,
                 child: AppButton(
-                  "Confirm",
+                  'Confirm',
                   kTealColor,
                   true,
                   vm.onConfirm,
@@ -163,13 +161,13 @@ class _HoursPicker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    SizedBox spacerBox = SizedBox(
+    final SizedBox spacerBox = SizedBox(
       width: MediaQuery.of(context).size.width * 0.03,
     );
     return Row(
       children: [
         Text(
-          "Every",
+          'Every',
           style: Theme.of(context)
               .textTheme
               .headline6!
@@ -179,7 +177,8 @@ class _HoursPicker extends StatelessWidget {
         Expanded(
           child: Container(
             padding: EdgeInsets.symmetric(
-                horizontal: MediaQuery.of(context).size.width * 0.02),
+              horizontal: MediaQuery.of(context).size.width * 0.02,
+            ),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(30.0),
               border: Border.all(
@@ -188,12 +187,15 @@ class _HoursPicker extends StatelessWidget {
               color: Colors.grey[200],
             ),
             child: TextButton(
-              onPressed: this.onSelectOpening,
+              onPressed: onSelectOpening,
+              style: TextButton.styleFrom(
+                primary: Colors.black,
+              ),
               child: Row(
                 children: [
                   Expanded(
                     child: Text(
-                      getTimeOfDayString(this.opening),
+                      getTimeOfDayString(opening),
                       style: Theme.of(context).textTheme.bodyText1,
                     ),
                   ),
@@ -203,16 +205,13 @@ class _HoursPicker extends StatelessWidget {
                     size: 16.0.sp,
                   ),
                 ],
-              ),
-              style: TextButton.styleFrom(
-                primary: Colors.black,
               ),
             ),
           ),
         ),
         spacerBox,
         Text(
-          "To",
+          'To',
           style: Theme.of(context)
               .textTheme
               .headline6!
@@ -222,7 +221,8 @@ class _HoursPicker extends StatelessWidget {
         Expanded(
           child: Container(
             padding: EdgeInsets.symmetric(
-                horizontal: MediaQuery.of(context).size.width * 0.02),
+              horizontal: MediaQuery.of(context).size.width * 0.02,
+            ),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(30.0),
               border: Border.all(
@@ -231,12 +231,15 @@ class _HoursPicker extends StatelessWidget {
               color: Colors.grey[200],
             ),
             child: TextButton(
-              onPressed: this.onSelectClosing,
+              onPressed: onSelectClosing,
+              style: TextButton.styleFrom(
+                primary: Colors.black,
+              ),
               child: Row(
                 children: [
                   Expanded(
                     child: Text(
-                      getTimeOfDayString(this.closing),
+                      getTimeOfDayString(closing),
                       style: Theme.of(context).textTheme.bodyText1,
                     ),
                   ),
@@ -246,9 +249,6 @@ class _HoursPicker extends StatelessWidget {
                     size: 16.0.sp,
                   ),
                 ],
-              ),
-              style: TextButton.styleFrom(
-                primary: Colors.black,
               ),
             ),
           ),

@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
@@ -31,7 +30,7 @@ class _WishListScreenView extends StatelessView<WishlistScreenViewModel> {
   @override
   Widget render(BuildContext context, WishlistScreenViewModel vm) {
     return Scaffold(
-      appBar: CustomAppBar(
+      appBar: const CustomAppBar(
         titleText: 'My Wishlist',
         backgroundColor: kTealColor,
         titleStyle: TextStyle(
@@ -79,7 +78,7 @@ class _WishListScreenView extends StatelessView<WishlistScreenViewModel> {
                           kBottomNavigationBarHeight -
                           kToolbarHeight,
                       width: MediaQuery.of(context).size.width,
-                      child: Center(
+                      child: const Center(
                         child: Text('No products added to wishlist!'),
                       ),
                     );

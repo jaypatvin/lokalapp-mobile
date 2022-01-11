@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../utils/constants/themes.dart';
@@ -8,11 +7,11 @@ class PrivacySetting extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xffF1FAFF),
+      backgroundColor: const Color(0xffF1FAFF),
       resizeToAvoidBottomInset: true,
       appBar: CustomAppBar(
         titleText: 'Privacy Settings',
-        titleStyle: TextStyle(color: Colors.white),
+        titleStyle: const TextStyle(color: Colors.white),
         backgroundColor: kTealColor,
         onPressedLeading: () => Navigator.pop(context),
       ),

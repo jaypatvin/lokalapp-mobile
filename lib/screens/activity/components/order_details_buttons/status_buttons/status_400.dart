@@ -22,50 +22,46 @@ class Status400Buttons extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (this.isBuyer) {
-      return Container(
-        child: Column(
-          children: [
-            if (order.proofOfPayment?.isNotEmpty ?? false)
-              Container(
-                width: double.infinity,
-                child: ViewPaymentButton(onPress: this.onPress),
-              ),
-            Container(
+    if (isBuyer) {
+      return Column(
+        children: [
+          if (order.proofOfPayment?.isNotEmpty ?? false)
+            SizedBox(
               width: double.infinity,
-              child: MessageSellerButton(order: this.order),
+              child: ViewPaymentButton(onPress: onPress),
             ),
-          ],
-        ),
+          SizedBox(
+            width: double.infinity,
+            child: MessageSellerButton(order: order),
+          ),
+        ],
       );
     }
 
-    return Container(
-      child: Column(
-        children: [
-          Container(
-            width: double.infinity,
-            child: ViewPaymentButton(onPress: this.onPress),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Expanded(
-                child: MessageBuyerButton(order: this.order),
+    return Column(
+      children: [
+        SizedBox(
+          width: double.infinity,
+          child: ViewPaymentButton(onPress: onPress),
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Expanded(
+              child: MessageBuyerButton(order: order),
+            ),
+            SizedBox(width: MediaQuery.of(context).size.width * 0.01),
+            Expanded(
+              child: AppButton(
+                'Ship Out',
+                kOrangeColor,
+                true,
+                () => onPress(OrderAction.shipOut),
               ),
-              SizedBox(width: MediaQuery.of(context).size.width * 0.01),
-              Expanded(
-                child: AppButton(
-                  "Ship Out",
-                  kOrangeColor,
-                  true,
-                  () => this.onPress(OrderAction.shipOut),
-                ),
-              )
-            ],
-          ),
-        ],
-      ),
+            )
+          ],
+        ),
+      ],
     );
   }
 }

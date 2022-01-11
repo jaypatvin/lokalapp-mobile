@@ -28,7 +28,7 @@ class OrderReceivedViewModel extends ViewModel {
     );
   }
 
-  void onRatingUpdate(double rating) async {
+  Future<void> onRatingUpdate(double rating) async {
     this.rating = rating.toInt();
     ratingTitle = '${this.rating} star${rating == 1 ? "..." : "s!"}';
     ratingMessage = this.rating == 5

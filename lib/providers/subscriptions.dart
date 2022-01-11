@@ -22,12 +22,12 @@ class SubscriptionPlanBodySchedule {
   Map<String, dynamic> toMap() {
     return {
       'start_dates': startDates
-          .map((date) => DateFormat("yyyy-MM-dd").format(date))
+          .map((date) => DateFormat('yyyy-MM-dd').format(date))
           .toList(),
       'repeat_unit': repeatUnit,
       'repeat_type': repeatType,
       'last_date':
-          lastDate != null ? DateFormat("yyyy-MM-dd").format(lastDate!) : "",
+          lastDate != null ? DateFormat('yyyy-MM-dd').format(lastDate!) : '',
     };
   }
 
@@ -125,9 +125,10 @@ class SubscriptionPlanBody {
 }
 
 class SubscriptionProvider {
-  final _service = SubscriptionService.instance;
+  late final _service = SubscriptionService.instance;
   String? _idToken;
 
+  // ignore: use_setters_to_change_properties
   void setIdToken(String? idToken) {
     _idToken = idToken;
   }
@@ -138,11 +139,11 @@ class SubscriptionProvider {
     final response =
         await _service!.createSubscriptionPlan(idToken: _idToken, data: data);
 
-    print(response.body);
+    debugPrint(response.body);
     // if (response.statusCode != 200) throw response.reasonPhrase;
 
     final Map<String, dynamic> body = json.decode(response.body);
-    if (body['status'] != "ok") throw body['message'];
+    if (body['status'] != 'ok') throw body['message'];
 
     final subscriptionPlan = ProductSubscriptionPlan.fromMap(body['data']);
     return subscriptionPlan;
@@ -158,7 +159,7 @@ class SubscriptionProvider {
 
     try {
       final Map<String, dynamic> body = json.decode(response.body);
-      return body["status"] == "ok";
+      return body['status'] == 'ok';
     } catch (e) {
       return false;
     }
@@ -175,13 +176,13 @@ class SubscriptionProvider {
     );
 
     if (response.statusCode != 200) {
-      print(response.body);
+      debugPrint(response.body);
       return false;
     }
 
     try {
       final Map<String, dynamic> body = json.decode(response.body);
-      return body["status"] == "ok";
+      return body['status'] == 'ok';
     } catch (e) {
       return false;
     }

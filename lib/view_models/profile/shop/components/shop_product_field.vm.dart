@@ -48,8 +48,8 @@ class ShopProductFieldViewModel extends ViewModel {
 
   @override
   void init() {
-    this.isCurrentUser = context.read<Auth>().user!.id! == this.userId;
-    this.user = isCurrentUser
+    isCurrentUser = context.read<Auth>().user!.id! == userId;
+    user = isCurrentUser
         ? context.read<Auth>().user!
         : context.read<Users>().findById(userId)!;
 
@@ -66,13 +66,13 @@ class ShopProductFieldViewModel extends ViewModel {
     }
 
     if (_shop == null) throw 'Error: no shop found.';
-    this.shop = _shop;
+    shop = _shop;
 
-    _products = context.read<Products>().findByShop(this.shop.id!);
+    _products = context.read<Products>().findByShop(shop.id!);
   }
 
   void updateProducts() {
-    final _items = context.read<Products>().findByShop(this.shop.id!);
+    final _items = context.read<Products>().findByShop(shop.id!);
     _products = [..._items];
     notifyListeners();
   }
@@ -94,12 +94,11 @@ class ShopProductFieldViewModel extends ViewModel {
       );
       return;
     }
-    context.read<AppRouter>()
-      ..navigateTo(
-        AppRoute.discover,
-        ProductDetail.routeName,
-        arguments: ProductDetailProps(product),
-      );
+    context.read<AppRouter>().navigateTo(
+          AppRoute.discover,
+          ProductDetail.routeName,
+          arguments: ProductDetailProps(product),
+        );
   }
 
   void onSearchTermChanged(String? value) {
