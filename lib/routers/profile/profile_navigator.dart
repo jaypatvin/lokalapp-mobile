@@ -28,21 +28,26 @@ class ProfileNavigator extends AppNavigator {
       case ProfileScreen.routeName:
         final userId = (settings.arguments! as Map<String, String>)['userId']!;
         return CupertinoPageRoute(
+          settings: settings,
           builder: (_) => ProfileScreen(
             userId: userId,
           ),
         );
       case EditProfile.routeName:
-        return CupertinoPageRoute(builder: (_) => const EditProfile());
+        return CupertinoPageRoute(
+          settings: settings,
+          builder: (_) => const EditProfile(),
+        );
       case Settings.routeName:
         return CupertinoPageRoute(
-          builder: (_) => Settings(),
           settings: settings,
+          builder: (_) => Settings(),
         );
 
       case UserShop.routeName:
         final props = settings.arguments! as UserShopProps;
         return CupertinoPageRoute(
+          settings: settings,
           builder: (_) => UserShop(
             userId: props.userId,
             shopId: props.shopId,
@@ -50,10 +55,14 @@ class ProfileNavigator extends AppNavigator {
         );
 
       case AddShop.routeName:
-        return CupertinoPageRoute(builder: (_) => AddShop());
+        return CupertinoPageRoute(
+          settings: settings,
+          builder: (_) => AddShop(),
+        );
       case ShopSchedule.routeName:
         final props = settings.arguments! as ShopScheduleProps;
         return CupertinoPageRoute(
+          settings: settings,
           builder: (_) => ShopSchedule(
             shopPhoto: props.shopPhoto,
             forEditing: props.forEditing,
@@ -63,6 +72,7 @@ class ProfileNavigator extends AppNavigator {
       case CustomizeAvailability.routeName:
         final props = settings.arguments! as CustomizeAvailabilityProps;
         return CupertinoPageRoute(
+          settings: settings,
           builder: (_) => CustomizeAvailability(
             repeatChoice: props.repeatChoice,
             selectableDays: props.selectableDays,
@@ -78,29 +88,43 @@ class ProfileNavigator extends AppNavigator {
         final onSubmit =
             (settings.arguments! as Map<String, void Function()>)['onSubmit']!;
         return CupertinoPageRoute(
+          settings: settings,
           builder: (_) => SetUpPaymentOptions(onSubmit: onSubmit),
         );
       case AddShopConfirmation.routeName:
-        return CupertinoPageRoute(builder: (_) => AddShopConfirmation());
+        return CupertinoPageRoute(
+          settings: settings,
+          builder: (_) => AddShopConfirmation(),
+        );
 
       case AddProduct.routeName:
         final productId = settings.arguments != null
             ? (settings.arguments! as Map<String, String>)['productId']
             : null;
         return CupertinoPageRoute(
+          settings: settings,
           builder: (_) => AddProduct(
             productId: productId,
           ),
         );
 
       case WishlistScreen.routeName:
-        return CupertinoPageRoute(builder: (_) => const WishlistScreen());
+        return CupertinoPageRoute(
+          settings: settings,
+          builder: (_) => const WishlistScreen(),
+        );
 
       case InviteAFriend.routeName:
-        return CupertinoPageRoute(builder: (_) => const InviteAFriend());
+        return CupertinoPageRoute(
+          settings: settings,
+          builder: (_) => const InviteAFriend(),
+        );
 
       case EditShop.routeName:
-        return CupertinoPageRoute(builder: (_) => const EditShop());
+        return CupertinoPageRoute(
+          settings: settings,
+          builder: (_) => const EditShop(),
+        );
       default:
         // TODO: implement unknownRoute
         throw UnimplementedError();

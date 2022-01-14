@@ -28,35 +28,60 @@ class DiscoverNavigator extends AppNavigator {
     switch (settings.name) {
       // DISCOVER SCREENS
       case Discover.routeName:
-        return CupertinoPageRoute(builder: (_) => const Discover());
+        return CupertinoPageRoute(
+          settings: settings,
+          builder: (_) => const Discover(),
+        );
       case ExploreCategories.routeName:
-        return CupertinoPageRoute(builder: (_) => ExploreCategories());
+        return CupertinoPageRoute(
+          settings: settings,
+          builder: (_) => ExploreCategories(),
+        );
       case ProductDetail.routeName:
         final props = settings.arguments! as ProductDetailProps;
-        return CupertinoPageRoute(builder: (_) => ProductDetail(props.product));
+        return CupertinoPageRoute(
+          settings: settings,
+          builder: (_) => ProductDetail(props.product),
+        );
       case Search.routeName:
-        return CupertinoPageRoute(builder: (_) => Search());
+        return CupertinoPageRoute(
+          settings: settings,
+          builder: (_) => Search(),
+        );
 
       // CART SCREENS
       case CheckoutCart.routeName:
-        return CupertinoPageRoute(builder: (_) => const CheckoutCart());
+        return CupertinoPageRoute(
+          settings: settings,
+          builder: (_) => const CheckoutCart(),
+        );
       case ShopCheckout.routeName:
         final props = settings.arguments! as ShopCheckoutProps;
         return CupertinoPageRoute(
+          settings: settings,
           builder: (_) => ShopCheckout(shop: props.shop),
         );
       case Checkout.routeName:
         final props = settings.arguments! as CheckoutProps;
         return CupertinoPageRoute(
-          builder: (_) => Checkout(productId: props.productId),
+          settings: settings,
+          builder: (_) => Checkout(
+            productId: props.productId,
+          ),
         );
       case CheckoutSchedule.routeName:
         final props = settings.arguments! as CheckoutScheduleProps;
         return CupertinoPageRoute(
-          builder: (_) => CheckoutSchedule(productId: props.productId),
+          settings: settings,
+          builder: (_) => CheckoutSchedule(
+            productId: props.productId,
+          ),
         );
       case CartConfirmation.routeName:
-        return CupertinoPageRoute(builder: (_) => const CartConfirmation());
+        return CupertinoPageRoute(
+          settings: settings,
+          builder: (_) => const CartConfirmation(),
+        );
       default:
         throw UnimplementedError();
     }

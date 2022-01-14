@@ -16,10 +16,14 @@ class ChatNavigator extends AppNavigator {
   Route onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
       case Chat.routeName:
-        return CupertinoPageRoute(builder: (_) => const Chat());
+        return CupertinoPageRoute(
+          settings: settings,
+          builder: (_) => const Chat(),
+        );
       case ChatView.routeName:
         final props = settings.arguments! as ChatViewProps;
         return CupertinoPageRoute(
+          settings: settings,
           builder: (_) => ChatView(
             props.createMessage,
             chat: props.chat,
@@ -31,6 +35,7 @@ class ChatNavigator extends AppNavigator {
       case ChatProfile.routeName:
         final props = settings.arguments! as ChatProfileProps;
         return CupertinoPageRoute(
+          settings: settings,
           builder: (_) => ChatProfile(
             props.chat,
             props.conversations,
@@ -40,6 +45,7 @@ class ChatNavigator extends AppNavigator {
         final conversations =
             (settings.arguments! as Map<String, dynamic>)['conversations'];
         return CupertinoPageRoute(
+          settings: settings,
           builder: (_) => SharedMedia(
             conversations: conversations,
           ),

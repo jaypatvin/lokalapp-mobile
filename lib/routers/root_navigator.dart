@@ -17,13 +17,25 @@ class RootNavigator extends AppNavigator {
   Route onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
       case BottomNavigation.routeName:
-        return CupertinoPageRoute(builder: (_) => BottomNavigation());
+        return CupertinoPageRoute(
+          settings: settings,
+          builder: (_) => BottomNavigation(),
+        );
       case DraftPost.routeName:
-        return CupertinoPageRoute(builder: (_) => const DraftPost());
+        return CupertinoPageRoute(
+          settings: settings,
+          builder: (_) => const DraftPost(),
+        );
       case InvitePage.routeName:
-        return CupertinoPageRoute(builder: (_) => const InvitePage());
+        return CupertinoPageRoute(
+          settings: settings,
+          builder: (_) => const InvitePage(),
+        );
       case ProfileRegistration.routeName:
-        return CupertinoPageRoute(builder: (_) => const ProfileRegistration());
+        return CupertinoPageRoute(
+          settings: settings,
+          builder: (_) => const ProfileRegistration(),
+        );
       default:
         // TODO: implement unknownRoute
         throw UnimplementedError();
