@@ -278,45 +278,36 @@ class Auth extends ChangeNotifier {
     return result;
   }
 
-  Future<void> changeEmail(
-    String email,
-    String password,
-    String newEmail,
-  ) async {
+  Future<void> changeEmail({
+    required String password,
+    required String newEmail,
+  }) async {
     try {
       checkSignInMethod();
-      final userCredential = await _auth.signInWithEmailAndPassword(
-        email: email,
+      await _auth.signInWithEmailAndPassword(
+        email: _auth.currentUser!.email!,
         password: password,
       );
-      await _auth.currentUser!.reauthenticateWithCredential(
-        userCredential.credential!,
-      );
+
       return await _auth.currentUser!.updateEmail(newEmail);
-    } on FirebaseAuthException catch (e) {
-      throw e.code;
     } catch (e) {
       rethrow;
     }
   }
 
   Future<void> changePassword(
-    String email,
+    // String email,
     String password,
     String newPassword,
   ) async {
     try {
       checkSignInMethod();
-      final userCredential = await _auth.signInWithEmailAndPassword(
-        email: email,
+      await _auth.signInWithEmailAndPassword(
+        email: _auth.currentUser!.email!,
         password: password,
       );
-      await _auth.currentUser!.reauthenticateWithCredential(
-        userCredential.credential!,
-      );
+
       return await _auth.currentUser!.updatePassword(newPassword);
-    } on FirebaseAuthException catch (e) {
-      throw e.code;
     } catch (e) {
       rethrow;
     }
@@ -332,15 +323,6 @@ class Auth extends ChangeNotifier {
       rethrow;
     }
   }
-
-  // String _generateNonce([int length = 32]) {
-  //   final charset =
-  //       '0123456789ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvwxyz-._';
-  //   final random = Random.secure();
-
-  //   return List.generate(length, (_) => charset[random.nextInt(charset.length)])
-  //       .join();
-  // }
 
   String _sha256ofString(String input) {
     final bytes = utf8.encode(input);

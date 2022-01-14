@@ -35,7 +35,10 @@ class ProfileNavigator extends AppNavigator {
       case EditProfile.routeName:
         return CupertinoPageRoute(builder: (_) => const EditProfile());
       case Settings.routeName:
-        return CupertinoPageRoute(builder: (_) => Settings());
+        return CupertinoPageRoute(
+          builder: (_) => Settings(),
+          settings: settings,
+        );
 
       case UserShop.routeName:
         final props = settings.arguments! as UserShopProps;

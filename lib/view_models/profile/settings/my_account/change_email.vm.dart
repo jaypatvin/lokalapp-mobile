@@ -1,29 +1,22 @@
 import 'dart:async';
 
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:oktoast/oktoast.dart';
+import 'package:provider/provider.dart';
 
-class ChangeEmailViewModel extends ChangeNotifier {
-  ChangeEmailViewModel();
+import '../../../../providers/auth.dart';
+import '../../../../state/view_model.dart';
 
-  // final Auth _userAuth;
-  final StreamController<String> _errorStream = StreamController.broadcast();
-
+class ChangeEmailViewModel extends ViewModel {
   bool _displayEmailError = false;
   bool _displaySignInError = false;
+
   String _email = '';
   String _newEmail = '';
   String _password = '';
 
   bool get displayEmailError => _displayEmailError;
   bool get displaySignInError => _displaySignInError;
-  Stream<String> get errorStream => _errorStream.stream;
-
-  @override
-  void dispose() {
-    _errorStream.close();
-    super.dispose();
-  }
 
   void onEmailChanged(String value) {
     _email = value;
@@ -43,28 +36,36 @@ class ChangeEmailViewModel extends ChangeNotifier {
 
   void onPasswordChanged(String value) {
     _password = value;
+    if (_displaySignInError) {
+      _displaySignInError = false;
+    }
     notifyListeners();
   }
 
-  Future<void> onFormSubmit() async {
+  Future<bool> onFormSubmit() async {
     if (_email != _newEmail) {
       _displayEmailError = true;
       notifyListeners();
-      return;
+      return false;
     }
     try {
-      // TODO: implement change Email
-      throw UnimplementedError('No API to change the email in user documents.');
+      await context.read<Auth>().changeEmail(
+            password: _password,
+            newEmail: _newEmail,
+          );
+      return true;
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'wrong-password') {
+        _displaySignInError = true;
+        notifyListeners();
+      } else {
+        showToast(e.toString());
+      }
 
-      // await _userAuth.changeEmail(
-      //   _email,
-      //   _password,
-      //   _newEmail,
-      // );
+      return false;
     } catch (e) {
-      _errorStream.add(e.toString());
+      showToast(e.toString());
+      return false;
     }
-
-    notifyListeners();
   }
 }

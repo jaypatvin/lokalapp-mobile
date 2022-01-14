@@ -8,29 +8,36 @@ import '../../../../../widgets/inputs/input_password_field.dart';
 
 class EmailInputForm extends StatefulWidget {
   final Key? formKey;
-  final TextEditingController? emailController;
   final TextEditingController? newEmailController;
+  final TextEditingController? confirmEmailController;
   final TextEditingController? passwordController;
   final void Function()? onFormChanged;
   final void Function()? onFormSubmit;
-  final void Function(String)? onEmailChanged;
   final void Function(String)? onNewEmailChanged;
+  final void Function(String)? onConfirmEmailChanged;
   final void Function(String)? onPasswordChanged;
   final bool displaySignInError;
   final bool displayEmailMatchError;
+  final FocusNode? newEmailFocusNode;
+  final FocusNode? confirmEmailFocusNode;
+  final FocusNode? passwordFocusNode;
+
   const EmailInputForm({
     Key? key,
     this.formKey,
-    this.emailController,
     this.newEmailController,
+    this.confirmEmailController,
     this.passwordController,
     this.onFormChanged,
     this.onFormSubmit,
     this.displaySignInError = false,
     this.displayEmailMatchError = false,
-    this.onEmailChanged,
     this.onNewEmailChanged,
+    this.onConfirmEmailChanged,
     this.onPasswordChanged,
+    this.newEmailFocusNode,
+    this.confirmEmailFocusNode,
+    this.passwordFocusNode,
   }) : super(key: key);
 
   @override
@@ -38,68 +45,32 @@ class EmailInputForm extends StatefulWidget {
 }
 
 class _EmailInputFormState extends State<EmailInputForm> {
-  final FocusNode _nodeEmail = FocusNode();
-  final FocusNode _nodeNewEmail = FocusNode();
-  final FocusNode _nodePassword = FocusNode();
+  late final FocusNode _nodeNewEmail;
+  late final FocusNode _nodeConfirmEmail;
+  late final FocusNode _nodePassword;
   late bool _passwordVisible;
 
   @override
   void initState() {
     super.initState();
     _passwordVisible = false;
+    _nodeNewEmail = widget.newEmailFocusNode ?? FocusNode();
+    _nodeConfirmEmail = widget.confirmEmailFocusNode ?? FocusNode();
+    _nodePassword = widget.passwordFocusNode ?? FocusNode();
   }
 
-  KeyboardActionsConfig _buildConfig(BuildContext context) {
+  KeyboardActionsConfig _buildConfig() {
     return KeyboardActionsConfig(
       keyboardBarColor: Colors.grey.shade200,
       actions: [
         KeyboardActionsItem(
-          focusNode: _nodeEmail,
-          toolbarButtons: [
-            (node) {
-              return TextButton(
-                onPressed: () => node.unfocus(),
-                child: Text(
-                  'Done',
-                  style: Theme.of(context).textTheme.bodyText1!.copyWith(
-                        color: Colors.black,
-                      ),
-                ),
-              );
-            },
-          ],
+          focusNode: _nodeNewEmail,
         ),
         KeyboardActionsItem(
-          focusNode: _nodeNewEmail,
-          toolbarButtons: [
-            (node) {
-              return TextButton(
-                onPressed: () => node.unfocus(),
-                child: Text(
-                  'Done',
-                  style: Theme.of(context).textTheme.bodyText1!.copyWith(
-                        color: Colors.black,
-                      ),
-                ),
-              );
-            },
-          ],
+          focusNode: _nodeConfirmEmail,
         ),
         KeyboardActionsItem(
           focusNode: _nodePassword,
-          toolbarButtons: [
-            (node) {
-              return TextButton(
-                onPressed: () => node.unfocus(),
-                child: Text(
-                  'Done',
-                  style: Theme.of(context).textTheme.bodyText1!.copyWith(
-                        color: Colors.black,
-                      ),
-                ),
-              );
-            },
-          ],
         ),
       ],
     );
@@ -109,7 +80,7 @@ class _EmailInputFormState extends State<EmailInputForm> {
   Widget build(BuildContext context) {
     return KeyboardActions(
       bottomAvoiderScrollPhysics: const ScrollPhysics(),
-      config: _buildConfig(context),
+      config: _buildConfig(),
       child: Form(
         onChanged: widget.onFormChanged,
         key: widget.formKey,
@@ -121,9 +92,10 @@ class _EmailInputFormState extends State<EmailInputForm> {
               style: Theme.of(context).textTheme.bodyText1,
             ),
             InputEmailField(
-              focusNode: _nodeEmail,
-              controller: widget.emailController,
-              onChanged: widget.onEmailChanged,
+              focusNode: _nodeNewEmail,
+              controller: widget.newEmailController,
+              onChanged: widget.onNewEmailChanged,
+              validate: true,
             ),
             SizedBox(height: 15.0.h),
             Text(
@@ -136,10 +108,11 @@ class _EmailInputFormState extends State<EmailInputForm> {
                   : Theme.of(context).textTheme.bodyText1,
             ),
             InputEmailField(
-              focusNode: _nodeNewEmail,
-              controller: widget.newEmailController,
-              onChanged: widget.onNewEmailChanged,
+              focusNode: _nodeConfirmEmail,
+              controller: widget.confirmEmailController,
+              onChanged: widget.onConfirmEmailChanged,
               displayErrorBorder: widget.displayEmailMatchError,
+              validate: true,
             ),
             SizedBox(height: 15.0.h),
             Text(
@@ -152,6 +125,7 @@ class _EmailInputFormState extends State<EmailInputForm> {
               onChanged: widget.onPasswordChanged,
               isPasswordVisible: _passwordVisible,
               displaySignInError: widget.displaySignInError,
+              
               onPasswordVisibilityChanged: () =>
                   setState(() => _passwordVisible = !_passwordVisible),
             ),
