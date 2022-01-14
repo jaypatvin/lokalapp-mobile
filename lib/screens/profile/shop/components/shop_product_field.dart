@@ -64,51 +64,40 @@ class _ShopProductFieldView extends HookView<ShopProductFieldViewModel> {
       return Center(
         child: Text('No products with term: ${vm.searchTerm}'),
       );
-    } else if (vm.products.isEmpty) {
-      return SizedBox(
-        width: MediaQuery.of(context).size.width * 0.5,
-        child: ListView(
-          shrinkWrap: true,
-          children: [
-            const SizedBox(height: 10),
-            Text(
-              'No products added',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: Colors.grey,
-                fontWeight: FontWeight.w500,
-                fontSize: 14.0.sp,
-              ),
-            ),
-            SizedBox(height: 10.0.h),
-            if (vm.isCurrentUser)
-              AppButton(
-                'ADD PRODUCTS',
-                kTealColor,
-                true,
-                vm.addProduct,
-              ),
-          ],
-        ),
-      );
     }
 
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 8.0.w),
-      child: ListView(
-        physics: const NeverScrollableScrollPhysics(),
-        shrinkWrap: true,
+      child: Column(
         children: [
-          if (vm.isCurrentUser)
-            AppButton(
-              '+ Add a new Product',
-              kTealColor,
-              false,
-              vm.addProduct,
+          if (vm.products.isEmpty)
+            Padding(
+              padding: EdgeInsets.only(bottom: 10.0.h),
+              child: Text(
+                'No products added',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.grey,
+                  fontWeight: FontWeight.w500,
+                  fontSize: 14.0.sp,
+                ),
+              ),
             ),
-          ProductsList(
-            items: [...vm.products],
-            onProductTap: vm.onProductTap,
+          if (vm.isCurrentUser)
+            Padding(
+              padding: EdgeInsets.only(bottom: 10.0.h),
+              child: AppButton(
+                '+ Add a new Product',
+                kTealColor,
+                false,
+                vm.addProduct,
+              ),
+            ),
+          Expanded(
+            child: ProductsList(
+              items: [...vm.products],
+              onProductTap: vm.onProductTap,
+            ),
           ),
         ],
       ),
