@@ -80,7 +80,6 @@ class _WalletDetailsView extends HookView<BankDetailsViewModel>
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 24.0.h),
               child: ListView.builder(
-                shrinkWrap: true,
                 itemCount: vm.paymentAccounts.length,
                 itemBuilder: (ctx, index) {
                   final _account = vm.paymentAccounts[index];
@@ -92,7 +91,10 @@ class _WalletDetailsView extends HookView<BankDetailsViewModel>
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
-                          context.read<BankCodes>().getById(_account.bank).name,
+                          context
+                              .read<BankCodes>()
+                              .getById(_account.bankCode)
+                              .name,
                           style: Theme.of(context).textTheme.subtitle1,
                         ),
                         Row(
@@ -108,7 +110,7 @@ class _WalletDetailsView extends HookView<BankDetailsViewModel>
                             Flexible(
                               flex: 4,
                               child: Text(
-                                '${_account.accountNumber}',
+                                _account.accountNumber,
                                 style: Theme.of(context).textTheme.subtitle1,
                               ),
                             ),

@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 
-import '../../models/payment_options.dart';
+import '../../models/payment_option.dart';
 import 'operating_hours_body.dart';
 
 class ShopBody extends ChangeNotifier {
@@ -15,7 +15,7 @@ class ShopBody extends ChangeNotifier {
   String? status;
   String? userId;
   OperatingHoursBody? operatingHours;
-  PaymentOptions? paymentOptions;
+  List<PaymentOption>? paymentOptions;
   ShopBody({
     this.name,
     this.description,
@@ -41,7 +41,7 @@ class ShopBody extends ChangeNotifier {
     String? status,
     String? userId,
     OperatingHoursBody? operatingHours,
-    PaymentOptions? paymentOptions,
+    List<PaymentOption>? paymentOptions,
     bool notify = true,
   }) {
     this.name = name ?? this.name;
@@ -69,7 +69,7 @@ class ShopBody extends ChangeNotifier {
         status: 'enabled',
         userId: '',
         operatingHours: OperatingHoursBody(),
-        paymentOptions: const PaymentOptions(),
+        paymentOptions: const [],
         notify: notify,
       );
 
@@ -85,7 +85,7 @@ class ShopBody extends ChangeNotifier {
     String? status,
     String? userId,
     OperatingHoursBody? operatingHours,
-    PaymentOptions? paymentOptions,
+    List<PaymentOption>? paymentOptions,
   }) {
     return ShopBody(
       name: name ?? this.name,
@@ -112,7 +112,9 @@ class ShopBody extends ChangeNotifier {
       'status': status,
       'user_id': userId,
       'operating_hours': operatingHours?.toMap(),
-      'payment_options': paymentOptions?.toMap(),
+      'payment_options': paymentOptions
+          ?.map<Map<String, dynamic>>((paymentOption) => paymentOption.toMap())
+          .toList(),
     };
   }
 
@@ -129,9 +131,12 @@ class ShopBody extends ChangeNotifier {
       operatingHours: map['operating_hours'] != null
           ? OperatingHoursBody.fromMap(map['operating_hours'])
           : null,
-      paymentOptions: map['payment_options'] != null
-          ? PaymentOptions.fromMap(map['payment_options'])
-          : null,
+      paymentOptions: List<PaymentOption>.from(
+        map['payment_options']?.map(
+              (x) => PaymentOption.fromMap(x),
+            ) ??
+            [],
+      ),
     );
   }
 

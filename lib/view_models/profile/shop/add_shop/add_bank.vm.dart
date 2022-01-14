@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 
 import '../../../../models/bank_code.dart';
-import '../../../../models/payment_options.dart';
+import '../../../../models/payment_option.dart';
 import '../../../../providers/bank_codes.dart';
 import '../../../../routers/app_router.dart';
 import '../../../../screens/profile/add_shop/add_bank_details.dart';
@@ -11,6 +11,8 @@ class AddBankViewModel extends ViewModel {
   AddBankViewModel(this._bankCodes, this._bankType);
   final BankCodes _bankCodes;
   final BankType _bankType;
+
+  BankType get bankType => _bankType;
 
   late final String header;
   late final String addButtonLabel;
@@ -28,12 +30,9 @@ class AddBankViewModel extends ViewModel {
 
   String getBankName(String id) => _bankCodes.getById(id).name;
 
-  List<BankAccount> items(PaymentOptions? paymentOptions) {
-    if (_bankType == BankType.bank) {
-      return paymentOptions?.bankAccounts ?? <BankAccount>[];
-    }
-
-    return paymentOptions?.gCashAccounts ?? <WalletAccount>[];
+  List<PaymentOption> items(List<PaymentOption>? paymentOptions) {
+    return paymentOptions?.where((bank) => bank.type == _bankType).toList() ??
+        const [];
   }
 
   void onAddBankDetails() {
@@ -46,7 +45,7 @@ class AddBankViewModel extends ViewModel {
     );
   }
 
-  void onEditBankDetails(BankAccount account) {
+  void onEditBankDetails(PaymentOption account) {
     AppRouter.profileNavigatorKey.currentState?.push(
       CupertinoPageRoute(
         builder: (_) => AddBankDetails(

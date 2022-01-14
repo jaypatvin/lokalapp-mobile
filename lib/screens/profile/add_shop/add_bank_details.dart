@@ -9,7 +9,7 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:provider/provider.dart';
 
 import '../../../models/bank_code.dart';
-import '../../../models/payment_options.dart';
+import '../../../models/payment_option.dart';
 import '../../../providers/bank_codes.dart';
 import '../../../providers/post_requests/shop_body.dart';
 import '../../../state/mvvm_builder.widget.dart';
@@ -26,7 +26,7 @@ class AddBankDetails extends StatelessWidget {
     required this.bankType,
     this.bankAccount,
   }) : super(key: key);
-  final BankAccount? bankAccount;
+  final PaymentOption? bankAccount;
   final BankType bankType;
 
   @override

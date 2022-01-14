@@ -55,7 +55,7 @@ class EditShopViewModel extends ViewModel {
         description: shop.description,
         coverPhoto: shop.coverPhoto,
         profilePhoto: shop.profilePhoto,
-        paymentOptions: shop.paymentOptions?.copyWith(),
+        paymentOptions: [...(shop.paymentOptions ?? const [])],
         notify: false,
       );
     context.read<OperatingHoursBody>().clear(notify: false);
@@ -198,6 +198,8 @@ class EditShopViewModel extends ViewModel {
         success = await _updateShopSchedule();
         if (!success) throw 'Update operating hours error';
       }
+
+      AppRouter.profileNavigatorKey.currentState?.pop();
     } catch (e) {
       showToast(e.toString());
     }

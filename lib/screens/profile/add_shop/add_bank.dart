@@ -90,7 +90,7 @@ class _AddBankView extends StatelessView<AddBankViewModel> {
                                 child: Image.network(
                                   context
                                       .read<BankCodes>()
-                                      .getById(item.bank)
+                                      .getById(item.bankCode)
                                       .iconUrl,
                                   fit: BoxFit.contain,
                                   errorBuilder: (_, __, ___) =>
@@ -103,7 +103,8 @@ class _AddBankView extends StatelessView<AddBankViewModel> {
                                 text: TextSpan(
                                   children: [
                                     TextSpan(
-                                      text: '${vm.getBankName(item.bank)}\n',
+                                      text:
+                                          '${vm.getBankName(item.bankCode)}\n',
                                       style: Theme.of(context)
                                           .textTheme
                                           .subtitle2
@@ -143,8 +144,10 @@ class _AddBankView extends StatelessView<AddBankViewModel> {
               width: double.infinity,
               child: Consumer<ShopBody>(
                 builder: (_, shopBody, __) {
-                  final isBankEmpty =
-                      shopBody.paymentOptions?.bankAccounts.isEmpty ?? true;
+                  final isBankEmpty = shopBody.paymentOptions
+                          ?.where((bank) => bank.type == vm.bankType)
+                          .isEmpty ??
+                      true;
 
                   return AppButton(
                     isBankEmpty ? 'Next' : 'Back to Payment Options',
