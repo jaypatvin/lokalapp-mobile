@@ -98,6 +98,8 @@ class TransactionDetails extends HookWidget {
         if (status?.isNotEmpty ?? false) _avatar,
         if (status?.isNotEmpty ?? false) SizedBox(height: 10.0.h),
         ListView.builder(
+          // this shrinkWrap is okay since there is only 1 (or a few) product
+          // per transaction
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           itemCount: transaction.products.length,

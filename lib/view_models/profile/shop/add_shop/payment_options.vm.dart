@@ -6,19 +6,26 @@ import '../../../../screens/profile/add_shop/add_bank.dart';
 import '../../../../state/view_model.dart';
 
 class SetupPaymentOptionsViewModel extends ViewModel {
-  SetupPaymentOptionsViewModel({required this.onSubmit});
+  SetupPaymentOptionsViewModel({required this.onSubmit, required this.edit});
   final void Function() onSubmit;
+  final bool edit;
 
   void onAddBank() {
-    AppRouter.profileNavigatorKey.currentState
-        ?.push(CupertinoPageRoute(builder: (_) => const AddBank()));
+    AppRouter.profileNavigatorKey.currentState?.push(
+      CupertinoPageRoute(
+        builder: (_) => AddBank(
+          edit: edit,
+        ),
+      ),
+    );
   }
 
   void onAddWallet() {
     AppRouter.profileNavigatorKey.currentState?.push(
       CupertinoPageRoute(
-        builder: (_) => const AddBank(
+        builder: (_) => AddBank(
           type: BankType.wallet,
+          edit: edit,
         ),
       ),
     );

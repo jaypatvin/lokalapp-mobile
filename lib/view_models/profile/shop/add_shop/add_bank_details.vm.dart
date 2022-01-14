@@ -13,13 +13,15 @@ class AddBankDetailsViewModel extends ViewModel {
     this.type,
     this._shopBody,
     this._bankCodes,
-    this.formKey, [
+    this.formKey, {
     this.initialAccount,
-  ]);
+    this.edit = false,
+  });
   final ShopBody _shopBody;
   final BankCodes _bankCodes;
   final GlobalKey<FormState> formKey;
   final BankType type;
+  final bool edit;
   PaymentOption? initialAccount;
 
   BankCode? _bank;

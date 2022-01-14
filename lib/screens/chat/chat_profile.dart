@@ -115,20 +115,25 @@ class _ChatProfileState extends State<ChatProfile> {
           children: [
             SizedBox(
               height: 100.0.h,
-              child: ListView.builder(
-                itemCount: _members.length,
-                physics: const NeverScrollableScrollPhysics(),
-                scrollDirection: Axis.horizontal,
+              child: CustomScrollView(
                 shrinkWrap: true,
-                itemBuilder: (ctx, index) {
-                  final displayName = _members[index].displayName;
-                  final imgUrl = _members[index].displayPhoto ?? '';
-                  return ChatAvatar(
-                    displayName: displayName,
-                    displayPhoto: imgUrl,
-                    radius: 120.0.r / _members.length,
-                  );
-                },
+                scrollDirection: Axis.horizontal,
+                slivers: [
+                  SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                      (BuildContext ctx, int index) {
+                        final displayName = _members[index].displayName;
+                        final imgUrl = _members[index].displayPhoto ?? '';
+                        return ChatAvatar(
+                          displayName: displayName,
+                          displayPhoto: imgUrl,
+                          radius: 120.0.r / _members.length,
+                        );
+                      },
+                      childCount: _members.length,
+                    ),
+                  ),
+                ],
               ),
             ),
             SizedBox(height: 10.0.h),

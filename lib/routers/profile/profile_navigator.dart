@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:lokalapp/routers/profile/payment_options.props.dart';
 
 import '../../models/app_navigator.dart';
 import '../../screens/profile/add_product/add_product.dart';
@@ -85,11 +86,12 @@ class ProfileNavigator extends AppNavigator {
           ),
         );
       case SetUpPaymentOptions.routeName:
-        final onSubmit =
-            (settings.arguments! as Map<String, void Function()>)['onSubmit']!;
+        final props = settings.arguments! as SetUpPaymentOptionsProps;
         return CupertinoPageRoute(
           settings: settings,
-          builder: (_) => SetUpPaymentOptions(onSubmit: onSubmit),
+          builder: (_) => props.edit
+              ? SetUpPaymentOptions.edit(onSubmit: props.onSubmit)
+              : SetUpPaymentOptions.create(onSubmit: props.onSubmit),
         );
       case AddShopConfirmation.routeName:
         return CupertinoPageRoute(

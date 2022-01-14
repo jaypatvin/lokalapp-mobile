@@ -60,7 +60,6 @@ class _SubscriptionsView extends StatelessView<SubscriptionsViewModel> {
                       );
                     } else {
                       return GroupedListView(
-                        shrinkWrap: true,
                         physics: const AlwaysScrollableScrollPhysics(),
                         elements: snapshot.data!.docs,
                         groupBy: (QueryDocumentSnapshot snapshot) {

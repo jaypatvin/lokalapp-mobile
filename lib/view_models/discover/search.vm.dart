@@ -14,12 +14,12 @@ import '../../routers/discover/product_detail.props.dart';
 import '../../screens/discover/product_detail.dart';
 import '../../services/api/api.dart';
 import '../../services/api/search_api_service.dart';
+import '../../state/view_model.dart';
 import '../../utils/shared_preference.dart';
 
-class SearchViewModel extends ChangeNotifier {
-  SearchViewModel(this.context);
+class SearchViewModel extends ViewModel {
+  SearchViewModel();
 
-  final BuildContext context;
   final TextEditingController searchController = TextEditingController();
 
   late final SearchAPIService _apiService;
@@ -37,6 +37,7 @@ class SearchViewModel extends ChangeNotifier {
 
   Timer? _timer;
 
+  @override
   void init() {
     _apiService = SearchAPIService(context.read<API>());
     _recentSearches = context.read<UserSharedPreferences>().getRecentSearches();
@@ -55,7 +56,11 @@ class SearchViewModel extends ChangeNotifier {
   }
 
   Future<void> _performSearch(String query) async {
-    if (query.isEmpty) return;
+    if (query.isEmpty) {
+      _searchResults.clear();
+      notifyListeners();
+      return;
+    }
 
     _isSearching = true;
     if (!_recentSearches.contains(query)) _recentSearches.insert(0, query);
@@ -72,7 +77,7 @@ class SearchViewModel extends ChangeNotifier {
       );
 
       if (response['products']!.isEmpty) {
-        throw 'Result is empty';
+        throw 'No search results. Refine or search for another.';
       }
 
       for (final id in response['products']!) {

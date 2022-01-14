@@ -9,11 +9,9 @@ import '../../state/mvvm_builder.widget.dart';
 import '../../state/views/stateless.view.dart';
 import '../../utils/constants/assets.dart';
 import '../../utils/constants/themes.dart';
-import '../../utils/shared_preference.dart';
 import '../../view_models/discover/discover.vm.dart';
 import '../../widgets/custom_app_bar.dart';
 import '../../widgets/inputs/search_text_field.dart';
-import '../../widgets/overlays/onboarding.dart';
 import '../../widgets/products_list.dart';
 import '../cart/cart_container.dart';
 import '../profile/components/product_card.dart';
@@ -43,7 +41,6 @@ class _DiscoverView extends StatelessView<DiscoverViewModel> {
         final categories = provider.categories;
         return ListView.builder(
           scrollDirection: Axis.horizontal,
-          shrinkWrap: true,
           itemCount: categories.length,
           itemBuilder: (ctx, index) {
             return SizedBox(
@@ -225,7 +222,6 @@ class _RecommendedProducts extends StatelessWidget {
       height: 250.0.h,
       width: MediaQuery.of(context).size.width,
       child: GridView.builder(
-        shrinkWrap: true,
         scrollDirection: Axis.horizontal,
         itemCount: products.length,
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(

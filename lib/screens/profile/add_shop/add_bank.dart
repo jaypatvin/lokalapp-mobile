@@ -14,8 +14,13 @@ import '../../../widgets/app_button.dart';
 import '../../../widgets/custom_app_bar.dart';
 
 class AddBank extends StatelessWidget {
-  const AddBank({Key? key, this.type = BankType.bank}) : super(key: key);
+  const AddBank({
+    Key? key,
+    this.type = BankType.bank,
+    this.edit = false,
+  }) : super(key: key);
   final BankType type;
+  final bool edit;
 
   @override
   Widget build(BuildContext context) {
@@ -24,6 +29,7 @@ class AddBank extends StatelessWidget {
       viewModel: AddBankViewModel(
         context.read<BankCodes>(),
         type,
+        edit: edit,
       ),
     );
   }
@@ -33,8 +39,8 @@ class _AddBankView extends StatelessView<AddBankViewModel> {
   @override
   Widget render(BuildContext context, AddBankViewModel vm) {
     return Scaffold(
-      appBar: const CustomAppBar(
-        titleText: 'Add Shop',
+      appBar: CustomAppBar(
+        titleText: vm.edit ? 'Edit Shop' : 'Add Shop',
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(
@@ -49,97 +55,97 @@ class _AddBankView extends StatelessView<AddBankViewModel> {
               style: Theme.of(context).textTheme.headline6,
             ),
             SizedBox(height: 10.h),
-            Consumer<ShopBody>(
-              builder: (ctx, shopBody, _) {
-                final items = vm.items(shopBody.paymentOptions);
-                return ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: items.length + 1,
-                  itemBuilder: (_, index) {
-                    if (items.length == index) {
-                      return Container(
-                        margin: const EdgeInsets.only(top: 8.0),
-                        width: double.infinity,
-                        height: 100.h,
-                        child: AppButton(
-                          vm.addButtonLabel,
-                          kTealColor,
-                          false,
-                          vm.onAddBankDetails,
+            Expanded(
+              child: Consumer<ShopBody>(
+                builder: (ctx, shopBody, _) {
+                  final items = vm.items(shopBody.paymentOptions);
+                  return ListView.builder(
+                    itemCount: items.length + 1,
+                    itemBuilder: (_, index) {
+                      if (items.length == index) {
+                        return Container(
+                          margin: const EdgeInsets.only(top: 8.0),
+                          width: double.infinity,
+                          height: 100.h,
+                          child: AppButton(
+                            vm.addButtonLabel,
+                            kTealColor,
+                            false,
+                            vm.onAddBankDetails,
+                          ),
+                        );
+                      }
+
+                      final item = items[index];
+                      return Card(
+                        elevation: 2.0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30.0),
+                        ),
+                        child: InkWell(
+                          onTap: () => vm.onEditBankDetails(item),
+                          child: Row(
+                            children: [
+                              Container(
+                                margin: const EdgeInsets.symmetric(
+                                    horizontal: 16.0),
+                                width: MediaQuery.of(context).size.width / 6,
+                                height: 100.h,
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(8.0),
+                                  child: Image.network(
+                                    context
+                                        .read<BankCodes>()
+                                        .getById(item.bankCode)
+                                        .iconUrl,
+                                    fit: BoxFit.contain,
+                                    errorBuilder: (_, __, ___) =>
+                                        const Text('No image'),
+                                  ),
+                                ),
+                              ),
+                              Expanded(
+                                child: RichText(
+                                  text: TextSpan(
+                                    children: [
+                                      TextSpan(
+                                        text:
+                                            '${vm.getBankName(item.bankCode)}\n',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .subtitle2
+                                            ?.copyWith(
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                      ),
+                                      TextSpan(
+                                        text: '${item.accountName}\n'
+                                            '${item.accountNumber}',
+                                      ),
+                                    ],
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .subtitle2
+                                        ?.copyWith(fontWeight: FontWeight.w500),
+                                  ),
+                                ),
+                              ),
+                              Container(
+                                margin: const EdgeInsets.only(right: 16.0),
+                                child: const Icon(
+                                  MdiIcons.squareEditOutline,
+                                  color: kTealColor,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       );
-                    }
-
-                    final item = items[index];
-                    return Card(
-                      elevation: 2.0,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30.0),
-                      ),
-                      child: InkWell(
-                        onTap: () => vm.onEditBankDetails(item),
-                        child: Row(
-                          children: [
-                            Container(
-                              margin:
-                                  const EdgeInsets.symmetric(horizontal: 16.0),
-                              width: MediaQuery.of(context).size.width / 6,
-                              height: 100.h,
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(8.0),
-                                child: Image.network(
-                                  context
-                                      .read<BankCodes>()
-                                      .getById(item.bankCode)
-                                      .iconUrl,
-                                  fit: BoxFit.contain,
-                                  errorBuilder: (_, __, ___) =>
-                                      const Text('No image'),
-                                ),
-                              ),
-                            ),
-                            Expanded(
-                              child: RichText(
-                                text: TextSpan(
-                                  children: [
-                                    TextSpan(
-                                      text:
-                                          '${vm.getBankName(item.bankCode)}\n',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .subtitle2
-                                          ?.copyWith(
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                    ),
-                                    TextSpan(
-                                      text: '${item.accountName}\n'
-                                          '${item.accountNumber}',
-                                    ),
-                                  ],
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .subtitle2
-                                      ?.copyWith(fontWeight: FontWeight.w500),
-                                ),
-                              ),
-                            ),
-                            Container(
-                              margin: const EdgeInsets.only(right: 16.0),
-                              child: const Icon(
-                                MdiIcons.squareEditOutline,
-                                color: kTealColor,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
-                  },
-                );
-              },
+                    },
+                  );
+                },
+              ),
             ),
-            const Spacer(),
             SizedBox(
               width: double.infinity,
               child: Consumer<ShopBody>(

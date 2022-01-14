@@ -46,7 +46,6 @@ class Timeline extends StatelessWidget {
         return ListView.builder(
           physics: const ScrollPhysics(),
           controller: scrollController,
-          shrinkWrap: true,
           itemCount: activityFeed.length, //snapshot.data!.length,
           itemBuilder: (context, index) {
             final activity = activityFeed[index];

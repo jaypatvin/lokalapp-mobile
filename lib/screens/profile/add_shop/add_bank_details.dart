@@ -25,9 +25,11 @@ class AddBankDetails extends StatelessWidget {
     Key? key,
     required this.bankType,
     this.bankAccount,
+    this.edit = false,
   }) : super(key: key);
   final PaymentOption? bankAccount;
   final BankType bankType;
+  final bool edit;
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +40,8 @@ class AddBankDetails extends StatelessWidget {
         context.read<ShopBody>(),
         context.read<BankCodes>(),
         GlobalKey<FormState>(),
-        bankAccount,
+        initialAccount: bankAccount,
+        edit: edit,
       ),
     );
   }
@@ -230,7 +233,7 @@ class _AddBankDetailsView extends HookView<AddBankDetailsViewModel> {
 
     return Scaffold(
       appBar: CustomAppBar(
-        titleText: 'Add Shop',
+        titleText: vm.edit ? 'Edit Shop' : 'Add Shop',
         actions: vm.initialAccount != null
             ? [
                 IconButton(

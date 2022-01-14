@@ -61,6 +61,10 @@ class CheckoutCart extends StatelessWidget {
                         child: Column(
                           children: [
                             ListView.builder(
+                              // this shrinkWrap is okay since this widget
+                              // lives inside a Card which will be handled
+                              // by another listView above this (which will
+                              // handle the re/builds)
                               shrinkWrap: true,
                               itemCount: cart.orders[key]!.length,
                               physics: const NeverScrollableScrollPhysics(),

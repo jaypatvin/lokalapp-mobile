@@ -8,9 +8,14 @@ import '../../../../screens/profile/add_shop/add_bank_details.dart';
 import '../../../../state/view_model.dart';
 
 class AddBankViewModel extends ViewModel {
-  AddBankViewModel(this._bankCodes, this._bankType);
+  AddBankViewModel(
+    this._bankCodes,
+    this._bankType, {
+    this.edit = false,
+  });
   final BankCodes _bankCodes;
   final BankType _bankType;
+  final bool edit;
 
   BankType get bankType => _bankType;
 
@@ -40,6 +45,7 @@ class AddBankViewModel extends ViewModel {
       CupertinoPageRoute(
         builder: (_) => AddBankDetails(
           bankType: _bankType,
+          edit: edit,
         ),
       ),
     );
@@ -51,6 +57,7 @@ class AddBankViewModel extends ViewModel {
         builder: (_) => AddBankDetails(
           bankAccount: account,
           bankType: _bankType,
+          edit: edit,
         ),
       ),
     );

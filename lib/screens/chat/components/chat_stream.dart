@@ -76,19 +76,20 @@ class _ChatStreamView extends StatelessView<ChatStreamViewModel> {
           );
         }
 
-        return SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              SizedBox(height: 10.0.h),
-              SearchTextField(
-                hintText: 'Search Chats',
-                enabled: true,
-                onChanged: vm.onSearchQueryChanged,
+        return CustomScrollView(
+          slivers: [
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: EdgeInsets.only(top: 10.0.h),
+                child: SearchTextField(
+                  hintText: 'Search Chats',
+                  enabled: true,
+                  onChanged: vm.onSearchQueryChanged,
+                ),
               ),
-              _ChatList(chats: vm.getChats(snapshot)),
-            ],
-          ),
+            ),
+            _ChatList(chats: vm.getChats(snapshot)),
+          ],
         );
       },
     );
@@ -133,7 +134,7 @@ class _ChatList extends StatelessWidget {
     );
   }
 
-  GestureDetector _itemBuilder(BuildContext context, int index) {
+  Widget _itemBuilder(BuildContext context, int index) {
     final cUserId = context.read<Auth>().user!.id;
     final chat = chats[index];
     final members = <ChatMember>[];
@@ -194,47 +195,49 @@ class _ChatList extends StatelessWidget {
       title = memberNames.join(', ');
     }
 
-    return GestureDetector(
-      onTap: () {
-        context.read<AppRouter>().navigateTo(
-              AppRoute.chat,
-              ChatView.routeName,
-              arguments: ChatViewProps(createMessage: false, chat: chat),
-            );
-      },
-      child: ListTile(
-        leading: _buildCircleAvatar(members),
-        title: Text(
-          title,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-          style: TextStyle(
-            fontWeight: FontWeight.w600,
-            fontSize: 13.0.sp,
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 5.0.r),
+      child: GestureDetector(
+        onTap: () {
+          context.read<AppRouter>().navigateTo(
+                AppRoute.chat,
+                ChatView.routeName,
+                arguments: ChatViewProps(createMessage: false, chat: chat),
+              );
+        },
+        child: ListTile(
+          leading: _buildCircleAvatar(members),
+          title: Text(
+            title,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              fontWeight: FontWeight.w600,
+              fontSize: 13.0.sp,
+            ),
           ),
-        ),
-        subtitle: Text(
-          chat.lastMessage.content,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-          style: TextStyle(
-            fontWeight: FontWeight.w500,
-            fontSize: 12.0.sp,
+          subtitle: Text(
+            chat.lastMessage.content,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              fontWeight: FontWeight.w500,
+              fontSize: 12.0.sp,
+            ),
           ),
+          trailing: Text(DateFormat.jm().format(chat.lastMessage.createdAt)),
         ),
-        trailing: Text(DateFormat.jm().format(chat.lastMessage.createdAt)),
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      physics: const NeverScrollableScrollPhysics(),
-      padding: EdgeInsets.all(5.0.r),
-      shrinkWrap: true,
-      itemCount: chats.length, //chatSnapshot!.data!.docs.length,
-      itemBuilder: _itemBuilder,
+    return SliverList(
+      delegate: SliverChildBuilderDelegate(
+        _itemBuilder,
+        childCount: chats.length,
+      ),
     );
   }
 }

@@ -32,6 +32,7 @@ import '../../widgets/photo_view_gallery/thumbnails/network_photo_thumbnail.dart
 import 'components/comment_card.dart';
 import 'components/post_options.dart';
 
+// TODO: separate classes
 class PostDetails extends StatelessWidget {
   static const routeName = '/home/post_details';
   const PostDetails({

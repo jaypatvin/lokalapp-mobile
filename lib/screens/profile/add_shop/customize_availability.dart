@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart' show DateFormat;
+import 'package:lokalapp/routers/profile/payment_options.props.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
@@ -208,7 +209,7 @@ class _CustomizeAvailabilityState extends State<CustomizeAvailability>
     context.read<AppRouter>().navigateTo(
       AppRoute.profile,
       SetUpPaymentOptions.routeName,
-      arguments: {'onSubmit': _onSubmit},
+      arguments: SetUpPaymentOptionsProps(onSubmit: _onSubmit),
     );
   }
 

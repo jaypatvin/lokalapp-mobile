@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
+import 'package:lokalapp/routers/profile/payment_options.props.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
@@ -128,11 +129,11 @@ class EditShopViewModel extends ViewModel {
   }
 
   void onEditPaymentOptions() {
-    AppRouter.profileNavigatorKey.currentState?.push(
-      CupertinoPageRoute(
-        builder: (_) => SetUpPaymentOptions(
-          onSubmit: () => AppRouter.profileNavigatorKey.currentState?.pop(),
-        ),
+    AppRouter.profileNavigatorKey.currentState?.pushNamed(
+      SetUpPaymentOptions.routeName,
+      arguments: SetUpPaymentOptionsProps(
+        onSubmit: () => AppRouter.profileNavigatorKey.currentState?.pop(),
+        edit: true,
       ),
     );
   }

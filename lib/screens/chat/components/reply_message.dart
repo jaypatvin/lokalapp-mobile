@@ -28,6 +28,7 @@ class ReplyMessageWidget extends StatelessWidget {
           SizedBox(
             height: 90.h,
             child: ListView.builder(
+              // Media only contains 5 images/media
               shrinkWrap: true,
               scrollDirection: Axis.horizontal,
               itemCount: message.media!.length,

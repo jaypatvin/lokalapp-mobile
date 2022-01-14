@@ -17,14 +17,38 @@ import '../../../widgets/overlays/screen_loader.dart';
 class SetUpPaymentOptions extends StatelessWidget {
   static const routeName = '/profile/shop/paymentOptions';
   final void Function() onSubmit;
-  const SetUpPaymentOptions({Key? key, required this.onSubmit})
+  final bool edit;
+
+  factory SetUpPaymentOptions.edit({
+    Key? key,
+    required void Function() onSubmit,
+  }) {
+    return SetUpPaymentOptions._(
+      onSubmit,
+      true,
+      key: key,
+    );
+  }
+
+  factory SetUpPaymentOptions.create({
+    Key? key,
+    required void Function() onSubmit,
+  }) {
+    return SetUpPaymentOptions._(
+      onSubmit,
+      false,
+      key: key,
+    );
+  }
+
+  const SetUpPaymentOptions._(this.onSubmit, this.edit, {Key? key})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return MVVM(
       view: (_, __) => _SetupPaymentOptionsView(),
-      viewModel: SetupPaymentOptionsViewModel(onSubmit: onSubmit),
+      viewModel: SetupPaymentOptionsViewModel(onSubmit: onSubmit, edit: edit),
     );
   }
 }
@@ -35,8 +59,7 @@ class _SetupPaymentOptionsView extends HookView<SetupPaymentOptionsViewModel>
   Widget screen(BuildContext context, SetupPaymentOptionsViewModel vm) {
     return Scaffold(
       appBar: CustomAppBar(
-        titleText: 'Add Shop',
-        onPressedLeading: () => Navigator.pop(context),
+        titleText: vm.edit ? 'Edit Shop' : 'Add Shop',
       ),
       body: Container(
         padding: EdgeInsets.symmetric(horizontal: 16.0.w),

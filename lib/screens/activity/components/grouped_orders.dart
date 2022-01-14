@@ -74,7 +74,6 @@ class _GroupedOrdersView extends HookView<GroupedOrdersViewModel>
               );
             } else {
               return GroupedListView(
-                shrinkWrap: true,
                 padding: EdgeInsets.symmetric(horizontal: 16.0.w),
                 physics: const AlwaysScrollableScrollPhysics(),
                 elements: snapshot.data!.docs,

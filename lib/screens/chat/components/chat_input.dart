@@ -150,6 +150,7 @@ class _ReplyToWidget extends StatelessWidget {
                     SizedBox(
                       height: 90.h,
                       child: ListView.builder(
+                        // this shrinkWrap is okay since there are only 5 media
                         shrinkWrap: true,
                         scrollDirection: Axis.horizontal,
                         itemCount: message.media!.length,
