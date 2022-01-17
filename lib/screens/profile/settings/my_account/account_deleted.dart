@@ -64,11 +64,9 @@ class AccountDeleted extends StatelessWidget {
           const Spacer(),
           SizedBox(
             width: MediaQuery.of(context).size.width * 0.9,
-            child: AppButton(
-              'Okay',
-              kTealColor,
-              true,
-              () {
+            child: AppButton.filled(
+              text: 'Okay',
+              onPressed: () {
                 // FirebaseAuth.instance.signOut();
                 Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
                   MaterialPageRoute(

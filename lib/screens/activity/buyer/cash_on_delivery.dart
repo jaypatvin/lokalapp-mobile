@@ -112,11 +112,9 @@ class _CashOnDeliveryView extends HookView<CashOnDeliveryViewModel>
             padding: EdgeInsets.symmetric(horizontal: 12.0.w),
             child: SizedBox(
               width: double.infinity,
-              child: AppButton(
-                'Continue with Cash on Delivery',
-                kTealColor,
-                true,
-                () => performFuture<void>(vm.onSubmitHandler),
+              child: AppButton.filled(
+                text: 'Continue with Cash on Delivery',
+                onPressed: () => performFuture<void>(vm.onSubmitHandler),
               ),
             ),
           ),

@@ -152,22 +152,20 @@ class _WalletDetailsView extends HookView<BankDetailsViewModel>
           Container(
             width: double.infinity,
             padding: EdgeInsets.symmetric(horizontal: 8.0.w, vertical: 4.0.h),
-            child: AppButton(
-              "${vm.proofOfPayment != null ? 'Re-u' : 'U'}"
-              'pload proof of payment',
-              kTealColor,
-              vm.proofOfPayment == null,
-              vm.onImagePick,
+            child: AppButton.custom(
+              text: "${vm.proofOfPayment != null ? 'Re-u' : 'U'}"
+                  'pload proof of payment',
+              onPressed: vm.onImagePick,
+              isFilled: vm.proofOfPayment == null,
             ),
           ),
           Container(
             width: double.infinity,
             padding: EdgeInsets.symmetric(horizontal: 8.0.w, vertical: 4.0.h),
-            child: AppButton(
-              'Submit',
-              vm.proofOfPayment != null ? kTealColor : Colors.grey,
-              true,
-              vm.proofOfPayment != null
+            child: AppButton.filled(
+              text: 'Submit',
+              color: vm.proofOfPayment != null ? kTealColor : Colors.grey,
+              onPressed: vm.proofOfPayment != null
                   ? () async => performFuture<void>(vm.onSubmit)
                   : null,
             ),

@@ -8,7 +8,6 @@ import '../../../models/order.dart';
 import '../../../state/mvvm_builder.widget.dart';
 import '../../../state/views/stateless.view.dart';
 import '../../../utils/constants/assets.dart';
-import '../../../utils/constants/themes.dart';
 import '../../../view_models/activity/order_received.vm.dart';
 import '../../../widgets/app_button.dart';
 import '../components/order_details_buttons/message_buttons.dart';
@@ -117,11 +116,9 @@ class _OrderReceivedView extends StatelessView<OrderReceivedViewModel> {
                     ),
                     SizedBox(
                       width: double.infinity,
-                      child: AppButton(
-                        'Back to Activity',
-                        kTealColor,
-                        true,
-                        vm.onBackToActivity,
+                      child: AppButton.filled(
+                        text: 'Back to Activity',
+                        onPressed: vm.onBackToActivity,
                       ),
                     ),
                   ],

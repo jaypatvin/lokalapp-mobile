@@ -205,8 +205,7 @@ class _ChangePasswordView extends HookView<ChangePasswordViewModel>
               padding: EdgeInsets.symmetric(horizontal: 16.0.w),
               width: double.maxFinite,
               child: AppButton.filled(
-                'Confirm',
-                color: kTealColor,
+                text: 'Confirm',
                 onPressed: () async {
                   _confirmPasswordFocusNode.unfocus();
                   _newPasswordFocusNode.unfocus();

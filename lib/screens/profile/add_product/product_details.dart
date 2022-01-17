@@ -291,11 +291,9 @@ class _ProductDetailsState extends State<ProductDetails> {
                 const SizedBox(height: 20),
                 SizedBox(
                   width: double.infinity,
-                  child: AppButton(
-                    'Next',
-                    kTealColor,
-                    true,
-                    valid
+                  child: AppButton.filled(
+                    text: 'Next',
+                    onPressed: valid
                         ? () {
                             AppRouter.pushNewScreen(
                               context,

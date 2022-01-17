@@ -159,11 +159,10 @@ class _CheckoutScheduleState extends State<CheckoutSchedule> with ScreenLoader {
               child: Row(
                 children: [
                   Expanded(
-                    child: AppButton(
-                      'Cancel',
-                      kPinkColor,
-                      false,
-                      () => Navigator.pop(context),
+                    child: AppButton.transparent(
+                      text: 'Cancel',
+                      color: kPinkColor,
+                      onPressed: () => Navigator.pop(context),
                     ),
                   ),
                   const SizedBox(width: 16.0),
@@ -171,11 +170,9 @@ class _CheckoutScheduleState extends State<CheckoutSchedule> with ScreenLoader {
                     child: Consumer<ShoppingCart>(
                       builder: (ctx, cart, child) {
                         final order = cart.orders[shop.id]![product.id]!;
-                        return AppButton(
-                          'Place Order',
-                          kTealColor,
-                          true,
-                          order.schedule != null
+                        return AppButton.filled(
+                          text: 'Place Order',
+                          onPressed: order.schedule != null
                               ? () async {
                                   await performFuture<void>(
                                     () async => _placeOrderHandler(

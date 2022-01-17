@@ -170,11 +170,9 @@ class _ProductScheduleState extends State<ProductSchedule> {
             ),
             SizedBox(
               width: double.infinity,
-              child: AppButton(
-                'Confirm',
-                kTealColor,
-                true,
-                () {
+              child: AppButton.filled(
+                text: 'Confirm',
+                onPressed: () {
                   setupProductAvailability();
                   AppRouter.pushNewScreen(
                     context,

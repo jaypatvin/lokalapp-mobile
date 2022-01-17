@@ -318,13 +318,11 @@ class _AddBankDetailsView extends HookView<AddBankDetailsViewModel> {
           ),
           Align(
             alignment: Alignment.bottomCenter,
-            child: AppButton(
-              vm.initialAccount == null
+            child: AppButton.filled(
+              text: vm.initialAccount == null
                   ? 'Add Bank Account'
                   : 'Edit Bank Account',
-              kTealColor,
-              true,
-              vm.onAddPaymentAccount,
+              onPressed: vm.onAddPaymentAccount,
             ),
           ),
         ],

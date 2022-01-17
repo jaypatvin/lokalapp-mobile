@@ -50,6 +50,7 @@ class WeekdayRow extends StatelessWidget {
     final List<Widget> list = [];
 
     /// because of number of days in a week is 7, so it would be easier to count it til 7.
+    // ignore: avoid_multiple_declarations_per_line
     for (int? i = firstDayOfWeek, count = 0;
         count! < 7;
         i = (i + 1) % 7, count++) {

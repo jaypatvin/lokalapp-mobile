@@ -3,6 +3,7 @@ import 'dart:io' show File, Platform;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:oktoast/oktoast.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 
@@ -197,7 +198,7 @@ class _VerifyScreenState extends State<VerifyScreen> {
             }
           }
         } catch (e) {
-          // TODO: SHOW ERROR MESSAGE
+          showToast(e.toString());
         }
       }
     }
@@ -298,13 +299,11 @@ class _VerifyScreenState extends State<VerifyScreen> {
                 ),
               SizedBox(
                 width: double.infinity,
-                child: AppButton(
-                  _file != null
+                child: AppButton.transparent(
+                  text: _file != null
                       ? 'Choose a different photo'
                       : 'UPLOAD PHOTO OF ID',
-                  kTealColor,
-                  false,
-                  () async {
+                  onPressed: () async {
                     _file = await context
                             .read<MediaUtility>()
                             .showMediaDialog(context) ??
@@ -316,11 +315,9 @@ class _VerifyScreenState extends State<VerifyScreen> {
               const Spacer(),
               SizedBox(
                 width: 120.0.w,
-                child: AppButton(
-                  'SUBMIT',
-                  kTealColor,
-                  true,
-                  _file != null ? _onSubmitHandler : null,
+                child: AppButton.filled(
+                  text: 'SUBMIT',
+                  onPressed: _file != null ? _onSubmitHandler : null,
                   textStyle: _file != null
                       ? const TextStyle(
                           color: kNavyColor,

@@ -3,9 +3,6 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
 
-import '../models/product_subscription_plan.dart';
-import '../services/lokal_api/subscription_service.dart';
-
 class SubscriptionPlanBodySchedule {
   final List<DateTime> startDates;
   final int? repeatUnit;
@@ -121,70 +118,5 @@ class SubscriptionPlanBody {
         instruction.hashCode ^
         paymentMethod.hashCode ^
         plan.hashCode;
-  }
-}
-
-class SubscriptionProvider {
-  late final _service = SubscriptionService.instance;
-  String? _idToken;
-
-  // ignore: use_setters_to_change_properties
-  void setIdToken(String? idToken) {
-    _idToken = idToken;
-  }
-
-  Future<ProductSubscriptionPlan?> createSubscriptionPlan(
-    Map<String, dynamic> data,
-  ) async {
-    final response =
-        await _service!.createSubscriptionPlan(idToken: _idToken, data: data);
-
-    debugPrint(response.body);
-    // if (response.statusCode != 200) throw response.reasonPhrase;
-
-    final Map<String, dynamic> body = json.decode(response.body);
-    if (body['status'] != 'ok') throw body['message'];
-
-    final subscriptionPlan = ProductSubscriptionPlan.fromMap(body['data']);
-    return subscriptionPlan;
-  }
-
-  Future<bool> autoReschedulePlan(String? planId) async {
-    final response =
-        await _service!.autoReschedulePlan(idToken: _idToken, planId: planId);
-
-    if (response.statusCode != 200) {
-      return false;
-    }
-
-    try {
-      final Map<String, dynamic> body = json.decode(response.body);
-      return body['status'] == 'ok';
-    } catch (e) {
-      return false;
-    }
-  }
-
-  Future<bool> manualReschedulePlan(
-    String? planId,
-    Map<String, dynamic> data,
-  ) async {
-    final response = await _service!.manualReschedulePlan(
-      idToken: _idToken,
-      planId: planId,
-      data: data,
-    );
-
-    if (response.statusCode != 200) {
-      debugPrint(response.body);
-      return false;
-    }
-
-    try {
-      final Map<String, dynamic> body = json.decode(response.body);
-      return body['status'] == 'ok';
-    } catch (e) {
-      return false;
-    }
   }
 }

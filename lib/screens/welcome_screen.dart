@@ -229,11 +229,9 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
               SizedBox(
                 width: 172.w,
                 height: 40.h,
-                child: AppButton(
-                  'SIGN IN',
-                  kTealColor,
-                  true,
-                  () => Navigator.push(
+                child: AppButton.filled(
+                  text: 'SIGN IN',
+                  onPressed: () => Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) => const LoginScreen(),
@@ -250,11 +248,9 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
               SizedBox(
                 width: 172.w,
                 height: 40.h,
-                child: AppButton(
-                  'REGISTER',
-                  kTealColor,
-                  false,
-                  () => Navigator.push(
+                child: AppButton.transparent(
+                  text: 'REGISTER',
+                  onPressed: () => Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) => const InvitePage(),

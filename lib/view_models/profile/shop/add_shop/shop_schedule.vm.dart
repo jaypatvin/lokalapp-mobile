@@ -109,8 +109,10 @@ class ShopScheduleViewModel extends ViewModel {
     if (pickedTime != null) onSet(pickedTime);
   }
 
-  void onSelectableDaysChanged(List<int> selectableDays) =>
-      _selectableDays = selectableDays;
+  void onSelectableDaysChanged(List<int> selectableDays) {
+    _selectableDays = selectableDays;
+    notifyListeners();
+  }
 
   RepeatChoices _getRepeatChoice() {
     final repeatType =

@@ -166,11 +166,10 @@ class _InviteAFriendView extends HookView<InviteAFriendViewModel>
                 SizedBox(height: 20.0.h),
                 SizedBox(
                   width: MediaQuery.of(context).size.width * 0.7,
-                  child: AppButton(
-                    'SEND INVITE CODE',
-                    kTealColor,
-                    true,
-                    () async => performFuture<void>(vm.sendInviteCode),
+                  child: AppButton.filled(
+                    text: 'SEND INVITE CODE',
+                    onPressed: () async =>
+                        performFuture<void>(vm.sendInviteCode),
                   ),
                 ),
               ],

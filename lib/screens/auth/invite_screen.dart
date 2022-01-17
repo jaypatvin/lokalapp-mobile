@@ -108,11 +108,9 @@ class _InvitePageView extends HookView<InviteScreenViewModel>
               SizedBox(height: 24.0.h),
               SizedBox(
                 width: 100.0.w,
-                child: AppButton(
-                  'JOIN',
-                  kTealColor,
-                  true,
-                  () async => performFuture<void>(
+                child: AppButton.filled(
+                  text: 'JOIN',
+                  onPressed: () async => performFuture<void>(
                     () async => vm.validateInviteCode(),
                   ),
                   textStyle: const TextStyle(color: kNavyColor),
@@ -170,11 +168,9 @@ class _InviteCodeDescription extends StatelessWidget {
             ),
             SizedBox(
               width: 120.w,
-              child: AppButton(
-                'Okay',
-                kTealColor,
-                false,
-                () => Navigator.pop(context),
+              child: AppButton.transparent(
+                text: 'Okay',
+                onPressed: () => Navigator.pop(context),
               ),
             ),
           ],

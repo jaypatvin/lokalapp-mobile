@@ -15,7 +15,6 @@ import '../../../providers/post_requests/product_body.dart';
 import '../../../providers/products.dart';
 import '../../../providers/shops.dart';
 import '../../../services/local_image_service.dart';
-import '../../../utils/constants/themes.dart';
 import '../../../widgets/app_button.dart';
 import '../../../widgets/custom_app_bar.dart';
 import '../../../widgets/overlays/screen_loader.dart';
@@ -363,11 +362,9 @@ class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
                 const Spacer(),
                 SizedBox(
                   width: double.infinity,
-                  child: AppButton(
-                    'Confirm',
-                    kTealColor,
-                    true,
-                    () async => performFuture<void>(
+                  child: AppButton.filled(
+                    text: 'Confirm',
+                    onPressed: () async => performFuture<void>(
                       () async => _onConfirm(),
                     ),
                   ),

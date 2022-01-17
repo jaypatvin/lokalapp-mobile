@@ -153,11 +153,10 @@ class _TransactionsView extends HookView<TransactionsViewModel> {
                 ),
                 SizedBox(height: 5.0.h),
                 if (vm.shop == null && !vm.isBuyer)
-                  AppButton(
-                    'Create Shop',
-                    kPurpleColor,
-                    false,
-                    vm.createShopHandler,
+                  AppButton.transparent(
+                    text: 'Create Shop',
+                    color: kPurpleColor,
+                    onPressed: vm.createShopHandler,
                   ),
               ],
             ),

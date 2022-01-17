@@ -1,27 +1,65 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../utils/constants/themes.dart';
+
 class AppButton extends StatelessWidget {
-  factory AppButton.filled(
-    String? text, {
-    Color color = Colors.black,
+  const AppButton._({
+    required this.text,
+    required this.isFilled,
+    this.color = kTealColor,
+    this.onPressed,
+    this.textStyle,
+  });
+
+  factory AppButton.custom({
+    required String text,
+    bool isFilled = false,
+    Color color = kTealColor,
     void Function()? onPressed,
     TextStyle? textStyle,
   }) {
-    return AppButton._(text, color, true, onPressed, textStyle);
+    return AppButton._(
+      text: text,
+      color: color,
+      onPressed: onPressed,
+      textStyle: textStyle,
+      isFilled: isFilled,
+    );
   }
 
-  factory AppButton.transparent(
-    String? text, {
-    Color color = Colors.black,
+  factory AppButton.filled({
+    required String text,
+    Color color = kTealColor,
     void Function()? onPressed,
     TextStyle? textStyle,
   }) {
-    return AppButton._(text, color, false, onPressed, textStyle);
+    return AppButton._(
+      text: text,
+      color: color,
+      onPressed: onPressed,
+      textStyle: textStyle,
+      isFilled: true,
+    );
+  }
+
+  factory AppButton.transparent({
+    required String text,
+    Color color = kTealColor,
+    void Function()? onPressed,
+    TextStyle? textStyle,
+  }) {
+    return AppButton._(
+      text: text,
+      isFilled: false,
+      color: color,
+      onPressed: onPressed,
+      textStyle: textStyle,
+    );
   }
 
   /// Button Label
-  final String? text;
+  final String text;
 
   /// Sets the button Color.
   ///
@@ -46,21 +84,13 @@ class AppButton extends StatelessWidget {
   /// ) ```
   final TextStyle? textStyle;
 
-  const AppButton(
-    this.text,
-    this.color,
-    this.isFilled,
-    this.onPressed, {
-    this.textStyle,
-  });
-
-  const AppButton._(
-    this.text,
-    this.color,
-    this.isFilled,
-    this.onPressed,
-    this.textStyle,
-  );
+  // const AppButton(
+  //   this.text,
+  //   this.color,
+  //   this.isFilled,
+  //   this.onPressed, {
+  //   this.textStyle,
+  // });
 
   @override
   Widget build(BuildContext context) {
@@ -74,7 +104,7 @@ class AppButton extends StatelessWidget {
         side: BorderSide(color: color),
       ),
       child: Text(
-        text!,
+        text,
         textAlign: TextAlign.center,
         style: TextStyle(
           fontFamily: 'Goldplay',

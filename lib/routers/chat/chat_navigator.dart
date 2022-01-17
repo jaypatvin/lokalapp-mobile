@@ -25,7 +25,7 @@ class ChatNavigator extends AppNavigator {
         return CupertinoPageRoute(
           settings: settings,
           builder: (_) => ChatView(
-            props.createMessage,
+            createMessage: props.createMessage,
             chat: props.chat,
             members: props.members,
             shopId: props.shopId,

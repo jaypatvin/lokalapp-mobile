@@ -113,11 +113,9 @@ class _ChangeEmailView extends HookView<ChangeEmailViewModel>
               ),
             SizedBox(
               width: double.maxFinite,
-              child: AppButton(
-                'Confirm',
-                kTealColor,
-                true,
-                () async {
+              child: AppButton.filled(
+                text: 'Confirm',
+                onPressed: () async {
                   _newEmailFocusNode.unfocus();
                   _confirmEmailFocusNode.unfocus();
                   _passwordFocusNode.unfocus();

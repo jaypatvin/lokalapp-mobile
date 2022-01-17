@@ -159,11 +159,10 @@ class _SetupPaymentOptionsView extends HookView<SetupPaymentOptionsViewModel>
                 final hasPayment = shopBody.paymentOptions?.isNotEmpty ?? false;
                 return SizedBox(
                   width: double.infinity,
-                  child: AppButton(
-                    hasPayment ? 'Finish Set-up' : 'Skip',
-                    kTealColor,
-                    hasPayment,
-                    () async => performFuture(vm.onSubmit),
+                  child: AppButton.custom(
+                    text: hasPayment ? 'Finish Set-up' : 'Skip',
+                    isFilled: hasPayment,
+                    onPressed: () async => performFuture(vm.onSubmit),
                   ),
                 );
               },

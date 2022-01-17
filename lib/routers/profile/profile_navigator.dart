@@ -1,5 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:lokalapp/routers/profile/payment_options.props.dart';
 
 import '../../models/app_navigator.dart';
 import '../../screens/profile/add_product/add_product.dart';
@@ -16,6 +15,7 @@ import '../../screens/profile/settings/settings.dart';
 import '../../screens/profile/shop/user_shop.dart';
 import '../../screens/profile/wishlist_screen.dart';
 import 'customize_availability.props.dart';
+import 'payment_options.props.dart';
 import 'shop_schedule.props.dart';
 import 'user_shop.props.dart';
 

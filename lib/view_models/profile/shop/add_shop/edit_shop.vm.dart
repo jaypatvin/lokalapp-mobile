@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
-import 'package:lokalapp/routers/profile/payment_options.props.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
@@ -10,6 +9,7 @@ import '../../../../providers/post_requests/operating_hours_body.dart';
 import '../../../../providers/post_requests/shop_body.dart';
 import '../../../../providers/shops.dart';
 import '../../../../routers/app_router.dart';
+import '../../../../routers/profile/payment_options.props.dart';
 import '../../../../screens/profile/add_shop/edit_shop.dart';
 import '../../../../screens/profile/add_shop/payment_options.dart';
 import '../../../../screens/profile/add_shop/shop_schedule.dart';

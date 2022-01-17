@@ -118,32 +118,7 @@ class ShopBody extends ChangeNotifier {
     };
   }
 
-  factory ShopBody.fromMap(Map<String, dynamic> map) {
-    return ShopBody(
-      name: map['name'],
-      description: map['description'],
-      communityId: map['community_id'],
-      profilePhoto: map['profile_hoto'],
-      coverPhoto: map['cover_photo'],
-      isClose: map['is_close'],
-      status: map['status'],
-      userId: map['user_id'],
-      operatingHours: map['operating_hours'] != null
-          ? OperatingHoursBody.fromMap(map['operating_hours'])
-          : null,
-      paymentOptions: List<PaymentOption>.from(
-        map['payment_options']?.map(
-              (x) => PaymentOption.fromMap(x),
-            ) ??
-            [],
-      ),
-    );
-  }
-
   String toJson() => json.encode(toMap());
-
-  factory ShopBody.fromJson(String source) =>
-      ShopBody.fromMap(json.decode(source));
 
   @override
   String toString() {

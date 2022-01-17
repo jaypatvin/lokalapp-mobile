@@ -119,11 +119,10 @@ class _SubscriptionsView extends StatelessView<SubscriptionsViewModel> {
                     style: Theme.of(context).textTheme.bodyText2,
                   ),
                   SizedBox(height: 5.0.h),
-                  AppButton(
-                    'Create Shop',
-                    kPurpleColor,
-                    false,
-                    vm.createShopHandler,
+                  AppButton.transparent(
+                    text: 'Create Shop',
+                    color: kPurpleColor,
+                    onPressed: vm.createShopHandler,
                   ),
                 ],
               ),
@@ -163,11 +162,9 @@ class _SubscriptionCard extends StatelessWidget {
             SizedBox(height: 15.0.h),
             SizedBox(
               width: double.infinity,
-              child: AppButton(
-                'Details',
-                kTealColor,
-                false,
-                onDetailsPressed,
+              child: AppButton.transparent(
+                text: 'Details',
+                onPressed: onDetailsPressed,
               ),
             ),
           ],

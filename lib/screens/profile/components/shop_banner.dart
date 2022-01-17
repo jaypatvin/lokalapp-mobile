@@ -130,11 +130,9 @@ class _ShopBannerView extends HookView<ShopBannerViewModel> {
                 width: MediaQuery.of(vm.context).size.width / 3,
                 child: SizedBox(
                   width: 300.w,
-                  child: AppButton(
-                    '+ ADD SHOP',
-                    kTealColor,
-                    false,
-                    vm.onAddShop,
+                  child: AppButton.transparent(
+                    text: '+ ADD SHOP',
+                    onPressed: vm.onAddShop,
                   ),
                 ),
               ),

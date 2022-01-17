@@ -24,11 +24,10 @@ class Status100Buttons extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Expanded(
-            child: AppButton(
-              'Cancel Order',
-              kPinkColor,
-              false,
-              () => onPress(OrderAction.cancel),
+            child: AppButton.transparent(
+              text: 'Cancel Order',
+              color: kPinkColor,
+              onPressed: () => onPress(OrderAction.cancel),
             ),
           ),
           SizedBox(width: MediaQuery.of(context).size.width * 0.01),
@@ -49,20 +48,18 @@ class Status100Buttons extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Expanded(
-              child: AppButton(
-                'Decline Order',
-                kPinkColor,
-                false,
-                () => onPress(OrderAction.decline),
+              child: AppButton.transparent(
+                text: 'Decline Order',
+                color: kPinkColor,
+                onPressed: () => onPress(OrderAction.decline),
               ),
             ),
             SizedBox(width: MediaQuery.of(context).size.width * 0.01),
             Expanded(
-              child: AppButton(
-                'Confirm Order',
-                kOrangeColor,
-                true,
-                () => onPress(OrderAction.confirm),
+              child: AppButton.filled(
+                text: 'Confirm Order',
+                color: kOrangeColor,
+                onPressed: () => onPress(OrderAction.confirm),
               ),
             )
           ],

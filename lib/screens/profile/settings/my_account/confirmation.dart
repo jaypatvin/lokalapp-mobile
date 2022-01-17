@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:lokalapp/routers/app_router.dart';
 import 'package:lottie/lottie.dart';
 
+import '../../../../routers/app_router.dart';
 import '../../../../utils/constants/assets.dart';
-import '../../../../utils/constants/themes.dart';
 import '../../../../widgets/app_button.dart';
 import '../settings.dart';
 
@@ -34,15 +33,10 @@ class MyAccountConfirmation extends StatelessWidget {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
               width: double.infinity,
-              child: AppButton(
-                'Back to Settings',
-                kTealColor,
-                true,
-                // () => Navigator.popUntil(
-                //   context,
-                //   ModalRoute.withName(Settings.routeName),
-                // ),
-                () => AppRouter.profileNavigatorKey.currentState?.popUntil(
+              child: AppButton.filled(
+                text: 'Back to Settings',
+                onPressed: () =>
+                    AppRouter.profileNavigatorKey.currentState?.popUntil(
                   ModalRoute.withName(Settings.routeName),
                 ),
               ),

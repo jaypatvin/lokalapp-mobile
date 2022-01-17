@@ -97,11 +97,9 @@ class OrderPlaced extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Expanded(
-                  child: AppButton(
-                    'BACK TO MY CART',
-                    kTealColor,
-                    false,
-                    () => Navigator.pushAndRemoveUntil(
+                  child: AppButton.transparent(
+                    text: 'BACK TO MY CART',
+                    onPressed: () => Navigator.pushAndRemoveUntil(
                       context,
                       MaterialPageRoute(
                         builder: (BuildContext context) => const CheckoutCart(),
@@ -116,11 +114,9 @@ class OrderPlaced extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Expanded(
-                  child: AppButton(
-                    'GO TO MY ACTIVITY',
-                    kTealColor,
-                    true,
-                    () {
+                  child: AppButton.filled(
+                    text: 'GO TO MY ACTIVITY',
+                    onPressed: () {
                       Navigator.popUntil(
                         context,
                         ModalRoute.withName(Discover.routeName),

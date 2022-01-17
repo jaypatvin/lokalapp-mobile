@@ -7,6 +7,8 @@ import '../../../providers/subscriptions.dart';
 import '../../../routers/app_router.dart';
 import '../../../screens/activity/buyer/processing_payment.dart';
 import '../../../screens/cart/cart_confirmation.dart';
+import '../../../services/api/api.dart';
+import '../../../services/api/subscription_plan_api_service.dart';
 import '../../../state/view_model.dart';
 
 class SubscriptionPaymentMethodViewModel extends ViewModel {
@@ -19,9 +21,12 @@ class SubscriptionPaymentMethodViewModel extends ViewModel {
   final bool reschedule;
 
   late final double totalPrice;
+  late final SubscriptionPlanAPIService _apiService;
 
   @override
   void init() {
+    _apiService = SubscriptionPlanAPIService(context.read<API>());
+
     final _productId = subscriptionPlanBody.productId;
     final _quantity = subscriptionPlanBody.quantity!;
     final _product = context.read<Products>().findById(_productId);
@@ -30,17 +35,18 @@ class SubscriptionPaymentMethodViewModel extends ViewModel {
 
   Future<void> onSubmitHandler(PaymentMode paymentMode) async {
     try {
-      final subscriptionProvider = context.read<SubscriptionProvider>();
       subscriptionPlanBody.paymentMethod = paymentMode.value;
 
-      final subscriptionPlan = await subscriptionProvider
-          .createSubscriptionPlan(subscriptionPlanBody.toMap());
+      // this will throw if there are any errors
+      final subscriptionPlan = await _apiService.createSubscriptionPlan(
+        body: subscriptionPlanBody.toMap(),
+      );
 
-      if (subscriptionPlan != null && reschedule) {
-        await subscriptionProvider.autoReschedulePlan(subscriptionPlan.id);
-      }
+      final success = await _apiService.autoRescheduleConflicts(
+        planId: subscriptionPlan.id!,
+      );
 
-      if (subscriptionPlan != null) {
+      if (success) {
         context.read<ShoppingCart>().remove(subscriptionPlanBody.productId);
         AppRouter.pushNewScreen(
           context,

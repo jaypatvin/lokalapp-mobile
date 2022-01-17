@@ -213,11 +213,9 @@ class _EditProfileView extends HookView<EditProfileViewModel>
                   SizedBox(height: height * 0.15),
                   SizedBox(
                     width: width * 0.6,
-                    child: AppButton(
-                      'Apply Changes',
-                      kTealColor,
-                      true,
-                      () async => performFuture<void>(vm.updateUser),
+                    child: AppButton.filled(
+                      text: 'Apply Changes',
+                      onPressed: () async => performFuture<void>(vm.updateUser),
                     ),
                   ),
                 ],

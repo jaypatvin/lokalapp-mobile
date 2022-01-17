@@ -67,7 +67,10 @@ class _MyAccountState extends State<MyAccount> {
                 onTap: () {
                   final isEmailAuth = viewModel.ifEmailAuth();
                   if (isEmailAuth) {
-                    AppRouter.pushNewScreen(context, screen: ChangeEmail());
+                    AppRouter.pushNewScreen(
+                      context,
+                      screen: const ChangeEmail(),
+                    );
                   }
                 },
                 leading: Text(
@@ -86,7 +89,10 @@ class _MyAccountState extends State<MyAccount> {
                 onTap: () {
                   final isEmailAuth = viewModel.ifEmailAuth();
                   if (isEmailAuth) {
-                    AppRouter.pushNewScreen(context, screen: ChangePassword());
+                    AppRouter.pushNewScreen(
+                      context,
+                      screen: const ChangePassword(),
+                    );
                   }
                 },
                 leading: Text(
@@ -102,11 +108,10 @@ class _MyAccountState extends State<MyAccount> {
               const SizedBox(height: 10),
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 20.0.w),
-                child: AppButton(
-                  'Delete Account',
-                  kPinkColor,
-                  false,
-                  () =>
+                child: AppButton.transparent(
+                  text: 'Delete Account',
+                  color: kPinkColor,
+                  onPressed: () =>
                       AppRouter.pushNewScreen(context, screen: DeleteAccount()),
                 ),
               ),

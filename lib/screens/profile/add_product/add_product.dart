@@ -241,20 +241,17 @@ class _AddProductState extends State<AddProduct> with ScreenLoader {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Expanded(
-                          child: AppButton(
-                            'Cancel',
-                            kTealColor,
-                            false,
-                            () => Navigator.pop(ctx, false),
+                          child: AppButton.transparent(
+                            text: 'Cancel',
+                            onPressed: () => Navigator.pop(ctx, false),
                           ),
                         ),
                         SizedBox(width: 5.0.w),
                         Expanded(
-                          child: AppButton(
-                            'Confirm',
-                            kPinkColor,
-                            true,
-                            () => Navigator.pop(ctx, true),
+                          child: AppButton.filled(
+                            text: 'Confirm',
+                            color: kPinkColor,
+                            onPressed: () => Navigator.pop(ctx, true),
                           ),
                         ),
                       ],
@@ -378,11 +375,9 @@ class _AddProductState extends State<AddProduct> with ScreenLoader {
               SizedBox(height: MediaQuery.of(context).size.height * 0.05),
               SizedBox(
                 width: double.infinity,
-                child: AppButton(
-                  'Next',
-                  kTealColor,
-                  true,
-                  _onSubmitHandler,
+                child: AppButton.filled(
+                  text: 'Next',
+                  onPressed: _onSubmitHandler,
                 ),
               ),
               SizedBox(height: MediaQuery.of(context).size.height * 0.02),

@@ -629,8 +629,8 @@ class _DayOfMonthPickerBody extends StatelessWidget {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    AppButton('Cancel', kTealColor, false, onCancel),
-                    AppButton('Confirm', kTealColor, true, onConfirm),
+                    AppButton.transparent(text: 'Cancel', onPressed: onCancel),
+                    AppButton.filled(text: 'Confirm', onPressed: onConfirm),
                   ],
                 ),
               ),
@@ -702,21 +702,17 @@ class _CalendarPickerBody extends StatelessWidget {
                   children: [
                     SizedBox(
                       width: MediaQuery.of(context).size.width * 0.3,
-                      child: AppButton(
-                        'Cancel',
-                        kTealColor,
-                        false,
-                        onCancel,
+                      child: AppButton.transparent(
+                        text: 'Cancel',
+                        onPressed: onCancel,
                       ),
                     ),
                     SizedBox(width: 5.0.h),
                     SizedBox(
                       width: MediaQuery.of(context).size.width * 0.3,
-                      child: AppButton(
-                        'Confirm',
-                        kTealColor,
-                        true,
-                        onConfirm,
+                      child: AppButton.filled(
+                        text: 'Confirm',
+                        onPressed: onConfirm,
                       ),
                     ),
                   ],
@@ -785,13 +781,11 @@ class _DayOfMonth extends StatelessWidget {
         SizedBox(
           height: 50.0.h,
           width: double.infinity,
-          child: AppButton(
-            startDayOfMonth == 0
+          child: AppButton.filled(
+            text: startDayOfMonth == 0
                 ? 'Select Start Day'
                 : '${getOrdinal(startDayOfMonth)} of the month',
-            kTealColor,
-            true,
-            editable ? onShowDayOfMonthPicker : null,
+            onPressed: editable ? onShowDayOfMonthPicker : null,
             textStyle: TextStyle(fontSize: 20.0.sp),
           ),
         ),
@@ -949,13 +943,11 @@ class _StartDatePicker extends StatelessWidget {
         Expanded(
           child: SizedBox(
             height: 50.0.h,
-            child: AppButton(
-              startDate != null
+            child: AppButton.filled(
+              text: startDate != null
                   ? DateFormat.MMMMd().format(startDate!)
                   : 'Select Start Date',
-              kTealColor,
-              true,
-              editable ? onSelectStartDate : null,
+              onPressed: editable ? onSelectStartDate : null,
               textStyle: TextStyle(
                 fontSize: 20.0.sp,
               ),

@@ -93,11 +93,9 @@ class CheckoutCart extends StatelessWidget {
                             const SizedBox(height: 12.0),
                             SizedBox(
                               width: double.infinity,
-                              child: AppButton(
-                                'Checkout',
-                                kTealColor,
-                                false,
-                                () {
+                              child: AppButton.transparent(
+                                text: 'Checkout',
+                                onPressed: () {
                                   context.read<AppRouter>().navigateTo(
                                         AppRoute.discover,
                                         ShopCheckout.routeName,

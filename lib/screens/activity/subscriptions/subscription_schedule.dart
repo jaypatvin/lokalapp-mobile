@@ -14,6 +14,8 @@ import '../../../providers/cart.dart';
 import '../../../providers/products.dart';
 import '../../../providers/shops.dart';
 import '../../../providers/subscriptions.dart';
+import '../../../services/api/api.dart';
+import '../../../services/api/subscription_plan_api_service.dart';
 import '../../../utils/calendar_picker/calendar_picker.dart';
 import '../../../utils/constants/themes.dart';
 import '../../../utils/repeated_days_generator/schedule_generator.dart';
@@ -59,6 +61,8 @@ class _SubscriptionScheduleState extends State<SubscriptionSchedule>
     with ScreenLoader {
   final _generator = ScheduleGenerator();
   final FocusNode _repeatUnitFocusNode = FocusNode();
+  //late final SubscriptionProvider2 _subscriptionProvider;
+  late final SubscriptionPlanAPIService _apiService;
 
   // --Order details variables - should only be changed/initialized in initState
   // --Needed for display. Since this screen can have 2 different sources, we
@@ -107,6 +111,9 @@ class _SubscriptionScheduleState extends State<SubscriptionSchedule>
     if (widget.subscriptionPlan == null && widget.productId == null) {
       throw 'The parameter subscriptionPlan or productId must not be null.';
     }
+
+    // _subscriptionProvider = SubscriptionProvider2(context.read<API>());
+    _apiService = SubscriptionPlanAPIService(context.read<API>());
 
     //#region Manually Resolve Conflicts
     if (widget.subscriptionPlan != null) {
@@ -203,9 +210,11 @@ class _SubscriptionScheduleState extends State<SubscriptionSchedule>
   //#region Schedule Creation
 
   // only used when weekday picker is used
-  // ignore: use_setters_to_change_properties
+
   void _onSelectableDaysChanged(List<int> selectableDays) {
-    _selectableDays = selectableDays;
+    setState(() {
+      _selectableDays = selectableDays;
+    });
   }
 
   void _onStartDatesChanged(List<DateTime>? startDates, String? repeatType) {
@@ -301,10 +310,16 @@ class _SubscriptionScheduleState extends State<SubscriptionSchedule>
       overridenDates.add(OverrideDate(originalDate: key, newDate: value));
     });
 
-    return context.read<SubscriptionProvider>().manualReschedulePlan(
-      widget.subscriptionPlan!.id,
-      {'override_dates': overridenDates.map((data) => data.toMap()).toList()},
-    );
+    try {
+      return await _apiService.manualReschedulePlan(
+        planId: widget.subscriptionPlan!.id!,
+        body: {
+          'override_dates': overridenDates.map((data) => data.toMap()).toList()
+        },
+      );
+    } catch (e) {
+      return false;
+    }
   }
 
   // Check for conflicts from two List<DateTime>
@@ -558,11 +573,9 @@ class _SubscriptionScheduleState extends State<SubscriptionSchedule>
               SizedBox(
                 height: 50.0.h,
                 width: double.infinity,
-                child: AppButton(
-                  widget.subscriptionPlan == null ? 'Next' : 'Apply',
-                  kTealColor,
-                  true,
-                  () async => performFuture<void>(
+                child: AppButton.filled(
+                  text: widget.subscriptionPlan == null ? 'Next' : 'Apply',
+                  onPressed: () async => performFuture<void>(
                     () async => _onSubmitHandler(),
                   ),
                   textStyle: TextStyle(fontSize: 20.0.sp),
@@ -746,20 +759,17 @@ class _ScheduleConflictsNotification extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   Expanded(
-                    child: AppButton(
-                      'Set Manually',
-                      kOrangeColor,
-                      true,
-                      onManual,
+                    child: AppButton.filled(
+                      text: 'Set Manually',
+                      color: kOrangeColor,
+                      onPressed: onManual,
                     ),
                   ),
                   SizedBox(width: 5.0.w),
                   Expanded(
-                    child: AppButton(
-                      'Set Automatically',
-                      kTealColor,
-                      true,
-                      onAutomatic,
+                    child: AppButton.filled(
+                      text: 'Set Automatically',
+                      onPressed: onAutomatic,
                     ),
                   ),
                 ],
@@ -848,20 +858,16 @@ class _CalendarPicker extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Expanded(
-                        child: AppButton(
-                          'Cancel',
-                          kTealColor,
-                          false,
-                          onCancel,
+                        child: AppButton.transparent(
+                          text: 'Cancel',
+                          onPressed: onCancel,
                         ),
                       ),
                       SizedBox(width: 5.0.w),
                       Expanded(
-                        child: AppButton(
-                          'Confirm',
-                          kTealColor,
-                          true,
-                          onConfirm,
+                        child: AppButton.filled(
+                          text: 'Confirm',
+                          onPressed: onConfirm,
                         ),
                       ),
                     ],

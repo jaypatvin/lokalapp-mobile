@@ -201,20 +201,17 @@ class _SubscriptionDetailsButtons extends StatelessWidget {
         Row(
           children: [
             Expanded(
-              child: AppButton(
-                'Unsubscribe',
-                kPinkColor,
-                false,
-                onUnsubscribe,
+              child: AppButton.transparent(
+                text: 'Unsubscribe',
+                color: kPinkColor,
+                onPressed: onUnsubscribe,
               ),
             ),
             SizedBox(width: 10.0.w),
             Expanded(
-              child: AppButton(
-                isBuyer ? 'Message Seller' : 'Message Buyer',
-                kTealColor,
-                false,
-                onMessageHandler,
+              child: AppButton.transparent(
+                text: isBuyer ? 'Message Seller' : 'Message Buyer',
+                onPressed: onMessageHandler,
               ),
             )
           ],

@@ -7,7 +7,6 @@ import '../../../providers/auth.dart';
 import '../../../routers/app_router.dart';
 import '../../../routers/profile/user_shop.props.dart';
 import '../../../utils/constants/assets.dart';
-import '../../../utils/constants/themes.dart';
 import '../../../widgets/app_button.dart';
 import '../../../widgets/custom_app_bar.dart';
 import '../../profile/profile_screen.dart';
@@ -60,11 +59,9 @@ class AddShopConfirmation extends StatelessWidget {
             const Spacer(),
             SizedBox(
               width: double.infinity,
-              child: AppButton(
-                '+ Add a New Product',
-                kTealColor,
-                false,
-                () {
+              child: AppButton.transparent(
+                text: '+ Add a New Product',
+                onPressed: () {
                   context.read<AppRouter>()
                     ..keyOf(AppRoute.profile)
                         .currentState!
@@ -75,11 +72,9 @@ class AddShopConfirmation extends StatelessWidget {
             ),
             SizedBox(
               width: double.infinity,
-              child: AppButton(
-                'Back to My Shop',
-                kTealColor,
-                true,
-                () {
+              child: AppButton.filled(
+                text: 'Back to My Shop',
+                onPressed: () {
                   final user = context.read<Auth>().user!;
                   context.read<AppRouter>()
                     ..keyOf(AppRoute.profile)

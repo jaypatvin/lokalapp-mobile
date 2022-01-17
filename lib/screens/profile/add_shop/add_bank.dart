@@ -67,11 +67,9 @@ class _AddBankView extends StatelessView<AddBankViewModel> {
                           margin: const EdgeInsets.only(top: 8.0),
                           width: double.infinity,
                           height: 100.h,
-                          child: AppButton(
-                            vm.addButtonLabel,
-                            kTealColor,
-                            false,
-                            vm.onAddBankDetails,
+                          child: AppButton.transparent(
+                            text: vm.addButtonLabel,
+                            onPressed: vm.onAddBankDetails,
                           ),
                         );
                       }
@@ -88,7 +86,8 @@ class _AddBankView extends StatelessView<AddBankViewModel> {
                             children: [
                               Container(
                                 margin: const EdgeInsets.symmetric(
-                                    horizontal: 16.0),
+                                  horizontal: 16.0,
+                                ),
                                 width: MediaQuery.of(context).size.width / 6,
                                 height: 100.h,
                                 child: ClipRRect(
@@ -155,11 +154,9 @@ class _AddBankView extends StatelessView<AddBankViewModel> {
                           .isEmpty ??
                       true;
 
-                  return AppButton(
-                    isBankEmpty ? 'Next' : 'Back to Payment Options',
-                    kTealColor,
-                    true,
-                    isBankEmpty
+                  return AppButton.filled(
+                    text: isBankEmpty ? 'Next' : 'Back to Payment Options',
+                    onPressed: isBankEmpty
                         ? vm.onAddBankDetails
                         : vm.onBackToPaymentOptions,
                   );

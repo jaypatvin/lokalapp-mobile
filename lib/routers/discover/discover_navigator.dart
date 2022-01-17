@@ -46,7 +46,7 @@ class DiscoverNavigator extends AppNavigator {
       case Search.routeName:
         return CupertinoPageRoute(
           settings: settings,
-          builder: (_) => Search(),
+          builder: (_) => const Search(),
         );
 
       // CART SCREENS

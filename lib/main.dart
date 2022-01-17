@@ -23,7 +23,6 @@ import 'providers/post_requests/product_body.dart';
 import 'providers/post_requests/shop_body.dart';
 import 'providers/products.dart';
 import 'providers/shops.dart';
-import 'providers/subscriptions.dart';
 import 'providers/users.dart';
 import 'providers/wishlist.dart';
 import 'root/root.dart';
@@ -183,11 +182,6 @@ class _MyAppState extends State<MyApp> {
       ListenableProvider<PageController>.value(value: _profilePageController),
       Provider<MediaUtility?>(create: (_) => MediaUtility.instance),
       Provider<LocalImageService?>(create: (_) => LocalImageService.instance),
-      ProxyProvider<Auth, SubscriptionProvider?>(
-        create: (_) => SubscriptionProvider(),
-        update: (_, auth, subscription) =>
-            subscription!..setIdToken(auth.idToken),
-      ),
     ];
   }
 

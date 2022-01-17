@@ -6,7 +6,6 @@ import 'package:provider/provider.dart';
 import '../../../../providers/products.dart';
 import '../../../../state/mvvm_builder.widget.dart';
 import '../../../../state/views/hook.view.dart';
-import '../../../../utils/constants/themes.dart';
 import '../../../../view_models/profile/shop/components/shop_product_field.vm.dart';
 import '../../../../widgets/app_button.dart';
 import '../../../../widgets/products_list.dart';
@@ -86,11 +85,9 @@ class _ShopProductFieldView extends HookView<ShopProductFieldViewModel> {
           if (vm.isCurrentUser)
             Padding(
               padding: EdgeInsets.only(bottom: 10.0.h),
-              child: AppButton(
-                '+ Add a new Product',
-                kTealColor,
-                false,
-                vm.addProduct,
+              child: AppButton.transparent(
+                text: '+ Add a new Product',
+                onPressed: vm.addProduct,
               ),
             ),
           Expanded(

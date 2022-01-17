@@ -87,11 +87,9 @@ class CartConfirmation extends StatelessWidget {
             SizedBox(height: 24.0.h),
             SizedBox(
               width: MediaQuery.of(context).size.width * 0.75,
-              child: AppButton(
-                'BACK TO MY CART',
-                kTealColor,
-                false,
-                () {
+              child: AppButton.transparent(
+                text: 'BACK TO MY CART',
+                onPressed: () {
                   context
                       .read<AppRouter>()
                       .keyOf(AppRoute.discover)
@@ -103,11 +101,9 @@ class CartConfirmation extends StatelessWidget {
             ),
             SizedBox(
               width: MediaQuery.of(context).size.width * 0.75,
-              child: AppButton(
-                'GO TO MY ACTIVITY',
-                kTealColor,
-                true,
-                () {
+              child: AppButton.filled(
+                text: 'GO TO MY ACTIVITY',
+                onPressed: () {
                   context.read<AppRouter>()
                     ..keyOf(AppRoute.discover)
                         .currentState!

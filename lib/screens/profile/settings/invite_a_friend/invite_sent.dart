@@ -81,11 +81,9 @@ class _InviteSentView extends StatelessView<InviteSentViewModel> {
               padding: EdgeInsets.symmetric(horizontal: 40.0.w),
               child: SizedBox(
                 width: double.infinity,
-                child: AppButton(
-                  'COPY INVITE CODE',
-                  kTealColor,
-                  true,
-                  vm.copyToClipboard,
+                child: AppButton.filled(
+                  text: 'COPY INVITE CODE',
+                  onPressed: vm.copyToClipboard,
                 ),
               ),
             ),

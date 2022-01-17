@@ -162,11 +162,10 @@ class _ProfileHeaderView extends StatelessView<ProfileHeaderViewModel> {
                     if (!vm.isCurrentUser)
                       SizedBox(
                         width: 140.w,
-                        child: AppButton(
-                          'Send a Message',
-                          Colors.white,
-                          false,
-                          vm.onSendMessage,
+                        child: AppButton.transparent(
+                          text: 'Send a Message',
+                          color: Colors.white,
+                          onPressed: vm.onSendMessage,
                           textStyle: const TextStyle(
                             color: Colors.white,
                           ),

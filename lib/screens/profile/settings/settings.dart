@@ -199,11 +199,10 @@ class Settings extends StatelessWidget {
                 children: [
                   SizedBox(
                     width: MediaQuery.of(context).size.width * 0.3,
-                    child: AppButton(
-                      'Log Out',
-                      kPinkColor,
-                      true,
-                      () async {
+                    child: AppButton.filled(
+                      text: 'Log Out',
+                      color: kPinkColor,
+                      onPressed: () async {
                         context.read<ShoppingCart>().clear();
                         context.read<AppRouter>()
                           ..jumpToTab(AppRoute.home)

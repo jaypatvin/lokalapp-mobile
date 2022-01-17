@@ -108,17 +108,17 @@ class _OnboardingState extends State<Onboarding> with AfterLayoutMixin {
           const SizedBox(height: 15),
           SizedBox(
             width: MediaQuery.of(context).size.width * 0.5,
-            child: AppButton(
-                _onboardDetails[widget.screen]!['label'], kTealColor, true,
-                //() => Navigator.pop(ctx),
-                () async {
-              setState(() {
-                _displayOnboarding = false;
-              });
-              await context
-                  .read<UserSharedPreferences>()
-                  .updateOnboardingStatus(widget.screen);
-            }),
+            child: AppButton.filled(
+              text: _onboardDetails[widget.screen]!['label'] ?? '',
+              onPressed: () async {
+                setState(() {
+                  _displayOnboarding = false;
+                });
+                await context
+                    .read<UserSharedPreferences>()
+                    .updateOnboardingStatus(widget.screen);
+              },
+            ),
           ),
         ],
       ),

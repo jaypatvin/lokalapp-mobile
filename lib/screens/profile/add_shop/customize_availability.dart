@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart' show DateFormat;
-import 'package:lokalapp/routers/profile/payment_options.props.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
@@ -13,9 +12,9 @@ import '../../../providers/post_requests/operating_hours_body.dart';
 import '../../../providers/post_requests/shop_body.dart';
 import '../../../providers/shops.dart';
 import '../../../routers/app_router.dart';
+import '../../../routers/profile/payment_options.props.dart';
 import '../../../services/local_image_service.dart';
 import '../../../utils/calendar_picker/calendar_picker.dart';
-import '../../../utils/constants/themes.dart';
 import '../../../utils/repeated_days_generator/schedule_generator.dart';
 import '../../../widgets/app_button.dart';
 import '../../../widgets/custom_app_bar.dart';
@@ -207,10 +206,10 @@ class _CustomizeAvailabilityState extends State<CustomizeAvailability>
     }
 
     context.read<AppRouter>().navigateTo(
-      AppRoute.profile,
-      SetUpPaymentOptions.routeName,
-      arguments: SetUpPaymentOptionsProps(onSubmit: _onSubmit),
-    );
+          AppRoute.profile,
+          SetUpPaymentOptions.routeName,
+          arguments: SetUpPaymentOptionsProps(onSubmit: _onSubmit),
+        );
   }
 
   @override
@@ -253,21 +252,17 @@ class _CustomizeAvailabilityState extends State<CustomizeAvailability>
             ),
             SizedBox(
               width: double.infinity,
-              child: AppButton(
-                'Customize Availability',
-                kTealColor,
-                false,
-                _showCalendarPicker,
+              child: AppButton.transparent(
+                text: 'Customize Availability',
+                onPressed: _showCalendarPicker,
               ),
             ),
             const Spacer(),
             SizedBox(
               width: double.infinity,
-              child: AppButton(
-                _customized ? 'Confirm' : 'Next',
-                kTealColor,
-                true,
-                _onConfirm,
+              child: AppButton.filled(
+                text: _customized ? 'Confirm' : 'Next',
+                onPressed: _onConfirm,
               ),
             )
           ],
@@ -333,20 +328,16 @@ class _CalendarPicker extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Expanded(
-                        child: AppButton(
-                          'Cancel',
-                          kTealColor,
-                          false,
-                          onCancel,
+                        child: AppButton.transparent(
+                          text: 'Cancel',
+                          onPressed: onCancel,
                         ),
                       ),
                       SizedBox(width: 5.0.w),
                       Expanded(
-                        child: AppButton(
-                          'Confirm',
-                          kTealColor,
-                          true,
-                          onConfirm,
+                        child: AppButton.filled(
+                          text: 'Confirm',
+                          onPressed: onConfirm,
                         ),
                       ),
                     ],

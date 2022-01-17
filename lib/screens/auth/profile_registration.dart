@@ -198,11 +198,9 @@ class _ProfileRegistrationView extends HookView<ProfileRegistrationViewModel>
             SizedBox(height: 30.0.h),
             SizedBox(
               width: 200.0.w,
-              child: AppButton(
-                'CREATE PROFILE',
-                kTealColor,
-                true,
-                () async => performFuture<void>(
+              child: AppButton.filled(
+                text: 'CREATE PROFILE',
+                onPressed: () async => performFuture<void>(
                   () async => vm.registerHandler(),
                 ),
                 textStyle: const TextStyle(color: kNavyColor),

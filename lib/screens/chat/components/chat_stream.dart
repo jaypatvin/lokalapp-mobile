@@ -49,11 +49,10 @@ class _ChatStreamView extends StatelessView<ChatStreamViewModel> {
         children: [
           const Text('You have not created a shop yet!'),
           SizedBox(height: 5.0.h),
-          AppButton(
-            'Create Shop',
-            kPurpleColor,
-            false,
-            vm.createShopHandler,
+          AppButton.transparent(
+            text: 'Create Shop',
+            color: kPurpleColor,
+            onPressed: vm.createShopHandler,
           ),
         ],
       );

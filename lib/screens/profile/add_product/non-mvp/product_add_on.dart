@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 
 import '../../../../providers/post_requests/product_body.dart';
 import '../../../../routers/app_router.dart';
-import '../../../../utils/constants/themes.dart';
 import '../../../../widgets/app_button.dart';
 import '../../../../widgets/custom_app_bar.dart';
 import '../components/add_product_gallery.dart';
@@ -59,11 +58,9 @@ class _ProductAddOnState extends State<ProductAddOn> {
             const SizedBox(
               height: 20,
             ),
-            AppButton(
-              'New Add-on',
-              kTealColor,
-              true,
-              () {
+            AppButton.filled(
+              text: 'New Add-on',
+              onPressed: () {
                 AppRouter.profileNavigatorKey.currentState?.push(
                   CupertinoPageRoute(
                     builder: (_) => NewAddOn(gallery: widget.gallery),
@@ -74,11 +71,9 @@ class _ProductAddOnState extends State<ProductAddOn> {
             SizedBox(
               height: MediaQuery.of(context).size.height / 3,
             ),
-            AppButton(
-              'Skip',
-              kTealColor,
-              true,
-              () {
+            AppButton.filled(
+              text: 'Skip',
+              onPressed: () {
                 AppRouter.profileNavigatorKey.currentState?.push(
                   CupertinoPageRoute(
                     builder: (_) => NewAddOn(gallery: widget.gallery),

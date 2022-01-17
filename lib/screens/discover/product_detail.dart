@@ -178,8 +178,7 @@ class _ProductDetailView extends HookView<ProductDetailViewModel> {
                             color: Colors.amber,
                           );
                         },
-                        // ignore: avoid_returning_null_for_void
-                        onRatingUpdate: (rating) => null,
+                        onRatingUpdate: (rating) {},
                         ignoreGestures: true,
                         itemSize: 24.0.h,
                       ),
@@ -311,11 +310,9 @@ class _ProductDetailView extends HookView<ProductDetailViewModel> {
               Row(
                 children: [
                   Expanded(
-                    child: AppButton(
-                      vm.buttonLabel,
-                      kTealColor,
-                      true,
-                      vm.onSubmit,
+                    child: AppButton.filled(
+                      text: vm.buttonLabel,
+                      onPressed: vm.onSubmit,
                     ),
                   ),
                 ],

@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 
 import '../../../../providers/post_requests/product_body.dart';
 import '../../../../routers/app_router.dart';
-import '../../../../utils/constants/themes.dart';
 import '../../../../widgets/app_button.dart';
 import '../../../../widgets/custom_app_bar.dart';
 import '../components/add_product_gallery.dart';
@@ -69,11 +68,9 @@ class _ProductVariant2State extends State<ProductVariant2> {
             const SizedBox(
               height: 20,
             ),
-            AppButton(
-              'Add another variant',
-              kTealColor,
-              true,
-              () {
+            AppButton.filled(
+              text: 'Add another variant',
+              onPressed: () {
                 AppRouter.pushNewScreen(
                   context,
                   screen: AddAVariant(gallery: widget.gallery),
@@ -83,11 +80,9 @@ class _ProductVariant2State extends State<ProductVariant2> {
             SizedBox(
               height: MediaQuery.of(context).size.height / 3,
             ),
-            AppButton(
-              'Next',
-              kTealColor,
-              true,
-              () {
+            AppButton.filled(
+              text: 'Next',
+              onPressed: () {
                 AppRouter.pushNewScreen(
                   context,
                   screen: ProductAddOn(gallery: widget.gallery),

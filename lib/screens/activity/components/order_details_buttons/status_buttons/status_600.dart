@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../../../../../models/order.dart';
-import '../../../../../utils/constants/themes.dart';
 import '../../../../../widgets/app_button.dart';
 import '../message_buttons.dart';
 import '../order_actions.dart';
@@ -40,11 +39,9 @@ class Status600Buttons extends StatelessWidget {
               ),
               SizedBox(width: MediaQuery.of(context).size.width * 0.01),
               Expanded(
-                child: AppButton(
-                  'Order Again',
-                  kTealColor,
-                  true,
-                  () => onPress(OrderAction.orderAgain),
+                child: AppButton.filled(
+                  text: 'Order Again',
+                  onPressed: () => onPress(OrderAction.orderAgain),
                 ),
               )
             ],

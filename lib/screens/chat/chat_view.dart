@@ -38,10 +38,8 @@ class ChatView extends StatefulWidget {
   final String? shopId;
   final String? productId;
 
-  // TODO: use factory method for createMessage
-  const ChatView(
-    // ignore: avoid_positional_boolean_parameters
-    this.createMessage, {
+  const ChatView({
+    required this.createMessage,
     this.chat,
     this.members,
     this.shopId,
