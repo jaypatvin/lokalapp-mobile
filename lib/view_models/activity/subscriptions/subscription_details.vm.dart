@@ -1,4 +1,5 @@
 import 'package:intl/intl.dart';
+import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
 import '../../../models/operating_hours.dart';
@@ -7,8 +8,12 @@ import '../../../providers/products.dart';
 import '../../../providers/shops.dart';
 import '../../../routers/app_router.dart';
 import '../../../routers/chat/chat_view.props.dart';
+import '../../../routers/discover/product_detail.props.dart';
 import '../../../screens/activity/subscriptions/subscription_schedule.dart';
 import '../../../screens/chat/chat_view.dart';
+import '../../../screens/discover/product_detail.dart';
+import '../../../services/api/api.dart';
+import '../../../services/api/subscription_plan_api_service.dart';
 import '../../../state/view_model.dart';
 import '../../../utils/repeated_days_generator/schedule_generator.dart';
 
@@ -20,6 +25,12 @@ class SubscriptionDetailsViewModel extends ViewModel {
 
   final ProductSubscriptionPlan subscriptionPlan;
   final bool isBuyer;
+  late final SubscriptionPlanAPIService _apiService;
+
+  @override
+  void init() {
+    _apiService = SubscriptionPlanAPIService(context.read<API>());
+  }
 
   double get orderTotal =>
       subscriptionPlan.quantity! * subscriptionPlan.product.price!;
@@ -107,7 +118,29 @@ class SubscriptionDetailsViewModel extends ViewModel {
         );
   }
 
-  // TODO: add unsubscribe
-  // ignore: avoid_returning_null_for_void
-  void onUnsubscribe() => null;
+  void onSubscribeAgain() {
+    final _product = context.read<Products>().findById(
+          subscriptionPlan.productId,
+        );
+    if (_product != null) {
+      context.read<AppRouter>().navigateTo(
+            AppRoute.discover,
+            ProductDetail.routeName,
+            arguments: ProductDetailProps(
+              _product,
+            ),
+          );
+    }
+  }
+
+  Future<bool> onUnsubscribe() async {
+    try {
+      return await _apiService.disableSubscriptionPlan(
+        planId: subscriptionPlan.id!,
+      );
+    } catch (e) {
+      showToast(e.toString());
+      return false;
+    }
+  }
 }

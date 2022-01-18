@@ -24,6 +24,7 @@ class SubscriptionPlanDetails extends StatelessWidget {
     final displayPhoto =
         isBuyer ? subscriptionPlan.shop.image : user.profilePhoto;
     final item = subscriptionPlan.product;
+    final disabled = subscriptionPlan.status == 'disabled';
 
     return Column(
       children: [
@@ -31,7 +32,7 @@ class SubscriptionPlanDetails extends StatelessWidget {
           Row(
             children: [
               Text(
-                'Subscription',
+                disabled ? 'Past Subscription' : 'Subscription',
                 style: Theme.of(context).textTheme.subtitle1,
               ),
             ],

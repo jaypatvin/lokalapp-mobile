@@ -51,6 +51,10 @@ class _SubscriptionDetailsView extends HookView<SubscriptionDetailsViewModel> {
       return _addressList.where((text) => text.isNotEmpty).join(', ');
     });
 
+    final _disabled = useMemoized<bool>(
+      () => vm.subscriptionPlan.status == 'disabled',
+    );
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: vm.isBuyer ? kTealColor : const Color(0xFF57183F),
@@ -64,7 +68,7 @@ class _SubscriptionDetailsView extends HookView<SubscriptionDetailsViewModel> {
                   ),
             ),
             Text(
-              'Subscription',
+              _disabled ? 'Past Subscription' : 'Subscription',
               style: Theme.of(context).textTheme.subtitle1!.copyWith(
                     color: Colors.white,
                   ),
@@ -137,9 +141,11 @@ class _SubscriptionDetailsView extends HookView<SubscriptionDetailsViewModel> {
             _SubscriptionDetailsButtons(
               isBuyer: vm.isBuyer,
               displayWarning: vm.checkForConflicts(),
+              disabled: _disabled,
               onSeeSchedule: vm.onSeeSchedule,
               onMessageHandler: vm.onMessageSend,
               onUnsubscribe: vm.onUnsubscribe,
+              onSubscribeAgain: vm.onSubscribeAgain,
             ),
           ],
         ),
@@ -151,62 +157,75 @@ class _SubscriptionDetailsView extends HookView<SubscriptionDetailsViewModel> {
 class _SubscriptionDetailsButtons extends StatelessWidget {
   final bool isBuyer;
   final bool displayWarning;
+  final bool disabled;
   final void Function()? onSeeSchedule;
   final void Function()? onMessageHandler;
   final void Function()? onUnsubscribe;
+  final void Function()? onSubscribeAgain;
   const _SubscriptionDetailsButtons({
     Key? key,
-    required this.displayWarning,
+    this.isBuyer = true,
+    this.displayWarning = false,
+    this.disabled = false,
     this.onSeeSchedule,
     this.onMessageHandler,
     this.onUnsubscribe,
-    this.isBuyer = true,
+    this.onSubscribeAgain,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        SizedBox(
-          width: double.infinity,
-          child: ElevatedButton(
-            onPressed: onSeeSchedule,
-            style: ElevatedButton.styleFrom(
-              shape: const StadiumBorder(),
-              elevation: 0.0,
-              primary: Colors.transparent,
-              minimumSize: Size(0, 40.0.h),
-              side: const BorderSide(color: kTealColor),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  'See Schedule',
-                  style: Theme.of(context)
-                      .textTheme
-                      .subtitle1!
-                      .copyWith(color: kTealColor),
-                ),
-                if (displayWarning)
-                  Icon(
-                    MdiIcons.alertCircle,
-                    color: kPinkColor,
-                    size: 20.0.r,
-                  )
-              ],
-            ),
-          ),
-        ),
-        Row(
-          children: [
-            Expanded(
-              child: AppButton.transparent(
-                text: 'Unsubscribe',
-                color: kPinkColor,
-                onPressed: onUnsubscribe,
+        if (!disabled)
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: onSeeSchedule,
+              style: ElevatedButton.styleFrom(
+                shape: const StadiumBorder(),
+                elevation: 0.0,
+                primary: Colors.transparent,
+                minimumSize: Size(0, 40.0.h),
+                side: const BorderSide(color: kTealColor),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'See Schedule',
+                    style: Theme.of(context)
+                        .textTheme
+                        .subtitle1!
+                        .copyWith(color: kTealColor),
+                  ),
+                  if (displayWarning)
+                    Icon(
+                      MdiIcons.alertCircle,
+                      color: kPinkColor,
+                      size: 20.0.r,
+                    )
+                ],
               ),
             ),
+          ),
+        Row(
+          children: [
+            if (disabled)
+              Expanded(
+                child: AppButton.transparent(
+                  text: 'Subscribe Again',
+                  onPressed: onSubscribeAgain,
+                ),
+              ),
+            if (!disabled)
+              Expanded(
+                child: AppButton.transparent(
+                  text: 'Unsubscribe',
+                  color: kPinkColor,
+                  onPressed: onUnsubscribe,
+                ),
+              ),
             SizedBox(width: 10.0.w),
             Expanded(
               child: AppButton.transparent(
