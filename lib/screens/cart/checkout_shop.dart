@@ -33,6 +33,8 @@ class ShopCheckout extends StatelessWidget {
       ),
       body: Consumer<ShoppingCart>(
         builder: (_, cart, __) {
+          if (cart.orders[shop.id] == null) return const SizedBox();
+
           final orders = cart.orders[shop.id]!;
           return ListView.builder(
             itemCount: orders.length,
@@ -109,7 +111,7 @@ class _OrdersCard extends StatelessWidget {
                       text: 'Subscribe',
                       onPressed: () => Navigator.of(context).push(
                         MaterialPageRoute(
-                          builder: (_) => SubscriptionSchedule(
+                          builder: (_) => SubscriptionSchedule.create(
                             productId: productId,
                           ),
                         ),
