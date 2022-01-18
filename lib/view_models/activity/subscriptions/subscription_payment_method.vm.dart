@@ -42,9 +42,10 @@ class SubscriptionPaymentMethodViewModel extends ViewModel {
         body: subscriptionPlanBody.toMap(),
       );
 
-      final success = await _apiService.autoRescheduleConflicts(
-        planId: subscriptionPlan.id!,
-      );
+      final success = !reschedule ||
+          await _apiService.autoRescheduleConflicts(
+            planId: subscriptionPlan.id!,
+          );
 
       if (success) {
         context.read<ShoppingCart>().remove(subscriptionPlanBody.productId);

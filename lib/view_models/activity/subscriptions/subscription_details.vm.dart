@@ -2,6 +2,7 @@ import 'package:intl/intl.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
+import '../../../models/failure_exception.dart';
 import '../../../models/operating_hours.dart';
 import '../../../models/product_subscription_plan.dart';
 import '../../../providers/products.dart';
@@ -98,7 +99,7 @@ class SubscriptionDetailsViewModel extends ViewModel {
   void onSeeSchedule() {
     AppRouter.pushNewScreen(
       context,
-      screen: SubscriptionSchedule(
+      screen: SubscriptionSchedule.view(
         subscriptionPlan: subscriptionPlan,
       ),
     );
@@ -133,14 +134,19 @@ class SubscriptionDetailsViewModel extends ViewModel {
     }
   }
 
-  Future<bool> onUnsubscribe() async {
+  Future<void> onUnsubscribe() async {
     try {
-      return await _apiService.disableSubscriptionPlan(
+      final _success = await _apiService.disableSubscriptionPlan(
         planId: subscriptionPlan.id!,
       );
+
+      if (!_success) {
+        throw FailureException('Failed to unsubscribe. Try again.');
+      }
+
+      context.read<AppRouter>().popScreen(AppRoute.activity);
     } catch (e) {
       showToast(e.toString());
-      return false;
     }
   }
 }
