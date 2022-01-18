@@ -5,13 +5,29 @@ import '../utils/constants/themes.dart';
 
 class AppButton extends StatelessWidget {
   const AppButton._({
-    required this.text,
+    required this.child,
     required this.isFilled,
     this.color = kTealColor,
     this.onPressed,
     this.textStyle,
   });
 
+  /// AppButton builder to be used for custom button child.
+  factory AppButton.customChild({
+    required Widget child,
+    bool isFilled = false,
+    Color color = kTealColor,
+    void Function()? onPressed,
+  }) {
+    return AppButton._(
+      isFilled: isFilled,
+      color: color,
+      onPressed: onPressed,
+      child: child,
+    );
+  }
+
+  /// AppButton builder to be used when you want flexibility for the design.
   factory AppButton.custom({
     required String text,
     bool isFilled = false,
@@ -19,47 +35,83 @@ class AppButton extends StatelessWidget {
     void Function()? onPressed,
     TextStyle? textStyle,
   }) {
+    final _child = Text(
+      text,
+      textAlign: TextAlign.center,
+      style: TextStyle(
+        fontFamily: 'Goldplay',
+        fontSize: 16.0.sp,
+        fontWeight: FontWeight.w600,
+        color: isFilled ? Colors.white : color,
+      ).merge(textStyle),
+    );
+
     return AppButton._(
-      text: text,
       color: color,
       onPressed: onPressed,
       textStyle: textStyle,
       isFilled: isFilled,
+      child: _child,
     );
   }
 
+  /// AppButton builder to be used for filled button.
   factory AppButton.filled({
     required String text,
     Color color = kTealColor,
     void Function()? onPressed,
     TextStyle? textStyle,
   }) {
+    final _child = Text(
+      text,
+      textAlign: TextAlign.center,
+      style: TextStyle(
+        fontFamily: 'Goldplay',
+        fontSize: 16.0.sp,
+        fontWeight: FontWeight.w600,
+        color: Colors.white,
+      ).merge(textStyle),
+    );
+
     return AppButton._(
-      text: text,
       color: color,
       onPressed: onPressed,
       textStyle: textStyle,
       isFilled: true,
+      child: _child,
     );
   }
 
+  /// AppButton builder to be used for a transparent.
   factory AppButton.transparent({
     required String text,
     Color color = kTealColor,
     void Function()? onPressed,
     TextStyle? textStyle,
   }) {
+    final _child = Text(
+      text,
+      textAlign: TextAlign.center,
+      style: TextStyle(
+        fontFamily: 'Goldplay',
+        fontSize: 16.0.sp,
+        fontWeight: FontWeight.w600,
+        color: color,
+      ).merge(textStyle),
+    );
     return AppButton._(
-      text: text,
       isFilled: false,
       color: color,
       onPressed: onPressed,
       textStyle: textStyle,
+      child: _child,
     );
   }
 
-  /// Button Label
-  final String text;
+  // /// Button Label
+  // final String text;
+
+  final Widget child;
 
   /// Sets the button Color.
   ///
@@ -103,16 +155,17 @@ class AppButton extends StatelessWidget {
         minimumSize: Size(0, 40.0.h),
         side: BorderSide(color: color),
       ),
-      child: Text(
-        text,
-        textAlign: TextAlign.center,
-        style: TextStyle(
-          fontFamily: 'Goldplay',
-          fontSize: 16.0.sp,
-          fontWeight: FontWeight.w600,
-          color: isFilled ? Colors.white : color,
-        ).merge(textStyle),
-      ),
+      // child: Text(
+      //   text,
+      //   textAlign: TextAlign.center,
+      //   style: TextStyle(
+      //     fontFamily: 'Goldplay',
+      //     fontSize: 16.0.sp,
+      //     fontWeight: FontWeight.w600,
+      //     color: isFilled ? Colors.white : color,
+      //   ).merge(textStyle),
+      // ),
+      child: child,
     );
   }
 }
