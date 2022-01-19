@@ -49,7 +49,10 @@ class _SubscriptionsView extends StatelessView<SubscriptionsViewModel> {
                     );
                   default:
                     if (snapshot.hasError) {
-                      return Text('Error: ${snapshot.error}');
+                      // return Text('Error: ${snapshot.error}');
+                      return const Center(
+                        child: Text('There was an unexpected error.'),
+                      );
                     } else if (!snapshot.hasData ||
                         snapshot.data!.docs.isEmpty) {
                       return Center(
@@ -60,7 +63,6 @@ class _SubscriptionsView extends StatelessView<SubscriptionsViewModel> {
                       );
                     } else {
                       return GroupedListView(
-                        shrinkWrap: true,
                         physics: const AlwaysScrollableScrollPhysics(),
                         elements: snapshot.data!.docs,
                         groupBy: (QueryDocumentSnapshot snapshot) {
@@ -120,11 +122,10 @@ class _SubscriptionsView extends StatelessView<SubscriptionsViewModel> {
                     style: Theme.of(context).textTheme.bodyText2,
                   ),
                   SizedBox(height: 5.0.h),
-                  AppButton(
-                    'Create Shop',
-                    kPurpleColor,
-                    false,
-                    vm.createShopHandler,
+                  AppButton.transparent(
+                    text: 'Create Shop',
+                    color: kPurpleColor,
+                    onPressed: vm.createShopHandler,
                   ),
                 ],
               ),
@@ -146,13 +147,15 @@ class _SubscriptionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bool disabled = subscriptionPlan.status == 'disabled';
+
     return Card(
       margin: EdgeInsets.only(top: 10.0.h, left: 10.w, right: 10.w),
       elevation: 0.0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20.0.r),
       ),
-      color: const Color(0xFFF1FAFF),
+      color: disabled ? Colors.grey.shade200 : const Color(0xFFF1FAFF),
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: 20.0.w, vertical: 10.0.h),
         child: Column(
@@ -164,11 +167,9 @@ class _SubscriptionCard extends StatelessWidget {
             SizedBox(height: 15.0.h),
             SizedBox(
               width: double.infinity,
-              child: AppButton(
-                'Details',
-                kTealColor,
-                false,
-                onDetailsPressed,
+              child: AppButton.transparent(
+                text: 'Details',
+                onPressed: onDetailsPressed,
               ),
             ),
           ],

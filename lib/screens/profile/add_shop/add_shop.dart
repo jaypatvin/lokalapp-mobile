@@ -8,7 +8,6 @@ import 'package:provider/provider.dart';
 import '../../../providers/post_requests/shop_body.dart';
 import '../../../routers/app_router.dart';
 import '../../../routers/profile/shop_schedule.props.dart';
-import '../../../utils/constants/themes.dart';
 import '../../../utils/utility.dart';
 import '../../../widgets/app_button.dart';
 import '../../../widgets/custom_app_bar.dart';
@@ -139,11 +138,9 @@ class _AddShopState extends State<AddShop> {
                     (shop.description?.isNotEmpty ?? false);
                 return SizedBox(
                   width: width * 0.8,
-                  child: AppButton(
-                    'Set Shop Schedule',
-                    kTealColor,
-                    true,
-                    isNotEmpty
+                  child: AppButton.filled(
+                    text: 'Set Shop Schedule',
+                    onPressed: isNotEmpty
                         ? () => context.read<AppRouter>().navigateTo(
                               AppRoute.profile,
                               ShopSchedule.routeName,

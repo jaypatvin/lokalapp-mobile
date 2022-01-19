@@ -27,8 +27,9 @@ class PostFieldViewModel extends ViewModel {
 
   @override
   void dispose() {
+    // We shouldn't dispose the scrollController here since it comes from
+    // a widget higher than this one in the tree.
     scrollController.removeListener(_scrollListener);
-    scrollController.dispose();
     super.dispose();
   }
 

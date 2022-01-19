@@ -1,6 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:lokalapp/providers/products.dart';
+import 'package:lokalapp/utils/constants/assets.dart';
+import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/user_shop.dart';
@@ -8,8 +11,6 @@ import '../../providers/auth.dart';
 import '../../providers/shops.dart';
 import '../../services/database.dart';
 import '../../utils/constants/themes.dart';
-import '../../utils/shared_preference.dart';
-import '../../widgets/overlays/onboarding.dart';
 import 'components/chat_avatar.dart';
 import 'components/chat_stream.dart';
 
@@ -71,34 +72,39 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    final user = context.read<Auth>().user!;
-    //final shops = context.read<Shops>().findByUser(user.id);
+    return Scaffold(
+      appBar: _ChatAppBar(
+        height: 120.0.h,
+        backgroundColor: _colorAnimation.value,
+        bottom: _ChatAppBarBottom(
+          tabController: _tabController,
+        ),
+      ),
+      body: Consumer2<Shops, Products>(
+        builder: (ctx, shops, products, _) {
+          if (shops.isLoading || products.isLoading) {
+            return SizedBox.expand(
+              child: Lottie.asset(kAnimationLoading, fit: BoxFit.cover),
+            );
+          }
 
-    return Consumer<Shops>(
-      builder: (ctx, shops, _) {
-        final _shops = shops.findByUser(user.id);
+          final user = context.read<Auth>().user!;
+          final _shops = shops.findByUser(user.id);
 
-        if (_shopChatStream == null && _shops.isNotEmpty) {
-          _shopChatStream = Database.instance.getUserChats(_shops.first.id);
-        }
-        return Scaffold(
-          appBar: _ChatAppBar(
-            height: 120.0.h,
-            backgroundColor: _colorAnimation.value,
-            bottom: _ChatAppBarBottom(
-              tabController: _tabController,
-            ),
-          ),
-          body: TabBarView(
+          if (_shopChatStream == null && _shops.isNotEmpty) {
+            _shopChatStream = Database.instance.getUserChats(_shops.first.id);
+          }
+
+          return TabBarView(
             physics: const NeverScrollableScrollPhysics(),
             controller: _tabController,
             children: [
               ChatStream(chatStream: _userChatStream),
               ChatStream(chatStream: _shopChatStream),
             ],
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 }

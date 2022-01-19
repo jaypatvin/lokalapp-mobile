@@ -32,6 +32,8 @@ class ProductDetailViewModel extends ViewModel {
   int _quantity = 0;
   int get quantity => _quantity;
 
+  bool get available => product.quantity > 0;
+
   @override
   void init() {
     super.init();
@@ -53,6 +55,11 @@ class ProductDetailViewModel extends ViewModel {
   }
 
   void increase() {
+    if (product.quantity <= quantity) {
+      showToast("You've reached the maximum number of possible orders.");
+      return;
+    }
+
     _quantity++;
     notifyListeners();
   }

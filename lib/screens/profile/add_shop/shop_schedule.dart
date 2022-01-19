@@ -130,11 +130,9 @@ class _ShopScheduleView extends HookView<ShopScheduleViewModel> {
               const SizedBox(height: 15),
               SizedBox(
                 width: double.infinity,
-                child: AppButton(
-                  'Confirm',
-                  kTealColor,
-                  true,
-                  vm.onConfirm,
+                child: AppButton.filled(
+                  text: 'Confirm',
+                  onPressed: vm.onConfirm,
                 ),
               )
             ],

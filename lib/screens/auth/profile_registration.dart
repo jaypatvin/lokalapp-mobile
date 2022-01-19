@@ -70,145 +70,107 @@ class _ProfileRegistrationView extends HookView<ProfileRegistrationViewModel>
         actions: [
           KeyboardActionsItem(
             focusNode: _firstNameFocusNode,
-            toolbarButtons: [
-              (node) {
-                return TextButton(
-                  onPressed: () => node.unfocus(),
-                  child: Text(
-                    'Done',
-                    style: Theme.of(context).textTheme.bodyText1!.copyWith(
-                          color: Colors.black,
-                        ),
-                  ),
-                );
-              },
-            ],
           ),
           KeyboardActionsItem(
             focusNode: _lastNameFocusNode,
-            toolbarButtons: [
-              (node) {
-                return TextButton(
-                  onPressed: () => node.unfocus(),
-                  child: Text(
-                    'Done',
-                    style: Theme.of(context).textTheme.bodyText1!.copyWith(
-                          color: Colors.black,
-                        ),
-                  ),
-                );
-              },
-            ],
           ),
           KeyboardActionsItem(
             focusNode: _streetNameFocusNode,
-            toolbarButtons: [
-              (node) {
-                return TextButton(
-                  onPressed: () => node.unfocus(),
-                  child: Text(
-                    'Done',
-                    style: Theme.of(context).textTheme.bodyText1!.copyWith(
-                          color: Colors.black,
-                        ),
-                  ),
-                );
-              },
-            ],
           ),
         ],
       );
     });
 
-    return Scaffold(
-      backgroundColor: kInviteScreenColor,
-      appBar: CustomAppBar(
+    return WillPopScope(
+      onWillPop: vm.onWillPop,
+      child: Scaffold(
         backgroundColor: kInviteScreenColor,
-        leadingColor: kTealColor,
-        onPressedLeading: () => Navigator.maybePop(context),
-      ),
-      body: KeyboardActions(
-        config: _kbConfig,
-        child: Column(
-          children: [
-            Text(
-              "Let's set up your profile",
-              style: TextStyle(
-                fontWeight: FontWeight.w500,
-                fontSize: 16.0.sp,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            SizedBox(height: 25.0.h),
-            GestureDetector(
-              onTap: vm.picturePickerHandler,
-              child: PhotoBox(
-                file: vm.profilePhoto,
-                shape: BoxShape.circle,
-                width: 120.0.w,
-                height: 120.0.h,
-              ),
-            ),
-            SizedBox(
-              height: 20.0.h,
-            ),
-            if (vm.hasEmptyField)
+        appBar: CustomAppBar(
+          backgroundColor: kInviteScreenColor,
+          leadingColor: kTealColor,
+          onPressedLeading: () => Navigator.maybePop(context),
+        ),
+        body: KeyboardActions(
+          config: _kbConfig,
+          child: Column(
+            children: [
               Text(
-                'You must fill out all field to proceed.',
+                "Let's set up your profile",
                 style: TextStyle(
-                  color: kPinkColor,
                   fontWeight: FontWeight.w500,
-                  fontSize: 12.0.sp,
+                  fontSize: 16.0.sp,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(height: 25.0.h),
+              GestureDetector(
+                onTap: vm.picturePickerHandler,
+                child: PhotoBox(
+                  file: vm.profilePhoto,
+                  shape: BoxShape.circle,
+                  width: 120.0.w,
+                  height: 120.0.h,
                 ),
               ),
-            SizedBox(height: 10.0.h),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 30.0.w),
-              child: _RegistrationForm(
-                formKey: vm.formKey,
-                firstNameController: _firstNameController,
-                firstNameNode: _firstNameFocusNode,
-                lastNameController: _lastNameController,
-                lastNameNode: _lastNameFocusNode,
-                streetAddressController: _streetNameController,
-                streetAdddressNode: _streetNameFocusNode,
-                onFormSubmit: () async => performFuture<void>(
-                  () async => vm.registerHandler(),
-                ),
-                formFieldDecoration: InputDecoration(
-                  filled: true,
-                  fillColor: Colors.white,
-                  alignLabelWithHint: true,
-                  contentPadding: EdgeInsets.symmetric(horizontal: 16.0.w),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(30.0.r)),
-                    borderSide: vm.hasEmptyField
-                        ? const BorderSide(color: kPinkColor)
-                        : BorderSide.none,
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(30.0.r)),
-                    borderSide: vm.hasEmptyField
-                        ? const BorderSide(color: kPinkColor)
-                        : BorderSide.none,
+              SizedBox(
+                height: 20.0.h,
+              ),
+              if (vm.hasEmptyField)
+                Text(
+                  'You must fill out all field to proceed.',
+                  style: TextStyle(
+                    color: kPinkColor,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 12.0.sp,
                   ),
                 ),
-              ),
-            ),
-            SizedBox(height: 30.0.h),
-            SizedBox(
-              width: 200.0.w,
-              child: AppButton(
-                'CREATE PROFILE',
-                kTealColor,
-                true,
-                () async => performFuture<void>(
-                  () async => vm.registerHandler(),
+              SizedBox(height: 10.0.h),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 30.0.w),
+                child: _RegistrationForm(
+                  formKey: vm.formKey,
+                  firstNameController: _firstNameController,
+                  firstNameNode: _firstNameFocusNode,
+                  lastNameController: _lastNameController,
+                  lastNameNode: _lastNameFocusNode,
+                  streetAddressController: _streetNameController,
+                  streetAdddressNode: _streetNameFocusNode,
+                  onFormSubmit: () async => performFuture<void>(
+                    () async => vm.registerHandler(),
+                  ),
+                  formFieldDecoration: InputDecoration(
+                    filled: true,
+                    fillColor: Colors.white,
+                    alignLabelWithHint: true,
+                    contentPadding: EdgeInsets.symmetric(horizontal: 16.0.w),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(30.0.r)),
+                      borderSide: vm.hasEmptyField
+                          ? const BorderSide(color: kPinkColor)
+                          : BorderSide.none,
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(30.0.r)),
+                      borderSide: vm.hasEmptyField
+                          ? const BorderSide(color: kPinkColor)
+                          : BorderSide.none,
+                    ),
+                  ),
                 ),
-                textStyle: const TextStyle(color: kNavyColor),
               ),
-            ),
-          ],
+              SizedBox(height: 30.0.h),
+              SizedBox(
+                width: 200.0.w,
+                child: AppButton.filled(
+                  text: 'CREATE PROFILE',
+                  onPressed: () async => performFuture<void>(
+                    () async => vm.registerHandler(),
+                  ),
+                  textStyle: const TextStyle(color: kNavyColor),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

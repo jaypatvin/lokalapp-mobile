@@ -49,11 +49,10 @@ class _DeleteAccountState extends State<DeleteAccount> {
             SizedBox(height: 20.h),
             SizedBox(
               width: double.infinity,
-              child: AppButton(
-                'Delete account',
-                kPinkColor,
-                true,
-                () => showToast('Not yet implemented.'),
+              child: AppButton.filled(
+                text: 'Delete account',
+                color: kPinkColor,
+                onPressed: () => showToast('Not yet implemented.'),
                 // () => pushNewScreen(
                 //   context,
                 //   screen: AccountDeleted(),
@@ -64,11 +63,9 @@ class _DeleteAccountState extends State<DeleteAccount> {
             const Spacer(),
             SizedBox(
               width: double.infinity,
-              child: AppButton(
-                'Go back to settings',
-                kTealColor,
-                true,
-                () {
+              child: AppButton.filled(
+                text: 'Go back to settings',
+                onPressed: () {
                   context
                       .read<AppRouter>()
                       .keyOf(AppRoute.profile)

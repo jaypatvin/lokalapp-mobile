@@ -80,7 +80,6 @@ class _WalletDetailsView extends HookView<BankDetailsViewModel>
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 24.0.h),
               child: ListView.builder(
-                shrinkWrap: true,
                 itemCount: vm.paymentAccounts.length,
                 itemBuilder: (ctx, index) {
                   final _account = vm.paymentAccounts[index];
@@ -92,7 +91,10 @@ class _WalletDetailsView extends HookView<BankDetailsViewModel>
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
-                          context.read<BankCodes>().getById(_account.bank).name,
+                          context
+                              .read<BankCodes>()
+                              .getById(_account.bankCode)
+                              .name,
                           style: Theme.of(context).textTheme.subtitle1,
                         ),
                         Row(
@@ -108,7 +110,7 @@ class _WalletDetailsView extends HookView<BankDetailsViewModel>
                             Flexible(
                               flex: 4,
                               child: Text(
-                                '${_account.accountNumber}',
+                                _account.accountNumber,
                                 style: Theme.of(context).textTheme.subtitle1,
                               ),
                             ),
@@ -150,22 +152,20 @@ class _WalletDetailsView extends HookView<BankDetailsViewModel>
           Container(
             width: double.infinity,
             padding: EdgeInsets.symmetric(horizontal: 8.0.w, vertical: 4.0.h),
-            child: AppButton(
-              "${vm.proofOfPayment != null ? 'Re-u' : 'U'}"
-              'pload proof of payment',
-              kTealColor,
-              vm.proofOfPayment == null,
-              vm.onImagePick,
+            child: AppButton.custom(
+              text: "${vm.proofOfPayment != null ? 'Re-u' : 'U'}"
+                  'pload proof of payment',
+              onPressed: vm.onImagePick,
+              isFilled: vm.proofOfPayment == null,
             ),
           ),
           Container(
             width: double.infinity,
             padding: EdgeInsets.symmetric(horizontal: 8.0.w, vertical: 4.0.h),
-            child: AppButton(
-              'Submit',
-              vm.proofOfPayment != null ? kTealColor : Colors.grey,
-              true,
-              vm.proofOfPayment != null
+            child: AppButton.filled(
+              text: 'Submit',
+              color: vm.proofOfPayment != null ? kTealColor : Colors.grey,
+              onPressed: vm.proofOfPayment != null
                   ? () async => performFuture<void>(vm.onSubmit)
                   : null,
             ),

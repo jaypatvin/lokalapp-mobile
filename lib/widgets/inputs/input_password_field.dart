@@ -57,6 +57,10 @@ class InputPasswordField extends StatelessWidget {
         hintText: hintText,
         contentPadding: EdgeInsets.symmetric(horizontal: 16.0.w),
         errorText: displaySignInError ? errorMessage : null,
+        // errorBorder: OutlineInputBorder(
+        //   borderRadius: BorderRadius.all(Radius.circular(30.0.r)),
+        //   borderSide: const BorderSide(color: Colors.red),
+        // ),
       ),
     );
   }

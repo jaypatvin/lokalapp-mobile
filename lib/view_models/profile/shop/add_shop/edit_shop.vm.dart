@@ -9,6 +9,7 @@ import '../../../../providers/post_requests/operating_hours_body.dart';
 import '../../../../providers/post_requests/shop_body.dart';
 import '../../../../providers/shops.dart';
 import '../../../../routers/app_router.dart';
+import '../../../../routers/profile/payment_options.props.dart';
 import '../../../../screens/profile/add_shop/edit_shop.dart';
 import '../../../../screens/profile/add_shop/payment_options.dart';
 import '../../../../screens/profile/add_shop/shop_schedule.dart';
@@ -55,7 +56,7 @@ class EditShopViewModel extends ViewModel {
         description: shop.description,
         coverPhoto: shop.coverPhoto,
         profilePhoto: shop.profilePhoto,
-        paymentOptions: shop.paymentOptions?.copyWith(),
+        paymentOptions: [...(shop.paymentOptions ?? const [])],
         notify: false,
       );
     context.read<OperatingHoursBody>().clear(notify: false);
@@ -128,11 +129,11 @@ class EditShopViewModel extends ViewModel {
   }
 
   void onEditPaymentOptions() {
-    AppRouter.profileNavigatorKey.currentState?.push(
-      CupertinoPageRoute(
-        builder: (_) => SetUpPaymentOptions(
-          onSubmit: () => AppRouter.profileNavigatorKey.currentState?.pop(),
-        ),
+    AppRouter.profileNavigatorKey.currentState?.pushNamed(
+      SetUpPaymentOptions.routeName,
+      arguments: SetUpPaymentOptionsProps(
+        onSubmit: () => AppRouter.profileNavigatorKey.currentState?.pop(),
+        edit: true,
       ),
     );
   }
@@ -198,6 +199,8 @@ class EditShopViewModel extends ViewModel {
         success = await _updateShopSchedule();
         if (!success) throw 'Update operating hours error';
       }
+
+      AppRouter.profileNavigatorKey.currentState?.pop();
     } catch (e) {
       showToast(e.toString());
     }

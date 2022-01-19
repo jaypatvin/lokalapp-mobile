@@ -139,20 +139,17 @@ class Checkout extends StatelessWidget {
               child: Row(
                 children: [
                   Expanded(
-                    child: AppButton(
-                      'Cancel',
-                      kPinkColor,
-                      false,
-                      () => Navigator.pop(context),
+                    child: AppButton.transparent(
+                      text: 'Cancel',
+                      color: kPinkColor,
+                      onPressed: () => Navigator.pop(context),
                     ),
                   ),
                   const SizedBox(width: 8.0),
                   Expanded(
-                    child: AppButton(
-                      'Continue',
-                      kTealColor,
-                      true,
-                      () {
+                    child: AppButton.filled(
+                      text: 'Continue',
+                      onPressed: () {
                         context.read<AppRouter>().navigateTo(
                               AppRoute.discover,
                               CheckoutSchedule.routeName,

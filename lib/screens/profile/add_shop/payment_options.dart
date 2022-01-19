@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
+import '../../../models/bank_code.dart';
 import '../../../providers/post_requests/shop_body.dart';
 import '../../../state/mvvm_builder.widget.dart';
 import '../../../state/views/hook.view.dart';
@@ -16,14 +17,38 @@ import '../../../widgets/overlays/screen_loader.dart';
 class SetUpPaymentOptions extends StatelessWidget {
   static const routeName = '/profile/shop/paymentOptions';
   final void Function() onSubmit;
-  const SetUpPaymentOptions({Key? key, required this.onSubmit})
+  final bool edit;
+
+  factory SetUpPaymentOptions.edit({
+    Key? key,
+    required void Function() onSubmit,
+  }) {
+    return SetUpPaymentOptions._(
+      onSubmit,
+      true,
+      key: key,
+    );
+  }
+
+  factory SetUpPaymentOptions.create({
+    Key? key,
+    required void Function() onSubmit,
+  }) {
+    return SetUpPaymentOptions._(
+      onSubmit,
+      false,
+      key: key,
+    );
+  }
+
+  const SetUpPaymentOptions._(this.onSubmit, this.edit, {Key? key})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return MVVM(
       view: (_, __) => _SetupPaymentOptionsView(),
-      viewModel: SetupPaymentOptionsViewModel(onSubmit: onSubmit),
+      viewModel: SetupPaymentOptionsViewModel(onSubmit: onSubmit, edit: edit),
     );
   }
 }
@@ -34,8 +59,7 @@ class _SetupPaymentOptionsView extends HookView<SetupPaymentOptionsViewModel>
   Widget screen(BuildContext context, SetupPaymentOptionsViewModel vm) {
     return Scaffold(
       appBar: CustomAppBar(
-        titleText: 'Add Shop',
-        onPressedLeading: () => Navigator.pop(context),
+        titleText: vm.edit ? 'Edit Shop' : 'Add Shop',
       ),
       body: Container(
         padding: EdgeInsets.symmetric(horizontal: 16.0.w),
@@ -53,11 +77,15 @@ class _SetupPaymentOptionsView extends HookView<SetupPaymentOptionsViewModel>
             const SizedBox(height: 10.0),
             Consumer<ShopBody>(
               builder: (ctx, shopBody, _) {
+                final _isBankAccountsEmpty = shopBody.paymentOptions
+                        ?.where((bank) => bank.type == BankType.bank)
+                        .isEmpty ??
+                    true;
+
                 return ListTile(
-                  tileColor:
-                      shopBody.paymentOptions?.bankAccounts.isEmpty ?? true
-                          ? Colors.grey[300]
-                          : kInviteScreenColor,
+                  tileColor: _isBankAccountsEmpty
+                      ? Colors.grey[300]
+                      : kInviteScreenColor,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30.0),
                   ),
@@ -76,9 +104,7 @@ class _SetupPaymentOptionsView extends HookView<SetupPaymentOptionsViewModel>
                         .copyWith(fontWeight: FontWeight.w600),
                   ),
                   trailing: Icon(
-                    shopBody.paymentOptions?.bankAccounts.isEmpty ?? true
-                        ? Icons.add
-                        : Icons.arrow_forward_ios,
+                    _isBankAccountsEmpty ? Icons.add : Icons.arrow_forward_ios,
                     color: kTealColor,
                     size: 18.0.r,
                   ),
@@ -89,11 +115,14 @@ class _SetupPaymentOptionsView extends HookView<SetupPaymentOptionsViewModel>
             const SizedBox(height: 10),
             Consumer<ShopBody>(
               builder: (_, shopBody, __) {
+                final _isWalletAccountsEmpty = shopBody.paymentOptions
+                        ?.where((bank) => bank.type == BankType.wallet)
+                        .isEmpty ??
+                    true;
                 return ListTile(
-                  tileColor:
-                      shopBody.paymentOptions?.gCashAccounts.isEmpty ?? true
-                          ? Colors.grey[300]
-                          : kInviteScreenColor,
+                  tileColor: _isWalletAccountsEmpty
+                      ? Colors.grey[300]
+                      : kInviteScreenColor,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30.0),
                   ),
@@ -114,7 +143,7 @@ class _SetupPaymentOptionsView extends HookView<SetupPaymentOptionsViewModel>
                         .copyWith(fontWeight: FontWeight.w600),
                   ),
                   trailing: Icon(
-                    shopBody.paymentOptions?.gCashAccounts.isEmpty ?? true
+                    _isWalletAccountsEmpty
                         ? Icons.add
                         : Icons.arrow_forward_ios,
                     color: kTealColor,
@@ -127,18 +156,13 @@ class _SetupPaymentOptionsView extends HookView<SetupPaymentOptionsViewModel>
             const Spacer(),
             Consumer<ShopBody>(
               builder: (_, shopBody, __) {
-                final hasPayment =
-                    (shopBody.paymentOptions?.bankAccounts.isNotEmpty ??
-                            false) ||
-                        (shopBody.paymentOptions?.gCashAccounts.isNotEmpty ??
-                            false);
+                final hasPayment = shopBody.paymentOptions?.isNotEmpty ?? false;
                 return SizedBox(
                   width: double.infinity,
-                  child: AppButton(
-                    hasPayment ? 'Finish Set-up' : 'Skip',
-                    kTealColor,
-                    hasPayment,
-                    () async => performFuture(vm.onSubmit),
+                  child: AppButton.custom(
+                    text: hasPayment ? 'Finish Set-up' : 'Skip',
+                    isFilled: hasPayment,
+                    onPressed: () async => performFuture(vm.onSubmit),
                   ),
                 );
               },

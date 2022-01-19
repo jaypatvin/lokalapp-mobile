@@ -61,6 +61,10 @@ class CheckoutCart extends StatelessWidget {
                         child: Column(
                           children: [
                             ListView.builder(
+                              // this shrinkWrap is okay since this widget
+                              // lives inside a Card which will be handled
+                              // by another listView above this (which will
+                              // handle the re/builds)
                               shrinkWrap: true,
                               itemCount: cart.orders[key]!.length,
                               physics: const NeverScrollableScrollPhysics(),
@@ -89,11 +93,9 @@ class CheckoutCart extends StatelessWidget {
                             const SizedBox(height: 12.0),
                             SizedBox(
                               width: double.infinity,
-                              child: AppButton(
-                                'Checkout',
-                                kTealColor,
-                                false,
-                                () {
+                              child: AppButton.transparent(
+                                text: 'Checkout',
+                                onPressed: () {
                                   context.read<AppRouter>().navigateTo(
                                         AppRoute.discover,
                                         ShopCheckout.routeName,

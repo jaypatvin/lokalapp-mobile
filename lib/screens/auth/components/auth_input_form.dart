@@ -167,14 +167,13 @@ class _AuthInputFormState extends State<AuthInputForm> {
             SizedBox(height: 15.0.h),
             SizedBox(
               width: 130.0.w,
-              child: AppButton(
-                widget.submitButtonLabel,
-                widget.emailController!.text.isEmpty ||
+              child: AppButton.filled(
+                text: widget.submitButtonLabel ?? '',
+                color: widget.emailController!.text.isEmpty ||
                         widget.passwordController!.text.isEmpty
                     ? kTealColor
                     : kOrangeColor,
-                true,
-                () {
+                onPressed: () {
                   _nodeTextEmail.unfocus();
                   _nodeTextPassword.unfocus();
                   widget.onFormSubmit?.call();

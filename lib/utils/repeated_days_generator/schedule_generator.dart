@@ -163,7 +163,7 @@ class ScheduleGenerator {
   List<DateTime> getSelectableDates(OperatingHours operatingHours) {
     List<DateTime> selectableDates = <DateTime>[];
     RepeatChoices? repeatChoice;
-    late bool isNDays;
+    bool isNDays = false;
     final repeatType = operatingHours.repeatType!;
     if (repeatType.split('-').length > 1) {
       isNDays = true;

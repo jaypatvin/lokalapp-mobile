@@ -108,6 +108,7 @@ class MessageStream extends StatelessWidget {
         child: ChatBubble(
           conversation: message,
           replyMessage: replyTo,
+          forFocus: true,
         ),
       ),
     );

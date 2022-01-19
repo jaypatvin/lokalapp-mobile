@@ -5,8 +5,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
+import '../../../models/bank_code.dart';
 import '../../../models/order.dart';
-import '../../../models/payment_options.dart';
+import '../../../models/payment_option.dart';
 import '../../../providers/shops.dart';
 import '../../../routers/app_router.dart';
 import '../../../screens/activity/buyer/processing_payment.dart';
@@ -28,7 +29,7 @@ class BankDetailsViewModel extends ViewModel {
   final _imageService = LocalImageService.instance!;
   late final OrderAPIService _apiService;
 
-  late final List<BankAccount> paymentAccounts;
+  late final List<PaymentOption> paymentAccounts;
 
   double get price =>
       order.products.fold(0.0, (double prev, product) => prev + product.price!);
@@ -39,10 +40,15 @@ class BankDetailsViewModel extends ViewModel {
 
     final shop = context.read<Shops>().findById(order.shopId);
     if (paymentMode == PaymentMode.gCash) {
-      paymentAccounts =
-          shop?.paymentOptions?.gCashAccounts ?? <WalletAccount>[];
+      paymentAccounts = shop?.paymentOptions
+              ?.where((bank) => bank.type == BankType.wallet)
+              .toList() ??
+          <PaymentOption>[];
     } else {
-      paymentAccounts = shop?.paymentOptions?.bankAccounts ?? <BankAccount>[];
+      paymentAccounts = shop?.paymentOptions
+              ?.where((bank) => bank.type == BankType.bank)
+              .toList() ??
+          <PaymentOption>[];
     }
   }
 

@@ -3,7 +3,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lottie/lottie.dart';
 
 import '../../../utils/constants/assets.dart';
-import '../../../utils/constants/themes.dart';
 import '../../../widgets/app_button.dart';
 import '../../../widgets/custom_app_bar.dart';
 import '../shop/user_shop.dart';
@@ -49,24 +48,24 @@ class AddProductConfirmation extends StatelessWidget {
               ),
             ),
             const Spacer(),
+            // SizedBox(
+            //   width: double.infinity,
+            //   child: AppButton.transparent(
+            //     text: 'Go to Listing',
+            //     onPressed: () async {
+            //       Navigator.popUntil(
+            //         context,
+            //         ModalRoute.withName(UserShop.routeName),
+            //       );
+
+            //     },
+            //   ),
+            // ),
             SizedBox(
               width: double.infinity,
-              child: AppButton(
-                'Go to Listing',
-                kTealColor,
-                false,
-                () {
-                  // TODO: what to do from here
-                },
-              ),
-            ),
-            SizedBox(
-              width: double.infinity,
-              child: AppButton(
-                'Back to my Shop',
-                kTealColor,
-                true,
-                () {
+              child: AppButton.filled(
+                text: 'Back to my Shop',
+                onPressed: () {
                   Navigator.popUntil(
                     context,
                     ModalRoute.withName(UserShop.routeName),

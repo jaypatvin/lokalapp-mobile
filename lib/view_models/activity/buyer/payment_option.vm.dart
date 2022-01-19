@@ -1,8 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 
+import '../../../models/bank_code.dart';
 import '../../../models/order.dart';
-import '../../../models/payment_options.dart';
+import '../../../models/payment_option.dart';
 import '../../../providers/shops.dart';
 import '../../../routers/app_router.dart';
 import '../../../screens/activity/buyer/bank_details.dart';
@@ -14,16 +15,19 @@ class PaymentOptionViewModel extends ViewModel {
   PaymentOptionViewModel(this.order);
   final Order order;
 
-  late final PaymentOptions _paymentOptions;
+  late final List<PaymentOption> _paymentOptions;
 
-  bool get bankEnabled => _paymentOptions.bankAccounts.isNotEmpty;
-  bool get walletEnabled => _paymentOptions.gCashAccounts.isNotEmpty;
+  bool get bankEnabled =>
+      _paymentOptions.where((bank) => bank.type == BankType.bank).isNotEmpty;
+
+  bool get walletEnabled =>
+      _paymentOptions.where((bank) => bank.type == BankType.wallet).isNotEmpty;
 
   @override
   void init() {
     _paymentOptions =
         context.read<Shops>().findById(order.shopId)?.paymentOptions ??
-            const PaymentOptions();
+            const [];
   }
 
   void onPaymentPressed(PaymentMode paymentMode) {

@@ -9,7 +9,7 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:provider/provider.dart';
 
 import '../../../models/bank_code.dart';
-import '../../../models/payment_options.dart';
+import '../../../models/payment_option.dart';
 import '../../../providers/bank_codes.dart';
 import '../../../providers/post_requests/shop_body.dart';
 import '../../../state/mvvm_builder.widget.dart';
@@ -25,9 +25,11 @@ class AddBankDetails extends StatelessWidget {
     Key? key,
     required this.bankType,
     this.bankAccount,
+    this.edit = false,
   }) : super(key: key);
-  final BankAccount? bankAccount;
+  final PaymentOption? bankAccount;
   final BankType bankType;
+  final bool edit;
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +40,8 @@ class AddBankDetails extends StatelessWidget {
         context.read<ShopBody>(),
         context.read<BankCodes>(),
         GlobalKey<FormState>(),
-        bankAccount,
+        initialAccount: bankAccount,
+        edit: edit,
       ),
     );
   }
@@ -230,7 +233,7 @@ class _AddBankDetailsView extends HookView<AddBankDetailsViewModel> {
 
     return Scaffold(
       appBar: CustomAppBar(
-        titleText: 'Add Shop',
+        titleText: vm.edit ? 'Edit Shop' : 'Add Shop',
         actions: vm.initialAccount != null
             ? [
                 IconButton(
@@ -315,13 +318,11 @@ class _AddBankDetailsView extends HookView<AddBankDetailsViewModel> {
           ),
           Align(
             alignment: Alignment.bottomCenter,
-            child: AppButton(
-              vm.initialAccount == null
+            child: AppButton.filled(
+              text: vm.initialAccount == null
                   ? 'Add Bank Account'
                   : 'Edit Bank Account',
-              kTealColor,
-              true,
-              vm.onAddPaymentAccount,
+              onPressed: vm.onAddPaymentAccount,
             ),
           ),
         ],

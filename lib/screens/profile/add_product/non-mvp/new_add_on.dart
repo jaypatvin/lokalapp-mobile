@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 
 import '../../../../providers/post_requests/product_body.dart';
 import '../../../../routers/app_router.dart';
-import '../../../../utils/constants/themes.dart';
 import '../../../../widgets/app_button.dart';
 import '../../../../widgets/custom_app_bar.dart';
 import '../../../../widgets/inputs/input_name_field.dart';
@@ -94,11 +93,9 @@ class _NewAddOnState extends State<NewAddOn> {
             SizedBox(
               height: MediaQuery.of(context).size.height * 0.08,
             ),
-            AppButton(
-              'Add add-on',
-              kTealColor,
-              true,
-              () {
+            AppButton.filled(
+              text: 'Add add-on',
+              onPressed: () {
                 AppRouter.pushNewScreen(
                   context,
                   screen: ProductAddOn2(gallery: widget.gallery),

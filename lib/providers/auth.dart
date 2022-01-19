@@ -132,10 +132,7 @@ class Auth extends ChangeNotifier {
         await _userChangeListener(_firebaseUser);
       }
     } catch (e) {
-      debugPrint(e.toString());
       rethrow;
-    } finally {
-      notifyListeners();
     }
   }
 
@@ -251,8 +248,8 @@ class Auth extends ChangeNotifier {
     _idTokenChangesSubscription?.cancel();
     _userStreamSubscription?.cancel();
 
-    await _userChangeListener(null);
     await _auth.signOut();
+    await _userChangeListener(null);
   }
 
   bool checkSignInMethod() {
@@ -278,45 +275,44 @@ class Auth extends ChangeNotifier {
     return result;
   }
 
-  Future<void> changeEmail(
-    String email,
-    String password,
-    String newEmail,
-  ) async {
+  Future<void> changeEmail({
+    required String password,
+    required String newEmail,
+  }) async {
     try {
       checkSignInMethod();
-      final userCredential = await _auth.signInWithEmailAndPassword(
-        email: email,
+      await _auth.signInWithEmailAndPassword(
+        email: _auth.currentUser!.email!,
         password: password,
       );
-      await _auth.currentUser!.reauthenticateWithCredential(
-        userCredential.credential!,
-      );
+
       return await _auth.currentUser!.updateEmail(newEmail);
-    } on FirebaseAuthException catch (e) {
-      throw e.code;
     } catch (e) {
       rethrow;
     }
   }
 
   Future<void> changePassword(
-    String email,
     String password,
     String newPassword,
   ) async {
     try {
       checkSignInMethod();
-      final userCredential = await _auth.signInWithEmailAndPassword(
-        email: email,
+      await _auth.signInWithEmailAndPassword(
+        email: _auth.currentUser!.email!,
         password: password,
       );
-      await _auth.currentUser!.reauthenticateWithCredential(
-        userCredential.credential!,
-      );
+
       return await _auth.currentUser!.updatePassword(newPassword);
-    } on FirebaseAuthException catch (e) {
-      throw e.code;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> deleteAccount() async {
+    try {
+      await _auth.currentUser?.delete();
+      await _userChangeListener(null);
     } catch (e) {
       rethrow;
     }
@@ -332,15 +328,6 @@ class Auth extends ChangeNotifier {
       rethrow;
     }
   }
-
-  // String _generateNonce([int length = 32]) {
-  //   final charset =
-  //       '0123456789ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvwxyz-._';
-  //   final random = Random.secure();
-
-  //   return List.generate(length, (_) => charset[random.nextInt(charset.length)])
-  //       .join();
-  // }
 
   String _sha256ofString(String input) {
     final bytes = utf8.encode(input);

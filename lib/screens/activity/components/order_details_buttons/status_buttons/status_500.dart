@@ -38,11 +38,10 @@ class Status500Buttons extends StatelessWidget {
               ),
               SizedBox(width: MediaQuery.of(context).size.width * 0.01),
               Expanded(
-                child: AppButton(
-                  'Order Received',
-                  kOrangeColor,
-                  true,
-                  () => onPress(OrderAction.received),
+                child: AppButton.filled(
+                  text: 'Order Received',
+                  color: kOrangeColor,
+                  onPressed: () => onPress(OrderAction.received),
                 ),
               )
             ],

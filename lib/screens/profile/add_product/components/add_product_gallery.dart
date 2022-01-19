@@ -82,6 +82,7 @@ class _AddProductGalleryState extends State<AddProductGallery> {
   @override
   Widget build(BuildContext context) {
     return GridView.builder(
+      // This is okay as we will always display all the images for this screen
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       itemCount: widget._photoBoxes.length,

@@ -6,7 +6,6 @@ import 'package:provider/provider.dart';
 import '../../../../providers/products.dart';
 import '../../../../state/mvvm_builder.widget.dart';
 import '../../../../state/views/hook.view.dart';
-import '../../../../utils/constants/themes.dart';
 import '../../../../view_models/profile/shop/components/shop_product_field.vm.dart';
 import '../../../../widgets/app_button.dart';
 import '../../../../widgets/products_list.dart';
@@ -33,69 +32,6 @@ class ShopProductField extends StatelessWidget {
         shopId: shopId,
       ),
     );
-    //   return ChangeNotifierProxyProvider<Products, ShopProductFieldViewModel>(
-    //     create: (ctx) => ShopProductFieldViewModel(
-    //       userId,
-    //       context.read<Products>().items,
-    //       shopId,
-    //     )..init(),
-    //     update: (ctx, products, vm) => vm!..updateProducts(products.items),
-    //     builder: (ctx, _) {
-    //       return Consumer<ShopProductFieldViewModel>(
-    //         builder: (ctx2, vm, _) {
-    //           if (vm.products.isEmpty) {
-    //             return Container(
-    //               width: MediaQuery.of(context).size.width * 0.5,
-    //               child: ListView(
-    //                 shrinkWrap: true,
-    //                 children: [
-    //                   const SizedBox(height: 10),
-    //                   Text(
-    //                     "No products added",
-    //                     textAlign: TextAlign.center,
-    //                     style: TextStyle(
-    //                       color: Colors.grey,
-    //                       fontWeight: FontWeight.w500,
-    //                       fontSize: 14.0.sp,
-    //                     ),
-    //                   ),
-    //                   SizedBox(height: 10.0.h),
-    //                   if (vm.isCurrentUser)
-    //                     AppButton(
-    //                       "ADD PRODUCTS",
-    //                       kTealColor,
-    //                       true,
-    //                       vm.addProduct,
-    //                     ),
-    //                 ],
-    //               ),
-    //             );
-    //           }
-
-    //           return Padding(
-    //             padding: EdgeInsets.symmetric(horizontal: 8.0.w),
-    //             child: ListView(
-    //               physics: NeverScrollableScrollPhysics(),
-    //               shrinkWrap: true,
-    //               children: [
-    //                 if (vm.isCurrentUser)
-    //                   AppButton(
-    //                     "+ Add a new Product",
-    //                     kTealColor,
-    //                     false,
-    //                     vm.addProduct,
-    //                   ),
-    //                 ProductsList(
-    //                   items: vm.products.toList(),
-    //                   onProductTap: vm.onProductTap,
-    //                 ),
-    //               ],
-    //             ),
-    //           );
-    //         },
-    //       );
-    //     },
-    //   );
   }
 }
 
@@ -127,51 +63,38 @@ class _ShopProductFieldView extends HookView<ShopProductFieldViewModel> {
       return Center(
         child: Text('No products with term: ${vm.searchTerm}'),
       );
-    } else if (vm.products.isEmpty) {
-      return SizedBox(
-        width: MediaQuery.of(context).size.width * 0.5,
-        child: ListView(
-          shrinkWrap: true,
-          children: [
-            const SizedBox(height: 10),
-            Text(
-              'No products added',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: Colors.grey,
-                fontWeight: FontWeight.w500,
-                fontSize: 14.0.sp,
-              ),
-            ),
-            SizedBox(height: 10.0.h),
-            if (vm.isCurrentUser)
-              AppButton(
-                'ADD PRODUCTS',
-                kTealColor,
-                true,
-                vm.addProduct,
-              ),
-          ],
-        ),
-      );
     }
 
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 8.0.w),
-      child: ListView(
-        physics: const NeverScrollableScrollPhysics(),
-        shrinkWrap: true,
+      child: Column(
         children: [
-          if (vm.isCurrentUser)
-            AppButton(
-              '+ Add a new Product',
-              kTealColor,
-              false,
-              vm.addProduct,
+          if (vm.products.isEmpty)
+            Padding(
+              padding: EdgeInsets.only(bottom: 10.0.h),
+              child: Text(
+                'No products added',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.grey,
+                  fontWeight: FontWeight.w500,
+                  fontSize: 14.0.sp,
+                ),
+              ),
             ),
-          ProductsList(
-            items: [...vm.products],
-            onProductTap: vm.onProductTap,
+          if (vm.isCurrentUser)
+            Padding(
+              padding: EdgeInsets.only(bottom: 10.0.h),
+              child: AppButton.transparent(
+                text: '+ Add a new Product',
+                onPressed: vm.addProduct,
+              ),
+            ),
+          Expanded(
+            child: ProductsList(
+              items: [...vm.products],
+              onProductTap: vm.onProductTap,
+            ),
           ),
         ],
       ),

@@ -30,20 +30,18 @@ class Status200Buttons extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Expanded(
-                child: AppButton(
-                  'Cancel Order',
-                  kPinkColor,
-                  false,
-                  () => onPress(OrderAction.cancel),
+                child: AppButton.transparent(
+                  text: 'Cancel Order',
+                  color: kPinkColor,
+                  onPressed: () => onPress(OrderAction.cancel),
                 ),
               ),
               SizedBox(width: MediaQuery.of(context).size.width * 0.01),
               Expanded(
-                child: AppButton(
-                  'Pay Now',
-                  kOrangeColor,
-                  true,
-                  () => onPress(OrderAction.pay),
+                child: AppButton.filled(
+                  text: 'Pay Now',
+                  color: kOrangeColor,
+                  onPressed: () => onPress(OrderAction.pay),
                 ),
               ),
             ],

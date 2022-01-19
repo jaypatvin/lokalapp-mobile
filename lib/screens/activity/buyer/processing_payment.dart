@@ -6,7 +6,6 @@ import 'package:lottie/lottie.dart';
 import '../../../models/order.dart';
 import '../../../routers/app_router.dart';
 import '../../../utils/constants/assets.dart';
-import '../../../utils/constants/themes.dart';
 import '../../../widgets/app_button.dart';
 import '../activity.dart';
 import '../components/order_details_buttons/message_buttons.dart';
@@ -123,11 +122,9 @@ class ProcessingPayment extends StatelessWidget {
                     ),
                     SizedBox(
                       width: double.infinity,
-                      child: AppButton(
-                        'Back to Activity',
-                        kTealColor,
-                        true,
-                        () {
+                      child: AppButton.filled(
+                        text: 'Back to Activity',
+                        onPressed: () {
                           AppRouter.activityNavigatorKey.currentState?.popUntil(
                             ModalRoute.withName(Activity.routeName),
                           );

@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'operating_hours.dart';
-import 'payment_options.dart';
+import 'payment_option.dart';
 
 class ShopModel {
   String? id;
@@ -16,7 +16,7 @@ class ShopModel {
   bool? isClosed;
   String? status;
   OperatingHours? operatingHours;
-  PaymentOptions? paymentOptions;
+  List<PaymentOption>? paymentOptions;
   ShopModel({
     this.id,
     this.name,
@@ -43,7 +43,7 @@ class ShopModel {
       'is_close': isClosed,
       'status': status,
       'operating_hours': operatingHours?.toMap(),
-      'payment_options': paymentOptions?.toMap(),
+      'payment_options': paymentOptions,
     };
   }
 
@@ -61,9 +61,12 @@ class ShopModel {
       operatingHours: map['operating_hours'] != null
           ? OperatingHours.fromMap(map['operating_hours'])
           : OperatingHours(),
-      paymentOptions: map['payment_options'] != null
-          ? PaymentOptions.fromMap(map['payment_options'])
-          : const PaymentOptions(),
+      paymentOptions: List<PaymentOption>.from(
+        map['payment_options']?.map(
+              (x) => PaymentOption.fromMap(x),
+            ) ??
+            [],
+      ),
     );
   }
   factory ShopModel.fromDocument(DocumentSnapshot doc) {

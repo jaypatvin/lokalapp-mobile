@@ -31,7 +31,7 @@ class CustomPickAssetWidget extends StatelessWidget {
       builder: (_, __) {
         final pickIndex = provider!.pickIndex(asset);
         final picked = pickIndex >= 0;
-        return pickColorMaskBuilder?.call(context, picked) ??
+        return pickColorMaskBuilder?.call(context, picked: picked) ??
             PickColorMask(
               picked: picked,
             );

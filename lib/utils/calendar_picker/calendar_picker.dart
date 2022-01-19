@@ -155,11 +155,10 @@ class _CalendarState extends State<CalendarCarousel> {
               }
             },
             isTitleTouchable: widget.headerTitleTouchable,
-            onHeaderTitlePressed:
-                widget.onHeaderTitlePressed as void Function()? ??
-                    () {
-                      // TODO: add functions
-                    },
+            onHeaderTitlePressed: widget.onHeaderTitlePressed?.call() ??
+                () {
+                  // TODO: add functions
+                },
           ),
           WeekdayRow(
             firstDayOfWeek,

@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 
 import '../../../../providers/post_requests/product_body.dart';
 import '../../../../routers/app_router.dart';
-import '../../../../utils/constants/themes.dart';
 import '../../../../widgets/app_button.dart';
 import '../../../../widgets/custom_app_bar.dart';
 import '../../../../widgets/inputs/input_name_field.dart';
@@ -107,11 +106,9 @@ class _AddAVariantState extends State<AddAVariant> {
             SizedBox(
               height: MediaQuery.of(context).size.height * 0.08,
             ),
-            AppButton(
-              'Add a Variant',
-              kTealColor,
-              true,
-              () {
+            AppButton.filled(
+              text: 'Add a Variant',
+              onPressed: () {
                 AppRouter.pushNewScreen(
                   context,
                   screen: ProductVariant2(gallery: widget.gallery),

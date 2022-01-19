@@ -152,17 +152,17 @@ class _BottomNavigationOnboardingState extends State<BottomNavigationOnboarding>
           const SizedBox(height: 15),
           SizedBox(
             width: MediaQuery.of(context).size.width * 0.5,
-            child:
-                AppButton(_onboardDetails[_screen]!['label'], kTealColor, true,
-                    //() => Navigator.pop(ctx),
-                    () async {
-              setState(() {
-                _displayOnboarding = false;
-              });
-              await context
-                  .read<UserSharedPreferences>()
-                  .updateOnboardingStatus(_screen);
-            }),
+            child: AppButton.filled(
+              text: _onboardDetails[_screen]!['label'] ?? '',
+              onPressed: () async {
+                setState(() {
+                  _displayOnboarding = false;
+                });
+                await context
+                    .read<UserSharedPreferences>()
+                    .updateOnboardingStatus(_screen);
+              },
+            ),
           ),
         ],
       ),

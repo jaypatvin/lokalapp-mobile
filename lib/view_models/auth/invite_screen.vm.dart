@@ -41,8 +41,6 @@ class InviteScreenViewModel extends ViewModel {
       final communityId = _lokalInvite.communityId;
       if (communityId.isEmpty) throw 'No Community ID returned.';
 
-      final fireUser = auth.firebaseUser;
-
       context.read<AuthBody>()
         ..update(communityId: communityId)
         ..setInviteCode(_inviteCode);
@@ -54,14 +52,16 @@ class InviteScreenViewModel extends ViewModel {
         _displayError = false;
         notifyListeners();
       }
+
+      final fireUser = auth.firebaseUser;
       if (fireUser != null) {
-        AppRouter.rootNavigatorKey.currentState?.push(
+        AppRouter.rootNavigatorKey.currentState?.pushReplacement(
           CupertinoPageRoute(
             builder: (_) => const ProfileRegistration(),
           ),
         );
       } else {
-        AppRouter.rootNavigatorKey.currentState?.push(
+        AppRouter.rootNavigatorKey.currentState?.pushReplacement(
           CupertinoPageRoute(
             builder: (_) => const RegisterScreen(),
           ),
@@ -81,10 +81,5 @@ class InviteScreenViewModel extends ViewModel {
         return dialog;
       },
     );
-  }
-
-  Future<bool> onWillPop() async {
-    await context.read<Auth>().logOut();
-    return true;
   }
 }

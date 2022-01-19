@@ -5,7 +5,6 @@ import 'package:lottie/lottie.dart';
 
 import '../../../models/order.dart';
 import '../../../utils/constants/assets.dart';
-import '../../../utils/constants/themes.dart';
 import '../../../widgets/app_button.dart';
 import '../components/order_details_buttons/message_buttons.dart';
 import '../components/transaction_details.dart';
@@ -78,11 +77,9 @@ class OrderConfirmed extends StatelessWidget {
                   ),
                   SizedBox(
                     width: double.infinity,
-                    child: AppButton(
-                      'Back to Activity',
-                      kTealColor,
-                      true,
-                      () => Navigator.pop(context),
+                    child: AppButton.filled(
+                      text: 'Back to Activity',
+                      onPressed: () => Navigator.pop(context),
                     ),
                   ),
                 ],

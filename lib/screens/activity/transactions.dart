@@ -102,13 +102,16 @@ class _TransactionsView extends HookView<TransactionsViewModel> {
             height: 25.0.h,
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
-              shrinkWrap: true,
               itemCount: vm.statuses.length,
               itemBuilder: (context, index) {
                 final key = vm.statuses.keys.elementAt(index);
+                final _keyString =
+                    '${vm.isBuyer ? "buyer" : "seller"}_status_$key';
                 return GestureDetector(
                   onTap: () => vm.changeIndex(key),
+                  key: Key(_keyString),
                   child: Container(
+                    key: Key(_keyString),
                     margin: EdgeInsets.symmetric(horizontal: 3.0.w),
                     padding: EdgeInsets.symmetric(
                       horizontal: 8.0.w,
@@ -122,6 +125,7 @@ class _TransactionsView extends HookView<TransactionsViewModel> {
                     ),
                     child: Text(
                       vm.statuses[key]!,
+                      key: Key(_keyString),
                       style: Theme.of(context).textTheme.bodyText2,
                     ),
                   ),
@@ -149,11 +153,10 @@ class _TransactionsView extends HookView<TransactionsViewModel> {
                 ),
                 SizedBox(height: 5.0.h),
                 if (vm.shop == null && !vm.isBuyer)
-                  AppButton(
-                    'Create Shop',
-                    kPurpleColor,
-                    false,
-                    vm.createShopHandler,
+                  AppButton.transparent(
+                    text: 'Create Shop',
+                    color: kPurpleColor,
+                    onPressed: vm.createShopHandler,
                   ),
               ],
             ),

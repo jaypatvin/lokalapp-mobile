@@ -50,11 +50,10 @@ class Status300Buttons extends StatelessWidget {
             ),
             SizedBox(width: MediaQuery.of(context).size.width * 0.01),
             Expanded(
-              child: AppButton(
-                'Confirm Payment',
-                kOrangeColor,
-                true,
-                () => onPress(OrderAction.confirmPayment),
+              child: AppButton.filled(
+                text: 'Confirm Payment',
+                color: kOrangeColor,
+                onPressed: () => onPress(OrderAction.confirmPayment),
               ),
             ),
           ],

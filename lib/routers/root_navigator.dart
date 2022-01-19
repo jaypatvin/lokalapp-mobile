@@ -5,6 +5,7 @@ import '../screens/auth/invite_screen.dart';
 import '../screens/auth/profile_registration.dart';
 import '../screens/bottom_navigation.dart';
 import '../screens/home/draft_post.dart';
+import '../screens/welcome_screen.dart';
 
 /// Handles named routes globally.
 ///
@@ -16,14 +17,31 @@ class RootNavigator extends AppNavigator {
   @override
   Route onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
+      case WelcomeScreen.routeName:
+        return CupertinoPageRoute(
+          settings: settings,
+          builder: (_) => const WelcomeScreen(),
+        );
       case BottomNavigation.routeName:
-        return CupertinoPageRoute(builder: (_) => BottomNavigation());
+        return CupertinoPageRoute(
+          settings: settings,
+          builder: (_) => BottomNavigation(),
+        );
       case DraftPost.routeName:
-        return CupertinoPageRoute(builder: (_) => const DraftPost());
+        return CupertinoPageRoute(
+          settings: settings,
+          builder: (_) => const DraftPost(),
+        );
       case InvitePage.routeName:
-        return CupertinoPageRoute(builder: (_) => const InvitePage());
+        return CupertinoPageRoute(
+          settings: settings,
+          builder: (_) => const InvitePage(),
+        );
       case ProfileRegistration.routeName:
-        return CupertinoPageRoute(builder: (_) => const ProfileRegistration());
+        return CupertinoPageRoute(
+          settings: settings,
+          builder: (_) => const ProfileRegistration(),
+        );
       default:
         // TODO: implement unknownRoute
         throw UnimplementedError();

@@ -33,6 +33,8 @@ class ShopCheckout extends StatelessWidget {
       ),
       body: Consumer<ShoppingCart>(
         builder: (_, cart, __) {
+          if (cart.orders[shop.id] == null) return const SizedBox();
+
           final orders = cart.orders[shop.id]!;
           return ListView.builder(
             itemCount: orders.length,
@@ -105,13 +107,11 @@ class _OrdersCard extends StatelessWidget {
               children: [
                 if (context.read<Products>().findById(productId)!.canSubscribe)
                   Expanded(
-                    child: AppButton(
-                      'Subscribe',
-                      kTealColor,
-                      false,
-                      () => Navigator.of(context).push(
+                    child: AppButton.transparent(
+                      text: 'Subscribe',
+                      onPressed: () => Navigator.of(context).push(
                         MaterialPageRoute(
-                          builder: (_) => SubscriptionSchedule(
+                          builder: (_) => SubscriptionSchedule.create(
                             productId: productId,
                           ),
                         ),
@@ -121,11 +121,9 @@ class _OrdersCard extends StatelessWidget {
                 if (context.read<Products>().findById(productId)!.canSubscribe)
                   const SizedBox(width: 8.0),
                 Expanded(
-                  child: AppButton(
-                    'Checkout',
-                    kTealColor,
-                    true,
-                    () {
+                  child: AppButton.filled(
+                    text: 'Checkout',
+                    onPressed: () {
                       context.read<AppRouter>().navigateTo(
                             AppRoute.discover,
                             Checkout.routeName,

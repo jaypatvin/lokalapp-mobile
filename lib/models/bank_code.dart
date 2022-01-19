@@ -6,10 +6,6 @@ enum BankType { bank, wallet }
 
 extension BankTypeExtension on BankType {
   String get value => toString().split('.').last;
-
-  BankType getFromValue() {
-    return BankType.bank;
-  }
 }
 
 class BankCode {

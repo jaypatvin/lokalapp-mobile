@@ -185,11 +185,10 @@ class _DraftPostView extends HookView<DraftPostViewModel>
                     SizedBox(
                       height: 40.0.h,
                       width: 100.0.w,
-                      child: AppButton(
-                        'POST',
-                        kTealColor,
-                        true,
-                        () async => performFuture<void>(vm.postHandler),
+                      child: AppButton.filled(
+                        text: 'POST',
+                        onPressed: () async =>
+                            performFuture<void>(vm.postHandler),
                       ),
                     ),
                   ],
@@ -252,20 +251,16 @@ class _ExitNotification extends StatelessWidget {
                 Row(
                   children: [
                     Expanded(
-                      child: AppButton(
-                        'Exit',
-                        kTealColor,
-                        false,
-                        () => Navigator.of(context).pop(true),
+                      child: AppButton.transparent(
+                        text: 'Exit',
+                        onPressed: () => Navigator.of(context).pop(true),
                       ),
                     ),
                     SizedBox(width: width * 0.02),
                     Expanded(
-                      child: AppButton(
-                        'Continue Editing',
-                        kTealColor,
-                        true,
-                        () => Navigator.of(context).pop(false),
+                      child: AppButton.filled(
+                        text: 'Continue Editing',
+                        onPressed: () => Navigator.of(context).pop(false),
                       ),
                     ),
                   ],

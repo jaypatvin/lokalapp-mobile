@@ -68,26 +68,23 @@ class _UserShopView extends HookView<UserShopViewModel> {
               onTap: vm.goToProfile,
             ),
             Expanded(
-              child: SizedBox(
-                height: MediaQuery.of(context).size.height,
-                child: ListView(
-                  physics: const BouncingScrollPhysics(),
-                  shrinkWrap: true,
-                  children: [
-                    SearchTextField(
+              child: Column(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(bottom: 10.0.h),
+                    child: SearchTextField(
                       enabled: true,
                       controller: _searchController,
                     ),
-                    SizedBox(height: 20.0.h),
-                    Center(
-                      child: ShopProductField(
-                        userId: vm.userId,
-                        shopId: vm.shopId,
-                        searchController: _searchController,
-                      ),
+                  ),
+                  Expanded(
+                    child: ShopProductField(
+                      userId: vm.userId,
+                      shopId: vm.shopId,
+                      searchController: _searchController,
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             )
           ],

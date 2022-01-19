@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:oktoast/oktoast.dart';
 
 import '../../../../models/bank_code.dart';
-import '../../../../models/payment_options.dart';
+import '../../../../models/payment_option.dart';
 import '../../../../providers/bank_codes.dart';
 import '../../../../providers/post_requests/shop_body.dart';
 import '../../../../routers/app_router.dart';
@@ -13,14 +13,16 @@ class AddBankDetailsViewModel extends ViewModel {
     this.type,
     this._shopBody,
     this._bankCodes,
-    this.formKey, [
+    this.formKey, {
     this.initialAccount,
-  ]);
+    this.edit = false,
+  });
   final ShopBody _shopBody;
   final BankCodes _bankCodes;
   final GlobalKey<FormState> formKey;
   final BankType type;
-  BankAccount? initialAccount;
+  final bool edit;
+  PaymentOption? initialAccount;
 
   BankCode? _bank;
   BankCode? get bank => _bank;
@@ -40,15 +42,14 @@ class AddBankDetailsViewModel extends ViewModel {
   @override
   void init() {
     if (initialAccount != null) {
-      final accounts = type == BankType.bank
-          ? _shopBody.paymentOptions!.bankAccounts
-          : _shopBody.paymentOptions!.gCashAccounts;
+      final accounts =
+          _shopBody.paymentOptions!.where((bank) => bank.type == type).toList();
 
       final account = accounts.firstWhere((bank) => bank == initialAccount);
 
-      _bank = codes.firstWhere((code) => code.id == account.bank);
+      _bank = codes.firstWhere((code) => code.id == account.bankCode);
       _accountName = account.accountName;
-      _accountNumber = account.accountNumber.toString();
+      _accountNumber = account.accountNumber;
     }
   }
 
@@ -67,96 +68,45 @@ class AddBankDetailsViewModel extends ViewModel {
     notifyListeners();
   }
 
-  void _onAddWalletAccount() {
-    final _paymentOptions = _shopBody.paymentOptions ?? const PaymentOptions();
-    final _gCashAccounts = [..._paymentOptions.gCashAccounts];
-    final _newAccount = WalletAccount(
-      bank: _bank!.id,
-      accountName: accountName,
-      accountNumber: int.parse(accountNumber),
-    );
-
-    if (initialAccount != null) {
-      _gCashAccounts.removeWhere((account) => account == initialAccount);
-    }
-
-    if (_gCashAccounts.contains(_newAccount)) {
-      showToast('Wallet has already been added!');
-      return;
-    }
-
-    final _newPaymentOptions = _paymentOptions.copyWith(
-      gCashAccounts: [
-        ..._gCashAccounts,
-        _newAccount,
-      ],
-    );
-    _shopBody.update(paymentOptions: _newPaymentOptions);
-  }
-
-  void _onAddBankAccount() {
-    final _paymentOptions = _shopBody.paymentOptions ?? const PaymentOptions();
-    final _bankAccounts = [..._paymentOptions.bankAccounts];
-    final _newAccount = BankAccount(
-      bank: _bank!.id,
-      accountName: accountName,
-      accountNumber: int.parse(accountNumber),
-    );
-
-    if (initialAccount != null) {
-      _bankAccounts.removeWhere((account) => account == initialAccount);
-    }
-
-    if (_bankAccounts.contains(_newAccount)) {
-      showToast('Bank has already been added!');
-      return;
-    }
-
-    final _newPaymentOptions = _paymentOptions.copyWith(
-      bankAccounts: [
-        ..._bankAccounts,
-        _newAccount,
-      ],
-    );
-    _shopBody.update(paymentOptions: _newPaymentOptions);
-  }
-
   void onAddPaymentAccount() {
     if (!(formKey.currentState?.validate() ?? false)) {
       if (_bank == null) {
-        _bankError = 'Bank should not be empty!';
+        _bankError =
+            '${type == BankType.bank ? "Bank" : "Wallet"} should not be empty!';
         notifyListeners();
       }
       return;
     }
 
-    if (type == BankType.bank) {
-      _onAddBankAccount();
-    } else {
-      _onAddWalletAccount();
+    final _paymentOptions = _shopBody.paymentOptions ?? const [];
+    final _initialAccounts = [
+      ..._paymentOptions,
+    ];
+    final _newAccount = PaymentOption(
+      bankCode: _bank!.id,
+      accountName: accountName,
+      accountNumber: accountNumber.trim(),
+      type: type,
+    );
+
+    if (initialAccount != null) {
+      _initialAccounts.removeWhere((account) => account == initialAccount);
     }
 
+    if (_initialAccounts.contains(_newAccount)) {
+      showToast(
+        '${type == BankType.bank ? "Bank" : "Wallet"} has already been added!',
+      );
+      return;
+    }
+
+    final _newPaymentOptions = [
+      ..._initialAccounts,
+      _newAccount,
+    ];
+    _shopBody.update(paymentOptions: _newPaymentOptions);
+
     AppRouter.profileNavigatorKey.currentState?.pop();
-  }
-
-  void _onDeleteBankAccount() {
-    final _paymentOptions = _shopBody.paymentOptions ?? const PaymentOptions();
-    final _bankAccounts = [..._paymentOptions.bankAccounts];
-    _bankAccounts.removeWhere((account) => account == initialAccount);
-    final _newPaymentOptions = _paymentOptions.copyWith(
-      bankAccounts: [..._bankAccounts],
-    );
-    _shopBody.update(paymentOptions: _newPaymentOptions);
-  }
-
-  void _onDeleteWalletAccount() {
-    final _paymentOptions = _shopBody.paymentOptions ?? const PaymentOptions();
-    final _gCashAccounts = [..._paymentOptions.gCashAccounts];
-    _gCashAccounts.removeWhere((account) => account == initialAccount);
-    final _newPaymentOptions = _paymentOptions.copyWith(
-      gCashAccounts: [..._gCashAccounts],
-    );
-    _shopBody.update(paymentOptions: _newPaymentOptions);
   }
 
   void onDeleteAccount() {
@@ -165,11 +115,13 @@ class AddBankDetailsViewModel extends ViewModel {
       return;
     }
 
-    if (type == BankType.bank) {
-      _onDeleteBankAccount();
-    } else {
-      _onDeleteWalletAccount();
-    }
+    final _paymentOptions = _shopBody.paymentOptions ?? const [];
+    final _initialAccounts = [
+      ..._paymentOptions,
+    ];
+    _initialAccounts.removeWhere((account) => account == initialAccount);
+    final _newPaymentOptions = [..._initialAccounts];
+    _shopBody.update(paymentOptions: _newPaymentOptions);
 
     AppRouter.profileNavigatorKey.currentState?.pop();
   }

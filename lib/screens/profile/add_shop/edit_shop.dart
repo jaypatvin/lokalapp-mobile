@@ -275,30 +275,25 @@ class _EditShopView extends HookView<EditShopViewModel>
                   ),
                   SizedBox(
                     width: width * 0.8,
-                    child: AppButton(
-                      'Change Shop Schedule',
-                      kTealColor,
-                      false,
-                      vm.onChangeShopSchedule,
+                    child: AppButton.transparent(
+                      text: 'Change Shop Schedule',
+                      onPressed: vm.onChangeShopSchedule,
                     ),
                   ),
                   SizedBox(
                     width: width * 0.8,
-                    child: AppButton(
-                      'Edit Payment Options',
-                      kTealColor,
-                      false,
-                      vm.onEditPaymentOptions,
+                    child: AppButton.transparent(
+                      text: 'Edit Payment Options',
+                      onPressed: vm.onEditPaymentOptions,
                     ),
                   ),
                   SizedBox(height: height * 0.01),
                   SizedBox(
                     width: width * 0.6,
-                    child: AppButton(
-                      'Apply Changes',
-                      kTealColor,
-                      true,
-                      () async => performFuture<void>(vm.onApplyChanges),
+                    child: AppButton.filled(
+                      text: 'Apply Changes',
+                      onPressed: () async =>
+                          performFuture<void>(vm.onApplyChanges),
                     ),
                   ),
                 ],

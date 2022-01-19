@@ -37,9 +37,4 @@ class OperatingHoursBody extends ChangeNotifier {
     _operatingHours = OperatingHours();
     if (notify) notifyListeners();
   }
-
-  // ignore: avoid_unused_constructor_parameters
-  factory OperatingHoursBody.fromMap(Map<String, dynamic> map) {
-    return OperatingHoursBody();
-  }
 }

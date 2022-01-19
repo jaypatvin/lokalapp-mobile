@@ -13,12 +13,16 @@ import '../../widgets/photo_view_gallery/thumbnails/network_photo_thumbnail.dart
 import 'components/reply_message.dart';
 
 class ChatBubble extends StatelessWidget {
-  final Conversation? conversation;
-  final DocumentReference? replyMessage;
   const ChatBubble({
     required this.conversation,
+    Key? key,
     this.replyMessage,
-  });
+    this.forFocus = false,
+  }) : super(key: key);
+
+  final Conversation? conversation;
+  final DocumentReference? replyMessage;
+  final bool forFocus;
 
   Widget _buildChatBubble({
     required BuildContext context,
@@ -34,7 +38,12 @@ class ChatBubble extends StatelessWidget {
         replyMessage.senderId == context.read<Auth>().user!.id;
 
     if (conversation!.media != null && conversation!.media!.isNotEmpty) {
-      messageWidgets.add(_MessageImages(images: conversation!.media!));
+      messageWidgets.add(
+        _MessageImages(
+          images: conversation!.media!,
+          forFocus: forFocus,
+        ),
+      );
       messageWidgets.add(space);
     }
 
@@ -143,10 +152,12 @@ class _MessageImages extends StatelessWidget {
     Key? key,
     required this.images,
     this.fit = BoxFit.cover,
+    this.forFocus = false,
   }) : super(key: key);
 
   final List<LokalImages> images;
   final BoxFit fit;
+  final bool forFocus;
 
   @override
   Widget build(BuildContext context) {
@@ -161,7 +172,8 @@ class _MessageImages extends StatelessWidget {
           crossAxisCellCount: crossAxisCellCount,
           mainAxisCellCount: 1,
           child: NetworkPhotoThumbnail(
-            key: Key('post_details_${images[index].url}'),
+            key: Key('chat_message_${images[index].url}'),
+            heroTag: forFocus ? '_focused_${images[index].url}' : null,
             galleryItem: images[index],
             onTap: () => openGallery(context, index, images),
           ),

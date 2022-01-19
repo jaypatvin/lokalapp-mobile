@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
@@ -199,23 +198,24 @@ class Settings extends StatelessWidget {
                 children: [
                   SizedBox(
                     width: MediaQuery.of(context).size.width * 0.3,
-                    child: AppButton(
-                      'Log Out',
-                      kPinkColor,
-                      true,
-                      () async {
+                    child: AppButton.filled(
+                      text: 'Log Out',
+                      color: kPinkColor,
+                      onPressed: () async {
+                        final _auth = context.read<Auth>();
                         context.read<ShoppingCart>().clear();
                         context.read<AppRouter>()
                           ..jumpToTab(AppRoute.home)
                           ..keyOf(AppRoute.root)
                               .currentState!
-                              .pushAndRemoveUntil(
-                                CupertinoPageRoute(
-                                  builder: (_) => WelcomeScreen(),
-                                ),
+                              .pushNamedAndRemoveUntil(
+                                WelcomeScreen.routeName,
                                 (route) => false,
                               );
-                        context.read<Auth>().logOut();
+
+                        Future.delayed(const Duration(milliseconds: 500), () {
+                          _auth.logOut();
+                        });
                       },
                     ),
                   ),

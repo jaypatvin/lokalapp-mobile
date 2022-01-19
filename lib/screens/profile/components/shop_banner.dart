@@ -117,33 +117,44 @@ class _ShopBannerView extends HookView<ShopBannerViewModel> {
           );
         }
 
-        if (vm.shop == null) {
-          return Container(
-            color: Colors.white,
-            width: double.infinity,
-            padding: EdgeInsets.symmetric(
-              vertical: 10.0.h,
-              horizontal: 5.0.w,
-            ),
-            child: Align(
-              child: SizedBox(
-                width: MediaQuery.of(vm.context).size.width / 3,
-                child: SizedBox(
-                  width: 300.w,
-                  child: AppButton(
-                    '+ ADD SHOP',
-                    kTealColor,
-                    false,
-                    vm.onAddShop,
+        return Consumer<Shops>(
+          builder: (_, shops, __) {
+            if (shops.isLoading) {
+              return const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 8.0),
+                child: Center(
+                  child: LinearProgressIndicator(),
+                ),
+              );
+            }
+
+            if (vm.shop == null) {
+              return Container(
+                color: Colors.white,
+                width: double.infinity,
+                padding: EdgeInsets.symmetric(
+                  vertical: 10.0.h,
+                  horizontal: 5.0.w,
+                ),
+                child: Align(
+                  child: SizedBox(
+                    width: MediaQuery.of(vm.context).size.width / 3,
+                    child: SizedBox(
+                      width: 300.w,
+                      child: AppButton.transparent(
+                        text: '+ ADD SHOP',
+                        onPressed: vm.onAddShop,
+                      ),
+                    ),
                   ),
                 ),
-              ),
-            ),
-          );
-        }
-        return ShopTile(
-          shop: vm.shop!,
-          onGoToShop: vm.goToShop,
+              );
+            }
+            return ShopTile(
+              shop: vm.shop!,
+              onGoToShop: vm.goToShop,
+            );
+          },
         );
       },
       [vm],

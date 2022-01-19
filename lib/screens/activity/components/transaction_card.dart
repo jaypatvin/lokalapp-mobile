@@ -104,11 +104,9 @@ class TransactionCard extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Expanded(
-          child: AppButton(
-            'Details',
-            kTealColor,
-            false,
-            () => Navigator.push(
+          child: AppButton.transparent(
+            text: 'Details',
+            onPressed: () => Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (context) => OrderDetails(
@@ -127,11 +125,11 @@ class TransactionCard extends StatelessWidget {
         Visibility(
           visible: enableSecondButton,
           child: Expanded(
-            child: AppButton(
-              secondButtonText,
-              secondButtonColor,
-              isFilled,
-              disabled ? null : onSecondButtonPress,
+            child: AppButton.custom(
+              text: secondButtonText,
+              color: secondButtonColor,
+              isFilled: isFilled,
+              onPressed: disabled ? null : onSecondButtonPress,
             ),
           ),
         ),
