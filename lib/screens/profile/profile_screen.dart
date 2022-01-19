@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:lokalapp/providers/shops.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/auth.dart';
@@ -46,7 +47,9 @@ class ProfileScreen extends StatelessWidget {
               _ProfileHeader(
                 userId: userId ?? context.read<Auth>().user!.id!,
               ),
-              ShopBanner(userId: userId ?? context.read<Auth>().user!.id!),
+             ShopBanner(
+                  userId: userId ?? context.read<Auth>().user!.id!,
+                ),
               Expanded(
                 child: !isCurrentUser
                     ? Container(

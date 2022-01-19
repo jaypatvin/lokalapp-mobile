@@ -35,7 +35,7 @@ class ChatAvatar extends StatelessWidget {
         child: CircleAvatar(
           radius: radius,
           backgroundColor: Colors.transparent,
-          child: displayPhoto != null && displayPhoto!.isNotEmpty
+          child: displayPhoto?.isNotEmpty ?? false
               ? Container(
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
