@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
@@ -116,5 +117,18 @@ class ProfileRegistrationViewModel extends ViewModel {
   Future<void> picturePickerHandler() async {
     _profilePhoto = await context.read<MediaUtility>().showMediaDialog(context);
     notifyListeners();
+  }
+
+  Future<bool> onWillPop() async {
+    try {
+      await context.read<Auth>().deleteAccount();
+      return true;
+    } on FirebaseAuthException catch (e) {
+      showToast(e.toString());
+      return false;
+    } catch (e) {
+      showToast(e.toString());
+      return false;
+    }
   }
 }

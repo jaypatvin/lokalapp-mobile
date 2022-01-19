@@ -132,10 +132,7 @@ class Auth extends ChangeNotifier {
         await _userChangeListener(_firebaseUser);
       }
     } catch (e) {
-      debugPrint(e.toString());
       rethrow;
-    } finally {
-      notifyListeners();
     }
   }
 
@@ -251,8 +248,8 @@ class Auth extends ChangeNotifier {
     _idTokenChangesSubscription?.cancel();
     _userStreamSubscription?.cancel();
 
-    await _userChangeListener(null);
     await _auth.signOut();
+    await _userChangeListener(null);
   }
 
   bool checkSignInMethod() {
@@ -296,7 +293,6 @@ class Auth extends ChangeNotifier {
   }
 
   Future<void> changePassword(
-    // String email,
     String password,
     String newPassword,
   ) async {
@@ -308,6 +304,15 @@ class Auth extends ChangeNotifier {
       );
 
       return await _auth.currentUser!.updatePassword(newPassword);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> deleteAccount() async {
+    try {
+      await _auth.currentUser?.delete();
+      await _userChangeListener(null);
     } catch (e) {
       rethrow;
     }

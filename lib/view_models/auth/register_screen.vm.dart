@@ -20,9 +20,7 @@ class RegisterScreenViewModel extends ViewModel {
 
   void _registerHandler() {
     if (context.read<Auth>().user == null) {
-      int count = 0;
-      AppRouter.rootNavigatorKey.currentState?.popUntil((_) => count++ >= 2);
-      AppRouter.rootNavigatorKey.currentState?.pushNamed(
+      AppRouter.rootNavigatorKey.currentState?.pushReplacementNamed(
         ProfileRegistration.routeName,
       );
     } else {
@@ -42,9 +40,15 @@ class RegisterScreenViewModel extends ViewModel {
 
       await context.read<Auth>().signUp(email, password);
 
-      int count = 0;
-      AppRouter.rootNavigatorKey.currentState?.popUntil((_) => count++ >= 2);
-      AppRouter.rootNavigatorKey.currentState?.pushNamed(
+      // AppRouter.rootNavigatorKey.currentState?.popUntil(
+      //   ModalRoute.withName(
+      //     WelcomeScreen.routeName,
+      //   ),
+      // );
+      // AppRouter.rootNavigatorKey.currentState?.pushNamed(
+      //   ProfileRegistration.routeName,
+      // );
+      AppRouter.rootNavigatorKey.currentState?.pushReplacementNamed(
         ProfileRegistration.routeName,
       );
     } on FirebaseAuthException catch (e) {

@@ -8,6 +8,7 @@ import '../providers/categories.dart';
 import '../providers/products.dart';
 import '../providers/shops.dart';
 import '../providers/users.dart';
+import '../routers/app_router.dart';
 import '../screens/bottom_navigation.dart';
 import '../screens/welcome_screen.dart';
 import '../utils/constants/assets.dart';
@@ -45,20 +46,15 @@ class _RootState extends State<Root> {
         ..read<BankCodes>().fetch();
       await context.read<Users>().fetch();
       if (!mounted) return;
-      Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(
-          builder: (_) => BottomNavigation(),
-          settings: const RouteSettings(name: BottomNavigation.routeName),
-        ),
+      AppRouter.rootNavigatorKey.currentState?.pushNamedAndRemoveUntil(
+        BottomNavigation.routeName,
         (route) => false,
       );
     } catch (e) {
       await auth.logOut();
       if (!mounted) return;
-      Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(
-          builder: (_) => WelcomeScreen(),
-        ),
+      AppRouter.rootNavigatorKey.currentState?.pushNamedAndRemoveUntil(
+        WelcomeScreen.routeName,
         (route) => false,
       );
     }

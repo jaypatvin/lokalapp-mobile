@@ -70,7 +70,7 @@ class AccountDeleted extends StatelessWidget {
                 // FirebaseAuth.instance.signOut();
                 Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
                   MaterialPageRoute(
-                    builder: (context) => WelcomeScreen(),
+                    builder: (context) => const WelcomeScreen(),
                   ),
                   (route) => false,
                 );
