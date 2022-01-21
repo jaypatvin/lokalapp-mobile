@@ -14,6 +14,7 @@ import '../../utils/constants/themes.dart';
 import '../../view_models/discover/discover.vm.dart';
 import '../../widgets/custom_app_bar.dart';
 import '../../widgets/inputs/search_text_field.dart';
+import '../../widgets/products_sliver_grid.dart';
 import '../cart/cart_container.dart';
 import '../profile/components/product_card.dart';
 
@@ -175,7 +176,7 @@ class _DiscoverView extends StatelessView<DiscoverViewModel> {
                   SliverToBoxAdapter(child: SizedBox(height: 10.0.h)),
                   SliverToBoxAdapter(
                     child: SizedBox(
-                      height: 125.0.h,
+                      height: 130.0.h,
                       child: _buildCategories(),
                     ),
                   ),
@@ -204,35 +205,11 @@ class _DiscoverView extends StatelessView<DiscoverViewModel> {
                           fit: BoxFit.contain,
                         ),
                       ),
-                    ),
-                  if (!vm.isProductsLoading)
-                    SliverGrid(
-                      delegate: SliverChildBuilderDelegate(
-                        (_, index) {
-                          final items = vm.otherUserProducts;
-                          try {
-                            return Container(
-                              key: ValueKey(items[index].id),
-                              margin: EdgeInsets.symmetric(
-                                vertical: 5.0.h,
-                                horizontal: 2.5.w,
-                              ),
-                              child: GestureDetector(
-                                onTap: () => vm.onProductTap(items[index].id),
-                                child: ProductCard(items[index].id),
-                              ),
-                            );
-                          } catch (e) {
-                            return const SizedBox();
-                          }
-                        },
-                        childCount: vm.otherUserProducts.length,
-                      ),
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                        childAspectRatio: 2 / 3,
-                        crossAxisCount: 2,
-                      ),
+                    )
+                  else
+                    ProductsSliverGrid(
+                      items: vm.otherUserProducts,
+                      onProductTap: vm.onProductTap,
                     ),
                 ],
               );
