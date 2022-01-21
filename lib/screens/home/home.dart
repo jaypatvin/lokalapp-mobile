@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:lottie/lottie.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
 
+import '../../providers/activities.dart';
 import '../../providers/community.dart';
 import '../../routers/app_router.dart';
-import '../../state/mvvm_builder.widget.dart';
-import '../../state/views/stateless.view.dart';
+import '../../utils/constants/assets.dart';
 import '../../utils/constants/themes.dart';
-import '../../view_models/home/post_field.vm.dart';
 import '../../widgets/custom_app_bar.dart';
 import '../cart/cart_container.dart';
+import 'components/post_card.dart';
+import 'draft_post.dart';
 import 'notifications.dart';
-import 'timeline.dart';
 
 class Home extends HookWidget {
   static const routeName = '/home';
@@ -21,8 +22,12 @@ class Home extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final _scrollController = useScrollController();
-    final _postFieldHeight = useMemoized(() => 75.0.h, []);
+    final _postFieldHeight = useRef(75.0.h);
+    final _onDraftPostTap = useCallback(
+      () => AppRouter.rootNavigatorKey.currentState
+          ?.pushNamed(DraftPost.routeName),
+      [],
+    );
 
     return Scaffold(
       backgroundColor: const Color(0xffF1FAFF),
@@ -45,20 +50,55 @@ class Home extends HookWidget {
         ],
       ),
       body: CartContainer(
-        child: SizedBox(
-          height: MediaQuery.of(context).size.height,
-          child: Stack(
-            children: [
-              Timeline(
-                scrollController: _scrollController,
-                firstIndexPadding: _postFieldHeight,
-              ),
-              _PostField(
-                scrollController: _scrollController,
-                height: _postFieldHeight,
-              ),
-            ],
-          ),
+        child: Consumer<Activities>(
+          builder: (ctx, activities, _) {
+            return CustomScrollView(
+              slivers: [
+                SliverPersistentHeader(
+                  floating: true,
+                  delegate: _PersistentPostFieldDelegate(
+                    height: _postFieldHeight.value,
+                    child: _PostField(
+                      height: _postFieldHeight.value,
+                      onDraftPostTap: _onDraftPostTap,
+                    ),
+                  ),
+                ),
+                if (activities.isLoading)
+                  SliverFillRemaining(
+                    child: Lottie.asset(
+                      kAnimationLoading,
+                      fit: BoxFit.cover,
+                      repeat: true,
+                    ),
+                  )
+                else if (activities.feed.isEmpty)
+                  const SliverFillRemaining(
+                    child: Center(
+                      child: Text(
+                        'No posts yet! Be the first one to post.',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  )
+                else
+                  SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                      (ctx2, index) {
+                        final activity = activities.feed[index];
+                        return PostCard(
+                          key: Key(activity.id),
+                          activity: activity,
+                        );
+                      },
+                      childCount: activities.feed.length,
+                    ),
+                  ),
+              ],
+            );
+          },
         ),
       ),
     );
@@ -69,70 +109,82 @@ class _PostField extends StatelessWidget {
   const _PostField({
     Key? key,
     this.height = 75.0,
-    required this.scrollController,
+    this.onDraftPostTap,
   }) : super(key: key);
-
   final double height;
-  final ScrollController scrollController;
+  final void Function()? onDraftPostTap;
 
   @override
   Widget build(BuildContext context) {
-    return MVVM(
-      view: (_, __) => _PostFieldView(),
-      viewModel: PostFieldViewModel(
-        scrollController: scrollController,
-        height: height,
-      ),
-    );
-  }
-}
-
-class _PostFieldView extends StatelessView<PostFieldViewModel> {
-  @override
-  Widget render(BuildContext context, PostFieldViewModel vm) {
-    return Transform.translate(
-      offset: Offset(0, vm.postFieldOffset),
-      child: Container(
-        height: vm.height,
-        width: double.infinity,
-        color: kInviteScreenColor.withOpacity(0.7),
-        child: Padding(
-          padding: EdgeInsets.symmetric(
-            horizontal: 20.0.w,
-            vertical: 15.h,
-          ),
-          child: GestureDetector(
-            onTap: vm.onDraftPostTapHandler,
-            child: Container(
-              height: 50.0.h,
-              width: double.infinity,
-              padding: EdgeInsets.symmetric(horizontal: 15.0.w),
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey.shade400),
-                borderRadius: BorderRadius.all(Radius.circular(15.0.r)),
-                color: Colors.white,
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "What's on your mind?",
-                    style: TextStyle(
-                      color: Colors.grey.shade400,
-                      fontSize: 14.0.sp,
-                      fontWeight: FontWeight.w500,
-                    ),
+    return Container(
+      height: height,
+      width: double.infinity,
+      color: kInviteScreenColor.withOpacity(0.7),
+      child: Padding(
+        padding: EdgeInsets.symmetric(
+          horizontal: 20.0.w,
+          vertical: 15.h,
+        ),
+        child: GestureDetector(
+          onTap: onDraftPostTap,
+          child: Container(
+            height: 50.0.h,
+            width: double.infinity,
+            padding: EdgeInsets.symmetric(horizontal: 15.0.w),
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.grey.shade400),
+              borderRadius: BorderRadius.all(Radius.circular(15.0.r)),
+              color: Colors.white,
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  "What's on your mind?",
+                  style: TextStyle(
+                    color: Colors.grey.shade400,
+                    fontSize: 14.0.sp,
+                    fontWeight: FontWeight.w500,
                   ),
-                  const Icon(
-                    MdiIcons.squareEditOutline,
-                    color: Color(0xffE0E0E0),
-                  ),
-                ],
-              ),
+                ),
+                const Icon(
+                  MdiIcons.squareEditOutline,
+                  color: Color(0xffE0E0E0),
+                ),
+              ],
             ),
           ),
         ),
       ),
     );
   }
+}
+
+class _PersistentPostFieldDelegate extends SliverPersistentHeaderDelegate {
+  const _PersistentPostFieldDelegate({
+    required this.child,
+    this.height = 75.0,
+  });
+
+  final Widget child;
+  final double height;
+
+  @override
+  Widget build(
+    BuildContext context,
+    double shrinkOffset,
+    bool overlapsContent,
+  ) {
+    return child;
+  }
+
+  @override
+  double get maxExtent => height;
+
+  @override
+  double get minExtent => height;
+
+  @override
+  bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) =>
+      true;
 }
