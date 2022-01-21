@@ -1,15 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:lokalapp/providers/products.dart';
-import 'package:lokalapp/utils/constants/assets.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/user_shop.dart';
 import '../../providers/auth.dart';
+import '../../providers/products.dart';
 import '../../providers/shops.dart';
 import '../../services/database.dart';
+import '../../utils/constants/assets.dart';
 import '../../utils/constants/themes.dart';
 import 'components/chat_avatar.dart';
 import 'components/chat_stream.dart';
