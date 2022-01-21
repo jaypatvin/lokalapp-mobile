@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import '../utils/constants/assets.dart';
 
 import '../utils/constants/themes.dart';
 import '../widgets/app_button.dart';
@@ -25,9 +27,8 @@ class WelcomeScreen extends StatelessWidget {
                 children: [
                   SizedBox(
                     height: 100.0.h,
-                    child: Image.asset(
-                      'assets/Lokalv2.png',
-                      fit: BoxFit.contain,
+                    child: SvgPicture.asset(
+                      kSvgLokalLogoV2,
                     ),
                   ),
                   SizedBox(height: 20.0.h),
