@@ -73,29 +73,20 @@ class ShopHeader extends StatelessWidget {
               onPressed: onSettingsTap,
             ),
           ),
-        Center(
-          child: Padding(
-            padding: EdgeInsets.only(
-              top: 10.0.h,
-              bottom: 10.0.h,
-            ),
-            child: Column(
-              children: [
-                ChatAvatar(
-                  displayName: shopName,
-                  displayPhoto: shopProfilePhoto,
-                  radius: 40.0.r,
-                  onTap: onShopPhotoTap,
-                ),
-                Text(
-                  shopName,
-                  style: TextStyle(
-                    fontSize: 18.0.sp,
-                    color: Colors.white,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ],
+        Transform.translate(
+          offset: const Offset(0, -10.0),
+          child: Center(
+            child: Padding(
+              padding: EdgeInsets.only(
+                top: 10.0.h,
+                bottom: 10.0.h,
+              ),
+              child: ChatAvatar(
+                displayName: shopName,
+                displayPhoto: shopProfilePhoto,
+                radius: 40.0.r,
+                onTap: onShopPhotoTap,
+              ),
             ),
           ),
         ),
