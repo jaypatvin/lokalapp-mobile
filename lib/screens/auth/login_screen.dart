@@ -43,16 +43,27 @@ class _LoginScreenView extends HookView<LoginScreenViewModel>
           _prevBottom.value = MediaQuery.of(context).viewInsets.bottom;
           return;
         }
-        _scrollController.animateTo(
-          _scrollController.position.maxScrollExtent,
-          duration: const Duration(milliseconds: 50),
-          curve: Curves.linear,
-        );
+
+        Future.delayed(const Duration(milliseconds: 100), () {
+          _scrollController.animateTo(
+            280.0.h - kToolbarHeight,
+            duration: const Duration(milliseconds: 50),
+            curve: Curves.linear,
+          );
+        });
+      } else {
+        Future.delayed(const Duration(milliseconds: 100), () {
+          _scrollController.animateTo(
+            _scrollController.position.minScrollExtent,
+            duration: const Duration(milliseconds: 50),
+            curve: Curves.linear,
+          );
+        });
       }
     });
 
-
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       body: CustomScrollView(
         controller: _scrollController,
         physics: const ClampingScrollPhysics(),
@@ -63,6 +74,10 @@ class _LoginScreenView extends HookView<LoginScreenViewModel>
             backgroundColor: kYellowColor,
             pinned: true,
             flexibleSpace: FlexibleSpaceBar(
+              stretchModes: const [
+                StretchMode.zoomBackground,
+                StretchMode.blurBackground,
+              ],
               centerTitle: true,
               titlePadding: const EdgeInsets.only(bottom: 5.0),
               title: Column(
@@ -157,6 +172,8 @@ class _LoginScreenView extends HookView<LoginScreenViewModel>
                       buttonWidth: 50.0.w,
                     ),
                   ),
+                  if (MediaQuery.of(context).viewInsets.bottom != 0)
+                    const SizedBox(height: kKeyboardActionHeight),
                 ],
               ),
             ),

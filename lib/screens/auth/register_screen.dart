@@ -46,11 +46,22 @@ class _RegisterScreenView extends HookView<RegisterScreenViewModel>
           _prevBottom.value = MediaQuery.of(context).viewInsets.bottom;
           return;
         }
-        _scrollController.animateTo(
-          _scrollController.position.maxScrollExtent,
-          duration: const Duration(milliseconds: 50),
-          curve: Curves.linear,
-        );
+
+        Future.delayed(const Duration(milliseconds: 100), () {
+          _scrollController.animateTo(
+            280.0.h - kToolbarHeight,
+            duration: const Duration(milliseconds: 50),
+            curve: Curves.linear,
+          );
+        });
+      } else {
+        Future.delayed(const Duration(milliseconds: 100), () {
+          _scrollController.animateTo(
+            _scrollController.position.minScrollExtent,
+            duration: const Duration(milliseconds: 50),
+            curve: Curves.linear,
+          );
+        });
       }
     });
 
@@ -143,6 +154,8 @@ class _RegisterScreenView extends HookView<RegisterScreenViewModel>
                     buttonWidth: 50.0.w,
                   ),
                   SizedBox(height: 10.0.h),
+                  if (MediaQuery.of(context).viewInsets.bottom > 0)
+                    const SizedBox(height: kKeyboardActionHeight)
                 ],
               ),
             ),
