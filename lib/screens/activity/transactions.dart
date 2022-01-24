@@ -4,48 +4,51 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../state/mvvm_builder.widget.dart';
 import '../../state/views/hook.view.dart';
 import '../../utils/constants/themes.dart';
+import '../../utils/hooks/automatic_keep_alive.dart';
 import '../../view_models/activity/transactions.vm.dart';
 import '../../widgets/app_button.dart';
+import '../../widgets/overlays/screen_loader.dart';
+import '../../widgets/persistent_header_delegate_builder.dart';
 import 'components/grouped_orders.dart';
 
 class Transactions extends StatelessWidget {
   factory Transactions.isBuyer(
-    Map<int, String?> statuses,
-    Animation<Color?> colorAnimation,
-  ) {
+    Map<int, String?> statuses, {
+    Color backgroundColor = kTealColor,
+  }) {
     return Transactions._(
       statuses,
       true,
-      colorAnimation,
+      backgroundColor,
     );
   }
 
   factory Transactions.isSeller(
-    Map<int, String?> _statuses,
-    Animation<Color?> _colorAnimation,
-  ) {
+    Map<int, String?> _statuses, {
+    Color backgroundColor = kPurpleColor,
+  }) {
     return Transactions._(
       _statuses,
       false,
-      _colorAnimation,
+      backgroundColor,
     );
   }
 
   const Transactions._(
     this._statuses,
     this._isBuyer,
-    this._colorAnimation,
+    this._backgroundColor,
   );
 
   final Map<int, String?> _statuses;
   final bool _isBuyer;
-  final Animation<Color?> _colorAnimation;
+  final Color _backgroundColor;
 
   @override
   Widget build(BuildContext context) {
     return MVVM(
       view: (_, __) => _TransactionsView(
-        _colorAnimation,
+        _backgroundColor,
       ),
       viewModel: TransactionsViewModel(
         _statuses,
@@ -55,95 +58,124 @@ class Transactions extends StatelessWidget {
   }
 }
 
-class _TransactionsView extends HookView<TransactionsViewModel> {
-  const _TransactionsView(
-    this._colorAnimation, {
+class _TransactionsView extends HookView<TransactionsViewModel>
+    with HookScreenLoader {
+  _TransactionsView(
+    this._backgroundColor, {
     Key? key,
   }) : super(key: key);
 
-  final Animation<Color?> _colorAnimation;
+  final Color _backgroundColor;
   @override
-  Widget render(BuildContext context, TransactionsViewModel vm) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Container(
-          padding: EdgeInsets.all(20.0.h),
-          width: MediaQuery.of(context).size.width,
-          color: _colorAnimation.value,
-          child: Text(
-            vm.subHeader,
-            style: Theme.of(context)
-                .textTheme
-                .bodyText2
-                ?.copyWith(color: Colors.white),
-          ),
-        ),
-        ListTile(
-          dense: true,
-          tileColor: const Color(0xFFEFEFEF),
-          title: Text(
-            vm.subscriptionSubtitle,
-            style: Theme.of(context)
-                .textTheme
-                .subtitle1
-                ?.copyWith(fontSize: 18.0.sp),
-          ),
-          trailing: Icon(
-            Icons.arrow_forward_ios,
-            color: kTealColor,
-            size: 14.0.r,
-          ),
-          onTap: vm.onGoToSubscriptionHandler,
-        ),
-        SizedBox(height: 10.0.h),
-        if (vm.stream != null)
-          SizedBox(
-            height: 25.0.h,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: vm.statuses.length,
-              itemBuilder: (context, index) {
-                final key = vm.statuses.keys.elementAt(index);
-                final _keyString =
-                    '${vm.isBuyer ? "buyer" : "seller"}_status_$key';
-                return GestureDetector(
-                  onTap: () => vm.changeIndex(key),
-                  key: Key(_keyString),
-                  child: Container(
-                    key: Key(_keyString),
-                    margin: EdgeInsets.symmetric(horizontal: 3.0.w),
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 8.0.w,
-                      vertical: 3.0.h,
-                    ),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10.0.r),
-                      color: vm.selectedIndex == key
-                          ? const Color(0xFFFFC700)
-                          : const Color(0xFFEFEFEF),
-                    ),
-                    child: Text(
-                      vm.statuses[key]!,
-                      key: Key(_keyString),
-                      style: Theme.of(context).textTheme.bodyText2,
-                    ),
-                  ),
-                );
-              },
+  Widget screen(BuildContext context, TransactionsViewModel vm) {
+    useAutomaticKeepAlive();
+
+    return CustomScrollView(
+      slivers: [
+        SliverToBoxAdapter(
+          child: Container(
+            padding: EdgeInsets.all(20.0.h),
+            width: MediaQuery.of(context).size.width,
+            color: _backgroundColor,
+            child: Text(
+              vm.subHeader,
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyText2
+                  ?.copyWith(color: Colors.white),
             ),
           ),
-        const SizedBox(height: 10.0),
-        if (vm.stream != null)
-          Expanded(
-            child: GroupedOrders(
-              vm.stream,
-              vm.initialStatuses,
-              isBuyer: vm.isBuyer,
+        ),
+        SliverPersistentHeader(
+          // pinned: true,
+
+          floating: true,
+          delegate: PersistentHeaderDelegateBuilder(
+            maxHeight: 71.0.h + 20,
+            minHeight: 71.0.h + 20,
+            child: SizedBox(
+              child: DecoratedBox(
+                decoration: const BoxDecoration(color: Colors.white),
+                child: Column(
+                  children: [
+                    Container(
+                      height: 40.0.h,
+                      color: const Color(0xFFEFEFEF),
+                      padding: EdgeInsets.symmetric(horizontal: 10.0.w),
+                      child: GestureDetector(
+                        onTap: vm.onGoToSubscriptionHandler,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              vm.subscriptionSubtitle,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .subtitle1
+                                  ?.copyWith(fontSize: 18.0.sp),
+                            ),
+                            Icon(
+                              Icons.arrow_forward_ios,
+                              color: kTealColor,
+                              size: 14.0.r,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    Container(
+                      height: 31.0.h + 20,
+                      color: Colors.white,
+                      padding: const EdgeInsets.symmetric(vertical: 10.0),
+                      child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: vm.statuses.length,
+                        itemBuilder: (context, index) {
+                          final key = vm.statuses.keys.elementAt(index);
+                          final _keyString =
+                              '${vm.isBuyer ? "buyer" : "seller"}_status_$key';
+                          return GestureDetector(
+                            onTap: () => vm.changeIndex(key),
+                            key: Key(_keyString),
+                            child: Container(
+                              key: Key(_keyString),
+                              margin: EdgeInsets.symmetric(horizontal: 3.0.w),
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 8.0.w,
+                                vertical: 3.0.h,
+                              ),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10.0.r),
+                                color: vm.selectedIndex == key
+                                    ? const Color(0xFFFFC700)
+                                    : const Color(0xFFEFEFEF),
+                              ),
+                              child: Text(
+                                vm.statuses[key]!,
+                                key: Key(_keyString),
+                                style: Theme.of(context).textTheme.bodyText2,
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
+          ),
+        ),
+        if (vm.stream != null)
+          GroupedOrders(
+            stream: vm.stream,
+            statuses: vm.initialStatuses,
+            isBuyer: vm.isBuyer,
+            onSecondButtonPressed: (order) async =>
+                performFuture(() async => vm.onSecondButtonPress(order)),
           ),
         if (vm.stream == null)
-          Expanded(
+          SliverFillRemaining(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [

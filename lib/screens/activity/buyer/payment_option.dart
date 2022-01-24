@@ -8,8 +8,8 @@ import '../../../view_models/activity/buyer/payment_option.vm.dart';
 import '../../../widgets/custom_app_bar.dart';
 import '../../../widgets/payment_options.widget.dart';
 
-class PaymentOption extends StatelessWidget {
-  const PaymentOption({Key? key, required this.order}) : super(key: key);
+class PaymentOptionScreen extends StatelessWidget {
+  const PaymentOptionScreen({Key? key, required this.order}) : super(key: key);
   final Order order;
   @override
   Widget build(BuildContext context) {

@@ -52,7 +52,7 @@ class OrderDetailsViewModel extends ViewModel {
       case OrderAction.pay:
         AppRouter.pushNewScreen(
           context,
-          screen: PaymentOption(order: order),
+          screen: PaymentOptionScreen(order: order),
         );
         break;
       case OrderAction.viewPayment:
