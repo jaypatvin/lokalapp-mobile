@@ -29,6 +29,7 @@ class Activity extends HookWidget {
     final _tabController = useTabController(initialLength: 2);
     final _tabSelectionHandler = useCallback(
       () {
+        if (_animationController.isAnimating) return;
         _animationController.animateTo(_tabController.animation!.value);
       },
       [_tabController, _animationController],
@@ -62,7 +63,6 @@ class Activity extends HookWidget {
     }
     return Scaffold(
       appBar: AppBar(
-        // elevation: 0,
         backgroundColor: const Color(0xFFF1FAFF),
         bottom: TabBar(
           controller: _tabController,

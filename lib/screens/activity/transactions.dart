@@ -87,8 +87,6 @@ class _TransactionsView extends HookView<TransactionsViewModel>
           ),
         ),
         SliverPersistentHeader(
-          // pinned: true,
-
           floating: true,
           delegate: PersistentHeaderDelegateBuilder(
             maxHeight: 71.0.h + 20,
@@ -150,10 +148,12 @@ class _TransactionsView extends HookView<TransactionsViewModel>
                                     ? const Color(0xFFFFC700)
                                     : const Color(0xFFEFEFEF),
                               ),
-                              child: Text(
-                                vm.statuses[key]!,
-                                key: Key(_keyString),
-                                style: Theme.of(context).textTheme.bodyText2,
+                              child: Center(
+                                child: Text(
+                                  vm.statuses[key]!,
+                                  key: Key(_keyString),
+                                  style: Theme.of(context).textTheme.bodyText2,
+                                ),
                               ),
                             ),
                           );

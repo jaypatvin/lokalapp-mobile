@@ -162,14 +162,13 @@ class _UserShopView extends HookView<UserShopViewModel> {
             delegate: PersistentHeaderDelegateBuilder(
               maxHeight: 65.0.h,
               minHeight: 65.0.h,
-              child: SizedBox(
+              child: Container(
                 height: 65.0.h,
-                child: Padding(
-                  padding: EdgeInsets.fromLTRB(8.0.w, 10.0.h, 8.0.w, 5.0.h),
-                  child: SearchTextField(
-                    enabled: true,
-                    controller: _searchController,
-                  ),
+                padding: EdgeInsets.fromLTRB(8.0.w, 10.0.h, 8.0.w, 5.0.h),
+                color: Colors.white,
+                child: SearchTextField(
+                  enabled: true,
+                  controller: _searchController,
                 ),
               ),
             ),
