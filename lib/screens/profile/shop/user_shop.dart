@@ -11,6 +11,7 @@ import '../../../utils/constants/themes.dart';
 import '../../../view_models/profile/shop/user_shop.vm.dart';
 import '../../../widgets/app_button.dart';
 import '../../../widgets/inputs/search_text_field.dart';
+import '../../../widgets/persistent_header_delegate_builder.dart';
 import '../../../widgets/products_sliver_grid.dart';
 import 'components/shop_header.dart';
 import 'components/user_banner.dart';
@@ -158,12 +159,17 @@ class _UserShopView extends HookView<UserShopViewModel> {
           ),
           SliverPersistentHeader(
             pinned: true,
-            delegate: _PersistentSearchTextFieldDelegate(
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 8.0.w),
-                child: SearchTextField(
-                  enabled: true,
-                  controller: _searchController,
+            delegate: PersistentHeaderDelegateBuilder(
+              maxHeight: 65.0.h,
+              minHeight: 65.0.h,
+              child: SizedBox(
+                height: 65.0.h,
+                child: Padding(
+                  padding: EdgeInsets.fromLTRB(8.0.w, 10.0.h, 8.0.w, 5.0.h),
+                  child: SearchTextField(
+                    enabled: true,
+                    controller: _searchController,
+                  ),
                 ),
               ),
             ),
@@ -178,41 +184,4 @@ class _UserShopView extends HookView<UserShopViewModel> {
       ),
     );
   }
-}
-
-class _PersistentSearchTextFieldDelegate
-    extends SliverPersistentHeaderDelegate {
-  const _PersistentSearchTextFieldDelegate({
-    required this.child,
-  });
-
-  final Widget child;
-
-  @override
-  Widget build(
-    BuildContext context,
-    double shrinkOffset,
-    bool overlapsContent,
-  ) {
-    return SizedBox(
-      height: 65.0.h,
-      child: DecoratedBox(
-        decoration: const BoxDecoration(color: Colors.white),
-        child: Padding(
-          padding: EdgeInsets.only(top: 10.0.h, bottom: 5.0.h),
-          child: child,
-        ),
-      ),
-    );
-  }
-
-  @override
-  double get maxExtent => 65.0.h;
-
-  @override
-  double get minExtent => 65.0.h;
-
-  @override
-  bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) =>
-      true;
 }

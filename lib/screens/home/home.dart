@@ -11,6 +11,7 @@ import '../../routers/app_router.dart';
 import '../../utils/constants/assets.dart';
 import '../../utils/constants/themes.dart';
 import '../../widgets/custom_app_bar.dart';
+import '../../widgets/persistent_header_delegate_builder.dart';
 import '../cart/cart_container.dart';
 import 'components/post_card.dart';
 import 'draft_post.dart';
@@ -56,8 +57,9 @@ class Home extends HookWidget {
               slivers: [
                 SliverPersistentHeader(
                   floating: true,
-                  delegate: _PersistentPostFieldDelegate(
-                    height: _postFieldHeight.value,
+                  delegate: PersistentHeaderDelegateBuilder(
+                    maxHeight: _postFieldHeight.value,
+                    minHeight: _postFieldHeight.value,
                     child: _PostField(
                       height: _postFieldHeight.value,
                       onDraftPostTap: _onDraftPostTap,
@@ -158,33 +160,4 @@ class _PostField extends StatelessWidget {
       ),
     );
   }
-}
-
-class _PersistentPostFieldDelegate extends SliverPersistentHeaderDelegate {
-  const _PersistentPostFieldDelegate({
-    required this.child,
-    this.height = 75.0,
-  });
-
-  final Widget child;
-  final double height;
-
-  @override
-  Widget build(
-    BuildContext context,
-    double shrinkOffset,
-    bool overlapsContent,
-  ) {
-    return child;
-  }
-
-  @override
-  double get maxExtent => height;
-
-  @override
-  double get minExtent => height;
-
-  @override
-  bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) =>
-      true;
 }
