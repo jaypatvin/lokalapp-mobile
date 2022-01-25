@@ -72,6 +72,21 @@ class _TransactionsView extends HookView<TransactionsViewModel>
 
     return CustomScrollView(
       slivers: [
+        SliverPersistentHeader(
+          pinned: true,
+          delegate: PersistentHeaderDelegateBuilder(
+            minHeight: 5.0,
+            maxHeight: 5.0,
+            child: SizedBox(
+              height: 5.0,
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  color: _backgroundColor,
+                ),
+              ),
+            ),
+          ),
+        ),
         SliverToBoxAdapter(
           child: Container(
             padding: EdgeInsets.all(20.0.h),
@@ -101,6 +116,7 @@ class _TransactionsView extends HookView<TransactionsViewModel>
                       color: const Color(0xFFEFEFEF),
                       padding: EdgeInsets.symmetric(horizontal: 10.0.w),
                       child: GestureDetector(
+                        behavior: HitTestBehavior.opaque,
                         onTap: vm.onGoToSubscriptionHandler,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,

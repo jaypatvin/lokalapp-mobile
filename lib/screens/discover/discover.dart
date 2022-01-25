@@ -98,11 +98,14 @@ class _DiscoverView extends StatelessView<DiscoverViewModel> {
                     child: SizedBox(height: 10.0.h),
                   ),
                   SliverToBoxAdapter(
-                    child: GestureDetector(
-                      onTap: vm.onSearch,
-                      child: const Hero(
-                        tag: 'search_field',
-                        child: SearchTextField(),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: GestureDetector(
+                        onTap: vm.onSearch,
+                        child: const Hero(
+                          tag: 'search_field',
+                          child: SearchTextField(),
+                        ),
                       ),
                     ),
                   ),
@@ -143,6 +146,7 @@ class _DiscoverView extends StatelessView<DiscoverViewModel> {
                       endIndent: 16.0.w,
                     ),
                   ),
+                  SliverToBoxAdapter(child: SizedBox(height: 10.0.h)),
                   SliverToBoxAdapter(
                     child: Padding(
                       padding: EdgeInsets.symmetric(horizontal: 16.0.w),
@@ -173,7 +177,6 @@ class _DiscoverView extends StatelessView<DiscoverViewModel> {
                       ),
                     ),
                   ),
-                  SliverToBoxAdapter(child: SizedBox(height: 10.0.h)),
                   SliverToBoxAdapter(
                     child: SizedBox(
                       height: 130.0.h,
@@ -187,6 +190,7 @@ class _DiscoverView extends StatelessView<DiscoverViewModel> {
                       endIndent: 16.0.w,
                     ),
                   ),
+                  SliverToBoxAdapter(child: SizedBox(height: 10.0.h)),
                   SliverToBoxAdapter(
                     child: Padding(
                       padding: EdgeInsets.symmetric(horizontal: 16.0.w),
@@ -196,7 +200,6 @@ class _DiscoverView extends StatelessView<DiscoverViewModel> {
                       ),
                     ),
                   ),
-                  SliverToBoxAdapter(child: SizedBox(height: 10.0.h)),
                   if (vm.isProductsLoading)
                     SliverFillRemaining(
                       child: Center(

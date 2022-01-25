@@ -94,7 +94,11 @@ class _UserShopView extends HookView<UserShopViewModel> {
           if (vm.isCurrentUser)
             SliverToBoxAdapter(
               child: Padding(
-                padding: EdgeInsets.only(bottom: 10.0.h),
+                padding: EdgeInsets.only(
+                  bottom: 10.0.h,
+                  left: 8.0.w,
+                  right: 8.0.w,
+                ),
                 child: AppButton.transparent(
                   text: '+ Add a new Product',
                   onPressed: vm.addProduct,

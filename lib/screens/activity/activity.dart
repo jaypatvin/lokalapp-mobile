@@ -64,6 +64,7 @@ class Activity extends HookWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xFFF1FAFF),
+        elevation: 0,
         bottom: TabBar(
           controller: _tabController,
           unselectedLabelColor: Colors.black,
