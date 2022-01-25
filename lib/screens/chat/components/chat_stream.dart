@@ -79,7 +79,7 @@ class _ChatStreamView extends StatelessView<ChatStreamViewModel> {
           slivers: [
             SliverToBoxAdapter(
               child: Padding(
-                padding: EdgeInsets.only(top: 10.0.h),
+                padding: EdgeInsets.fromLTRB(8.0.w, 10.0.h, 8.0.w, 0.0),
                 child: SearchTextField(
                   hintText: 'Search Chats',
                   enabled: true,

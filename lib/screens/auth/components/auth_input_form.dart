@@ -8,8 +8,8 @@ import '../../../widgets/app_button.dart';
 
 class AuthInputForm extends StatefulWidget {
   final Key? formKey;
-  final TextEditingController? emailController;
-  final TextEditingController? passwordController;
+  final TextEditingController emailController;
+  final TextEditingController passwordController;
   final void Function()? onFormChanged;
   final void Function()? onFormSubmit;
   final String? submitButtonLabel;
@@ -21,8 +21,8 @@ class AuthInputForm extends StatefulWidget {
   const AuthInputForm({
     Key? key,
     this.formKey,
-    this.emailController,
-    this.passwordController,
+    required this.emailController,
+    required this.passwordController,
     this.onFormChanged,
     this.onFormSubmit,
     this.submitButtonLabel,
@@ -169,8 +169,8 @@ class _AuthInputFormState extends State<AuthInputForm> {
               width: 130.0.w,
               child: AppButton.filled(
                 text: widget.submitButtonLabel ?? '',
-                color: widget.emailController!.text.isEmpty ||
-                        widget.passwordController!.text.isEmpty
+                color: widget.emailController.text.isEmpty ||
+                        widget.passwordController.text.isEmpty
                     ? kTealColor
                     : kOrangeColor,
                 onPressed: () {

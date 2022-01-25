@@ -1,14 +1,21 @@
+import 'package:collection/collection.dart';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../models/failure_exception.dart';
 import '../../../models/lokal_images.dart';
 import '../../../models/lokal_user.dart';
+import '../../../models/product.dart';
 import '../../../models/user_shop.dart';
 import '../../../providers/auth.dart';
+import '../../../providers/products.dart';
 import '../../../providers/shops.dart';
 import '../../../providers/users.dart';
 import '../../../routers/app_router.dart';
+import '../../../routers/discover/product_detail.props.dart';
+import '../../../screens/discover/product_detail.dart';
+import '../../../screens/profile/add_product/add_product.dart';
 import '../../../screens/profile/add_shop/edit_shop.dart';
 import '../../../screens/profile/profile_screen.dart';
 import '../../../screens/profile/settings/settings.dart';
@@ -26,12 +33,30 @@ class UserShopViewModel extends ViewModel {
   late final LokalUser user;
   late ShopModel shop;
 
+  late List<Product> _products;
+  UnmodifiableListView<Product> get products {
+    if (_searchTerm?.isNotEmpty ?? false) {
+      return UnmodifiableListView(
+        _products.where(
+          (product) => product.name.toLowerCase().contains(
+                _searchTerm!.toLowerCase(),
+              ),
+        ),
+      );
+    }
+
+    return UnmodifiableListView(_products);
+  }
+
   List<Color> get shopHeaderColors => isCurrentUser
       ? const [Color(0xffFFC700), Colors.black45]
       : const [kPinkColor, Colors.black45];
 
   bool get displaySettingsButton => isCurrentUser;
   bool get displayEditButton => isCurrentUser;
+
+  String? _searchTerm;
+  String? get searchTerm => _searchTerm;
 
   @override
   void init() {
@@ -40,6 +65,8 @@ class UserShopViewModel extends ViewModel {
     user = isCurrentUser
         ? context.read<Auth>().user!
         : context.read<Users>().findById(userId)!;
+
+    _products = context.read<Products>().findByShop(shop.id!);
   }
 
   void _shopSetup() {
@@ -88,6 +115,12 @@ class UserShopViewModel extends ViewModel {
     }
   }
 
+  void addProduct() {
+    context
+        .read<AppRouter>()
+        .navigateTo(AppRoute.profile, AddProduct.routeName);
+  }
+
   void goToProfile() {
     if (isCurrentUser) {
       context.read<AppRouter>()
@@ -106,5 +139,35 @@ class UserShopViewModel extends ViewModel {
           arguments: {'userId': user.id!},
         );
     }
+  }
+
+  void updateProducts() {
+    final _items = context.read<Products>().findByShop(shop.id!);
+    _products = [..._items];
+    notifyListeners();
+  }
+
+  void onProductTap(String id) {
+    final product = _products.firstWhereOrNull((p) => p.id == id);
+    if (product == null) throw 'Product does not exist!';
+    if (isCurrentUser) {
+      context.read<AppRouter>().navigateTo(
+        AppRoute.profile,
+        AddProduct.routeName,
+        arguments: {'productId': product.id},
+      );
+      return;
+    }
+    context.read<AppRouter>().navigateTo(
+          AppRoute.discover,
+          ProductDetail.routeName,
+          arguments: ProductDetailProps(product),
+        );
+  }
+
+  void onSearchTermChanged(String? value) {
+    if (_searchTerm == value) return;
+    _searchTerm = value;
+    notifyListeners();
   }
 }

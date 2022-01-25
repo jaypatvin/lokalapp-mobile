@@ -1,56 +1,36 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:grouped_list/grouped_list.dart';
+import 'package:grouped_list/sliver_grouped_list.dart';
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 
 import '../../../models/order.dart';
-import '../../../state/mvvm_builder.widget.dart';
-import '../../../state/views/hook.view.dart';
 import '../../../utils/constants/assets.dart';
-import '../../../view_models/activity/components/grouped_orders.vm.dart';
-import '../../../widgets/overlays/screen_loader.dart';
 import 'transaction_card.dart';
 
 class GroupedOrders extends StatelessWidget {
-  const GroupedOrders(
-    this.stream,
-    this.statuses, {
+  const GroupedOrders({
     Key? key,
+    required this.stream,
+    required this.statuses,
     required this.isBuyer,
+    required this.onSecondButtonPressed,
   }) : super(key: key);
 
   final Stream<QuerySnapshot>? stream;
   final Map<int, String?> statuses;
-
   final bool isBuyer;
+  final void Function(Order order) onSecondButtonPressed;
 
   @override
   Widget build(BuildContext context) {
-    return MVVM(
-      view: (_, __) => _GroupedOrdersView(stream, statuses),
-      viewModel: GroupedOrdersViewModel(isBuyer: isBuyer),
-    );
-  }
-}
-
-class _GroupedOrdersView extends HookView<GroupedOrdersViewModel>
-    with HookScreenLoader<GroupedOrdersViewModel> {
-  _GroupedOrdersView(this.stream, this.statuses);
-  final Stream<QuerySnapshot>? stream;
-  final Map<int, String?> statuses;
-
-  @override
-  Widget screen(BuildContext context, GroupedOrdersViewModel vm) {
     return StreamBuilder(
       stream: stream,
       builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
         switch (snapshot.connectionState) {
           case ConnectionState.waiting:
-            return SizedBox(
-              width: double.infinity,
-              height: double.infinity,
+            return SliverFillRemaining(
               child: DecoratedBox(
                 decoration: const BoxDecoration(
                   color: Colors.white,
@@ -60,22 +40,24 @@ class _GroupedOrdersView extends HookView<GroupedOrdersViewModel>
             );
           default:
             if (snapshot.hasError) {
-              return Center(
-                child: Text('Error: ${snapshot.error}'),
+              return SliverFillRemaining(
+                child: Center(
+                  child: Text('Error: ${snapshot.error}'),
+                ),
               );
             } else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-              return const Center(
-                child: Text(
-                  'No orders yet!',
-                  style: TextStyle(
-                    fontWeight: FontWeight.w500,
+              return const SliverFillRemaining(
+                child: Center(
+                  child: Text(
+                    'No orders yet!',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
                 ),
               );
             } else {
-              return GroupedListView(
-                padding: EdgeInsets.symmetric(horizontal: 16.0.w),
-                physics: const AlwaysScrollableScrollPhysics(),
+              return SliverGroupedListView(
                 elements: snapshot.data!.docs,
                 groupBy: (QueryDocumentSnapshot element) {
                   final date = (element['created_at'] as Timestamp).toDate();
@@ -83,7 +65,12 @@ class _GroupedOrdersView extends HookView<GroupedOrdersViewModel>
                 },
                 groupSeparatorBuilder: (DateTime value) {
                   return Container(
-                    margin: EdgeInsets.only(top: 10.0.h, bottom: 15.0.h),
+                    margin: EdgeInsets.only(
+                      top: 10.0.h,
+                      bottom: 15.0.h,
+                      left: 16.0.w,
+                      right: 16.0.w,
+                    ),
                     child: Text(
                       DateFormat.MMMMd().format(value),
                       style: Theme.of(context)
@@ -99,12 +86,13 @@ class _GroupedOrdersView extends HookView<GroupedOrdersViewModel>
                   final int? code = snapshotData['status_code'];
                   final data = {...snapshotData, 'id': snapshot.id};
                   final order = Order.fromMap(data);
-                  return TransactionCard(
-                    order: order,
-                    isBuyer: vm.isBuyer,
-                    status: statuses[code],
-                    onSecondButtonPress: () => performFuture<void>(
-                      () => vm.onSecondButtonPress(order),
+                  return Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16.0.w),
+                    child: TransactionCard(
+                      order: order,
+                      isBuyer: isBuyer,
+                      status: statuses[code],
+                      onSecondButtonPress: () => onSecondButtonPressed(order),
                     ),
                   );
                 },
