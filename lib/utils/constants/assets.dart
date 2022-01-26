@@ -45,5 +45,5 @@ const kSvgLokalLogoV2 = 'assets/lokal_logo_v2.svg';
 // URLs:
 const kAboutLokalUrl = 'https://www.lokalapp.ph';
 const kHelpCenterUrl = 'https://www.lokalapp.ph';
-const kPrivacyPolicyUrl = 'https://www.lokalapp.ph';
-const kTermsOfServiceUrl = 'https://www.lokalapp.ph';
+const kPrivacyPolicyUrl = 'https://www.lokalapp.ph/privacy-policy.html';
+const kTermsOfServiceUrl = 'https://www.lokalapp.ph/terms-and-condition.html';
