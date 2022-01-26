@@ -52,13 +52,18 @@ class _AssetGalleryWidgetState extends State<AssetGalleryWidget> {
 
   @override
   Widget build(BuildContext context) {
+    int itemCount = widget.path?.assetCount ?? 0;
+    if (widget.specialItemBuilder != null) {
+      itemCount += 1;
+    }
+
     return NotificationListener<ScrollNotification>(
       onNotification: _onScroll,
       child: ListView.builder(
         key: ValueKey(widget.path),
         shrinkWrap: true,
         scrollDirection: Axis.horizontal,
-        itemCount: widget.path?.assetCount ?? 1,
+        itemCount: itemCount,
         itemBuilder: (context, index) => SizedBox(
           height: widget.assetHeight,
           width: widget.assetWidth,

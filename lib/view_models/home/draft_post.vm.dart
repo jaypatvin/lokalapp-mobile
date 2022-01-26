@@ -20,12 +20,18 @@ class DraftPostViewModel extends ViewModel {
   String? _postMessage;
   String? get postMessage => _postMessage;
 
+  bool _showImagePicker = false;
+  bool get showImagePicker => _showImagePicker;
+  set showImagePicker(bool value) {
+    _showImagePicker = value;
+    notifyListeners();
+  }
+
   @override
   void init() {
     imageProvider = context.read<CustomPickerDataProvider>();
     imageProvider.onPickMax.addListener(_showMaxAssetsText);
     imageProvider.pickedNotifier.addListener(_onPick);
-    _providerInit();
   }
 
   @override
@@ -36,12 +42,40 @@ class DraftPostViewModel extends ViewModel {
     super.dispose();
   }
 
-  Future<void> _providerInit() async {
-    final pathList = await PhotoManager.getAssetPathList(
-      onlyAll: true,
-      type: RequestType.image,
-    );
-    imageProvider.resetPathList(pathList);
+  @override
+  Future<void> onResume() async {
+    if (showImagePicker) {
+      final result = await PhotoManager.requestPermissionExtend();
+      if (result.isAuth) {
+        final pathList = await PhotoManager.getAssetPathList(
+          onlyAll: true,
+          type: RequestType.image,
+        );
+        imageProvider.resetPathList(pathList);
+      }
+    }
+  }
+
+  Future<void> onShowImagePicker({
+    Future Function()? iOSDialogPermissionCallback,
+  }) async {
+    if (!_showImagePicker) {
+      final result = await PhotoManager.requestPermissionExtend();
+      if (result.isAuth) {
+        // TODO: check if this is necessary on iOS
+        if (result == PermissionState.limited) {
+          iOSDialogPermissionCallback?.call();
+        }
+        final pathList = await PhotoManager.getAssetPathList(
+          onlyAll: true,
+          type: RequestType.image,
+        );
+
+        imageProvider.resetPathList(pathList);
+      }
+    }
+
+    showImagePicker = !_showImagePicker;
   }
 
   void _showMaxAssetsText() =>

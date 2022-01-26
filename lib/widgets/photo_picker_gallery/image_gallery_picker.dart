@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:oktoast/oktoast.dart';
 import 'package:wechat_camera_picker/wechat_camera_picker.dart';
 
+import '../../routers/app_router.dart';
 import 'asset_gallery_widget.dart';
 import 'custom_pick_asset_widget.dart';
 import 'provider/custom_photo_provider.dart';
 
 class ImageGalleryPicker extends StatelessWidget {
-  final CustomPickerDataProvider? provider; // can be inserted to provider
+  final CustomPickerDataProvider provider; // can be inserted to provider
   final double pickerHeight;
   final double assetHeight;
   final double assetWidth;
@@ -30,7 +32,7 @@ class ImageGalleryPicker extends StatelessWidget {
     return SizedBox(
       height: 150,
       child: AnimatedBuilder(
-        animation: provider!.currentPathNotifier,
+        animation: provider.currentPathNotifier,
         builder: (_, __) => _buildPath(),
       ),
     );
@@ -42,13 +44,18 @@ class ImageGalleryPicker extends StatelessWidget {
       onTap: () async {
         final AssetEntity? result = await CameraPicker.pickFromCamera(
           context,
-          // maximumRecordingDuration: const Duration(seconds: 30),
-          // textDelegate: EnglishCameraPickerTextDelegateWithRecording(),
           textDelegate: EnglishCameraPickerTextDelegate(),
+          onError: (e, stack) {
+            if (e is CameraException) {
+              if (e.code == 'cameraPermission') {
+                showToast('Denied camera permissions');
+              }
+            }
+            AppRouter.rootNavigatorKey.currentState?.pop();
+          },
         );
         if (result != null) {
-          ///Navigator.of(context).pop(<AssetEntity>[...assets, result]);
-          provider!.picked = [...provider!.picked, result];
+          provider.pickEntity(result);
         }
       },
       child: const Center(
@@ -59,7 +66,7 @@ class ImageGalleryPicker extends StatelessWidget {
 
   Widget _buildPath() {
     return AssetGalleryWidget(
-      path: provider?.currentPath,
+      path: provider.currentPath,
       assetHeight: assetHeight,
       assetWidth: assetWidth,
       thumbSize: thumbSize,

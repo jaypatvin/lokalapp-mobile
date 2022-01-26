@@ -30,13 +30,19 @@ class PostDetailViewModel extends ViewModel {
   bool _isCommentUploading = false;
   bool _isPostDeleting = false;
 
+  bool _showImagePicker = false;
+  bool get showImagePicker => _showImagePicker;
+  set showImagePicker(bool value) {
+    _showImagePicker = value;
+    notifyListeners();
+  }
+
   @override
   void init() {
     imageProvider = context.read<CustomPickerDataProvider>();
     imageProvider.onPickMax.addListener(_showMaxAssetsText);
     imageProvider.pickedNotifier.addListener(_onPick);
     commentFeed = Database.instance.getCommentFeed(activityId);
-    _providerInit();
   }
 
   @override
@@ -48,12 +54,33 @@ class PostDetailViewModel extends ViewModel {
     super.dispose();
   }
 
-  Future<void> _providerInit() async {
-    final pathList = await PhotoManager.getAssetPathList(
-      onlyAll: true,
-      type: RequestType.image,
-    );
-    imageProvider.resetPathList(pathList);
+  @override
+  Future<void> onResume() async {
+    if (_showImagePicker) {
+      final result = await PhotoManager.requestPermissionExtend();
+      if (result.isAuth) {
+        final pathList = await PhotoManager.getAssetPathList(
+          onlyAll: true,
+          type: RequestType.image,
+        );
+        imageProvider.resetPathList(pathList);
+      }
+    }
+  }
+
+  Future<void> onShowImagePicker() async {
+    if (!_showImagePicker) {
+      final result = await PhotoManager.requestPermissionExtend();
+      if (result.isAuth) {
+        final pathList = await PhotoManager.getAssetPathList(
+          onlyAll: true,
+          type: RequestType.image,
+        );
+        imageProvider.resetPathList(pathList);
+      }
+    }
+
+    showImagePicker = !_showImagePicker;
   }
 
   void _showMaxAssetsText() =>
