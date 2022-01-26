@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
 
@@ -395,6 +396,15 @@ class ProductSubscriptionPlan {
       product: SubscriptionProductDetails.fromMap(map['product']),
       shop: SubscriptionShopDetails.fromMap(map['shop']),
     );
+  }
+
+  factory ProductSubscriptionPlan.fromDocument(
+    QueryDocumentSnapshot<Map<String, dynamic>> document,
+  ) {
+    return ProductSubscriptionPlan.fromMap({
+      ...document.data(),
+      'id': document.id,
+    });
   }
 
   factory ProductSubscriptionPlan.fromJson(String source) =>
