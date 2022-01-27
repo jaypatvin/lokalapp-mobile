@@ -28,8 +28,11 @@ class WelcomeScreen extends StatelessWidget {
                 children: [
                   SizedBox(
                     height: 100.0.h,
-                    child: SvgPicture.asset(
-                      kSvgLokalLogoV2,
+                    child: Hero(
+                      tag: kSvgLokalLogoV2,
+                      child: SvgPicture.asset(
+                        kSvgLokalLogoV2,
+                      ),
                     ),
                   ),
                   SizedBox(height: 20.0.h),

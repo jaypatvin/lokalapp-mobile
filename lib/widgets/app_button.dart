@@ -40,7 +40,7 @@ class AppButton extends StatelessWidget {
       textAlign: TextAlign.center,
       style: TextStyle(
         fontFamily: 'Goldplay',
-        fontSize: 16.0.sp,
+        fontSize: 14.0.sp,
         fontWeight: FontWeight.w600,
         color: isFilled ? Colors.white : color,
       ).merge(textStyle),
@@ -67,7 +67,7 @@ class AppButton extends StatelessWidget {
       textAlign: TextAlign.center,
       style: TextStyle(
         fontFamily: 'Goldplay',
-        fontSize: 16.0.sp,
+        fontSize: 14.0.sp,
         fontWeight: FontWeight.w600,
         color: Colors.white,
       ).merge(textStyle),
@@ -94,7 +94,7 @@ class AppButton extends StatelessWidget {
       textAlign: TextAlign.center,
       style: TextStyle(
         fontFamily: 'Goldplay',
-        fontSize: 16.0.sp,
+        fontSize: 14.0.sp,
         fontWeight: FontWeight.w600,
         color: color,
       ).merge(textStyle),
@@ -107,9 +107,6 @@ class AppButton extends StatelessWidget {
       child: _child,
     );
   }
-
-  // /// Button Label
-  // final String text;
 
   final Widget child;
 
@@ -136,14 +133,6 @@ class AppButton extends StatelessWidget {
   /// ) ```
   final TextStyle? textStyle;
 
-  // const AppButton(
-  //   this.text,
-  //   this.color,
-  //   this.isFilled,
-  //   this.onPressed, {
-  //   this.textStyle,
-  // });
-
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
@@ -155,16 +144,6 @@ class AppButton extends StatelessWidget {
         minimumSize: Size(0, 40.0.h),
         side: BorderSide(color: color),
       ),
-      // child: Text(
-      //   text,
-      //   textAlign: TextAlign.center,
-      //   style: TextStyle(
-      //     fontFamily: 'Goldplay',
-      //     fontSize: 16.0.sp,
-      //     fontWeight: FontWeight.w600,
-      //     color: isFilled ? Colors.white : color,
-      //   ).merge(textStyle),
-      // ),
       child: child,
     );
   }
