@@ -34,7 +34,6 @@ class _DraftPostView extends HookView<DraftPostViewModel>
   @override
   Widget screen(BuildContext context, DraftPostViewModel vm) {
     final _nodePostText = useFocusNode();
-    final _showImagePicker = useState<bool>(false);
 
     final _kbConfig = useMemoized<KeyboardActionsConfig>(() {
       return KeyboardActionsConfig(
@@ -122,7 +121,7 @@ class _DraftPostView extends HookView<DraftPostViewModel>
                         ),
                         galleryItem: vm.imageProvider.picked[index],
                         onTap: () => vm.openGallery(index),
-                        onRemove: () => vm.imageProvider.picked.removeAt(index),
+                        onRemove: () => vm.imageProvider.removeAt(index),
                       ),
                     );
                   }).toList(),
@@ -137,7 +136,7 @@ class _DraftPostView extends HookView<DraftPostViewModel>
                     cursorColor: Colors.black,
                     keyboardType: TextInputType.multiline,
                     maxLines: null,
-                    onTap: () => _showImagePicker.value = false,
+                    onTap: () => vm.showImagePicker = false,
                     decoration: InputDecoration(
                       border: InputBorder.none,
                       focusedBorder: InputBorder.none,
@@ -165,6 +164,7 @@ class _DraftPostView extends HookView<DraftPostViewModel>
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     GestureDetector(
+                      onTap: vm.onShowImagePicker,
                       child: Container(
                         padding: const EdgeInsets.all(10),
                         decoration: BoxDecoration(
@@ -178,8 +178,6 @@ class _DraftPostView extends HookView<DraftPostViewModel>
                           color: kTealColor,
                         ),
                       ),
-                      onTap: () =>
-                          _showImagePicker.value = !_showImagePicker.value,
                     ),
                     const Spacer(),
                     SizedBox(
@@ -196,7 +194,7 @@ class _DraftPostView extends HookView<DraftPostViewModel>
               ),
               AnimatedContainer(
                 duration: const Duration(milliseconds: 100),
-                height: _showImagePicker.value ? 150.0.h : 0.0.h,
+                height: vm.showImagePicker ? 150.0.h : 0.0.h,
                 child: ImageGalleryPicker(
                   vm.imageProvider,
                   pickerHeight: 150.h,

@@ -42,7 +42,10 @@ mixin PhotoDataProvider on ChangeNotifier {
     )
         sortBy = _defaultSort,
   }) {
-    if (list.isEmpty) return;
+    if (list.isEmpty) {
+      clearPathList();
+      return;
+    }
     list.sort(sortBy);
 
     pathList.clear();
@@ -50,6 +53,14 @@ mixin PhotoDataProvider on ChangeNotifier {
     _cacheMap.clear();
     currentPath = list[defaultIndex];
     pathListNotifier.value = pathList;
+    notifyListeners();
+  }
+
+  void clearPathList() {
+    pathList.clear();
+    pathListNotifier.value = pathList;
+    _cacheMap.clear();
+    currentPath = null;
     notifyListeners();
   }
 
@@ -126,6 +137,11 @@ class CustomPickerDataProvider extends ChangeNotifier with PhotoDataProvider {
     pickedNotifier.value = picked;
     pickedNotifier.notifyListeners();
     notifyListeners();
+  }
+
+  void removeAt(int index) {
+    if (picked.isEmpty) return;
+    pickEntity(picked[index]);
   }
 
   int pickIndex(AssetEntity entity) {

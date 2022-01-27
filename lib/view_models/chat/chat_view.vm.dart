@@ -15,12 +15,12 @@ import '../../services/api/chat_api_service.dart';
 import '../../services/api/conversation_api_service.dart';
 import '../../services/database.dart';
 import '../../services/local_image_service.dart';
+import '../../state/view_model.dart';
 import '../../utils/constants/themes.dart';
 import '../../widgets/photo_picker_gallery/provider/custom_photo_provider.dart';
 
-class ChatViewViewModel extends ChangeNotifier {
-  ChatViewViewModel(
-    this.context, {
+class ChatViewViewModel extends ViewModel {
+  ChatViewViewModel({
     required this.createMessage,
     this.chat,
     this.members,
@@ -28,7 +28,6 @@ class ChatViewViewModel extends ChangeNotifier {
     this.productId,
   });
 
-  final BuildContext context;
   final bool createMessage;
 
   final ChatModel? chat;
@@ -46,7 +45,7 @@ class ChatViewViewModel extends ChangeNotifier {
   final ScrollController scrollController = ScrollController();
 
   late final Color indicatorColor;
-  late final CustomPickerDataProvider provider;
+  late final CustomPickerDataProvider imageProvider;
 
   String _chatTitle = 'New message';
   String get chatTitle => _chatTitle;
@@ -67,6 +66,10 @@ class ChatViewViewModel extends ChangeNotifier {
 
   bool _showImagePicker = false;
   bool get showImagePicker => _showImagePicker;
+  set showImagePicker(bool value) {
+    _showImagePicker = value;
+    notifyListeners();
+  }
 
   Stream<QuerySnapshot>? messageStream;
   StreamSubscription? _messageSubscription;
@@ -80,18 +83,19 @@ class ChatViewViewModel extends ChangeNotifier {
   bool _loading = false;
   bool get isLoading => _loading;
 
+  @override
   void init() {
     _chatApiService = ChatAPIService(context.read<API>());
     _conversationAPIService = ConversationAPIService(context.read<API>());
 
     // we're reusing the image picker used in the post and comments section
-    provider = Provider.of<CustomPickerDataProvider>(context, listen: false);
-    provider.onPickMax.addListener(_showMaxAssetsText);
+    imageProvider =
+        Provider.of<CustomPickerDataProvider>(context, listen: false);
+    imageProvider.onPickMax.addListener(_showMaxAssetsText);
     // no need to add onPickListener (like in post_details) since we are not
     // using SingleChildScrollView to build the screen
-    provider.pickedNotifier.addListener(() => notifyListeners());
+    imageProvider.pickedNotifier.addListener(() => notifyListeners());
 
-    _providerInit();
     final userId = context.read<Auth>().user!.id;
     if (!createMessage) {
       _chatTitle = chat!.title;
@@ -113,11 +117,25 @@ class ChatViewViewModel extends ChangeNotifier {
     debugPrint('called dispose');
     // we need to clear and remove the picked images and listeners
     // so that we can use it in its initial state on other screens
-    provider.picked.clear();
-    provider.removeListener(_showMaxAssetsText);
+    imageProvider.picked.clear();
+    imageProvider.removeListener(_showMaxAssetsText);
     _messageSubscription?.cancel();
 
     super.dispose();
+  }
+
+  @override
+  Future<void> onResume() async {
+    if (_showImagePicker) {
+      final result = await PhotoManager.requestPermissionExtend();
+      if (result.isAuth) {
+        final pathList = await PhotoManager.getAssetPathList(
+          onlyAll: true,
+          type: RequestType.image,
+        );
+        imageProvider.resetPathList(pathList);
+      }
+    }
   }
 
   void _messageStreamListener(QuerySnapshot snapshot) {
@@ -132,14 +150,6 @@ class ChatViewViewModel extends ChangeNotifier {
       _userSentLastMessage = false;
     }
     notifyListeners();
-  }
-
-  Future<void> _providerInit() async {
-    final pathList = await PhotoManager.getAssetPathList(
-      onlyAll: true,
-      type: RequestType.image,
-    );
-    provider.resetPathList(pathList);
   }
 
   Future<void> _checkExistingChat() async {
@@ -172,7 +182,7 @@ class ChatViewViewModel extends ChangeNotifier {
 
   Future<void> onSendMessage() async {
     final message = chatInputController.text;
-    final picked = provider.picked;
+    final picked = imageProvider.picked;
     final showImagePicker = _showImagePicker;
     final replyMessage = _replyMessage;
     final replyId = _replyId;
@@ -190,7 +200,7 @@ class ChatViewViewModel extends ChangeNotifier {
       notifyListeners();
 
       if (_createNewMessage) {
-        final media = await _getMedia(provider.picked);
+        final media = await _getMedia(imageProvider.picked);
         final chat = await _chatApiService.createChat(
           body: {
             'user_id': user.id,
@@ -212,7 +222,7 @@ class ChatViewViewModel extends ChangeNotifier {
         );
         notifyListeners();
       } else {
-        final media = _getMedia(provider.picked);
+        final media = _getMedia(imageProvider.picked);
         _conversationAPIService.createConversation(
           chatId: _chat!.id,
           body: {
@@ -224,7 +234,7 @@ class ChatViewViewModel extends ChangeNotifier {
         );
       }
       chatInputController.clear();
-      provider.picked.clear();
+      imageProvider.picked.clear();
       _showImagePicker = false;
       _replyMessage = null;
       _replyId = '';
@@ -232,7 +242,7 @@ class ChatViewViewModel extends ChangeNotifier {
     } catch (e) {
       showToast(e.toString());
       chatInputController.text = message;
-      provider.picked = picked;
+      imageProvider.picked = picked;
       _showImagePicker = showImagePicker;
       _replyMessage = replyMessage;
       _replyId = replyId;
@@ -267,7 +277,18 @@ class ChatViewViewModel extends ChangeNotifier {
     );
   }
 
-  void onShowImagePicker() {
+  Future<void> onShowImagePicker() async {
+    if (!_showImagePicker) {
+      final result = await PhotoManager.requestPermissionExtend();
+      if (result.isAuth) {
+        final pathList = await PhotoManager.getAssetPathList(
+          onlyAll: true,
+          type: RequestType.image,
+        );
+        imageProvider.resetPathList(pathList);
+      }
+    }
+
     _showImagePicker = !_showImagePicker;
     notifyListeners();
   }
@@ -284,7 +305,7 @@ class ChatViewViewModel extends ChangeNotifier {
   }
 
   void onImageRemove(int index) {
-    provider.picked.removeAt(index);
+    imageProvider.picked.removeAt(index);
     notifyListeners();
   }
 

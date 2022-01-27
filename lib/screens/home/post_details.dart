@@ -59,7 +59,7 @@ class _PostDetailsView extends HookView<PostDetailViewModel>
   Widget screen(BuildContext context, PostDetailViewModel vm) {
     final _scrollController = useScrollController();
     final _commentInputFocusNode = useFocusNode();
-    final _showImagePicker = useState<bool>(false);
+    // final _showImagePicker = useState<bool>(false);
 
     useEffect(
       () {
@@ -228,8 +228,8 @@ class _PostDetailsView extends HookView<PostDetailViewModel>
                             color: kTealColor,
                           ),
                         ),
-                        onTap: () {
-                          _showImagePicker.value = !_showImagePicker.value;
+                        onTap: () async {
+                          await vm.onShowImagePicker();
                           Future.delayed(const Duration(milliseconds: 300), () {
                             _scrollController.animateTo(
                               _scrollController.position.maxScrollExtent,
@@ -269,7 +269,7 @@ class _PostDetailsView extends HookView<PostDetailViewModel>
                                   inputController: vm.inputController,
                                   inputFocusNode: _commentInputFocusNode,
                                   onSend: vm.createComment,
-                                  onTap: () => _showImagePicker.value = false,
+                                  onTap: () => vm.showImagePicker = false,
                                   hintText: 'Add a comment...',
                                 ),
                               ],
@@ -282,7 +282,7 @@ class _PostDetailsView extends HookView<PostDetailViewModel>
                 ),
                 AnimatedContainer(
                   duration: const Duration(milliseconds: 100),
-                  height: _showImagePicker.value ? 150.0.h : 0,
+                  height: vm.showImagePicker ? 150.0.h : 0,
                   child: ImageGalleryPicker(
                     vm.imageProvider,
                     pickerHeight: 150.h,

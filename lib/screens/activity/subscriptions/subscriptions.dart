@@ -39,9 +39,9 @@ class _SubscriptionsView extends StatelessView<SubscriptionsViewModel> {
         onPressedLeading: () => Navigator.of(context).pop(),
       ),
       body: vm.stream != null
-          ? StreamBuilder(
+          ? StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
               stream: vm.stream,
-              builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+              builder: (context, snapshot) {
                 switch (snapshot.connectionState) {
                   case ConnectionState.waiting:
                     return const Center(
@@ -62,26 +62,21 @@ class _SubscriptionsView extends StatelessView<SubscriptionsViewModel> {
                         ),
                       );
                     } else {
-                      return GroupedListView(
+                      return GroupedListView<
+                          QueryDocumentSnapshot<Map<String, dynamic>>, bool?>(
                         physics: const AlwaysScrollableScrollPhysics(),
                         elements: snapshot.data!.docs,
-                        groupBy: (QueryDocumentSnapshot snapshot) {
+                        groupBy: (snapshot) {
                           final archived = snapshot['archived'] as bool?;
                           return archived;
                         },
-                        groupSeparatorBuilder: (dynamic archived) {
+                        groupSeparatorBuilder: (bool? archived) {
                           return const SizedBox();
                         },
                         order: GroupedListOrder.DESC,
-                        itemBuilder: (context, QueryDocumentSnapshot snapshot) {
-                          final snapshotData =
-                              snapshot.data()! as Map<String, dynamic>;
-                          final data = {
-                            ...snapshotData,
-                            'id': snapshot.id,
-                          };
+                        itemBuilder: (context, snapshot) {
                           final subscriptionPlan =
-                              ProductSubscriptionPlan.fromMap(data);
+                              ProductSubscriptionPlan.fromDocument(snapshot);
                           return _SubscriptionCard(
                             subscriptionPlan: subscriptionPlan,
                             isBuyer: vm.isBuyer,
@@ -96,15 +91,9 @@ class _SubscriptionsView extends StatelessView<SubscriptionsViewModel> {
                             },
                           );
                         },
-                        itemComparator:
-                            (QueryDocumentSnapshot a, QueryDocumentSnapshot b) {
-                          final subA = ProductSubscriptionPlan.fromMap(
-                            a.data()! as Map<String, dynamic>,
-                          );
-                          final subB = ProductSubscriptionPlan.fromMap(
-                            b.data()! as Map<String, dynamic>,
-                          );
-
+                        itemComparator: (a, b) {
+                          final subA = ProductSubscriptionPlan.fromDocument(a);
+                          final subB = ProductSubscriptionPlan.fromDocument(b);
                           return subA.plan.startDates.first
                               .compareTo(subB.plan.startDates.first);
                         },

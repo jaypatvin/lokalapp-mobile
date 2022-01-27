@@ -50,7 +50,7 @@ class ChatView extends StatefulWidget {
   _ChatViewState createState() => _ChatViewState();
 }
 
-class _ChatViewState extends State<ChatView> {
+class _ChatViewState extends State<ChatView> with WidgetsBindingObserver {
   // TODO: clean up repeated codes
   // these repeated codes are from post_details.dart
 
@@ -61,7 +61,7 @@ class _ChatViewState extends State<ChatView> {
   String replyId = '';
   Conversation? replyMessage;
   bool showImagePicker = false;
-  late final CustomPickerDataProvider provider;
+  late final CustomPickerDataProvider imageProvider;
   Color? _indicatorColor;
 
   Conversation? _currentlySendingMessage;
@@ -94,13 +94,13 @@ class _ChatViewState extends State<ChatView> {
     _conversationAPIService = ConversationAPIService(context.read<API>());
 
     // we're reusing the image picker used in the post and comments section
-    provider = context.read<CustomPickerDataProvider>();
-    provider.onPickMax.addListener(showMaxAssetsText);
+    imageProvider = context.read<CustomPickerDataProvider>();
+    imageProvider.onPickMax.addListener(showMaxAssetsText);
     // no need to add onPickListener (like in post_details) since we are not
     // using SingleChildScrollView to build the screen
-    provider.pickedNotifier.addListener(() => setState(() {}));
+    imageProvider.pickedNotifier.addListener(() => setState(() {}));
 
-    providerInit();
+    // providerInit();
     final userId = context.read<Auth>().user!.id;
     if (!widget.createMessage) {
       _loading = false;
@@ -117,17 +117,42 @@ class _ChatViewState extends State<ChatView> {
       checkExistingChat();
     }
     _createNewMessage = widget.createMessage;
+
+    WidgetsBinding.instance?.addObserver(this);
   }
 
   @override
   void dispose() {
+    WidgetsBinding.instance?.removeObserver(this);
+
     // we need to clear and remove the picked images and listeners
     // so that we can use it in its initial state on other screens
-    provider.picked.clear();
-    provider.removeListener(showMaxAssetsText);
+    imageProvider.picked.clear();
+    imageProvider.removeListener(showMaxAssetsText);
     _messageSubscription?.cancel();
 
     super.dispose();
+  }
+
+  @override
+  Future<void> didChangeAppLifecycleState(AppLifecycleState state) async {
+    switch (state) {
+      case AppLifecycleState.resumed:
+        if (showImagePicker) {
+          final result = await PhotoManager.requestPermissionExtend();
+          if (result.isAuth) {
+            final pathList = await PhotoManager.getAssetPathList(
+              onlyAll: true,
+              type: RequestType.image,
+            );
+            imageProvider.resetPathList(pathList);
+          }
+          setState(() {});
+        }
+        break;
+      default:
+        break;
+    }
   }
 
   void _messageStreamListener(QuerySnapshot<Map<String, dynamic>> snapshot) {
@@ -150,12 +175,21 @@ class _ChatViewState extends State<ChatView> {
     }
   }
 
-  Future<void> providerInit() async {
-    final pathList = await PhotoManager.getAssetPathList(
-      onlyAll: true,
-      type: RequestType.image,
-    );
-    provider.resetPathList(pathList);
+  Future<void> onShowImagePicker() async {
+    if (!showImagePicker) {
+      final result = await PhotoManager.requestPermissionExtend();
+      if (result.isAuth) {
+        final pathList = await PhotoManager.getAssetPathList(
+          onlyAll: true,
+          type: RequestType.image,
+        );
+        imageProvider.resetPathList(pathList);
+      }
+    }
+
+    setState(() {
+      showImagePicker = !showImagePicker;
+    });
   }
 
   Future<void> checkExistingChat() async {
@@ -223,7 +257,7 @@ class _ChatViewState extends State<ChatView> {
         );
       });
       if (_createNewMessage) {
-        final media = await _getMedia(provider.picked);
+        final media = await _getMedia(imageProvider.picked);
         final chat = await _chatApiService.createChat(
           body: {
             'user_id': user.id,
@@ -244,7 +278,7 @@ class _ChatViewState extends State<ChatView> {
         });
         _messageSubscription = _messageStream!.listen(_messageStreamListener);
       } else {
-        final media = _getMedia(provider.picked);
+        final media = _getMedia(imageProvider.picked);
         _conversationAPIService.createConversation(
           chatId: _chat!.id,
           body: {
@@ -257,7 +291,7 @@ class _ChatViewState extends State<ChatView> {
       }
       chatInputController.clear();
       setState(() {
-        provider.picked.clear();
+        imageProvider.picked.clear();
         replyId = '';
         showImagePicker = false;
         replyMessage = null;
@@ -318,16 +352,13 @@ class _ChatViewState extends State<ChatView> {
       padding: EdgeInsets.symmetric(horizontal: 10.0.w, vertical: 10.0.h),
       child: ChatInput(
         onMessageSend: _onSendMessage,
-        onShowImagePicker: () => setState(() {
-          showImagePicker = !showImagePicker;
-        }),
+        onShowImagePicker: onShowImagePicker,
         onCancelReply: () => setState(() => replyMessage = null),
-        onImageRemove: (index) => setState(() {
-          provider.picked.removeAt(index);
-        }),
+        onImageRemove: (index) =>
+            setState(() => imageProvider.picked.removeAt(index)),
         chatInputController: chatInputController,
         replyMessage: replyMessage,
-        images: provider.picked,
+        images: imageProvider.picked,
         onTextFieldTap: () => setState(() => showImagePicker = false),
         chatFocusNode: _chatInputNode,
       ),
@@ -339,7 +370,7 @@ class _ChatViewState extends State<ChatView> {
       duration: const Duration(milliseconds: 100),
       height: showImagePicker ? 150.0.h : 0.0.h,
       child: ImageGalleryPicker(
-        provider,
+        imageProvider,
         pickerHeight: 150.h,
         assetHeight: 150.h,
         assetWidth: 150.h,
