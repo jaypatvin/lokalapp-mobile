@@ -7,7 +7,7 @@ import '../../models/user_shop.dart';
 import '../../providers/cart.dart';
 import '../../providers/wishlist.dart';
 import '../../routers/app_router.dart';
-import '../../routers/profile/user_shop.props.dart';
+import '../../routers/profile/props/user_shop.props.dart';
 import '../../screens/profile/shop/user_shop.dart';
 import '../../services/bottom_nav_bar_hider.dart';
 import '../../state/view_model.dart';

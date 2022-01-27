@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/widgets.dart';
 
 import '../../models/app_navigator.dart';
 import '../../screens/home/draft_post.dart';
@@ -16,18 +16,18 @@ class HomeNavigator extends AppNavigator {
   Route<dynamic> onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
       case Home.routeName:
-        return CupertinoPageRoute(
+        return AppNavigator.appPageRoute(
           settings: settings,
           builder: (_) => const Home(),
         );
       case DraftPost.routeName:
-        return CupertinoPageRoute(
+        return AppNavigator.appPageRoute(
           settings: settings,
           builder: (_) => const DraftPost(),
         );
       case PostDetails.routeName:
         final props = settings.arguments! as PostDetailsProps;
-        return CupertinoPageRoute(
+        return AppNavigator.appPageRoute(
           settings: settings,
           builder: (_) => PostDetails(
             activityId: props.activityId,
@@ -36,7 +36,7 @@ class HomeNavigator extends AppNavigator {
           ),
         );
       case Notifications.routeName:
-        return CupertinoPageRoute(
+        return AppNavigator.appPageRoute(
           settings: settings,
           builder: (_) => const Notifications(),
         );

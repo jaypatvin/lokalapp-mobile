@@ -11,7 +11,7 @@ import '../../../providers/products.dart';
 import '../../../providers/shops.dart';
 import '../../../providers/users.dart';
 import '../../../routers/app_router.dart';
-import '../../../routers/chat/chat_view.props.dart';
+import '../../../routers/chat/props/chat_view.props.dart';
 import '../../../state/mvvm_builder.widget.dart';
 import '../../../state/views/stateless.view.dart';
 import '../../../utils/constants/assets.dart';

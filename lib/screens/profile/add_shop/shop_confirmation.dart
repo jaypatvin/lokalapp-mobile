@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 
 import '../../../providers/auth.dart';
 import '../../../routers/app_router.dart';
-import '../../../routers/profile/user_shop.props.dart';
+import '../../../routers/profile/props/user_shop.props.dart';
 import '../../../utils/constants/assets.dart';
 import '../../../widgets/app_button.dart';
 import '../../../widgets/custom_app_bar.dart';

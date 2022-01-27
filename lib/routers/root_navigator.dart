@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/widgets.dart';
 
 import '../models/app_navigator.dart';
 import '../screens/auth/invite_screen.dart';
@@ -18,27 +18,27 @@ class RootNavigator extends AppNavigator {
   Route onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
       case WelcomeScreen.routeName:
-        return CupertinoPageRoute(
+        return AppNavigator.appPageRoute(
           settings: settings,
           builder: (_) => const WelcomeScreen(),
         );
       case BottomNavigation.routeName:
-        return CupertinoPageRoute(
+        return AppNavigator.appPageRoute(
           settings: settings,
-          builder: (_) => BottomNavigation(),
+          builder: (_) => const BottomNavigation(),
         );
       case DraftPost.routeName:
-        return CupertinoPageRoute(
+        return AppNavigator.appPageRoute(
           settings: settings,
           builder: (_) => const DraftPost(),
         );
       case InvitePage.routeName:
-        return CupertinoPageRoute(
+        return AppNavigator.appPageRoute(
           settings: settings,
           builder: (_) => const InvitePage(),
         );
       case ProfileRegistration.routeName:
-        return CupertinoPageRoute(
+        return AppNavigator.appPageRoute(
           settings: settings,
           builder: (_) => const ProfileRegistration(),
         );

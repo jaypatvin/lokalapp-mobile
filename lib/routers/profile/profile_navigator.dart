@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/widgets.dart';
 
 import '../../models/app_navigator.dart';
 import '../../screens/profile/add_product/add_product.dart';
@@ -14,10 +14,10 @@ import '../../screens/profile/settings/invite_a_friend/invite_a_friend.dart';
 import '../../screens/profile/settings/settings.dart';
 import '../../screens/profile/shop/user_shop.dart';
 import '../../screens/profile/wishlist_screen.dart';
-import 'customize_availability.props.dart';
-import 'payment_options.props.dart';
-import 'shop_schedule.props.dart';
-import 'user_shop.props.dart';
+import 'props/customize_availability.props.dart';
+import 'props/payment_options.props.dart';
+import 'props/shop_schedule.props.dart';
+import 'props/user_shop.props.dart';
 
 class ProfileNavigator extends AppNavigator {
   const ProfileNavigator(GlobalKey<NavigatorState> navigatorKey)
@@ -28,26 +28,26 @@ class ProfileNavigator extends AppNavigator {
     switch (settings.name) {
       case ProfileScreen.routeName:
         final userId = (settings.arguments! as Map<String, String>)['userId']!;
-        return CupertinoPageRoute(
+        return AppNavigator.appPageRoute(
           settings: settings,
           builder: (_) => ProfileScreen(
             userId: userId,
           ),
         );
       case EditProfile.routeName:
-        return CupertinoPageRoute(
+        return AppNavigator.appPageRoute(
           settings: settings,
           builder: (_) => const EditProfile(),
         );
       case Settings.routeName:
-        return CupertinoPageRoute(
+        return AppNavigator.appPageRoute(
           settings: settings,
           builder: (_) => Settings(),
         );
 
       case UserShop.routeName:
         final props = settings.arguments! as UserShopProps;
-        return CupertinoPageRoute(
+        return AppNavigator.appPageRoute(
           settings: settings,
           builder: (_) => UserShop(
             userId: props.userId,
@@ -56,13 +56,13 @@ class ProfileNavigator extends AppNavigator {
         );
 
       case AddShop.routeName:
-        return CupertinoPageRoute(
+        return AppNavigator.appPageRoute(
           settings: settings,
           builder: (_) => AddShop(),
         );
       case ShopSchedule.routeName:
         final props = settings.arguments! as ShopScheduleProps;
-        return CupertinoPageRoute(
+        return AppNavigator.appPageRoute(
           settings: settings,
           builder: (_) => ShopSchedule(
             shopPhoto: props.shopPhoto,
@@ -72,7 +72,7 @@ class ProfileNavigator extends AppNavigator {
         );
       case CustomizeAvailability.routeName:
         final props = settings.arguments! as CustomizeAvailabilityProps;
-        return CupertinoPageRoute(
+        return AppNavigator.appPageRoute(
           settings: settings,
           builder: (_) => CustomizeAvailability(
             repeatChoice: props.repeatChoice,
@@ -87,14 +87,14 @@ class ProfileNavigator extends AppNavigator {
         );
       case SetUpPaymentOptions.routeName:
         final props = settings.arguments! as SetUpPaymentOptionsProps;
-        return CupertinoPageRoute(
+        return AppNavigator.appPageRoute(
           settings: settings,
           builder: (_) => props.edit
               ? SetUpPaymentOptions.edit(onSubmit: props.onSubmit)
               : SetUpPaymentOptions.create(onSubmit: props.onSubmit),
         );
       case AddShopConfirmation.routeName:
-        return CupertinoPageRoute(
+        return AppNavigator.appPageRoute(
           settings: settings,
           builder: (_) => AddShopConfirmation(),
         );
@@ -103,7 +103,7 @@ class ProfileNavigator extends AppNavigator {
         final productId = settings.arguments != null
             ? (settings.arguments! as Map<String, String>)['productId']
             : null;
-        return CupertinoPageRoute(
+        return AppNavigator.appPageRoute(
           settings: settings,
           builder: (_) => AddProduct(
             productId: productId,
@@ -111,19 +111,19 @@ class ProfileNavigator extends AppNavigator {
         );
 
       case WishlistScreen.routeName:
-        return CupertinoPageRoute(
+        return AppNavigator.appPageRoute(
           settings: settings,
           builder: (_) => const WishlistScreen(),
         );
 
       case InviteAFriend.routeName:
-        return CupertinoPageRoute(
+        return AppNavigator.appPageRoute(
           settings: settings,
           builder: (_) => const InviteAFriend(),
         );
 
       case EditShop.routeName:
-        return CupertinoPageRoute(
+        return AppNavigator.appPageRoute(
           settings: settings,
           builder: (_) => const EditShop(),
         );

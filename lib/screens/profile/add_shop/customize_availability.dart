@@ -12,7 +12,7 @@ import '../../../providers/post_requests/operating_hours_body.dart';
 import '../../../providers/post_requests/shop_body.dart';
 import '../../../providers/shops.dart';
 import '../../../routers/app_router.dart';
-import '../../../routers/profile/payment_options.props.dart';
+import '../../../routers/profile/props/payment_options.props.dart';
 import '../../../services/local_image_service.dart';
 import '../../../utils/calendar_picker/calendar_picker.dart';
 import '../../../utils/repeated_days_generator/schedule_generator.dart';

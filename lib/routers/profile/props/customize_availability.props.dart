@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import '../../widgets/schedule_picker.dart';
+import '../../../widgets/schedule_picker.dart';
 
 class CustomizeAvailabilityProps {
   const CustomizeAvailabilityProps({

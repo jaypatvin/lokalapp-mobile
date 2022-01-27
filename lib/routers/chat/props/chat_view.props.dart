@@ -1,4 +1,4 @@
-import '../../models/chat_model.dart';
+import '../../../models/chat_model.dart';
 
 class ChatViewProps {
   const ChatViewProps({

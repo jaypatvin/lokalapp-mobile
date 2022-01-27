@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/widgets.dart';
 
 import '../../models/app_navigator.dart';
 import '../../screens/cart/cart_confirmation.dart';
@@ -28,42 +28,42 @@ class DiscoverNavigator extends AppNavigator {
     switch (settings.name) {
       // DISCOVER SCREENS
       case Discover.routeName:
-        return CupertinoPageRoute(
+        return AppNavigator.appPageRoute(
           settings: settings,
           builder: (_) => const Discover(),
         );
       case ExploreCategories.routeName:
-        return CupertinoPageRoute(
+        return AppNavigator.appPageRoute(
           settings: settings,
           builder: (_) => ExploreCategories(),
         );
       case ProductDetail.routeName:
         final props = settings.arguments! as ProductDetailProps;
-        return CupertinoPageRoute(
+        return AppNavigator.appPageRoute(
           settings: settings,
           builder: (_) => ProductDetail(props.product),
         );
       case Search.routeName:
-        return CupertinoPageRoute(
+        return AppNavigator.appPageRoute(
           settings: settings,
           builder: (_) => const Search(),
         );
 
       // CART SCREENS
       case CheckoutCart.routeName:
-        return CupertinoPageRoute(
+        return AppNavigator.appPageRoute(
           settings: settings,
           builder: (_) => const CheckoutCart(),
         );
       case ShopCheckout.routeName:
         final props = settings.arguments! as ShopCheckoutProps;
-        return CupertinoPageRoute(
+        return AppNavigator.appPageRoute(
           settings: settings,
           builder: (_) => ShopCheckout(shop: props.shop),
         );
       case Checkout.routeName:
         final props = settings.arguments! as CheckoutProps;
-        return CupertinoPageRoute(
+        return AppNavigator.appPageRoute(
           settings: settings,
           builder: (_) => Checkout(
             productId: props.productId,
@@ -71,14 +71,14 @@ class DiscoverNavigator extends AppNavigator {
         );
       case CheckoutSchedule.routeName:
         final props = settings.arguments! as CheckoutScheduleProps;
-        return CupertinoPageRoute(
+        return AppNavigator.appPageRoute(
           settings: settings,
           builder: (_) => CheckoutSchedule(
             productId: props.productId,
           ),
         );
       case CartConfirmation.routeName:
-        return CupertinoPageRoute(
+        return AppNavigator.appPageRoute(
           settings: settings,
           builder: (_) => const CartConfirmation(),
         );

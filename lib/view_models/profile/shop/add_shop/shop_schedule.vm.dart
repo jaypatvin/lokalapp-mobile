@@ -9,7 +9,7 @@ import '../../../../providers/auth.dart';
 import '../../../../providers/post_requests/operating_hours_body.dart';
 import '../../../../providers/shops.dart';
 import '../../../../routers/app_router.dart';
-import '../../../../routers/profile/customize_availability.props.dart';
+import '../../../../routers/profile/props/customize_availability.props.dart';
 import '../../../../screens/profile/add_shop/customize_availability.dart';
 import '../../../../state/view_model.dart';
 import '../../../../utils/functions.utils.dart';

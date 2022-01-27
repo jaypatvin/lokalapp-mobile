@@ -8,7 +8,7 @@ import '../../../models/product_subscription_plan.dart';
 import '../../../providers/products.dart';
 import '../../../providers/shops.dart';
 import '../../../routers/app_router.dart';
-import '../../../routers/chat/chat_view.props.dart';
+import '../../../routers/chat/props/chat_view.props.dart';
 import '../../../routers/discover/product_detail.props.dart';
 import '../../../screens/activity/subscriptions/subscription_schedule.dart';
 import '../../../screens/chat/chat_view.dart';
