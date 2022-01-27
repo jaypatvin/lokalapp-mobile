@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import '../utils/constants/assets.dart';
 
+import '../models/app_navigator.dart';
+import '../utils/constants/assets.dart';
 import '../utils/constants/themes.dart';
 import '../widgets/app_button.dart';
 import 'auth/invite_screen.dart';
@@ -62,8 +63,8 @@ class WelcomeScreen extends StatelessWidget {
                   text: 'SIGN IN',
                   onPressed: () => Navigator.push(
                     context,
-                    MaterialPageRoute(
-                      builder: (context) => const LoginScreen(),
+                    AppNavigator.appPageRoute(
+                      builder: (_) => const LoginScreen(),
                     ),
                   ),
                 ),
@@ -77,8 +78,8 @@ class WelcomeScreen extends StatelessWidget {
                   color: kOrangeColor,
                   onPressed: () => Navigator.push(
                     context,
-                    MaterialPageRoute(
-                      builder: (context) => const InvitePage(),
+                    AppNavigator.appPageRoute(
+                      builder: (_) => const InvitePage(),
                     ),
                   ),
                 ),

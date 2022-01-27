@@ -6,9 +6,11 @@ import 'package:oktoast/oktoast.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:provider/provider.dart';
 
+import '../../models/app_navigator.dart';
 import '../../models/chat_model.dart';
 import '../../models/conversation.dart';
 import '../../providers/auth.dart';
+import '../../routers/app_router.dart';
 import '../../screens/chat/chat_profile.dart';
 import '../../services/api/api.dart';
 import '../../services/api/chat_api_service.dart';
@@ -266,13 +268,10 @@ class ChatViewViewModel extends ViewModel {
 
   void onGoToChatDetails() {
     if (chat == null) return;
-    Navigator.push(
-      context,
-      CupertinoPageRoute(
-        builder: (ctx) => ChatProfile(
-          _chat,
-          _conversations,
-        ),
+
+    AppRouter.chatNavigatorKey.currentState?.push(
+      AppNavigator.appPageRoute(
+        builder: (_) => ChatProfile(_chat, _conversations),
       ),
     );
   }

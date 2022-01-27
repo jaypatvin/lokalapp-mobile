@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
+import '../../models/app_navigator.dart';
 import '../../models/conversation.dart';
 import '../../models/lokal_images.dart';
 import '../../widgets/custom_app_bar.dart';
@@ -45,13 +46,13 @@ class _SharedMediaState extends State<SharedMedia> {
   ) {
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (context) => GalleryNetworkPhotoView(
+      AppNavigator.appPageRoute(
+        builder: (_) => GalleryNetworkPhotoView(
           galleryItems: galleryItems,
+          initialIndex: index,
           backgroundDecoration: const BoxDecoration(
             color: Colors.black,
           ),
-          initialIndex: index,
         ),
       ),
     );

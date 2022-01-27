@@ -1,7 +1,7 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../models/app_navigator.dart';
 import '../../../../providers/post_requests/product_body.dart';
 import '../../../../routers/app_router.dart';
 import '../../../../widgets/app_button.dart';
@@ -62,8 +62,10 @@ class _ProductAddOnState extends State<ProductAddOn> {
               text: 'New Add-on',
               onPressed: () {
                 AppRouter.profileNavigatorKey.currentState?.push(
-                  CupertinoPageRoute(
-                    builder: (_) => NewAddOn(gallery: widget.gallery),
+                  AppNavigator.appPageRoute(
+                    builder: (_) => NewAddOn(
+                      gallery: widget.gallery,
+                    ),
                   ),
                 );
               },
@@ -75,7 +77,7 @@ class _ProductAddOnState extends State<ProductAddOn> {
               text: 'Skip',
               onPressed: () {
                 AppRouter.profileNavigatorKey.currentState?.push(
-                  CupertinoPageRoute(
+                  AppNavigator.appPageRoute(
                     builder: (_) => NewAddOn(gallery: widget.gallery),
                   ),
                 );

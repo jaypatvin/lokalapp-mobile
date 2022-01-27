@@ -8,6 +8,7 @@ import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 import 'package:provider/provider.dart';
 
+import '../../../models/app_navigator.dart';
 import '../../../models/lokal_images.dart';
 import '../../../providers/auth.dart';
 import '../../../providers/post_requests/operating_hours_body.dart';
@@ -319,8 +320,8 @@ class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
 
       Navigator.push(
         context,
-        MaterialPageRoute(
-          builder: (BuildContext context) => AddProductConfirmation(),
+        AppNavigator.appPageRoute(
+          builder: (_) => const AddProductConfirmation(),
         ),
       );
     } catch (e) {

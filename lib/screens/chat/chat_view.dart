@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:keyboard_actions/keyboard_actions.dart';
@@ -10,6 +9,7 @@ import 'package:oktoast/oktoast.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:provider/provider.dart';
 
+import '../../models/app_navigator.dart';
 import '../../models/chat_model.dart';
 import '../../models/conversation.dart';
 import '../../providers/auth.dart';
@@ -391,11 +391,8 @@ class _ChatViewState extends State<ChatView> with WidgetsBindingObserver {
         if (_chat != null) {
           Navigator.push(
             context,
-            CupertinoPageRoute(
-              builder: (ctx) => ChatProfile(
-                _chat,
-                _conversations,
-              ),
+            AppNavigator.appPageRoute(
+              builder: (_) => ChatProfile(_chat, _conversations),
             ),
           );
         }

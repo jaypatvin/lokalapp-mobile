@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../models/app_navigator.dart';
 import '../../../../models/user_shop.dart';
 import '../../../../providers/post_requests/operating_hours_body.dart';
 import '../../../../providers/post_requests/shop_body.dart';
@@ -109,23 +110,23 @@ class EditShopViewModel extends ViewModel {
   }
 
   void onChangeShopSchedule() {
-    context.read<AppRouter>().keyOf(AppRoute.profile).currentState?.push(
-          CupertinoPageRoute(
-            builder: (_) => ShopSchedule(
-              shopPhoto: shopPhoto,
-              forEditing: true,
-              onShopEdit: () {
-                _editedShopSchedule = true;
-                Navigator.popUntil(
-                  context,
-                  ModalRoute.withName(
-                    EditShop.routeName,
-                  ),
-                );
-              },
-            ),
-          ),
-        );
+    AppRouter.profileNavigatorKey.currentState?.push(
+      AppNavigator.appPageRoute(
+        builder: (_) => ShopSchedule(
+          shopPhoto: shopPhoto,
+          forEditing: true,
+          onShopEdit: () {
+            _editedShopSchedule = true;
+            Navigator.popUntil(
+              context,
+              ModalRoute.withName(
+                EditShop.routeName,
+              ),
+            );
+          },
+        ),
+      ),
+    );
   }
 
   void onEditPaymentOptions() {

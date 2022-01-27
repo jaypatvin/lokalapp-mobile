@@ -1,10 +1,10 @@
 import 'dart:developer';
 import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
+import '../../../models/app_navigator.dart';
 import '../../../models/bank_code.dart';
 import '../../../models/order.dart';
 import '../../../models/payment_option.dart';
@@ -83,7 +83,7 @@ class BankDetailsViewModel extends ViewModel {
       // The ProcessingPaymentScreen returns a boolean on successful
       // payment. If it is, we pop this and go back to the Activity screen.
       AppRouter.activityNavigatorKey.currentState?.push(
-        CupertinoPageRoute(
+        AppNavigator.appPageRoute(
           builder: (_) => ProcessingPayment(
             order: order,
             paymentMode: paymentMode,

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../models/app_navigator.dart';
 import '../../../../providers/post_requests/product_body.dart';
-import '../../../../routers/app_router.dart';
 import '../../../../widgets/app_button.dart';
 import '../../../../widgets/custom_app_bar.dart';
 import '../../../../widgets/inputs/input_name_field.dart';
@@ -109,9 +109,11 @@ class _AddAVariantState extends State<AddAVariant> {
             AppButton.filled(
               text: 'Add a Variant',
               onPressed: () {
-                AppRouter.pushNewScreen(
+                Navigator.push(
                   context,
-                  screen: ProductVariant2(gallery: widget.gallery),
+                  AppNavigator.appPageRoute(
+                    builder: (_) => ProductVariant2(gallery: widget.gallery),
+                  ),
                 );
               },
             ),

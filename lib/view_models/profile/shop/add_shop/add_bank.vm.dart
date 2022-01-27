@@ -1,5 +1,4 @@
-import 'package:flutter/cupertino.dart';
-
+import '../../../../models/app_navigator.dart';
 import '../../../../models/bank_code.dart';
 import '../../../../models/payment_option.dart';
 import '../../../../providers/bank_codes.dart';
@@ -42,7 +41,7 @@ class AddBankViewModel extends ViewModel {
 
   void onAddBankDetails() {
     AppRouter.profileNavigatorKey.currentState?.push(
-      CupertinoPageRoute(
+      AppNavigator.appPageRoute(
         builder: (_) => AddBankDetails(
           bankType: _bankType,
           edit: edit,
@@ -53,7 +52,7 @@ class AddBankViewModel extends ViewModel {
 
   void onEditBankDetails(PaymentOption account) {
     AppRouter.profileNavigatorKey.currentState?.push(
-      CupertinoPageRoute(
+      AppNavigator.appPageRoute(
         builder: (_) => AddBankDetails(
           bankAccount: account,
           bankType: _bankType,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../models/app_navigator.dart';
 import '../../../models/order.dart';
 import '../../../utils/constants/themes.dart';
 import '../../../widgets/app_button.dart';
@@ -108,8 +109,8 @@ class TransactionCard extends StatelessWidget {
             text: 'Details',
             onPressed: () => Navigator.push(
               context,
-              MaterialPageRoute(
-                builder: (context) => OrderDetails(
+              AppNavigator.appPageRoute(
+                builder: (_) => OrderDetails(
                   order: order,
                   isBuyer: isBuyer,
                   subheader: status ?? '',

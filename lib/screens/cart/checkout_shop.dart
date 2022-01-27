@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../models/app_navigator.dart';
 import '../../models/user_shop.dart';
 import '../../providers/cart.dart';
 import '../../providers/products.dart';
@@ -109,8 +110,9 @@ class _OrdersCard extends StatelessWidget {
                   Expanded(
                     child: AppButton.transparent(
                       text: 'Subscribe',
-                      onPressed: () => Navigator.of(context).push(
-                        MaterialPageRoute(
+                      onPressed: () => Navigator.push(
+                        context,
+                        AppNavigator.appPageRoute(
                           builder: (_) => SubscriptionSchedule.create(
                             productId: productId,
                           ),

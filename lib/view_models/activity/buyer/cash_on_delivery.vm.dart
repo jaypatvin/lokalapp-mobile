@@ -1,7 +1,7 @@
-import 'package:flutter/cupertino.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
+import '../../../models/app_navigator.dart';
 import '../../../models/failure_exception.dart';
 import '../../../models/order.dart';
 import '../../../routers/app_router.dart';
@@ -31,15 +31,8 @@ class CashOnDeliveryViewModel extends ViewModel {
       );
 
       if (_success) {
-        // AppRouter.pushNewScreen(
-        //   context,
-        //   screen: ProcessingPayment(
-        //     order: order,
-        //     paymentMode: PaymentMode.cash,
-        //   ),
-        // );
         AppRouter.activityNavigatorKey.currentState?.push(
-          CupertinoPageRoute(
+          AppNavigator.appPageRoute(
             builder: (_) => ProcessingPayment(
               order: order,
               paymentMode: PaymentMode.cash,

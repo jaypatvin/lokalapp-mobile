@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:grouped_list/grouped_list.dart';
 
+import '../../../models/app_navigator.dart';
 import '../../../models/product_subscription_plan.dart';
 import '../../../state/mvvm_builder.widget.dart';
 import '../../../state/views/stateless.view.dart';
@@ -81,8 +82,9 @@ class _SubscriptionsView extends StatelessView<SubscriptionsViewModel> {
                             subscriptionPlan: subscriptionPlan,
                             isBuyer: vm.isBuyer,
                             onDetailsPressed: () {
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
+                              Navigator.push(
+                                context,
+                                AppNavigator.appPageRoute(
                                   builder: (_) => SubscriptionDetails(
                                     subscriptionPlan: subscriptionPlan,
                                   ),

@@ -2,6 +2,7 @@ import 'package:intl/intl.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
+import '../../../models/app_navigator.dart';
 import '../../../models/failure_exception.dart';
 import '../../../models/operating_hours.dart';
 import '../../../models/product_subscription_plan.dart';
@@ -97,10 +98,11 @@ class SubscriptionDetailsViewModel extends ViewModel {
   }
 
   void onSeeSchedule() {
-    AppRouter.pushNewScreen(
-      context,
-      screen: SubscriptionSchedule.view(
-        subscriptionPlan: subscriptionPlan,
+    AppRouter.activityNavigatorKey.currentState?.push(
+      AppNavigator.appPageRoute(
+        builder: (_) => SubscriptionSchedule.view(
+          subscriptionPlan: subscriptionPlan,
+        ),
       ),
     );
   }

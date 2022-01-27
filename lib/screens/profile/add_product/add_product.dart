@@ -5,10 +5,10 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
+import '../../../models/app_navigator.dart';
 import '../../../models/lokal_images.dart';
 import '../../../providers/post_requests/product_body.dart';
 import '../../../providers/products.dart';
-import '../../../routers/app_router.dart';
 import '../../../utils/constants/themes.dart';
 import '../../../widgets/app_button.dart';
 import '../../../widgets/custom_app_bar.dart';
@@ -191,11 +191,13 @@ class _AddProductState extends State<AddProduct> with ScreenLoader {
           description: _descriptionController.text,
         );
 
-    AppRouter.pushNewScreen(
+    Navigator.push(
       context,
-      screen: ProductDetails(
-        gallery: _gallery,
-        productId: widget.productId,
+      AppNavigator.appPageRoute(
+        builder: (_) => ProductDetails(
+          gallery: _gallery,
+          productId: widget.productId,
+        ),
       ),
     );
   }

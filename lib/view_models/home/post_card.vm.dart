@@ -1,9 +1,9 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/activity_feed.dart';
+import '../../models/app_navigator.dart';
 import '../../providers/activities.dart';
 import '../../providers/auth.dart';
 import '../../routers/app_router.dart';
@@ -86,15 +86,14 @@ class PostCardViewModel extends ViewModel {
   }
 
   void openGallery(ActivityFeed activity, int index) {
-    Navigator.push(
-      context,
-      CupertinoPageRoute(
-        builder: (context) => GalleryNetworkPhotoView(
+    AppRouter.rootNavigatorKey.currentState?.push(
+      AppNavigator.appPageRoute(
+        builder: (_) => GalleryNetworkPhotoView(
           galleryItems: activity.images,
+          initialIndex: index,
           backgroundDecoration: const BoxDecoration(
             color: Colors.black,
           ),
-          initialIndex: index,
         ),
       ),
     );

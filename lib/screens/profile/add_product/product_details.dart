@@ -4,10 +4,10 @@ import 'package:keyboard_actions/keyboard_actions.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
 
+import '../../../models/app_navigator.dart';
 import '../../../models/lokal_category.dart';
 import '../../../providers/categories.dart';
 import '../../../providers/post_requests/product_body.dart';
-import '../../../routers/app_router.dart';
 import '../../../utils/constants/themes.dart';
 import '../../../widgets/app_button.dart';
 import '../../../widgets/app_checkbox.dart';
@@ -295,11 +295,13 @@ class _ProductDetailsState extends State<ProductDetails> {
                     text: 'Next',
                     onPressed: valid
                         ? () {
-                            AppRouter.pushNewScreen(
+                            Navigator.push(
                               context,
-                              screen: ProductSchedule(
-                                gallery: widget.gallery,
-                                productId: widget.productId,
+                              AppNavigator.appPageRoute(
+                                builder: (_) => ProductSchedule(
+                                  gallery: widget.gallery,
+                                  productId: widget.productId,
+                                ),
                               ),
                             );
                           }

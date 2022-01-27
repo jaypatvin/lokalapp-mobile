@@ -7,7 +7,9 @@ import 'package:oktoast/oktoast.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 
+import '../../models/app_navigator.dart';
 import '../../providers/auth.dart';
+import '../../routers/app_router.dart';
 import '../../screens/bottom_navigation.dart';
 import '../../services/api/api.dart';
 import '../../services/api/user_api_service.dart';
@@ -92,10 +94,6 @@ class _VerifyScreenState extends State<VerifyScreen> {
         .toList();
 
     return CupertinoButton(
-      // child: Text(
-      //   _chosenIdType ?? 'Select type of ID',
-      //   style: Theme.of(context).textTheme.bodyText2,
-      // ),
       child: Row(
         children: [
           if (_chosenIdType == null)
@@ -177,20 +175,18 @@ class _VerifyScreenState extends State<VerifyScreen> {
 
           if (verified) {
             if (widget.skippable) {
-              Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => VerifyConfirmationScreen(
+              AppRouter.rootNavigatorKey.currentState?.pushAndRemoveUntil(
+                AppNavigator.appPageRoute(
+                  builder: (_) => VerifyConfirmationScreen(
                     skippable: widget.skippable,
                   ),
                 ),
                 (route) => false,
               );
             } else {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => VerifyConfirmationScreen(
+              AppRouter.profileNavigatorKey.currentState?.push(
+                AppNavigator.appPageRoute(
+                  builder: (_) => VerifyConfirmationScreen(
                     skippable: widget.skippable,
                   ),
                 ),
@@ -209,10 +205,10 @@ class _VerifyScreenState extends State<VerifyScreen> {
       return [
         TextButton(
           onPressed: () {
-            Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (context) => BottomNavigation()),
-              (route) => false,
+            AppRouter.rootNavigatorKey.currentState?.push(
+              AppNavigator.appPageRoute(
+                builder: (_) => const BottomNavigation(),
+              ),
             );
           },
           child: Text(
@@ -232,10 +228,10 @@ class _VerifyScreenState extends State<VerifyScreen> {
 
   Future<bool> _onWillPop() async {
     if (widget.skippable) {
-      Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(builder: (context) => BottomNavigation()),
-        (route) => false,
+      AppRouter.rootNavigatorKey.currentState?.push(
+        AppNavigator.appPageRoute(
+          builder: (_) => const BottomNavigation(),
+        ),
       );
     }
     return true;

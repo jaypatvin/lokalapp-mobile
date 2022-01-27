@@ -10,6 +10,7 @@ import '../../../../widgets/custom_app_bar.dart';
 import '../settings.dart';
 
 class DeleteAccount extends StatefulWidget {
+  const DeleteAccount({Key? key}) : super(key: key);
   @override
   _DeleteAccountState createState() => _DeleteAccountState();
 }

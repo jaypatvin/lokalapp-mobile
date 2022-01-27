@@ -3,6 +3,7 @@ import 'package:lottie/lottie.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 
+import '../../models/app_navigator.dart';
 import '../../utils/constants/assets.dart';
 import '../../utils/constants/themes.dart';
 import '../../widgets/app_button.dart';
@@ -101,8 +102,8 @@ class OrderPlaced extends StatelessWidget {
                     text: 'BACK TO MY CART',
                     onPressed: () => Navigator.pushAndRemoveUntil(
                       context,
-                      MaterialPageRoute(
-                        builder: (BuildContext context) => const CheckoutCart(),
+                      AppNavigator.appPageRoute(
+                        builder: (_) => const CheckoutCart(),
                       ),
                       ModalRoute.withName(Discover.routeName),
                     ),

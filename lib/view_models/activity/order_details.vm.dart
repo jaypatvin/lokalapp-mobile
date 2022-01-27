@@ -1,5 +1,6 @@
 import 'package:provider/provider.dart';
 
+import '../../models/app_navigator.dart';
 import '../../models/lokal_images.dart';
 import '../../models/order.dart';
 import '../../routers/app_router.dart';
@@ -40,19 +41,21 @@ class OrderDetailsViewModel extends ViewModel {
       case OrderAction.confirm:
         final success = await _apiService.confirm(orderId: order.id!);
         if (success) {
-          AppRouter.pushNewScreen(
-            context,
-            screen: OrderConfirmed(
-              order: order,
-              isBuyer: isBuyer,
+          AppRouter.activityNavigatorKey.currentState?.push(
+            AppNavigator.appPageRoute(
+              builder: (_) => OrderConfirmed(
+                order: order,
+                isBuyer: isBuyer,
+              ),
             ),
           );
         }
         break;
       case OrderAction.pay:
-        AppRouter.pushNewScreen(
-          context,
-          screen: PaymentOptionScreen(order: order),
+        AppRouter.activityNavigatorKey.currentState?.push(
+          AppNavigator.appPageRoute(
+            builder: (_) => PaymentOptionScreen(order: order),
+          ),
         );
         break;
       case OrderAction.viewPayment:
@@ -67,9 +70,10 @@ class OrderDetailsViewModel extends ViewModel {
         final success = await _apiService.confirmPayment(orderId: order.id!);
 
         if (success) {
-          AppRouter.pushNewScreen(
-            context,
-            screen: PaymentConfirmed(order: order),
+          AppRouter.activityNavigatorKey.currentState?.push(
+            AppNavigator.appPageRoute(
+              builder: (_) => PaymentConfirmed(order: order),
+            ),
           );
         }
         break;
@@ -77,16 +81,21 @@ class OrderDetailsViewModel extends ViewModel {
         final success = await _apiService.shipOut(orderId: order.id!);
 
         if (success) {
-          AppRouter.pushNewScreen(context, screen: ShippedOut(order: order));
+          AppRouter.activityNavigatorKey.currentState?.push(
+            AppNavigator.appPageRoute(
+              builder: (_) => ShippedOut(order: order),
+            ),
+          );
         }
         break;
       case OrderAction.received:
         final success = await _apiService.receive(orderId: order.id!);
 
         if (success) {
-          AppRouter.pushNewScreen(
-            context,
-            screen: OrderReceived(order: order),
+          AppRouter.activityNavigatorKey.currentState?.push(
+            AppNavigator.appPageRoute(
+              builder: (_) => OrderReceived(order: order),
+            ),
           );
         }
 

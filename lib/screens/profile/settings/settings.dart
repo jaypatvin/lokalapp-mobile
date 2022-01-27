@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
+import '../../../models/app_navigator.dart';
 import '../../../providers/auth.dart';
 import '../../../providers/cart.dart';
 import '../../../routers/app_router.dart';
@@ -48,8 +49,12 @@ class Settings extends StatelessWidget {
               ),
             ),
             ListTile(
-              onTap: () =>
-                  AppRouter.pushNewScreen(context, screen: MyAccount()),
+              onTap: () => Navigator.push(
+                context,
+                AppNavigator.appPageRoute(
+                  builder: (_) => const MyAccount(),
+                ),
+              ),
               tileColor: Colors.white,
               leading: Text(
                 'My Account',
@@ -62,9 +67,11 @@ class Settings extends StatelessWidget {
               ),
             ),
             ListTile(
-              onTap: () => AppRouter.pushNewScreen(
+              onTap: () => Navigator.push(
                 context,
-                screen: const ChatSettings(),
+                AppNavigator.appPageRoute(
+                  builder: (_) => const ChatSettings(),
+                ),
               ),
               tileColor: Colors.white,
               leading: Text(
@@ -78,9 +85,11 @@ class Settings extends StatelessWidget {
               ),
             ),
             ListTile(
-              onTap: () => AppRouter.pushNewScreen(
+              onTap: () => Navigator.push(
                 context,
-                screen: NotificationSetting(),
+                AppNavigator.appPageRoute(
+                  builder: (_) => const NotificationSettings(),
+                ),
               ),
               tileColor: Colors.white,
               leading: Text(
@@ -94,8 +103,12 @@ class Settings extends StatelessWidget {
               ),
             ),
             ListTile(
-              onTap: () =>
-                  AppRouter.pushNewScreen(context, screen: PrivacySetting()),
+              onTap: () => Navigator.push(
+                context,
+                AppNavigator.appPageRoute(
+                  builder: (_) => const PrivacySettings(),
+                ),
+              ),
               tileColor: Colors.white,
               leading: Text(
                 'Privacy Settings',
@@ -108,9 +121,11 @@ class Settings extends StatelessWidget {
               ),
             ),
             ListTile(
-              onTap: () => AppRouter.pushNewScreen(
+              onTap: () => Navigator.push(
                 context,
-                screen: const InviteAFriend(),
+                AppNavigator.appPageRoute(
+                  builder: (_) => const InviteAFriend(),
+                ),
               ),
               tileColor: Colors.white,
               leading: Text(
@@ -136,8 +151,12 @@ class Settings extends StatelessWidget {
               ),
             ),
             ListTile(
-              onTap: () =>
-                  AppRouter.pushNewScreen(context, screen: HelpCenter()),
+              onTap: () => Navigator.push(
+                context,
+                AppNavigator.appPageRoute(
+                  builder: (_) => const HelpCenter(),
+                ),
+              ),
               tileColor: Colors.white,
               leading: Text(
                 'Help Center',
@@ -150,8 +169,12 @@ class Settings extends StatelessWidget {
               ),
             ),
             ListTile(
-              onTap: () =>
-                  AppRouter.pushNewScreen(context, screen: TermsOfService()),
+              onTap: () => Navigator.push(
+                context,
+                AppNavigator.appPageRoute(
+                  builder: (_) => const TermsOfService(),
+                ),
+              ),
               tileColor: Colors.white,
               leading: Text(
                 'Terms of Service',
@@ -164,9 +187,11 @@ class Settings extends StatelessWidget {
               ),
             ),
             ListTile(
-              onTap: () => AppRouter.pushNewScreen(
+              onTap: () => Navigator.push(
                 context,
-                screen: const PrivacyPolicy(),
+                AppNavigator.appPageRoute(
+                  builder: (_) => const PrivacyPolicy(),
+                ),
               ),
               tileColor: Colors.white,
               leading: Text(
@@ -180,7 +205,12 @@ class Settings extends StatelessWidget {
               ),
             ),
             ListTile(
-              onTap: () => AppRouter.pushNewScreen(context, screen: About()),
+              onTap: () => Navigator.push(
+                context,
+                AppNavigator.appPageRoute(
+                  builder: (_) => const About(),
+                ),
+              ),
               tileColor: Colors.white,
               leading: Text(
                 'About',

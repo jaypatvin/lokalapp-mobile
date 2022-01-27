@@ -1,9 +1,9 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:provider/provider.dart';
 
+import '../../models/app_navigator.dart';
 import '../../models/lokal_images.dart';
 import '../../providers/activities.dart';
 import '../../providers/auth.dart';
@@ -90,15 +90,15 @@ class DraftPostViewModel extends ViewModel {
 
   void openGallery(final int index) {
     AppRouter.rootNavigatorKey.currentState?.push(
-      CupertinoPageRoute(
-        builder: (context) => GalleryAssetPhotoView(
-          loadingBuilder: (_, __) =>
-              const Center(child: CircularProgressIndicator()),
+      AppNavigator.appPageRoute(
+        builder: (_) => GalleryAssetPhotoView(
+          initialIndex: index,
           galleryItems: imageProvider.picked,
           backgroundDecoration: const BoxDecoration(
             color: Colors.black,
           ),
-          initialIndex: index,
+          loadingBuilder: (_, __) =>
+              const Center(child: CircularProgressIndicator()),
         ),
       ),
     );

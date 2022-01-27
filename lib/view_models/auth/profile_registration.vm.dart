@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
+import '../../models/app_navigator.dart';
 import '../../providers/auth.dart';
 import '../../providers/bank_codes.dart';
 import '../../providers/categories.dart';
@@ -106,7 +107,7 @@ class ProfileRegistrationViewModel extends ViewModel {
       await context.read<Categories>().fetch();
       await context.read<BankCodes>().fetch();
       AppRouter.rootNavigatorKey.currentState?.pushAndRemoveUntil(
-        CupertinoPageRoute(
+        AppNavigator.appPageRoute(
           builder: (context) => const VerifyScreen(),
         ),
         (route) => false,

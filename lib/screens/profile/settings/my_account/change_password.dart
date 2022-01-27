@@ -3,6 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:keyboard_actions/keyboard_actions.dart';
 
+import '../../../../models/app_navigator.dart';
 import '../../../../state/mvvm_builder.widget.dart';
 import '../../../../state/views/hook.view.dart';
 import '../../../../utils/constants/themes.dart';
@@ -217,8 +218,8 @@ class _ChangePasswordView extends HookView<ChangePasswordViewModel>
                   if (success!) {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(
-                        builder: (context) => const MyAccountConfirmation(
+                      AppNavigator.appPageRoute(
+                        builder: (_) => const MyAccountConfirmation(
                           isPassword: true,
                         ),
                       ),

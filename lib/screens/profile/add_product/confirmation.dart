@@ -8,6 +8,8 @@ import '../../../widgets/custom_app_bar.dart';
 import '../shop/user_shop.dart';
 
 class AddProductConfirmation extends StatelessWidget {
+  const AddProductConfirmation({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     final double height = MediaQuery.of(context).size.height;

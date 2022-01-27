@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import '../../../../utils/constants/themes.dart';
 import '../../../../widgets/custom_app_bar.dart';
 
-class PrivacySetting extends StatelessWidget {
+class PrivacySettings extends StatelessWidget {
+  const PrivacySettings({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Scaffold(

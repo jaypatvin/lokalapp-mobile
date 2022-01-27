@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 
+import '../../models/app_navigator.dart';
+import '../../routers/app_router.dart';
 import '../../screens/bottom_navigation.dart';
 import '../../utils/constants/themes.dart';
 import '../../widgets/custom_app_bar.dart';
@@ -13,10 +15,10 @@ class VerifyConfirmationScreen extends StatelessWidget {
 
   Future<bool> _onWillPop(BuildContext context) async {
     if (skippable) {
-      Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(builder: (context) => BottomNavigation()),
-        (route) => false,
+      AppRouter.rootNavigatorKey.currentState?.push(
+        AppNavigator.appPageRoute(
+          builder: (_) => const BottomNavigation(),
+        ),
       );
     }
     return true;
