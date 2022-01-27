@@ -131,49 +131,17 @@ class _ProductDetailView extends HookView<ProductDetailViewModel> {
             Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                // TextButton(
-                //   onPressed: () => null,
-                //   style: TextButton.styleFrom(
-                //     padding: EdgeInsets.zero,
-                //     minimumSize: Size.zero,
-                //     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                //   ),
-                //   child: Text(
-                //     "Read Reviews",
-                //     style: TextStyle(
-                //       fontSize:
-                //           Theme.of(context).textTheme.subtitle2?.fontSize,
-                //       decoration: TextDecoration.underline,
-                //     ),
-                //   ),
-                // ),
-                Consumer<UserWishlist>(
-                  builder: (ctx, wishlist, __) {
-                    if (wishlist.isLoading) {
-                      return const Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    }
-
-                    return TextButton(
-                      onPressed: vm.onWishlistPressed,
-                      style: TextButton.styleFrom(
-                        padding: EdgeInsets.zero,
-                        minimumSize: Size.zero,
-                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      ),
-                      child: Text(
-                        wishlist.items.contains(vm.product.id)
-                            ? 'Remove from Wishlist'
-                            : 'Add to Wishlist',
-                        style: TextStyle(
-                          fontSize:
-                              Theme.of(context).textTheme.subtitle2?.fontSize,
+                TextButton(
+                  onPressed: () {},
+                  style: TextButton.styleFrom(
+                    padding: EdgeInsets.zero,
+                    minimumSize: Size.zero,
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    textStyle: Theme.of(context).textTheme.subtitle2?.copyWith(
                           decoration: TextDecoration.underline,
                         ),
-                      ),
-                    );
-                  },
+                  ),
+                  child: const Text('Read Reviews'),
                 ),
               ],
             ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/app_navigator.dart';
@@ -30,7 +31,6 @@ class ShopCheckout extends StatelessWidget {
         titleText: shop.name,
         titleStyle: const TextStyle(color: Colors.white),
         backgroundColor: kTealColor,
-        onPressedLeading: () => Navigator.pop(context),
       ),
       body: Consumer<ShoppingCart>(
         builder: (_, cart, __) {
@@ -43,7 +43,10 @@ class ShopCheckout extends StatelessWidget {
               final key = orders.keys.elementAt(index);
               if (key == null) return const SizedBox();
               return Padding(
-                padding: const EdgeInsets.all(16.0),
+                padding: EdgeInsets.symmetric(
+                  horizontal: 16.0.w,
+                  vertical: 8.0.h,
+                ),
                 child: _OrdersCard(productId: key),
               );
             },
@@ -68,11 +71,11 @@ class _OrdersCard extends StatelessWidget {
     return Card(
       elevation: 0.0,
       shape: RoundedRectangleBorder(
-        side: BorderSide(color: Colors.grey[300]!),
-        borderRadius: BorderRadius.circular(16.0),
+        side: BorderSide(color: Colors.grey.shade300),
+        borderRadius: BorderRadius.circular(16.0.r),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: EdgeInsets.fromLTRB(16.0.w, 16.0.h, 16.0.w, 8.0.h),
         child: Column(
           children: [
             OrderDetails(
@@ -87,54 +90,70 @@ class _OrdersCard extends StatelessWidget {
               },
             ),
             const Divider(),
+            SizedBox(height: 8.0.h),
             Align(
               alignment: Alignment.centerRight,
               child: RichText(
                 text: TextSpan(
                   text: 'Order Total\t',
-                  style: const TextStyle(color: Color(0xFF828282)),
+                  style: Theme.of(context).textTheme.bodyText2?.copyWith(
+                        fontSize: 12.0.sp,
+                        fontWeight: FontWeight.w500,
+                      ),
                   children: [
                     TextSpan(
                       text: (product.basePrice * order.quantity).toString(),
-                      style: const TextStyle(color: Colors.orange),
+                      style: Theme.of(context).textTheme.bodyText2?.copyWith(
+                            fontSize: 12.0.sp,
+                            color: kOrangeColor,
+                            fontWeight: FontWeight.w600,
+                          ),
                     )
                   ],
                 ),
               ),
             ),
-            const SizedBox(height: 8.0),
-            Row(
-              // TODO: ADD ON PRESS FUNCTIONS
-              children: [
-                if (context.read<Products>().findById(productId)!.canSubscribe)
-                  Expanded(
-                    child: AppButton.transparent(
-                      text: 'Subscribe',
-                      onPressed: () => Navigator.push(
-                        context,
-                        AppNavigator.appPageRoute(
-                          builder: (_) => SubscriptionSchedule.create(
-                            productId: productId,
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: 8.0.h),
+              child: Row(
+                // TODO: ADD ON PRESS FUNCTIONS
+                children: [
+                  if (context
+                      .read<Products>()
+                      .findById(productId)!
+                      .canSubscribe)
+                    Expanded(
+                      child: AppButton.transparent(
+                        text: 'Subscribe',
+                        onPressed: () => Navigator.push(
+                          context,
+                          AppNavigator.appPageRoute(
+                            builder: (_) => SubscriptionSchedule.create(
+                              productId: productId,
+                            ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-                if (context.read<Products>().findById(productId)!.canSubscribe)
-                  const SizedBox(width: 8.0),
-                Expanded(
-                  child: AppButton.filled(
-                    text: 'Checkout',
-                    onPressed: () {
-                      context.read<AppRouter>().navigateTo(
-                            AppRoute.discover,
-                            Checkout.routeName,
-                            arguments: CheckoutProps(productId),
-                          );
-                    },
-                  ),
-                )
-              ],
+                  if (context
+                      .read<Products>()
+                      .findById(productId)!
+                      .canSubscribe)
+                    const SizedBox(width: 8.0),
+                  Expanded(
+                    child: AppButton.filled(
+                      text: 'Checkout',
+                      onPressed: () {
+                        context.read<AppRouter>().navigateTo(
+                              AppRoute.discover,
+                              Checkout.routeName,
+                              arguments: CheckoutProps(productId),
+                            );
+                      },
+                    ),
+                  )
+                ],
+              ),
             ),
           ],
         ),
