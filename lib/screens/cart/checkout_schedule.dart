@@ -48,6 +48,7 @@ class _CheckoutScheduleState extends State<CheckoutSchedule> with ScreenLoader {
       final user = auth.user!;
       final order =
           context.read<ShoppingCart>().orders[shopId]![widget.productId]!;
+      final _cart = context.read<ShoppingCart>();
       await _apiService.create(
         body: {
           'products': [
@@ -64,18 +65,16 @@ class _CheckoutScheduleState extends State<CheckoutSchedule> with ScreenLoader {
         },
       );
 
-      context
-        ..read<ShoppingCart>().remove(widget.productId)
-        ..read<AppRouter>()
-            .keyOf(AppRoute.discover)
-            .currentState!
-            .pushNamedAndRemoveUntil(
-              CartConfirmation.routeName,
-              ModalRoute.withName(
-                Discover.routeName,
-              ),
-            );
+      AppRouter.discoverNavigatorKey.currentState
+          ?.pushNamedAndRemoveUntil(
+            CartConfirmation.routeName,
+            ModalRoute.withName(
+              Discover.routeName,
+            ),
+          )
+          .then((_) => _cart.remove(widget.productId));
     } catch (e) {
+      debugPrint(e.toString());
       showToast('Failed to place order!');
     }
   }
