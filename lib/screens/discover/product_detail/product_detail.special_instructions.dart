@@ -15,7 +15,7 @@ class SpecialInstructionsTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: maxLines * 15.0,
+      height: maxLines * 15.0.sp,
       child: TextField(
         focusNode: focusNode,
         controller: controller,
@@ -48,16 +48,13 @@ class SpecialInstructionsTextField extends StatelessWidget {
           // disabledBorder: InputBorder.none,
           contentPadding: EdgeInsets.symmetric(
             horizontal: 24.0.w,
-            vertical: 24.0.w,
+            vertical: 24.0.h,
           ),
           hintText: 'e.g no bell peppers, please.',
-          hintStyle: TextStyle(
-            color: const Color(0xFFBDBDBD),
-            fontSize: 16.0.sp,
-            fontFamily: 'Goldplay',
-            fontWeight: FontWeight.w500,
-            // fontWeight: FontWeight.w500,
-          ),
+          hintStyle: Theme.of(context)
+              .textTheme
+              .bodyText2
+              ?.copyWith(color: const Color(0xFFBDBDBD)),
         ),
       ),
     );

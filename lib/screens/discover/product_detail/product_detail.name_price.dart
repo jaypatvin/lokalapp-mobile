@@ -23,7 +23,7 @@ class ProductItemAndPrice extends StatelessWidget {
             productName!,
             style: Theme.of(context)
                 .textTheme
-                .headline5
+                .headline6
                 ?.copyWith(fontWeight: FontWeight.w600),
           ),
         ),

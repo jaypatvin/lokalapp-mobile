@@ -141,7 +141,7 @@ class Product {
       productPhoto: map['product_photo'],
       status: map['status'],
       archived: map['archived'],
-      canSubscribe: map['can_subscribe'] ?? true,
+      canSubscribe: map['can_subscribe'] ?? false,
       createdAt: TimestampObject.fromMap(map['created_at']).toDateTime(),
       updatedAt: map['updated_at'] != null
           ? TimestampObject.fromMap(map['updated_at']).toDateTime()
