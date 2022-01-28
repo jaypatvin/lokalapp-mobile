@@ -245,7 +245,7 @@ class _MyAppState extends State<MyApp> {
                       headline6: TextStyle(
                         fontSize: 20.0.sp,
                         color: kNavyColor,
-                        fontWeight: FontWeight.bold,
+                        fontWeight: FontWeight.w600,
                       ),
                       subtitle1: TextStyle(
                         fontSize: 16.0.sp,

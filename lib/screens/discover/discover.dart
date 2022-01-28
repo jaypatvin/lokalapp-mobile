@@ -62,7 +62,10 @@ class _DiscoverView extends StatelessView<DiscoverViewModel> {
                     softWrap: true,
                     overflow: TextOverflow.ellipsis,
                     textAlign: TextAlign.center,
-                    style: Theme.of(ctx).textTheme.subtitle1,
+                    style: Theme.of(ctx).textTheme.subtitle2?.copyWith(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 12.0.sp,
+                        ),
                   ),
                 ],
               ),
@@ -117,7 +120,7 @@ class _DiscoverView extends StatelessView<DiscoverViewModel> {
                       padding: EdgeInsets.symmetric(horizontal: 16.0.w),
                       child: Text(
                         'Recommended',
-                        style: Theme.of(context).textTheme.headline5,
+                        style: Theme.of(context).textTheme.headline6,
                       ),
                     ),
                   ),
@@ -146,15 +149,17 @@ class _DiscoverView extends StatelessView<DiscoverViewModel> {
                       endIndent: 16.0.w,
                     ),
                   ),
-                  SliverToBoxAdapter(child: SizedBox(height: 10.0.h)),
                   SliverToBoxAdapter(
                     child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 16.0.w),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 16.0.w,
+                        vertical: 10.0.h,
+                      ),
                       child: Row(
                         children: [
                           Text(
                             'Explore Categories',
-                            style: Theme.of(context).textTheme.headline5,
+                            style: Theme.of(context).textTheme.headline6,
                           ),
                           const Spacer(),
                           GestureDetector(
@@ -163,10 +168,14 @@ class _DiscoverView extends StatelessView<DiscoverViewModel> {
                               children: [
                                 Text(
                                   'View All',
-                                  style: Theme.of(context).textTheme.subtitle1,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .subtitle1
+                                      ?.copyWith(color: kTealColor),
                                 ),
                                 Icon(
-                                  Icons.arrow_forward_ios,
+                                  // Icons.arrow_forward_ios,
+                                  Icons.arrow_forward,
                                   color: kTealColor,
                                   size: 16.0.sp,
                                 ),
@@ -196,7 +205,7 @@ class _DiscoverView extends StatelessView<DiscoverViewModel> {
                       padding: EdgeInsets.symmetric(horizontal: 16.0.w),
                       child: Text(
                         'Recent',
-                        style: Theme.of(context).textTheme.headline5,
+                        style: Theme.of(context).textTheme.headline6,
                       ),
                     ),
                   ),
@@ -243,7 +252,7 @@ class _RecommendedProducts extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         itemCount: products.length,
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          childAspectRatio: 3 / 2,
+          childAspectRatio: 5 / 3.5,
           crossAxisCount: 1,
         ),
         itemBuilder: (ctx, index) {

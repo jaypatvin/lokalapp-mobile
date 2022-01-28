@@ -35,12 +35,15 @@ class SearchTextField extends StatelessWidget {
         prefixIcon: Icon(
           Icons.search,
           color: const Color(0xffBDBDBD),
-          size: 23.0.sp,
+          size: 24.0.sp,
         ),
         hintText: hintText,
         labelStyle: TextStyle(fontSize: 20.0.sp),
         contentPadding: const EdgeInsets.symmetric(vertical: 1),
-        hintStyle: const TextStyle(color: Color(0xffBDBDBD)),
+        hintStyle: const TextStyle(
+          color: Color(0xffBDBDBD),
+          fontWeight: FontWeight.w500,
+        ),
       ),
     );
   }

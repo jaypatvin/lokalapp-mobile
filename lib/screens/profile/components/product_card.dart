@@ -65,104 +65,110 @@ class _ProductCardView extends HookView<ProductCardViewModel> {
             ? Border.all(color: Colors.orange, width: 3)
             : Border.all(color: Colors.grey.shade300),
       ),
-      child: GridTile(
-        key: Key(vm.productId),
-        footer: Container(
-          margin: EdgeInsets.zero,
-          padding: EdgeInsets.symmetric(
-            horizontal: 5.0.w,
-            vertical: 2.0.h,
-          ),
-          constraints: const BoxConstraints(),
-          color: Colors.white,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                vm.productName,
-                softWrap: true,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: Theme.of(context).textTheme.headline6,
+      child: Stack(
+        children: [
+          Positioned.fill(
+            child: Image.network(
+              vm.productImage ?? '',
+              fit: BoxFit.cover,
+              errorBuilder: (ctx, _, __) => const SizedBox(
+                child: Text('No Image'),
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            ),
+          ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Container(
+              margin: EdgeInsets.zero,
+              padding: EdgeInsets.symmetric(
+                horizontal: 5.0.w,
+                vertical: 2.0.h,
+              ),
+              color: Colors.white,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    vm.productPrice,
-                    textAlign: TextAlign.start,
-                    style: Theme.of(context)
-                        .textTheme
-                        .subtitle1!
-                        .copyWith(color: kOrangeColor),
+                    '${vm.productName}\n',
+                    softWrap: true,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: Theme.of(context).textTheme.subtitle1,
                   ),
-                  GestureDetector(
-                    onTap: vm.onLike,
-                    child: !vm.isLiked
-                        ? Icon(
-                            MdiIcons.heartOutline,
-                            size: 24.0.r,
-                            color: Colors.black,
-                          )
-                        : Icon(
-                            MdiIcons.heart,
-                            size: 24.0.r,
-                            color: kPinkColor,
-                          ),
-                  ),
-                ],
-              ),
-              SizedBox(height: 2.0.h),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  ChatAvatar(
-                    displayName: vm.shop.name,
-                    displayPhoto: vm.shop.profilePhoto,
-                    radius: 9.0.r,
-                    onTap: vm.onShopTap,
-                  ),
-                  SizedBox(width: 5.0.w),
-                  Expanded(
-                    child: Text(
-                      vm.shop.name!,
-                      overflow: TextOverflow.ellipsis,
-                      textAlign: TextAlign.start,
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 12.0.sp,
-                      ),
-                    ),
-                  ),
-                  SizedBox(width: 5.0.w),
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Icon(
-                        Icons.star,
-                        color: Colors.amber,
-                        size: 9.0.r,
-                      ),
                       Text(
-                        vm.productRating,
-                        style: TextStyle(
-                          color: Colors.amber,
-                          fontSize: 12.0.sp,
-                        ),
+                        vm.productPrice,
+                        textAlign: TextAlign.start,
+                        style: Theme.of(context)
+                            .textTheme
+                            .subtitle1!
+                            .copyWith(color: kOrangeColor),
+                      ),
+                      GestureDetector(
+                        onTap: vm.onLike,
+                        child: !vm.isLiked
+                            ? Icon(
+                                MdiIcons.heartOutline,
+                                size: 24.0.r,
+                                color: Colors.black,
+                              )
+                            : Icon(
+                                MdiIcons.heart,
+                                size: 24.0.r,
+                                color: kPinkColor,
+                              ),
                       ),
                     ],
-                  )
+                  ),
+                  SizedBox(height: 2.0.h),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      ChatAvatar(
+                        displayName: vm.shop.name,
+                        displayPhoto: vm.shop.profilePhoto,
+                        radius: 9.0.r,
+                        onTap: vm.onShopTap,
+                      ),
+                      SizedBox(width: 5.0.w),
+                      Expanded(
+                        child: Text(
+                          vm.shop.name!,
+                          overflow: TextOverflow.ellipsis,
+                          textAlign: TextAlign.start,
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 12.0.sp,
+                          ),
+                        ),
+                      ),
+                      SizedBox(width: 5.0.w),
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.star,
+                            color: Colors.amber,
+                            size: 9.0.r,
+                          ),
+                          Text(
+                            vm.productRating,
+                            style: TextStyle(
+                              color: Colors.amber,
+                              fontSize: 12.0.sp,
+                            ),
+                          ),
+                        ],
+                      )
+                    ],
+                  ),
                 ],
               ),
-            ],
+            ),
           ),
-        ),
-        child: Image.network(
-          vm.productImage ?? '',
-          fit: BoxFit.cover,
-          errorBuilder: (ctx, _, __) => const SizedBox(
-            child: Text('No Image'),
-          ),
-        ),
+        ],
       ),
     );
   }
