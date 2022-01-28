@@ -16,6 +16,7 @@ import '../../../providers/post_requests/product_body.dart';
 import '../../../providers/products.dart';
 import '../../../providers/shops.dart';
 import '../../../services/local_image_service.dart';
+import '../../../utils/constants/assets.dart';
 import '../../../widgets/app_button.dart';
 import '../../../widgets/custom_app_bar.dart';
 import '../../../widgets/overlays/screen_loader.dart';
@@ -164,9 +165,10 @@ class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
   Future<void> _createProduct() async {
     final List<LokalImages> gallery = [];
     for (final image in images) {
-      final mediaUrl =
-          await Provider.of<LocalImageService>(context, listen: false)
-              .uploadImage(file: image!, name: 'productPhoto');
+      final mediaUrl = await context.read<LocalImageService>().uploadImage(
+            file: image!,
+            src: kProductImagesSrc,
+          );
       gallery.add(LokalImages(url: mediaUrl, order: gallery.length));
     }
 
@@ -222,7 +224,7 @@ class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
       for (final image in images) {
         final mediaUrl = await context
             .read<LocalImageService>()
-            .uploadImage(file: image!, name: 'productPhoto');
+            .uploadImage(file: image!, src: kProductImagesSrc);
         gallery.add(LokalImages(url: mediaUrl, order: gallery.length));
       }
       if (!listEquals(gallery, _product.gallery)) {

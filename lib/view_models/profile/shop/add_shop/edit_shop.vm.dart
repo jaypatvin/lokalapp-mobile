@@ -16,7 +16,8 @@ import '../../../../screens/profile/add_shop/payment_options.dart';
 import '../../../../screens/profile/add_shop/shop_schedule.dart';
 import '../../../../services/local_image_service.dart';
 import '../../../../state/view_model.dart';
-import '../../../../utils/utility.dart';
+import '../../../../utils/constants/assets.dart';
+import '../../../../utils/media_utility.dart';
 
 class EditShopViewModel extends ViewModel {
   EditShopViewModel({required this.shop});
@@ -148,7 +149,7 @@ class EditShopViewModel extends ViewModel {
       try {
         shopPhotoUrl = await imageService.uploadImage(
           file: shopPhoto!,
-          name: 'shop-photo',
+          src: kShopImagesSrc,
         );
       } catch (e) {
         shopPhotoUrl = shopBody.profilePhoto;
@@ -160,7 +161,7 @@ class EditShopViewModel extends ViewModel {
       try {
         shopCoverPhotoUrl = await imageService.uploadImage(
           file: shopCoverPhoto!,
-          name: 'shop-cover-photo',
+          src: kShopImagesSrc,
         );
       } catch (e) {
         shopCoverPhotoUrl = shopBody.coverPhoto;

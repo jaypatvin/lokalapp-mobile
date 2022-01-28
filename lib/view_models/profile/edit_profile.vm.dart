@@ -10,7 +10,8 @@ import '../../services/api/api.dart';
 import '../../services/api/user_api_service.dart';
 import '../../services/local_image_service.dart';
 import '../../state/view_model.dart';
-import '../../utils/utility.dart';
+import '../../utils/constants/assets.dart';
+import '../../utils/media_utility.dart';
 
 class EditProfileViewModel extends ViewModel {
   late String _firstName;
@@ -56,7 +57,7 @@ class EditProfileViewModel extends ViewModel {
     try {
       userPhotoUrl = await imageService.uploadImage(
         file: _profilePhoto!,
-        name: 'profile-photo',
+        src: kUserImagesSrc,
       );
     } catch (e) {
       showToast('Error changing the image');

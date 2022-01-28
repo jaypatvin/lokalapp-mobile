@@ -14,8 +14,9 @@ import '../../screens/bottom_navigation.dart';
 import '../../services/api/api.dart';
 import '../../services/api/user_api_service.dart';
 import '../../services/local_image_service.dart';
+import '../../utils/constants/assets.dart';
 import '../../utils/constants/themes.dart';
-import '../../utils/utility.dart';
+import '../../utils/media_utility.dart';
 import '../../widgets/app_button.dart';
 import '../../widgets/custom_app_bar.dart';
 import 'verify_confirmation_screen.dart';
@@ -157,8 +158,10 @@ class _VerifyScreenState extends State<VerifyScreen> {
     final LocalImageService picker =
         Provider.of<LocalImageService>(context, listen: false);
     if (_file != null) {
-      final String mediaUrl =
-          await picker.uploadImage(file: _file!, name: 'verification');
+      final String mediaUrl = await picker.uploadImage(
+        file: _file!,
+        src: kVerificationImagesSrc,
+      );
 
       if (mediaUrl.isNotEmpty) {
         // TODO: CHANGE TO PROVIDER

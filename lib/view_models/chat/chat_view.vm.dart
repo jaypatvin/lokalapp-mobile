@@ -18,6 +18,7 @@ import '../../services/api/conversation_api_service.dart';
 import '../../services/database.dart';
 import '../../services/local_image_service.dart';
 import '../../state/view_model.dart';
+import '../../utils/constants/assets.dart';
 import '../../utils/constants/themes.dart';
 import '../../widgets/photo_picker_gallery/provider/custom_photo_provider.dart';
 
@@ -316,15 +317,15 @@ class ChatViewViewModel extends ViewModel {
   Future<List<Map<String, dynamic>>> _getMedia(
     List<AssetEntity> assets,
   ) async {
-    final _imageService = LocalImageService.instance;
+    final _imageService = context.read<LocalImageService>();
     final media = <Map<String, dynamic>>[];
 
     for (int index = 0; index < assets.length; index++) {
       final asset = assets[index];
       final file = await asset.file;
-      final url = await _imageService!.uploadImage(
+      final url = await _imageService.uploadImage(
         file: file!,
-        name: 'post_photo',
+        src: kChatImagesSrc,
       );
       media.add({
         'url': url,

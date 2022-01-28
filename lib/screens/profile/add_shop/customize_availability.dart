@@ -15,6 +15,7 @@ import '../../../routers/app_router.dart';
 import '../../../routers/profile/props/payment_options.props.dart';
 import '../../../services/local_image_service.dart';
 import '../../../utils/calendar_picker/calendar_picker.dart';
+import '../../../utils/constants/assets.dart';
 import '../../../utils/repeated_days_generator/schedule_generator.dart';
 import '../../../widgets/app_button.dart';
 import '../../../widgets/custom_app_bar.dart';
@@ -160,8 +161,9 @@ class _CustomizeAvailabilityState extends State<CustomizeAvailability>
     final file = widget.shopPhoto;
     String mediaUrl = '';
     if (file != null) {
-      mediaUrl = await Provider.of<LocalImageService>(context, listen: false)
-          .uploadImage(file: file, name: 'shop_photo');
+      mediaUrl = await context
+          .read<LocalImageService>()
+          .uploadImage(file: file, src: kShopImagesSrc);
     }
     if (!mounted) return;
     final user = context.read<Auth>().user!;

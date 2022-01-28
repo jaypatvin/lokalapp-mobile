@@ -223,15 +223,15 @@ class _ChatViewState extends State<ChatView> with WidgetsBindingObserver {
   Future<List<Map<String, dynamic>>> _getMedia(
     List<AssetEntity> assets,
   ) async {
-    final _imageService = LocalImageService.instance;
+    final _imageService = context.read<LocalImageService>();
     final media = <Map<String, dynamic>>[];
 
     for (int index = 0; index < assets.length; index++) {
       final asset = assets[index];
       final file = await asset.file;
-      final url = await _imageService!.uploadImage(
+      final url = await _imageService.uploadImage(
         file: file!,
-        name: 'post_photo',
+        src: kChatImagesSrc,
       );
       media.add({
         'url': url,

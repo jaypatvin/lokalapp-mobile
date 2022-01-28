@@ -47,3 +47,12 @@ const kAboutLokalUrl = 'https://www.lokalapp.ph';
 const kHelpCenterUrl = 'https://www.lokalapp.ph';
 const kPrivacyPolicyUrl = 'https://www.lokalapp.ph/privacy-policy.html';
 const kTermsOfServiceUrl = 'https://www.lokalapp.ph/terms-and-condition.html';
+
+// src path for Firebase Storage
+const kActivityImagesSrc = 'activities';
+const kChatImagesSrc = 'chats';
+const kOrderImagesSrc = 'orders';
+const kProductImagesSrc = 'products';
+const kShopImagesSrc = 'shops';
+const kUserImagesSrc = 'users/profilePhotos';
+const kVerificationImagesSrc = 'users/registration';

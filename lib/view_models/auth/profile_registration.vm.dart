@@ -18,7 +18,8 @@ import '../../services/api/api.dart';
 import '../../services/api/invite_api_service.dart';
 import '../../services/local_image_service.dart';
 import '../../state/view_model.dart';
-import '../../utils/utility.dart';
+import '../../utils/constants/assets.dart';
+import '../../utils/media_utility.dart';
 import '../../widgets/verification/verify_screen.dart';
 
 class ProfileRegistrationViewModel extends ViewModel {
@@ -60,7 +61,7 @@ class ProfileRegistrationViewModel extends ViewModel {
     if (profilePhoto != null) {
       mediaUrl = await _imageService.uploadImage(
         file: profilePhoto!,
-        name: 'profile_photo',
+        src: kUserImagesSrc,
       );
     }
 
