@@ -8,7 +8,7 @@ import '../functions.utils.dart';
 import 'repeated_days_generator.dart';
 
 class Schedule {
-  static const List<String?> ordinalNumbers = [
+  static const List<String> ordinalNumbers = [
     'First',
     'Second',
     'Third',
