@@ -50,7 +50,9 @@ class SubscriptionPaymentMethodViewModel extends ViewModel {
 
       if (success) {
         context.read<ShoppingCart>().remove(subscriptionPlanBody.productId);
-        AppRouter.activityNavigatorKey.currentState?.push(
+        // the user is making a new subscription, meaning that the app
+        // is currently at the Discover Tab
+        AppRouter.discoverNavigatorKey.currentState?.push(
           AppNavigator.appPageRoute(
             builder: (_) => const CartConfirmation(
               isSubscription: true,

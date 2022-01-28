@@ -135,7 +135,7 @@ class NewSubscriptionScheduleViewModel extends ViewModel {
         startDates: _startDates,
       ),
     );
-    AppRouter.activityNavigatorKey.currentState?.push(
+    AppRouter.discoverNavigatorKey.currentState?.push(
       AppNavigator.appPageRoute(
         builder: (_) => SubscriptionPaymentMethod(
           subscriptionPlanBody: subscriptionPlanBody,

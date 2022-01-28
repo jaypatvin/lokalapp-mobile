@@ -136,7 +136,6 @@ class _NewSubscriptionScheduleView
                   onPressed: () async => performFuture<void>(
                     () async => vm.onSubmitHandler(),
                   ),
-                  textStyle: TextStyle(fontSize: 20.0.sp),
                 ),
               ),
             ],

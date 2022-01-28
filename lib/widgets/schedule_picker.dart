@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/date_symbols.dart';
 import 'package:intl/intl.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 import '../models/operating_hours.dart';
 import '../utils/calendar_picker/calendar_picker.dart';
@@ -452,6 +453,12 @@ class _SchedulePickerState extends State<SchedulePicker> {
     if (_repeatChoice == RepeatChoices.week) {
       final int everyNWeeks = int.tryParse(_repeatUnit) ?? 0;
       if (everyNWeeks <= 0) return;
+      if (_selectableDays.isEmpty) {
+        _startDates = [];
+        _markedStartDates = [];
+        widget.onStartDatesChanged(_startDates, _repeatChoice.value);
+        return;
+      }
       _startDates = _scheduleGenerator.getWeekDayStartDates(
         _startDate,
         _selectableDays,
@@ -539,7 +546,7 @@ class _SchedulePickerState extends State<SchedulePicker> {
       children: [
         Text(
           widget.header,
-          style: Theme.of(context).textTheme.headline5,
+          style: Theme.of(context).textTheme.headline6,
         ),
         SizedBox(height: 10.0.h),
         Text(
@@ -779,14 +786,16 @@ class _DayOfMonth extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         SizedBox(
-          height: 50.0.h,
           width: double.infinity,
           child: AppButton.filled(
             text: startDayOfMonth == 0
                 ? 'Select Start Day'
                 : '${getOrdinal(startDayOfMonth)} of the month',
             onPressed: editable ? onShowDayOfMonthPicker : null,
-            textStyle: TextStyle(fontSize: 20.0.sp),
+            textStyle: TextStyle(
+              fontSize: 18.0.sp,
+              fontWeight: FontWeight.w600,
+            ),
           ),
         ),
         Align(
@@ -794,8 +803,9 @@ class _DayOfMonth extends StatelessWidget {
             padding: EdgeInsets.symmetric(vertical: height * 0.01),
             child: Text(
               'or',
-              style: Theme.of(context).textTheme.headline6!.copyWith(
+              style: Theme.of(context).textTheme.bodyText2?.copyWith(
                     fontWeight: FontWeight.normal,
+                    color: Colors.black,
                   ),
             ),
           ),
@@ -814,27 +824,30 @@ class _DayOfMonth extends StatelessWidget {
                 ),
                 child: DropdownButtonHideUnderline(
                   child: DropdownButton<String>(
+                    value: ordinalChoice,
+                    onChanged: editable ? onOrdinalChoiceChanged : null,
+                    elevation: 0,
+                    iconSize: 24.0.sp,
+                    style: Theme.of(context).textTheme.bodyText1?.copyWith(
+                          color: Colors.black,
+                          fontWeight: FontWeight.normal,
+                          fontSize: 18.0.sp,
+                        ),
+                    icon: const Icon(
+                      MdiIcons.chevronDown,
+                      color: kTealColor,
+                    ),
                     items: ordinalNumbers.map((String? choice) {
                       return DropdownMenuItem<String>(
                         value: choice,
                         child: Text(choice!),
                       );
                     }).toList(),
-                    value: ordinalChoice,
-                    onChanged: editable ? onOrdinalChoiceChanged : null,
-                    style: Theme.of(context).textTheme.bodyText1!.copyWith(
-                          color: Colors.black,
-                          fontWeight: FontWeight.normal,
-                          fontSize: 20.0.sp,
-                        ),
-                    iconSize: 24.0.sp,
                   ),
                 ),
               ),
             ),
-            SizedBox(
-              width: MediaQuery.of(context).size.width * 0.02,
-            ),
+            SizedBox(width: 5.0.w),
             Expanded(
               child: Container(
                 padding: EdgeInsets.symmetric(horizontal: 20.0.w),
@@ -847,36 +860,39 @@ class _DayOfMonth extends StatelessWidget {
                 ),
                 child: DropdownButtonHideUnderline(
                   child: DropdownButton<String>(
+                    value: monthDayChoice,
+                    onChanged: editable ? onMonthDayChoiceChanged : null,
+                    elevation: 0,
+                    iconSize: 24.0.sp,
+                    style: Theme.of(context).textTheme.bodyText1?.copyWith(
+                          color: Colors.black,
+                          fontWeight: FontWeight.normal,
+                          fontSize: 18.0.sp,
+                        ),
+                    icon: const Icon(
+                      MdiIcons.chevronDown,
+                      color: kTealColor,
+                    ),
                     items: en_USSymbols.WEEKDAYS.map((String choice) {
                       return DropdownMenuItem<String>(
                         value: choice,
                         child: Text(choice),
                       );
                     }).toList(),
-                    value: monthDayChoice,
-                    onChanged: editable ? onMonthDayChoiceChanged : null,
-                    style: Theme.of(context).textTheme.bodyText1!.copyWith(
-                          color: Colors.black,
-                          fontWeight: FontWeight.normal,
-                          fontSize: 20.0.sp,
-                        ),
-                    iconSize: 24.0.sp,
                   ),
                 ),
               ),
             ),
           ],
         ),
-        SizedBox(
-          height: MediaQuery.of(context).size.height * 0.02,
-        ),
+        SizedBox(height: 30.0.h),
         Row(
           children: [
             Text(
               'Start Month',
-              style: Theme.of(context).textTheme.headline6!.copyWith(
+              style: Theme.of(context).textTheme.subtitle2?.copyWith(
                     fontWeight: FontWeight.normal,
-                    fontSize: 20.0.sp,
+                    color: Colors.black,
                   ),
             ),
             SizedBox(width: 10.0.w),
@@ -892,20 +908,27 @@ class _DayOfMonth extends StatelessWidget {
                 ),
                 child: DropdownButtonHideUnderline(
                   child: DropdownButton<String>(
+                    value: monthChoice,
+                    onChanged: editable ? onMonthChoiceChanged : null,
+                    elevation: 0,
+                    iconSize: 24.0.sp,
+                    style: Theme.of(context).textTheme.bodyText1?.copyWith(
+                          color: Colors.black,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 18.0.sp,
+                        ),
+                    icon: const Icon(
+                      MdiIcons.chevronDown,
+                      color: kTealColor,
+                    ),
                     items: en_USSymbols.MONTHS.map((String choice) {
                       return DropdownMenuItem<String>(
                         value: choice,
-                        child: Text(choice),
+                        child: Text(
+                          choice,
+                        ),
                       );
                     }).toList(),
-                    value: monthChoice,
-                    onChanged: editable ? onMonthChoiceChanged : null,
-                    style: Theme.of(context).textTheme.bodyText1!.copyWith(
-                          color: Colors.black,
-                          fontWeight: FontWeight.normal,
-                          fontSize: 20.0.sp,
-                        ),
-                    iconSize: 24.0.sp,
                   ),
                 ),
               ),
@@ -941,17 +964,11 @@ class _StartDatePicker extends StatelessWidget {
         ),
         SizedBox(width: 15.0.w),
         Expanded(
-          child: SizedBox(
-            height: 50.0.h,
-            child: AppButton.filled(
-              text: startDate != null
-                  ? DateFormat.MMMMd().format(startDate!)
-                  : 'Select Start Date',
-              onPressed: editable ? onSelectStartDate : null,
-              textStyle: TextStyle(
-                fontSize: 20.0.sp,
-              ),
-            ),
+          child: AppButton.filled(
+            text: startDate != null
+                ? DateFormat.MMMMd().format(startDate!)
+                : 'Select Start Date',
+            onPressed: editable ? onSelectStartDate : null,
           ),
         ),
       ],
@@ -988,9 +1005,9 @@ class _RepeatabilityPicker extends StatelessWidget {
           children: [
             Text(
               'Every',
-              style: Theme.of(context).textTheme.bodyText1!.copyWith(
+              style: Theme.of(context).textTheme.subtitle2?.copyWith(
                     fontWeight: FontWeight.normal,
-                    fontSize: 20.0.sp,
+                    color: Colors.black,
                   ),
             ),
             SizedBox(width: 30.0.w),
@@ -1009,7 +1026,7 @@ class _RepeatabilityPicker extends StatelessWidget {
                   border: UnderlineInputBorder(),
                 ),
                 textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.headline4!.copyWith(
+                style: Theme.of(context).textTheme.headline5!.copyWith(
                       color: kTealColor,
                     ),
               ),
@@ -1027,6 +1044,19 @@ class _RepeatabilityPicker extends StatelessWidget {
                 ),
                 child: DropdownButtonHideUnderline(
                   child: DropdownButton<RepeatChoices>(
+                    value: repeatChoice,
+                    onChanged: editable ? onRepeatChoiceChanged : null,
+                    elevation: 0,
+                    iconSize: 24.0.sp,
+                    style: Theme.of(context).textTheme.bodyText1?.copyWith(
+                          color: Colors.black,
+                          fontWeight: FontWeight.w500,
+                          fontSize: 18.0.sp,
+                        ),
+                    icon: const Icon(
+                      MdiIcons.chevronDown,
+                      color: kTealColor,
+                    ),
                     items: repeatabilityChoices!.map((RepeatChoices choice) {
                       return DropdownMenuItem<RepeatChoices>(
                         value: choice,
@@ -1037,14 +1067,6 @@ class _RepeatabilityPicker extends StatelessWidget {
                         ),
                       );
                     }).toList(),
-                    value: repeatChoice,
-                    onChanged: editable ? onRepeatChoiceChanged : null,
-                    style: Theme.of(context).textTheme.bodyText1!.copyWith(
-                          color: Colors.black,
-                          fontWeight: FontWeight.normal,
-                          fontSize: 20.0.sp,
-                        ),
-                    iconSize: 24.0.sp,
                   ),
                 ),
               ),
