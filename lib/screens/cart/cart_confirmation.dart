@@ -84,7 +84,7 @@ class CartConfirmation extends StatelessWidget {
                 textAlign: TextAlign.center,
               ),
             ),
-            SizedBox(height: 24.0.h),
+            const Spacer(),
             SizedBox(
               width: MediaQuery.of(context).size.width * 0.75,
               child: AppButton.transparent(
@@ -111,7 +111,8 @@ class CartConfirmation extends StatelessWidget {
                     ..jumpToTab(AppRoute.activity);
                 },
               ),
-            )
+            ),
+            SizedBox(height: 10.0.h),
           ],
         ),
       ),

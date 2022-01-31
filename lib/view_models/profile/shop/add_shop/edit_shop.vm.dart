@@ -4,18 +4,20 @@ import 'package:flutter/cupertino.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../models/app_navigator.dart';
 import '../../../../models/user_shop.dart';
 import '../../../../providers/post_requests/operating_hours_body.dart';
 import '../../../../providers/post_requests/shop_body.dart';
 import '../../../../providers/shops.dart';
 import '../../../../routers/app_router.dart';
-import '../../../../routers/profile/payment_options.props.dart';
+import '../../../../routers/profile/props/payment_options.props.dart';
 import '../../../../screens/profile/add_shop/edit_shop.dart';
 import '../../../../screens/profile/add_shop/payment_options.dart';
 import '../../../../screens/profile/add_shop/shop_schedule.dart';
 import '../../../../services/local_image_service.dart';
 import '../../../../state/view_model.dart';
-import '../../../../utils/utility.dart';
+import '../../../../utils/constants/assets.dart';
+import '../../../../utils/media_utility.dart';
 
 class EditShopViewModel extends ViewModel {
   EditShopViewModel({required this.shop});
@@ -109,23 +111,23 @@ class EditShopViewModel extends ViewModel {
   }
 
   void onChangeShopSchedule() {
-    context.read<AppRouter>().keyOf(AppRoute.profile).currentState?.push(
-          CupertinoPageRoute(
-            builder: (_) => ShopSchedule(
-              shopPhoto: shopPhoto,
-              forEditing: true,
-              onShopEdit: () {
-                _editedShopSchedule = true;
-                Navigator.popUntil(
-                  context,
-                  ModalRoute.withName(
-                    EditShop.routeName,
-                  ),
-                );
-              },
-            ),
-          ),
-        );
+    AppRouter.profileNavigatorKey.currentState?.push(
+      AppNavigator.appPageRoute(
+        builder: (_) => ShopSchedule(
+          shopPhoto: shopPhoto,
+          forEditing: true,
+          onShopEdit: () {
+            _editedShopSchedule = true;
+            Navigator.popUntil(
+              context,
+              ModalRoute.withName(
+                EditShop.routeName,
+              ),
+            );
+          },
+        ),
+      ),
+    );
   }
 
   void onEditPaymentOptions() {
@@ -147,7 +149,7 @@ class EditShopViewModel extends ViewModel {
       try {
         shopPhotoUrl = await imageService.uploadImage(
           file: shopPhoto!,
-          name: 'shop-photo',
+          src: kShopImagesSrc,
         );
       } catch (e) {
         shopPhotoUrl = shopBody.profilePhoto;
@@ -159,7 +161,7 @@ class EditShopViewModel extends ViewModel {
       try {
         shopCoverPhotoUrl = await imageService.uploadImage(
           file: shopCoverPhoto!,
-          name: 'shop-cover-photo',
+          src: kShopImagesSrc,
         );
       } catch (e) {
         shopCoverPhotoUrl = shopBody.coverPhoto;

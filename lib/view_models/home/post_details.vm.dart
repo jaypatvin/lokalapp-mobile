@@ -10,6 +10,7 @@ import '../../providers/auth.dart';
 import '../../services/database.dart';
 import '../../services/local_image_service.dart';
 import '../../state/view_model.dart';
+import '../../utils/constants/assets.dart';
 import '../../widgets/photo_picker_gallery/provider/custom_photo_provider.dart';
 
 class PostDetailViewModel extends ViewModel {
@@ -102,7 +103,10 @@ class PostDetailViewModel extends ViewModel {
     final gallery = <LokalImages>[];
     for (final asset in imageProvider.picked) {
       final file = await asset.file;
-      final url = await service.uploadImage(file: file!, name: 'post_photo');
+      final url = await service.uploadImage(
+        file: file!,
+        src: kActivityImagesSrc,
+      );
       gallery.add(
         LokalImages(
           url: url,

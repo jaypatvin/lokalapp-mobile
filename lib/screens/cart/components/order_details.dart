@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../models/product.dart';
 import '../../../utils/constants/themes.dart';
@@ -20,103 +21,91 @@ class OrderDetails extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Expanded(
-          child: Row(
-            children: [
-              if (product.gallery != null && product.gallery!.isNotEmpty)
-                SizedBox(
-                  width: 60.0,
-                  height: 60.0,
-                  child: Image(
-                    image: NetworkImage(product.gallery!.first.url),
-                    fit: BoxFit.cover,
-                    errorBuilder: (ctx, obj, stk) => const SizedBox(),
-                  ),
+        if (product.gallery != null && product.gallery!.isNotEmpty)
+          SizedBox(
+            width: 60.0.h,
+            height: 60.0.h,
+            child: Image(
+              image: NetworkImage(product.gallery!.first.url),
+              fit: BoxFit.cover,
+              errorBuilder: (ctx, obj, stk) => const SizedBox(),
+            ),
+          ),
+        if (product.gallery == null || product.gallery!.isEmpty)
+          SizedBox(
+            width: 60.0.h,
+            height: 60.0.h,
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: Colors.grey,
                 ),
-              if (product.gallery == null || product.gallery!.isEmpty)
-                SizedBox(
-                  width: 60.0,
-                  height: 60.0,
-                  child: DecoratedBox(
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: Colors.grey,
-                      ),
-                    ),
-                    child: const Center(
-                      child: Text(
-                        'No image',
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                  ),
-                ),
-              const SizedBox(
-                width: 10.0,
               ),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
+              child: const Center(
+                child: Text(
+                  'No image',
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ),
+          ),
+        SizedBox(width: 16.0.w),
+        Expanded(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: Text(
                       product.name,
                       overflow: TextOverflow.ellipsis,
-                      maxLines: 1,
-                      softWrap: false,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontFamily: 'Goldplay',
-                        fontWeight: FontWeight.w700,
+                      maxLines: 2,
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyText2
+                          ?.copyWith(fontWeight: FontWeight.w600),
+                    ),
+                  ),
+                  SizedBox(width: 16.0.w),
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text(
+                        product.basePrice.toString(),
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodyText2
+                            ?.copyWith(fontWeight: FontWeight.w400),
                       ),
-                    ),
-                    const SizedBox(
-                      height: 5,
-                    ),
-                    InkWell(
-                      onTap: onEditTap,
-                      child: const Text(
-                        'Edit',
-                        style: TextStyle(
-                          fontSize: 16.0,
-                          fontFamily: 'Goldplay',
-                          fontWeight: FontWeight.w300,
-                          decoration: TextDecoration.underline,
-                          color: kTealColor,
-                        ),
+                      Text(
+                        'x$quantity',
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodyText2
+                            ?.copyWith(fontWeight: FontWeight.w600),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
+                ],
+              ),
+              InkWell(
+                onTap: onEditTap,
+                child: Text(
+                  'Edit',
+                  style: Theme.of(context).textTheme.bodyText2?.copyWith(
+                        fontSize: 12.0.sp,
+                        fontWeight: FontWeight.w300,
+                        decoration: TextDecoration.underline,
+                        color: kTealColor,
+                      ),
                 ),
               ),
             ],
           ),
-        ),
-        const SizedBox(width: 8.0),
-        Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'x$quantity',
-              style: const TextStyle(
-                fontSize: 16,
-                fontFamily: 'GoldplayBold',
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-            const SizedBox(
-              height: 5.0,
-            ),
-            Text(
-              product.basePrice.toString(),
-              style: const TextStyle(
-                fontSize: 16.0,
-                fontFamily: 'GoldplayBold',
-                fontWeight: FontWeight.w300,
-              ),
-            ),
-          ],
         ),
       ],
     );

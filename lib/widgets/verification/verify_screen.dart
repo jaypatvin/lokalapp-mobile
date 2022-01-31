@@ -3,17 +3,21 @@ import 'dart:io' show File, Platform;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:lokalapp/widgets/overlays/screen_loader.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 
+import '../../models/app_navigator.dart';
 import '../../providers/auth.dart';
+import '../../routers/app_router.dart';
 import '../../screens/bottom_navigation.dart';
 import '../../services/api/api.dart';
 import '../../services/api/user_api_service.dart';
 import '../../services/local_image_service.dart';
+import '../../utils/constants/assets.dart';
 import '../../utils/constants/themes.dart';
-import '../../utils/utility.dart';
+import '../../utils/media_utility.dart';
 import '../../widgets/app_button.dart';
 import '../../widgets/custom_app_bar.dart';
 import 'verify_confirmation_screen.dart';
@@ -25,8 +29,8 @@ class VerifyScreen extends StatefulWidget {
   _VerifyScreenState createState() => _VerifyScreenState();
 }
 
-class _VerifyScreenState extends State<VerifyScreen> {
-  final _ids = <String>[
+class _VerifyScreenState extends State<VerifyScreen> with ScreenLoader {
+  final _ids = const <String>[
     "Driver's License",
     'Old Philippine Passport (Issued before 15 Aug 2016)',
     'New Philippine Passport',
@@ -92,10 +96,6 @@ class _VerifyScreenState extends State<VerifyScreen> {
         .toList();
 
     return CupertinoButton(
-      // child: Text(
-      //   _chosenIdType ?? 'Select type of ID',
-      //   style: Theme.of(context).textTheme.bodyText2,
-      // ),
       child: Row(
         children: [
           if (_chosenIdType == null)
@@ -159,38 +159,38 @@ class _VerifyScreenState extends State<VerifyScreen> {
     final LocalImageService picker =
         Provider.of<LocalImageService>(context, listen: false);
     if (_file != null) {
-      final String mediaUrl =
-          await picker.uploadImage(file: _file!, name: 'verification');
+      final String mediaUrl = await picker.uploadImage(
+        file: _file!,
+        src: kVerificationImagesSrc,
+      );
 
       if (mediaUrl.isNotEmpty) {
-        // TODO: CHANGE TO PROVIDER
         final user = context.read<Auth>().user!;
         try {
-          final verified = await UserAPIService(context.read<API>()).update(
-            body: {
-              'id': user.id!,
-              'id_photo': mediaUrl,
-              'id_type': _chosenIdType,
-            },
+          final success = await UserAPIService(context.read<API>()).update(
             userId: user.id!,
+            body: {
+              'registration': {
+                'id_photo': mediaUrl,
+                'id_type': _chosenIdType,
+              }
+            },
           );
 
-          if (verified) {
+          if (success) {
             if (widget.skippable) {
-              Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => VerifyConfirmationScreen(
+              AppRouter.rootNavigatorKey.currentState?.pushAndRemoveUntil(
+                AppNavigator.appPageRoute(
+                  builder: (_) => VerifyConfirmationScreen(
                     skippable: widget.skippable,
                   ),
                 ),
                 (route) => false,
               );
             } else {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => VerifyConfirmationScreen(
+              AppRouter.profileNavigatorKey.currentState?.push(
+                AppNavigator.appPageRoute(
+                  builder: (_) => VerifyConfirmationScreen(
                     skippable: widget.skippable,
                   ),
                 ),
@@ -209,10 +209,10 @@ class _VerifyScreenState extends State<VerifyScreen> {
       return [
         TextButton(
           onPressed: () {
-            Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (context) => BottomNavigation()),
-              (route) => false,
+            AppRouter.rootNavigatorKey.currentState?.push(
+              AppNavigator.appPageRoute(
+                builder: (_) => const BottomNavigation(),
+              ),
             );
           },
           child: Text(
@@ -232,17 +232,17 @@ class _VerifyScreenState extends State<VerifyScreen> {
 
   Future<bool> _onWillPop() async {
     if (widget.skippable) {
-      Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(builder: (context) => BottomNavigation()),
-        (route) => false,
+      AppRouter.rootNavigatorKey.currentState?.push(
+        AppNavigator.appPageRoute(
+          builder: (_) => const BottomNavigation(),
+        ),
       );
     }
     return true;
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget screen(BuildContext context) {
     return NestedWillPopScope(
       onWillPop: _onWillPop,
       child: Scaffold(
@@ -317,7 +317,11 @@ class _VerifyScreenState extends State<VerifyScreen> {
                 width: 120.0.w,
                 child: AppButton.filled(
                   text: 'SUBMIT',
-                  onPressed: _file != null ? _onSubmitHandler : null,
+                  onPressed: _file != null
+                      ? () async {
+                          await performFuture<void>(_onSubmitHandler);
+                        }
+                      : null,
                   textStyle: _file != null
                       ? const TextStyle(
                           color: kNavyColor,

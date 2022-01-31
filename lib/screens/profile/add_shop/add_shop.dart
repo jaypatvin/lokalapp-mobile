@@ -7,8 +7,8 @@ import 'package:provider/provider.dart';
 
 import '../../../providers/post_requests/shop_body.dart';
 import '../../../routers/app_router.dart';
-import '../../../routers/profile/shop_schedule.props.dart';
-import '../../../utils/utility.dart';
+import '../../../routers/profile/props/shop_schedule.props.dart';
+import '../../../utils/media_utility.dart';
 import '../../../widgets/app_button.dart';
 import '../../../widgets/custom_app_bar.dart';
 import '../../../widgets/inputs/input_description_field.dart';

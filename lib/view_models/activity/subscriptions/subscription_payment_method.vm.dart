@@ -1,6 +1,7 @@
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
+import '../../../models/app_navigator.dart';
 import '../../../providers/cart.dart';
 import '../../../providers/products.dart';
 import '../../../providers/subscriptions.dart';
@@ -49,10 +50,13 @@ class SubscriptionPaymentMethodViewModel extends ViewModel {
 
       if (success) {
         context.read<ShoppingCart>().remove(subscriptionPlanBody.productId);
-        AppRouter.pushNewScreen(
-          context,
-          screen: const CartConfirmation(
-            isSubscription: true,
+        // the user is making a new subscription, meaning that the app
+        // is currently at the Discover Tab
+        AppRouter.discoverNavigatorKey.currentState?.push(
+          AppNavigator.appPageRoute(
+            builder: (_) => const CartConfirmation(
+              isSubscription: true,
+            ),
           ),
         );
       }

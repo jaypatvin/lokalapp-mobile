@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
+import '../../../models/app_navigator.dart';
 import '../../../models/failure_exception.dart';
 import '../../../models/operating_hours.dart';
 import '../../../models/product.dart';
@@ -134,9 +135,8 @@ class NewSubscriptionScheduleViewModel extends ViewModel {
         startDates: _startDates,
       ),
     );
-
     AppRouter.discoverNavigatorKey.currentState?.push(
-      CupertinoPageRoute(
+      AppNavigator.appPageRoute(
         builder: (_) => SubscriptionPaymentMethod(
           subscriptionPlanBody: subscriptionPlanBody,
           reschedule: reschedule,

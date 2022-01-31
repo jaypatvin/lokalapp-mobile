@@ -21,12 +21,20 @@ class DiscoverViewModel extends ViewModel {
 
   List<Product> _recommendedProducts = [];
   UnmodifiableListView<Product> get recommendedProducts {
+    final cUser = context.read<Auth>().user!;
+
     if (_recommendedProducts.isNotEmpty) {
-      return UnmodifiableListView(_recommendedProducts);
+      return UnmodifiableListView(
+        _recommendedProducts.where(
+          (product) => product.userId != cUser.id,
+        ),
+      );
     }
 
-    final items = [...context.read<Products>().items];
-    return UnmodifiableListView(items..shuffle());
+    return UnmodifiableListView(
+      context.read<Products>().items.where((p) => p.userId != cUser.id).toList()
+        ..shuffle(),
+    );
   }
 
   UnmodifiableListView<Product> get otherUserProducts {

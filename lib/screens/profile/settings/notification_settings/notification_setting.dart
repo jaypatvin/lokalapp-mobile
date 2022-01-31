@@ -12,12 +12,13 @@ import '../../../../utils/constants/themes.dart';
 import '../../../../view_models/profile/settings/notification_settings/notification_setting.vm.dart';
 import '../../../../widgets/custom_app_bar.dart';
 
-class NotificationSetting extends StatefulWidget {
+class NotificationSettings extends StatefulWidget {
+  const NotificationSettings({Key? key}) : super(key: key);
   @override
-  _NotificationSettingState createState() => _NotificationSettingState();
+  _NotificationSettingsState createState() => _NotificationSettingsState();
 }
 
-class _NotificationSettingState extends State<NotificationSetting> {
+class _NotificationSettingsState extends State<NotificationSettings> {
   late final NotificationSettingViewModel _viewModel;
 
   @override

@@ -1,6 +1,6 @@
-import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 
+import '../../../models/app_navigator.dart';
 import '../../../models/bank_code.dart';
 import '../../../models/order.dart';
 import '../../../models/payment_option.dart';
@@ -34,22 +34,19 @@ class PaymentOptionViewModel extends ViewModel {
     switch (paymentMode) {
       case PaymentMode.bank:
       case PaymentMode.gCash:
-        AppRouter.activityNavigatorKey.currentState?.push<bool?>(
-          CupertinoPageRoute(
-            builder: (context) => BankDetails(
-              paymentMode: paymentMode,
+        AppRouter.activityNavigatorKey.currentState?.push(
+          AppNavigator.appPageRoute(
+            builder: (_) => BankDetails(
               order: order,
+              paymentMode: paymentMode,
             ),
           ),
         );
-
         break;
       case PaymentMode.cash:
-        AppRouter.activityNavigatorKey.currentState?.push<bool?>(
-          CupertinoPageRoute(
-            builder: (context) => CashOnDelivery(
-              order: order,
-            ),
+        AppRouter.activityNavigatorKey.currentState?.push(
+          AppNavigator.appPageRoute(
+            builder: (_) => CashOnDelivery(order: order),
           ),
         );
         break;

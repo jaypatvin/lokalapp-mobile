@@ -6,7 +6,7 @@ import '../../models/lokal_images.dart';
 import '../../providers/auth.dart';
 import '../../providers/users.dart';
 import '../../routers/app_router.dart';
-import '../../routers/chat/chat_view.props.dart';
+import '../../routers/chat/props/chat_view.props.dart';
 import '../../screens/chat/chat_view.dart';
 import '../../screens/profile/edit_profile.dart';
 import '../../screens/profile/settings/settings.dart';

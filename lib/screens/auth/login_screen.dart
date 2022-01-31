@@ -118,9 +118,13 @@ class _LoginScreenView extends HookView<LoginScreenViewModel>
                     Center(
                       child: Transform.translate(
                         offset: Offset(0, -30.0.h),
-                        child: SvgPicture.asset(
-                          kSvgLokalLogoV2,
-                          fit: BoxFit.scaleDown,
+                        child: Hero(
+                          tag: kSvgLokalLogoV2,
+                          child: SvgPicture.asset(
+                            kSvgLokalLogoV2,
+                            fit: BoxFit.scaleDown,
+                            color: kOrangeColor.withOpacity(0.7),
+                          ),
                         ),
                       ),
                     ),

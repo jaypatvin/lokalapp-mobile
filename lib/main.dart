@@ -33,8 +33,8 @@ import 'services/local_image_service.dart';
 import 'utils/connectivity_status.dart';
 import 'utils/constants/assets.dart';
 import 'utils/constants/themes.dart';
+import 'utils/media_utility.dart';
 import 'utils/shared_preference.dart';
-import 'utils/utility.dart';
 import 'widgets/overlays/screen_loader.dart';
 import 'widgets/photo_picker_gallery/provider/custom_photo_provider.dart';
 
@@ -180,8 +180,8 @@ class _MyAppState extends State<MyApp> {
 
       // services:
       ListenableProvider<PageController>.value(value: _profilePageController),
-      Provider<MediaUtility?>(create: (_) => MediaUtility.instance),
-      Provider<LocalImageService?>(create: (_) => LocalImageService.instance),
+      Provider<MediaUtility?>(create: (_) => MediaUtility()),
+      Provider<LocalImageService?>(create: (_) => const LocalImageService()),
     ];
   }
 
@@ -245,7 +245,7 @@ class _MyAppState extends State<MyApp> {
                       headline6: TextStyle(
                         fontSize: 20.0.sp,
                         color: kNavyColor,
-                        fontWeight: FontWeight.bold,
+                        fontWeight: FontWeight.w600,
                       ),
                       subtitle1: TextStyle(
                         fontSize: 16.0.sp,

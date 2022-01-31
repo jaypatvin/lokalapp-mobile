@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
+import '../../models/app_navigator.dart';
 import '../../models/order.dart';
 import '../../models/user_shop.dart';
 import '../../providers/auth.dart';
@@ -146,12 +146,9 @@ class TransactionsViewModel extends ViewModel {
   }
 
   void onGoToSubscriptionHandler() {
-    Navigator.push(
-      context,
-      CupertinoPageRoute(
-        builder: (context) => Subscriptions(
-          isBuyer: isBuyer,
-        ),
+    AppRouter.activityNavigatorKey.currentState?.push(
+      AppNavigator.appPageRoute(
+        builder: (_) => Subscriptions(isBuyer: isBuyer),
       ),
     );
   }
@@ -166,7 +163,7 @@ class TransactionsViewModel extends ViewModel {
         switch (order.statusCode) {
           case 200:
             AppRouter.activityNavigatorKey.currentState?.push(
-              CupertinoPageRoute(
+              AppNavigator.appPageRoute(
                 builder: (_) => PaymentOptionScreen(order: order),
               ),
             );
@@ -174,9 +171,10 @@ class TransactionsViewModel extends ViewModel {
           case 500:
             final success = await _apiService.receive(orderId: order.id!);
             if (success) {
-              AppRouter.pushNewScreen(
-                context,
-                screen: OrderReceived(order: order),
+              AppRouter.activityNavigatorKey.currentState?.push(
+                AppNavigator.appPageRoute(
+                  builder: (_) => OrderReceived(order: order),
+                ),
               );
             }
 
@@ -189,11 +187,12 @@ class TransactionsViewModel extends ViewModel {
           case 100:
             final success = await _apiService.confirm(orderId: order.id!);
             if (success) {
-              AppRouter.pushNewScreen(
-                context,
-                screen: OrderConfirmed(
-                  order: order,
-                  isBuyer: isBuyer,
+              AppRouter.activityNavigatorKey.currentState?.push(
+                AppNavigator.appPageRoute(
+                  builder: (_) => OrderConfirmed(
+                    order: order,
+                    isBuyer: isBuyer,
+                  ),
                 ),
               );
             }
@@ -203,17 +202,19 @@ class TransactionsViewModel extends ViewModel {
               final success =
                   await _apiService.confirmPayment(orderId: order.id!);
               if (success) {
-                AppRouter.pushNewScreen(
-                  context,
-                  screen: PaymentConfirmed(order: order),
+                AppRouter.activityNavigatorKey.currentState?.push(
+                  AppNavigator.appPageRoute(
+                    builder: (_) => PaymentConfirmed(order: order),
+                  ),
                 );
               }
             } else {
-              AppRouter.pushNewScreen(
-                context,
-                screen: OrderDetails(
-                  order: order,
-                  isBuyer: isBuyer,
+              AppRouter.activityNavigatorKey.currentState?.push(
+                AppNavigator.appPageRoute(
+                  builder: (_) => OrderDetails(
+                    order: order,
+                    isBuyer: isBuyer,
+                  ),
                 ),
               );
             }
@@ -221,9 +222,10 @@ class TransactionsViewModel extends ViewModel {
           case 400:
             final success = await _apiService.shipOut(orderId: order.id!);
             if (success) {
-              AppRouter.pushNewScreen(
-                context,
-                screen: ShippedOut(order: order),
+              AppRouter.activityNavigatorKey.currentState?.push(
+                AppNavigator.appPageRoute(
+                  builder: (_) => ShippedOut(order: order),
+                ),
               );
             }
             break;

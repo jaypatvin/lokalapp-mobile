@@ -5,8 +5,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../models/app_navigator.dart';
 import '../../../../providers/auth.dart';
-import '../../../../routers/app_router.dart';
 import '../../../../utils/constants/themes.dart';
 import '../../../../view_models/profile/settings/my_account/my_account.vm.dart';
 import '../../../../widgets/app_button.dart';
@@ -16,6 +16,7 @@ import 'change_password.dart';
 import 'delete_account.dart';
 
 class MyAccount extends StatefulWidget {
+  const MyAccount({Key? key}) : super(key: key);
   @override
   State<MyAccount> createState() => _MyAccountState();
 }
@@ -67,9 +68,11 @@ class _MyAccountState extends State<MyAccount> {
                 onTap: () {
                   final isEmailAuth = viewModel.ifEmailAuth();
                   if (isEmailAuth) {
-                    AppRouter.pushNewScreen(
+                    Navigator.push(
                       context,
-                      screen: const ChangeEmail(),
+                      AppNavigator.appPageRoute(
+                        builder: (_) => const ChangeEmail(),
+                      ),
                     );
                   }
                 },
@@ -89,9 +92,11 @@ class _MyAccountState extends State<MyAccount> {
                 onTap: () {
                   final isEmailAuth = viewModel.ifEmailAuth();
                   if (isEmailAuth) {
-                    AppRouter.pushNewScreen(
+                    Navigator.push(
                       context,
-                      screen: const ChangePassword(),
+                      AppNavigator.appPageRoute(
+                        builder: (_) => const ChangePassword(),
+                      ),
                     );
                   }
                 },
@@ -111,8 +116,12 @@ class _MyAccountState extends State<MyAccount> {
                 child: AppButton.transparent(
                   text: 'Delete Account',
                   color: kPinkColor,
-                  onPressed: () =>
-                      AppRouter.pushNewScreen(context, screen: DeleteAccount()),
+                  onPressed: () => Navigator.push(
+                    context,
+                    AppNavigator.appPageRoute(
+                      builder: (_) => const DeleteAccount(),
+                    ),
+                  ),
                 ),
               ),
             ],

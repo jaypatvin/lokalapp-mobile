@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/cart.dart';
@@ -32,32 +33,34 @@ class CheckoutCart extends StatelessWidget {
               return Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const SizedBox(height: 24.0),
-                  Text(
-                    shop.name!,
-                    style: const TextStyle(
-                      color: kNavyColor,
-                      fontFamily: 'Goldplay',
-                      fontWeight: FontWeight.w800,
-                      fontSize: 24.0,
+                  Padding(
+                    padding: EdgeInsets.only(
+                      left: 16.0.w,
+                      right: 16.0.w,
+                      top: 16.0.h,
+                    ),
+                    child: Text(
+                      shop.name!,
+                      style: Theme.of(context)
+                          .textTheme
+                          .headline6
+                          ?.copyWith(fontSize: 18.0.sp),
+                      textAlign: TextAlign.center,
                     ),
                   ),
-                  const SizedBox(
-                    height: 8.0,
-                  ),
                   Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16.0,
-                      vertical: 8.0,
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 18.0.w,
+                      vertical: 8.0.h,
                     ),
                     child: Card(
                       elevation: 0.0,
                       shape: RoundedRectangleBorder(
-                        side: BorderSide(color: Colors.grey[300]!),
-                        borderRadius: BorderRadius.circular(16.0),
+                        side: BorderSide(color: Colors.grey.shade300),
+                        borderRadius: BorderRadius.circular(16.0.r),
                       ),
                       child: Padding(
-                        padding: const EdgeInsets.all(16.0),
+                        padding: EdgeInsets.fromLTRB(16.0.w, 16.0.h, 16.0.w, 0),
                         child: Column(
                           children: [
                             ListView.builder(
@@ -75,33 +78,41 @@ class CheckoutCart extends StatelessWidget {
                                 final _key = orders.keys.elementAt(orderIndex);
                                 final product =
                                     context.read<Products>().findById(_key);
-                                return OrderDetails(
-                                  product: product!,
-                                  quantity: orders[_key]!.quantity,
-                                  onEditTap: () {
-                                    context.read<AppRouter>().navigateTo(
-                                          AppRoute.discover,
-                                          ProductDetail.routeName,
-                                          arguments: ProductDetailProps(
-                                            product,
-                                          ),
-                                        );
-                                  },
+                                return Padding(
+                                  padding: orderIndex != 0
+                                      ? EdgeInsets.only(top: 8.0.h)
+                                      : EdgeInsets.zero,
+                                  child: OrderDetails(
+                                    product: product!,
+                                    quantity: orders[_key]!.quantity,
+                                    onEditTap: () {
+                                      context.read<AppRouter>().navigateTo(
+                                            AppRoute.discover,
+                                            ProductDetail.routeName,
+                                            arguments: ProductDetailProps(
+                                              product,
+                                            ),
+                                          );
+                                    },
+                                  ),
                                 );
                               },
                             ),
-                            const SizedBox(height: 12.0),
-                            SizedBox(
-                              width: double.infinity,
-                              child: AppButton.transparent(
-                                text: 'Checkout',
-                                onPressed: () {
-                                  context.read<AppRouter>().navigateTo(
-                                        AppRoute.discover,
-                                        ShopCheckout.routeName,
-                                        arguments: ShopCheckoutProps(shop),
-                                      );
-                                },
+                            // const SizedBox(height: 12.0),
+                            Padding(
+                              padding: EdgeInsets.symmetric(vertical: 8.0.h),
+                              child: SizedBox(
+                                width: double.infinity,
+                                child: AppButton.transparent(
+                                  text: 'Checkout',
+                                  onPressed: () {
+                                    context.read<AppRouter>().navigateTo(
+                                          AppRoute.discover,
+                                          ShopCheckout.routeName,
+                                          arguments: ShopCheckoutProps(shop),
+                                        );
+                                  },
+                                ),
                               ),
                             ),
                           ],
@@ -132,6 +143,7 @@ class _CheckOutCartAppBar extends StatelessWidget
   Widget build(BuildContext context) {
     return AppBar(
       backgroundColor: kTealColor,
+      elevation: 0,
       leading: IconButton(
         icon: const Icon(
           Icons.arrow_back_sharp,
@@ -144,25 +156,18 @@ class _CheckOutCartAppBar extends StatelessWidget
         mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Text(
-            'Shopping Cart',
-            style: TextStyle(
-              color: Colors.white,
-              fontFamily: 'Goldplay',
-              fontWeight: FontWeight.w600,
-              fontSize: 24.0,
-            ),
-          ),
-          const SizedBox(width: 8.0),
+          SizedBox(width: 25.0.r + 8.0.w), // this is needed to center the text
+          const Text('Shopping Cart'),
+          SizedBox(width: 8.0.w),
           Container(
             padding: const EdgeInsets.all(1.0),
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               color: kOrangeColor,
-              borderRadius: BorderRadius.circular(25.0),
+              shape: BoxShape.circle,
             ),
-            constraints: const BoxConstraints(
-              minWidth: 18.0,
-              minHeight: 18.0,
+            constraints: BoxConstraints(
+              minWidth: 25.0.r,
+              minHeight: 25.0.r,
             ),
             child: Consumer<ShoppingCart>(
               builder: (_, cart, __) {
@@ -172,12 +177,10 @@ class _CheckOutCartAppBar extends StatelessWidget
                 return Center(
                   child: Text(
                     quantity.toString(), //cart.orders.length.toString(),
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontFamily: 'Goldplay',
-                      fontWeight: FontWeight.w600,
-                      fontSize: 14.0,
-                    ),
+                    style: Theme.of(context)
+                        .textTheme
+                        .subtitle2
+                        ?.copyWith(color: Colors.white),
                   ),
                 );
               },

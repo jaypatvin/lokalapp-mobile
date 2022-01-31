@@ -3,13 +3,13 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart' show DateFormat;
 import 'package:provider/provider.dart';
 
+import '../../../models/app_navigator.dart';
 import '../../../models/operating_hours.dart';
 import '../../../providers/auth.dart';
 import '../../../providers/post_requests/operating_hours_body.dart';
 import '../../../providers/post_requests/product_body.dart';
 import '../../../providers/products.dart';
 import '../../../providers/shops.dart';
-import '../../../routers/app_router.dart';
 import '../../../utils/calendar_picker/calendar_picker.dart';
 import '../../../utils/constants/themes.dart';
 import '../../../utils/repeated_days_generator/schedule_generator.dart';
@@ -174,12 +174,14 @@ class _ProductScheduleState extends State<ProductSchedule> {
                 text: 'Confirm',
                 onPressed: () {
                   setupProductAvailability();
-                  AppRouter.pushNewScreen(
+                  Navigator.push(
                     context,
-                    screen: ProductPreview(
-                      gallery: widget.gallery,
-                      scheduleState: _productSchedule,
-                      productId: widget.productId,
+                    AppNavigator.appPageRoute(
+                      builder: (_) => ProductPreview(
+                        gallery: widget.gallery,
+                        scheduleState: _productSchedule,
+                        productId: widget.productId,
+                      ),
                     ),
                   );
                 },

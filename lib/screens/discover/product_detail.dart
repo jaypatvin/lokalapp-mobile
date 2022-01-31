@@ -58,11 +58,7 @@ class _ProductDetailView extends HookView<ProductDetailViewModel> {
         Future.delayed(const Duration(milliseconds: 100), () {
           _navBarHider.isHidden = true;
         });
-        void listener() {
-          vm.onInstructionsChanged(_instructionsController.text);
-        }
 
-        _instructionsController.addListener(listener);
         final cart = context.read<ShoppingCart>();
         if (cart.contains(vm.product.id)) {
           final order = cart.getProductOrder(vm.product.id)!;
@@ -73,6 +69,13 @@ class _ProductDetailView extends HookView<ProductDetailViewModel> {
             ),
           );
         }
+
+        void listener() {
+          vm.onInstructionsChanged(_instructionsController.text);
+        }
+
+        _instructionsController.addListener(listener);
+
         return () {
           Future.delayed(const Duration(milliseconds: 100), () {
             _navBarHider.isHidden = false;
@@ -89,6 +92,7 @@ class _ProductDetailView extends HookView<ProductDetailViewModel> {
 
     _children.addAll(
       [
+        SizedBox(height: 10.0.h),
         ProductDetailGallery(
           product: vm.product,
           currentIndex: _galleryIndex.value,
@@ -100,6 +104,7 @@ class _ProductDetailView extends HookView<ProductDetailViewModel> {
           productName: vm.product.name,
           productPrice: vm.product.basePrice,
         ),
+        SizedBox(height: 10.0.h),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -119,8 +124,9 @@ class _ProductDetailView extends HookView<ProductDetailViewModel> {
                   },
                   onRatingUpdate: (rating) {},
                   ignoreGestures: true,
-                  itemSize: 24.0.h,
+                  itemSize: 18.0.h,
                 ),
+                SizedBox(width: 5.0.w),
                 Text(
                   vm.product.avgRating.toString(),
                   textAlign: TextAlign.center,
@@ -128,62 +134,28 @@ class _ProductDetailView extends HookView<ProductDetailViewModel> {
                 )
               ],
             ),
-            Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // TextButton(
-                //   onPressed: () => null,
-                //   style: TextButton.styleFrom(
-                //     padding: EdgeInsets.zero,
-                //     minimumSize: Size.zero,
-                //     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                //   ),
-                //   child: Text(
-                //     "Read Reviews",
-                //     style: TextStyle(
-                //       fontSize:
-                //           Theme.of(context).textTheme.subtitle2?.fontSize,
-                //       decoration: TextDecoration.underline,
-                //     ),
-                //   ),
-                // ),
-                Consumer<UserWishlist>(
-                  builder: (ctx, wishlist, __) {
-                    if (wishlist.isLoading) {
-                      return const Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    }
-
-                    return TextButton(
-                      onPressed: vm.onWishlistPressed,
-                      style: TextButton.styleFrom(
-                        padding: EdgeInsets.zero,
-                        minimumSize: Size.zero,
-                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      ),
-                      child: Text(
-                        wishlist.items.contains(vm.product.id)
-                            ? 'Remove from Wishlist'
-                            : 'Add to Wishlist',
-                        style: TextStyle(
-                          fontSize:
-                              Theme.of(context).textTheme.subtitle2?.fontSize,
-                          decoration: TextDecoration.underline,
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ],
+            TextButton(
+              onPressed: () {},
+              style: TextButton.styleFrom(
+                padding: EdgeInsets.zero,
+                minimumSize: Size.zero,
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                textStyle: Theme.of(context).textTheme.subtitle2?.copyWith(
+                      fontWeight: FontWeight.w500,
+                      decoration: TextDecoration.underline,
+                    ),
+              ),
+              child: const Text('Read Reviews'),
             ),
           ],
         ),
+        SizedBox(height: 10.0.h),
         Align(
           alignment: Alignment.centerLeft,
           child: Text(
             vm.product.description ?? '',
             style: Theme.of(context).textTheme.bodyText1,
+            textAlign: TextAlign.left,
           ),
         ),
         SizedBox(height: 10.0.h),
@@ -195,26 +167,21 @@ class _ProductDetailView extends HookView<ProductDetailViewModel> {
     if (vm.available) {
       _children.addAll(
         [
-          Align(
-            alignment: Alignment.centerLeft,
-            child: RichText(
-              text: TextSpan(
-                text: 'Special Instructions ',
-                children: [
-                  TextSpan(
-                    text: 'Optional',
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyText2
-                        ?.copyWith(fontSize: 12.0.sp),
-                  ),
-                ],
+          Row(
+            children: [
+              Text(
+                'Special Instructions',
                 style: Theme.of(context)
                     .textTheme
-                    .subtitle1
-                    ?.copyWith(fontSize: 20.0.sp),
+                    .headline6
+                    ?.copyWith(fontWeight: FontWeight.w600),
               ),
-            ),
+              SizedBox(width: 5.0.w),
+              Text(
+                'Optional',
+                style: Theme.of(context).textTheme.bodyText2,
+              ),
+            ],
           ),
           Padding(
             padding: EdgeInsets.only(top: 10.0.h, bottom: 20.0.h),
@@ -224,25 +191,28 @@ class _ProductDetailView extends HookView<ProductDetailViewModel> {
             ),
           ),
           Divider(thickness: 1, height: 2, color: Colors.grey.shade300),
+          SizedBox(height: 10.0.h),
           Padding(
             padding: EdgeInsets.symmetric(vertical: 20.0.h),
-            child: RichText(
-              text: TextSpan(
-                children: [
-                  const TextSpan(text: 'Quantity\t\t'),
-                  TextSpan(
-                    text: vm.quantity.toString(),
-                    style: Theme.of(context)
-                        .textTheme
-                        .subtitle1
-                        ?.copyWith(fontSize: 20.0.sp, color: kTealColor),
-                  ),
-                ],
-                style: Theme.of(context)
-                    .textTheme
-                    .subtitle1
-                    ?.copyWith(fontSize: 20.0.sp),
-              ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  'Quantity',
+                  style: Theme.of(context)
+                      .textTheme
+                      .headline6
+                      ?.copyWith(fontWeight: FontWeight.w600),
+                ),
+                SizedBox(width: 20.0.w),
+                Text(
+                  vm.quantity.toString(),
+                  style: Theme.of(context).textTheme.headline6?.copyWith(
+                        color: kTealColor,
+                        fontWeight: FontWeight.w600,
+                      ),
+                ),
+              ],
             ),
           ),
           QuantityController(
@@ -268,24 +238,26 @@ class _ProductDetailView extends HookView<ProductDetailViewModel> {
       );
     } else {
       _children.add(
-        SizedBox(
-          width: double.infinity,
-          // child: AppButton.transparent(text: 'Add to Wishlist'),
-          child: Consumer<UserWishlist>(
-            builder: (ctx, wishlist, __) {
-              if (wishlist.isLoading) {
+        Padding(
+          padding: EdgeInsets.symmetric(vertical: 20.0.h),
+          child: SizedBox(
+            width: double.infinity,
+            child: Consumer<UserWishlist>(
+              builder: (ctx, wishlist, __) {
+                if (wishlist.isLoading) {
+                  return AppButton.transparent(
+                    text: '',
+                  );
+                }
+
+                final _inWishlist = wishlist.items.contains(vm.product.id);
                 return AppButton.transparent(
-                  text: '',
+                  text:
+                      _inWishlist ? 'Remove from Wishlist' : 'Add to Wishlist',
+                  onPressed: vm.onWishlistPressed,
                 );
-              }
-
-              final _inWishlist = wishlist.items.contains(vm.product.id);
-
-              return AppButton.transparent(
-                text: _inWishlist ? 'Remove from Wishlist' : 'Add to Wishlist',
-                onPressed: vm.onWishlistPressed,
-              );
-            },
+              },
+            ),
           ),
         ),
       );
@@ -296,14 +268,12 @@ class _ProductDetailView extends HookView<ProductDetailViewModel> {
       appBar: CustomAppBar(
         leadingColor: kTealColor,
         backgroundColor: Colors.white,
-        onPressedLeading: () => Navigator.pop(context),
         title: GestureDetector(
           onTap: vm.goToShop,
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
               SizedBox(
-                height: kToolbarHeight * 0.80,
                 child: ChatAvatar(
                   displayName: vm.shop.name,
                   displayPhoto: vm.shop.profilePhoto,
@@ -314,9 +284,14 @@ class _ProductDetailView extends HookView<ProductDetailViewModel> {
               Flexible(
                 child: Text(
                   vm.appBarTitle,
-                  style: Theme.of(context).textTheme.headline5,
+                  // style: Theme.of(context).textTheme.headline5,
+                  style: const TextStyle(color: Colors.black),
                   overflow: TextOverflow.ellipsis,
                 ),
+              ),
+              // Added to center the Title
+              SizedBox(
+                width: 15.0.r + 24.0, // 24 is the icon size for the leading
               ),
             ],
           ),
@@ -344,7 +319,7 @@ class _ProductDetailView extends HookView<ProductDetailViewModel> {
         ),
         tapOutsideBehavior: TapOutsideBehavior.translucentDismiss,
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          padding: EdgeInsets.symmetric(horizontal: 16.0.w),
           child: Column(
             children: _children,
           ),

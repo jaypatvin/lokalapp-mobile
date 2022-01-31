@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart' show DateFormat;
 import 'package:photo_manager/photo_manager.dart';
 
+import '../models/app_navigator.dart';
 import '../models/lokal_images.dart';
 import '../models/operating_hours.dart';
 import '../widgets/photo_view_gallery/gallery/gallery_asset_photo_view.dart';
@@ -14,13 +15,13 @@ void openInputGallery(
 ) {
   Navigator.push(
     context,
-    MaterialPageRoute(
-      builder: (context) => GalleryAssetPhotoView(
+    AppNavigator.appPageRoute(
+      builder: (_) => GalleryAssetPhotoView(
         galleryItems: galleryItems,
+        initialIndex: index,
         backgroundDecoration: const BoxDecoration(
           color: Colors.black,
         ),
-        initialIndex: index,
       ),
     ),
   );
@@ -33,13 +34,13 @@ void openGallery(
 ) {
   Navigator.push(
     context,
-    MaterialPageRoute(
-      builder: (context) => GalleryNetworkPhotoView(
+    AppNavigator.appPageRoute(
+      builder: (_) => GalleryNetworkPhotoView(
         galleryItems: galleryItems,
+        initialIndex: index,
         backgroundDecoration: const BoxDecoration(
           color: Colors.black,
         ),
-        initialIndex: index,
       ),
     ),
   );

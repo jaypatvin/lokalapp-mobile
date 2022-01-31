@@ -1,8 +1,8 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
+import '../../models/app_navigator.dart';
 import '../../providers/auth.dart';
 import '../../providers/community.dart';
 import '../../providers/post_requests/auth_body.dart';
@@ -56,13 +56,13 @@ class InviteScreenViewModel extends ViewModel {
       final fireUser = auth.firebaseUser;
       if (fireUser != null) {
         AppRouter.rootNavigatorKey.currentState?.pushReplacement(
-          CupertinoPageRoute(
+          AppNavigator.appPageRoute(
             builder: (_) => const ProfileRegistration(),
           ),
         );
       } else {
         AppRouter.rootNavigatorKey.currentState?.pushReplacement(
-          CupertinoPageRoute(
+          AppNavigator.appPageRoute(
             builder: (_) => const RegisterScreen(),
           ),
         );

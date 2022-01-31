@@ -63,9 +63,13 @@ class TransactionDetails extends HookWidget {
             radius: 15.0.r,
           ),
           SizedBox(width: 5.0.w),
-          Text(
-            _name ?? '',
-            style: Theme.of(context).textTheme.bodyText1,
+          Expanded(
+            child: Text(
+              _name ?? '',
+              style: Theme.of(context).textTheme.bodyText1,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
           ),
         ],
       );

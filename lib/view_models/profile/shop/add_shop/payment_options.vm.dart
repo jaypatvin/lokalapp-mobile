@@ -1,5 +1,4 @@
-import 'package:flutter/cupertino.dart';
-
+import '../../../../models/app_navigator.dart';
 import '../../../../models/bank_code.dart';
 import '../../../../routers/app_router.dart';
 import '../../../../screens/profile/add_shop/add_bank.dart';
@@ -12,7 +11,7 @@ class SetupPaymentOptionsViewModel extends ViewModel {
 
   void onAddBank() {
     AppRouter.profileNavigatorKey.currentState?.push(
-      CupertinoPageRoute(
+      AppNavigator.appPageRoute(
         builder: (_) => AddBank(
           edit: edit,
         ),
@@ -22,7 +21,7 @@ class SetupPaymentOptionsViewModel extends ViewModel {
 
   void onAddWallet() {
     AppRouter.profileNavigatorKey.currentState?.push(
-      CupertinoPageRoute(
+      AppNavigator.appPageRoute(
         builder: (_) => AddBank(
           type: BankType.wallet,
           edit: edit,

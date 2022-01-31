@@ -248,6 +248,15 @@ class Auth extends ChangeNotifier {
     _idTokenChangesSubscription?.cancel();
     _userStreamSubscription?.cancel();
 
+    if (_auth.currentUser?.providerData.any(
+          (userInfo) => userInfo.providerId == GoogleAuthProvider.PROVIDER_ID,
+        ) ??
+        false) {
+      await GoogleSignIn().disconnect().catchError((e) {
+        // TODO: add error catching
+      });
+    }
+
     await _auth.signOut();
     await _userChangeListener(null);
   }

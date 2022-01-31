@@ -385,9 +385,14 @@ class Database {
     return retVal;
   }
 
-  Future<String> uploadImage(File imageFile, String fileName) async {
-    final UploadTask uploadTask =
-        storageRef.child('$fileName.jpg').putFile(imageFile);
+  Future<String> uploadImage({
+    required File file,
+    required String src,
+    required String fileName,
+  }) async {
+    final UploadTask uploadTask = storageRef
+        .child('/images/$src/$fileName.jpg')
+        .putFile(file);
     final TaskSnapshot storageSnap = await uploadTask;
     final String downloadUrl = await storageSnap.ref.getDownloadURL();
     return downloadUrl;

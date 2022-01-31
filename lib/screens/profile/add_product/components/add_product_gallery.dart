@@ -1,9 +1,10 @@
 import 'dart:collection';
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../../../models/lokal_images.dart';
-import '../../../../utils/utility.dart';
+import '../../../../utils/media_utility.dart';
 import '../../../../widgets/photo_box.dart';
 
 class AddProductGallery extends StatefulWidget {
@@ -49,7 +50,7 @@ class _AddProductGalleryState extends State<AddProductGallery> {
   }
 
   Future<void> _selectImage(int index) async {
-    final file = await MediaUtility.instance!.showMediaDialog(context);
+    final file = await context.read<MediaUtility>().showMediaDialog(context);
     if (file != null) {
       setState(() {
         widget._photoBoxes[index] = PhotoBox(

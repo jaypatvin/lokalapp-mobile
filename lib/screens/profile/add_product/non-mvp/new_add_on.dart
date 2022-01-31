@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../models/app_navigator.dart';
 import '../../../../providers/post_requests/product_body.dart';
-import '../../../../routers/app_router.dart';
 import '../../../../widgets/app_button.dart';
 import '../../../../widgets/custom_app_bar.dart';
 import '../../../../widgets/inputs/input_name_field.dart';
@@ -96,9 +96,11 @@ class _NewAddOnState extends State<NewAddOn> {
             AppButton.filled(
               text: 'Add add-on',
               onPressed: () {
-                AppRouter.pushNewScreen(
+                Navigator.push(
                   context,
-                  screen: ProductAddOn2(gallery: widget.gallery),
+                  AppNavigator.appPageRoute(
+                    builder: (_) => ProductAddOn2(gallery: widget.gallery),
+                  ),
                 );
               },
             ),

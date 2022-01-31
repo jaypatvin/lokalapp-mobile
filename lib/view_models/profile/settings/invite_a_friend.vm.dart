@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:validators/validators.dart';
 
+import '../../../models/app_navigator.dart';
 import '../../../models/failure_exception.dart';
 import '../../../models/lokal_invite.dart';
 import '../../../screens/profile/settings/invite_a_friend/invite_sent.dart';
@@ -70,7 +71,7 @@ class InviteAFriendViewModel extends ViewModel {
       if (invite.code == null) throw 'No Invite code Provided';
 
       Navigator.of(context).pushReplacement(
-        CupertinoPageRoute(builder: (_) => InviteSent(invite)),
+        AppNavigator.appPageRoute(builder: (_) => InviteSent(invite)),
       );
     } catch (e) {
       showToast(e.toString());

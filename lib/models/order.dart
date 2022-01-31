@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 
+import 'timestamp_time_object.dart';
+
 class DeliveryAddress {
   String? barangay;
   String? city;
@@ -304,12 +306,27 @@ class Order {
   }
 
   factory Order.fromMap(Map<String, dynamic> map) {
+    late final DateTime _createdAt;
+    late final DateTime _deliveryDate;
+
+    if (map['created_at'] is Timestamp) {
+      _createdAt = (map['created_at'] as Timestamp).toDate();
+    } else {
+      _createdAt = TimestampObject.fromMap(map['created_at']).toDateTime();
+    }
+
+    if (map['delivery_date'] is Timestamp) {
+      _deliveryDate = (map['delivery_date'] as Timestamp).toDate();
+    } else {
+      _deliveryDate = TimestampObject.fromMap(map['created_at']).toDateTime();
+    }
+
     return Order(
       id: map['id'],
       buyerId: map['buyer_id'],
       communityId: map['community_id'],
-      createdAt: (map['created_at'] as Timestamp).toDate(),
-      deliveryDate: (map['delivery_date'] as Timestamp).toDate(),
+      createdAt: _createdAt,
+      deliveryDate: _deliveryDate,
       deliveryOption: map['delivery_option'],
       instruction: map['instruction'],
       isPaid: map['is_paid'],

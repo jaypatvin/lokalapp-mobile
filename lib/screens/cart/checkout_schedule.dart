@@ -48,6 +48,7 @@ class _CheckoutScheduleState extends State<CheckoutSchedule> with ScreenLoader {
       final user = auth.user!;
       final order =
           context.read<ShoppingCart>().orders[shopId]![widget.productId]!;
+      final _cart = context.read<ShoppingCart>();
       await _apiService.create(
         body: {
           'products': [
@@ -64,18 +65,16 @@ class _CheckoutScheduleState extends State<CheckoutSchedule> with ScreenLoader {
         },
       );
 
-      context
-        ..read<ShoppingCart>().remove(widget.productId)
-        ..read<AppRouter>()
-            .keyOf(AppRoute.discover)
-            .currentState!
-            .pushNamedAndRemoveUntil(
-              CartConfirmation.routeName,
-              ModalRoute.withName(
-                Discover.routeName,
-              ),
-            );
+      AppRouter.discoverNavigatorKey.currentState
+          ?.pushNamedAndRemoveUntil(
+            CartConfirmation.routeName,
+            ModalRoute.withName(
+              Discover.routeName,
+            ),
+          )
+          .then((_) => _cart.remove(widget.productId));
     } catch (e) {
+      debugPrint(e.toString());
       showToast('Failed to place order!');
     }
   }
@@ -85,24 +84,28 @@ class _CheckoutScheduleState extends State<CheckoutSchedule> with ScreenLoader {
     final product = context.read<Products>().findById(widget.productId);
     final shop = context.read<Shops>().findById(product!.shopId)!;
     return Scaffold(
-      appBar: CustomAppBar(
+      appBar: const CustomAppBar(
         titleText: 'Checkout',
         backgroundColor: kTealColor,
-        titleStyle: const TextStyle(color: Colors.white),
-        onPressedLeading: () => Navigator.pop(context),
+        titleStyle: TextStyle(color: Colors.white),
       ),
       body: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const SizedBox(height: 24.0),
-            Text(
-              shop.name!,
-              style: const TextStyle(
-                color: kNavyColor,
-                fontFamily: 'Goldplay',
-                fontWeight: FontWeight.w800,
-                fontSize: 24.0,
+            Padding(
+              padding: EdgeInsets.only(
+                left: 16.0.w,
+                right: 16.0.w,
+                top: 16.0.h,
+              ),
+              child: Text(
+                shop.name!,
+                style: Theme.of(context)
+                    .textTheme
+                    .headline6
+                    ?.copyWith(fontSize: 18.0.sp),
+                textAlign: TextAlign.center,
               ),
             ),
             Container(
@@ -136,17 +139,16 @@ class _CheckoutScheduleState extends State<CheckoutSchedule> with ScreenLoader {
             ),
             const Divider(),
             const SizedBox(height: 8.0),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.0),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16.0.w),
               child: Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
                   'Delivery Schedule',
-                  style: TextStyle(
-                    fontWeight: FontWeight.w800,
-                    fontFamily: 'Goldplay',
-                    fontSize: 28,
-                  ),
+                  style: Theme.of(context)
+                      .textTheme
+                      .headline6
+                      ?.copyWith(fontSize: 18.0.sp),
                 ),
               ),
             ),

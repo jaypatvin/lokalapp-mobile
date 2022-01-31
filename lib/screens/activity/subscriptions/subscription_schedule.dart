@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:keyboard_actions/keyboard_actions.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
+import '../../../models/app_navigator.dart';
 import '../../../models/product_subscription_plan.dart';
 import '../../../state/mvvm_builder.widget.dart';
 import '../../../state/views/hook.view.dart';
@@ -106,8 +107,9 @@ class _NewSubscriptionScheduleView
               SubscriptionScheduleProductCard(
                 product: vm.product,
                 quantity: vm.quantity,
-                onEditTap: () => Navigator.of(context).push(
-                  MaterialPageRoute(
+                onEditTap: () => Navigator.push(
+                  context,
+                  AppNavigator.appPageRoute(
                     builder: (_) => ProductDetail(vm.product),
                   ),
                 ),
@@ -134,7 +136,6 @@ class _NewSubscriptionScheduleView
                   onPressed: () async => performFuture<void>(
                     () async => vm.onSubmitHandler(),
                   ),
-                  textStyle: TextStyle(fontSize: 20.0.sp),
                 ),
               ),
             ],

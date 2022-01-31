@@ -8,7 +8,7 @@ import '../../providers/cart.dart';
 import '../../providers/products.dart';
 import '../../providers/shops.dart';
 import '../../routers/app_router.dart';
-import '../../routers/profile/user_shop.props.dart';
+import '../../routers/profile/props/user_shop.props.dart';
 import '../../screens/profile/shop/user_shop.dart';
 import '../../state/view_model.dart';
 

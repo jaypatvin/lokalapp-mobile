@@ -1,15 +1,16 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:provider/provider.dart';
 
+import '../../models/app_navigator.dart';
 import '../../models/lokal_images.dart';
 import '../../providers/activities.dart';
 import '../../providers/auth.dart';
 import '../../routers/app_router.dart';
 import '../../services/local_image_service.dart';
 import '../../state/view_model.dart';
+import '../../utils/constants/assets.dart';
 import '../../widgets/photo_picker_gallery/provider/custom_photo_provider.dart';
 import '../../widgets/photo_view_gallery/gallery/gallery_asset_photo_view.dart';
 
@@ -90,15 +91,15 @@ class DraftPostViewModel extends ViewModel {
 
   void openGallery(final int index) {
     AppRouter.rootNavigatorKey.currentState?.push(
-      CupertinoPageRoute(
-        builder: (context) => GalleryAssetPhotoView(
-          loadingBuilder: (_, __) =>
-              const Center(child: CircularProgressIndicator()),
+      AppNavigator.appPageRoute(
+        builder: (_) => GalleryAssetPhotoView(
+          initialIndex: index,
           galleryItems: imageProvider.picked,
           backgroundDecoration: const BoxDecoration(
             color: Colors.black,
           ),
-          initialIndex: index,
+          loadingBuilder: (_, __) =>
+              const Center(child: CircularProgressIndicator()),
         ),
       ),
     );
@@ -112,7 +113,10 @@ class DraftPostViewModel extends ViewModel {
     final gallery = <LokalImages>[];
     for (final asset in imageProvider.picked) {
       final file = await asset.file;
-      final url = await service.uploadImage(file: file!, name: 'post_photo');
+      final url = await service.uploadImage(
+        file: file!,
+        src: kActivityImagesSrc,
+      );
       gallery.add(
         LokalImages(
           url: url,

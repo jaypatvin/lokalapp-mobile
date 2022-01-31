@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../../../../models/order.dart';
 import '../../../../routers/app_router.dart';
-import '../../../../routers/chat/chat_view.props.dart';
+import '../../../../routers/chat/props/chat_view.props.dart';
 import '../../../../widgets/app_button.dart';
 import '../../../chat/chat_view.dart';
 

@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
+import '../../models/app_navigator.dart';
 import '../../providers/auth.dart';
 import '../../providers/bank_codes.dart';
 import '../../providers/categories.dart';
@@ -17,7 +18,8 @@ import '../../services/api/api.dart';
 import '../../services/api/invite_api_service.dart';
 import '../../services/local_image_service.dart';
 import '../../state/view_model.dart';
-import '../../utils/utility.dart';
+import '../../utils/constants/assets.dart';
+import '../../utils/media_utility.dart';
 import '../../widgets/verification/verify_screen.dart';
 
 class ProfileRegistrationViewModel extends ViewModel {
@@ -59,7 +61,7 @@ class ProfileRegistrationViewModel extends ViewModel {
     if (profilePhoto != null) {
       mediaUrl = await _imageService.uploadImage(
         file: profilePhoto!,
-        name: 'profile_photo',
+        src: kUserImagesSrc,
       );
     }
 
@@ -106,7 +108,7 @@ class ProfileRegistrationViewModel extends ViewModel {
       await context.read<Categories>().fetch();
       await context.read<BankCodes>().fetch();
       AppRouter.rootNavigatorKey.currentState?.pushAndRemoveUntil(
-        CupertinoPageRoute(
+        AppNavigator.appPageRoute(
           builder: (context) => const VerifyScreen(),
         ),
         (route) => false,

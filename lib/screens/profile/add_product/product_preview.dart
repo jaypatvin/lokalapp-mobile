@@ -8,6 +8,7 @@ import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 import 'package:provider/provider.dart';
 
+import '../../../models/app_navigator.dart';
 import '../../../models/lokal_images.dart';
 import '../../../providers/auth.dart';
 import '../../../providers/post_requests/operating_hours_body.dart';
@@ -15,6 +16,7 @@ import '../../../providers/post_requests/product_body.dart';
 import '../../../providers/products.dart';
 import '../../../providers/shops.dart';
 import '../../../services/local_image_service.dart';
+import '../../../utils/constants/assets.dart';
 import '../../../widgets/app_button.dart';
 import '../../../widgets/custom_app_bar.dart';
 import '../../../widgets/overlays/screen_loader.dart';
@@ -163,9 +165,10 @@ class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
   Future<void> _createProduct() async {
     final List<LokalImages> gallery = [];
     for (final image in images) {
-      final mediaUrl =
-          await Provider.of<LocalImageService>(context, listen: false)
-              .uploadImage(file: image!, name: 'productPhoto');
+      final mediaUrl = await context.read<LocalImageService>().uploadImage(
+            file: image!,
+            src: kProductImagesSrc,
+          );
       gallery.add(LokalImages(url: mediaUrl, order: gallery.length));
     }
 
@@ -221,7 +224,7 @@ class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
       for (final image in images) {
         final mediaUrl = await context
             .read<LocalImageService>()
-            .uploadImage(file: image!, name: 'productPhoto');
+            .uploadImage(file: image!, src: kProductImagesSrc);
         gallery.add(LokalImages(url: mediaUrl, order: gallery.length));
       }
       if (!listEquals(gallery, _product.gallery)) {
@@ -319,8 +322,8 @@ class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
 
       Navigator.push(
         context,
-        MaterialPageRoute(
-          builder: (BuildContext context) => AddProductConfirmation(),
+        AppNavigator.appPageRoute(
+          builder: (_) => const AddProductConfirmation(),
         ),
       );
     } catch (e) {

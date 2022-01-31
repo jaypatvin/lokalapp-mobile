@@ -1,8 +1,8 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../../models/app_navigator.dart';
 import '../../../../state/mvvm_builder.widget.dart';
 import '../../../../state/views/hook.view.dart';
 import '../../../../utils/constants/themes.dart';
@@ -95,7 +95,7 @@ class _ChangeEmailView extends HookView<ChangeEmailViewModel>
                   if (success!) {
                     Navigator.push(
                       context,
-                      CupertinoPageRoute(
+                      AppNavigator.appPageRoute(
                         builder: (_) => const MyAccountConfirmation(),
                       ),
                     );
@@ -128,8 +128,8 @@ class _ChangeEmailView extends HookView<ChangeEmailViewModel>
                   if (_success!) {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(
-                        builder: (context) => const MyAccountConfirmation(),
+                      AppNavigator.appPageRoute(
+                        builder: (_) => const MyAccountConfirmation(),
                       ),
                     );
                     return;

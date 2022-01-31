@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import '../../../../models/app_navigator.dart';
 import '../../../../utils/constants/assets.dart';
 import '../../../../utils/constants/themes.dart';
 import '../../../../widgets/app_button.dart';
@@ -67,10 +68,9 @@ class AccountDeleted extends StatelessWidget {
             child: AppButton.filled(
               text: 'Okay',
               onPressed: () {
-                // FirebaseAuth.instance.signOut();
                 Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
-                  MaterialPageRoute(
-                    builder: (context) => const WelcomeScreen(),
+                  AppNavigator.appPageRoute(
+                    builder: (_) => const WelcomeScreen(),
                   ),
                   (route) => false,
                 );

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../models/app_navigator.dart';
 import '../../../../providers/post_requests/product_body.dart';
-import '../../../../routers/app_router.dart';
 import '../../../../widgets/app_button.dart';
 import '../../../../widgets/custom_app_bar.dart';
 import '../components/add_product_gallery.dart';
@@ -71,9 +71,11 @@ class _ProductVariant2State extends State<ProductVariant2> {
             AppButton.filled(
               text: 'Add another variant',
               onPressed: () {
-                AppRouter.pushNewScreen(
+                Navigator.push(
                   context,
-                  screen: AddAVariant(gallery: widget.gallery),
+                  AppNavigator.appPageRoute(
+                    builder: (_) => AddAVariant(gallery: widget.gallery),
+                  ),
                 );
               },
             ),
@@ -83,9 +85,11 @@ class _ProductVariant2State extends State<ProductVariant2> {
             AppButton.filled(
               text: 'Next',
               onPressed: () {
-                AppRouter.pushNewScreen(
+                Navigator.push(
                   context,
-                  screen: ProductAddOn(gallery: widget.gallery),
+                  AppNavigator.appPageRoute(
+                    builder: (_) => ProductAddOn(gallery: widget.gallery),
+                  ),
                 );
               },
             ),
