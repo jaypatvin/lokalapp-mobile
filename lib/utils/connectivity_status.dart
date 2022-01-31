@@ -123,7 +123,7 @@ class _ConnectivityStatusState extends State<ConnectivityStatus>
               width: double.infinity,
               color: Colors.red.shade300,
               child: const Text(
-                'No internet connection!',
+                'No internet connection or cannot connect to server.',
                 textAlign: TextAlign.center,
               ),
             ),
