@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:lokalapp/screens/profile/profile_screen.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 
 import '../../models/app_navigator.dart';
@@ -13,7 +14,7 @@ class VerifyConfirmationScreen extends StatelessWidget {
   const VerifyConfirmationScreen({Key? key, this.skippable = true})
       : super(key: key);
 
-  Future<bool> _onWillPop(BuildContext context) async {
+  Future<bool> _onWillPop() async {
     if (skippable) {
       AppRouter.rootNavigatorKey.currentState?.push(
         AppNavigator.appPageRoute(
@@ -27,7 +28,7 @@ class VerifyConfirmationScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return NestedWillPopScope(
-      onWillPop: () => _onWillPop(context),
+      onWillPop: _onWillPop,
       child: Scaffold(
         backgroundColor: kInviteScreenColor,
         appBar: CustomAppBar(
@@ -35,7 +36,17 @@ class VerifyConfirmationScreen extends StatelessWidget {
           backgroundColor: kInviteScreenColor,
           actions: [
             TextButton(
-              onPressed: () => Navigator.of(context).maybePop<bool>(true),
+              onPressed: () {
+                if (skippable) {
+                  Navigator.of(context).maybePop();
+                } else {
+                  AppRouter.profileNavigatorKey.currentState?.popUntil(
+                    ModalRoute.withName(
+                      ProfileScreen.routeName,
+                    ),
+                  );
+                }
+              },
               child: Text(
                 'Done',
                 style: TextStyle(

@@ -3,6 +3,7 @@ import 'dart:io' show File, Platform;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:lokalapp/widgets/overlays/screen_loader.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
@@ -28,8 +29,8 @@ class VerifyScreen extends StatefulWidget {
   _VerifyScreenState createState() => _VerifyScreenState();
 }
 
-class _VerifyScreenState extends State<VerifyScreen> {
-  final _ids = <String>[
+class _VerifyScreenState extends State<VerifyScreen> with ScreenLoader {
+  final _ids = const <String>[
     "Driver's License",
     'Old Philippine Passport (Issued before 15 Aug 2016)',
     'New Philippine Passport',
@@ -164,19 +165,19 @@ class _VerifyScreenState extends State<VerifyScreen> {
       );
 
       if (mediaUrl.isNotEmpty) {
-        // TODO: CHANGE TO PROVIDER
         final user = context.read<Auth>().user!;
         try {
-          final verified = await UserAPIService(context.read<API>()).update(
-            body: {
-              'id': user.id!,
-              'id_photo': mediaUrl,
-              'id_type': _chosenIdType,
-            },
+          final success = await UserAPIService(context.read<API>()).update(
             userId: user.id!,
+            body: {
+              'registration': {
+                'id_photo': mediaUrl,
+                'id_type': _chosenIdType,
+              }
+            },
           );
 
-          if (verified) {
+          if (success) {
             if (widget.skippable) {
               AppRouter.rootNavigatorKey.currentState?.pushAndRemoveUntil(
                 AppNavigator.appPageRoute(
@@ -241,7 +242,7 @@ class _VerifyScreenState extends State<VerifyScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget screen(BuildContext context) {
     return NestedWillPopScope(
       onWillPop: _onWillPop,
       child: Scaffold(
@@ -316,7 +317,11 @@ class _VerifyScreenState extends State<VerifyScreen> {
                 width: 120.0.w,
                 child: AppButton.filled(
                   text: 'SUBMIT',
-                  onPressed: _file != null ? _onSubmitHandler : null,
+                  onPressed: _file != null
+                      ? () async {
+                          await performFuture<void>(_onSubmitHandler);
+                        }
+                      : null,
                   textStyle: _file != null
                       ? const TextStyle(
                           color: kNavyColor,
