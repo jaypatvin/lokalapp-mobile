@@ -145,8 +145,8 @@ class _WalletDetailsView extends HookView<BankDetailsViewModel>
           const SizedBox(height: 16.0),
           if (vm.proofOfPayment != null)
             PhotoBox(
+              imageSource: PhotoBoxImageSource(file: vm.proofOfPayment),
               shape: BoxShape.rectangle,
-              file: vm.proofOfPayment,
               displayBorder: false,
             ),
           Container(

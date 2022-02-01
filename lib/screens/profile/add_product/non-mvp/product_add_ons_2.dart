@@ -5,13 +5,16 @@ import '../../../../models/app_navigator.dart';
 import '../../../../providers/post_requests/product_body.dart';
 import '../../../../widgets/app_button.dart';
 import '../../../../widgets/custom_app_bar.dart';
-import '../components/add_product_gallery.dart';
+import '../../../../widgets/photo_box.dart';
 import '../components/product_header.dart';
 import '../product_schedule.dart';
 
 class ProductAddOn2 extends StatefulWidget {
-  final AddProductGallery gallery;
-  const ProductAddOn2({required this.gallery});
+  const ProductAddOn2({
+    Key? key,
+    required this.images,
+  }) : super(key: key);
+  final List<PhotoBoxImageSource> images;
   @override
   _ProductAddOn2State createState() => _ProductAddOn2State();
 }
@@ -20,7 +23,9 @@ class _ProductAddOn2State extends State<ProductAddOn2> {
   Widget buildBody() {
     final horizontalPadding = MediaQuery.of(context).size.width * 0.05;
     final topPadding = MediaQuery.of(context).size.height * 0.03;
-    final image = widget.gallery.photoBoxes.first;
+    final image = widget.images.isNotEmpty
+        ? widget.images.first
+        : const PhotoBoxImageSource();
 
     return Container(
       padding: EdgeInsets.fromLTRB(
@@ -37,10 +42,10 @@ class _ProductAddOn2State extends State<ProductAddOn2> {
             Consumer<ProductBody>(
               builder: (context, product, child) {
                 return ProductHeader(
-                  photoBox: image,
-                  productName: product.name,
-                  productPrice: product.basePrice,
-                  productStock: product.quantity,
+                  productHeaderImageSource: image,
+                  productName: product.name ?? '',
+                  productPrice: product.basePrice ?? 0.0,
+                  productStock: product.quantity ?? 0,
                 );
               },
             ),
@@ -57,10 +62,10 @@ class _ProductAddOn2State extends State<ProductAddOn2> {
             Consumer<ProductBody>(
               builder: (context, product, child) {
                 return ProductHeader(
-                  photoBox: image,
-                  productName: product.name,
-                  productPrice: product.basePrice,
-                  productStock: product.quantity,
+                  productHeaderImageSource: image,
+                  productName: product.name ?? '',
+                  productPrice: product.basePrice ?? 0.0,
+                  productStock: product.quantity ?? 0,
                 );
               },
             ),
@@ -79,7 +84,7 @@ class _ProductAddOn2State extends State<ProductAddOn2> {
                 Navigator.push(
                   context,
                   AppNavigator.appPageRoute(
-                    builder: (_) => ProductSchedule(gallery: widget.gallery),
+                    builder: (_) => ProductSchedule(images: widget.images),
                   ),
                 );
               },

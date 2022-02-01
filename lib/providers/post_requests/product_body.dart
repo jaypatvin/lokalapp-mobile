@@ -37,6 +37,7 @@ class ProductBody extends ChangeNotifier {
     bool? canSubscribe,
     List<Map<String, dynamic>>? gallery,
     Map<String, dynamic>? availability,
+    bool notify = true,
   }) {
     _productBody['name'] = name ?? _productBody['name'];
     _productBody['description'] = description ?? _productBody['description'];
@@ -50,7 +51,8 @@ class ProductBody extends ChangeNotifier {
     _productBody['can_subscribe'] =
         canSubscribe ?? _productBody['can_subscribe'];
     _productBody['availability'] = availability ?? _productBody['availability'];
-    notifyListeners();
+
+    if (notify) notifyListeners();
   }
 
   void clear() => update(

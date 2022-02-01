@@ -6,13 +6,17 @@ import '../../../../providers/post_requests/product_body.dart';
 import '../../../../widgets/app_button.dart';
 import '../../../../widgets/custom_app_bar.dart';
 import '../../../../widgets/inputs/input_name_field.dart';
-import '../components/add_product_gallery.dart';
+import '../../../../widgets/photo_box.dart';
 import '../components/product_header.dart';
 import 'product_add_ons_2.dart';
 
 class NewAddOn extends StatefulWidget {
-  final AddProductGallery gallery;
-  const NewAddOn({required this.gallery});
+  const NewAddOn({
+    Key? key,
+    required this.images,
+  }) : super(key: key);
+  final List<PhotoBoxImageSource> images;
+
   @override
   _NewAddOnState createState() => _NewAddOnState();
 }
@@ -26,7 +30,9 @@ class _NewAddOnState extends State<NewAddOn> {
   Widget buildBody() {
     final horizontalPadding = MediaQuery.of(context).size.width * 0.05;
     final topPadding = MediaQuery.of(context).size.height * 0.03;
-    final image = widget.gallery.photoBoxes.first;
+    final image = widget.images.isNotEmpty
+        ? widget.images.first
+        : const PhotoBoxImageSource();
     return Container(
       padding: EdgeInsets.fromLTRB(
         horizontalPadding,
@@ -41,10 +47,10 @@ class _NewAddOnState extends State<NewAddOn> {
             Consumer<ProductBody>(
               builder: (context, product, child) {
                 return ProductHeader(
-                  photoBox: image,
-                  productName: product.name,
-                  productPrice: product.basePrice,
-                  productStock: product.quantity,
+                  productHeaderImageSource: image,
+                  productName: product.name ?? '',
+                  productPrice: product.basePrice ?? 0.0,
+                  productStock: product.quantity ?? 0,
                 );
               },
             ),
@@ -99,7 +105,7 @@ class _NewAddOnState extends State<NewAddOn> {
                 Navigator.push(
                   context,
                   AppNavigator.appPageRoute(
-                    builder: (_) => ProductAddOn2(gallery: widget.gallery),
+                    builder: (_) => ProductAddOn2(images: widget.images),
                   ),
                 );
               },

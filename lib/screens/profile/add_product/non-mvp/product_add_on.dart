@@ -6,13 +6,16 @@ import '../../../../providers/post_requests/product_body.dart';
 import '../../../../routers/app_router.dart';
 import '../../../../widgets/app_button.dart';
 import '../../../../widgets/custom_app_bar.dart';
-import '../components/add_product_gallery.dart';
+import '../../../../widgets/photo_box.dart';
 import '../components/product_header.dart';
 import 'new_add_on.dart';
 
 class ProductAddOn extends StatefulWidget {
-  final AddProductGallery gallery;
-  const ProductAddOn({required this.gallery});
+  const ProductAddOn({
+    Key? key,
+    required this.images,
+  }) : super(key: key);
+  final List<PhotoBoxImageSource> images;
   @override
   _ProductAddOnState createState() => _ProductAddOnState();
 }
@@ -21,7 +24,9 @@ class _ProductAddOnState extends State<ProductAddOn> {
   Widget buildBody() {
     final horizontalPadding = MediaQuery.of(context).size.width * 0.05;
     final topPadding = MediaQuery.of(context).size.height * 0.03;
-    final image = widget.gallery.photoBoxes.first;
+    final image = widget.images.isNotEmpty
+        ? widget.images.first
+        : const PhotoBoxImageSource();
 
     return Container(
       padding: EdgeInsets.fromLTRB(
@@ -38,10 +43,10 @@ class _ProductAddOnState extends State<ProductAddOn> {
             Consumer<ProductBody>(
               builder: (context, product, child) {
                 return ProductHeader(
-                  photoBox: image,
-                  productName: product.name,
-                  productPrice: product.basePrice,
-                  productStock: product.quantity,
+                  productHeaderImageSource: image,
+                  productName: product.name ?? '',
+                  productPrice: product.basePrice ?? 0.0,
+                  productStock: product.quantity ?? 0,
                 );
               },
             ),
@@ -64,7 +69,7 @@ class _ProductAddOnState extends State<ProductAddOn> {
                 AppRouter.profileNavigatorKey.currentState?.push(
                   AppNavigator.appPageRoute(
                     builder: (_) => NewAddOn(
-                      gallery: widget.gallery,
+                      images: widget.images,
                     ),
                   ),
                 );
@@ -78,7 +83,7 @@ class _ProductAddOnState extends State<ProductAddOn> {
               onPressed: () {
                 AppRouter.profileNavigatorKey.currentState?.push(
                   AppNavigator.appPageRoute(
-                    builder: (_) => NewAddOn(gallery: widget.gallery),
+                    builder: (_) => NewAddOn(images: widget.images),
                   ),
                 );
               },

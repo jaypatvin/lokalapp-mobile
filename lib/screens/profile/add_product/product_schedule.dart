@@ -15,22 +15,30 @@ import '../../../utils/constants/themes.dart';
 import '../../../utils/repeated_days_generator/schedule_generator.dart';
 import '../../../widgets/app_button.dart';
 import '../../../widgets/custom_app_bar.dart';
-import 'components/add_product_gallery.dart';
+import '../../../widgets/overlays/constrained_scrollview.dart';
+import '../../../widgets/photo_box.dart';
 import 'components/product_header.dart';
 import 'product_preview.dart';
 
+enum ProductScheduleState { shop, custom }
+
 class ProductSchedule extends StatefulWidget {
-  final AddProductGallery? gallery;
+  const ProductSchedule({
+    Key? key,
+    required this.images,
+    this.productId,
+  }) : super(key: key);
+
+  // final AddProductGallery gallery;
+  final List<PhotoBoxImageSource> images;
   final String? productId;
-  const ProductSchedule({required this.gallery, this.productId});
+
   @override
   _ProductScheduleState createState() => _ProductScheduleState();
 }
 
-enum ProductScheduleState { shop, custom }
-
 class _ProductScheduleState extends State<ProductSchedule> {
-  ProductScheduleState? _productSchedule;
+  ProductScheduleState _productSchedule = ProductScheduleState.shop;
   List<DateTime?> _markedDatesMap = [];
   List<DateTime?> _selectableDates = [];
 
@@ -104,26 +112,28 @@ class _ProductScheduleState extends State<ProductSchedule> {
   Widget buildBody() {
     final horizontalPadding = MediaQuery.of(context).size.width * 0.05;
     final topPadding = MediaQuery.of(context).size.height * 0.03;
-    final image = widget.gallery!.photoBoxes.first;
+    final image = widget.images.isNotEmpty
+        ? widget.images.first
+        : const PhotoBoxImageSource();
 
-    return Container(
-      padding: EdgeInsets.fromLTRB(
-        horizontalPadding,
-        topPadding,
-        horizontalPadding,
-        0,
-      ),
-      child: SingleChildScrollView(
+    return ConstrainedScrollView(
+      child: Padding(
+        padding: EdgeInsets.fromLTRB(
+          horizontalPadding,
+          topPadding,
+          horizontalPadding,
+          0,
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Consumer<ProductBody>(
               builder: (context, product, child) {
                 return ProductHeader(
-                  photoBox: image,
-                  productName: product.name,
-                  productPrice: product.basePrice,
-                  productStock: product.quantity,
+                  productHeaderImageSource: image,
+                  productName: product.name ?? '',
+                  productPrice: product.basePrice ?? 0.0,
+                  productStock: product.quantity ?? 0,
                 );
               },
             ),
@@ -168,6 +178,7 @@ class _ProductScheduleState extends State<ProductSchedule> {
                 selectableDates: _selectableDates,
               ),
             ),
+            const Spacer(),
             SizedBox(
               width: double.infinity,
               child: AppButton.filled(
@@ -178,7 +189,7 @@ class _ProductScheduleState extends State<ProductSchedule> {
                     context,
                     AppNavigator.appPageRoute(
                       builder: (_) => ProductPreview(
-                        gallery: widget.gallery,
+                        images: widget.images,
                         scheduleState: _productSchedule,
                         productId: widget.productId,
                       ),
@@ -187,9 +198,6 @@ class _ProductScheduleState extends State<ProductSchedule> {
                 },
               ),
             ),
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 0.02,
-            )
           ],
         ),
       ),
@@ -261,11 +269,8 @@ class _ProductScheduleState extends State<ProductSchedule> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: CustomAppBar(
+      appBar: const CustomAppBar(
         titleText: 'Product Schedule',
-        onPressedLeading: () {
-          Navigator.pop(context);
-        },
       ),
       body: buildBody(),
     );

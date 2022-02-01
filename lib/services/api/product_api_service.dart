@@ -20,7 +20,6 @@ class ProductApiService extends APIService<Product> {
         headers: api.withBodyHeader(),
         body: json.encode(body),
       );
-
       return handleResponse((map) => Product.fromMap(map), response);
     } catch (e) {
       rethrow;

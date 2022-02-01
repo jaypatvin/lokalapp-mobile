@@ -100,7 +100,7 @@ class _AddShopState extends State<AddShop> {
                 });
               },
               child: PhotoBox(
-                file: shopPhoto,
+                imageSource: PhotoBoxImageSource(file: shopPhoto),
                 shape: BoxShape.circle,
                 width: 140.w,
                 height: 140.w,

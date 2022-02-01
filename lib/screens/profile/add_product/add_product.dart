@@ -10,11 +10,14 @@ import '../../../models/lokal_images.dart';
 import '../../../providers/post_requests/product_body.dart';
 import '../../../providers/products.dart';
 import '../../../utils/constants/themes.dart';
+import '../../../utils/media_utility.dart';
 import '../../../widgets/app_button.dart';
 import '../../../widgets/custom_app_bar.dart';
 import '../../../widgets/inputs/input_description_field.dart';
 import '../../../widgets/inputs/input_name_field.dart';
+import '../../../widgets/overlays/constrained_scrollview.dart';
 import '../../../widgets/overlays/screen_loader.dart';
+import '../../../widgets/photo_box.dart';
 import '../shop/user_shop.dart';
 import 'components/add_product_gallery.dart';
 import 'product_details.dart';
@@ -30,7 +33,6 @@ class AddProduct extends StatefulWidget {
 }
 
 class _AddProductState extends State<AddProduct> with ScreenLoader {
-  AddProductGallery? _gallery;
   String? _title;
 
   final _nameController = TextEditingController();
@@ -41,7 +43,10 @@ class _AddProductState extends State<AddProduct> with ScreenLoader {
   final FocusNode _descriptionFocusNode = FocusNode();
 
   String? _errorTextName;
+  String? _errorTextDescription;
   String? _errorTextPrice;
+
+  final List<PhotoBoxImageSource> _images = [];
 
   @override
   void initState() {
@@ -51,9 +56,16 @@ class _AddProductState extends State<AddProduct> with ScreenLoader {
       final product = context.read<Products>().findById(widget.productId);
 
       if (product != null) {
-        _gallery = AddProductGallery(
-          images: product.gallery,
-        );
+        if (product.gallery?.isNotEmpty ?? false) {
+          _images.addAll(
+            product.gallery!
+                .map<PhotoBoxImageSource>(
+                  (image) => PhotoBoxImageSource(url: image.url),
+                )
+                .toList(),
+          );
+        }
+
         _nameController.text = product.name;
         _priceController.text = product.basePrice.toString();
         _descriptionController.text = product.description!;
@@ -81,8 +93,20 @@ class _AddProductState extends State<AddProduct> with ScreenLoader {
       }
     }
 
-    _gallery = AddProductGallery();
     _title = 'Add a New Product';
+  }
+
+  Future<void> _onSelectImage(int index) async {
+    final file = await context.read<MediaUtility>().showMediaDialog(context);
+    if (file != null) {
+      setState(() {
+        if (_images.isEmpty || index >= _images.length) {
+          _images.add(PhotoBoxImageSource(file: file));
+        } else {
+          _images[index] = PhotoBoxImageSource(file: file);
+        }
+      });
+    }
   }
 
   KeyboardActionsConfig _buildConfig() {
@@ -172,9 +196,14 @@ class _AddProductState extends State<AddProduct> with ScreenLoader {
   void _onSubmitHandler() {
     if (_nameController.text.isEmpty) {
       setState(() {
-        _errorTextName = 'Enter a valid name.';
+        _errorTextName = 'Name must not be empty.';
       });
-      return;
+    }
+
+    if (_descriptionController.text.isEmpty) {
+      setState(() {
+        _errorTextDescription = 'Description must not be empty.';
+      });
     }
 
     if (_priceController.text.isEmpty ||
@@ -182,6 +211,12 @@ class _AddProductState extends State<AddProduct> with ScreenLoader {
       setState(() {
         _errorTextPrice = 'Enter a valid price.';
       });
+    }
+
+    if (_errorTextName?.isNotEmpty ??
+        _errorTextDescription?.isNotEmpty ??
+        _errorTextPrice?.isNotEmpty ??
+        false) {
       return;
     }
 
@@ -195,7 +230,7 @@ class _AddProductState extends State<AddProduct> with ScreenLoader {
       context,
       AppNavigator.appPageRoute(
         builder: (_) => ProductDetails(
-          gallery: _gallery,
+          images: _images,
           productId: widget.productId,
         ),
       ),
@@ -302,9 +337,6 @@ class _AddProductState extends State<AddProduct> with ScreenLoader {
       backgroundColor: Colors.white,
       appBar: CustomAppBar(
         titleText: _title,
-        onPressedLeading: () {
-          Navigator.pop(context);
-        },
         actions: _title == 'Edit Product'
             ? [
                 IconButton(
@@ -316,74 +348,91 @@ class _AddProductState extends State<AddProduct> with ScreenLoader {
               ]
             : null,
       ),
-      resizeToAvoidBottomInset: false,
-      body: Container(
-        padding: EdgeInsets.fromLTRB(
-          horizontalPadding,
-          topPadding,
-          horizontalPadding,
-          0,
-        ),
+      body: ConstrainedScrollView(
         child: KeyboardActions(
           config: _buildConfig(),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Product Photos',
-                style: Theme.of(context).textTheme.headline6,
-              ),
-              SizedBox(
-                height: MediaQuery.of(context).size.height * 0.02,
-              ),
-              _gallery!,
-              SizedBox(
-                height: MediaQuery.of(context).size.height * 0.02,
-              ),
-              Text(
-                'Product Name',
-                style: Theme.of(context).textTheme.headline6,
-              ),
-              SizedBox(
-                height: MediaQuery.of(context).size.height * 0.005,
-              ),
-              InputNameField(
-                controller: _nameController,
-                focusNode: _nameFocusNode,
-                hintText: 'Item Name',
-                errorText: _errorTextName,
-                onChanged: (value) {
-                  if (_errorTextName != null) {
-                    setState(() {
-                      _errorTextName = null;
-                    });
-                  }
-                },
-              ),
-              SizedBox(
-                height: MediaQuery.of(context).size.height * 0.02,
-              ),
-              Text(
-                'Description',
-                style: Theme.of(context).textTheme.headline6,
-              ),
-              InputDescriptionField(
-                controller: _descriptionController,
-                focusNode: _descriptionFocusNode,
-                hintText: 'Product Description',
-              ),
-              const SizedBox(height: 20),
-              _buildProductPrice(),
-              SizedBox(height: MediaQuery.of(context).size.height * 0.05),
-              SizedBox(
-                width: double.infinity,
-                child: AppButton.filled(
-                  text: 'Next',
-                  onPressed: _onSubmitHandler,
+          disableScroll: true,
+          child: Padding(
+            padding: EdgeInsets.fromLTRB(
+              horizontalPadding,
+              topPadding,
+              horizontalPadding,
+              0,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Product Photos',
+                  style: Theme.of(context).textTheme.headline6,
                 ),
-              ),
-              SizedBox(height: MediaQuery.of(context).size.height * 0.02),
-            ],
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.02,
+                ),
+                // _gallery!,
+                SizedBox(
+                  height: ((_images.length + 1) / 4).ceil() * 85.0.h,
+                  child: AddProductGallery(
+                    images: _images,
+                    onSelectImage: _onSelectImage,
+                  ),
+                ),
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.02,
+                ),
+                Text(
+                  'Product Name',
+                  style: Theme.of(context).textTheme.headline6,
+                ),
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.005,
+                ),
+                InputNameField(
+                  controller: _nameController,
+                  focusNode: _nameFocusNode,
+                  hintText: 'Item Name',
+                  errorText: _errorTextName,
+                  onChanged: (value) {
+                    if (_errorTextName != null) {
+                      setState(() {
+                        _errorTextName = null;
+                      });
+                    }
+                  },
+                ),
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.02,
+                ),
+                Text(
+                  'Description',
+                  style: Theme.of(context).textTheme.headline6,
+                ),
+                InputDescriptionField(
+                  controller: _descriptionController,
+                  focusNode: _descriptionFocusNode,
+                  hintText: 'Product Description',
+                  errorText: _errorTextDescription,
+                  onChanged: (value) {
+                    if (_errorTextDescription != null) {
+                      setState(() {
+                        _errorTextDescription = null;
+                      });
+                    }
+                  },
+                ),
+                const SizedBox(height: 10),
+                _buildProductPrice(),
+                const Spacer(),
+                const SizedBox(height: 5),
+                SizedBox(
+                  width: double.infinity,
+                  child: AppButton.filled(
+                    text: 'Next',
+                    onPressed: _onSubmitHandler,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

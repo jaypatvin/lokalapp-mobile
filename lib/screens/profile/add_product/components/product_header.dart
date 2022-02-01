@@ -1,26 +1,32 @@
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../widgets/photo_box.dart';
 
 class ProductHeader extends StatelessWidget {
-  final PhotoBox photoBox;
-  final String? productName;
-  final double? productPrice;
-  final int? productStock;
   const ProductHeader({
-    required this.photoBox,
     required this.productName,
     required this.productPrice,
-    this.productStock,
+    required this.productHeaderImageSource,
+    this.productStock = 0,
   });
+  final String productName;
+  final double productPrice;
+  final int productStock;
+  final PhotoBoxImageSource productHeaderImageSource;
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
-        if (photoBox.file != null || photoBox.url != null)
-          photoBox
+        if (productHeaderImageSource.isNotEmpty)
+          PhotoBox(
+            imageSource: productHeaderImageSource,
+            shape: BoxShape.rectangle,
+            height: 75,
+            width: 75,
+          )
         else
           Container(
             height: 75.0,
@@ -36,7 +42,7 @@ class ProductHeader extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                productName!,
+                productName,
                 overflow: TextOverflow.ellipsis,
                 style: Theme.of(context).textTheme.headline6,
                 maxLines: 2,
@@ -48,15 +54,12 @@ class ProductHeader extends StatelessWidget {
                     "PHP ${NumberFormat("#,##0.00").format(productPrice)}",
                     style: Theme.of(context).textTheme.bodyText1,
                   ),
-                  Visibility(
-                    visible: productStock != null,
-                    child: Text(
-                      'In Stock: $productStock',
-                      style: Theme.of(context).textTheme.bodyText1!.copyWith(
-                            fontSize: MediaQuery.of(context).size.width * 0.04,
-                            fontWeight: FontWeight.w400,
-                          ),
-                    ),
+                  Text(
+                    'In Stock: $productStock',
+                    style: Theme.of(context).textTheme.bodyText1!.copyWith(
+                          fontSize: MediaQuery.of(context).size.width * 0.04,
+                          fontWeight: FontWeight.w400,
+                        ),
                   ),
                 ],
               ),

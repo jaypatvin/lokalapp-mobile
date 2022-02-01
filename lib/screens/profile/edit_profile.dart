@@ -135,9 +135,11 @@ class _EditProfileView extends HookView<EditProfileViewModel>
                                 BlendMode.modulate,
                               ),
                               child: PhotoBox(
-                                file: vm.profilePhoto,
+                                imageSource: PhotoBoxImageSource(
+                                  file: vm.profilePhoto,
+                                  url: context.watch<AuthBody>().profilePhoto,
+                                ),
                                 shape: BoxShape.circle,
-                                url: context.read<AuthBody>().profilePhoto,
                                 displayBorder: false,
                               ),
                             ),
