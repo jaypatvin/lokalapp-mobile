@@ -46,9 +46,9 @@ class ProfileScreen extends StatelessWidget {
               _ProfileHeader(
                 userId: userId ?? context.read<Auth>().user!.id!,
               ),
-             ShopBanner(
-                  userId: userId ?? context.read<Auth>().user!.id!,
-                ),
+              ShopBanner(
+                userId: userId ?? context.read<Auth>().user!.id!,
+              ),
               Expanded(
                 child: !isCurrentUser
                     ? Container(
@@ -102,10 +102,8 @@ class _ProfileHeaderView extends StatelessView<ProfileHeaderViewModel> {
           children: [
             if (user.profilePhoto != null)
               Positioned.fill(
-                child: Image(
-                  image: NetworkImage(
-                    user.profilePhoto ?? '',
-                  ),
+                child: Image.network(
+                  user.profilePhoto ?? '',
                   fit: BoxFit.cover,
                   errorBuilder: (ctx, obj, trace) =>
                       _backgroundBuilder(vm.profileHeaderColors),

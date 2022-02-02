@@ -25,7 +25,7 @@ class PhotoBox extends StatelessWidget {
   const PhotoBox({
     required this.shape,
     this.imageSource = const PhotoBoxImageSource(),
-    this.width = 140.0,
+    this.width = 150.0,
     this.height = 150.0,
     this.displayBorder = true,
   });
@@ -36,15 +36,6 @@ class PhotoBox extends StatelessWidget {
       width: width,
       height: height,
       decoration: BoxDecoration(
-        image: imageSource.isEmpty
-            ? null
-            : DecorationImage(
-                fit: BoxFit.cover,
-                image: imageSource.isFile
-                    ? FileImage(imageSource.file!) as ImageProvider<FileImage>
-                    : NetworkImage(imageSource.url!)
-                        as ImageProvider<NetworkImage>,
-              ),
         shape: shape,
         border: displayBorder ? Border.all(color: kTealColor) : null,
         color: Colors.transparent,
@@ -55,7 +46,16 @@ class PhotoBox extends StatelessWidget {
               color: kTealColor,
               size: 15,
             )
-          : null,
+          : Image(
+              fit: BoxFit.cover,
+              image: imageSource.isFile
+                  ? FileImage(imageSource.file!) as ImageProvider<FileImage>
+                  : NetworkImage(imageSource.url!)
+                      as ImageProvider<NetworkImage>,
+              errorBuilder: (ctx, e, stack) => const Center(
+                child: Text('Error displaying image'),
+              ),
+            ),
     );
   }
 }

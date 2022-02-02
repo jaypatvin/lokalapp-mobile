@@ -45,8 +45,16 @@ class SubscriptionScheduleProductCard extends StatelessWidget {
                         product.gallery!.first.url,
                         fit: BoxFit.cover,
                         errorBuilder: (ctx, obj, stack) {
-                          return const Text('No Image');
+                          return const Text('Error displaying image');
                         },
+                      ),
+                    )
+                  else
+                    SizedBox(
+                      height: 80.0.h,
+                      width: 80.0.h,
+                      child: const Center(
+                        child: Text('No Image'),
                       ),
                     ),
                   SizedBox(width: 8.0.w),

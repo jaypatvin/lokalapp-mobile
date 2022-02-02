@@ -49,11 +49,22 @@ class _DiscoverView extends StatelessView<DiscoverViewModel> {
               width: 100.0.w,
               child: Column(
                 children: [
-                  CircleAvatar(
-                    radius: 35.0.r,
-                    backgroundColor: const Color(0XFFF1FAFF),
-                    foregroundImage: NetworkImage(categories[index].iconUrl),
-                    onForegroundImageError: (obj, stack) {},
+                  // TODO: separate widget
+                  Container(
+                    height: 70.0.r,
+                    width: 70.0.r,
+                    decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Color(0XFFF1FAFF),
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(30.0.r),
+                      child: Image.network(
+                        categories[index].iconUrl,
+                        fit: BoxFit.cover,
+                        errorBuilder: (_, e, stack) => const SizedBox.shrink(),
+                      ),
+                    ),
                   ),
                   SizedBox(height: 10.0.h),
                   Text(

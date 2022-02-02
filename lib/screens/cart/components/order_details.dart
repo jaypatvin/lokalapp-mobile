@@ -21,17 +21,18 @@ class OrderDetails extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        if (product.gallery != null && product.gallery!.isNotEmpty)
+        if (product.gallery?.isNotEmpty ?? false)
           SizedBox(
             width: 60.0.h,
             height: 60.0.h,
-            child: Image(
-              image: NetworkImage(product.gallery!.first.url),
+            child: Image.network(
+              product.gallery!.first.url,
               fit: BoxFit.cover,
-              errorBuilder: (ctx, obj, stk) => const SizedBox(),
+              errorBuilder: (ctx, obj, stk) =>
+                  const Center(child: Text('Error displaying image.')),
             ),
-          ),
-        if (product.gallery == null || product.gallery!.isEmpty)
+          )
+        else
           SizedBox(
             width: 60.0.h,
             height: 60.0.h,

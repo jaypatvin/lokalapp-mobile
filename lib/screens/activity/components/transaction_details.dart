@@ -117,13 +117,23 @@ class TransactionDetails extends HookWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Image.network(
-                    product?.gallery?.first.url ?? '',
-                    width: 40.0.h,
-                    height: 40.0.h,
-                    fit: BoxFit.cover,
-                    errorBuilder: (_, __, ___) => const Text('No Image'),
-                  ),
+                  if (product?.gallery?.isNotEmpty ?? false)
+                    Image.network(
+                      product!.gallery!.first.url,
+                      width: 40.0.h,
+                      height: 40.0.h,
+                      fit: BoxFit.cover,
+                      errorBuilder: (_, __, ___) =>
+                          const Center(child: Text('Error displaying Image')),
+                    )
+                  else
+                    SizedBox(
+                      height: 40.0.h,
+                      width: 40.0.h,
+                      child: const Center(
+                        child: Text('No image'),
+                      ),
+                    ),
                   Text(
                     item.name!,
                     style: Theme.of(context).textTheme.subtitle1,

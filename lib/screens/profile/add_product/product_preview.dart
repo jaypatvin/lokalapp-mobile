@@ -51,7 +51,7 @@ class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
   final List<File> _fileImages = [];
   final List<String> _urlImages = [];
 
-  // bool _isUpdating = false;
+  bool _isLoading = false;
 
   @override
   void initState() {
@@ -302,6 +302,11 @@ class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
 
   Future<void> _onConfirm() async {
     try {
+      if (_isLoading) return;
+      setState(() {
+        _isLoading = true;
+      });
+
       if (widget.productId != null) {
         final success = await _updateProduct();
         if (success) {
@@ -324,6 +329,10 @@ class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
     } catch (e, stack) {
       FirebaseCrashlytics.instance.recordError(e, stack);
       showToast(e is FailureException ? e.message : e.toString());
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 

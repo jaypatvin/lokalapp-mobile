@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../chat/components/chat_avatar.dart';
+
 class PostDetailsHeader extends StatelessWidget {
   const PostDetailsHeader({
     Key? key,
@@ -23,9 +25,9 @@ class PostDetailsHeader extends StatelessWidget {
       onTap: onTap,
       child: Row(
         children: [
-          CircleAvatar(
-            backgroundImage:
-                photo?.isNotEmpty ?? false ? NetworkImage(photo!) : null,
+          ChatAvatar(
+            displayName: firstName,
+            displayPhoto: photo,
             radius: 24.0.r,
           ),
           SizedBox(width: spacing),
