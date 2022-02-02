@@ -1,3 +1,4 @@
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:uuid/uuid.dart';
@@ -35,7 +36,8 @@ class ProductsSliverGrid extends StatelessWidget {
                 child: ProductCard(items[index].id),
               ),
             );
-          } catch (e) {
+          } catch (e, stack) {
+            FirebaseCrashlytics.instance.recordError(e, stack);
             return const SizedBox();
           }
         },

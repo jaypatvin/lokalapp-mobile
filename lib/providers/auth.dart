@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:crypto/crypto.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -97,6 +98,7 @@ class Auth extends ChangeNotifier {
         }
 
         debugPrint('API called by firebaseAuth changes');
+        FirebaseCrashlytics.instance.setUserIdentifier(id);
         _user = await _apiService.getById(userId: id);
 
         _userStreamSubscription?.cancel();
@@ -119,7 +121,6 @@ class Auth extends ChangeNotifier {
 
       notifyListeners();
     } catch (e) {
-      debugPrint(e.toString());
       rethrow;
     }
   }
@@ -252,8 +253,8 @@ class Auth extends ChangeNotifier {
           (userInfo) => userInfo.providerId == GoogleAuthProvider.PROVIDER_ID,
         ) ??
         false) {
-      await GoogleSignIn().disconnect().catchError((e) {
-        // TODO: add error catching
+      await GoogleSignIn().signOut().onError((error, stackTrace) {
+        FirebaseCrashlytics.instance.recordError(error, stackTrace);
       });
     }
 

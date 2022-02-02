@@ -1,8 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
+import '../../models/failure_exception.dart';
 import '../../providers/auth.dart';
 import '../../routers/app_router.dart';
 import '../../screens/auth/profile_registration.dart';
@@ -40,18 +42,10 @@ class RegisterScreenViewModel extends ViewModel {
 
       await context.read<Auth>().signUp(email, password);
 
-      // AppRouter.rootNavigatorKey.currentState?.popUntil(
-      //   ModalRoute.withName(
-      //     WelcomeScreen.routeName,
-      //   ),
-      // );
-      // AppRouter.rootNavigatorKey.currentState?.pushNamed(
-      //   ProfileRegistration.routeName,
-      // );
       AppRouter.rootNavigatorKey.currentState?.pushReplacementNamed(
         ProfileRegistration.routeName,
       );
-    } on FirebaseAuthException catch (e) {
+    } on FirebaseAuthException catch (e, stack) {
       if (e.code == 'email-already-in-use') {
         if (context.read<Auth>().user != null) {
           AppRouter.rootNavigatorKey.currentState?.pushNamedAndRemoveUntil(
@@ -65,9 +59,11 @@ class RegisterScreenViewModel extends ViewModel {
         notifyListeners();
         return;
       }
+      FirebaseCrashlytics.instance.recordError(e, stack);
       showToast(e.code);
-    } catch (e) {
-      showToast(e.toString());
+    } catch (e, stack) {
+      FirebaseCrashlytics.instance.recordError(e, stack);
+      showToast(e is FailureException ? e.message : e.toString());
     }
   }
 
@@ -75,8 +71,9 @@ class RegisterScreenViewModel extends ViewModel {
     try {
       await context.read<Auth>().loginWithApple();
       _registerHandler();
-    } catch (e) {
-      showToast(e.toString());
+    } catch (e, stack) {
+      FirebaseCrashlytics.instance.recordError(e, stack);
+      showToast(e is FailureException ? e.message : e.toString());
     }
   }
 
@@ -84,8 +81,9 @@ class RegisterScreenViewModel extends ViewModel {
     try {
       await context.read<Auth>().loginWithFacebook();
       _registerHandler();
-    } catch (e) {
-      showToast(e.toString());
+    } catch (e, stack) {
+      FirebaseCrashlytics.instance.recordError(e, stack);
+      showToast(e is FailureException ? e.message : e.toString());
     }
   }
 
@@ -93,8 +91,9 @@ class RegisterScreenViewModel extends ViewModel {
     try {
       await context.read<Auth>().loginWithGoogle();
       _registerHandler();
-    } catch (e) {
-      showToast(e.toString());
+    } catch (e, stack) {
+      FirebaseCrashlytics.instance.recordError(e, stack);
+      showToast(e is FailureException ? e.message : e.toString());
     }
   }
 

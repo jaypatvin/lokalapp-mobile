@@ -1,3 +1,4 @@
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
@@ -82,10 +83,11 @@ class CommentCardViewModel extends ViewModel {
         notifyListeners();
         debugPrint('Liked comment ${comment.id}');
       }
-    } catch (e) {
+    } catch (e, stack) {
+      FirebaseCrashlytics.instance.recordError(e, stack);
+      showToast('Error liking comment!');
       isLiked = !isLiked;
       notifyListeners();
-      showToast('Error liking comment!');
     }
   }
 }

@@ -13,7 +13,6 @@ class MessageBuyerButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: ADD MESSAGE BUYER FUNCTION
     return AppButton.transparent(
       text: 'Message Buyer',
       onPressed: () {

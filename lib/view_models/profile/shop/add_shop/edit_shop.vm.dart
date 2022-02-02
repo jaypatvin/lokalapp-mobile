@@ -1,10 +1,12 @@
 import 'dart:io';
 
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../models/app_navigator.dart';
+import '../../../../models/failure_exception.dart';
 import '../../../../models/user_shop.dart';
 import '../../../../providers/post_requests/operating_hours_body.dart';
 import '../../../../providers/post_requests/shop_body.dart';
@@ -144,7 +146,7 @@ class EditShopViewModel extends ViewModel {
     final shopBody = context.read<ShopBody>();
     final imageService = context.read<LocalImageService>();
 
-    var shopPhotoUrl = shopBody.profilePhoto;
+    String? shopPhotoUrl = shopBody.profilePhoto;
     if (shopPhoto != null) {
       try {
         shopPhotoUrl = await imageService.uploadImage(
@@ -153,6 +155,7 @@ class EditShopViewModel extends ViewModel {
         );
       } catch (e) {
         shopPhotoUrl = shopBody.profilePhoto;
+        showToast('Failed to upload Shop Photo. Try again.');
       }
     }
 
@@ -165,6 +168,7 @@ class EditShopViewModel extends ViewModel {
         );
       } catch (e) {
         shopCoverPhotoUrl = shopBody.coverPhoto;
+        showToast('Failed to upload Shop Cover Photo. Try again.');
       }
     }
 
@@ -176,15 +180,22 @@ class EditShopViewModel extends ViewModel {
       status: isShopOpen ? 'enabled' : 'disabled',
     );
 
-    return context.read<Shops>().update(id: shop.id!, data: shopBody.toMap());
+    try {
+      return context.read<Shops>().update(id: shop.id!, data: shopBody.toMap());
+    } catch (e) {
+      rethrow;
+    }
   }
 
   Future<bool> _updateShopSchedule() async {
-    final operatingHoursBody =
-        Provider.of<OperatingHoursBody>(context, listen: false);
-    return context
-        .read<Shops>()
-        .setOperatingHours(id: shop.id!, data: operatingHoursBody.data);
+    try {
+      final operatingHoursBody = context.read<OperatingHoursBody>();
+      return context
+          .read<Shops>()
+          .setOperatingHours(id: shop.id!, data: operatingHoursBody.data);
+    } catch (e) {
+      rethrow;
+    }
   }
 
   Future<void> onApplyChanges() async {
@@ -195,16 +206,17 @@ class EditShopViewModel extends ViewModel {
       }
 
       bool success = await _updateShop();
-      if (!success) throw 'Update shop error';
+      if (!success) throw FailureException('Update shop error');
 
       if (_editedShopSchedule) {
         success = await _updateShopSchedule();
-        if (!success) throw 'Update operating hours error';
+        if (!success) throw FailureException('Update operating hours error');
       }
 
       AppRouter.profileNavigatorKey.currentState?.pop();
-    } catch (e) {
-      showToast(e.toString());
+    } catch (e, stack) {
+      FirebaseCrashlytics.instance.recordError(e, stack);
+      showToast(e is FailureException ? e.message : e.toString());
     }
   }
 }

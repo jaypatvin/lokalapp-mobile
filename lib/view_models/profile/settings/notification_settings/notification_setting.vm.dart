@@ -1,5 +1,6 @@
 import 'dart:collection';
 
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:recase/recase.dart';
 
@@ -37,25 +38,27 @@ class NotificationSettingViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<bool> toggleNotifications(
+  Future<void> toggleNotifications(
     String key, {
     required bool value,
   }) async {
     final body = {key: value};
+    bool success = false;
     try {
       _notificationTypes[key]!.value = value;
       user.notificationSettings[key] = value;
       notifyListeners();
-      final success = await _userAPIService.updateNotficationSettings(
+      success = await _userAPIService.updateNotficationSettings(
         userId: user.id!,
         body: body,
       );
-
-      return success;
-    } catch (e) {
-      _notificationTypes[key]!.value = !value;
-      notifyListeners();
-      rethrow;
+    } catch (e, stack) {
+      FirebaseCrashlytics.instance.recordError(e, stack);
+    } finally {
+      if (!success) {
+        _notificationTypes[key]!.value = !value;
+        notifyListeners();
+      }
     }
   }
 }

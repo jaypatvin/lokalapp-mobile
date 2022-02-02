@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -300,8 +301,8 @@ class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
   }
 
   Future<void> _onConfirm() async {
-    if (widget.productId != null) {
-      try {
+    try {
+      if (widget.productId != null) {
         final success = await _updateProduct();
         if (success) {
           if (!mounted) return;
@@ -310,23 +311,19 @@ class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
         } else {
           showToast('Failed to update product');
         }
-      } catch (e) {
-        showToast(e.toString());
+      } else {
+        await _createProduct();
+        if (!mounted) return;
+        AppRouter.profileNavigatorKey.currentState?.pushAndRemoveUntil(
+          AppNavigator.appPageRoute(
+            builder: (_) => const AddProductConfirmation(),
+          ),
+          ModalRoute.withName(UserShop.routeName),
+        );
       }
-      return;
-    }
-
-    try {
-      await _createProduct();
-      if (!mounted) return;
-      AppRouter.profileNavigatorKey.currentState?.pushAndRemoveUntil(
-        AppNavigator.appPageRoute(
-          builder: (_) => const AddProductConfirmation(),
-        ),
-        ModalRoute.withName(UserShop.routeName),
-      );
-    } catch (e) {
-      showToast(e.toString());
+    } catch (e, stack) {
+      FirebaseCrashlytics.instance.recordError(e, stack);
+      showToast(e is FailureException ? e.message : e.toString());
     }
   }
 

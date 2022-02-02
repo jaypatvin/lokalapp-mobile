@@ -1,9 +1,11 @@
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/app_navigator.dart';
+import '../../models/failure_exception.dart';
 import '../../models/lokal_images.dart';
 import '../../providers/activities.dart';
 import '../../providers/auth.dart';
@@ -134,8 +136,9 @@ class DraftPostViewModel extends ViewModel {
       });
 
       Navigator.pop(context, true);
-    } catch (e) {
-      showToast(e.toString());
+    } catch (e, stack) {
+      FirebaseCrashlytics.instance.recordError(e, stack);
+      showToast(e is FailureException ? e.message : e.toString());
     }
   }
 

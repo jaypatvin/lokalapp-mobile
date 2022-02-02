@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
@@ -60,7 +61,7 @@ class LoginScreenViewModel extends ViewModel {
 
       await context.read<Auth>().loginWithEmail(email, password);
       await _loginHandler();
-    } on FirebaseAuthException catch (e) {
+    } on FirebaseAuthException catch (e, stack) {
       switch (e.code) {
         case 'invalid-email':
         case 'wrong-password':
@@ -77,12 +78,14 @@ class LoginScreenViewModel extends ViewModel {
           notifyListeners();
           break;
         default:
+          FirebaseCrashlytics.instance.recordError(e, stack);
           showToast(e.message ?? 'Error Logging In');
       }
     } on SocketException catch (e) {
       showToast(e.toString());
-    } catch (e) {
-      throw FailureException(e.toString());
+    } catch (e, stack) {
+      FirebaseCrashlytics.instance.recordError(e, stack);
+      showToast(e is FailureException ? e.message : e.toString());
     }
   }
 
@@ -90,8 +93,9 @@ class LoginScreenViewModel extends ViewModel {
     try {
       await context.read<Auth>().loginWithFacebook();
       await _loginHandler();
-    } catch (e) {
-      showToast(e.toString());
+    } catch (e, stack) {
+      FirebaseCrashlytics.instance.recordError(e, stack);
+      showToast(e is FailureException ? e.message : e.toString());
     }
   }
 
@@ -99,8 +103,9 @@ class LoginScreenViewModel extends ViewModel {
     try {
       await context.read<Auth>().loginWithGoogle();
       await _loginHandler();
-    } catch (e) {
-      showToast(e.toString());
+    } catch (e, stack) {
+      FirebaseCrashlytics.instance.recordError(e, stack);
+      showToast(e is FailureException ? e.message : e.toString());
     }
   }
 
@@ -108,8 +113,9 @@ class LoginScreenViewModel extends ViewModel {
     try {
       await context.read<Auth>().loginWithApple();
       await _loginHandler();
-    } catch (e) {
-      showToast(e.toString());
+    } catch (e, stack) {
+      FirebaseCrashlytics.instance.recordError(e, stack);
+      showToast(e is FailureException ? e.message : e.toString());
     }
   }
 }

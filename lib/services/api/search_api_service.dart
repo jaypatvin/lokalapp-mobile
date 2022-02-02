@@ -63,17 +63,20 @@ class SearchAPIService extends APIService {
       } else {
         final map = json.decode(response.body);
         if (map['data'] != null) {
-          throw throw FailureException(map['data']);
+          throw FailureException(map['data']);
         }
 
         if (map['message'] != null) {
           throw FailureException(map['message']);
         }
 
-        throw FailureException(response.reasonPhrase ?? 'Error parsing data.');
+        throw FailureException(
+          response.reasonPhrase ?? 'Error parsing data.',
+          response.body,
+        );
       }
-    } on FormatException {
-      throw FailureException('Bad response format');
+    } on FormatException catch (e) {
+      throw FailureException('Bad Response Format', e);
     } catch (e) {
       rethrow;
     }

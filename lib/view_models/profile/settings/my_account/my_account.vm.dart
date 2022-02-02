@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+
 import '../../../../providers/auth.dart';
 
 class MyAccountViewModel {
@@ -18,7 +20,8 @@ class MyAccountViewModel {
   bool ifEmailAuth() {
     try {
       return _userAuth.checkSignInMethod();
-    } catch (e) {
+    } catch (e, stack) {
+      FirebaseCrashlytics.instance.recordError(e, stack);
       _errorStream.add('Cannot change Email Address/Password: $e');
       return false;
     }

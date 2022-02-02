@@ -1,9 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:provider/provider.dart';
 
+import '../../models/failure_exception.dart';
 import '../../models/lokal_images.dart';
 import '../../providers/activities.dart';
 import '../../providers/auth.dart';
@@ -130,10 +132,11 @@ class PostDetailViewModel extends ViewModel {
       inputController.clear();
       imageProvider.picked.clear();
       notifyListeners();
-    } catch (e) {
+    } catch (e, stack) {
+      FirebaseCrashlytics.instance.recordError(e, stack);
+      showToast('Cannot create a comment: $e');
       _isCommentUploading = false;
       notifyListeners();
-      showToast('Cannot create a comment: $e');
     }
   }
 
@@ -153,8 +156,9 @@ class PostDetailViewModel extends ViewModel {
     try {
       _isPostDeleting = true;
       await context.read<Activities>().deleteActivity(activityId);
-    } catch (e) {
-      showToast(e.toString());
+    } catch (e, stack) {
+      FirebaseCrashlytics.instance.recordError(e, stack);
+      showToast(e is FailureException ? e.message : e.toString());
     } finally {
       _isPostDeleting = false;
     }

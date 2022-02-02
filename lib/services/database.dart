@@ -2,10 +2,8 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/material.dart';
 
 import '../models/activity_feed.dart';
-import '../models/lokal_user.dart';
 
 final activitiesRef = FirebaseFirestore.instance.collection('activities');
 final usersRef = FirebaseFirestore.instance.collection('users');
@@ -302,54 +300,6 @@ class Database {
     return chatsRef.doc(chatId).get();
   }
 
-  Future<Map?> getUserInfo(String uid) async {
-    Map? data;
-    try {
-      final String documentId = await getUserDocId(uid);
-      if (documentId.isNotEmpty) {
-        final DocumentSnapshot _docSnapshot =
-            await usersRef.doc(documentId).get();
-        if (_docSnapshot.exists) {
-          data = _docSnapshot.data() as Map<dynamic, dynamic>?;
-        }
-      }
-    } catch (e) {
-      debugPrint(e.toString());
-    }
-    return data;
-  }
-
-  Future getShopInfo(String uid) async {
-    List? data;
-    try {
-      final String documentId = await getUserDocId(uid);
-      if (documentId.isNotEmpty) {
-        final QuerySnapshot _docSnapshot =
-            await shopRef.where('user_id', isEqualTo: documentId).get();
-        data = _docSnapshot.docs;
-      }
-    } catch (e) {
-      debugPrint(e.toString());
-    }
-    return data;
-  }
-
-  Future<String> updateShopById(
-    LokalUser user,
-    String key,
-    dynamic value,
-  ) async {
-    String retVal = 'error';
-    try {
-      final String docId = await getUserDocId(user.userUids!.first);
-      await shopRef.doc(docId).update({});
-      retVal = 'success';
-    } catch (e) {
-      retVal = e.toString();
-    }
-    return retVal;
-  }
-
   Future<String> getUserDocId(String userUid) async {
     String retVal = '';
     final QuerySnapshot snapshot =
@@ -373,41 +323,15 @@ class Database {
     return retVal;
   }
 
-  Future<String> updateUser(LokalUser user, String key, dynamic value) async {
-    String retVal = 'error';
-    try {
-      final String docId = await getUserDocId(user.userUids!.first);
-      await usersRef.doc(docId).update({key: value});
-      retVal = 'success';
-    } catch (e) {
-      retVal = e.toString();
-    }
-    return retVal;
-  }
-
   Future<String> uploadImage({
     required File file,
     required String src,
     required String fileName,
   }) async {
-    final UploadTask uploadTask = storageRef
-        .child('/images/$src/$fileName.jpg')
-        .putFile(file);
+    final UploadTask uploadTask =
+        storageRef.child('/images/$src/$fileName.jpg').putFile(file);
     final TaskSnapshot storageSnap = await uploadTask;
     final String downloadUrl = await storageSnap.ref.getDownloadURL();
     return downloadUrl;
-  }
-
-  Future<bool> checkIfDocExists(String id) async {
-    try {
-      final collectionRef = FirebaseFirestore.instance
-          .collection('chats')
-          .doc(id)
-          .collection('conversations');
-      final doc = await collectionRef.doc(id).get();
-      return doc.exists;
-    } catch (e) {
-      rethrow;
-    }
   }
 }

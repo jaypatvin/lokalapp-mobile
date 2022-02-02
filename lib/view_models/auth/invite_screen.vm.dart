@@ -1,5 +1,5 @@
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
-import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/app_navigator.dart';
@@ -67,10 +67,10 @@ class InviteScreenViewModel extends ViewModel {
           ),
         );
       }
-    } catch (e) {
+    } catch (e, stack) {
       _displayError = true;
+      FirebaseCrashlytics.instance.recordError(e, stack);
       notifyListeners();
-      showToast(e.toString());
     }
   }
 

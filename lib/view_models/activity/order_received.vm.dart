@@ -1,8 +1,10 @@
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
+import '../../models/failure_exception.dart';
 import '../../models/order.dart';
 import '../../routers/app_router.dart';
 import '../../screens/activity/activity.dart';
@@ -63,8 +65,9 @@ class OrderReceivedViewModel extends ViewModel {
           'order_id': order.id,
         },
       );
-    } catch (e) {
-      showToast(e.toString());
+    } catch (e, stack) {
+      FirebaseCrashlytics.instance.recordError(e, stack);
+      showToast(e is FailureException ? e.message : e.toString());
     }
 
     notifyListeners();

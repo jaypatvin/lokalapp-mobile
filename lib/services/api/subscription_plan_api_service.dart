@@ -57,9 +57,10 @@ class SubscriptionPlanAPIService extends APIService<ProductSubscriptionPlan> {
 
           throw FailureException(
             response.reasonPhrase ?? 'Error parsing data.',
+            response.body,
           );
         } on FormatException {
-          throw FailureException('Bad response format');
+          throw FailureException('Bad response format', response.body);
         }
       }
     } catch (e) {

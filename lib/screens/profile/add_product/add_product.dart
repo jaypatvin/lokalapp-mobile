@@ -1,3 +1,4 @@
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:keyboard_actions/keyboard_actions.dart';
@@ -6,6 +7,7 @@ import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
 import '../../../models/app_navigator.dart';
+import '../../../models/failure_exception.dart';
 import '../../../models/lokal_images.dart';
 import '../../../providers/post_requests/product_body.dart';
 import '../../../providers/products.dart';
@@ -318,8 +320,9 @@ class _AddProductState extends State<AddProduct> with ScreenLoader {
           ModalRoute.withName(UserShop.routeName),
         );
       }
-    } catch (e) {
-      showToast(e.toString());
+    } catch (e, stack) {
+      FirebaseCrashlytics.instance.recordError(e, stack);
+      showToast(e is FailureException ? e.message : e.toString());
     }
   }
 

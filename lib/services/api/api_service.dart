@@ -127,9 +127,14 @@ abstract class APIService<T> {
           throw FailureException(map['message']);
         }
 
-        throw FailureException(response.reasonPhrase ?? 'Error parsing data.');
+        throw FailureException(
+          response.reasonPhrase ?? 'Error parsing data.',
+          response.body,
+        );
       } on FormatException {
-        throw FailureException('Bad response format');
+        throw FailureException('Bad response format', response.body);
+      } catch (e) {
+        rethrow;
       }
     }
   }
@@ -164,9 +169,14 @@ abstract class APIService<T> {
           throw FailureException(map['message']);
         }
 
-        throw FailureException(response.reasonPhrase ?? 'Error parsing data.');
+        throw FailureException(
+          response.reasonPhrase ?? 'Error parsing data.',
+          response.body,
+        );
       } on FormatException {
-        throw FailureException('Bad response format');
+        throw FailureException('Bad response format', response.body);
+      } catch (e) {
+        rethrow;
       }
     }
   }
@@ -192,9 +202,14 @@ abstract class APIService<T> {
           throw FailureException(map['message']);
         }
 
-        throw FailureException(response.reasonPhrase ?? 'Error parsing data.');
+        throw FailureException(
+          response.reasonPhrase ?? 'Error parsing data.',
+          response.body,
+        );
       } on FormatException {
-        throw FailureException('Bad response format');
+        throw FailureException('Bad response format', response.body);
+      } catch (e) {
+        rethrow;
       }
     }
   }

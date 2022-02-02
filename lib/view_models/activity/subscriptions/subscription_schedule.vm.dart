@@ -1,3 +1,4 @@
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 import 'package:oktoast/oktoast.dart';
@@ -353,7 +354,8 @@ class ViewSubscriptionScheduleViewModel extends ViewModel {
           'override_dates': overridenDates.map((data) => data.toMap()).toList()
         },
       );
-    } catch (e) {
+    } catch (e, stack) {
+      FirebaseCrashlytics.instance.recordError(e, stack);
       return false;
     }
   }

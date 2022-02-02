@@ -1,3 +1,4 @@
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:oktoast/oktoast.dart';
 
@@ -31,8 +32,12 @@ class CommunityProvider extends ChangeNotifier {
         _community = null;
       }
       notifyListeners();
-    } catch (e) {
+    } catch (e, stack) {
       showToast('Community error: $e');
+
+      // We're not rethrowing the error so let's log it here. This lives
+      // at the top of the app so there's nothing to catch the error with.
+      FirebaseCrashlytics.instance.recordError(e, stack);
     }
   }
 }

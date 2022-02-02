@@ -1,3 +1,4 @@
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:intl/intl.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
@@ -138,6 +139,7 @@ class SubscriptionDetailsViewModel extends ViewModel {
 
   Future<void> onUnsubscribe() async {
     try {
+      // this will throw an error if unsuccessful
       final _success = await _apiService.disableSubscriptionPlan(
         planId: subscriptionPlan.id!,
       );
@@ -147,8 +149,9 @@ class SubscriptionDetailsViewModel extends ViewModel {
       }
 
       context.read<AppRouter>().popScreen(AppRoute.activity);
-    } catch (e) {
-      showToast(e.toString());
+    } catch (e, stack) {
+      FirebaseCrashlytics.instance.recordError(e, stack);
+      showToast(e is FailureException ? e.message : e.toString());
     }
   }
 }

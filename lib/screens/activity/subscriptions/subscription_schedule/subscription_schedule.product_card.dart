@@ -72,7 +72,6 @@ class SubscriptionScheduleProductCard extends StatelessWidget {
                               children: [
                                 Text(
                                   product.basePrice.toString(),
-                                  // textAlign: TextAlign.end,
                                   style: Theme.of(context).textTheme.bodyText1,
                                 ),
                                 Text(

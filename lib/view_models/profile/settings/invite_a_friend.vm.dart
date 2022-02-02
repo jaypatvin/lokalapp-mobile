@@ -1,3 +1,4 @@
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:validators/validators.dart';
@@ -73,8 +74,9 @@ class InviteAFriendViewModel extends ViewModel {
       Navigator.of(context).pushReplacement(
         AppNavigator.appPageRoute(builder: (_) => InviteSent(invite)),
       );
-    } catch (e) {
-      showToast(e.toString());
+    } catch (e, stack) {
+      FirebaseCrashlytics.instance.recordError(e, stack);
+      showToast(e is FailureException ? e.message : e.toString());
     }
   }
 }

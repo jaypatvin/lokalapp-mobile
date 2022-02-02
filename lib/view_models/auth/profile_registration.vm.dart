@@ -1,11 +1,13 @@
 import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/app_navigator.dart';
+import '../../models/failure_exception.dart';
 import '../../providers/auth.dart';
 import '../../providers/bank_codes.dart';
 import '../../providers/categories.dart';
@@ -86,8 +88,9 @@ class ProfileRegistrationViewModel extends ViewModel {
           userId: auth.user!.id!,
           code: inviteCode,
         );
-      } catch (e) {
-        showToast(e.toString());
+      } catch (e, stack) {
+        FirebaseCrashlytics.instance.recordError(e, stack);
+        showToast(e is FailureException ? e.message : e.toString());
       }
     }
     return inviteCodeClaimed;
@@ -125,11 +128,13 @@ class ProfileRegistrationViewModel extends ViewModel {
     try {
       await context.read<Auth>().deleteAccount();
       return true;
-    } on FirebaseAuthException catch (e) {
+    } on FirebaseAuthException catch (e, stack) {
+      FirebaseCrashlytics.instance.recordError(e, stack);
       showToast(e.toString());
       return false;
-    } catch (e) {
-      showToast(e.toString());
+    } catch (e, stack) {
+      FirebaseCrashlytics.instance.recordError(e, stack);
+      showToast(e is FailureException ? e.message : e.toString());
       return false;
     }
   }

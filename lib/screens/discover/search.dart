@@ -1,3 +1,4 @@
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -124,7 +125,8 @@ class _SearchView extends HookView<SearchViewModel> {
                             child: ProductCard(vm.searchResults[index].id),
                           ),
                         );
-                      } catch (e) {
+                      } catch (e, stack) {
+                        FirebaseCrashlytics.instance.recordError(e, stack);
                         return const SizedBox();
                       }
                     },

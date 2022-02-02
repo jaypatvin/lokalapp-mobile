@@ -1,9 +1,11 @@
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/activity_feed.dart';
 import '../../models/app_navigator.dart';
+import '../../models/failure_exception.dart';
 import '../../providers/activities.dart';
 import '../../providers/auth.dart';
 import '../../routers/app_router.dart';
@@ -54,8 +56,9 @@ class PostCardViewModel extends ViewModel {
               userId: user.id!,
             );
       }
-    } catch (e) {
-      _showError(e.toString());
+    } catch (e, stack) {
+      FirebaseCrashlytics.instance.recordError(e, stack);
+      showToast(e is FailureException ? e.message : e.toString());
     } finally {
       _isLiking = false;
     }
@@ -104,8 +107,9 @@ class PostCardViewModel extends ViewModel {
     try {
       _isDeleting = true;
       await context.read<Activities>().deleteActivity(activity.id);
-    } catch (e) {
-      _showError(e.toString());
+    } catch (e, stack) {
+      FirebaseCrashlytics.instance.recordError(e, stack);
+      showToast(e is FailureException ? e.message : e.toString());
     } finally {
       _isDeleting = false;
     }
@@ -125,9 +129,5 @@ class PostCardViewModel extends ViewModel {
 
   void onReportPost() {
     showToast('Report post not implemented!');
-  }
-
-  void _showError(String message) {
-    showToast(message);
   }
 }
