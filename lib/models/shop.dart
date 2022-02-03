@@ -21,8 +21,8 @@ extension ShopStatusExtension on ShopStatus {
 
 class DeliveryOptions {
   const DeliveryOptions({
-    required this.delivery,
-    required this.pickup,
+    this.delivery = true,
+    this.pickup = true,
   });
 
   final bool delivery;
@@ -230,7 +230,9 @@ class Shop {
             ) ??
             [],
       ),
-      deliveryOptions: DeliveryOptions.fromMap(map['delivery_options']),
+      deliveryOptions: map['delivery_options'] != null
+          ? DeliveryOptions.fromMap(map['delivery_options'])
+          : const DeliveryOptions(),
       profilePhoto: map['profile_photo'],
       status: ShopStatus.values.firstWhere(
         (e) => e.value == map['status'],
