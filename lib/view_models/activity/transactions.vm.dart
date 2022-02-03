@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 
 import '../../models/app_navigator.dart';
 import '../../models/order.dart';
-import '../../models/user_shop.dart';
+import '../../models/shop.dart';
 import '../../providers/auth.dart';
 import '../../providers/shops.dart';
 import '../../routers/app_router.dart';
@@ -52,7 +52,7 @@ class TransactionsViewModel extends ViewModel {
 
   final _db = Database.instance;
 
-  ShopModel? shop;
+  Shop? shop;
 
   @override
   void init() {

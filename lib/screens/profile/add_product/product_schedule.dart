@@ -208,7 +208,7 @@ class _ProductScheduleState extends State<ProductSchedule> {
     final operatingHours = context.read<OperatingHoursBody>();
     final user = context.read<Auth>().user!;
     final shops = context.read<Shops>().findByUser(user.id);
-    final shopSchedule = shops.first.operatingHours!;
+    final shopSchedule = shops.first.operatingHours;
     final unavailableDates = _selectableDates
         .where((date) => !_markedDatesMap.contains(date))
         .toList();

@@ -153,7 +153,7 @@ class _CustomizeAvailabilityState extends State<CustomizeAvailability>
     final userShop = shops.findByUser(user.id).first;
     final operatingHours = context.read<OperatingHoursBody>();
     return shops.setOperatingHours(
-      id: userShop.id!,
+      id: userShop.id,
       data: operatingHours.data,
     );
   }

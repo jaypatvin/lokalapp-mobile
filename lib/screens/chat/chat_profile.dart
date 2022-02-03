@@ -176,7 +176,7 @@ class _ChatProfileState extends State<ChatProfile> {
                                   AppRoute.profile,
                                   UserShop.routeName,
                                   arguments: UserShopProps(
-                                    shop!.userId!,
+                                    shop!.userId,
                                     user.id,
                                   ),
                                 );

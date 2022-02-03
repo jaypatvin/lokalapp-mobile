@@ -101,7 +101,7 @@ class _CheckoutScheduleState extends State<CheckoutSchedule> with ScreenLoader {
                 top: 16.0.h,
               ),
               child: Text(
-                shop.name!,
+                shop.name,
                 style: Theme.of(context)
                     .textTheme
                     .headline6
@@ -211,7 +211,7 @@ class _DeliverySchedule extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final shop = context.read<Shops>().findById(shopId)!;
-    final operatingHours = shop.operatingHours!;
+    final operatingHours = shop.operatingHours;
     final selectableDates =
         ScheduleGenerator().getSelectableDates(operatingHours);
 

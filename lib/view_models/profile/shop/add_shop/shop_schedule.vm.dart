@@ -48,7 +48,7 @@ class ShopScheduleViewModel extends ViewModel {
     if (shops.isNotEmpty) {
       final shop = shops.first;
       if (isValidOperatingHours(shop.operatingHours)) {
-        final operatingHours = shop.operatingHours!;
+        final operatingHours = shop.operatingHours;
         _opening = stringToTimeOfDay(operatingHours.startTime!);
         _closing = stringToTimeOfDay(operatingHours.endTime!);
         context.read<OperatingHoursBody>().update(

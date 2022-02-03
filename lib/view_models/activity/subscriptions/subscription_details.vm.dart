@@ -57,8 +57,8 @@ class SubscriptionDetailsViewModel extends ViewModel {
           .map<String>((date) => DateFormat('yyyy-MM-dd').format(date))
           .toList(),
       customDates: [],
-      startTime: shop.operatingHours!.startTime,
-      endTime: shop.operatingHours!.endTime,
+      startTime: shop.operatingHours.startTime,
+      endTime: shop.operatingHours.endTime,
     );
 
     // product schedule initialization

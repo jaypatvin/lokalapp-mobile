@@ -3,7 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/app_navigator.dart';
-import '../../models/user_shop.dart';
+import '../../models/shop.dart';
 import '../../providers/cart.dart';
 import '../../providers/products.dart';
 import '../../routers/app_router.dart';
@@ -19,7 +19,7 @@ import 'components/order_details.dart';
 
 class ShopCheckout extends StatelessWidget {
   static const routeName = '/cart/checkout/shop';
-  final ShopModel shop;
+  final Shop shop;
   const ShopCheckout({
     Key? key,
     required this.shop,

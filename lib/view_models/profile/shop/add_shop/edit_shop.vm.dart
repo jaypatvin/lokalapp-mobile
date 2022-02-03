@@ -7,7 +7,7 @@ import 'package:provider/provider.dart';
 
 import '../../../../models/app_navigator.dart';
 import '../../../../models/failure_exception.dart';
-import '../../../../models/user_shop.dart';
+import '../../../../models/shop.dart';
 import '../../../../providers/post_requests/operating_hours_body.dart';
 import '../../../../providers/post_requests/shop_body.dart';
 import '../../../../providers/shops.dart';
@@ -39,7 +39,7 @@ class EditShopViewModel extends ViewModel {
   late bool _isShopOpen;
   bool get isShopOpen => _isShopOpen;
 
-  final ShopModel shop;
+  final Shop shop;
 
   bool _editedShopSchedule = false;
 
@@ -49,9 +49,9 @@ class EditShopViewModel extends ViewModel {
   @override
   void init() {
     super.init();
-    _shopName = shop.name!;
-    _shopDescription = shop.description ?? '';
-    _isShopOpen = shop.status == 'enabled';
+    _shopName = shop.name;
+    _shopDescription = shop.description;
+    _isShopOpen = shop.status == ShopStatus.enabled;
 
     context.read<ShopBody>()
       ..clear(notify: false)
@@ -94,7 +94,7 @@ class EditShopViewModel extends ViewModel {
     final operatingHoursBody = context.read<OperatingHoursBody>();
     return context
         .read<Shops>()
-        .setOperatingHours(id: shop.id!, data: operatingHoursBody.data);
+        .setOperatingHours(id: shop.id, data: operatingHoursBody.data);
   }
 
   void onShopNameChanged(String value) {
@@ -181,7 +181,7 @@ class EditShopViewModel extends ViewModel {
     );
 
     try {
-      return context.read<Shops>().update(id: shop.id!, data: shopBody.toMap());
+      return context.read<Shops>().update(id: shop.id, data: shopBody.toMap());
     } catch (e) {
       rethrow;
     }
@@ -192,7 +192,7 @@ class EditShopViewModel extends ViewModel {
       final operatingHoursBody = context.read<OperatingHoursBody>();
       return context
           .read<Shops>()
-          .setOperatingHours(id: shop.id!, data: operatingHoursBody.data);
+          .setOperatingHours(id: shop.id, data: operatingHoursBody.data);
     } catch (e) {
       rethrow;
     }

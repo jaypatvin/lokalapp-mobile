@@ -40,7 +40,7 @@ class CheckoutCart extends StatelessWidget {
                       top: 16.0.h,
                     ),
                     child: Text(
-                      shop.name!,
+                      shop.name,
                       style: Theme.of(context)
                           .textTheme
                           .headline6
