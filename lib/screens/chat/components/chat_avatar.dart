@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../models/chat_model.dart';
+import '../../../utils/constants/themes.dart';
 
 class ChatMember {
   final String? id;
@@ -28,24 +30,33 @@ class ChatAvatar extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
+        height: radius * 2,
+        width: radius * 2,
         decoration: BoxDecoration(
-          border: Border.all(color: Colors.grey[600]!),
           shape: BoxShape.circle,
+          border: Border.all(color: Colors.black.withOpacity(0.3)),
+          color: Colors.transparent,
         ),
-        child: CircleAvatar(
-          radius: radius,
-          backgroundColor: Colors.transparent,
-          child: displayPhoto?.isNotEmpty ?? false
-              ? Container(
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    image: DecorationImage(
-                      fit: BoxFit.cover,
-                      image: NetworkImage(displayPhoto!),
-                    ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(30.0.r),
+          child: Image.network(
+            displayPhoto ?? '',
+            fit: BoxFit.cover,
+            errorBuilder: (_, e, stack) {
+              return Center(
+                child: MediaQuery(
+                  data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+                  child: Text(
+                    displayName![0],
+                    style: Theme.of(context)
+                        .primaryTextTheme
+                        .subtitle1
+                        ?.copyWith(color: kTealColor),
                   ),
-                )
-              : Text(displayName![0]),
+                ),
+              );
+            },
+          ),
         ),
       ),
     );

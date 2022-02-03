@@ -1,14 +1,15 @@
 import 'dart:io' show File, Platform;
 
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:lokalapp/widgets/overlays/screen_loader.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/app_navigator.dart';
+import '../../models/failure_exception.dart';
 import '../../providers/auth.dart';
 import '../../routers/app_router.dart';
 import '../../screens/bottom_navigation.dart';
@@ -20,6 +21,7 @@ import '../../utils/constants/themes.dart';
 import '../../utils/media_utility.dart';
 import '../../widgets/app_button.dart';
 import '../../widgets/custom_app_bar.dart';
+import '../overlays/screen_loader.dart';
 import 'verify_confirmation_screen.dart';
 
 class VerifyScreen extends StatefulWidget {
@@ -188,7 +190,7 @@ class _VerifyScreenState extends State<VerifyScreen> with ScreenLoader {
                 (route) => false,
               );
             } else {
-              AppRouter.profileNavigatorKey.currentState?.push(
+              AppRouter.profileNavigatorKey.currentState?.pushReplacement(
                 AppNavigator.appPageRoute(
                   builder: (_) => VerifyConfirmationScreen(
                     skippable: widget.skippable,
@@ -197,8 +199,9 @@ class _VerifyScreenState extends State<VerifyScreen> with ScreenLoader {
               );
             }
           }
-        } catch (e) {
-          showToast(e.toString());
+        } catch (e, stack) {
+          FirebaseCrashlytics.instance.recordError(e, stack);
+          showToast(e is FailureException ? e.message : e.toString());
         }
       }
     }

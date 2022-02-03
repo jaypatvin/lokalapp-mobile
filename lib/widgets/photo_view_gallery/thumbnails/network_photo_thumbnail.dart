@@ -26,6 +26,9 @@ class NetworkPhotoThumbnail extends StatelessWidget {
           galleryItem.url,
           alignment: Alignment.topCenter,
           fit: fit,
+          errorBuilder: (ctx, e, stack) => const Center(
+            child: Text('Error displaying image.'),
+          ),
         ),
       ),
     );

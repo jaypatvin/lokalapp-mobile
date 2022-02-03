@@ -116,7 +116,6 @@ class _OrdersCard extends StatelessWidget {
             Padding(
               padding: EdgeInsets.symmetric(vertical: 8.0.h),
               child: Row(
-                // TODO: ADD ON PRESS FUNCTIONS
                 children: [
                   if (context
                       .read<Products>()

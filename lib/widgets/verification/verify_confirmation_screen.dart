@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:lokalapp/screens/profile/profile_screen.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 
 import '../../models/app_navigator.dart';
 import '../../routers/app_router.dart';
 import '../../screens/bottom_navigation.dart';
+import '../../screens/profile/profile_screen.dart';
 import '../../utils/constants/themes.dart';
 import '../../widgets/custom_app_bar.dart';
 

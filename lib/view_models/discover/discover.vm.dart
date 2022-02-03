@@ -1,9 +1,11 @@
 import 'dart:async';
 
 import 'package:collection/collection.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
+import '../../models/failure_exception.dart';
 import '../../models/product.dart';
 import '../../providers/auth.dart';
 import '../../providers/products.dart';
@@ -66,8 +68,9 @@ class DiscoverViewModel extends ViewModel {
         userId: user.id!,
         communityId: user.communityId!,
       );
-    } catch (e) {
-      showToast(e.toString());
+    } catch (e, stack) {
+      FirebaseCrashlytics.instance.recordError(e, stack);
+      showToast(e is FailureException ? e.message : e.toString());
     } finally {
       _isLoading = false;
       notifyListeners();

@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart' show DateFormat;
@@ -179,7 +180,7 @@ class _CustomizeAvailabilityState extends State<CustomizeAvailability>
 
     try {
       await shops.create(shopBody.toMap());
-    } on Exception catch (e) {
+    } catch (e) {
       debugPrint(e.toString());
       rethrow;
     }
@@ -194,7 +195,8 @@ class _CustomizeAvailabilityState extends State<CustomizeAvailability>
             AppRoute.profile,
             AddShopConfirmation.routeName,
           );
-    } catch (e) {
+    } catch (e, stack) {
+      FirebaseCrashlytics.instance.recordError(e, stack);
       showToast('Failed to create shop. Try again.');
     }
   }

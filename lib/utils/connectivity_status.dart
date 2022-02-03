@@ -3,6 +3,7 @@ import 'dart:developer' as developer;
 import 'dart:io';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -59,9 +60,12 @@ class _ConnectivityStatusState extends State<ConnectivityStatus>
 
     try {
       result = await _connectivity.checkConnectivity();
-    } on PlatformException catch (e) {
+    } on PlatformException catch (e, stack) {
       developer.log("Couldn't check connectivity status", error: e);
+      FirebaseCrashlytics.instance.recordError(e, stack);
       return;
+    } catch (e, stack) {
+      FirebaseCrashlytics.instance.recordError(e, stack);
     }
 
     if (!mounted) {
@@ -100,6 +104,8 @@ class _ConnectivityStatusState extends State<ConnectivityStatus>
       }
     } on SocketException catch (_) {
       _status = false;
+    } catch (e, stack) {
+      FirebaseCrashlytics.instance.recordError(e, stack);
     }
 
     if (previousConnection != _status) {

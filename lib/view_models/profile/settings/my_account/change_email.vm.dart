@@ -1,9 +1,11 @@
 import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../models/failure_exception.dart';
 import '../../../../providers/auth.dart';
 import '../../../../state/view_model.dart';
 
@@ -54,17 +56,18 @@ class ChangeEmailViewModel extends ViewModel {
             newEmail: _newEmail,
           );
       return true;
-    } on FirebaseAuthException catch (e) {
+    } on FirebaseAuthException catch (e, stack) {
       if (e.code == 'wrong-password') {
         _displaySignInError = true;
         notifyListeners();
-      } else {
-        showToast(e.toString());
+      } else if (e.code != 'email-already-in-use') {
+        FirebaseCrashlytics.instance.recordError(e, stack);
       }
-
-      return false;
-    } catch (e) {
       showToast(e.toString());
+      return false;
+    } catch (e, stack) {
+      FirebaseCrashlytics.instance.recordError(e, stack);
+      showToast(e is FailureException ? e.message : e.toString());
       return false;
     }
   }

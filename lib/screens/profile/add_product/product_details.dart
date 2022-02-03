@@ -13,15 +13,20 @@ import '../../../widgets/app_button.dart';
 import '../../../widgets/app_checkbox.dart';
 import '../../../widgets/custom_app_bar.dart';
 import '../../../widgets/inputs/input_name_field.dart';
-import 'components/add_product_gallery.dart';
+import '../../../widgets/overlays/constrained_scrollview.dart';
+import '../../../widgets/photo_box.dart';
 import 'components/product_header.dart';
 import 'product_schedule.dart';
 
 class ProductDetails extends StatefulWidget {
-  final AddProductGallery? gallery;
+  const ProductDetails({
+    Key? key,
+    required this.images,
+    this.productId,
+  }) : super(key: key);
   final String? productId;
+  final List<PhotoBoxImageSource> images;
 
-  const ProductDetails({required this.gallery, this.productId});
   @override
   _ProductDetailsState createState() => _ProductDetailsState();
 }
@@ -39,8 +44,19 @@ class _ProductDetailsState extends State<ProductDetails> {
     final details = context.read<ProductBody>();
     _stockController.text = details.quantity.toString();
 
-    if (context.read<Categories>().categories.isEmpty) {
-      context.read<Categories>().fetch();
+    final _categories = context.read<Categories>();
+    if (_categories.categories.isEmpty) {
+      _categories.fetch().then((_) {
+        if (_categories.categories.isEmpty) return;
+        context.read<ProductBody>().update(
+              productCategory: _categories.categories.first.name,
+            );
+      });
+    } else {
+      context.read<ProductBody>().update(
+            productCategory: _categories.categories.first.name,
+            notify: false,
+          );
     }
   }
 
@@ -152,28 +168,6 @@ class _ProductDetailsState extends State<ProductDetails> {
     );
   }
 
-  Widget _buildDeliveryOptions() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Expanded(
-          child: AppCheckBox(
-            value: _forPickup,
-            onTap: () {}, // () => setState(() => _forPickup = !_forPickup),
-            title: const Text('Customer Pick-up'),
-          ),
-        ),
-        Expanded(
-          child: AppCheckBox(
-            value: _forDelivery,
-            onTap: () {}, //() => setState(() => _forDelivery = !_forDelivery),
-            title: const Text('Delivery'),
-          ),
-        ),
-      ],
-    );
-  }
-
   Widget _buildSubscriptionSection() {
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -198,6 +192,18 @@ class _ProductDetailsState extends State<ProductDetails> {
             );
           },
         ),
+        const SizedBox(height: 10),
+        Row(
+          children: const [
+            SizedBox(width: 34),
+            Expanded(
+              child: Text(
+                'Lets your customers create an auto-order on specific dates.',
+                maxLines: 2,
+              ),
+            ),
+          ],
+        )
       ],
     );
   }
@@ -206,55 +212,55 @@ class _ProductDetailsState extends State<ProductDetails> {
   Widget build(BuildContext context) {
     final horizontalPadding = MediaQuery.of(context).size.width * 0.05;
     final topPadding = MediaQuery.of(context).size.height * 0.03;
-    final image = widget.gallery!.photoBoxes.first;
+    final image = widget.images.isNotEmpty
+        ? widget.images.first
+        : const PhotoBoxImageSource();
 
     final bool valid = (_forDelivery | _forPickup) &&
         context.read<ProductBody>().productCategory != null &&
         context.read<ProductBody>().productCategory!.isNotEmpty &&
         context.read<ProductBody>().quantity != null &&
         context.read<ProductBody>().quantity! >= 0;
+
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: CustomAppBar(
+      appBar: const CustomAppBar(
         titleText: 'Product Details',
-        onPressedLeading: () {
-          Navigator.pop(context);
-        },
       ),
-      body: Container(
-        padding: EdgeInsets.fromLTRB(
-          horizontalPadding,
-          topPadding,
-          horizontalPadding,
-          0,
-        ),
-        child: KeyboardActions(
-          config: KeyboardActionsConfig(
-            keyboardBarColor: Colors.grey[200],
-            actions: [
-              KeyboardActionsItem(
-                focusNode: _stockFocusNode,
-                displayArrows: false,
-                toolbarButtons: [
-                  (node) {
-                    return TextButton(
-                      onPressed: () => node.unfocus(),
-                      child: Text(
-                        'Done',
-                        style: Theme.of(context).textTheme.bodyText1!.copyWith(
-                              color: Colors.black,
-                            ),
-                      ),
-                    );
-                  },
-                ],
-              ),
-            ],
+      body: ConstrainedScrollView(
+        child: Padding(
+          padding: EdgeInsets.fromLTRB(
+            horizontalPadding,
+            topPadding,
+            horizontalPadding,
+            0,
           ),
-          disableScroll: true,
-          tapOutsideBehavior: TapOutsideBehavior.translucentDismiss,
-          child: SingleChildScrollView(
-            physics: const NeverScrollableScrollPhysics(),
+          child: KeyboardActions(
+            config: KeyboardActionsConfig(
+              keyboardBarColor: Colors.grey[200],
+              actions: [
+                KeyboardActionsItem(
+                  focusNode: _stockFocusNode,
+                  displayArrows: false,
+                  toolbarButtons: [
+                    (node) {
+                      return TextButton(
+                        onPressed: () => node.unfocus(),
+                        child: Text(
+                          'Done',
+                          style:
+                              Theme.of(context).textTheme.bodyText1!.copyWith(
+                                    color: Colors.black,
+                                  ),
+                        ),
+                      );
+                    },
+                  ],
+                ),
+              ],
+            ),
+            disableScroll: true,
+            tapOutsideBehavior: TapOutsideBehavior.translucentDismiss,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
@@ -262,10 +268,10 @@ class _ProductDetailsState extends State<ProductDetails> {
                 Consumer<ProductBody>(
                   builder: (context, product, child) {
                     return ProductHeader(
-                      photoBox: image,
-                      productName: product.name,
-                      productPrice: product.basePrice,
-                      //productStock: product.quantity,
+                      productHeaderImageSource: image,
+                      productName: product.name ?? '',
+                      productPrice: product.basePrice ?? 0.0,
+                      productStock: product.quantity ?? 0,
                     );
                   },
                 ),
@@ -280,15 +286,8 @@ class _ProductDetailsState extends State<ProductDetails> {
                 SizedBox(
                   height: MediaQuery.of(context).size.height * 0.05,
                 ),
-                Text(
-                  'Delivery Options',
-                  style: Theme.of(context).textTheme.headline6,
-                ),
-                const SizedBox(height: 10),
-                _buildDeliveryOptions(),
-                const SizedBox(height: 10),
                 _buildSubscriptionSection(),
-                const SizedBox(height: 20),
+                const Spacer(),
                 SizedBox(
                   width: double.infinity,
                   child: AppButton.filled(
@@ -299,7 +298,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                               context,
                               AppNavigator.appPageRoute(
                                 builder: (_) => ProductSchedule(
-                                  gallery: widget.gallery,
+                                  images: widget.images,
                                   productId: widget.productId,
                                 ),
                               ),

@@ -1,3 +1,4 @@
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:oktoast/oktoast.dart';
@@ -73,8 +74,8 @@ class _CheckoutScheduleState extends State<CheckoutSchedule> with ScreenLoader {
             ),
           )
           .then((_) => _cart.remove(widget.productId));
-    } catch (e) {
-      debugPrint(e.toString());
+    } catch (e, stack) {
+      FirebaseCrashlytics.instance.recordError(e, stack);
       showToast('Failed to place order!');
     }
   }

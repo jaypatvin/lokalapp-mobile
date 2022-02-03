@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -9,31 +10,36 @@ import 'package:photo_view/photo_view_gallery.dart';
 import 'package:provider/provider.dart';
 
 import '../../../models/app_navigator.dart';
+import '../../../models/failure_exception.dart';
 import '../../../models/lokal_images.dart';
 import '../../../providers/auth.dart';
 import '../../../providers/post_requests/operating_hours_body.dart';
 import '../../../providers/post_requests/product_body.dart';
 import '../../../providers/products.dart';
 import '../../../providers/shops.dart';
+import '../../../routers/app_router.dart';
 import '../../../services/local_image_service.dart';
 import '../../../utils/constants/assets.dart';
+import '../../../utils/constants/themes.dart';
 import '../../../widgets/app_button.dart';
 import '../../../widgets/custom_app_bar.dart';
+import '../../../widgets/overlays/constrained_scrollview.dart';
 import '../../../widgets/overlays/screen_loader.dart';
+import '../../../widgets/photo_box.dart';
 import '../shop/user_shop.dart';
-import 'components/add_product_gallery.dart';
 import 'confirmation.dart';
 import 'product_schedule.dart';
 
 class ProductPreview extends StatefulWidget {
-  final AddProductGallery? gallery;
-  final ProductScheduleState? scheduleState;
-  final String? productId;
   const ProductPreview({
-    required this.gallery,
+    Key? key,
+    required this.images,
     required this.scheduleState,
     this.productId,
-  });
+  }) : super(key: key);
+  final List<PhotoBoxImageSource> images;
+  final ProductScheduleState? scheduleState;
+  final String? productId;
 
   @override
   _ProductPreviewState createState() => _ProductPreviewState();
@@ -42,18 +48,20 @@ class ProductPreview extends StatefulWidget {
 class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
   PhotoViewController? controller;
   int _current = 0;
-  late List<File?> images;
-  late List<String?> _urlImages;
+  final List<File> _fileImages = [];
+  final List<String> _urlImages = [];
+
+  bool _isLoading = false;
 
   @override
   void initState() {
-    images = widget.gallery!.photoBoxes.map((image) {
-      if (image.file != null) return image.file;
-    }).toList()
-      ..removeWhere((image) => image == null);
-
-    _urlImages = widget.gallery!.photoBoxes.map((image) => image.url).toList()
-      ..removeWhere((image) => image == null || image.isEmpty);
+    for (final image in widget.images) {
+      if (image.isFile) {
+        _fileImages.add(image.file!);
+      } else if (image.isUrl) {
+        _urlImages.add(image.url!);
+      }
+    }
 
     super.initState();
   }
@@ -61,17 +69,16 @@ class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
   Widget _buildDots() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
-      children: images.map((file) {
-        final int index = images.indexOf(file);
+      children: _fileImages.map((file) {
+        final int index = _fileImages.indexOf(file);
         return Container(
           width: 9.0,
           height: 10.0,
           margin: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 5.0),
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            border: Border.all(width: 1.sp),
-            color:
-                _current == index ? Colors.black.withOpacity(0.5) : Colors.grey,
+            border: Border.all(width: 1.sp, color: kOrangeColor),
+            color: _current == index ? kOrangeColor : Colors.transparent,
           ),
         );
       }).toList(),
@@ -80,7 +87,7 @@ class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
 
   Widget _buildGallery() {
     return PhotoViewGallery.builder(
-      itemCount: images.length + _urlImages.length,
+      itemCount: _fileImages.length + _urlImages.length,
       onPageChanged: (index) {
         if (mounted) {
           setState(() {
@@ -94,7 +101,7 @@ class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
 
           return PhotoViewGalleryPageOptions(
             basePosition: Alignment.center,
-            imageProvider: NetworkImage(image!), //NetworkImage(url),
+            imageProvider: NetworkImage(image),
             minScale: PhotoViewComputedScale.contained,
             maxScale: PhotoViewComputedScale.covered,
             controller: controller,
@@ -103,11 +110,11 @@ class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
           );
         } else {
           final _index = index - _urlImages.length;
-          final image = images[_index];
+          final image = _fileImages[_index];
 
           return PhotoViewGalleryPageOptions(
             basePosition: Alignment.center,
-            imageProvider: FileImage(image!), //NetworkImage(url),
+            imageProvider: FileImage(image),
             minScale: PhotoViewComputedScale.contained,
             maxScale: PhotoViewComputedScale.covered,
             controller: controller,
@@ -164,9 +171,9 @@ class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
 
   Future<void> _createProduct() async {
     final List<LokalImages> gallery = [];
-    for (final image in images) {
+    for (final image in _fileImages) {
       final mediaUrl = await context.read<LocalImageService>().uploadImage(
-            file: image!,
+            file: image,
             src: kProductImagesSrc,
           );
       gallery.add(LokalImages(url: mediaUrl, order: gallery.length));
@@ -174,10 +181,9 @@ class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
 
     if (!mounted) return;
     final user = context.read<Auth>().user!;
-    final shop =
-        Provider.of<Shops>(context, listen: false).findByUser(user.id).first;
-    final products = Provider.of<Products>(context, listen: false);
-    final productBody = Provider.of<ProductBody>(context, listen: false);
+    final shop = context.read<Shops>().findByUser(user.id).first;
+    final products = context.read<Products>();
+    final productBody = context.read<ProductBody>();
     try {
       productBody.update(
         gallery: gallery.map((image) => image.toMap()).toList(),
@@ -185,9 +191,6 @@ class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
         availability: context.read<OperatingHoursBody>().data,
       );
       return await products.create(productBody.data);
-    } on Exception catch (e) {
-      debugPrint(e.toString());
-      return;
     } catch (e) {
       rethrow;
     }
@@ -195,8 +198,8 @@ class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
 
   Future<bool> _updateProduct() async {
     final _productBody = context.read<ProductBody>();
-    final _product = context.read<Products>().findById(widget.productId);
-    final updateBody = ProductBody()..update(shopId: _product!.id);
+    final _product = context.read<Products>().findById(widget.productId)!;
+    final updateBody = ProductBody();
     updateBody.data.remove('gallery');
 
     if (_productBody.name != _product.name) {
@@ -218,13 +221,13 @@ class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
       updateBody.update(canSubscribe: _productBody.canSubscribe);
     }
 
-    if (images.isNotEmpty) {
+    if (_fileImages.isNotEmpty) {
       final gallery = <LokalImages>[..._product.gallery!];
 
-      for (final image in images) {
+      for (final image in _fileImages) {
         final mediaUrl = await context
             .read<LocalImageService>()
-            .uploadImage(file: image!, src: kProductImagesSrc);
+            .uploadImage(file: image, src: kProductImagesSrc);
         gallery.add(LokalImages(url: mediaUrl, order: gallery.length));
       }
       if (!listEquals(gallery, _product.gallery)) {
@@ -268,7 +271,7 @@ class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
 
     if (updateData.isEmpty && !updateSchedule) {
       // this would mean that there is nothing to update
-      throw 'There is nothing to update';
+      throw FailureException('Nothing to update');
     }
 
     bool updatedProductDetails = false;
@@ -298,36 +301,38 @@ class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
   }
 
   Future<void> _onConfirm() async {
-    if (widget.productId != null) {
-      try {
+    try {
+      if (_isLoading) return;
+      setState(() {
+        _isLoading = true;
+      });
+
+      if (widget.productId != null) {
         final success = await _updateProduct();
         if (success) {
           if (!mounted) return;
-          Navigator.popUntil(
-            context,
-            ModalRoute.withName(UserShop.routeName),
-          );
+          AppRouter.profileNavigatorKey.currentState
+              ?.popUntil(ModalRoute.withName(UserShop.routeName));
         } else {
           showToast('Failed to update product');
         }
-      } catch (e) {
-        showToast(e.toString());
+      } else {
+        await _createProduct();
+        if (!mounted) return;
+        AppRouter.profileNavigatorKey.currentState?.pushAndRemoveUntil(
+          AppNavigator.appPageRoute(
+            builder: (_) => const AddProductConfirmation(),
+          ),
+          ModalRoute.withName(UserShop.routeName),
+        );
       }
-      return;
-    }
-
-    try {
-      await _createProduct();
-      if (!mounted) return;
-
-      Navigator.push(
-        context,
-        AppNavigator.appPageRoute(
-          builder: (_) => const AddProductConfirmation(),
-        ),
-      );
-    } catch (e) {
-      showToast(e.toString());
+    } catch (e, stack) {
+      FirebaseCrashlytics.instance.recordError(e, stack);
+      showToast(e is FailureException ? e.message : e.toString());
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 
@@ -341,40 +346,45 @@ class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
           Navigator.pop(context);
         },
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Consumer<ProductBody>(
-          builder: (context, product, child) {
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(
-                  height: height * 0.45,
-                  child: _buildImage(product),
-                ),
-                Text(
-                  product.name!,
-                  style: Theme.of(context).textTheme.headline5,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                const SizedBox(height: 10),
-                Text(
-                  product.description!,
-                  style: Theme.of(context).textTheme.subtitle1,
-                ),
-                const Spacer(),
-                SizedBox(
-                  width: double.infinity,
-                  child: AppButton.filled(
-                    text: 'Confirm',
-                    onPressed: () async => performFuture<void>(
-                      () async => _onConfirm(),
+      body: ConstrainedScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Consumer<ProductBody>(
+            builder: (context, product, child) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    height: height * 0.45,
+                    child: _buildImage(product),
+                  ),
+                  Text(
+                    product.name!,
+                    style: Theme.of(context)
+                        .textTheme
+                        .headline6
+                        ?.copyWith(fontWeight: FontWeight.bold),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    product.description!,
+                    style: Theme.of(context).textTheme.bodyText1,
+                  ),
+                  const Spacer(),
+                  SizedBox(
+                    width: double.infinity,
+                    child: AppButton.filled(
+                      text: 'Confirm',
+                      onPressed: () async => performFuture<void>(
+                        () async => _onConfirm(),
+                      ),
                     ),
                   ),
-                ),
-              ],
-            );
-          },
+                ],
+              );
+            },
+          ),
         ),
       ),
     );

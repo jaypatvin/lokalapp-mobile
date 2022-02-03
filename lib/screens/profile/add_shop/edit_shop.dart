@@ -330,11 +330,13 @@ class _ShopPhotoSection extends StatelessWidget {
         children: [
           Center(
             child: PhotoBox(
-              file: shopCoverPhoto,
+              imageSource: PhotoBoxImageSource(
+                file: shopCoverPhoto,
+                url: shopCoverPhotoUrl,
+              ),
               shape: BoxShape.rectangle,
               width: double.infinity,
               height: height * 0.25,
-              url: shopCoverPhotoUrl,
               displayBorder: false,
             ),
           ),
@@ -344,10 +346,13 @@ class _ShopPhotoSection extends StatelessWidget {
               child: Stack(
                 children: [
                   PhotoBox(
+                    imageSource: PhotoBoxImageSource(
+                      file: shopPhoto,
+                      url: shopPhotoUrl,
+                    ),
                     height: 140.0,
-                    file: shopPhoto,
                     shape: BoxShape.circle,
-                    url: shopPhotoUrl,
+                    displayBorder: false,
                   ),
                   Container(
                     width: 140.0,

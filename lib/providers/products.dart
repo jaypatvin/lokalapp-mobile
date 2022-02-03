@@ -103,8 +103,7 @@ class Products extends ChangeNotifier {
 
   Future<void> create(Map<String, dynamic> body) async {
     try {
-      final _product = await _apiService.create(body: body);
-      _products.add(_product);
+      await _apiService.create(body: body);
       notifyListeners();
     } catch (e) {
       rethrow;

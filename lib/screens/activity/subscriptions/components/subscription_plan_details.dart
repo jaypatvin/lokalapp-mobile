@@ -56,10 +56,18 @@ class SubscriptionPlanDetails extends StatelessWidget {
               width: 40.0.w,
               height: 40.0.w,
               child: Image.network(
-                item.image!,
+                item.image ?? '',
                 fit: BoxFit.cover,
                 errorBuilder: (ctx, obj, stack) {
-                  return const Text('No Image');
+                  if (item.image != null) {
+                    return const Center(
+                      child: Text('Error displaying image.'),
+                    );
+                  }
+
+                  return const Center(
+                    child: Text('No image.'),
+                  );
                 },
               ),
             ),

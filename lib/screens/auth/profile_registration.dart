@@ -106,7 +106,7 @@ class _ProfileRegistrationView extends HookView<ProfileRegistrationViewModel>
               GestureDetector(
                 onTap: vm.picturePickerHandler,
                 child: PhotoBox(
-                  file: vm.profilePhoto,
+                  imageSource: PhotoBoxImageSource(file: vm.profilePhoto),
                   shape: BoxShape.circle,
                   width: 120.0.w,
                   height: 120.0.h,

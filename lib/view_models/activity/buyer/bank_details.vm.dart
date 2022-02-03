@@ -1,11 +1,12 @@
-import 'dart:developer';
 import 'dart:io';
 
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
 import '../../../models/app_navigator.dart';
 import '../../../models/bank_code.dart';
+import '../../../models/failure_exception.dart';
 import '../../../models/order.dart';
 import '../../../models/payment_option.dart';
 import '../../../providers/shops.dart';
@@ -91,9 +92,9 @@ class BankDetailsViewModel extends ViewModel {
           ),
         ),
       );
-    } catch (e) {
-      showToast(e.toString());
-      log(e.toString());
+    } catch (e, stack) {
+      FirebaseCrashlytics.instance.recordError(e, stack);
+      showToast(e is FailureException ? e.message : e.toString());
     }
   }
 }

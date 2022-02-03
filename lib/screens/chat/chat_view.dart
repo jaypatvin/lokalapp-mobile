@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:keyboard_actions/keyboard_actions.dart';
@@ -12,6 +13,7 @@ import 'package:provider/provider.dart';
 import '../../models/app_navigator.dart';
 import '../../models/chat_model.dart';
 import '../../models/conversation.dart';
+import '../../models/failure_exception.dart';
 import '../../providers/auth.dart';
 import '../../services/api/api.dart';
 import '../../services/api/chat_api_service.dart';
@@ -297,8 +299,9 @@ class _ChatViewState extends State<ChatView> with WidgetsBindingObserver {
         replyMessage = null;
         replyId = '';
       });
-    } catch (e) {
-      showToast(e.toString());
+    } catch (e, stack) {
+      FirebaseCrashlytics.instance.recordError(e, stack);
+      showToast(e is FailureException ? e.message : e.toString());
     }
   }
 
@@ -309,8 +312,9 @@ class _ChatViewState extends State<ChatView> with WidgetsBindingObserver {
         messageId: id,
       );
       showToast('Message delete succesfully.');
-    } catch (e) {
-      showToast(e.toString());
+    } catch (e, stack) {
+      FirebaseCrashlytics.instance.recordError(e, stack);
+      showToast(e is FailureException ? e.message : e.toString());
     }
   }
 

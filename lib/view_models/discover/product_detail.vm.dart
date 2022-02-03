@@ -1,7 +1,9 @@
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
+import '../../models/failure_exception.dart';
 import '../../models/product.dart';
 import '../../models/user_shop.dart';
 import '../../providers/cart.dart';
@@ -94,8 +96,9 @@ class ProductDetailViewModel extends ViewModel {
       showToast('Successfully added to wishlist!');
       if (!success) throw 'Error adding to wishlist.';
       return;
-    } catch (e) {
-      showToast(e.toString());
+    } catch (e, stack) {
+      FirebaseCrashlytics.instance.recordError(e, stack);
+      showToast(e is FailureException ? e.message : e.toString());
     }
   }
 

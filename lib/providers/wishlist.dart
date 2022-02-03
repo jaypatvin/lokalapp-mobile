@@ -1,3 +1,4 @@
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 
 import '../services/api/api.dart';
@@ -40,8 +41,11 @@ class UserWishlist extends ChangeNotifier {
 
       final _products = await _apiService.getUserWishlist(userId: _userId!);
       _wishList = _products.map<String>((product) => product.id).toList();
-    } catch (e) {
+    } catch (e, stack) {
       _errorMessage = 'Error fetching wishlist, try again.';
+
+      // No rethrows as it is used in [main.dart]
+      FirebaseCrashlytics.instance.recordError(e, stack);
     } finally {
       _isLoading = false;
       notifyListeners();

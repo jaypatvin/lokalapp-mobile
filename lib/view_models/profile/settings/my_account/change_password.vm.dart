@@ -1,7 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../models/failure_exception.dart';
 import '../../../../providers/auth.dart';
 import '../../../../state/view_model.dart';
 
@@ -99,15 +101,17 @@ class ChangePasswordViewModel extends ViewModel {
             _newPassword,
           );
       return true;
-    } on FirebaseAuthException catch (e) {
+    } on FirebaseAuthException catch (e, stack) {
       if (e.code == 'wrong-password') {
-        // _displaySignInError = true;
         _signInError = 'Password is incorrect. Please try again';
         notifyListeners();
+      } else {
+        FirebaseCrashlytics.instance.recordError(e, stack);
       }
       showToast(e.toString());
-    } catch (e) {
-      showToast(e.toString());
+    } catch (e, stack) {
+      FirebaseCrashlytics.instance.recordError(e, stack);
+      showToast(e is FailureException ? e.message : e.toString());
     }
 
     notifyListeners();

@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:collection/collection.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
@@ -48,8 +49,6 @@ class TransactionsViewModel extends ViewModel {
   late final String subHeader;
   late final String subscriptionSubtitle;
   late final String noOrderMessage;
-
-  // final String noOrderMessage = 'You have no orders yet!';
 
   final _db = Database.instance;
 
@@ -234,7 +233,8 @@ class TransactionsViewModel extends ViewModel {
             break;
         }
       }
-    } catch (_) {
+    } catch (e, stack) {
+      FirebaseCrashlytics.instance.recordError(e, stack);
       showToast('Error performing task. Please try again.');
     }
   }

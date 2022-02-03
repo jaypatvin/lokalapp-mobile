@@ -33,10 +33,8 @@ class ShopHeader extends StatelessWidget {
     return Stack(
       children: [
         Positioned.fill(
-          child: Image(
-            image: NetworkImage(
-              shopCoverPhoto!,
-            ),
+          child: Image.network(
+            shopCoverPhoto ?? '',
             fit: BoxFit.cover,
             errorBuilder: (ctx, obj, trace) => SizedBox(
               child: DecoratedBox(

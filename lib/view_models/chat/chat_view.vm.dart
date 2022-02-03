@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:photo_manager/photo_manager.dart';
@@ -9,6 +10,7 @@ import 'package:provider/provider.dart';
 import '../../models/app_navigator.dart';
 import '../../models/chat_model.dart';
 import '../../models/conversation.dart';
+import '../../models/failure_exception.dart';
 import '../../providers/auth.dart';
 import '../../routers/app_router.dart';
 import '../../screens/chat/chat_profile.dart';
@@ -242,8 +244,10 @@ class ChatViewViewModel extends ViewModel {
       _replyMessage = null;
       _replyId = '';
       notifyListeners();
-    } catch (e) {
-      showToast(e.toString());
+    } catch (e, stack) {
+      FirebaseCrashlytics.instance.recordError(e, stack);
+      showToast(e is FailureException ? e.message : e.toString());
+
       chatInputController.text = message;
       imageProvider.picked = picked;
       _showImagePicker = showImagePicker;
@@ -262,8 +266,9 @@ class ChatViewViewModel extends ViewModel {
         messageId: id,
       );
       showToast('Message deleted succesfully.');
-    } catch (e) {
-      showToast(e.toString());
+    } catch (e, stack) {
+      FirebaseCrashlytics.instance.recordError(e, stack);
+      showToast(e is FailureException ? e.message : e.toString());
     }
   }
 

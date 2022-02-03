@@ -6,13 +6,16 @@ import '../../../../providers/post_requests/product_body.dart';
 import '../../../../widgets/app_button.dart';
 import '../../../../widgets/custom_app_bar.dart';
 import '../../../../widgets/inputs/input_name_field.dart';
-import '../components/add_product_gallery.dart';
+import '../../../../widgets/photo_box.dart';
 import '../components/product_header.dart';
 import 'product_variant_2.dart';
 
 class AddAVariant extends StatefulWidget {
-  final AddProductGallery gallery;
-  const AddAVariant({required this.gallery});
+  const AddAVariant({
+    Key? key,
+    required this.images,
+  }) : super(key: key);
+  final List<PhotoBoxImageSource> images;
 
   @override
   _AddAVariantState createState() => _AddAVariantState();
@@ -27,8 +30,10 @@ class _AddAVariantState extends State<AddAVariant> {
   Widget buildBody() {
     final horizontalPadding = MediaQuery.of(context).size.width * 0.05;
     final topPadding = MediaQuery.of(context).size.height * 0.03;
-    final image = widget.gallery.photoBoxes.first;
-    final AddProductGallery _gallery = AddProductGallery();
+    final image = widget.images.isNotEmpty
+        ? widget.images.first
+        : const PhotoBoxImageSource();
+
     return Container(
       padding: EdgeInsets.fromLTRB(
         horizontalPadding,
@@ -43,10 +48,10 @@ class _AddAVariantState extends State<AddAVariant> {
             Consumer<ProductBody>(
               builder: (context, product, child) {
                 return ProductHeader(
-                  photoBox: image,
-                  productName: product.name,
-                  productPrice: product.basePrice,
-                  productStock: product.quantity,
+                  productHeaderImageSource: image,
+                  productName: product.name ?? '',
+                  productPrice: product.basePrice ?? 0.0,
+                  productStock: product.quantity ?? 0,
                 );
               },
             ),
@@ -60,7 +65,8 @@ class _AddAVariantState extends State<AddAVariant> {
                 fontWeight: FontWeight.w600,
               ),
             ),
-            _gallery,
+            // TODO: variant images
+            //_gallery,
             SizedBox(
               height: MediaQuery.of(context).size.height * 0.05,
             ),
@@ -112,7 +118,7 @@ class _AddAVariantState extends State<AddAVariant> {
                 Navigator.push(
                   context,
                   AppNavigator.appPageRoute(
-                    builder: (_) => ProductVariant2(gallery: widget.gallery),
+                    builder: (_) => ProductVariant2(images: widget.images),
                   ),
                 );
               },
