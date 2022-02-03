@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../models/chat_model.dart';
 import '../../../utils/constants/themes.dart';
@@ -38,7 +37,7 @@ class ChatAvatar extends StatelessWidget {
           color: Colors.transparent,
         ),
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(30.0.r),
+          borderRadius: BorderRadius.circular(radius),
           child: Image.network(
             displayPhoto ?? '',
             fit: BoxFit.cover,

@@ -351,6 +351,7 @@ class _ShopPhotoSection extends StatelessWidget {
                       url: shopPhotoUrl,
                     ),
                     height: 140.0,
+                    width: 140.0,
                     shape: BoxShape.circle,
                     displayBorder: false,
                   ),

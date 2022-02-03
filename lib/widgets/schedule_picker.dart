@@ -425,25 +425,31 @@ class _SchedulePickerState extends State<SchedulePicker> {
   }
 
   Widget _weekdayPicker() {
-    return Column(
-      children: [
-        WeekdayPicker(
-          onDayPressed:
-              widget.editable ? _onWeekDayPickerDayPressedHandler : null,
-          markedDaysMap: _selectableDays,
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 100),
+      height: _selectableDays.isNotEmpty ? 70.0.h : 130.0.h,
+      child: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            WeekdayPicker(
+              onDayPressed:
+                  widget.editable ? _onWeekDayPickerDayPressedHandler : null,
+              markedDaysMap: _selectableDays,
+            ),
+            SizedBox(height: 10.0.h),
+            if (_selectableDays.isEmpty)
+              Text(
+                'Select a day or days to repeat every week',
+                style: Theme.of(context).textTheme.bodyText1!.copyWith(
+                      color: Colors.red,
+                      fontWeight: FontWeight.normal,
+                      fontSize: 16.0.sp,
+                    ),
+              ),
+          ],
         ),
-        SizedBox(height: 10.0.h),
-        if (_selectableDays.isEmpty)
-          Text(
-            'Select a day or days to repeat every week',
-            style: Theme.of(context).textTheme.bodyText1!.copyWith(
-                  color: Colors.red,
-                  fontWeight: FontWeight.normal,
-                  fontSize: 16.0.sp,
-                ),
-          ),
-        SizedBox(height: 10.0.h),
-      ],
+      ),
     );
   }
 
@@ -623,37 +629,49 @@ class _DayOfMonthPickerBody extends StatelessWidget {
         insetPadding: EdgeInsets.zero,
         shape:
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0)),
-        child: SingleChildScrollView(
-          physics: const NeverScrollableScrollPhysics(),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              SizedBox(
-                height: MediaQuery.of(context).size.height * 0.02,
-              ),
-              Text(
-                'Start Date',
-                style: Theme.of(context).textTheme.headline5,
-              ),
-              DayOfMonthPicker(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SizedBox(
+              height: MediaQuery.of(context).size.height * 0.02,
+            ),
+            Text(
+              'Start Date',
+              style: Theme.of(context).textTheme.headline5,
+            ),
+            Flexible(
+              flex: 5,
+              child: DayOfMonthPicker(
                 width: MediaQuery.of(context).size.width * 0.95,
                 padding: const EdgeInsets.all(5.0),
                 onDayPressed: onDayPressed,
                 markedDay: markedStartDayOfMonth,
               ),
-              Container(
-                padding:
-                    EdgeInsets.all(MediaQuery.of(context).size.width * 0.05),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    AppButton.transparent(text: 'Cancel', onPressed: onCancel),
-                    AppButton.filled(text: 'Confirm', onPressed: onConfirm),
-                  ],
-                ),
+            ),
+            Flexible(
+              flex: 2,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.3,
+                    child: AppButton.transparent(
+                      text: 'Cancel',
+                      onPressed: onCancel,
+                    ),
+                  ),
+                  SizedBox(width: 5.0.w),
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.3,
+                    child: AppButton.filled(
+                      text: 'Confirm',
+                      onPressed: onConfirm,
+                    ),
+                  ),
+                ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -689,23 +707,25 @@ class _CalendarPickerBody extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(30.0),
         ),
-        child: SizedBox(
-          height: MediaQuery.of(context).size.height * 0.85,
-          child: Column(
-            children: [
-              SizedBox(
-                height: MediaQuery.of(context).size.height * 0.02,
-              ),
-              Text(
-                'Start Date',
-                style: Theme.of(context).textTheme.headline5,
-              ),
-              Container(
-                width: MediaQuery.of(context).size.width * 0.95,
-                height: MediaQuery.of(context).size.height * 0.65,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SizedBox(
+              height: MediaQuery.of(context).size.height * 0.02,
+            ),
+            Text(
+              'Start Date',
+              style: Theme.of(context).textTheme.headline5,
+            ),
+            Flexible(
+              flex: 5,
+              child: Container(
+                // width: MediaQuery.of(context).size.width * 0.95,
+                // height: MediaQuery.of(context).size.height * 0.65,
                 padding: const EdgeInsets.all(5.0),
                 child: CalendarCarousel(
                   width: MediaQuery.of(context).size.width * 0.95,
+                  height: MediaQuery.of(context).size.height,
                   onDayPressed: onDayPressed,
                   markedDatesMap: startDates,
                   selectableDaysMap: repeatChoice == RepeatChoices.week
@@ -714,30 +734,32 @@ class _CalendarPickerBody extends StatelessWidget {
                   selectableDates: selectableDates,
                 ),
               ),
-              Flexible(
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.3,
-                      child: AppButton.transparent(
-                        text: 'Cancel',
-                        onPressed: onCancel,
-                      ),
+            ),
+            Flexible(
+              flex: 2,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.3,
+                    child: AppButton.transparent(
+                      text: 'Cancel',
+                      onPressed: onCancel,
                     ),
-                    SizedBox(width: 5.0.h),
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.3,
-                      child: AppButton.filled(
-                        text: 'Confirm',
-                        onPressed: onConfirm,
-                      ),
+                  ),
+                  SizedBox(width: 5.0.h),
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.3,
+                    child: AppButton.filled(
+                      text: 'Confirm',
+                      onPressed: onConfirm,
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            ],
-          ),
+            ),
+            SizedBox(height: 5.0.h),
+          ],
         ),
       ),
     );
@@ -825,7 +847,7 @@ class _DayOfMonth extends StatelessWidget {
           children: [
             Expanded(
               child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 20.0.w),
+                padding: EdgeInsets.symmetric(horizontal: 15.0.w),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(30.0.r),
                   border: Border.all(
@@ -844,7 +866,7 @@ class _DayOfMonth extends StatelessWidget {
             SizedBox(width: 5.0.w),
             Expanded(
               child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 20.0.w),
+                padding: EdgeInsets.symmetric(horizontal: 15.0.w),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(30.0.r),
                   border: Border.all(
