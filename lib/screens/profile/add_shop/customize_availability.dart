@@ -63,7 +63,7 @@ class _CustomizeAvailabilityState extends State<CustomizeAvailability>
     super.initState();
     final _generator = ScheduleGenerator();
 
-    final operatingHours = context.read<OperatingHoursBody>().operatingHours;
+    final operatingHours = context.read<OperatingHoursBody>().body;
 
     initialDates = _generator.generateInitialDates(
       repeatChoice: widget.repeatChoice,
@@ -74,17 +74,17 @@ class _CustomizeAvailabilityState extends State<CustomizeAvailability>
     );
     markedDates = [...initialDates];
 
-    operatingHours.customDates?.forEach((customDate) {
+    for (final customDate in operatingHours.customDates) {
       markedDates.add(DateTime.parse(customDate.date!));
-    });
-    operatingHours.unavailableDates?.forEach((dateString) {
+    }
+    for (final dateString in operatingHours.unavailableDates) {
       final _date = DateTime.parse(dateString);
       final index = markedDates
           .indexWhere((date) => date?.isAtSameMomentAs(_date) ?? false);
       if (index > -1) {
         markedDates.removeAt(index);
       }
-    });
+    }
   }
 
   Future<List<DateTime?>?> _showCalendarPicker() async {
@@ -174,12 +174,11 @@ class _CustomizeAvailabilityState extends State<CustomizeAvailability>
     shopBody.update(
       profilePhoto: mediaUrl,
       userId: user.id,
-      communityId: user.communityId,
-      operatingHours: context.read<OperatingHoursBody>(),
+      operatingHours: context.read<OperatingHoursBody>().body,
     );
 
     try {
-      await shops.create(shopBody.toMap());
+      await shops.create(shopBody.data);
     } catch (e) {
       debugPrint(e.toString());
       rethrow;

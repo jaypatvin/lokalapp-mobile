@@ -63,7 +63,7 @@ class NewSubscriptionScheduleViewModel extends ViewModel {
     product = _product;
     operatingHours = product.availability ??
         context.read<Shops>().findById(product.shopId)?.operatingHours ??
-        OperatingHours();
+        const OperatingHours();
     repeatabilityChoices = _getRepeatabilityChoices();
   }
 
@@ -101,7 +101,7 @@ class NewSubscriptionScheduleViewModel extends ViewModel {
   // we can only choose a schedule of weekly and monthly. Finally, when the
   // product is available monthly, we can also only set the sub sched to monthly.
   List<RepeatChoices> _getRepeatabilityChoices() {
-    final repeatType = operatingHours.repeatType!;
+    final repeatType = operatingHours.repeatType;
     final repeatChoice = _generator.getRepeatChoicesFromString(repeatType);
 
     switch (repeatChoice) {
@@ -244,8 +244,8 @@ class ViewSubscriptionScheduleViewModel extends ViewModel {
           subscriptionPlan.productId,
         )!;
     operatingHours = OperatingHours(
-      repeatType: subscriptionPlan.plan.repeatType,
-      repeatUnit: subscriptionPlan.plan.repeatUnit,
+      repeatType: subscriptionPlan.plan.repeatType!,
+      repeatUnit: subscriptionPlan.plan.repeatUnit!,
       startDates: subscriptionPlan.plan.startDates
           .map<String>((date) => DateFormat('yyyy-MM-dd').format(date))
           .toList(),
@@ -316,7 +316,7 @@ class ViewSubscriptionScheduleViewModel extends ViewModel {
   // we can only choose a schedule of weekly and monthly. Finally, when the
   // product is available monthly, we can also only set the sub sched to monthly.
   List<RepeatChoices> _getRepeatabilityChoices() {
-    final repeatType = operatingHours.repeatType!;
+    final repeatType = operatingHours.repeatType;
     final repeatChoice = _generator.getRepeatChoicesFromString(repeatType);
 
     switch (repeatChoice) {

@@ -78,9 +78,8 @@ class _SetupPaymentOptionsView extends HookView<SetupPaymentOptionsViewModel>
             Consumer<ShopBody>(
               builder: (ctx, shopBody, _) {
                 final _isBankAccountsEmpty = shopBody.paymentOptions
-                        ?.where((bank) => bank.type == BankType.bank)
-                        .isEmpty ??
-                    true;
+                    .where((bank) => bank.type == BankType.bank)
+                    .isEmpty;
 
                 return ListTile(
                   tileColor: _isBankAccountsEmpty
@@ -116,9 +115,8 @@ class _SetupPaymentOptionsView extends HookView<SetupPaymentOptionsViewModel>
             Consumer<ShopBody>(
               builder: (_, shopBody, __) {
                 final _isWalletAccountsEmpty = shopBody.paymentOptions
-                        ?.where((bank) => bank.type == BankType.wallet)
-                        .isEmpty ??
-                    true;
+                    .where((bank) => bank.type == BankType.wallet)
+                    .isEmpty;
                 return ListTile(
                   tileColor: _isWalletAccountsEmpty
                       ? Colors.grey[300]
@@ -156,7 +154,7 @@ class _SetupPaymentOptionsView extends HookView<SetupPaymentOptionsViewModel>
             const Spacer(),
             Consumer<ShopBody>(
               builder: (_, shopBody, __) {
-                final hasPayment = shopBody.paymentOptions?.isNotEmpty ?? false;
+                final hasPayment = shopBody.paymentOptions.isNotEmpty;
                 return SizedBox(
                   width: double.infinity,
                   child: AppButton.custom(

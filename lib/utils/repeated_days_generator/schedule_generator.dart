@@ -164,7 +164,7 @@ class ScheduleGenerator {
     List<DateTime> selectableDates = <DateTime>[];
     RepeatChoices? repeatChoice;
     bool isNDays = false;
-    final repeatType = operatingHours.repeatType!;
+    final repeatType = operatingHours.repeatType;
     if (repeatType.split('-').length > 1) {
       isNDays = true;
       repeatChoice = RepeatChoices.month;
@@ -177,20 +177,20 @@ class ScheduleGenerator {
 
     final repeatUnit = operatingHours.repeatUnit;
     final startDate = DateFormat('yyyy-MM-dd').parse(
-      operatingHours.startDates!.first,
+      operatingHours.startDates.first,
     );
 
     switch (repeatChoice) {
       case RepeatChoices.day:
         selectableDates = _generator.getRepeatedDays(
           startDate: startDate,
-          everyNDays: repeatUnit!,
+          everyNDays: repeatUnit,
           validate: false,
         );
         break;
       case RepeatChoices.week:
         final selectableDays = <int>[];
-        for (final element in operatingHours.startDates!) {
+        for (final element in operatingHours.startDates) {
           final date = DateFormat('yyyy-MM-dd').parse(element);
           var weekday = date.weekday;
           if (weekday == 7) weekday = 0;
@@ -198,7 +198,7 @@ class ScheduleGenerator {
         }
         selectableDates = _generator.getRepeatedWeekDays(
           startDate: startDate,
-          everyNWeeks: repeatUnit!,
+          everyNWeeks: repeatUnit,
           selectedDays: selectableDays,
           validate: false,
         );
@@ -209,9 +209,9 @@ class ScheduleGenerator {
         break;
       case RepeatChoices.month:
         if (isNDays) {
-          final type = operatingHours.repeatType!.split('-');
+          final type = operatingHours.repeatType.split('-');
           selectableDates = _generator.getRepeatedMonthDaysByNthDay(
-            everyNMonths: operatingHours.repeatUnit!,
+            everyNMonths: operatingHours.repeatUnit,
             ordinal: int.parse(type[0]),
             weekday: en_USSymbols.SHORTWEEKDAYS.indexOf(type[1].capitalize()),
             month: DateTime.now().month,
@@ -219,7 +219,7 @@ class ScheduleGenerator {
         } else {
           selectableDates = _generator.getRepeatedMonthDaysByStartDate(
             startDate: startDate,
-            everyNMonths: repeatUnit!,
+            everyNMonths: repeatUnit,
             validate: false,
           );
         }
@@ -231,13 +231,13 @@ class ScheduleGenerator {
     }
 
     final unavailableDates = <DateTime>[];
-    for (final element in operatingHours.unavailableDates!) {
+    for (final element in operatingHours.unavailableDates) {
       unavailableDates.add(DateFormat('yyyy-MM-dd').parse(element));
     }
     selectableDates
         .removeWhere((element) => unavailableDates.contains(element));
 
-    for (final element in operatingHours.customDates!) {
+    for (final element in operatingHours.customDates) {
       final date = DateFormat('yyyy-MM-dd').parse(element.date!);
       if (!selectableDates.contains(date)) {
         selectableDates.add(date);
@@ -254,7 +254,7 @@ class ScheduleGenerator {
     final _startDates = <DateTime>[];
 
     // Day and week:
-    for (final element in operatingHours.startDates!) {
+    for (final element in operatingHours.startDates) {
       final date = DateFormat('yyyy-MM-dd').parse(element);
       int weekday = date.weekday;
       if (weekday == 7) weekday = 0;
@@ -262,13 +262,13 @@ class ScheduleGenerator {
       _startDates.add(date);
     }
     final _startDate = DateFormat('yyyy-MM-dd').parse(
-      operatingHours.startDates!.first,
+      operatingHours.startDates.first,
     );
 
     // Month:
     int _startDayOfMonth = 0;
 
-    final repeatType = operatingHours.repeatType!;
+    final repeatType = operatingHours.repeatType;
     var _repeatChoice = RepeatChoices.day;
     if (repeatType.split('-').length > 1) {
       _repeatChoice = RepeatChoices.month;

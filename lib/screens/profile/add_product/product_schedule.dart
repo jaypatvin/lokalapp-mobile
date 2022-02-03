@@ -218,11 +218,11 @@ class _ProductScheduleState extends State<ProductSchedule> {
       endTime: shopSchedule.endTime,
       repeatType: shopSchedule.repeatType,
       repeatUnit: shopSchedule.repeatUnit,
-      startDates: shopSchedule.startDates,
-      customDates: [...shopSchedule.customDates!],
+      startDates: [...shopSchedule.startDates],
+      customDates: [...shopSchedule.customDates],
       unavailableDates: [
         ...{
-          ...shopSchedule.unavailableDates!,
+          ...shopSchedule.unavailableDates,
           ...unavailableDates
               .map((date) => DateFormat('yyyy-MM-dd').format(date!))
               .toList(),

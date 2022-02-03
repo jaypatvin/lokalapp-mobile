@@ -74,7 +74,7 @@ class EditShopViewModel extends ViewModel {
 
   void toggleButton() {
     _isShopOpen = !_isShopOpen;
-    final status = _isShopOpen ? 'enabled' : 'disabled';
+    final status = _isShopOpen ? ShopStatus.enabled : ShopStatus.disabled;
     context.read<ShopBody>().update(status: status);
   }
 
@@ -177,11 +177,11 @@ class EditShopViewModel extends ViewModel {
       description: shopDescription,
       profilePhoto: shopPhotoUrl,
       coverPhoto: shopCoverPhotoUrl,
-      status: isShopOpen ? 'enabled' : 'disabled',
+      status: isShopOpen ? ShopStatus.enabled : ShopStatus.enabled,
     );
 
     try {
-      return context.read<Shops>().update(id: shop.id, data: shopBody.toMap());
+      return context.read<Shops>().update(id: shop.id, data: shopBody.data);
     } catch (e) {
       rethrow;
     }

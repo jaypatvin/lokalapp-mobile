@@ -150,9 +150,8 @@ class _AddBankView extends StatelessView<AddBankViewModel> {
               child: Consumer<ShopBody>(
                 builder: (_, shopBody, __) {
                   final isBankEmpty = shopBody.paymentOptions
-                          ?.where((bank) => bank.type == vm.bankType)
-                          .isEmpty ??
-                      true;
+                      .where((bank) => bank.type == vm.bankType)
+                      .isEmpty;
 
                   return AppButton.filled(
                     text: isBankEmpty ? 'Next' : 'Back to Payment Options',

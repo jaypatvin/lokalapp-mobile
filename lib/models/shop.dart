@@ -221,9 +221,7 @@ class Shop {
       description: map['description'] ?? '',
       isClosed: map['is_close'] ?? false,
       name: map['name'] ?? '',
-      operatingHours: map['operating_hours'] != null
-          ? OperatingHours.fromMap(map['operating_hours'])
-          : OperatingHours(),
+      operatingHours: OperatingHours.fromMap(map['operating_hours']),
       paymentOptions: List<PaymentOption>.from(
         map['payment_options']?.map(
               (x) => PaymentOption.fromMap(x),

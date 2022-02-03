@@ -151,9 +151,7 @@ class Product {
           : List<LokalImages>.from(
               map['gallery']?.map((x) => LokalImages.fromMap(x)),
             ),
-      availability: map['availability'] != null
-          ? OperatingHours.fromMap(map['availability'])
-          : OperatingHours(),
+      availability: OperatingHours.fromMap(map['availability']),
       numRatings: map['numRatings'] ?? 0,
       avgRating: map['avgRating']?.toDouble() ?? 0.0,
       updatedFrom: map['updated_from'] ?? '',

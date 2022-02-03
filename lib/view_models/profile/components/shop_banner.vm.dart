@@ -64,7 +64,7 @@ class ShopBannerViewModel extends ViewModel {
   void onAddShop() {
     AppRouter.profileNavigatorKey.currentState?.push(
       AppNavigator.appPageRoute(
-        builder: (_) => AddShop(),
+        builder: (_) => const AddShop(),
       ),
     );
   }

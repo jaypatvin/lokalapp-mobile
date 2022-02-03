@@ -58,7 +58,7 @@ class ProfileNavigator extends AppNavigator {
       case AddShop.routeName:
         return AppNavigator.appPageRoute(
           settings: settings,
-          builder: (_) => AddShop(),
+          builder: (_) => const AddShop(),
         );
       case ShopSchedule.routeName:
         final props = settings.arguments! as ShopScheduleProps;
