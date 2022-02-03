@@ -20,7 +20,7 @@ class MessageBuyerButton extends StatelessWidget {
               AppRoute.chat,
               ChatView.routeName,
               arguments: ChatViewProps(
-                members: [order!.buyerId!, order!.shopId!],
+                members: [order!.buyerId, order!.shopId],
                 shopId: order!.shopId,
               ),
             );
@@ -42,7 +42,7 @@ class MessageSellerButton extends StatelessWidget {
               AppRoute.chat,
               ChatView.routeName,
               arguments: ChatViewProps(
-                members: [order.buyerId!, order.shopId!],
+                members: [order.buyerId, order.shopId],
                 shopId: order.shopId,
               ),
             );

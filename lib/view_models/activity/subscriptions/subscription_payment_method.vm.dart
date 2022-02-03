@@ -4,11 +4,11 @@ import 'package:provider/provider.dart';
 
 import '../../../models/app_navigator.dart';
 import '../../../models/failure_exception.dart';
+import '../../../models/order.dart';
 import '../../../providers/cart.dart';
 import '../../../providers/products.dart';
 import '../../../providers/subscriptions.dart';
 import '../../../routers/app_router.dart';
-import '../../../screens/activity/buyer/processing_payment.dart';
 import '../../../screens/cart/cart_confirmation.dart';
 import '../../../services/api/api.dart';
 import '../../../services/api/subscription_plan_api_service.dart';
@@ -36,7 +36,7 @@ class SubscriptionPaymentMethodViewModel extends ViewModel {
     totalPrice = _quantity * _product!.basePrice;
   }
 
-  Future<void> onSubmitHandler(PaymentMode paymentMode) async {
+  Future<void> onSubmitHandler(PaymentMethod paymentMode) async {
     try {
       subscriptionPlanBody.paymentMethod = paymentMode.value;
 

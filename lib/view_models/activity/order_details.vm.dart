@@ -33,13 +33,13 @@ class OrderDetailsViewModel extends ViewModel {
   Future<void> onPress(OrderAction action) async {
     switch (action) {
       case OrderAction.cancel:
-        await _apiService.cancel(orderId: order.id!);
+        await _apiService.cancel(orderId: order.id);
         break;
       case OrderAction.decline:
-        await _apiService.decline(orderId: order.id!);
+        await _apiService.decline(orderId: order.id);
         break;
       case OrderAction.confirm:
-        final success = await _apiService.confirm(orderId: order.id!);
+        final success = await _apiService.confirm(orderId: order.id);
         if (success) {
           AppRouter.activityNavigatorKey.currentState?.push(
             AppNavigator.appPageRoute(
@@ -67,7 +67,7 @@ class OrderDetailsViewModel extends ViewModel {
         openGallery(context, 0, galleryItems);
         break;
       case OrderAction.confirmPayment:
-        final success = await _apiService.confirmPayment(orderId: order.id!);
+        final success = await _apiService.confirmPayment(orderId: order.id);
 
         if (success) {
           AppRouter.activityNavigatorKey.currentState?.push(
@@ -78,7 +78,7 @@ class OrderDetailsViewModel extends ViewModel {
         }
         break;
       case OrderAction.shipOut:
-        final success = await _apiService.shipOut(orderId: order.id!);
+        final success = await _apiService.shipOut(orderId: order.id);
 
         if (success) {
           AppRouter.activityNavigatorKey.currentState?.push(
@@ -89,7 +89,7 @@ class OrderDetailsViewModel extends ViewModel {
         }
         break;
       case OrderAction.received:
-        final success = await _apiService.receive(orderId: order.id!);
+        final success = await _apiService.receive(orderId: order.id);
 
         if (success) {
           AppRouter.activityNavigatorKey.currentState?.push(

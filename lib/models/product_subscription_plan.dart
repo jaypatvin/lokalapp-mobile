@@ -365,7 +365,7 @@ class ProductSubscriptionPlan {
     String? status,
     ProductSubscriptionSchedule? plan,
     SubscriptionShopDetails? shop,
-    ProductOrder? product,
+    OrderProduct? product,
   }) {
     return ProductSubscriptionPlan(
       id: id ?? this.id,

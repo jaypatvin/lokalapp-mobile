@@ -38,7 +38,7 @@ class _CashOnDeliveryView extends HookView<CashOnDeliveryViewModel>
       () => _numberFormat.format(
         vm.order.products.fold<double>(
           0.0,
-          (double prev, product) => prev + product.price!,
+          (double prev, product) => prev + product.price,
         ),
       ),
     );

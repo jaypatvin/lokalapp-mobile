@@ -47,22 +47,22 @@ class _OrderDetailsView extends HookView<OrderDetailsViewModel>
         _address.city,
       ];
 
-      return _addressList.where((text) => text?.isNotEmpty ?? false).join(', ');
+      return _addressList.where((text) => text.isNotEmpty).join(', ');
     });
 
     final _instructions = useMemoized<String>(
-      () => vm.order.instruction?.isNotEmpty ?? false
-          ? vm.order.instruction!
+      () => vm.order.instruction.isNotEmpty
+          ? vm.order.instruction
           : 'No instructions.',
     );
 
     final _modeOfPayment = useMemoized<String>(() {
-      if (vm.order.paymentMethod == 'bank') {
+      if (vm.order.paymentMethod == PaymentMethod.bank) {
         return 'Bank Transfer/Deposit';
-      } else if (vm.order.paymentMethod == 'cod') {
-        return 'Cash on Delivery';
-      } else {
+      } else if (vm.order.paymentMethod == PaymentMethod.eWallet) {
         return 'Wallet Transfer/Deposit';
+      } else {
+        return 'Cash on Delivery';
       }
     });
 
@@ -91,7 +91,7 @@ class _OrderDetailsView extends HookView<OrderDetailsViewModel>
                 style: Theme.of(context).textTheme.bodyText1,
               ),
               SizedBox(height: 16.0.h),
-              if (vm.order.statusCode! >= 300)
+              if (vm.order.statusCode >= 300)
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -157,7 +157,7 @@ class _OrderDetailsView extends HookView<OrderDetailsViewModel>
               _textInfo,
               SizedBox(height: 24.0.h),
               OrderDetailsButtons(
-                statusCode: vm.order.statusCode!,
+                statusCode: vm.order.statusCode,
                 isBuyer: vm.isBuyer,
                 order: vm.order,
                 onPress: (action) async => performFuture(

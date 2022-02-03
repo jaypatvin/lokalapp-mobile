@@ -43,28 +43,24 @@ class OrderDetailsButtons extends StatelessWidget {
           isBuyer: isBuyer,
           order: order,
           onPress: onPress,
-          paymentMethod: order.paymentMethod,
         );
       case 400:
         return Status400Buttons(
           isBuyer: isBuyer,
           order: order,
           onPress: onPress,
-          paymentMethod: order.paymentMethod,
         );
       case 500:
         return Status500Buttons(
           isBuyer: isBuyer,
           order: order,
           onPress: onPress,
-          paymentMethod: order.paymentMethod,
         );
       case 600:
         return Status600Buttons(
           isBuyer: isBuyer,
           order: order,
           onPress: onPress,
-          paymentMethod: order.paymentMethod,
         );
       default:
         return isBuyer

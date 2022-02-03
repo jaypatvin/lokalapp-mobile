@@ -168,7 +168,7 @@ class TransactionsViewModel extends ViewModel {
             );
             break;
           case 500:
-            final success = await _apiService.receive(orderId: order.id!);
+            final success = await _apiService.receive(orderId: order.id);
             if (success) {
               AppRouter.activityNavigatorKey.currentState?.push(
                 AppNavigator.appPageRoute(
@@ -184,7 +184,7 @@ class TransactionsViewModel extends ViewModel {
       } else {
         switch (order.statusCode) {
           case 100:
-            final success = await _apiService.confirm(orderId: order.id!);
+            final success = await _apiService.confirm(orderId: order.id);
             if (success) {
               AppRouter.activityNavigatorKey.currentState?.push(
                 AppNavigator.appPageRoute(
@@ -197,9 +197,9 @@ class TransactionsViewModel extends ViewModel {
             }
             break;
           case 300:
-            if (order.paymentMethod == 'cod') {
+            if (order.paymentMethod == PaymentMethod.cod) {
               final success =
-                  await _apiService.confirmPayment(orderId: order.id!);
+                  await _apiService.confirmPayment(orderId: order.id);
               if (success) {
                 AppRouter.activityNavigatorKey.currentState?.push(
                   AppNavigator.appPageRoute(
@@ -219,7 +219,7 @@ class TransactionsViewModel extends ViewModel {
             }
             break;
           case 400:
-            final success = await _apiService.shipOut(orderId: order.id!);
+            final success = await _apiService.shipOut(orderId: order.id);
             if (success) {
               AppRouter.activityNavigatorKey.currentState?.push(
                 AppNavigator.appPageRoute(

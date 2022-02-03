@@ -10,13 +10,11 @@ class Status600Buttons extends StatelessWidget {
   final bool isBuyer;
   final Order order;
   final void Function(OrderAction) onPress;
-  final String? paymentMethod;
   const Status600Buttons({
     Key? key,
     this.isBuyer = true,
     required this.order,
     required this.onPress,
-    required this.paymentMethod,
   }) : super(key: key);
 
   @override

@@ -10,14 +10,12 @@ import '../view_payment_button.dart';
 class Status400Buttons extends StatelessWidget {
   final bool isBuyer;
   final Order order;
-  final String? paymentMethod;
   final void Function(OrderAction) onPress;
   const Status400Buttons({
     Key? key,
     this.isBuyer = true,
     required this.order,
     required this.onPress,
-    required this.paymentMethod,
   }) : super(key: key);
 
   @override

@@ -22,7 +22,7 @@ import '../../../utils/media_utility.dart';
 class BankDetailsViewModel extends ViewModel {
   BankDetailsViewModel({required this.order, required this.paymentMode});
   final Order order;
-  final PaymentMode paymentMode;
+  final PaymentMethod paymentMode;
 
   File? _proofOfPayment;
   File? get proofOfPayment => _proofOfPayment;
@@ -34,7 +34,7 @@ class BankDetailsViewModel extends ViewModel {
   late final List<PaymentOption> paymentAccounts;
 
   double get price =>
-      order.products.fold(0.0, (double prev, product) => prev + product.price!);
+      order.products.fold(0.0, (double prev, product) => prev + product.price);
 
   @override
   void init() {
@@ -43,7 +43,7 @@ class BankDetailsViewModel extends ViewModel {
     _imageService = context.read<LocalImageService>();
 
     final shop = context.read<Shops>().findById(order.shopId);
-    if (paymentMode == PaymentMode.gCash) {
+    if (paymentMode == PaymentMethod.eWallet) {
       paymentAccounts = shop?.paymentOptions
               ?.where((bank) => bank.type == BankType.wallet)
               .toList() ??
@@ -75,7 +75,7 @@ class BankDetailsViewModel extends ViewModel {
       );
 
       final success = await _apiService.pay(
-        orderId: order.id!,
+        orderId: order.id,
         body: <String, String>{
           'payment_method': paymentMode.value,
           'proof_of_payment': _url,
