@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
+import '../../models/order.dart';
 import '../../providers/cart.dart';
 import '../../providers/products.dart';
 import '../../providers/shops.dart';
@@ -15,7 +17,7 @@ import '../discover/product_detail.dart';
 import 'checkout_schedule.dart';
 import 'components/order_details.dart';
 
-class Checkout extends StatelessWidget {
+class Checkout extends HookWidget {
   static const routeName = '/cart/checkout/shop/checkout';
   final String productId;
   const Checkout({
@@ -25,8 +27,45 @@ class Checkout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final product = context.read<Products>().findById(productId);
-    final shop = context.read<Shops>().findById(product!.shopId)!;
+    final product = context.watch<Products>().findById(productId);
+    final shop = context.watch<Shops>().findById(product!.shopId)!;
+
+    final _onCustomerPickUpToggle =
+        useMemoized<void Function(DeliveryOption?)?>(
+      () {
+        if (shop.deliveryOptions.pickup) {
+          return (value) => context.read<ShoppingCart>().updateOrder(
+                productId: productId,
+                deliveryOption: value,
+              );
+        }
+        return null;
+      },
+      [shop, productId],
+    );
+
+    final _onDeliveryToggle = useMemoized<void Function(DeliveryOption?)?>(() {
+      if (shop.deliveryOptions.delivery) {
+        return (value) => context.read<ShoppingCart>().updateOrder(
+              productId: productId,
+              deliveryOption: value,
+            );
+      }
+      return null;
+    });
+
+    useEffect(
+      () {
+        if (!shop.deliveryOptions.pickup) {
+          context.read<ShoppingCart>().updateOrder(
+                productId: productId,
+                deliveryOption: DeliveryOption.delivery,
+                notify: false,
+              );
+        }
+      },
+      [shop, product],
+    );
     return Scaffold(
       appBar: CustomAppBar(
         titleText: 'Checkout',
@@ -113,10 +152,7 @@ class Checkout extends StatelessWidget {
                     visualDensity: VisualDensity.compact,
                     value: DeliveryOption.pickup,
                     groupValue: order.deliveryOption,
-                    onChanged: (value) => cart.updateOrder(
-                      productId: productId,
-                      deliveryOption: value,
-                    ),
+                    onChanged: _onCustomerPickUpToggle,
                     selected: DeliveryOption.pickup == order.deliveryOption,
                     title: const Text('Customer Pick-up'),
                   ),
@@ -125,10 +161,7 @@ class Checkout extends StatelessWidget {
                     visualDensity: VisualDensity.compact,
                     value: DeliveryOption.delivery,
                     groupValue: order.deliveryOption,
-                    onChanged: (value) => cart.updateOrder(
-                      productId: productId,
-                      deliveryOption: value,
-                    ),
+                    onChanged: _onDeliveryToggle,
                     selected: DeliveryOption.delivery == order.deliveryOption,
                     title: const Text('Delivery'),
                   ),

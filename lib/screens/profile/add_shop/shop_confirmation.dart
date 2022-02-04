@@ -70,6 +70,7 @@ class AddShopConfirmation extends StatelessWidget {
                 },
               ),
             ),
+            const SizedBox(height: 10),
             SizedBox(
               width: double.infinity,
               child: AppButton.filled(

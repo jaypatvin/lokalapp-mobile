@@ -46,12 +46,20 @@ class EditShopViewModel extends ViewModel {
   String? _errorNameText;
   String? get errorNameText => _errorNameText;
 
+  late bool _forDelivery;
+  bool get forDelivery => _forDelivery;
+
+  late bool _forPickup;
+  bool get forPickup => _forPickup;
+
   @override
   void init() {
     super.init();
     _shopName = shop.name;
     _shopDescription = shop.description;
     _isShopOpen = shop.status == ShopStatus.enabled;
+    _forDelivery = shop.deliveryOptions.delivery;
+    _forPickup = shop.deliveryOptions.pickup;
 
     context.read<ShopBody>()
       ..clear(notify: false)
@@ -60,7 +68,11 @@ class EditShopViewModel extends ViewModel {
         description: shop.description,
         coverPhoto: shop.coverPhoto,
         profilePhoto: shop.profilePhoto,
+        isClose: shop.isClosed,
+        status: shop.status,
+        userId: shop.userId,
         paymentOptions: [...(shop.paymentOptions ?? const [])],
+        deliveryOptions: shop.deliveryOptions,
         notify: false,
       );
     context.read<OperatingHoursBody>().clear(notify: false);
@@ -140,6 +152,29 @@ class EditShopViewModel extends ViewModel {
         edit: true,
       ),
     );
+  }
+
+  void onPickupTap() {
+    _forPickup = !_forPickup;
+    context.read<ShopBody>().update(
+          deliveryOptions: DeliveryOptions(
+            delivery: _forDelivery,
+            pickup: _forPickup,
+          ),
+        );
+
+    notifyListeners();
+  }
+
+  void onDeliveryTap() {
+    _forDelivery = !_forDelivery;
+    context.read<ShopBody>().update(
+          deliveryOptions: DeliveryOptions(
+            delivery: _forDelivery,
+            pickup: _forPickup,
+          ),
+        );
+    notifyListeners();
   }
 
   Future<bool> _updateShop() async {

@@ -427,28 +427,26 @@ class _SchedulePickerState extends State<SchedulePicker> {
   Widget _weekdayPicker() {
     return AnimatedContainer(
       duration: const Duration(milliseconds: 100),
-      height: _selectableDays.isNotEmpty ? 70.0.h : 130.0.h,
-      child: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            WeekdayPicker(
-              onDayPressed:
-                  widget.editable ? _onWeekDayPickerDayPressedHandler : null,
-              markedDaysMap: _selectableDays,
+      height: _selectableDays.isNotEmpty ? 70.0.h : 100.0.h,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          WeekdayPicker(
+            onDayPressed:
+                widget.editable ? _onWeekDayPickerDayPressedHandler : null,
+            markedDaysMap: _selectableDays,
+          ),
+          SizedBox(height: 10.0.h),
+          if (_selectableDays.isEmpty)
+            Text(
+              'Select a day or days to repeat every week',
+              style: Theme.of(context).textTheme.bodyText1!.copyWith(
+                    color: Colors.red,
+                    fontWeight: FontWeight.normal,
+                    fontSize: 16.0.sp,
+                  ),
             ),
-            SizedBox(height: 10.0.h),
-            if (_selectableDays.isEmpty)
-              Text(
-                'Select a day or days to repeat every week',
-                style: Theme.of(context).textTheme.bodyText1!.copyWith(
-                      color: Colors.red,
-                      fontWeight: FontWeight.normal,
-                      fontSize: 16.0.sp,
-                    ),
-              ),
-          ],
-        ),
+        ],
       ),
     );
   }

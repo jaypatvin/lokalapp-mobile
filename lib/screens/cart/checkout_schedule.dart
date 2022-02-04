@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
+import '../../models/order.dart';
 import '../../providers/auth.dart';
 import '../../providers/cart.dart';
 import '../../providers/products.dart';
@@ -17,6 +18,7 @@ import '../../utils/constants/themes.dart';
 import '../../utils/repeated_days_generator/schedule_generator.dart';
 import '../../widgets/app_button.dart';
 import '../../widgets/custom_app_bar.dart';
+import '../../widgets/overlays/constrained_scrollview.dart';
 import '../../widgets/overlays/screen_loader.dart';
 import '../discover/discover.dart';
 import '../discover/product_detail.dart';
@@ -90,7 +92,7 @@ class _CheckoutScheduleState extends State<CheckoutSchedule> with ScreenLoader {
         backgroundColor: kTealColor,
         titleStyle: TextStyle(color: Colors.white),
       ),
-      body: SingleChildScrollView(
+      body: ConstrainedScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -153,42 +155,48 @@ class _CheckoutScheduleState extends State<CheckoutSchedule> with ScreenLoader {
                 ),
               ),
             ),
-            _DeliverySchedule(
-              shopId: shop.id,
-              productId: widget.productId,
+            Flexible(
+              flex: 5,
+              child: _DeliverySchedule(
+                shopId: shop.id,
+                productId: widget.productId,
+              ),
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: AppButton.transparent(
-                      text: 'Cancel',
-                      color: kPinkColor,
-                      onPressed: () => Navigator.pop(context),
+            Flexible(
+              flex: 2,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: AppButton.transparent(
+                        text: 'Cancel',
+                        color: kPinkColor,
+                        onPressed: () => Navigator.pop(context),
+                      ),
                     ),
-                  ),
-                  const SizedBox(width: 16.0),
-                  Expanded(
-                    child: Consumer<ShoppingCart>(
-                      builder: (ctx, cart, child) {
-                        final order = cart.orders[shop.id]![product.id]!;
-                        return AppButton.filled(
-                          text: 'Place Order',
-                          onPressed: order.schedule != null
-                              ? () async {
-                                  await performFuture<void>(
-                                    () async => _placeOrderHandler(
-                                      shop.id,
-                                    ),
-                                  );
-                                }
-                              : null,
-                        );
-                      },
-                    ),
-                  )
-                ],
+                    const SizedBox(width: 16.0),
+                    Expanded(
+                      child: Consumer<ShoppingCart>(
+                        builder: (ctx, cart, child) {
+                          final order = cart.orders[shop.id]![product.id]!;
+                          return AppButton.filled(
+                            text: 'Place Order',
+                            onPressed: order.schedule != null
+                                ? () async {
+                                    await performFuture<void>(
+                                      () async => _placeOrderHandler(
+                                        shop.id,
+                                      ),
+                                    );
+                                  }
+                                : null,
+                          );
+                        },
+                      ),
+                    )
+                  ],
+                ),
               ),
             ),
             const SizedBox(height: 24.0),
@@ -227,7 +235,6 @@ class _DeliverySchedule extends StatelessWidget {
           },
           selectedDateTime: delivery,
           markedDatesMap: [delivery],
-          height: 425.0.h,
           width: MediaQuery.of(context).size.width * 0.9,
           selectableDates: selectableDates,
         );

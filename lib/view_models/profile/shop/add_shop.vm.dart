@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:provider/provider.dart';
 
+import '../../../models/shop.dart';
 import '../../../providers/post_requests/shop_body.dart';
 import '../../../routers/app_router.dart';
 import '../../../routers/profile/props/shop_schedule.props.dart';
@@ -28,6 +29,12 @@ class AddShopViewModel extends ViewModel {
   String? _descriptionErrorText;
   String? get descriptionErrorText => _descriptionErrorText;
 
+  bool _forDelivery = true;
+  bool get forDelivery => _forDelivery;
+
+  bool _forPickup = true;
+  bool get forPickup => _forPickup;
+
   Future<void> onAddPhoto() async {
     _shopPhoto = await mediaUtility.showMediaDialog(context);
     notifyListeners();
@@ -39,6 +46,29 @@ class AddShopViewModel extends ViewModel {
     }
     _name = value;
     context.read<ShopBody>().update(name: value);
+    notifyListeners();
+  }
+
+  void onPickupTap() {
+    _forPickup = !_forPickup;
+    context.read<ShopBody>().update(
+          deliveryOptions: DeliveryOptions(
+            delivery: _forDelivery,
+            pickup: _forPickup,
+          ),
+        );
+
+    notifyListeners();
+  }
+
+  void onDeliveryTap() {
+    _forDelivery = !_forDelivery;
+    context.read<ShopBody>().update(
+          deliveryOptions: DeliveryOptions(
+            delivery: _forDelivery,
+            pickup: _forPickup,
+          ),
+        );
     notifyListeners();
   }
 
@@ -59,7 +89,7 @@ class AddShopViewModel extends ViewModel {
       _descriptionErrorText = 'Shop Description should not be empty';
     }
 
-    if (_nameErrorText != null && _descriptionErrorText != null) {
+    if (_nameErrorText != null || _descriptionErrorText != null) {
       notifyListeners();
       return;
     }

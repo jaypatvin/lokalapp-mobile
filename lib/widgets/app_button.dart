@@ -141,7 +141,7 @@ class AppButton extends StatelessWidget {
         shape: const StadiumBorder(),
         elevation: 0.0,
         primary: isFilled ? color : Colors.transparent,
-        minimumSize: Size(0, 40.0.h),
+        minimumSize: const Size(0, kMinInteractiveDimension),
         side: BorderSide(color: color),
       ),
       child: child,

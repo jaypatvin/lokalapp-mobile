@@ -3,19 +3,7 @@ import 'dart:collection';
 import 'package:collection/collection.dart' show IterableExtension;
 import 'package:flutter/foundation.dart';
 
-enum DeliveryOption { pickup, delivery }
-
-extension DeliveryOptionExtension on DeliveryOption {
-  String get value {
-    switch (this) {
-      case DeliveryOption.delivery:
-        return 'delivery';
-      case DeliveryOption.pickup:
-      default:
-        return 'pickup';
-    }
-  }
-}
+import '../models/order.dart';
 
 class ProductOrderDetails {
   /// The number of items to be ordered
@@ -102,6 +90,7 @@ class ShoppingCart extends ChangeNotifier {
     String? notes,
     DeliveryOption? deliveryOption,
     DateTime? schedule,
+    bool notify = true,
   }) {
     final shopOrder = _getOrderEntry(productId);
     if (shopOrder == null) return;
@@ -124,7 +113,7 @@ class ShoppingCart extends ChangeNotifier {
       schedule: schedule ?? order!.schedule,
     );
 
-    notifyListeners();
+    if (notify) notifyListeners();
   }
 
   /// Removes a MapEntry from the orders
