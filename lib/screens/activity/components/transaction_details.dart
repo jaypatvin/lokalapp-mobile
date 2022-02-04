@@ -26,7 +26,7 @@ class TransactionDetails extends HookWidget {
   Widget build(BuildContext context) {
     final _name = useMemoized<String?>(
       () => isBuyer
-          ? transaction.shopName
+          ? transaction.shop.name
           : Provider.of<Users>(context, listen: false)
               .findById(transaction.buyerId)
               ?.displayName,
@@ -44,14 +44,14 @@ class TransactionDetails extends HookWidget {
 
     final _price = useMemoized<double>(
       () => transaction.products
-          .fold(0.0, (double prev, product) => prev + product.price!),
+          .fold(0.0, (double prev, product) => prev + product.price),
     );
 
     final _displayStatus = useMemoized<String?>(
-      () =>
-          (transaction.statusCode == 300 && transaction.paymentMethod == 'cod')
-              ? 'Cash on Delivery'
-              : status,
+      () => (transaction.statusCode == 300 &&
+              transaction.paymentMethod == PaymentMethod.cod)
+          ? 'Cash on Delivery'
+          : status,
     );
 
     final _avatar = useMemoized<Row>(() {
@@ -135,7 +135,7 @@ class TransactionDetails extends HookWidget {
                       ),
                     ),
                   Text(
-                    item.name!,
+                    item.name,
                     style: Theme.of(context).textTheme.subtitle1,
                   ),
                   Text(
@@ -146,7 +146,7 @@ class TransactionDetails extends HookWidget {
                         ?.copyWith(fontWeight: FontWeight.w400),
                   ),
                   Text(
-                    'P ${item.quantity! * item.price!}',
+                    'P ${item.quantity * item.price}',
                     style: Theme.of(context).textTheme.bodyText1,
                   ),
                 ],

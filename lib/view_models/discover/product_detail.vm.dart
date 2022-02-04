@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 
 import '../../models/failure_exception.dart';
 import '../../models/product.dart';
-import '../../models/user_shop.dart';
+import '../../models/shop.dart';
 import '../../providers/cart.dart';
 import '../../providers/wishlist.dart';
 import '../../routers/app_router.dart';
@@ -23,7 +23,7 @@ class ProductDetailViewModel extends ViewModel {
 
   final ShoppingCart cart;
   final Product product;
-  final ShopModel shop;
+  final Shop shop;
 
   late final String appBarTitle;
   late final String buttonLabel;
@@ -46,7 +46,7 @@ class ProductDetailViewModel extends ViewModel {
       appBarTitle = 'Edit Order';
       buttonLabel = 'UPDATE CART';
     } else {
-      appBarTitle = shop.name!;
+      appBarTitle = shop.name;
       buttonLabel = 'ADD TO CART';
     }
   }

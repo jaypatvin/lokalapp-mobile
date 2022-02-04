@@ -14,6 +14,7 @@ import '../../../state/views/hook.view.dart';
 import '../../../utils/constants/themes.dart';
 import '../../../view_models/profile/shop/add_shop/edit_shop.vm.dart';
 import '../../../widgets/app_button.dart';
+import '../../../widgets/app_checkbox.dart';
 import '../../../widgets/custom_app_bar.dart';
 import '../../../widgets/inputs/input_description_field.dart';
 import '../../../widgets/inputs/input_name_field.dart';
@@ -45,12 +46,13 @@ class _EditShopView extends HookView<EditShopViewModel>
 
   @override
   Widget screen(BuildContext context, EditShopViewModel vm) {
+    final themeData = Theme.of(context);
     final width = MediaQuery.of(context).size.width;
     final height = MediaQuery.of(context).size.height;
     final padding = height * 0.05;
 
-    final buttonWidth = 90.0.w;
-    final buttonHeight = 40.0.h;
+    const buttonWidth = kMinInteractiveDimension * 2;
+    const buttonHeight = kMinInteractiveDimension;
 
     final _isAnimating = useState<bool>(false);
 
@@ -156,7 +158,7 @@ class _EditShopView extends HookView<EditShopViewModel>
                     height: buttonHeight,
                     width: buttonWidth,
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20.0.r),
+                      borderRadius: BorderRadius.circular(30.0.r),
                       color: vm.isShopOpen ? kTealColor : kPinkColor,
                     ),
                     child: Stack(
@@ -165,8 +167,12 @@ class _EditShopView extends HookView<EditShopViewModel>
                           visible: !_isAnimating.value,
                           child: Padding(
                             padding: vm.isShopOpen
-                                ? EdgeInsets.only(left: buttonWidth * 0.10)
-                                : EdgeInsets.only(right: buttonWidth * 0.10),
+                                ? const EdgeInsets.only(
+                                    left: buttonWidth * 0.10,
+                                  )
+                                : const EdgeInsets.only(
+                                    right: buttonWidth * 0.10,
+                                  ),
                             child: Align(
                               alignment: vm.isShopOpen
                                   ? Alignment.centerLeft
@@ -213,9 +219,7 @@ class _EditShopView extends HookView<EditShopViewModel>
                     'Basic Information',
                     style: Theme.of(context).textTheme.headline5,
                   ),
-                  SizedBox(
-                    height: height * 0.02,
-                  ),
+                  SizedBox(height: 5.0.h),
                   _ShopPhotoSection(
                     shopPhoto: vm.shopPhoto,
                     shopCoverPhoto: vm.shopCoverPhoto,
@@ -223,9 +227,7 @@ class _EditShopView extends HookView<EditShopViewModel>
                     shopPhotoUrl: vm.shop.profilePhoto,
                     shopCoverPhotoUrl: vm.shop.coverPhoto,
                   ),
-                  SizedBox(
-                    height: height * 0.02,
-                  ),
+                  SizedBox(height: 5.0.h),
                   InkWell(
                     onTap: vm.onCoverPhotoPick,
                     child: Row(
@@ -247,29 +249,58 @@ class _EditShopView extends HookView<EditShopViewModel>
                       ],
                     ),
                   ),
-                  SizedBox(
-                    height: height * 0.02,
-                  ),
+                  SizedBox(height: 10.0.h),
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: padding),
                     child: InputNameField(
                       controller: _shopNameController,
                       hintText: 'Shop Name',
-                      errorText: vm.errorNameText,
+                      errorText: vm.nameErrorText,
                       focusNode: _nameNode,
                     ),
-                  ),
-                  SizedBox(
-                    height: height * 0.02,
                   ),
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: padding),
                     child: InputDescriptionField(
                       controller: _shopDescController,
                       hintText: 'Shop Description',
+                      errorText: vm.descriptionErrorText,
                       focusNode: _descriptionNode,
                     ),
                   ),
+                  SizedBox(height: 5.0.h),
+                  SizedBox(
+                    width: width * 0.8,
+                    child: Text(
+                      'Delivery Options',
+                      style: Theme.of(context).textTheme.subtitle1,
+                    ),
+                  ),
+                  SizedBox(height: 5.0.h),
+                  SizedBox(
+                    width: width * 0.8,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        AppCheckBox(
+                          value: vm.forPickup,
+                          onTap: vm.onPickupTap,
+                          title: const Text('Customer Pick-up'),
+                        ),
+                        AppCheckBox(
+                          value: vm.forDelivery,
+                          onTap: vm.onDeliveryTap,
+                          title: const Text('Delivery'),
+                        ),
+                      ],
+                    ),
+                  ),
+                  if (vm.deliveryOptionErrorText != null)
+                    Text(
+                      vm.deliveryOptionErrorText!,
+                      style: themeData.textTheme.caption!
+                          .copyWith(color: themeData.errorColor),
+                    ),
                   SizedBox(
                     height: height * 0.02,
                   ),
@@ -351,6 +382,7 @@ class _ShopPhotoSection extends StatelessWidget {
                       url: shopPhotoUrl,
                     ),
                     height: 140.0,
+                    width: 140.0,
                     shape: BoxShape.circle,
                     displayBorder: false,
                   ),

@@ -43,20 +43,22 @@ class _ProductDetailsState extends State<ProductDetails> {
 
     final details = context.read<ProductBody>();
     _stockController.text = details.quantity.toString();
-
     final _categories = context.read<Categories>();
+
     if (_categories.categories.isEmpty) {
       _categories.fetch().then((_) {
-        if (_categories.categories.isEmpty) return;
-        context.read<ProductBody>().update(
-              productCategory: _categories.categories.first.name,
-            );
+        if (_categories.categories.isEmpty ||
+            (details.productCategory?.isNotEmpty ?? false)) return;
+        details.update(
+          productCategory: _categories.categories.first.name,
+        );
       });
     } else {
-      context.read<ProductBody>().update(
-            productCategory: _categories.categories.first.name,
-            notify: false,
-          );
+      if (details.productCategory?.isNotEmpty ?? false) return;
+      details.update(
+        productCategory: _categories.categories.first.name,
+        notify: false,
+      );
     }
   }
 

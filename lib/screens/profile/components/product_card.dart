@@ -136,7 +136,7 @@ class _ProductCardView extends HookView<ProductCardViewModel> {
                       SizedBox(width: 5.0.w),
                       Expanded(
                         child: Text(
-                          vm.shop.name!,
+                          vm.shop.name,
                           overflow: TextOverflow.ellipsis,
                           textAlign: TextAlign.start,
                           style: TextStyle(

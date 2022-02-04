@@ -64,21 +64,21 @@ class CustomDates {
 }
 
 class OperatingHours {
-  String? startTime;
-  String? endTime;
-  String? repeatType;
-  int? repeatUnit;
-  List<String>? startDates;
-  List<String>? unavailableDates;
-  List<CustomDates>? customDates;
-  OperatingHours({
-    this.startTime,
-    this.endTime,
-    this.repeatType,
-    this.repeatUnit,
-    this.startDates,
-    this.unavailableDates,
-    this.customDates,
+  final String startTime;
+  final String endTime;
+  final String repeatType;
+  final int repeatUnit;
+  final List<String> startDates;
+  final List<String> unavailableDates;
+  final List<CustomDates> customDates;
+  const OperatingHours({
+    this.startTime = '8:00 AM',
+    this.endTime = '5:00 PM',
+    this.repeatType = 'day',
+    this.repeatUnit = 1,
+    this.startDates = const [],
+    this.unavailableDates = const [],
+    this.customDates = const [],
   });
 
   OperatingHours copyWith({
@@ -105,11 +105,11 @@ class OperatingHours {
     return {
       'start_time': startTime,
       'end_time': endTime,
-      'repeat_type': repeatType?.toLowerCase(),
+      'repeat_type': repeatType.toLowerCase(),
       'repeat_unit': repeatUnit,
       'start_dates': startDates,
       'unavailable_dates': unavailableDates,
-      'custom_dates': customDates?.map((x) => x.toMap()).toList(),
+      'custom_dates': customDates.map((x) => x.toMap()).toList(),
     };
   }
 

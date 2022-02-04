@@ -131,7 +131,7 @@ class _UserShopView extends HookView<UserShopViewModel> {
                 return FlexibleSpaceBar(
                   centerTitle: true,
                   title: Text(
-                    vm.shop.name!,
+                    vm.shop.name,
                     textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.subtitle1?.copyWith(
                           color: _collapsed ? kNavyColor : Colors.white,
@@ -139,7 +139,7 @@ class _UserShopView extends HookView<UserShopViewModel> {
                   ),
                   background: SafeArea(
                     child: ShopHeader(
-                      shopName: vm.shop.name!,
+                      shopName: vm.shop.name,
                       shopProfilePhoto: vm.shop.profilePhoto,
                       shopCoverPhoto: vm.shop.coverPhoto,
                       linearGradientColors: vm.shopHeaderColors,

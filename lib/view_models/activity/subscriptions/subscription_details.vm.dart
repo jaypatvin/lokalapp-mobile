@@ -48,8 +48,8 @@ class SubscriptionDetailsViewModel extends ViewModel {
     final shop = context.read<Shops>().findById(subscriptionPlan.shopId)!;
 
     final operatingHours = OperatingHours(
-      repeatType: subscriptionPlan.plan.repeatType,
-      repeatUnit: subscriptionPlan.plan.repeatUnit,
+      repeatType: subscriptionPlan.plan.repeatType!,
+      repeatUnit: subscriptionPlan.plan.repeatUnit!,
       startDates: subscriptionPlan.plan.startDates
           .map<String>((date) => DateFormat('yyyy-MM-dd').format(date))
           .toList(),
@@ -57,8 +57,8 @@ class SubscriptionDetailsViewModel extends ViewModel {
           .map<String>((date) => DateFormat('yyyy-MM-dd').format(date))
           .toList(),
       customDates: [],
-      startTime: shop.operatingHours!.startTime,
-      endTime: shop.operatingHours!.endTime,
+      startTime: shop.operatingHours.startTime,
+      endTime: shop.operatingHours.endTime,
     );
 
     // product schedule initialization

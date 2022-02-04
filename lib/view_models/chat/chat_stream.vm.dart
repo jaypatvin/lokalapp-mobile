@@ -24,7 +24,7 @@ class ChatStreamViewModel extends ViewModel {
       final shop = context.read<Shops>().findById(id);
       if (shop != null) {
         isMatch =
-            shop.name!.toLowerCase().contains(_searchQuery!.toLowerCase());
+            shop.name.toLowerCase().contains(_searchQuery!.toLowerCase());
       } else {
         final user = context.read<Users>().findById(id);
         if (user != null) {

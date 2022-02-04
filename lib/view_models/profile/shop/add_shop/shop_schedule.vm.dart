@@ -48,9 +48,9 @@ class ShopScheduleViewModel extends ViewModel {
     if (shops.isNotEmpty) {
       final shop = shops.first;
       if (isValidOperatingHours(shop.operatingHours)) {
-        final operatingHours = shop.operatingHours!;
-        _opening = stringToTimeOfDay(operatingHours.startTime!);
-        _closing = stringToTimeOfDay(operatingHours.endTime!);
+        final operatingHours = shop.operatingHours;
+        _opening = stringToTimeOfDay(operatingHours.startTime);
+        _closing = stringToTimeOfDay(operatingHours.endTime);
         context.read<OperatingHoursBody>().update(
               startTime: getTimeOfDayString(_opening),
               endTime: getTimeOfDayString(_closing),
@@ -115,8 +115,7 @@ class ShopScheduleViewModel extends ViewModel {
   }
 
   RepeatChoices _getRepeatChoice() {
-    final repeatType =
-        context.read<OperatingHoursBody>().operatingHours.repeatType!;
+    final repeatType = context.read<OperatingHoursBody>().body.repeatType;
     var repeatChoice = RepeatChoices.month;
     if (repeatType.split('-').length <= 1) {
       for (final choice in RepeatChoices.values) {
@@ -151,15 +150,15 @@ class ShopScheduleViewModel extends ViewModel {
   }
 
   void onConfirm() {
-    final operatingHours = context.read<OperatingHoursBody>().operatingHours;
+    final operatingHours = context.read<OperatingHoursBody>().body;
     final startDates = operatingHours.startDates;
     final repeatUnit = operatingHours.repeatUnit;
-    if (startDates == null || startDates.isEmpty) {
+    if (startDates.isEmpty) {
       showToast('Select a start date.');
       return;
     }
 
-    if (repeatUnit == null || repeatUnit <= 0) {
+    if (repeatUnit <= 0) {
       showToast('Enter a valid repeat number.');
       return;
     }
@@ -168,15 +167,14 @@ class ShopScheduleViewModel extends ViewModel {
           CustomizeAvailability.routeName,
           arguments: CustomizeAvailabilityProps(
             repeatChoice: _getRepeatChoice(),
-            repeatEvery:
-                context.read<OperatingHoursBody>().operatingHours.repeatUnit,
+            repeatEvery: context.read<OperatingHoursBody>().body.repeatUnit,
             selectableDays: _selectableDays,
             startDate: _startDate ?? DateTime.now(),
             shopPhoto: shopPhoto,
             usedDatePicker: context
                     .read<OperatingHoursBody>()
-                    .operatingHours
-                    .repeatType!
+                    .body
+                    .repeatType
                     .split('-')
                     .length <=
                 1,

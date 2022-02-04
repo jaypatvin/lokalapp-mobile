@@ -4,7 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 
-import '../../models/user_shop.dart';
+import '../../models/shop.dart';
 import '../../providers/auth.dart';
 import '../../providers/products.dart';
 import '../../providers/shops.dart';
@@ -187,7 +187,7 @@ class _ChatAppBarBottom extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     final user = context.read<Auth>().user!;
     final shops = context.watch<Shops>().findByUser(user.id);
-    final ShopModel? shop = shops.isNotEmpty ? shops.first : null;
+    final Shop? shop = shops.isNotEmpty ? shops.first : null;
 
     return Container(
       padding: EdgeInsets.only(bottom: 14.0.h, left: 14.0.w, right: 14.0.w),

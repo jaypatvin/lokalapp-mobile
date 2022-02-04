@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:keyboard_actions/keyboard_actions.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
 
 import '../../../providers/auth.dart';
@@ -15,6 +16,7 @@ import '../../../utils/functions.utils.dart';
 import '../../../view_models/profile/shop/add_shop/shop_schedule.vm.dart';
 import '../../../widgets/app_button.dart';
 import '../../../widgets/custom_app_bar.dart';
+import '../../../widgets/overlays/constrained_scrollview.dart';
 import '../../../widgets/schedule_picker.dart';
 
 class ShopSchedule extends StatelessWidget {
@@ -68,74 +70,78 @@ class _ShopScheduleView extends HookView<ShopScheduleViewModel> {
         leadingColor: Colors.black,
         onPressedLeading: () => Navigator.pop(context),
       ),
-      body: Container(
-        padding: EdgeInsets.symmetric(
-          horizontal: width * 0.05,
-          vertical: height * 0.02,
-        ),
-        child: KeyboardActions(
-          config: KeyboardActionsConfig(
-            nextFocus: false,
-            actions: [
-              KeyboardActionsItem(
-                focusNode: _repeatUnitFocusNode,
-                toolbarButtons: [
-                  (node) {
-                    return TextButton(
-                      onPressed: () => node.unfocus(),
-                      child: Text(
-                        'Done',
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodyText1!
-                            .copyWith(color: Colors.black),
-                      ),
-                    );
-                  },
-                ],
-              ),
-            ],
+      body: ConstrainedScrollView(
+        child: Container(
+          padding: EdgeInsets.symmetric(
+            horizontal: width * 0.05,
+            vertical: height * 0.02,
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              SchedulePicker(
-                header: 'Days Available',
-                description: "Set your shop's availability",
-                repeatUnitFocusNode: _repeatUnitFocusNode,
-                operatingHours:
-                    shops.isNotEmpty ? shops.first.operatingHours : null,
-                onStartDatesChanged: vm.onStartDatesChangedHandler,
-                onRepeatTypeChanged: (repeatType) => context
-                    .read<OperatingHoursBody>()
-                    .update(repeatType: repeatType),
-                onRepeatUnitChanged: (repeatUnit) => context
-                    .read<OperatingHoursBody>()
-                    .update(repeatUnit: repeatUnit),
-                onSelectableDaysChanged: vm.onSelectableDaysChanged,
-              ),
-              const SizedBox(height: 15),
-              Text(
-                'Hours',
-                style: Theme.of(context).textTheme.headline5,
-              ),
-              const SizedBox(height: 10),
-              _HoursPicker(
-                opening: vm.opening,
-                closing: vm.closing,
-                onSelectOpening: vm.onSelectOpening,
-                onSelectClosing: vm.onSelectClosing,
-              ),
-              const SizedBox(height: 15),
-              SizedBox(
-                width: double.infinity,
-                child: AppButton.filled(
-                  text: 'Confirm',
-                  onPressed: vm.onConfirm,
+          child: KeyboardActions(
+            disableScroll: true,
+            config: KeyboardActionsConfig(
+              nextFocus: false,
+              actions: [
+                KeyboardActionsItem(
+                  focusNode: _repeatUnitFocusNode,
+                  toolbarButtons: [
+                    (node) {
+                      return TextButton(
+                        onPressed: () => node.unfocus(),
+                        child: Text(
+                          'Done',
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyText1!
+                              .copyWith(color: Colors.black),
+                        ),
+                      );
+                    },
+                  ],
                 ),
-              )
-            ],
+              ],
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SchedulePicker(
+                  header: 'Days Available',
+                  description: "Set your shop's availability",
+                  repeatUnitFocusNode: _repeatUnitFocusNode,
+                  operatingHours:
+                      shops.isNotEmpty ? shops.first.operatingHours : null,
+                  onStartDatesChanged: vm.onStartDatesChangedHandler,
+                  onRepeatTypeChanged: (repeatType) => context
+                      .read<OperatingHoursBody>()
+                      .update(repeatType: repeatType),
+                  onRepeatUnitChanged: (repeatUnit) => context
+                      .read<OperatingHoursBody>()
+                      .update(repeatUnit: repeatUnit),
+                  onSelectableDaysChanged: vm.onSelectableDaysChanged,
+                ),
+                const SizedBox(height: 15),
+                Text(
+                  'Hours',
+                  style: Theme.of(context).textTheme.headline5,
+                ),
+                const SizedBox(height: 10),
+                _HoursPicker(
+                  opening: vm.opening,
+                  closing: vm.closing,
+                  onSelectOpening: vm.onSelectOpening,
+                  onSelectClosing: vm.onSelectClosing,
+                ),
+                const Spacer(),
+                const SizedBox(height: 10),
+                SizedBox(
+                  width: double.infinity,
+                  child: AppButton.filled(
+                    text: 'Confirm',
+                    onPressed: vm.onConfirm,
+                  ),
+                )
+              ],
+            ),
           ),
         ),
       ),
@@ -174,9 +180,6 @@ class _HoursPicker extends StatelessWidget {
         spacerBox,
         Expanded(
           child: Container(
-            padding: EdgeInsets.symmetric(
-              horizontal: MediaQuery.of(context).size.width * 0.02,
-            ),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(30.0),
               border: Border.all(
@@ -198,7 +201,7 @@ class _HoursPicker extends StatelessWidget {
                     ),
                   ),
                   Icon(
-                    Icons.arrow_drop_down_sharp,
+                    MdiIcons.chevronDown,
                     color: kTealColor,
                     size: 16.0.sp,
                   ),
@@ -218,9 +221,6 @@ class _HoursPicker extends StatelessWidget {
         spacerBox,
         Expanded(
           child: Container(
-            padding: EdgeInsets.symmetric(
-              horizontal: MediaQuery.of(context).size.width * 0.02,
-            ),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(30.0),
               border: Border.all(
@@ -242,7 +242,7 @@ class _HoursPicker extends StatelessWidget {
                     ),
                   ),
                   Icon(
-                    Icons.arrow_drop_down_sharp,
+                    MdiIcons.chevronDown,
                     color: kTealColor,
                     size: 16.0.sp,
                   ),

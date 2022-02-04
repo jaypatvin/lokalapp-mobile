@@ -4,7 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 
-import '../models/user_shop.dart';
+import '../models/shop.dart';
 import '../services/api/api.dart';
 import '../services/api/shop_api_service.dart';
 import '../services/database.dart';
@@ -20,13 +20,13 @@ class Shops extends ChangeNotifier {
   final Database _db = Database.instance;
 
   String? _communityId;
-  List<ShopModel> _shops = [];
+  List<Shop> _shops = [];
   bool _isLoading = false;
 
   StreamSubscription<QuerySnapshot<Map<String, dynamic>>>? _shopsSubscription;
 
   bool get isLoading => _isLoading;
-  UnmodifiableListView<ShopModel> get items => UnmodifiableListView(_shops);
+  UnmodifiableListView<Shop> get items => UnmodifiableListView(_shops);
   String? get communityId => _communityId;
 
   void setCommunityId(String? id) {
@@ -57,11 +57,11 @@ class Shops extends ChangeNotifier {
     }
   }
 
-  ShopModel? findById(String? id) {
+  Shop? findById(String? id) {
     return _shops.firstWhereOrNull((shop) => shop.id == id);
   }
 
-  List<ShopModel> findByUser(String? userId) {
+  List<Shop> findByUser(String? userId) {
     return _shops.where((shop) => shop.userId == userId).toList();
   }
 

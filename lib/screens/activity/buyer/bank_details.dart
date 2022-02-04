@@ -14,16 +14,15 @@ import '../../../widgets/app_button.dart';
 import '../../../widgets/custom_app_bar.dart';
 import '../../../widgets/overlays/screen_loader.dart';
 import '../../../widgets/photo_box.dart';
-import 'processing_payment.dart';
 
 class BankDetails extends StatelessWidget {
   const BankDetails({
     Key? key,
     required this.order,
-    this.paymentMode = PaymentMode.gCash,
+    this.paymentMethod = PaymentMethod.eWallet,
   }) : super(key: key);
   final Order order;
-  final PaymentMode paymentMode;
+  final PaymentMethod paymentMethod;
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +30,7 @@ class BankDetails extends StatelessWidget {
       view: (_, __) => _WalletDetailsView(),
       viewModel: BankDetailsViewModel(
         order: order,
-        paymentMode: paymentMode,
+        paymentMode: paymentMethod,
       ),
     );
   }
@@ -47,7 +46,8 @@ class _WalletDetailsView extends HookView<BankDetailsViewModel>
 
     return Scaffold(
       appBar: CustomAppBar(
-        titleText: '${vm.paymentMode == PaymentMode.gCash ? "Wallet" : "Bank"} '
+        titleText:
+            '${vm.paymentMode == PaymentMethod.eWallet ? "Wallet" : "Bank"} '
             'Transfer/Deposit',
         titleStyle: const TextStyle(color: Colors.white),
         backgroundColor: kTealColor,
@@ -68,8 +68,8 @@ class _WalletDetailsView extends HookView<BankDetailsViewModel>
                         ),
                   ),
                   TextSpan(
-                    text:
-                        ' to any of these ${vm.paymentMode == PaymentMode.gCash ? "wallet" : "bank"} accounts:',
+                    text: ' to any of these '
+                        '${vm.paymentMode == PaymentMethod.eWallet ? "wallet" : "bank"} accounts:',
                   ),
                 ],
                 style: Theme.of(context).textTheme.bodyText1,

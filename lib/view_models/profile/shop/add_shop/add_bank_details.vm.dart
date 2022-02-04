@@ -43,7 +43,7 @@ class AddBankDetailsViewModel extends ViewModel {
   void init() {
     if (initialAccount != null) {
       final accounts =
-          _shopBody.paymentOptions!.where((bank) => bank.type == type).toList();
+          _shopBody.paymentOptions.where((bank) => bank.type == type).toList();
 
       final account = accounts.firstWhere((bank) => bank == initialAccount);
 
@@ -78,7 +78,7 @@ class AddBankDetailsViewModel extends ViewModel {
       return;
     }
 
-    final _paymentOptions = _shopBody.paymentOptions ?? const [];
+    final _paymentOptions = _shopBody.paymentOptions;
     final _initialAccounts = [
       ..._paymentOptions,
     ];
@@ -115,7 +115,7 @@ class AddBankDetailsViewModel extends ViewModel {
       return;
     }
 
-    final _paymentOptions = _shopBody.paymentOptions ?? const [];
+    final _paymentOptions = _shopBody.paymentOptions;
     final _initialAccounts = [
       ..._paymentOptions,
     ];

@@ -11,26 +11,9 @@ import '../activity.dart';
 import '../components/order_details_buttons/message_buttons.dart';
 import '../components/transaction_details.dart';
 
-enum PaymentMode { cash, bank, gCash }
-
-extension PaymentModeExtension on PaymentMode {
-  String get value {
-    switch (this) {
-      case PaymentMode.cash:
-        return 'cod';
-      case PaymentMode.bank:
-        return 'bank';
-      case PaymentMode.gCash:
-        return 'e-wallet';
-      default:
-        return '';
-    }
-  }
-}
-
 class ProcessingPayment extends StatelessWidget {
   final Order order;
-  final PaymentMode paymentMode;
+  final PaymentMethod paymentMode;
 
   const ProcessingPayment({
     Key? key,
@@ -40,12 +23,12 @@ class ProcessingPayment extends StatelessWidget {
 
   String _getTitleText() {
     switch (paymentMode) {
-      case PaymentMode.bank:
+      case PaymentMethod.bank:
         return 'Processing Payment!';
-      case PaymentMode.cash:
+      case PaymentMethod.cod:
         return 'Cash on Delivery!';
-      case PaymentMode.gCash:
-        return 'GCash!';
+      case PaymentMethod.eWallet:
+        return 'E-Wallet!';
       default:
         return '';
     }

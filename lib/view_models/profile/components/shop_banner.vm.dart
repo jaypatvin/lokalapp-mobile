@@ -2,7 +2,7 @@ import 'package:provider/provider.dart';
 
 import '../../../models/app_navigator.dart';
 import '../../../models/lokal_user.dart';
-import '../../../models/user_shop.dart';
+import '../../../models/shop.dart';
 import '../../../providers/auth.dart';
 import '../../../providers/shops.dart';
 import '../../../providers/users.dart';
@@ -27,7 +27,7 @@ class ShopBannerViewModel extends ViewModel {
   late LokalUser _user;
   LokalUser get user => _user;
 
-  ShopModel? shop;
+  Shop? shop;
   ShopBannerMode mode = ShopBannerMode.currentUser;
   bool get isUserRegistered => _user.registration?.verified ?? false;
 
@@ -64,7 +64,7 @@ class ShopBannerViewModel extends ViewModel {
   void onAddShop() {
     AppRouter.profileNavigatorKey.currentState?.push(
       AppNavigator.appPageRoute(
-        builder: (_) => AddShop(),
+        builder: (_) => const AddShop(),
       ),
     );
   }

@@ -25,7 +25,7 @@ class CashOnDeliveryViewModel extends ViewModel {
   Future<void> onSubmitHandler() async {
     try {
       final _success = await _apiService.pay(
-        orderId: order.id!,
+        orderId: order.id,
         body: <String, String>{
           'payment_method': 'cod',
         },
@@ -36,7 +36,7 @@ class CashOnDeliveryViewModel extends ViewModel {
           AppNavigator.appPageRoute(
             builder: (_) => ProcessingPayment(
               order: order,
-              paymentMode: PaymentMode.cash,
+              paymentMode: PaymentMethod.cod,
             ),
           ),
         );

@@ -67,11 +67,11 @@ String getTimeOfDayString(TimeOfDay time) {
 
 bool isValidOperatingHours(OperatingHours? operatingHours) {
   return operatingHours != null &&
-      operatingHours.repeatUnit! > 0 &&
-      (operatingHours.startTime?.isNotEmpty ?? false) &&
-      (operatingHours.endTime?.isNotEmpty ?? false) &&
-      (operatingHours.repeatType?.isNotEmpty ?? false) &&
-      (operatingHours.startDates?.isNotEmpty ?? false);
+      operatingHours.repeatUnit > 0 &&
+      (operatingHours.startTime.isNotEmpty) &&
+      (operatingHours.endTime.isNotEmpty) &&
+      (operatingHours.repeatType.isNotEmpty) &&
+      (operatingHours.startDates.isNotEmpty);
 }
 
 extension StringExtension on String {

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 
-import '../screens/activity/buyer/processing_payment.dart';
+import '../models/order.dart';
 import '../utils/constants/themes.dart';
 
 class PaymentOptionsWidget extends StatelessWidget {
@@ -15,7 +15,7 @@ class PaymentOptionsWidget extends StatelessWidget {
     this.tileColor = kInviteScreenColor,
   }) : super(key: key);
 
-  final void Function(PaymentMode) onPaymentPressed;
+  final void Function(PaymentMethod paymentMethod) onPaymentPressed;
   final bool cashEnabled;
   final bool bankEnabled;
   final bool walletEnabled;
@@ -52,7 +52,7 @@ class PaymentOptionsWidget extends StatelessWidget {
               color: kTealColor,
               size: 18.0.r,
             ),
-            onTap: () => onPaymentPressed(PaymentMode.cash),
+            onTap: () => onPaymentPressed(PaymentMethod.cod),
           ),
           const SizedBox(height: 10),
           ListTile(
@@ -79,7 +79,7 @@ class PaymentOptionsWidget extends StatelessWidget {
               color: bankEnabled ? kTealColor : Colors.grey.shade200,
               size: 18.0.r,
             ),
-            onTap: () => onPaymentPressed(PaymentMode.bank),
+            onTap: () => onPaymentPressed(PaymentMethod.bank),
           ),
           const SizedBox(height: 10),
           ListTile(
@@ -105,7 +105,7 @@ class PaymentOptionsWidget extends StatelessWidget {
               color: walletEnabled ? kTealColor : Colors.grey.shade200,
               size: 18.0.r,
             ),
-            onTap: () => onPaymentPressed(PaymentMode.gCash),
+            onTap: () => onPaymentPressed(PaymentMethod.eWallet),
           ),
         ],
       ),

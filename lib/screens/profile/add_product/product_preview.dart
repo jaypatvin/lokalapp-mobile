@@ -258,11 +258,11 @@ class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
         updateSchedule = true;
       }
     } else {
-      final body = context.read<OperatingHoursBody>().operatingHours;
+      final _operatingHoursRequest = context.read<OperatingHoursBody>();
       final availability = _product.availability!;
       if (!listEquals(
-        body.unavailableDates!..sort(),
-        availability.unavailableDates!..sort(),
+        _operatingHoursRequest.body.unavailableDates..sort(),
+        availability.unavailableDates..sort(),
       )) {
         // We update the availability of the product.
         updateSchedule = true;

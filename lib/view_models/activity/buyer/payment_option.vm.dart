@@ -8,7 +8,6 @@ import '../../../providers/shops.dart';
 import '../../../routers/app_router.dart';
 import '../../../screens/activity/buyer/bank_details.dart';
 import '../../../screens/activity/buyer/cash_on_delivery.dart';
-import '../../../screens/activity/buyer/processing_payment.dart';
 import '../../../state/view_model.dart';
 
 class PaymentOptionViewModel extends ViewModel {
@@ -30,20 +29,20 @@ class PaymentOptionViewModel extends ViewModel {
             const [];
   }
 
-  void onPaymentPressed(PaymentMode paymentMode) {
+  void onPaymentPressed(PaymentMethod paymentMode) {
     switch (paymentMode) {
-      case PaymentMode.bank:
-      case PaymentMode.gCash:
+      case PaymentMethod.bank:
+      case PaymentMethod.eWallet:
         AppRouter.activityNavigatorKey.currentState?.push(
           AppNavigator.appPageRoute(
             builder: (_) => BankDetails(
               order: order,
-              paymentMode: paymentMode,
+              paymentMethod: paymentMode,
             ),
           ),
         );
         break;
-      case PaymentMode.cash:
+      case PaymentMethod.cod:
         AppRouter.activityNavigatorKey.currentState?.push(
           AppNavigator.appPageRoute(
             builder: (_) => CashOnDelivery(order: order),

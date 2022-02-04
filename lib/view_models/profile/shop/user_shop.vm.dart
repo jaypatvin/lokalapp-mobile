@@ -7,7 +7,7 @@ import '../../../models/failure_exception.dart';
 import '../../../models/lokal_images.dart';
 import '../../../models/lokal_user.dart';
 import '../../../models/product.dart';
-import '../../../models/user_shop.dart';
+import '../../../models/shop.dart';
 import '../../../providers/auth.dart';
 import '../../../providers/products.dart';
 import '../../../providers/shops.dart';
@@ -31,7 +31,7 @@ class UserShopViewModel extends ViewModel {
 
   late final bool isCurrentUser;
   late final LokalUser user;
-  late ShopModel shop;
+  late Shop shop;
 
   late List<Product> _products;
   UnmodifiableListView<Product> get products {
@@ -66,11 +66,11 @@ class UserShopViewModel extends ViewModel {
         ? context.read<Auth>().user!
         : context.read<Users>().findById(userId)!;
 
-    _products = context.read<Products>().findByShop(shop.id!);
+    _products = context.read<Products>().findByShop(shop.id);
   }
 
   void _shopSetup() {
-    ShopModel? _shop;
+    Shop? _shop;
 
     if (shopId != null) {
       _shop = context.read<Shops>().findById(shopId);
@@ -142,7 +142,7 @@ class UserShopViewModel extends ViewModel {
   }
 
   void updateProducts() {
-    final _items = context.read<Products>().findByShop(shop.id!);
+    final _items = context.read<Products>().findByShop(shop.id);
     _products = [..._items];
     notifyListeners();
   }

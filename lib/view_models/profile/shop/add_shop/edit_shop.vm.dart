@@ -7,7 +7,7 @@ import 'package:provider/provider.dart';
 
 import '../../../../models/app_navigator.dart';
 import '../../../../models/failure_exception.dart';
-import '../../../../models/user_shop.dart';
+import '../../../../models/shop.dart';
 import '../../../../providers/post_requests/operating_hours_body.dart';
 import '../../../../providers/post_requests/shop_body.dart';
 import '../../../../providers/shops.dart';
@@ -39,19 +39,33 @@ class EditShopViewModel extends ViewModel {
   late bool _isShopOpen;
   bool get isShopOpen => _isShopOpen;
 
-  final ShopModel shop;
+  final Shop shop;
 
   bool _editedShopSchedule = false;
 
-  String? _errorNameText;
-  String? get errorNameText => _errorNameText;
+  String? _nameErrorText;
+  String? get nameErrorText => _nameErrorText;
+
+  String? _descriptionErrorText;
+  String? get descriptionErrorText => _descriptionErrorText;
+
+  String? _deliveryOptionErrorText;
+  String? get deliveryOptionErrorText => _deliveryOptionErrorText;
+
+  late bool _forDelivery;
+  bool get forDelivery => _forDelivery;
+
+  late bool _forPickup;
+  bool get forPickup => _forPickup;
 
   @override
   void init() {
     super.init();
-    _shopName = shop.name!;
-    _shopDescription = shop.description ?? '';
-    _isShopOpen = shop.status == 'enabled';
+    _shopName = shop.name;
+    _shopDescription = shop.description;
+    _isShopOpen = shop.status == ShopStatus.enabled;
+    _forDelivery = shop.deliveryOptions.delivery;
+    _forPickup = shop.deliveryOptions.pickup;
 
     context.read<ShopBody>()
       ..clear(notify: false)
@@ -60,7 +74,11 @@ class EditShopViewModel extends ViewModel {
         description: shop.description,
         coverPhoto: shop.coverPhoto,
         profilePhoto: shop.profilePhoto,
+        isClose: shop.isClosed,
+        status: shop.status,
+        userId: shop.userId,
         paymentOptions: [...(shop.paymentOptions ?? const [])],
+        deliveryOptions: shop.deliveryOptions,
         notify: false,
       );
     context.read<OperatingHoursBody>().clear(notify: false);
@@ -74,7 +92,7 @@ class EditShopViewModel extends ViewModel {
 
   void toggleButton() {
     _isShopOpen = !_isShopOpen;
-    final status = _isShopOpen ? 'enabled' : 'disabled';
+    final status = _isShopOpen ? ShopStatus.enabled : ShopStatus.disabled;
     context.read<ShopBody>().update(status: status);
   }
 
@@ -94,19 +112,22 @@ class EditShopViewModel extends ViewModel {
     final operatingHoursBody = context.read<OperatingHoursBody>();
     return context
         .read<Shops>()
-        .setOperatingHours(id: shop.id!, data: operatingHoursBody.data);
+        .setOperatingHours(id: shop.id, data: operatingHoursBody.data);
   }
 
   void onShopNameChanged(String value) {
-    _shopName = value;
-    if (errorNameText?.isNotEmpty ?? false) {
-      _errorNameText = null;
+    if (_nameErrorText?.isNotEmpty ?? false) {
+      _nameErrorText = null;
     }
+    _shopName = value;
     context.read<ShopBody>().update(name: value);
     notifyListeners();
   }
 
   void onShopDescriptionChange(String value) {
+    if (_descriptionErrorText?.isNotEmpty ?? false) {
+      _descriptionErrorText = null;
+    }
     _shopDescription = value;
     context.read<ShopBody>().update(description: value);
     notifyListeners();
@@ -140,6 +161,35 @@ class EditShopViewModel extends ViewModel {
         edit: true,
       ),
     );
+  }
+
+  void onPickupTap() {
+    if (_deliveryOptionErrorText?.isNotEmpty ?? false) {
+      _deliveryOptionErrorText = null;
+    }
+    _forPickup = !_forPickup;
+    context.read<ShopBody>().update(
+          deliveryOptions: DeliveryOptions(
+            delivery: _forDelivery,
+            pickup: _forPickup,
+          ),
+        );
+
+    notifyListeners();
+  }
+
+  void onDeliveryTap() {
+    if (_deliveryOptionErrorText?.isNotEmpty ?? false) {
+      _deliveryOptionErrorText = null;
+    }
+    _forDelivery = !_forDelivery;
+    context.read<ShopBody>().update(
+          deliveryOptions: DeliveryOptions(
+            delivery: _forDelivery,
+            pickup: _forPickup,
+          ),
+        );
+    notifyListeners();
   }
 
   Future<bool> _updateShop() async {
@@ -177,11 +227,11 @@ class EditShopViewModel extends ViewModel {
       description: shopDescription,
       profilePhoto: shopPhotoUrl,
       coverPhoto: shopCoverPhotoUrl,
-      status: isShopOpen ? 'enabled' : 'disabled',
+      status: isShopOpen ? ShopStatus.enabled : ShopStatus.enabled,
     );
 
     try {
-      return context.read<Shops>().update(id: shop.id!, data: shopBody.toMap());
+      return context.read<Shops>().update(id: shop.id, data: shopBody.data);
     } catch (e) {
       rethrow;
     }
@@ -192,7 +242,7 @@ class EditShopViewModel extends ViewModel {
       final operatingHoursBody = context.read<OperatingHoursBody>();
       return context
           .read<Shops>()
-          .setOperatingHours(id: shop.id!, data: operatingHoursBody.data);
+          .setOperatingHours(id: shop.id, data: operatingHoursBody.data);
     } catch (e) {
       rethrow;
     }
@@ -200,9 +250,22 @@ class EditShopViewModel extends ViewModel {
 
   Future<void> onApplyChanges() async {
     try {
-      if (shopName.isEmpty) {
-        _errorNameText = 'Shop Name cannot be empty.';
+      if (_shopName.isEmpty) {
+        _nameErrorText = 'Shop Name should not be empty';
+      }
+      if (_shopDescription.isEmpty) {
+        _descriptionErrorText = 'Shop Description should not be empty';
+      }
+      if (!_forDelivery && !_forPickup) {
+        _deliveryOptionErrorText =
+            'At least one of the options must be selected.';
+      }
+
+      if (_nameErrorText != null ||
+          _descriptionErrorText != null ||
+          _deliveryOptionErrorText != null) {
         notifyListeners();
+        return;
       }
 
       bool success = await _updateShop();

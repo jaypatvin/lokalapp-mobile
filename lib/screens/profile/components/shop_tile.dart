@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../models/user_shop.dart';
+import '../../../models/shop.dart';
 import '../../../utils/constants/themes.dart';
 import '../../chat/components/chat_avatar.dart';
 
 class ShopTile extends StatelessWidget {
-  final ShopModel shop;
+  final Shop shop;
   final void Function() onGoToShop;
   const ShopTile({
     Key? key,
@@ -25,7 +25,7 @@ class ShopTile extends StatelessWidget {
       ),
       onTap: onGoToShop,
       title: Text(
-        shop.name!,
+        shop.name,
         style: TextStyle(
           color: Colors.black,
           fontWeight: FontWeight.bold,

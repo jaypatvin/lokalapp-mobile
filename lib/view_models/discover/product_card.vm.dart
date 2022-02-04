@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 
 import '../../models/failure_exception.dart';
 import '../../models/product.dart';
-import '../../models/user_shop.dart';
+import '../../models/shop.dart';
 import '../../providers/auth.dart';
 import '../../providers/cart.dart';
 import '../../providers/products.dart';
@@ -22,7 +22,7 @@ class ProductCardViewModel extends ViewModel {
   bool get displayBorder => _displayBorder;
 
   late Product product;
-  late ShopModel shop;
+  late Shop shop;
 
   String? get productImage =>
       product.productPhoto ?? product.gallery?.first.url;

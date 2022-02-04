@@ -1,11 +1,11 @@
 import 'dart:convert';
 
 import '../../models/operating_hours.dart';
-import '../../models/user_shop.dart';
+import '../../models/shop.dart';
 import 'api.dart';
 import 'api_service.dart';
 
-class ShopAPIService extends APIService<ShopModel> {
+class ShopAPIService extends APIService<Shop> {
   factory ShopAPIService(API api) {
     return ShopAPIService._(api, _OperatingHoursAPIService(api));
   }
@@ -17,7 +17,7 @@ class ShopAPIService extends APIService<ShopModel> {
   final _OperatingHoursAPIService _operatingHoursService;
 
   // --POST
-  Future<ShopModel> create({
+  Future<Shop> create({
     required Map body,
   }) async {
     try {
@@ -27,7 +27,7 @@ class ShopAPIService extends APIService<ShopModel> {
         body: json.encode(body),
       );
 
-      return handleResponse((map) => ShopModel.fromMap(map), response);
+      return handleResponse((map) => Shop.fromMap(map), response);
     } catch (e) {
       rethrow;
     }
@@ -69,20 +69,20 @@ class ShopAPIService extends APIService<ShopModel> {
   }
 
   // --GET
-  Future<ShopModel> getById({required String id}) async {
+  Future<Shop> getById({required String id}) async {
     try {
       final response = await getter(
         api.endpointUri(endpoint, pathSegments: [id]),
         headers: api.authHeader(),
       );
 
-      return handleResponse((map) => ShopModel.fromMap(map), response);
+      return handleResponse((map) => Shop.fromMap(map), response);
     } catch (e) {
       rethrow;
     }
   }
 
-  Future<List<ShopModel>> getCommunityShops({
+  Future<List<Shop>> getCommunityShops({
     required String communityId,
   }) async {
     try {
@@ -94,13 +94,13 @@ class ShopAPIService extends APIService<ShopModel> {
         headers: api.authHeader(),
       );
 
-      return handleResponseList((map) => ShopModel.fromMap(map), response);
+      return handleResponseList((map) => Shop.fromMap(map), response);
     } catch (e) {
       rethrow;
     }
   }
 
-  Future<List<ShopModel>> getByUserId({
+  Future<List<Shop>> getByUserId({
     required String userId,
   }) async {
     try {
@@ -109,7 +109,7 @@ class ShopAPIService extends APIService<ShopModel> {
         headers: api.authHeader(),
       );
 
-      return handleResponseList((map) => ShopModel.fromMap(map), response);
+      return handleResponseList((map) => Shop.fromMap(map), response);
     } catch (e) {
       rethrow;
     }
@@ -118,7 +118,7 @@ class ShopAPIService extends APIService<ShopModel> {
   Future<OperatingHours> getOperatingHours({required String shopId}) =>
       _operatingHoursService.getOperatingHours(shopId: shopId);
 
-  Future<List<ShopModel>> getAvailableShops({
+  Future<List<Shop>> getAvailableShops({
     required String communityId,
   }) async {
     try {
@@ -130,7 +130,7 @@ class ShopAPIService extends APIService<ShopModel> {
         headers: api.authHeader(),
       );
 
-      return handleResponseList((map) => ShopModel.fromMap(map), response);
+      return handleResponseList((map) => Shop.fromMap(map), response);
     } catch (e) {
       rethrow;
     }

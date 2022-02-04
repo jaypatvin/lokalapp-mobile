@@ -61,7 +61,6 @@ class WelcomeScreen extends StatelessWidget {
               SizedBox(height: 36.0.h),
               SizedBox(
                 width: 172.w,
-                height: 40.h,
                 child: AppButton.filled(
                   text: 'SIGN IN',
                   onPressed: () => Navigator.push(
@@ -75,7 +74,6 @@ class WelcomeScreen extends StatelessWidget {
               SizedBox(height: 10.0.h),
               SizedBox(
                 width: 172.w,
-                height: 40.h,
                 child: AppButton.filled(
                   text: 'REGISTER',
                   color: kOrangeColor,
