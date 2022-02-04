@@ -34,6 +34,7 @@ class AddShop extends StatelessWidget {
 class _AddShopView extends HookView<AddShopViewModel> {
   @override
   Widget render(BuildContext context, AddShopViewModel viewModel) {
+    final themeData = Theme.of(context);
     final width = MediaQuery.of(context).size.width;
     final height = MediaQuery.of(context).size.height;
     final padding = height * 0.05;
@@ -165,6 +166,12 @@ class _AddShopView extends HookView<AddShopViewModel> {
                   ],
                 ),
               ),
+              if (viewModel.deliveryOptionErrorText != null)
+                Text(
+                  viewModel.deliveryOptionErrorText!,
+                  style: themeData.textTheme.caption!
+                      .copyWith(color: themeData.errorColor),
+                ),
               const Spacer(),
               SizedBox(height: 10.0.h),
               SizedBox(

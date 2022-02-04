@@ -43,8 +43,14 @@ class EditShopViewModel extends ViewModel {
 
   bool _editedShopSchedule = false;
 
-  String? _errorNameText;
-  String? get errorNameText => _errorNameText;
+  String? _nameErrorText;
+  String? get nameErrorText => _nameErrorText;
+
+  String? _descriptionErrorText;
+  String? get descriptionErrorText => _descriptionErrorText;
+
+  String? _deliveryOptionErrorText;
+  String? get deliveryOptionErrorText => _deliveryOptionErrorText;
 
   late bool _forDelivery;
   bool get forDelivery => _forDelivery;
@@ -110,15 +116,18 @@ class EditShopViewModel extends ViewModel {
   }
 
   void onShopNameChanged(String value) {
-    _shopName = value;
-    if (errorNameText?.isNotEmpty ?? false) {
-      _errorNameText = null;
+    if (_nameErrorText?.isNotEmpty ?? false) {
+      _nameErrorText = null;
     }
+    _shopName = value;
     context.read<ShopBody>().update(name: value);
     notifyListeners();
   }
 
   void onShopDescriptionChange(String value) {
+    if (_descriptionErrorText?.isNotEmpty ?? false) {
+      _descriptionErrorText = null;
+    }
     _shopDescription = value;
     context.read<ShopBody>().update(description: value);
     notifyListeners();
@@ -155,6 +164,9 @@ class EditShopViewModel extends ViewModel {
   }
 
   void onPickupTap() {
+    if (_deliveryOptionErrorText?.isNotEmpty ?? false) {
+      _deliveryOptionErrorText = null;
+    }
     _forPickup = !_forPickup;
     context.read<ShopBody>().update(
           deliveryOptions: DeliveryOptions(
@@ -167,6 +179,9 @@ class EditShopViewModel extends ViewModel {
   }
 
   void onDeliveryTap() {
+    if (_deliveryOptionErrorText?.isNotEmpty ?? false) {
+      _deliveryOptionErrorText = null;
+    }
     _forDelivery = !_forDelivery;
     context.read<ShopBody>().update(
           deliveryOptions: DeliveryOptions(
@@ -235,9 +250,22 @@ class EditShopViewModel extends ViewModel {
 
   Future<void> onApplyChanges() async {
     try {
-      if (shopName.isEmpty) {
-        _errorNameText = 'Shop Name cannot be empty.';
+      if (_shopName.isEmpty) {
+        _nameErrorText = 'Shop Name should not be empty';
+      }
+      if (_shopDescription.isEmpty) {
+        _descriptionErrorText = 'Shop Description should not be empty';
+      }
+      if (!_forDelivery && !_forPickup) {
+        _deliveryOptionErrorText =
+            'At least one of the options must be selected.';
+      }
+
+      if (_nameErrorText != null ||
+          _descriptionErrorText != null ||
+          _deliveryOptionErrorText != null) {
         notifyListeners();
+        return;
       }
 
       bool success = await _updateShop();

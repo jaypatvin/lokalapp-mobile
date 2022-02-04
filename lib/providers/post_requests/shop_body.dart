@@ -26,10 +26,7 @@ class ShopRequestBody {
     this.coverPhoto,
     this.operatingHoursBody = const OperatingHoursRequestBody(),
     this.paymentOptions = const [],
-    this.deliveryOptions = const DeliveryOptions(
-      delivery: true,
-      pickup: true,
-    ),
+    this.deliveryOptions = const DeliveryOptions(),
   });
 
   ShopRequestBody copyWith({

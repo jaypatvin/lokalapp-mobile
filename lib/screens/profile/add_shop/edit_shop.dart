@@ -46,6 +46,7 @@ class _EditShopView extends HookView<EditShopViewModel>
 
   @override
   Widget screen(BuildContext context, EditShopViewModel vm) {
+    final themeData = Theme.of(context);
     final width = MediaQuery.of(context).size.width;
     final height = MediaQuery.of(context).size.height;
     final padding = height * 0.05;
@@ -254,7 +255,7 @@ class _EditShopView extends HookView<EditShopViewModel>
                     child: InputNameField(
                       controller: _shopNameController,
                       hintText: 'Shop Name',
-                      errorText: vm.errorNameText,
+                      errorText: vm.nameErrorText,
                       focusNode: _nameNode,
                     ),
                   ),
@@ -263,6 +264,7 @@ class _EditShopView extends HookView<EditShopViewModel>
                     child: InputDescriptionField(
                       controller: _shopDescController,
                       hintText: 'Shop Description',
+                      errorText: vm.descriptionErrorText,
                       focusNode: _descriptionNode,
                     ),
                   ),
@@ -293,6 +295,12 @@ class _EditShopView extends HookView<EditShopViewModel>
                       ],
                     ),
                   ),
+                  if (vm.deliveryOptionErrorText != null)
+                    Text(
+                      vm.deliveryOptionErrorText!,
+                      style: themeData.textTheme.caption!
+                          .copyWith(color: themeData.errorColor),
+                    ),
                   SizedBox(
                     height: height * 0.02,
                   ),

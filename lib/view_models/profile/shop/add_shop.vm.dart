@@ -29,6 +29,9 @@ class AddShopViewModel extends ViewModel {
   String? _descriptionErrorText;
   String? get descriptionErrorText => _descriptionErrorText;
 
+  String? _deliveryOptionErrorText;
+  String? get deliveryOptionErrorText => _deliveryOptionErrorText;
+
   bool _forDelivery = true;
   bool get forDelivery => _forDelivery;
 
@@ -88,8 +91,14 @@ class AddShopViewModel extends ViewModel {
     if (_description.isEmpty) {
       _descriptionErrorText = 'Shop Description should not be empty';
     }
+    if (!_forDelivery && !_forPickup) {
+      _deliveryOptionErrorText =
+          'At least one of the options must be selected.';
+    }
 
-    if (_nameErrorText != null || _descriptionErrorText != null) {
+    if (_nameErrorText != null ||
+        _descriptionErrorText != null ||
+        _deliveryOptionErrorText != null) {
       notifyListeners();
       return;
     }
