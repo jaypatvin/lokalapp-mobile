@@ -117,6 +117,25 @@ class UserAPIService extends APIService<LokalUser> {
     }
   }
 
+  Future<bool> registerUser({
+    required String userId,
+    required Map<String, String> body,
+  }) async {
+    try {
+      final response = await putter(
+        api.endpointUri(
+          endpoint,
+          pathSegments: [userId, 'register'],
+        ),
+        headers: api.withBodyHeader(),
+        body: json.encode(body),
+      );
+      return handleGenericResponse(response);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   // --DELETE
   Future<bool> delete({required String userId, required String idToken}) async {
     try {

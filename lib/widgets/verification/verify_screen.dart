@@ -158,52 +158,65 @@ class _VerifyScreenState extends State<VerifyScreen> with ScreenLoader {
   }
 
   Future<void> _onSubmitHandler() async {
-    final LocalImageService picker =
-        Provider.of<LocalImageService>(context, listen: false);
-    if (_file != null) {
-      final String mediaUrl = await picker.uploadImage(
+    if (_file == null) {
+      showToast(
+        'Please select an image.',
+        duration: const Duration(seconds: 2),
+      );
+      return;
+    }
+
+    if (_chosenIdType == null) {
+      showToast(
+        'Please select an ID type.',
+        duration: const Duration(seconds: 2),
+      );
+      return;
+    }
+
+    final user = context.read<Auth>().user!;
+    try {
+      final picker = context.read<LocalImageService>();
+      final mediaUrl = await picker.uploadImage(
         file: _file!,
         src: kVerificationImagesSrc,
       );
 
-      if (mediaUrl.isNotEmpty) {
-        final user = context.read<Auth>().user!;
-        try {
-          final success = await UserAPIService(context.read<API>()).update(
-            userId: user.id!,
-            body: {
-              'registration': {
-                'id_photo': mediaUrl,
-                'id_type': _chosenIdType,
-              }
-            },
-          );
+      if (mediaUrl.isEmpty) {
+        throw FailureException('Error uploading image. Try again.');
+      }
 
-          if (success) {
-            if (widget.skippable) {
-              AppRouter.rootNavigatorKey.currentState?.pushAndRemoveUntil(
-                AppNavigator.appPageRoute(
-                  builder: (_) => VerifyConfirmationScreen(
-                    skippable: widget.skippable,
-                  ),
-                ),
-                (route) => false,
-              );
-            } else {
-              AppRouter.profileNavigatorKey.currentState?.pushReplacement(
-                AppNavigator.appPageRoute(
-                  builder: (_) => VerifyConfirmationScreen(
-                    skippable: widget.skippable,
-                  ),
-                ),
-              );
-            }
-          }
-        } catch (e, stack) {
-          FirebaseCrashlytics.instance.recordError(e, stack);
-          showToast(e is FailureException ? e.message : e.toString());
+      final success = await UserAPIService(context.read<API>()).registerUser(
+        userId: user.id!,
+        body: {
+          'id_type': _chosenIdType!,
+          'id_photo': mediaUrl,
+        },
+      );
+
+      if (success) {
+        if (widget.skippable) {
+          AppRouter.rootNavigatorKey.currentState?.pushAndRemoveUntil(
+            AppNavigator.appPageRoute(
+              builder: (_) => VerifyConfirmationScreen(
+                skippable: widget.skippable,
+              ),
+            ),
+            (route) => false,
+          );
+        } else {
+          AppRouter.profileNavigatorKey.currentState?.pushReplacement(
+            AppNavigator.appPageRoute(
+              builder: (_) => VerifyConfirmationScreen(
+                skippable: widget.skippable,
+              ),
+            ),
+          );
         }
       }
+    } catch (e, stack) {
+      FirebaseCrashlytics.instance.recordError(e, stack);
+      showToast(e is FailureException ? e.message : e.toString());
     }
   }
 
