@@ -315,12 +315,19 @@ class _CalendarPicker extends StatelessWidget {
                 width: MediaQuery.of(context).size.width * 0.95,
                 height: MediaQuery.of(context).size.height * 0.63,
                 padding: const EdgeInsets.all(5.0),
-                child: CalendarCarousel(
-                  width: MediaQuery.of(context).size.width * 0.95,
+                // child: CalendarCarousel(
+                //   width: MediaQuery.of(context).size.width * 0.95,
+                //   startDate: startDate,
+                //   onDayPressed: onDayPressed,
+                //   markedDatesMap: markedDates,
+                //   selectableDaysMap: selectableDays,
+                // ),
+                child: CalendarPicker(
+                  selectedDate: DateTime.now(),
                   startDate: startDate,
                   onDayPressed: onDayPressed,
-                  markedDatesMap: markedDates,
-                  selectableDaysMap: selectableDays,
+                  markedDates: markedDates.whereType<DateTime>().toList(),
+                  selectableDays: selectableDays,
                 ),
               ),
               Flexible(

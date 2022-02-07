@@ -47,12 +47,13 @@ class SubscriptionScheduleCalendar extends StatelessWidget {
               SizedBox(
                 width: MediaQuery.of(context).size.width * 0.95,
                 height: MediaQuery.of(context).size.height * 0.63,
-                child: CalendarCarousel(
-                  width: MediaQuery.of(context).size.width * 0.95,
+                child: CalendarPicker(
+                  selectableDates:
+                      selectableDates.whereType<DateTime>().toList(),
                   onDayPressed: onDayPressed,
+                  markedDates: markedDates.whereType<DateTime>().toList(),
                   onNonSelectableDayPressed: onNonSelectableDayPressed,
-                  markedDatesMap: markedDates,
-                  selectableDates: selectableDates,
+                  selectedDate: DateTime.now(),
                 ),
               ),
               if (displayWarning)

@@ -225,7 +225,7 @@ class _SchedulePickerState extends State<SchedulePicker> {
     _ordinalChoice = Schedule.ordinalNumbers[_ordinal - 1];
     _monthChoice = en_USSymbols.MONTHS[_startDate!.month - 1];
     var _weekday = _startDate!.weekday;
-    if (_weekday == 7) _weekday = 7;
+    if (_weekday == 7) _weekday = 0;
     _monthDayChoice = en_USSymbols.WEEKDAYS[_weekday];
 
     _usedDatePicker = _startDayOfMonth != 0;
@@ -718,18 +718,16 @@ class _CalendarPickerBody extends StatelessWidget {
             Flexible(
               flex: 5,
               child: Container(
-                // width: MediaQuery.of(context).size.width * 0.95,
-                // height: MediaQuery.of(context).size.height * 0.65,
                 padding: const EdgeInsets.all(5.0),
-                child: CalendarCarousel(
-                  width: MediaQuery.of(context).size.width * 0.95,
-                  height: MediaQuery.of(context).size.height,
-                  onDayPressed: onDayPressed,
-                  markedDatesMap: startDates,
-                  selectableDaysMap: repeatChoice == RepeatChoices.week
+                child: CalendarPicker(
+                  selectedDate: DateTime.now(),
+                  selectableDates:
+                      selectableDates.whereType<DateTime>().toList(),
+                  selectableDays: repeatChoice == RepeatChoices.week
                       ? selectableDays
-                      : [1, 2, 3, 4, 5, 6, 0],
-                  selectableDates: selectableDates,
+                      : [0, 1, 2, 3, 4, 5, 6],
+                  onDayPressed: onDayPressed,
+                  markedDates: startDates.whereType<DateTime>().toList(),
                 ),
               ),
             ),

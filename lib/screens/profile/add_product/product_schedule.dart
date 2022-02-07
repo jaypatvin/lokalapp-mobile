@@ -161,7 +161,7 @@ class _ProductScheduleState extends State<ProductSchedule> {
               height: _productSchedule == ProductScheduleState.custom
                   ? MediaQuery.of(context).size.height * 0.65
                   : 0,
-              child: CalendarCarousel(
+              child: CalendarPicker(
                 onDayPressed: (date) {
                   final now = DateTime.now().subtract(const Duration(days: 1));
                   if (date.isBefore(now)) return;
@@ -173,9 +173,10 @@ class _ProductScheduleState extends State<ProductSchedule> {
                     }
                   });
                 },
-                markedDatesMap: _markedDatesMap,
-                height: MediaQuery.of(context).size.height * 0.55,
-                selectableDates: _selectableDates,
+                markedDates: _markedDatesMap.whereType<DateTime>().toList(),
+                selectableDates:
+                    _selectableDates.whereType<DateTime>().toList(),
+                selectedDate: DateTime.now(),
               ),
             ),
             const Spacer(),

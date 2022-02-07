@@ -1,5 +1,6 @@
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
@@ -207,7 +208,7 @@ class _CheckoutScheduleState extends State<CheckoutSchedule> with ScreenLoader {
   }
 }
 
-class _DeliverySchedule extends StatelessWidget {
+class _DeliverySchedule extends HookWidget {
   final String? shopId;
   final String? productId;
   const _DeliverySchedule({
@@ -218,25 +219,28 @@ class _DeliverySchedule extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final shop = context.read<Shops>().findById(shopId)!;
+    final shop = context.watch<Shops>().findById(shopId)!;
     final operatingHours = shop.operatingHours;
-    final selectableDates =
-        ScheduleGenerator().getSelectableDates(operatingHours);
+    // final selectableDates =
+    //     ScheduleGenerator().getSelectableDates(operatingHours);
+    final selectableDates = useMemoized(
+      () => ScheduleGenerator().getSelectableDates(operatingHours),
+      [operatingHours],
+    );
 
     // copied from product_schedule (hey, it's repeated code -.-)
     return Consumer<ShoppingCart>(
       builder: (_, cart, __) {
         final delivery = cart.orders[shopId]![productId]!.schedule;
-        return CalendarCarousel(
+        return CalendarPicker(
+          selectableDates: selectableDates,
+          selectedDate: delivery ?? DateTime.now(),
           onDayPressed: (date) {
             final now = DateTime.now().subtract(const Duration(days: 1));
             if (date.isBefore(now)) return;
             cart.updateOrder(productId: productId, schedule: date);
           },
-          selectedDateTime: delivery,
-          markedDatesMap: [delivery],
-          width: MediaQuery.of(context).size.width * 0.9,
-          selectableDates: selectableDates,
+          markedDates: [delivery ?? DateTime.now()],
         );
       },
     );
