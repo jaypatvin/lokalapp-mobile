@@ -86,6 +86,8 @@ class _ChatViewState extends State<ChatView> with WidgetsBindingObserver {
   late final ChatAPIService _chatApiService;
   late final ConversationAPIService _conversationAPIService;
 
+  List<AssetEntity> _sendImages = [];
+
   bool _loading = true;
 
   @override
@@ -245,26 +247,40 @@ class _ChatViewState extends State<ChatView> with WidgetsBindingObserver {
   }
 
   Future<void> _onSendMessage() async {
+    final _replyId = replyId;
+    final _message = chatInputController.text;
+    final _replyMessage = replyMessage;
+
     try {
+      setState(() {
+        _sendImages = [...imageProvider.picked];
+        chatInputController.clear();
+        replyId = '';
+        showImagePicker = false;
+        replyMessage = null;
+        imageProvider.picked.clear();
+      });
+
       final user = context.read<Auth>().user!;
       setState(() {
         _sendingMessage = true;
         _currentlySendingMessage = Conversation(
           archived: false,
           createdAt: DateTime.now(),
-          message: chatInputController.text,
+          message: _message,
           senderId: user.id!,
           sentAt: DateTime.now(),
           media: [],
         );
       });
+
       if (_createNewMessage) {
-        final media = await _getMedia(imageProvider.picked);
+        final media = await _getMedia(_sendImages);
         final chat = await _chatApiService.createChat(
           body: {
             'user_id': user.id,
-            'reply_to': replyId,
-            'message': chatInputController.text,
+            'reply_to': _replyId,
+            'message': _message,
             'media': media,
             'members': [...widget.members!],
             'shop_id': widget.shopId,
@@ -280,28 +296,24 @@ class _ChatViewState extends State<ChatView> with WidgetsBindingObserver {
         });
         _messageSubscription = _messageStream!.listen(_messageStreamListener);
       } else {
-        final media = _getMedia(imageProvider.picked);
+        final media = await _getMedia(_sendImages);
         _conversationAPIService.createConversation(
           chatId: _chat!.id,
           body: {
             'user_id': user.id,
-            'reply_to': replyId,
-            'message': chatInputController.text,
+            'reply_to': _replyId,
+            'message': _message,
             'media': media,
           },
         );
       }
-      chatInputController.clear();
-      setState(() {
-        imageProvider.picked.clear();
-        replyId = '';
-        showImagePicker = false;
-        replyMessage = null;
-        replyId = '';
-      });
     } catch (e, stack) {
       FirebaseCrashlytics.instance.recordError(e, stack);
-      showToast(e is FailureException ? e.message : e.toString());
+      showToast('Error sending message, try again.');
+      chatInputController.text = _message;
+      replyId = _replyId;
+      replyMessage = _replyMessage;
+      imageProvider.picked.addAll(_sendImages);
     }
   }
 
@@ -311,7 +323,7 @@ class _ChatViewState extends State<ChatView> with WidgetsBindingObserver {
         chatId: _chat!.id,
         messageId: id,
       );
-      showToast('Message delete succesfully.');
+      showToast('Message deleted succesfully.');
     } catch (e, stack) {
       FirebaseCrashlytics.instance.recordError(e, stack);
       showToast(e is FailureException ? e.message : e.toString());
@@ -407,7 +419,10 @@ class _ChatViewState extends State<ChatView> with WidgetsBindingObserver {
   Widget _buildAdditionalStates() {
     Widget child = const SizedBox();
     if (_sendingMessage) {
-      child = ChatBubble(conversation: _currentlySendingMessage);
+      child = ChatBubble(
+        conversation: _currentlySendingMessage,
+        images: _sendImages,
+      );
     } else if (_userSentLastMessage) {
       child = const SizedBox(
         width: double.infinity,

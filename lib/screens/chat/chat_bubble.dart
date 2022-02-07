@@ -1,7 +1,11 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:oktoast/oktoast.dart';
+import 'package:photo_manager/photo_manager.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/conversation.dart';
@@ -9,6 +13,7 @@ import '../../models/lokal_images.dart';
 import '../../providers/auth.dart';
 import '../../utils/constants/themes.dart';
 import '../../utils/functions.utils.dart';
+import '../../widgets/photo_view_gallery/thumbnails/file_photo_thumbnail.dart';
 import '../../widgets/photo_view_gallery/thumbnails/network_photo_thumbnail.dart';
 import 'components/reply_message.dart';
 
@@ -18,11 +23,13 @@ class ChatBubble extends StatelessWidget {
     Key? key,
     this.replyMessage,
     this.forFocus = false,
+    this.images = const [],
   }) : super(key: key);
 
   final Conversation? conversation;
   final DocumentReference? replyMessage;
   final bool forFocus;
+  final List<AssetEntity> images;
 
   Widget _buildChatBubble({
     required BuildContext context,
@@ -41,6 +48,16 @@ class ChatBubble extends StatelessWidget {
       messageWidgets.add(
         _MessageImages(
           images: conversation!.media!,
+          forFocus: forFocus,
+        ),
+      );
+      messageWidgets.add(space);
+    }
+
+    if (images.isNotEmpty) {
+      messageWidgets.add(
+        _FileImages(
+          images: images,
           forFocus: forFocus,
         ),
       );
@@ -176,6 +193,61 @@ class _MessageImages extends StatelessWidget {
             heroTag: forFocus ? '_focused_${images[index].url}' : null,
             galleryItem: images[index],
             onTap: () => openGallery(context, index, images),
+          ),
+        );
+      }).toList(),
+    );
+  }
+}
+
+class _FileImages extends StatelessWidget {
+  const _FileImages({
+    Key? key,
+    required this.images,
+    this.fit = BoxFit.cover,
+    this.forFocus = false,
+  }) : super(key: key);
+
+  final List<AssetEntity> images;
+  final BoxFit fit;
+  final bool forFocus;
+
+  @override
+  Widget build(BuildContext context) {
+    return StaggeredGrid.count(
+      crossAxisCount: 2,
+      mainAxisSpacing: 4.0.w,
+      crossAxisSpacing: 4.0.h,
+      children: images.map<StaggeredGridTile>((image) {
+        final index = images.indexOf(image);
+        final crossAxisCellCount = images.length % 2 != 0 && index == 0 ? 2 : 1;
+        return StaggeredGridTile.count(
+          crossAxisCellCount: crossAxisCellCount,
+          mainAxisCellCount: 1,
+          child: Stack(
+            children: [
+              Positioned.fill(
+                child: FutureBuilder<File?>(
+                  future: images[index].file,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState != ConnectionState.done ||
+                        !snapshot.hasData) {
+                      return const SizedBox.expand();
+                    }
+                    final _file = snapshot.data!;
+                    return FilePhotoThumbnail(
+                      key: Key('chat_message_${_file.absolute}'),
+                      heroTag: forFocus ? '_focused_${_file.absolute}' : null,
+                      galleryItem: _file,
+                      onTap: () => showToast('Image is sending'),
+                    );
+                  },
+                ),
+              ),
+              const Center(
+                child: CircularProgressIndicator(),
+              ),
+            ],
           ),
         );
       }).toList(),
