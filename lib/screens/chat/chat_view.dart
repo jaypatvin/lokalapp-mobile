@@ -310,10 +310,14 @@ class _ChatViewState extends State<ChatView> with WidgetsBindingObserver {
     } catch (e, stack) {
       FirebaseCrashlytics.instance.recordError(e, stack);
       showToast('Error sending message, try again.');
-      chatInputController.text = _message;
-      replyId = _replyId;
-      replyMessage = _replyMessage;
-      imageProvider.picked.addAll(_sendImages);
+      setState(() {
+        chatInputController.text = _message;
+        replyId = _replyId;
+        replyMessage = _replyMessage;
+        imageProvider.picked.addAll(_sendImages);
+        _sendingMessage = false;
+        _currentlySendingMessage = null;
+      });
     }
   }
 
