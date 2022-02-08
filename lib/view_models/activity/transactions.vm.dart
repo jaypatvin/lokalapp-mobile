@@ -104,6 +104,7 @@ class TransactionsViewModel extends ViewModel {
       }
 
       shopChangeListener(notify: false);
+      return;
     }
 
     for (final key in _statuses.keys) {
