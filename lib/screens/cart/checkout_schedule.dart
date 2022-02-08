@@ -14,10 +14,10 @@ import '../../routers/app_router.dart';
 import '../../routers/discover/product_detail.props.dart';
 import '../../services/api/api.dart';
 import '../../services/api/order_api_service.dart';
-import '../../utils/calendar_picker/calendar_picker.dart';
 import '../../utils/constants/themes.dart';
 import '../../utils/repeated_days_generator/schedule_generator.dart';
 import '../../widgets/app_button.dart';
+import '../../widgets/calendar_picker/calendar_picker.dart';
 import '../../widgets/custom_app_bar.dart';
 import '../../widgets/overlays/constrained_scrollview.dart';
 import '../../widgets/overlays/screen_loader.dart';
@@ -156,48 +156,44 @@ class _CheckoutScheduleState extends State<CheckoutSchedule> with ScreenLoader {
                 ),
               ),
             ),
-            Flexible(
-              flex: 5,
-              child: _DeliverySchedule(
-                shopId: shop.id,
-                productId: widget.productId,
-              ),
+            _DeliverySchedule(
+              shopId: shop.id,
+              productId: widget.productId,
             ),
-            Flexible(
-              flex: 2,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: AppButton.transparent(
-                        text: 'Cancel',
-                        color: kPinkColor,
-                        onPressed: () => Navigator.pop(context),
-                      ),
+            SizedBox(height: 10.0.h),
+            const Spacer(),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: AppButton.transparent(
+                      text: 'Cancel',
+                      color: kPinkColor,
+                      onPressed: () => Navigator.pop(context),
                     ),
-                    const SizedBox(width: 16.0),
-                    Expanded(
-                      child: Consumer<ShoppingCart>(
-                        builder: (ctx, cart, child) {
-                          final order = cart.orders[shop.id]![product.id]!;
-                          return AppButton.filled(
-                            text: 'Place Order',
-                            onPressed: order.schedule != null
-                                ? () async {
-                                    await performFuture<void>(
-                                      () async => _placeOrderHandler(
-                                        shop.id,
-                                      ),
-                                    );
-                                  }
-                                : null,
-                          );
-                        },
-                      ),
-                    )
-                  ],
-                ),
+                  ),
+                  const SizedBox(width: 16.0),
+                  Expanded(
+                    child: Consumer<ShoppingCart>(
+                      builder: (ctx, cart, child) {
+                        final order = cart.orders[shop.id]![product.id]!;
+                        return AppButton.filled(
+                          text: 'Place Order',
+                          onPressed: order.schedule != null
+                              ? () async {
+                                  await performFuture<void>(
+                                    () async => _placeOrderHandler(
+                                      shop.id,
+                                    ),
+                                  );
+                                }
+                              : null,
+                        );
+                      },
+                    ),
+                  )
+                ],
               ),
             ),
             const SizedBox(height: 24.0),

@@ -15,10 +15,10 @@ import '../../../providers/shops.dart';
 import '../../../routers/app_router.dart';
 import '../../../routers/profile/props/payment_options.props.dart';
 import '../../../services/local_image_service.dart';
-import '../../../utils/calendar_picker/calendar_picker.dart';
 import '../../../utils/constants/assets.dart';
 import '../../../utils/repeated_days_generator/schedule_generator.dart';
 import '../../../widgets/app_button.dart';
+import '../../../widgets/calendar_picker/calendar_picker.dart';
 import '../../../widgets/custom_app_bar.dart';
 import '../../../widgets/overlays/screen_loader.dart';
 import '../../../widgets/schedule_picker.dart';
@@ -297,65 +297,57 @@ class _CalendarPicker extends StatelessWidget {
     return Center(
       child: Dialog(
         insetPadding: EdgeInsets.zero,
-        shape:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0)),
-        child: SingleChildScrollView(
-          physics: const NeverScrollableScrollPhysics(),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              SizedBox(
-                height: MediaQuery.of(context).size.height * 0.02,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(30.0),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SizedBox(
+              height: MediaQuery.of(context).size.height * 0.02,
+            ),
+            Text(
+              'Set Availability Exceptions',
+              style: Theme.of(context).textTheme.headline5,
+            ),
+            Container(
+              width: MediaQuery.of(context).size.width * 0.95,
+              height: MediaQuery.of(context).size.height * 0.63,
+              padding: const EdgeInsets.all(5.0),
+              child: StatefulBuilder(
+                builder: (BuildContext context, StateSetter setState) {
+                  return CalendarPicker(
+                    startDate: startDate,
+                    onDayPressed: (day) => setState(() => onDayPressed(day)),
+                    markedDates: markedDates.whereType<DateTime>().toList(),
+                    selectableDays: selectableDays,
+                  );
+                },
               ),
-              Text(
-                'Set Availability Exceptions',
-                style: Theme.of(context).textTheme.headline5,
-              ),
-              Container(
-                width: MediaQuery.of(context).size.width * 0.95,
-                height: MediaQuery.of(context).size.height * 0.63,
-                padding: const EdgeInsets.all(5.0),
-                // child: CalendarCarousel(
-                //   width: MediaQuery.of(context).size.width * 0.95,
-                //   startDate: startDate,
-                //   onDayPressed: onDayPressed,
-                //   markedDatesMap: markedDates,
-                //   selectableDaysMap: selectableDays,
-                // ),
-                child: CalendarPicker(
-                  selectedDate: DateTime.now(),
-                  startDate: startDate,
-                  onDayPressed: onDayPressed,
-                  markedDates: markedDates.whereType<DateTime>().toList(),
-                  selectableDays: selectableDays,
-                ),
-              ),
-              Flexible(
-                child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 10.0.w),
-                  margin: EdgeInsets.symmetric(vertical: 5.0.h),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Expanded(
-                        child: AppButton.transparent(
-                          text: 'Cancel',
-                          onPressed: onCancel,
-                        ),
-                      ),
-                      SizedBox(width: 5.0.w),
-                      Expanded(
-                        child: AppButton.filled(
-                          text: 'Confirm',
-                          onPressed: onConfirm,
-                        ),
-                      ),
-                    ],
+            ),
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 10.0.w),
+              margin: EdgeInsets.symmetric(vertical: 5.0.h),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Expanded(
+                    child: AppButton.transparent(
+                      text: 'Cancel',
+                      onPressed: onCancel,
+                    ),
                   ),
-                ),
+                  SizedBox(width: 5.0.w),
+                  Expanded(
+                    child: AppButton.filled(
+                      text: 'Confirm',
+                      onPressed: onConfirm,
+                    ),
+                  ),
+                ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

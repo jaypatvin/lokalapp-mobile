@@ -123,6 +123,7 @@ class _CalendarCarouselState extends State<CalendarCarousel>
   @override
   Widget build(BuildContext context) {
     return Column(
+      mainAxisSize: MainAxisSize.min,
       children: <Widget>[
         _createHeaderView(),
         _createWeekView(),
@@ -274,6 +275,7 @@ class _CalendarCarouselState extends State<CalendarCarousel>
     return SizedBox(
       width: double.infinity,
       child: GridView.count(
+        padding: EdgeInsets.zero,
         physics: const NeverScrollableScrollPhysics(),
         crossAxisCount: 7,
         childAspectRatio: widget.childAspectRatio,

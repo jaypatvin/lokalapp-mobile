@@ -1,29 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import '../../widgets/calendar_carousel/calendar_carousel.dart';
-import '../../widgets/calendar_carousel/calendar_default_widget.dart';
-import '../../widgets/calendar_carousel/calendar_widgets..dart';
+import 'src/calendar_carousel.dart';
+import 'src/calendar_default_widget.dart';
+import 'src/calendar_widgets.dart';
 
 class CalendarPicker extends StatelessWidget {
   const CalendarPicker({
     Key? key,
     required this.onDayPressed,
-    required this.selectedDate,
+    this.selectedDate,
     this.selectableDates = const [],
     this.selectableDays = const [],
     this.markedDates = const [],
     this.onNonSelectableDayPressed,
     this.startDate,
+    this.weekdayWidgetBuilder,
   }) : super(key: key);
 
   final List<DateTime> selectableDates;
   final List<DateTime> markedDates;
   final List<int> selectableDays;
-  final DateTime selectedDate;
+  final DateTime? selectedDate;
   final DateTime? startDate;
   final void Function(DateTime date) onDayPressed;
   final void Function(DateTime date)? onNonSelectableDayPressed;
+  final Widget Function(int)? weekdayWidgetBuilder;
 
   @override
   Widget build(BuildContext context) {
@@ -39,16 +41,17 @@ class CalendarPicker extends StatelessWidget {
           dateFormat: dateFormat,
         );
       },
-      weekdayWidgetBuilder: (weekday) {
-        return LokalCalendarWeekday(
-          weekday: weekday,
-          dateFormat: DateFormat.yMMM(Intl.defaultLocale),
-          textStyle: const TextStyle(
-            fontSize: 16,
-            color: Colors.black,
-          ),
-        );
-      },
+      weekdayWidgetBuilder: weekdayWidgetBuilder ??
+          (weekday) {
+            return LokalCalendarWeekday(
+              weekday: weekday,
+              dateFormat: DateFormat.yMMM(Intl.defaultLocale),
+              textStyle: const TextStyle(
+                fontSize: 16,
+                color: Colors.black,
+              ),
+            );
+          },
       dayWidgetBuilder: (date, isLastMonthDay, isNextMonthDay) {
         final _startDate = startDate ?? DateTime.now();
         final isToday = _startDate.year == date.year &&
@@ -79,9 +82,9 @@ class CalendarPicker extends StatelessWidget {
           isLastMonthDay: isLastMonthDay,
           isNextMonthDay: isNextMonthDay,
           isSelectable: isSelectable,
-          isSelected: selectedDate.year == date.year &&
-              selectedDate.month == date.month &&
-              selectedDate.day == date.day,
+          isSelected: selectedDate?.year == date.year &&
+              selectedDate?.month == date.month &&
+              selectedDate?.day == date.day,
           isMarked: markedDates.any(
             (e) =>
                 e.year == date.year &&

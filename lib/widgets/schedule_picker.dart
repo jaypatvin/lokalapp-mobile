@@ -1,5 +1,6 @@
 import 'dart:io' show Platform;
 
+import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -9,14 +10,14 @@ import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 import '../models/operating_hours.dart';
-import '../utils/calendar_picker/calendar_picker.dart';
-import '../utils/calendar_picker/day_of_month_picker.dart';
-import '../utils/calendar_picker/weekday_picker.dart';
 import '../utils/constants/themes.dart';
 import '../utils/functions.utils.dart';
 import '../utils/repeated_days_generator/repeated_days_generator.dart';
 import '../utils/repeated_days_generator/schedule_generator.dart';
 import 'app_button.dart';
+import 'calendar_picker/calendar_picker.dart';
+import 'calendar_picker/day_of_month_picker.dart';
+import 'calendar_picker/weekday_picker.dart';
 
 /// The user can choose to repeat the schedule/subscription by day, week, or months
 enum RepeatChoices {
@@ -382,7 +383,6 @@ class _SchedulePickerState extends State<SchedulePicker> {
       useSafeArea: false,
       builder: (BuildContext context) {
         return _CalendarPickerBody(
-          height: MediaQuery.of(context).size.height,
           repeatChoice: _repeatChoice,
           startDates: _markedStartDates,
           selectableDays: _selectableDays,
@@ -637,30 +637,28 @@ class _DayOfMonthPickerBody extends StatelessWidget {
               'Start Date',
               style: Theme.of(context).textTheme.headline5,
             ),
-            Flexible(
-              flex: 5,
-              child: DayOfMonthPicker(
-                width: MediaQuery.of(context).size.width * 0.95,
-                padding: const EdgeInsets.all(5.0),
-                onDayPressed: onDayPressed,
-                markedDay: markedStartDayOfMonth,
-              ),
+            DayOfMonthPicker(
+              width: MediaQuery.of(context).size.width * 0.95,
+              padding: const EdgeInsets.all(5.0),
+              onDayPressed: onDayPressed,
+              markedDay: markedStartDayOfMonth,
             ),
-            Flexible(
-              flex: 2,
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 8.0,
+                vertical: 5.0,
+              ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.3,
+                  Expanded(
                     child: AppButton.transparent(
                       text: 'Cancel',
                       onPressed: onCancel,
                     ),
                   ),
                   SizedBox(width: 5.0.w),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.3,
+                  Expanded(
                     child: AppButton.filled(
                       text: 'Confirm',
                       onPressed: onConfirm,
@@ -677,7 +675,6 @@ class _DayOfMonthPickerBody extends StatelessWidget {
 }
 
 class _CalendarPickerBody extends StatelessWidget {
-  final double height;
   final RepeatChoices repeatChoice;
   final List<DateTime?> startDates;
   final List<int> selectableDays;
@@ -687,7 +684,6 @@ class _CalendarPickerBody extends StatelessWidget {
   final void Function() onConfirm;
   const _CalendarPickerBody({
     Key? key,
-    required this.height,
     required this.repeatChoice,
     required this.startDates,
     required this.selectableDays,
@@ -701,7 +697,7 @@ class _CalendarPickerBody extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Dialog(
-        insetPadding: EdgeInsets.zero,
+        insetPadding: EdgeInsets.symmetric(horizontal: 10.0.w),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(30.0),
         ),
@@ -715,44 +711,40 @@ class _CalendarPickerBody extends StatelessWidget {
               'Start Date',
               style: Theme.of(context).textTheme.headline5,
             ),
-            Flexible(
-              flex: 5,
-              child: Container(
-                padding: const EdgeInsets.all(5.0),
-                child: CalendarPicker(
-                  selectedDate: DateTime.now(),
+            StatefulBuilder(
+              builder: (BuildContext context, StateSetter setState) {
+                return CalendarPicker(
+                  selectedDate: startDates.firstOrNull ?? DateTime.now(),
                   selectableDates:
                       selectableDates.whereType<DateTime>().toList(),
                   selectableDays: repeatChoice == RepeatChoices.week
                       ? selectableDays
                       : [0, 1, 2, 3, 4, 5, 6],
-                  onDayPressed: onDayPressed,
+                  onDayPressed: (day) => setState(() => onDayPressed(day)),
                   markedDates: startDates.whereType<DateTime>().toList(),
-                ),
-              ),
+                );
+              },
             ),
-            Flexible(
-              flex: 2,
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.3,
-                    child: AppButton.transparent(
-                      text: 'Cancel',
-                      onPressed: onCancel,
-                    ),
+            SizedBox(height: 10.0.h),
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.3,
+                  child: AppButton.transparent(
+                    text: 'Cancel',
+                    onPressed: onCancel,
                   ),
-                  SizedBox(width: 5.0.h),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.3,
-                    child: AppButton.filled(
-                      text: 'Confirm',
-                      onPressed: onConfirm,
-                    ),
+                ),
+                SizedBox(width: 5.0.h),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.3,
+                  child: AppButton.filled(
+                    text: 'Confirm',
+                    onPressed: onConfirm,
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
             SizedBox(height: 5.0.h),
           ],

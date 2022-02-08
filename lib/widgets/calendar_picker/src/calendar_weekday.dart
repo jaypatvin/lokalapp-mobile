@@ -25,7 +25,7 @@ class CalendarWeekday extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: _renderWeekDays(),
-      );
+    mainAxisAlignment: MainAxisAlignment.spaceAround,
+    children: _renderWeekDays(),
+  );
 }
