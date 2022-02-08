@@ -7,22 +7,29 @@ class FilePhotoThumbnail extends StatelessWidget {
     Key? key,
     required this.galleryItem,
     required this.onTap,
+    this.fit = BoxFit.cover,
+    this.heroTag,
   }) : super(key: key);
 
   final File galleryItem;
 
   final GestureTapCallback onTap;
+  final BoxFit fit;
+  final String? heroTag;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
       child: Hero(
-        tag: galleryItem.absolute,
+        tag: heroTag ?? galleryItem.absolute,
         child: Image.file(
           galleryItem,
           alignment: Alignment.topCenter,
-          fit: BoxFit.cover,
+          fit: fit,
+          errorBuilder: (ctx, e, stack) => const Center(
+            child: Text('Error displaying image.'),
+          ),
         ),
       ),
     );
