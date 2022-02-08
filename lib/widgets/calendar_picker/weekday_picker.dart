@@ -2,8 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart' show DateFormat;
 
-import 'calendar_picker.dart';
 import 'src/default_styles.dart';
+
+enum WeekdayFormat {
+  weekdays,
+  standalone,
+  short,
+  standaloneShort,
+  narrow,
+  standaloneNarrow,
+}
 
 class WeekdayPicker extends StatefulWidget {
   final WeekdayFormat weekdayFormat;

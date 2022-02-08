@@ -10,10 +10,10 @@ import '../../../providers/post_requests/operating_hours_body.dart';
 import '../../../providers/post_requests/product_body.dart';
 import '../../../providers/products.dart';
 import '../../../providers/shops.dart';
-import '../../../utils/calendar_picker/calendar_picker.dart';
 import '../../../utils/constants/themes.dart';
 import '../../../utils/repeated_days_generator/schedule_generator.dart';
 import '../../../widgets/app_button.dart';
+import '../../../widgets/calendar_picker/calendar_picker.dart';
 import '../../../widgets/custom_app_bar.dart';
 import '../../../widgets/overlays/constrained_scrollview.dart';
 import '../../../widgets/photo_box.dart';
@@ -41,6 +41,40 @@ class _ProductScheduleState extends State<ProductSchedule> {
   ProductScheduleState _productSchedule = ProductScheduleState.shop;
   List<DateTime?> _markedDatesMap = [];
   List<DateTime?> _selectableDates = [];
+  // List<int> _selectableDays = [1, 2, 3, 4, 5, 6, 7];
+
+  @override
+  void initState() {
+    super.initState();
+    final _generator = ScheduleGenerator();
+    OperatingHours? _operatingHours;
+    final user = context.read<Auth>().user!;
+    final shops = context.read<Shops>().findByUser(user.id);
+    _operatingHours = shops.first.operatingHours;
+
+    final _schedule = _generator.generateSchedule(_operatingHours);
+    _selectableDates = _schedule.selectableDates;
+    _markedDatesMap = [..._selectableDates];
+    // _selectableDays = _schedule.selectableDays;
+    if (widget.productId != null && widget.productId!.isNotEmpty) {
+      final product = context.read<Products>().findById(widget.productId);
+      if (product != null) {
+        final _productSched = product.availability!;
+        final _productSelectableDates =
+            _generator.getSelectableDates(_productSched);
+
+        _markedDatesMap = [..._productSelectableDates];
+        if (_selectableDates
+            .toSet()
+            .difference(_productSelectableDates.toSet())
+            .isEmpty) {
+          _productSchedule = ProductScheduleState.shop;
+        } else {
+          _productSchedule = ProductScheduleState.custom;
+        }
+      }
+    }
+  }
 
   Widget _buildRadioTile() {
     return Column(
@@ -157,26 +191,48 @@ class _ProductScheduleState extends State<ProductSchedule> {
                   : 0,
             ),
             AnimatedContainer(
-              duration: const Duration(milliseconds: 300),
-              height: _productSchedule == ProductScheduleState.custom
-                  ? MediaQuery.of(context).size.height * 0.65
-                  : 0,
-              child: CalendarCarousel(
-                onDayPressed: (date) {
-                  final now = DateTime.now().subtract(const Duration(days: 1));
-                  if (date.isBefore(now)) return;
-                  setState(() {
-                    if (_markedDatesMap.contains(date)) {
-                      _markedDatesMap.remove(date);
-                    } else {
-                      _markedDatesMap.add(date);
-                    }
-                  });
-                },
-                markedDatesMap: _markedDatesMap,
-                height: MediaQuery.of(context).size.height * 0.55,
-                selectableDates: _selectableDates,
-              ),
+              duration: const Duration(milliseconds: 200),
+              child: _productSchedule == ProductScheduleState.custom
+                  ? CalendarPicker(
+                      onDayPressed: (date) {
+                        final now =
+                            DateTime.now().subtract(const Duration(days: 1));
+                        if (date.isBefore(now)) return;
+                        setState(() {
+                          if (_markedDatesMap.contains(date)) {
+                            _markedDatesMap.remove(date);
+                          } else {
+                            _markedDatesMap.add(date);
+                          }
+                        });
+                      },
+                      markedDates:
+                          _markedDatesMap.whereType<DateTime>().toList(),
+                      selectableDates:
+                          _selectableDates.whereType<DateTime>().toList(),
+                      // TODO: tappable weekday header
+                      // weekdayWidgetBuilder: (weekday) =>
+                      //     TappableCalendarWeekday(
+                      //   weekday: weekday,
+                      //   dateFormat: DateFormat.yMMM(Intl.defaultLocale),
+                      //   isMarked: _selectableDays.contains(weekday),
+                      //   textStyle: const TextStyle(
+                      //     fontSize: 16,
+                      //     color: Colors.black,
+                      //   ),
+                      //   onPressed: () {
+                      //     setState(() {
+                      //       if (_selectableDays.contains(weekday)) {
+                      //         _selectableDays.remove(weekday);
+
+                      //       } else {
+                      //         _selectableDays.add(weekday);
+                      //       }
+                      //     });
+                      //   },
+                      // ),
+                    )
+                  : null,
             ),
             const Spacer(),
             SizedBox(
@@ -229,40 +285,6 @@ class _ProductScheduleState extends State<ProductSchedule> {
         }
       ],
     );
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    final _generator = ScheduleGenerator();
-    OperatingHours? _operatingHours;
-    final user = context.read<Auth>().user!;
-    final shops = context.read<Shops>().findByUser(user.id);
-    if (shops.isNotEmpty) _operatingHours = shops.first.operatingHours;
-
-    final _selectableDates = _generator.getSelectableDates(_operatingHours!);
-
-    this._selectableDates = _selectableDates;
-    _markedDatesMap = [..._selectableDates];
-
-    if (widget.productId != null && widget.productId!.isNotEmpty) {
-      final product = context.read<Products>().findById(widget.productId);
-      if (product != null) {
-        final _productSched = product.availability!;
-        final _productSelectableDates =
-            _generator.getSelectableDates(_productSched);
-
-        _markedDatesMap = [..._productSelectableDates];
-        if (_selectableDates
-            .toSet()
-            .difference(_productSelectableDates.toSet())
-            .isEmpty) {
-          _productSchedule = ProductScheduleState.shop;
-        } else {
-          _productSchedule = ProductScheduleState.custom;
-        }
-      }
-    }
   }
 
   @override

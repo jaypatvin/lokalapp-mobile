@@ -252,7 +252,6 @@ class ScheduleGenerator {
 
     final _selectableDays = <int>[];
     final _startDates = <DateTime>[];
-
     // Day and week:
     for (final element in operatingHours.startDates) {
       final date = DateFormat('yyyy-MM-dd').parse(element);

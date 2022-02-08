@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../utils/constants/themes.dart';
 import 'src/default_styles.dart';
 
 class DayOfMonthPicker extends StatefulWidget {
@@ -33,57 +34,53 @@ class _DayOfMonthPickerState extends State<DayOfMonthPicker> {
   }
 
   Widget _dayContainer(int day) {
+    final bool _isMarked = day == _markedDay;
+
     return Container(
-      margin: const EdgeInsets.all(2.0),
-      child: GestureDetector(
-        child: Container(
-          padding: const EdgeInsets.all(2.0),
-          decoration: BoxDecoration(
-            border: Border.all(
-              color: _markedDay == day ? Colors.orange : Colors.grey[300]!,
-            ),
-            borderRadius: const BorderRadius.all(
-              Radius.circular(15.0),
+      margin: const EdgeInsets.all(1.0),
+      padding: const EdgeInsets.all(2.0),
+      decoration: ShapeDecoration(
+        shape: RoundedRectangleBorder(
+          side: BorderSide(
+            color: _isMarked ? kOrangeColor : Colors.grey.shade300,
+          ),
+          borderRadius: const BorderRadius.all(
+            Radius.circular(10.0),
+          ),
+        ),
+      ),
+      child: TextButton(
+        onPressed: () {
+          // the calling method should handle the logic of the day press
+          setState(() {
+            if (_markedDay == day) {
+              _markedDay = 0;
+            } else {
+              _markedDay = day;
+            }
+          });
+          widget.onDayPressed(day);
+        },
+        style: TextButton.styleFrom(
+          padding: EdgeInsets.zero,
+          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          backgroundColor: _isMarked ? kOrangeColor : Colors.transparent,
+          shape: const RoundedRectangleBorder(
+            side: BorderSide(color: Colors.transparent),
+            borderRadius: BorderRadius.all(
+              Radius.circular(10.0),
             ),
           ),
-          child: TextButton(
-            style: TextButton.styleFrom(
-              padding: EdgeInsets.zero,
-              backgroundColor:
-                  _markedDay == day ? Colors.orange : Colors.transparent,
-              shape: RoundedRectangleBorder(
-                side: const BorderSide(color: Colors.transparent),
-                borderRadius: BorderRadius.circular(13.0),
-              ),
-            ),
-            onPressed: () {
-              // the calling method should handle the logic of the day press
-              setState(() {
-                if (_markedDay == day) {
-                  _markedDay = 0;
-                } else {
-                  _markedDay = day;
-                }
-              });
-              widget.onDayPressed(day);
-            },
-            child: SizedBox(
-              width: double.infinity,
-              height: double.infinity,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  DefaultTextStyle(
-                    style: defaultDaysTextStyle,
-                    child: Text(
-                      day.toString(),
-                      semanticsLabel: day.toString(),
-                      style: defaultWeekdayTextStyle,
-                      maxLines: 1,
-                    ),
-                  ),
-                ],
-              ),
+        ),
+        child: SizedBox(
+          width: double.infinity,
+          height: double.infinity,
+          child: Center(
+            child: Text(
+              '$day',
+              semanticsLabel: day.toString(),
+              style: defaultDaysTextStyle,
+              maxLines: 1,
             ),
           ),
         ),

@@ -472,7 +472,7 @@ class Order {
       isPaid: map['is_paid'],
       productIds: List<String>.from(map['product_ids']),
       products: List<OrderProduct>.from(
-        map['products']?.map((x) => OrderProduct.fromMap(x)),
+        map['products']?.map((x) => OrderProduct.fromMap(x)) ?? [],
       ),
       sellerId: map['seller_id'],
       shopId: map['shop_id'],

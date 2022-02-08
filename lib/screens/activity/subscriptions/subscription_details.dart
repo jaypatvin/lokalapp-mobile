@@ -180,6 +180,7 @@ class _SubscriptionDetailsButtons extends StatelessWidget {
         if (!disabled)
           SizedBox(
             width: double.infinity,
+            height: kMinInteractiveDimension,
             child: ElevatedButton(
               onPressed: onSeeSchedule,
               style: ElevatedButton.styleFrom(
@@ -209,6 +210,7 @@ class _SubscriptionDetailsButtons extends StatelessWidget {
               ),
             ),
           ),
+        SizedBox(height: 5.0.h),
         Row(
           children: [
             if (disabled)
