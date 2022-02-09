@@ -5,7 +5,7 @@ import '../utils/constants/themes.dart';
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final double height;
 
-  final String? titleText;
+  final String titleText;
   final Widget? title;
   final Widget? leading;
   final bool buildLeading;
@@ -92,7 +92,7 @@ class _Leading extends StatelessWidget {
 }
 
 class _Title extends StatelessWidget {
-  final String? titleText;
+  final String titleText;
   final TextStyle? titleStyle;
   const _Title(
     this.titleText,
@@ -103,7 +103,7 @@ class _Title extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Text(
-      titleText!,
+      titleText,
       style: const TextStyle(
         color: Color(0xFFFFC700),
         fontFamily: 'Goldplay',

@@ -27,7 +27,7 @@ class WelcomeScreen extends StatelessWidget {
               Column(
                 children: [
                   SizedBox(
-                    height: 100.0.h,
+                    height: 120.0.h,
                     child: Hero(
                       tag: kSvgLokalLogoV2,
                       child: SvgPicture.asset(
@@ -38,31 +38,23 @@ class WelcomeScreen extends StatelessWidget {
                   SizedBox(height: 20.0.h),
                   Text(
                     'Welcome to Lokal',
-                    style: TextStyle(
-                      color: kNavyColor,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 32.0.sp,
-                    ),
+                    style: Theme.of(context).textTheme.headline4,
+                    textAlign: TextAlign.center,
                   ),
                   SizedBox(height: 18.0.h),
-                  const Text(
+                  Text(
                     'Get to know more your neighborhood safely and securely.',
-                    style: TextStyle(
-                      fontSize: 18.0,
-                      fontFamily: 'Goldplay',
-                      color: kNavyColor,
-                      fontWeight: FontWeight.w500,
-                    ),
+                    style: Theme.of(context).textTheme.bodyText1,
                     textAlign: TextAlign.center,
                   ),
                   SizedBox(height: 5.0.h),
                 ],
               ),
-              SizedBox(height: 36.0.h),
+              SizedBox(height: 48.0.h),
               SizedBox(
-                width: 172.w,
+                width: 200.w,
                 child: AppButton.filled(
-                  text: 'SIGN IN',
+                  text: 'Sign-in',
                   onPressed: () => Navigator.push(
                     context,
                     AppNavigator.appPageRoute(
@@ -71,11 +63,10 @@ class WelcomeScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              SizedBox(height: 10.0.h),
               SizedBox(
-                width: 172.w,
+                width: 200.w,
                 child: AppButton.filled(
-                  text: 'REGISTER',
+                  text: 'Register',
                   color: kOrangeColor,
                   onPressed: () => Navigator.push(
                     context,

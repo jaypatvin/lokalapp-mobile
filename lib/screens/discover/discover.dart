@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
+import 'package:shimmer_animation/shimmer_animation.dart';
 
 import '../../models/product.dart';
 import '../../providers/categories.dart';
@@ -36,8 +37,17 @@ class _DiscoverView extends StatelessView<DiscoverViewModel> {
     return Consumer<Categories>(
       builder: (ctx, provider, _) {
         if (provider.isLoading) {
-          return const Center(
-            child: CircularProgressIndicator(),
+          return Shimmer(
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                color: Colors.grey.shade100,
+              ),
+              child: const Center(
+                child: CircularProgressIndicator(
+                  color: kOrangeColor,
+                ),
+              ),
+            ),
           );
         }
         final categories = provider.categories;
@@ -73,10 +83,10 @@ class _DiscoverView extends StatelessView<DiscoverViewModel> {
                     softWrap: true,
                     overflow: TextOverflow.ellipsis,
                     textAlign: TextAlign.center,
-                    style: Theme.of(ctx).textTheme.subtitle2?.copyWith(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 12.0.sp,
-                        ),
+                    style: Theme.of(ctx)
+                        .textTheme
+                        .subtitle2
+                        ?.copyWith(fontWeight: FontWeight.w600),
                   ),
                 ],
               ),
@@ -138,18 +148,31 @@ class _DiscoverView extends StatelessView<DiscoverViewModel> {
                   SliverToBoxAdapter(child: SizedBox(height: 5.0.h)),
                   if (vm.isLoading)
                     SliverToBoxAdapter(
-                      child: Center(
-                        child: Lottie.asset(
-                          kAnimationLoading,
-                          fit: BoxFit.contain,
+                      child: SizedBox(
+                        height: 250.0.h,
+                        child: Shimmer(
+                          child: DecoratedBox(
+                            decoration: BoxDecoration(
+                              color: Colors.grey.shade100,
+                            ),
+                            child: const Center(
+                              child: CircularProgressIndicator(
+                                color: kOrangeColor,
+                              ),
+                            ),
+                          ),
                         ),
                       ),
-                    ),
-                  if (!vm.isLoading)
+                    )
+                  else
                     SliverToBoxAdapter(
-                      child: _RecommendedProducts(
-                        products: vm.recommendedProducts,
-                        onProductTap: vm.onProductTap,
+                      child: SizedBox(
+                        height: 250.0.h,
+                        width: MediaQuery.of(context).size.width,
+                        child: _RecommendedProducts(
+                          products: vm.recommendedProducts,
+                          onProductTap: vm.onProductTap,
+                        ),
                       ),
                     ),
                   SliverToBoxAdapter(child: SizedBox(height: 15.0.h)),
@@ -256,32 +279,28 @@ class _RecommendedProducts extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 250.0.h,
-      width: MediaQuery.of(context).size.width,
-      child: GridView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: products.length,
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          childAspectRatio: 5 / 3.5,
-          crossAxisCount: 1,
-        ),
-        itemBuilder: (ctx, index) {
-          return Container(
-            key: Key(products[index].id),
-            padding: index == 0
-                ? EdgeInsets.only(left: 16.0.w, right: 2.5.w)
-                : index == products.length - 1
-                    ? EdgeInsets.only(left: 2.5.w, right: 16.0.w)
-                    : EdgeInsets.symmetric(horizontal: 2.5.w),
-            child: GestureDetector(
-              key: Key(products[index].id),
-              onTap: () => onProductTap(products[index].id),
-              child: ProductCard(products[index].id),
-            ),
-          );
-        },
+    return GridView.builder(
+      scrollDirection: Axis.horizontal,
+      itemCount: products.length,
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        childAspectRatio: 5 / 3.5,
+        crossAxisCount: 1,
       ),
+      itemBuilder: (ctx, index) {
+        return Container(
+          key: Key(products[index].id),
+          padding: index == 0
+              ? EdgeInsets.only(left: 16.0.w, right: 2.5.w)
+              : index == products.length - 1
+                  ? EdgeInsets.only(left: 2.5.w, right: 16.0.w)
+                  : EdgeInsets.symmetric(horizontal: 2.5.w),
+          child: GestureDetector(
+            key: Key(products[index].id),
+            onTap: () => onProductTap(products[index].id),
+            child: ProductCard(products[index].id),
+          ),
+        );
+      },
     );
   }
 }

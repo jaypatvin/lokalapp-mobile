@@ -94,7 +94,7 @@ class _PostCardView extends StatelessView<PostCardViewModel> {
           activity.message,
           style: TextStyle(
             fontFamily: 'Goldplay',
-            fontSize: 14.0.sp,
+            fontSize: 16.0.sp,
             fontWeight: FontWeight.w500,
           ),
           maxLines: 8,

@@ -452,7 +452,7 @@ class _ChatViewState extends State<ChatView> with WidgetsBindingObserver {
     return Scaffold(
       appBar: CustomAppBar(
         backgroundColor: _indicatorColor ?? kYellowColor,
-        titleText: _chatTitle,
+        titleText: _chatTitle ?? '',
         titleStyle: const TextStyle(color: Colors.white, fontSize: 16.0),
         onPressedLeading: () => Navigator.pop(context),
         actions: [_buildDetailsButton()],

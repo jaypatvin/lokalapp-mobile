@@ -15,7 +15,6 @@ import '../../widgets/persistent_header_delegate_builder.dart';
 import '../cart/cart_container.dart';
 import 'components/post_card.dart';
 import 'draft_post.dart';
-import 'notifications.dart';
 
 class Home extends HookWidget {
   static const routeName = '/home';
@@ -39,16 +38,16 @@ class Home extends HookWidget {
         titleStyle: const TextStyle(color: Colors.white),
         backgroundColor: kTealColor,
         buildLeading: false,
-        actions: [
-          IconButton(
-            onPressed: () => context
-                .read<AppRouter>()
-                .keyOf(AppRoute.home)
-                .currentState!
-                .pushNamed(Notifications.routeName),
-            icon: const Icon(Icons.notifications_outlined),
-          )
-        ],
+        // actions: [
+        //   IconButton(
+        //     onPressed: () => context
+        //         .read<AppRouter>()
+        //         .keyOf(AppRoute.home)
+        //         .currentState!
+        //         .pushNamed(Notifications.routeName),
+        //     icon: const Icon(Icons.notifications_outlined),
+        //   ),
+        // ],
       ),
       body: CartContainer(
         child: Consumer<Activities>(
@@ -67,11 +66,20 @@ class Home extends HookWidget {
                   ),
                 ),
                 if (activities.isLoading)
-                  SliverFillRemaining(
-                    child: Lottie.asset(
-                      kAnimationLoading,
-                      fit: BoxFit.cover,
-                      repeat: true,
+                  SliverFillViewport(
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) {
+                        return Transform.translate(
+                          offset: Offset(0, -150.h),
+                          child: Lottie.asset(
+                            kAnimationLoading,
+                            // fit: BoxFit.,
+                            fit: BoxFit.cover,
+                            repeat: true,
+                          ),
+                        );
+                      },
+                      childCount: 1,
                     ),
                   )
                 else if (activities.feed.isEmpty)

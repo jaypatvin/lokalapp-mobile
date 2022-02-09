@@ -98,7 +98,7 @@ class OrderDetails extends StatelessWidget {
                 child: Text(
                   'Edit',
                   style: Theme.of(context).textTheme.bodyText2?.copyWith(
-                        fontSize: 12.0.sp,
+                        fontSize: 13.0.sp,
                         fontWeight: FontWeight.w300,
                         decoration: TextDecoration.underline,
                         color: kTealColor,
