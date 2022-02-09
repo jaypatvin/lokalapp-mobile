@@ -187,8 +187,7 @@ class _TransactionsView extends HookView<TransactionsViewModel>
             stream: vm.stream,
             statuses: vm.initialStatuses,
             isBuyer: vm.isBuyer,
-            onSecondButtonPressed: (order) async =>
-                performFuture(() async => vm.onSecondButtonPress(order)),
+            onSecondButtonPressed: vm.onSecondButtonPress,
           ),
         if (vm.stream == null)
           SliverFillRemaining(

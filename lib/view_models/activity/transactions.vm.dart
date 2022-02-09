@@ -104,6 +104,7 @@ class TransactionsViewModel extends ViewModel {
       }
 
       shopChangeListener(notify: false);
+      return;
     }
 
     for (final key in _statuses.keys) {
@@ -176,7 +177,6 @@ class TransactionsViewModel extends ViewModel {
                 ),
               );
             }
-
             break;
           default:
             break;
@@ -185,28 +185,30 @@ class TransactionsViewModel extends ViewModel {
         switch (order.statusCode) {
           case 100:
             final success = await _apiService.confirm(orderId: order.id);
-            if (success) {
-              AppRouter.activityNavigatorKey.currentState?.push(
-                AppNavigator.appPageRoute(
-                  builder: (_) => OrderConfirmed(
-                    order: order,
-                    isBuyer: isBuyer,
-                  ),
-                ),
-              );
-            }
+            if (success) showToast('Order Confirmed');
+            // if (success) {
+            //   AppRouter.activityNavigatorKey.currentState?.push(
+            //     AppNavigator.appPageRoute(
+            //       builder: (_) => OrderConfirmed(
+            //         order: order,
+            //         isBuyer: isBuyer,
+            //       ),
+            //     ),
+            //   );
+            // }
             break;
           case 300:
             if (order.paymentMethod == PaymentMethod.cod) {
               final success =
                   await _apiService.confirmPayment(orderId: order.id);
-              if (success) {
-                AppRouter.activityNavigatorKey.currentState?.push(
-                  AppNavigator.appPageRoute(
-                    builder: (_) => PaymentConfirmed(order: order),
-                  ),
-                );
-              }
+              if (success) showToast('Payment Confirmed');
+              // if (success) {
+              //   AppRouter.activityNavigatorKey.currentState?.push(
+              //     AppNavigator.appPageRoute(
+              //       builder: (_) => PaymentConfirmed(order: order),
+              //     ),
+              //   );
+              // }
             } else {
               AppRouter.activityNavigatorKey.currentState?.push(
                 AppNavigator.appPageRoute(
@@ -220,13 +222,14 @@ class TransactionsViewModel extends ViewModel {
             break;
           case 400:
             final success = await _apiService.shipOut(orderId: order.id);
-            if (success) {
-              AppRouter.activityNavigatorKey.currentState?.push(
-                AppNavigator.appPageRoute(
-                  builder: (_) => ShippedOut(order: order),
-                ),
-              );
-            }
+            if (success) showToast('Order has been shipped out.');
+            // if (success) {
+            //   AppRouter.activityNavigatorKey.currentState?.push(
+            //     AppNavigator.appPageRoute(
+            //       builder: (_) => ShippedOut(order: order),
+            //     ),
+            //   );
+            // }
             break;
           default:
             // do nothing

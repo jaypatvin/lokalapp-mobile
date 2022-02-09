@@ -230,7 +230,6 @@ class _DeliverySchedule extends HookWidget {
         final delivery = cart.orders[shopId]![productId]!.schedule;
         return CalendarPicker(
           selectableDates: selectableDates,
-          selectedDate: delivery ?? DateTime.now(),
           onDayPressed: (date) {
             final now = DateTime.now().subtract(const Duration(days: 1));
             if (date.isBefore(now)) return;
