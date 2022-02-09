@@ -1,8 +1,10 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:shimmer_animation/shimmer_animation.dart';
 
 import '../../../models/order.dart';
 import '../../../providers/products.dart';
@@ -118,13 +120,23 @@ class TransactionDetails extends HookWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   if (product?.gallery?.isNotEmpty ?? false)
-                    Image.network(
-                      product!.gallery!.first.url,
+                    CachedNetworkImage(
+                      imageUrl: product!.gallery!.first.url,
                       width: 40.0.h,
                       height: 40.0.h,
                       fit: BoxFit.cover,
-                      errorBuilder: (_, __, ___) =>
-                          const Center(child: Text('Error displaying Image')),
+                      placeholder: (_, __) => Shimmer(
+                        child: DecoratedBox(
+                          decoration: BoxDecoration(
+                            color: Colors.grey.shade300,
+                          ),
+                        ),
+                      ),
+                      errorWidget: (_, __, ___) => const Center(
+                        child: Text(
+                          'Error displaying Image',
+                        ),
+                      ),
                     )
                   else
                     SizedBox(

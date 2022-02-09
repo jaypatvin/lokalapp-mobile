@@ -1,5 +1,7 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:shimmer_animation/shimmer_animation.dart';
 
 import '../../../models/product.dart';
 import '../../../utils/constants/themes.dart';
@@ -25,10 +27,17 @@ class OrderDetails extends StatelessWidget {
           SizedBox(
             width: 60.0.h,
             height: 60.0.h,
-            child: Image.network(
-              product.gallery!.first.url,
+            child: CachedNetworkImage(
+              imageUrl: product.gallery!.first.url,
               fit: BoxFit.cover,
-              errorBuilder: (ctx, obj, stk) =>
+              placeholder: (_, __) => Shimmer(
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: Colors.grey.shade300,
+                  ),
+                ),
+              ),
+              errorWidget: (ctx, url, err) =>
                   const Center(child: Text('Error displaying image.')),
             ),
           )

@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -101,7 +102,7 @@ class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
 
           return PhotoViewGalleryPageOptions(
             basePosition: Alignment.center,
-            imageProvider: NetworkImage(image),
+            imageProvider: CachedNetworkImageProvider(image),
             minScale: PhotoViewComputedScale.contained,
             maxScale: PhotoViewComputedScale.covered,
             controller: controller,

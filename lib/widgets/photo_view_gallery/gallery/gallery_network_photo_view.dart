@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:photo_view/photo_view.dart';
@@ -105,7 +106,7 @@ class _GalleryNetworkPhotoViewState extends State<GalleryNetworkPhotoView> {
   PhotoViewGalleryPageOptions _buildItem(BuildContext context, int index) {
     final LokalImages item = widget.galleryItems![index];
     return PhotoViewGalleryPageOptions(
-      imageProvider: NetworkImage(item.url),
+      imageProvider: CachedNetworkImageProvider(item.url),
       initialScale: PhotoViewComputedScale.contained,
       minScale: PhotoViewComputedScale.contained * (0.5 + index / 10),
       maxScale: PhotoViewComputedScale.covered * 4.1,

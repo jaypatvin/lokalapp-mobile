@@ -1,4 +1,6 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:shimmer_animation/shimmer_animation.dart';
 
 import '../../../models/lokal_images.dart';
 
@@ -22,24 +24,19 @@ class NetworkPhotoThumbnail extends StatelessWidget {
       onTap: onTap,
       child: Hero(
         tag: heroTag ?? galleryItem.url,
-        child: Image.network(
-          galleryItem.url,
+        child: CachedNetworkImage(
+          imageUrl: galleryItem.url,
           alignment: Alignment.topCenter,
           fit: fit,
-          loadingBuilder: (context, child, loadingProgress) {
-            if (loadingProgress == null) return child;
-            return Center(
-              child: CircularProgressIndicator(
-                value: loadingProgress.expectedTotalBytes != null
-                    ? loadingProgress.cumulativeBytesLoaded /
-                        loadingProgress.expectedTotalBytes!
-                    : null,
+          placeholder: (_, __) => Shimmer(
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                color: Colors.grey.shade300,
               ),
-            );
-          },
-          errorBuilder: (ctx, e, stack) => const Center(
-            child: Text('Error displaying image.'),
+            ),
           ),
+          errorWidget: (ctx, url, err) =>
+              const Center(child: Text('Error displaying image.')),
         ),
       ),
     );

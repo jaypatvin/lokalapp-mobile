@@ -1,6 +1,8 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
+import 'package:shimmer_animation/shimmer_animation.dart';
 
 import '../../../../models/product_subscription_plan.dart';
 import '../../../../providers/auth.dart';
@@ -55,11 +57,18 @@ class SubscriptionPlanDetails extends StatelessWidget {
             SizedBox(
               width: 40.0.w,
               height: 40.0.w,
-              child: Image.network(
-                item.image ?? '',
+              child: CachedNetworkImage(
+                imageUrl: item.image ?? '',
                 fit: BoxFit.cover,
-                errorBuilder: (ctx, obj, stack) {
-                  if (item.image != null) {
+                placeholder: (_, __) => Shimmer(
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: Colors.grey.shade300,
+                    ),
+                  ),
+                ),
+                errorWidget: (ctx, url, error) {
+                  if (item.image?.isNotEmpty ?? false) {
                     return const Center(
                       child: Text('Error displaying image.'),
                     );

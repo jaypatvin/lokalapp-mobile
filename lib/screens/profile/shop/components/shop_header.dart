@@ -1,6 +1,8 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:shimmer_animation/shimmer_animation.dart';
 
 import '../../../chat/components/chat_avatar.dart';
 
@@ -33,10 +35,17 @@ class ShopHeader extends StatelessWidget {
     return Stack(
       children: [
         Positioned.fill(
-          child: Image.network(
-            shopCoverPhoto ?? '',
+          child: CachedNetworkImage(
+            imageUrl: shopCoverPhoto ?? '',
             fit: BoxFit.cover,
-            errorBuilder: (ctx, obj, trace) => SizedBox(
+            placeholder: (_, __) => Shimmer(
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade300,
+                ),
+              ),
+            ),
+            errorWidget: (ctx, url, err) => SizedBox(
               child: DecoratedBox(
                 decoration: BoxDecoration(
                   gradient: LinearGradient(

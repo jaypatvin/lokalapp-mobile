@@ -1,7 +1,9 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
+import 'package:shimmer_animation/shimmer_animation.dart';
 
 import '../../providers/auth.dart';
 import '../../providers/users.dart';
@@ -102,10 +104,17 @@ class _ProfileHeaderView extends StatelessView<ProfileHeaderViewModel> {
           children: [
             if (user.profilePhoto != null)
               Positioned.fill(
-                child: Image.network(
-                  user.profilePhoto ?? '',
+                child: CachedNetworkImage(
+                  imageUrl: user.profilePhoto ?? '',
                   fit: BoxFit.cover,
-                  errorBuilder: (ctx, obj, trace) =>
+                  placeholder: (_, __) => Shimmer(
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade300,
+                      ),
+                    ),
+                  ),
+                  errorWidget: (ctx, url, err) =>
                       _backgroundBuilder(vm.profileHeaderColors),
                 ),
               )

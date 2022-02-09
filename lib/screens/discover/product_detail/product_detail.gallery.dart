@@ -1,6 +1,8 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
+import 'package:shimmer_animation/shimmer_animation.dart';
 
 import '../../../models/product.dart';
 import '../../../utils/constants/themes.dart';
@@ -39,27 +41,18 @@ class ProductDetailGallery extends StatelessWidget {
             builder: (context, index) {
               final image = gallery[index];
               return PhotoViewGalleryPageOptions.customChild(
-                child: Image.network(
-                  image.url,
+                child: CachedNetworkImage(
+                  imageUrl: image.url,
                   fit: BoxFit.cover,
-                  filterQuality: FilterQuality.high,
-                  errorBuilder: (ctx, _, __) => const SizedBox.shrink(),
-                  loadingBuilder: (context, child, event) {
-                    if (event == null) return child;
-                    return Center(
-                      child: SizedBox(
-                        width: 30.0,
-                        height: 30.0,
-                        child: CircularProgressIndicator(
-                          color: Colors.orange,
-                          value: event.expectedTotalBytes != null
-                              ? event.cumulativeBytesLoaded /
-                                  event.expectedTotalBytes!
-                              : null,
-                        ),
+                  placeholder: (_, __) => Shimmer(
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade300,
                       ),
-                    );
-                  },
+                    ),
+                  ),
+                  errorWidget: (ctx, url, err) =>
+                      const Center(child: Text('Error displaying image.')),
                 ),
                 disableGestures: true,
                 controller: controller,
