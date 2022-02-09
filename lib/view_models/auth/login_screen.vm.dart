@@ -28,11 +28,13 @@ class LoginScreenViewModel extends ViewModel {
 
   Future<void> _loginHandler() async {
     if (context.read<Auth>().user != null) {
-      context.read<Shops>().fetch();
-      context.read<Products>().fetch();
-      context.read<Categories>().fetch();
-      context.read<BankCodes>().fetch();
-      await context.read<Users>().fetch();
+      await Future.wait([
+        context.read<Shops>().fetch(),
+        context.read<Products>().fetch(),
+        context.read<Categories>().fetch(),
+        context.read<BankCodes>().fetch(),
+        context.read<Users>().fetch(),
+      ]);
 
       AppRouter.rootNavigatorKey.currentState?.pushNamedAndRemoveUntil(
         BottomNavigation.routeName,
