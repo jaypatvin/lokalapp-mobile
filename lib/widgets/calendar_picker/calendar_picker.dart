@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:intl/intl.dart';
 
 import 'src/calendar_carousel.dart';
 import 'src/calendar_default_widget.dart';
 import 'src/calendar_widgets.dart';
 
-class CalendarPicker extends StatelessWidget {
+class CalendarPicker extends HookWidget {
   const CalendarPicker({
     Key? key,
     required this.onDayPressed,
@@ -29,14 +30,19 @@ class CalendarPicker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final _calendarController = useMemoized(
+      () => CalendarController(),
+    );
+
     return CalendarCarousel(
+      controller: _calendarController,
       dateFormat: DateFormat.yMMM(
         Intl.defaultLocale,
       ),
       day: DateTime.now().day,
       headerWidgetBuilder: (controller, dateFormat, dateTime) {
         return CalendarDefaultHeader(
-          calendarController: controller,
+          calendarController: _calendarController,
           dateTime: dateTime,
           dateFormat: dateFormat,
         );
