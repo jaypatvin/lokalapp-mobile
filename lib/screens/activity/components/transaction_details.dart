@@ -103,68 +103,72 @@ class TransactionDetails extends HookWidget {
         SizedBox(height: 10.0.h),
         if (status?.isNotEmpty ?? false) _avatar,
         if (status?.isNotEmpty ?? false) SizedBox(height: 10.0.h),
-        ListView.builder(
-          // this shrinkWrap is okay since there is only 1 (or a few) product
-          // per transaction
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: transaction.products.length,
-          itemBuilder: (ctx, index) {
-            final item = transaction.products[index];
-            final product =
-                Provider.of<Products>(context, listen: false).findById(item.id);
+        SizedBox(
+          height: 53.0.h * transaction.products.length,
+          child: ListView.builder(
+            // this shrinkWrap is okay since there is only 1 (or a few) product
+            // per transaction
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: transaction.products.length,
+            padding: EdgeInsets.zero,
+            itemBuilder: (ctx, index) {
+              final item = transaction.products[index];
+              final product = Provider.of<Products>(context, listen: false)
+                  .findById(item.id);
 
-            return Container(
-              padding: const EdgeInsets.symmetric(vertical: 5.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  if (product?.gallery?.isNotEmpty ?? false)
-                    CachedNetworkImage(
-                      imageUrl: product!.gallery!.first.url,
-                      width: 40.0.h,
-                      height: 40.0.h,
-                      fit: BoxFit.cover,
-                      placeholder: (_, __) => Shimmer(
-                        child: DecoratedBox(
-                          decoration: BoxDecoration(
-                            color: Colors.grey.shade300,
+              return Padding(
+                padding: const EdgeInsets.symmetric(vertical: 5.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    if (product?.gallery?.isNotEmpty ?? false)
+                      CachedNetworkImage(
+                        imageUrl: product!.gallery!.first.url,
+                        width: 40.0.h,
+                        height: 40.0.h,
+                        fit: BoxFit.cover,
+                        placeholder: (_, __) => Shimmer(
+                          child: DecoratedBox(
+                            decoration: BoxDecoration(
+                              color: Colors.grey.shade300,
+                            ),
                           ),
                         ),
-                      ),
-                      errorWidget: (_, __, ___) => const Center(
-                        child: Text(
-                          'Error displaying Image',
+                        errorWidget: (_, __, ___) => const Center(
+                          child: Text(
+                            'Error displaying Image',
+                          ),
+                        ),
+                      )
+                    else
+                      SizedBox(
+                        height: 40.0.h,
+                        width: 40.0.h,
+                        child: const Center(
+                          child: Text('No image'),
                         ),
                       ),
-                    )
-                  else
-                    SizedBox(
-                      height: 40.0.h,
-                      width: 40.0.h,
-                      child: const Center(
-                        child: Text('No image'),
-                      ),
+                    Text(
+                      item.name,
+                      style: Theme.of(context).textTheme.subtitle1,
                     ),
-                  Text(
-                    item.name,
-                    style: Theme.of(context).textTheme.subtitle1,
-                  ),
-                  Text(
-                    'x${item.quantity}',
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyText1
-                        ?.copyWith(fontWeight: FontWeight.w400),
-                  ),
-                  Text(
-                    'P ${item.quantity * item.price}',
-                    style: Theme.of(context).textTheme.bodyText1,
-                  ),
-                ],
-              ),
-            );
-          },
+                    Text(
+                      'x${item.quantity}',
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyText1
+                          ?.copyWith(fontWeight: FontWeight.w400),
+                    ),
+                    Text(
+                      'P ${item.quantity * item.price}',
+                      style: Theme.of(context).textTheme.bodyText1,
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
         ),
         SizedBox(height: 10.0.h),
         const Divider(
