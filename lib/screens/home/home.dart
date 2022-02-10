@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 
 import '../../providers/activities.dart';
 import '../../providers/community.dart';
+import '../../providers/notifications.dart';
 import '../../routers/app_router.dart';
 import '../../utils/constants/assets.dart';
 import '../../utils/constants/themes.dart';
@@ -15,6 +16,7 @@ import '../../widgets/persistent_header_delegate_builder.dart';
 import '../cart/cart_container.dart';
 import 'components/post_card.dart';
 import 'draft_post.dart';
+import 'notifications.dart';
 
 class Home extends HookWidget {
   static const routeName = '/home';
@@ -38,16 +40,52 @@ class Home extends HookWidget {
         titleStyle: const TextStyle(color: Colors.white),
         backgroundColor: kTealColor,
         buildLeading: false,
-        // actions: [
-        //   IconButton(
-        //     onPressed: () => context
-        //         .read<AppRouter>()
-        //         .keyOf(AppRoute.home)
-        //         .currentState!
-        //         .pushNamed(Notifications.routeName),
-        //     icon: const Icon(Icons.notifications_outlined),
-        //   ),
-        // ],
+        actions: [
+          Consumer<NotificationsProvider>(
+            builder: (ctx, notifications, child) {
+              if (notifications.displayAlert) {
+                return Stack(
+                  alignment: AlignmentDirectional.center,
+                  children: [
+                    IconButton(
+                      onPressed: () => context
+                          .read<AppRouter>()
+                          .keyOf(AppRoute.home)
+                          .currentState!
+                          .pushNamed(Notifications.routeName),
+                      icon: const Icon(Icons.notifications_rounded),
+                    ),
+                    const Positioned(
+                      right: 8,
+                      top: 15,
+                      child: Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: DecoratedBox(
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: kPinkColor,
+                          ),
+                          child: SizedBox(
+                            height: 5,
+                            width: 5,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                );
+              }
+              return IconButton(
+                onPressed: () => context
+                    .read<AppRouter>()
+                    .keyOf(AppRoute.home)
+                    .currentState!
+                    .pushNamed(Notifications.routeName),
+                icon: const Icon(Icons.notifications_outlined),
+              );
+            },
+          ),
+        ],
       ),
       body: CartContainer(
         child: Consumer<Activities>(
