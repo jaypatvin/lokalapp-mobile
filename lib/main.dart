@@ -19,6 +19,7 @@ import 'providers/bank_codes.dart';
 import 'providers/cart.dart';
 import 'providers/categories.dart';
 import 'providers/community.dart';
+import 'providers/notifications.dart';
 import 'providers/post_requests/auth_body.dart';
 import 'providers/post_requests/operating_hours_body.dart';
 import 'providers/post_requests/product_body.dart';
@@ -156,6 +157,12 @@ class _MyAppState extends State<MyApp> {
         create: (_) => Shops(_api),
         update: (_, auth, shops) =>
             shops!..setCommunityId(auth.user?.communityId),
+      ),
+
+      ChangeNotifierProxyProvider<Auth, NotificationsProvider?>(
+        create: (_) => NotificationsProvider(),
+        update: (_, auth, notifications) =>
+            notifications?..setUserId(auth.user?.id),
       ),
 
       ChangeNotifierProvider<Categories>(create: (_) => Categories(_api)),

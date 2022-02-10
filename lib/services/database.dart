@@ -23,6 +23,27 @@ class Database {
     return _database ??= Database();
   }
 
+  Future<void> onNotificationSeen({
+    required String userId,
+    required String notificationId,
+  }) {
+    return usersRef
+        .doc(userId)
+        .collection('notifications')
+        .doc(notificationId)
+        .update({'viewed': true});
+  }
+
+  Stream<QuerySnapshot<Map<String, dynamic>>> getUserNotifications(
+    String userId,
+  ) {
+    return usersRef
+        .doc(userId)
+        .collection('notifications')
+        .orderBy('created_at', descending: true)
+        .snapshots();
+  }
+
   Future<QuerySnapshot<Map<String, dynamic>>> getBankCodes() {
     return FirebaseFirestore.instance.collection('bank_codes').get();
   }
