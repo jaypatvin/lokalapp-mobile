@@ -35,7 +35,7 @@ class AddProduct extends StatefulWidget {
 }
 
 class _AddProductState extends State<AddProduct> with ScreenLoader {
-  String? _title;
+  late final String _title;
 
   final _nameController = TextEditingController();
   final _priceController = TextEditingController();

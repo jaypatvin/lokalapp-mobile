@@ -3,7 +3,9 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
+import 'package:http/http.dart' as http;
 
+import '../models/failure_exception.dart';
 import '../models/product.dart';
 import '../services/api/api.dart';
 import '../services/api/product_api_service.dart';
@@ -53,7 +55,15 @@ class Products extends ChangeNotifier {
       final index = _products.indexWhere((p) => p.id == id);
 
       if (index >= 0) {
-        _products[index] = await _apiService.getById(productId: id);
+        try {
+          _products[index] = await _apiService.getById(productId: id);
+        } catch (e) {
+          if (e is FailureException && e.details is http.Response) {
+            if ((e.details! as http.Response).statusCode == 404) {
+              _products.removeAt(index);
+            }
+          }
+        }
         notifyListeners();
         return;
       }

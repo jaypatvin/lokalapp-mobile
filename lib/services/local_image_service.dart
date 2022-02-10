@@ -16,17 +16,21 @@ class LocalImageService {
     required File file,
     required String src,
   }) async {
-    final fileName = uuid.v4();
-    final compressedFile = await _compressImage(file, fileName);
-    if (compressedFile == null) {
-      throw FailureException('Failed to create image');
-    }
+    try {
+      final fileName = uuid.v4();
+      final compressedFile = await _compressImage(file, fileName);
+      if (compressedFile == null) {
+        throw FailureException('Failed to create image');
+      }
 
-    return Database().uploadImage(
-      file: compressedFile,
-      fileName: fileName,
-      src: src,
-    );
+      return Database().uploadImage(
+        file: compressedFile,
+        fileName: fileName,
+        src: src,
+      );
+    } catch (e) {
+      rethrow;
+    }
   }
 
   // Future<File> _compressImage(File file, String fileName) async {

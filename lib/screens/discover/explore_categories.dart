@@ -1,6 +1,8 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
+import 'package:shimmer_animation/shimmer_animation.dart';
 
 import '../../providers/categories.dart';
 import '../../utils/constants/themes.dart';
@@ -66,11 +68,27 @@ class ExploreCategories extends StatelessWidget {
                                   ),
                                   child: ClipRRect(
                                     borderRadius: BorderRadius.circular(30.0.r),
-                                    child: Image.network(
-                                      categories[index].iconUrl,
+                                    child: CachedNetworkImage(
+                                      imageUrl: categories[index].iconUrl,
                                       fit: BoxFit.cover,
-                                      errorBuilder: (_, e, stack) =>
-                                          const SizedBox.shrink(),
+                                      placeholder: (_, __) => Shimmer(
+                                        child: DecoratedBox(
+                                          decoration: BoxDecoration(
+                                            color: Colors.grey.shade300,
+                                          ),
+                                        ),
+                                      ),
+                                      errorWidget: (ctx, url, err) {
+                                        if (categories[index].iconUrl.isEmpty) {
+                                          return const Center(
+                                            child: Text('No image.'),
+                                          );
+                                        }
+                                        return const Center(
+                                          child:
+                                              Text('Error displaying image.'),
+                                        );
+                                      },
                                     ),
                                   ),
                                 ),

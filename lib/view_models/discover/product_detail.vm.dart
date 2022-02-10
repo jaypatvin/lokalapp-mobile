@@ -31,7 +31,7 @@ class ProductDetailViewModel extends ViewModel {
   String _instructions = '';
   String get instructions => _instructions;
 
-  int _quantity = 0;
+  int _quantity = 1;
   int get quantity => _quantity;
 
   bool get available => product.quantity > 0;

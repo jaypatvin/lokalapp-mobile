@@ -50,11 +50,14 @@ class Timeline extends StatelessWidget {
           itemBuilder: (context, index) {
             final activity = activityFeed[index];
             return Container(
-              key: Key(activity.id),
+              key: ValueKey(activity.id),
               margin: index == 0
                   ? EdgeInsets.only(top: firstIndexPadding)
                   : EdgeInsets.zero,
-              child: PostCard(activity: activity),
+              child: PostCard(
+                key: ValueKey(activity.id),
+                activity: activity,
+              ),
             );
           },
         );

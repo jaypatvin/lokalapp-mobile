@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 import '../utils/constants/themes.dart';
@@ -51,7 +52,7 @@ class PhotoBox extends StatelessWidget {
               fit: BoxFit.cover,
               image: imageSource.isFile
                   ? FileImage(imageSource.file!) as ImageProvider<FileImage>
-                  : NetworkImage(imageSource.url!)
+                  : CachedNetworkImageProvider(imageSource.url!)
                       as ImageProvider<NetworkImage>,
               errorBuilder: (ctx, e, stack) => const Center(
                 child: Text('Error displaying image'),

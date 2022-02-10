@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
+import '../models/failure_exception.dart';
 import '../providers/auth.dart';
 import '../providers/bank_codes.dart';
 import '../providers/categories.dart';
@@ -36,25 +38,36 @@ class _RootState extends State<Root> {
 
     try {
       await auth.onStartUp();
-      if (auth.user == null) throw 'user-not-registered';
+      if (auth.user == null) throw FailureException('user-not-registered');
 
       if (!mounted) return;
-      context
-        ..read<Shops>().fetch()
-        ..read<Products>().fetch()
-        ..read<Categories>().fetch()
-        ..read<BankCodes>().fetch();
-      await context.read<Users>().fetch();
+      await Future.wait([
+        context.read<Shops>().fetch(),
+        context.read<Products>().fetch(),
+        context.read<Categories>().fetch(),
+        context.read<BankCodes>().fetch(),
+        context.read<Users>().fetch(),
+      ]);
       if (!mounted) return;
       AppRouter.rootNavigatorKey.currentState?.pushNamedAndRemoveUntil(
         BottomNavigation.routeName,
         (route) => false,
       );
     } catch (e) {
-      await auth.logOut();
+      if (e is FailureException && e.message == 'user-not-registered') {
+        await auth.logOut();
+        if (!mounted) return;
+        AppRouter.rootNavigatorKey.currentState?.pushNamedAndRemoveUntil(
+          WelcomeScreen.routeName,
+          (route) => false,
+        );
+        return;
+      }
+
+      showToast(e.toString());
       if (!mounted) return;
       AppRouter.rootNavigatorKey.currentState?.pushNamedAndRemoveUntil(
-        WelcomeScreen.routeName,
+        BottomNavigation.routeName,
         (route) => false,
       );
     }

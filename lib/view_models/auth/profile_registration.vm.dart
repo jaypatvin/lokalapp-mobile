@@ -105,11 +105,13 @@ class ProfileRegistrationViewModel extends ViewModel {
     }
     final bool success = await _registerUser();
     if (success) {
-      await context.read<Shops>().fetch();
-      await context.read<Products>().fetch();
-      await context.read<Users>().fetch();
-      await context.read<Categories>().fetch();
-      await context.read<BankCodes>().fetch();
+      await Future.wait([
+        context.read<Shops>().fetch(),
+        context.read<Products>().fetch(),
+        context.read<Users>().fetch(),
+        context.read<Categories>().fetch(),
+        context.read<BankCodes>().fetch(),
+      ]);
       AppRouter.rootNavigatorKey.currentState?.pushAndRemoveUntil(
         AppNavigator.appPageRoute(
           builder: (context) => const VerifyScreen(),

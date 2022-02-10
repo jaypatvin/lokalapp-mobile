@@ -1,7 +1,9 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:shimmer_animation/shimmer_animation.dart';
 
 import '../../../models/bank_code.dart';
 import '../../../providers/bank_codes.dart';
@@ -92,14 +94,33 @@ class _AddBankView extends StatelessView<AddBankViewModel> {
                                 height: 100.h,
                                 child: ClipRRect(
                                   borderRadius: BorderRadius.circular(8.0),
-                                  child: Image.network(
-                                    context
+                                  child: CachedNetworkImage(
+                                    imageUrl: context
                                         .read<BankCodes>()
                                         .getById(item.bankCode)
                                         .iconUrl,
-                                    fit: BoxFit.contain,
-                                    errorBuilder: (_, __, ___) =>
-                                        const Text('No image'),
+                                    fit: BoxFit.cover,
+                                    placeholder: (_, __) => Shimmer(
+                                      child: DecoratedBox(
+                                        decoration: BoxDecoration(
+                                          color: Colors.grey.shade300,
+                                        ),
+                                      ),
+                                    ),
+                                    errorWidget: (ctx, url, err) {
+                                      if (context
+                                          .read<BankCodes>()
+                                          .getById(item.bankCode)
+                                          .iconUrl
+                                          .isEmpty) {
+                                        return const Center(
+                                          child: Text('No image.'),
+                                        );
+                                      }
+                                      return const Center(
+                                        child: Text('Error displaying image.'),
+                                      );
+                                    },
                                   ),
                                 ),
                               ),

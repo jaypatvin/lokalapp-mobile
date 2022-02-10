@@ -80,15 +80,24 @@ class _UserShopView extends HookView<UserShopViewModel> {
             SliverToBoxAdapter(
               child: Padding(
                 padding: EdgeInsets.only(bottom: 10.0.h),
-                child: Text(
-                  'No products added',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Colors.grey,
-                    fontWeight: FontWeight.w500,
-                    fontSize: 14.0.sp,
-                  ),
-                ),
+                child: Consumer<Products>(builder: (ctx, products, _) {
+                  if (products.isLoading) {
+                    return const Center(
+                      child: CircularProgressIndicator(
+                        color: kOrangeColor,
+                      ),
+                    );
+                  }
+                  return Text(
+                    'No products added',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Colors.grey,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 14.0.sp,
+                    ),
+                  );
+                },),
               ),
             ),
           if (vm.isCurrentUser)

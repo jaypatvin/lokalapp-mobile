@@ -1,4 +1,6 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:shimmer_animation/shimmer_animation.dart';
 
 import '../../../models/chat_model.dart';
 import '../../../utils/constants/themes.dart';
@@ -38,23 +40,28 @@ class ChatAvatar extends StatelessWidget {
         ),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(radius),
-          child: Image.network(
-            displayPhoto ?? '',
+          child: CachedNetworkImage(
+            imageUrl: displayPhoto ?? '',
             fit: BoxFit.cover,
-            errorBuilder: (_, e, stack) {
-              return Center(
-                child: MediaQuery(
-                  data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
-                  child: Text(
-                    displayName![0],
-                    style: Theme.of(context)
-                        .primaryTextTheme
-                        .subtitle1
-                        ?.copyWith(color: kTealColor),
-                  ),
+            placeholder: (_, __) => Shimmer(
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade300,
                 ),
-              );
-            },
+              ),
+            ),
+            errorWidget: (ctx, url, err) => Center(
+              child: MediaQuery(
+                data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+                child: Text(
+                  displayName![0],
+                  style: Theme.of(context)
+                      .primaryTextTheme
+                      .subtitle1
+                      ?.copyWith(color: kTealColor),
+                ),
+              ),
+            ),
           ),
         ),
       ),

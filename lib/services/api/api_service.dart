@@ -120,16 +120,16 @@ abstract class APIService<T> {
       try {
         final map = json.decode(response.body);
         if (map['data'] != null) {
-          throw throw FailureException(map['data']);
+          throw FailureException(map['data'], response);
         }
 
         if (map['message'] != null) {
-          throw FailureException(map['message']);
+          throw FailureException(map['message'], response);
         }
 
         throw FailureException(
           response.reasonPhrase ?? 'Error parsing data.',
-          response.body,
+          response,
         );
       } on FormatException {
         throw FailureException('Bad response format', response.body);

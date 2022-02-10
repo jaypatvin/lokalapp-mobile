@@ -1,8 +1,10 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:shimmer_animation/shimmer_animation.dart';
 
 import '../../../providers/cart.dart';
 import '../../../providers/products.dart';
@@ -68,12 +70,22 @@ class _ProductCardView extends HookView<ProductCardViewModel> {
       child: Stack(
         children: [
           Positioned.fill(
-            child: Image.network(
-              vm.productImage ?? '',
+            child: CachedNetworkImage(
+              imageUrl: vm.productImage ?? '',
               fit: BoxFit.cover,
-              errorBuilder: (ctx, _, __) => const SizedBox(
-                child: Text('No Image'),
+              placeholder: (_, __) => Shimmer(
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: Colors.grey.shade300,
+                  ),
+                ),
               ),
+              errorWidget: (ctx, url, err) {
+                if (vm.productImage?.isEmpty ?? true) {
+                  return const Center(child: Text('No image.'));
+                }
+                return const Center(child: Text('Error displaying image.'));
+              },
             ),
           ),
           Align(
