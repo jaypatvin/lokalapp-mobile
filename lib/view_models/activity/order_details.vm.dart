@@ -1,3 +1,5 @@
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/app_navigator.dart';
@@ -31,78 +33,85 @@ class OrderDetailsViewModel extends ViewModel {
   }
 
   Future<void> onPress(OrderAction action) async {
-    switch (action) {
-      case OrderAction.cancel:
-        await _apiService.cancel(orderId: order.id);
-        break;
-      case OrderAction.decline:
-        await _apiService.decline(orderId: order.id);
-        break;
-      case OrderAction.confirm:
-        final success = await _apiService.confirm(orderId: order.id);
-        if (success) {
-          AppRouter.activityNavigatorKey.currentState?.push(
-            AppNavigator.appPageRoute(
-              builder: (_) => OrderConfirmed(
-                order: order,
-                isBuyer: isBuyer,
+    try {
+      switch (action) {
+        case OrderAction.cancel:
+          await _apiService.cancel(orderId: order.id);
+          AppRouter.activityNavigatorKey.currentState?.pop();
+          break;
+        case OrderAction.decline:
+          await _apiService.decline(orderId: order.id);
+          AppRouter.activityNavigatorKey.currentState?.pop();
+          break;
+        case OrderAction.confirm:
+          final success = await _apiService.confirm(orderId: order.id);
+          if (success) {
+            AppRouter.activityNavigatorKey.currentState?.push(
+              AppNavigator.appPageRoute(
+                builder: (_) => OrderConfirmed(
+                  order: order,
+                  isBuyer: isBuyer,
+                ),
               ),
-            ),
-          );
-        }
-        break;
-      case OrderAction.pay:
-        AppRouter.activityNavigatorKey.currentState?.push(
-          AppNavigator.appPageRoute(
-            builder: (_) => PaymentOptionScreen(order: order),
-          ),
-        );
-        break;
-      case OrderAction.viewPayment:
-        final galleryItems = order.proofOfPayment != null
-            ? <LokalImages>[
-                LokalImages(url: order.proofOfPayment!, order: 0),
-              ]
-            : <LokalImages>[];
-        openGallery(context, 0, galleryItems);
-        break;
-      case OrderAction.confirmPayment:
-        final success = await _apiService.confirmPayment(orderId: order.id);
-
-        if (success) {
+            );
+          }
+          break;
+        case OrderAction.pay:
           AppRouter.activityNavigatorKey.currentState?.push(
             AppNavigator.appPageRoute(
-              builder: (_) => PaymentConfirmed(order: order),
+              builder: (_) => PaymentOptionScreen(order: order),
             ),
           );
-        }
-        break;
-      case OrderAction.shipOut:
-        final success = await _apiService.shipOut(orderId: order.id);
+          break;
+        case OrderAction.viewPayment:
+          final galleryItems = order.proofOfPayment != null
+              ? <LokalImages>[
+                  LokalImages(url: order.proofOfPayment!, order: 0),
+                ]
+              : <LokalImages>[];
+          openGallery(context, 0, galleryItems);
+          break;
+        case OrderAction.confirmPayment:
+          final success = await _apiService.confirmPayment(orderId: order.id);
 
-        if (success) {
-          AppRouter.activityNavigatorKey.currentState?.push(
-            AppNavigator.appPageRoute(
-              builder: (_) => ShippedOut(order: order),
-            ),
-          );
-        }
-        break;
-      case OrderAction.received:
-        final success = await _apiService.receive(orderId: order.id);
+          if (success) {
+            AppRouter.activityNavigatorKey.currentState?.push(
+              AppNavigator.appPageRoute(
+                builder: (_) => PaymentConfirmed(order: order),
+              ),
+            );
+          }
+          break;
+        case OrderAction.shipOut:
+          final success = await _apiService.shipOut(orderId: order.id);
 
-        if (success) {
-          AppRouter.activityNavigatorKey.currentState?.push(
-            AppNavigator.appPageRoute(
-              builder: (_) => OrderReceived(order: order),
-            ),
-          );
-        }
+          if (success) {
+            AppRouter.activityNavigatorKey.currentState?.push(
+              AppNavigator.appPageRoute(
+                builder: (_) => ShippedOut(order: order),
+              ),
+            );
+          }
+          break;
+        case OrderAction.received:
+          final success = await _apiService.receive(orderId: order.id);
 
-        break;
-      case OrderAction.orderAgain:
-        //TODO: add logic for order again
-        break;
+          if (success) {
+            AppRouter.activityNavigatorKey.currentState?.push(
+              AppNavigator.appPageRoute(
+                builder: (_) => OrderReceived(order: order),
+              ),
+            );
+          }
+
+          break;
+        case OrderAction.orderAgain:
+          //TODO: add logic for order again
+          break;
+      }
+    } catch (e, stack) {
+      FirebaseCrashlytics.instance.recordError(e, stack);
+      showToast('There was an error performing the task. Please try again.');
     }
   }
 }
