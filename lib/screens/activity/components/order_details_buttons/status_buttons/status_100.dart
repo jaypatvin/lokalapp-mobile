@@ -54,7 +54,6 @@ class Status100Buttons extends StatelessWidget {
                 onPressed: () => onPress(OrderAction.decline),
               ),
             ),
-            SizedBox(width: MediaQuery.of(context).size.width * 0.01),
             Expanded(
               child: AppButton.filled(
                 text: 'Confirm Order',

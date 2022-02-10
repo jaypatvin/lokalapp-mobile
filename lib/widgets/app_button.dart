@@ -135,16 +135,19 @@ class AppButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: onPressed,
-      style: ElevatedButton.styleFrom(
-        shape: const StadiumBorder(),
-        elevation: 0.0,
-        primary: isFilled ? color : Colors.transparent,
-        minimumSize: Size(0, kMinInteractiveDimension.h),
-        side: BorderSide(color: color),
+    return Container(
+      margin: const EdgeInsets.all(2.5),
+      child: ElevatedButton(
+        onPressed: onPressed,
+        style: ElevatedButton.styleFrom(
+          shape: const StadiumBorder(),
+          elevation: 0.0,
+          primary: isFilled ? color : Colors.transparent,
+          minimumSize: const Size(0, kMinInteractiveDimension),
+          side: BorderSide(color: color),
+        ),
+        child: child,
       ),
-      child: child,
     );
   }
 }

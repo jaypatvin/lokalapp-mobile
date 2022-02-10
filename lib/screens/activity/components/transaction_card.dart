@@ -121,10 +121,6 @@ class TransactionCard extends StatelessWidget {
         ),
         Visibility(
           visible: enableSecondButton,
-          child: SizedBox(width: 5.0.w),
-        ),
-        Visibility(
-          visible: enableSecondButton,
           child: Expanded(
             child: AppButton.custom(
               text: secondButtonText,
