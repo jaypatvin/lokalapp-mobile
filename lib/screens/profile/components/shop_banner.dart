@@ -55,28 +55,31 @@ class _ShopBannerView extends HookView<ShopBannerViewModel> {
       () {
         if (!vm.isUserRegistered &&
             (vm.user.registration?.idPhoto?.isNotEmpty ?? false)) {
-          return Container(
-            color: Colors.white,
-            width: double.infinity,
-            padding: EdgeInsets.symmetric(vertical: 16.0.h),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  'Verification Pending',
-                  style: Theme.of(context)
-                      .textTheme
-                      .headline5
-                      ?.copyWith(color: Colors.black),
-                ),
-                Text(
-                  'We are currently verifying your account.',
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyText1
-                      ?.copyWith(color: Colors.grey),
-                ),
-              ],
+          return GestureDetector(
+            onTap: vm.onVerify,
+            child: Container(
+              color: Colors.white,
+              width: double.infinity,
+              padding: EdgeInsets.symmetric(vertical: 16.0.h),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    'Verification Pending',
+                    style: Theme.of(context)
+                        .textTheme
+                        .headline6
+                        ?.copyWith(color: Colors.black),
+                  ),
+                  Text(
+                    'We are currently verifying your account.',
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyText2
+                        ?.copyWith(color: Colors.grey),
+                  ),
+                ],
+              ),
             ),
           );
         } else if (!vm.isUserRegistered) {

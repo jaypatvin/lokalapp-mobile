@@ -60,7 +60,7 @@ class _PostCardView extends StatelessView<PostCardViewModel> {
         children: [
           Text(
             '${user.firstName} ${user.lastName}',
-            style: Theme.of(vm.context).textTheme.subtitle2,
+            style: Theme.of(vm.context).textTheme.subtitle1,
           ),
           Text(
             createdSince,

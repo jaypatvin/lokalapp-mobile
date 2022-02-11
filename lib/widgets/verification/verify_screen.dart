@@ -21,12 +21,17 @@ import '../../utils/constants/themes.dart';
 import '../../utils/media_utility.dart';
 import '../../widgets/app_button.dart';
 import '../../widgets/custom_app_bar.dart';
+import '../overlays/constrained_scrollview.dart';
 import '../overlays/screen_loader.dart';
+import '../photo_box.dart';
 import 'verify_confirmation_screen.dart';
 
 class VerifyScreen extends StatefulWidget {
   final bool skippable;
-  const VerifyScreen({Key? key, this.skippable = true}) : super(key: key);
+  const VerifyScreen({
+    Key? key,
+    this.skippable = true,
+  }) : super(key: key);
   @override
   _VerifyScreenState createState() => _VerifyScreenState();
 }
@@ -41,8 +46,17 @@ class _VerifyScreenState extends State<VerifyScreen> with ScreenLoader {
 
   String? _chosenIdType;
   File? _file;
+  String? _uploadedImage;
 
-  Widget androidDropDown() {
+  @override
+  void initState() {
+    super.initState();
+
+    _chosenIdType = context.read<Auth>().user?.registration?.idType;
+    _uploadedImage = context.read<Auth>().user?.registration?.idPhoto;
+  }
+
+  Widget _androidDropDown() {
     final List<DropdownMenuItem<String>> dropDownItems = [];
 
     for (final id in _ids) {
@@ -85,7 +99,7 @@ class _VerifyScreenState extends State<VerifyScreen> with ScreenLoader {
     );
   }
 
-  Widget iOSPicker() {
+  Widget _iOSPicker() {
     final pickerItems = _ids
         .map<Widget>(
           (id) => Center(
@@ -269,84 +283,89 @@ class _VerifyScreenState extends State<VerifyScreen> with ScreenLoader {
           onPressedLeading: () => Navigator.maybePop(context),
           actions: _appBarActions(),
         ),
-        body: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 24.0.w),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                'Verify Your Account',
-                style: TextStyle(
-                  fontSize: 30.0.sp,
-                  color: kNavyColor,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              SizedBox(height: 10.0.h),
-              const Text(
-                "In order to access all of Lokal's features, "
-                'we need to verify your identity',
-                style: TextStyle(
-                  fontSize: 16.0,
-                  color: kNavyColor,
-                  fontWeight: FontWeight.w500,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              SizedBox(height: 75.0.h),
-              Container(
-                width: double.infinity,
-                decoration: const ShapeDecoration(
-                  color: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(30.0)),
+        body: ConstrainedScrollView(
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 24.0.w),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  'Verify Your Account',
+                  style: TextStyle(
+                    fontSize: 30.0.sp,
+                    color: kNavyColor,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
-                child: Platform.isIOS ? iOSPicker() : androidDropDown(),
-              ),
-              SizedBox(height: 20.0.h),
-              if (_file != null)
-                SizedBox(
+                SizedBox(height: 10.0.h),
+                const Text(
+                  "In order to access all of Lokal's features, "
+                  'we need to verify your identity',
+                  style: TextStyle(
+                    fontSize: 16.0,
+                    color: kNavyColor,
+                    fontWeight: FontWeight.w500,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                SizedBox(height: 25.0.h),
+                Container(
+                  width: double.infinity,
+                  decoration: const ShapeDecoration(
+                    color: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(30.0)),
+                    ),
+                  ),
+                  child: Platform.isIOS ? _iOSPicker() : _androidDropDown(),
+                ),
+                SizedBox(height: 20.0.h),
+                PhotoBox(
+                  shape: BoxShape.rectangle,
+                  width: 200.w,
                   height: 150.h,
-                  child: Image.file(
-                    _file!,
-                    fit: BoxFit.cover,
+                  displayBorder: false,
+                  imageSource: PhotoBoxImageSource(
+                    file: _file,
+                    url: _uploadedImage,
                   ),
                 ),
-              SizedBox(
-                width: double.infinity,
-                child: AppButton.transparent(
-                  text: _file != null
-                      ? 'Choose a different photo'
-                      : 'UPLOAD PHOTO OF ID',
-                  onPressed: () async {
-                    _file = await context
-                            .read<MediaUtility>()
-                            .showMediaDialog(context) ??
-                        _file;
-                    setState(() {});
-                  },
+                SizedBox(height: 10.0.h),
+                SizedBox(
+                  width: double.infinity,
+                  child: AppButton.transparent(
+                    text: _file != null || (_uploadedImage?.isNotEmpty ?? false)
+                        ? 'Choose a different photo'
+                        : 'UPLOAD PHOTO OF ID',
+                    onPressed: () async {
+                      _file = await context
+                              .read<MediaUtility>()
+                              .showMediaDialog(context) ??
+                          _file;
+                      setState(() {});
+                    },
+                  ),
                 ),
-              ),
-              const Spacer(),
-              SizedBox(
-                width: 120.0.w,
-                child: AppButton.filled(
-                  text: 'SUBMIT',
-                  onPressed: _file != null
-                      ? () async {
-                          await performFuture<void>(_onSubmitHandler);
-                        }
-                      : null,
-                  textStyle: _file != null
-                      ? const TextStyle(
-                          color: kNavyColor,
-                        )
-                      : null,
+                const Spacer(),
+                SizedBox(
+                  width: 160.0.w,
+                  child: AppButton.filled(
+                    text: 'SUBMIT',
+                    onPressed: _file != null
+                        ? () async {
+                            await performFuture<void>(_onSubmitHandler);
+                          }
+                        : null,
+                    textStyle: _file != null
+                        ? const TextStyle(
+                            color: kNavyColor,
+                          )
+                        : null,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 20),
-            ],
+                const SizedBox(height: 20),
+              ],
+            ),
           ),
         ),
       ),
