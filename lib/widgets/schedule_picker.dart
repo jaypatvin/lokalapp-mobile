@@ -131,7 +131,7 @@ class _SchedulePickerState extends State<SchedulePicker> {
   int _startDayOfMonth = 0;
 
   String _ordinalChoice = Schedule.ordinalNumbers.first;
-  String? _monthChoice;
+  late String _monthChoice;
   String? _monthDayChoice;
 
   RepeatChoices _repeatChoice = RepeatChoices.day;
@@ -313,6 +313,7 @@ class _SchedulePickerState extends State<SchedulePicker> {
       barrierDismissible: false,
       builder: (BuildContext context) {
         return _DayOfMonthPickerBody(
+          monthChoice: _monthChoice,
           markedStartDayOfMonth: _markedStartDayOfMonth,
           onDayPressed: (day) {
             setState(() {
@@ -357,7 +358,7 @@ class _SchedulePickerState extends State<SchedulePicker> {
   void setMonthDayOfWeek() {
     final weekdayIndex = en_USSymbols.WEEKDAYS.indexOf(_monthDayChoice!);
     final ordinalNumber = Schedule.ordinalNumbers.indexOf(_ordinalChoice) + 1;
-    final month = en_USSymbols.MONTHS.indexOf(_monthChoice!);
+    final month = en_USSymbols.MONTHS.indexOf(_monthChoice);
     final startDates =
         RepeatedDaysGenerator.instance!.getRepeatedMonthDaysByNthDay(
       everyNMonths: int.tryParse(_repeatUnit) ?? 1,
@@ -541,10 +542,10 @@ class _SchedulePickerState extends State<SchedulePicker> {
 
   void _onMonthChoiceChanged(String? value) {
     setState(() {
-      _monthChoice = value;
+      _monthChoice = value!;
     });
 
-    final month = en_USSymbols.MONTHS.indexOf(_monthChoice!);
+    final month = en_USSymbols.MONTHS.indexOf(_monthChoice);
     if (_usedDatePicker) {
       setMonthStartDate(month: month + 1);
     } else {
@@ -608,6 +609,7 @@ class _SchedulePickerState extends State<SchedulePicker> {
 
 class _DayOfMonthPickerBody extends StatelessWidget {
   final int markedStartDayOfMonth;
+  final String monthChoice;
   final void Function(int) onDayPressed;
   final void Function() onCancel;
   final void Function() onConfirm;
@@ -617,6 +619,7 @@ class _DayOfMonthPickerBody extends StatelessWidget {
     required this.onDayPressed,
     required this.onCancel,
     required this.onConfirm,
+    required this.monthChoice,
   }) : super(key: key);
 
   @override
@@ -641,6 +644,7 @@ class _DayOfMonthPickerBody extends StatelessWidget {
               padding: const EdgeInsets.all(5.0),
               onDayPressed: onDayPressed,
               markedDay: markedStartDayOfMonth,
+              monthChoice: monthChoice,
             ),
             Padding(
               padding: const EdgeInsets.symmetric(
@@ -757,12 +761,12 @@ class _DayOfMonth extends StatelessWidget {
   final int startDayOfMonth;
   final String? ordinalChoice;
   final String? monthDayChoice;
-  final String? monthChoice;
+  final String monthChoice;
   final List<String> ordinalNumbers;
   final void Function() onShowDayOfMonthPicker;
   final void Function(String?) onOrdinalChoiceChanged;
   final void Function(String?) onMonthDayChoiceChanged;
-  final void Function(String?) onMonthChoiceChanged;
+  final void Function(String) onMonthChoiceChanged;
   final bool editable;
   const _DayOfMonth({
     Key? key,
@@ -894,7 +898,7 @@ class _DayOfMonth extends StatelessWidget {
                 child: _StartMonthPicker(
                   monthChoice: monthChoice,
                   editable: editable,
-                  onMonthChoiceChanged: onMonthChoiceChanged,
+                  onMonthChoiceChanged: (value) => onMonthChoiceChanged(value!),
                 ),
               ),
             ),
@@ -1128,7 +1132,7 @@ class _StartMonthPicker extends StatelessWidget {
     required this.editable,
     required this.onMonthChoiceChanged,
   }) : super(key: key);
-  final String? monthChoice;
+  final String monthChoice;
   final bool editable;
   final void Function(String?) onMonthChoiceChanged;
 
@@ -1140,7 +1144,7 @@ class _StartMonthPicker extends StatelessWidget {
         child: Row(
           children: [
             Text(
-              monthChoice ?? '',
+              monthChoice,
               style: Theme.of(context).textTheme.bodyText1?.copyWith(
                     color: Colors.black,
                     fontWeight: FontWeight.w600,

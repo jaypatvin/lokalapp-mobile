@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/date_symbols.dart';
 
 import '../../utils/constants/themes.dart';
 import 'src/default_styles.dart';
@@ -9,6 +10,7 @@ class DayOfMonthPicker extends StatefulWidget {
   final Function(int) onDayPressed;
   final int? markedDay;
   final EdgeInsets padding;
+  final String monthChoice;
 
   const DayOfMonthPicker({
     Key? key,
@@ -17,6 +19,7 @@ class DayOfMonthPicker extends StatefulWidget {
     required this.onDayPressed,
     this.markedDay,
     this.padding = EdgeInsets.zero,
+    required this.monthChoice,
   }) : super(key: key);
 
   @override
@@ -92,8 +95,12 @@ class _DayOfMonthPickerState extends State<DayOfMonthPicker> {
     final weekDays = _renderWeekDays();
     final List<Widget> list = [...weekDays];
 
-    /// because of number of days in a week is 7, so it would be easier to count it til 7.
-    for (var index = 1; index <= 31; index++) {
+    final _index = en_USSymbols.MONTHS.indexOf(widget.monthChoice) + 1;
+
+    final _now = DateTime.now();
+    final _lastDayOfMonth = DateTime(_now.year, _index + 1, 0).day;
+
+    for (var index = 1; index <= _lastDayOfMonth; index++) {
       list.add(_dayContainer(index));
     }
 
