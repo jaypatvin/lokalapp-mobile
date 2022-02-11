@@ -15,6 +15,7 @@ import '../../routers/discover/product_detail.props.dart';
 import '../../services/api/api.dart';
 import '../../services/api/order_api_service.dart';
 import '../../utils/constants/themes.dart';
+import '../../utils/functions.utils.dart';
 import '../../utils/repeated_days_generator/schedule_generator.dart';
 import '../../widgets/app_button.dart';
 import '../../widgets/calendar_picker/calendar_picker.dart';
@@ -217,18 +218,46 @@ class _DeliverySchedule extends HookWidget {
   Widget build(BuildContext context) {
     final shop = context.watch<Shops>().findById(shopId)!;
     final operatingHours = shop.operatingHours;
-    // final selectableDates =
-    //     ScheduleGenerator().getSelectableDates(operatingHours);
     final selectableDates = useMemoized(
       () => ScheduleGenerator().getSelectableDates(operatingHours),
       [operatingHours],
     );
 
-    // copied from product_schedule (hey, it's repeated code -.-)
+    useEffect(
+      () {
+        final _now = DateTime.now();
+
+        final _order = context.read<ShoppingCart>().getProductOrder(productId);
+
+        if (_order?.schedule?.year == _now.year &&
+            _order?.schedule?.month == _now.month &&
+            _order?.schedule?.day == _now.day) {
+          final _timeOfDayNow = TimeOfDay.fromDateTime(_now);
+          final _closing = stringToTimeOfDay(operatingHours.endTime);
+          if ((_timeOfDayNow.hour * 60 + _timeOfDayNow.minute) >
+              (_closing.hour * 60 + _closing.minute)) {
+            final _nearestAvailableDate = selectableDates.reduce((a, b) {
+              if (a.difference(_now).isNegative) {
+                return b;
+              }
+              return a;
+            });
+            context.read<ShoppingCart>().updateOrder(
+                  productId: productId,
+                  schedule: _nearestAvailableDate,
+                  notify: false,
+                );
+          }
+        }
+      },
+      [operatingHours, selectableDates],
+    );
+
     return Consumer<ShoppingCart>(
       builder: (_, cart, __) {
         final delivery = cart.orders[shopId]![productId]!.schedule;
         return CalendarPicker(
+          closing: stringToTimeOfDay(operatingHours.endTime),
           selectableDates: selectableDates,
           onDayPressed: (date) {
             final now = DateTime.now().subtract(const Duration(days: 1));

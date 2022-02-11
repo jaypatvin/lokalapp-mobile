@@ -140,6 +140,7 @@ class _SchedulePickerState extends State<SchedulePicker> {
   bool _usedDatePicker = true;
 
   late List<RepeatChoices> _repeatabilityChoices;
+  TimeOfDay? _closing;
 
   @override
   void initState() {
@@ -175,6 +176,7 @@ class _SchedulePickerState extends State<SchedulePicker> {
   // Used on subscription schedule and edit-shop schedule.
   void _onOperatingHoursInit() {
     final _operatingHours = widget.operatingHours!;
+    _closing = stringToTimeOfDay(_operatingHours.endTime);
     final _schedule = _scheduleGenerator.generateSchedule(_operatingHours);
 
     if (widget.limitSelectableDates) {
@@ -383,6 +385,7 @@ class _SchedulePickerState extends State<SchedulePicker> {
       useSafeArea: false,
       builder: (BuildContext context) {
         return _CalendarPickerBody(
+          closing: _closing,
           repeatChoice: _repeatChoice,
           startDates: _markedStartDates,
           selectableDays: _selectableDays,
@@ -685,6 +688,7 @@ class _CalendarPickerBody extends StatelessWidget {
   final void Function(DateTime) onDayPressed;
   final void Function() onCancel;
   final void Function() onConfirm;
+  final TimeOfDay? closing;
   const _CalendarPickerBody({
     Key? key,
     required this.repeatChoice,
@@ -694,6 +698,7 @@ class _CalendarPickerBody extends StatelessWidget {
     required this.onDayPressed,
     required this.onCancel,
     required this.onConfirm,
+    this.closing,
   }) : super(key: key);
 
   @override
@@ -717,6 +722,7 @@ class _CalendarPickerBody extends StatelessWidget {
             StatefulBuilder(
               builder: (BuildContext context, StateSetter setState) {
                 return CalendarPicker(
+                  closing: closing,
                   selectedDate: startDates.firstOrNull ?? DateTime.now(),
                   selectableDates:
                       selectableDates.whereType<DateTime>().toList(),
