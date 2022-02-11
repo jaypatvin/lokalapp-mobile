@@ -37,8 +37,6 @@ class SearchViewModel extends ViewModel {
   UnmodifiableListView<String> get recentSearches =>
       UnmodifiableListView(_recentSearches);
 
-  Timer? _timer;
-
   late final String _userId;
 
   @override
@@ -49,19 +47,7 @@ class SearchViewModel extends ViewModel {
         context.read<UserSharedPreferences>().getRecentSearches(_userId);
   }
 
-  /// Will perform the search every 750ms
-  void onChanged({
-    required String text,
-    Duration duration = const Duration(milliseconds: 750),
-  }) {
-    _timer?.cancel();
-    _timer = Timer(
-      duration,
-      () => _performSearch(text),
-    );
-  }
-
-  Future<void> _performSearch(String query) async {
+  Future<void> onSubmitted(String query) async {
     if (query.isEmpty) {
       _searchResults.clear();
       notifyListeners();
@@ -113,7 +99,7 @@ class SearchViewModel extends ViewModel {
 
   void onRecentTap(int index) {
     searchController.text = _recentSearches[index];
-    _performSearch(searchController.text);
+    onSubmitted(searchController.text);
   }
 
   void onProductTap(int index) {

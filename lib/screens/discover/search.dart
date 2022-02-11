@@ -74,8 +74,8 @@ class _SearchView extends HookView<SearchViewModel> {
           tag: 'search_field',
           child: SearchTextField(
             controller: vm.searchController,
+            onSubmitted: vm.onSubmitted,
             enabled: true,
-            onChanged: (searchTerm) => vm.onChanged(text: searchTerm),
           ),
         ),
         onPressedLeading: () => Navigator.of(context).pop(),
