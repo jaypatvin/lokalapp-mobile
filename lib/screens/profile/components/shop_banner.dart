@@ -136,16 +136,11 @@ class _ShopBannerView extends HookView<ShopBannerViewModel> {
                   vertical: 10.0.h,
                   horizontal: 5.0.w,
                 ),
-                child: Align(
-                  child: SizedBox(
-                    width: MediaQuery.of(vm.context).size.width / 3,
-                    child: SizedBox(
-                      width: 300.w,
-                      child: AppButton.transparent(
-                        text: '+ ADD SHOP',
-                        onPressed: vm.onAddShop,
-                      ),
-                    ),
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 100.0.w),
+                  child: AppButton.transparent(
+                    text: '+ ADD SHOP',
+                    onPressed: vm.onAddShop,
                   ),
                 ),
               );
