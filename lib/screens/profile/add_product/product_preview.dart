@@ -218,9 +218,8 @@ class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
     if (_productBody.quantity != _product.quantity) {
       updateBody.update(quantity: _productBody.quantity);
     }
-    if (_productBody.canSubscribe != _product.canSubscribe) {
-      updateBody.update(canSubscribe: _productBody.canSubscribe);
-    }
+
+    updateBody.update(canSubscribe: _productBody.canSubscribe);
 
     if (_fileImages.isNotEmpty) {
       final gallery = <LokalImages>[..._product.gallery!];
@@ -242,11 +241,18 @@ class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
     updateData.remove('shop_id');
     updateData.remove('availability');
 
-    ProductBody().data.forEach((key, value) {
+    for (final entry in ProductBody().data.entries) {
+      final key = entry.key;
+      final value = entry.value;
+
       if (updateData[key] == value || updateData[key] == null) {
         updateData.remove(key);
+        continue;
       }
-    });
+      if (key == 'can_subscribe' && _product.canSubscribe == updateData[key]) {
+        updateData.remove(key);
+      }
+    }
 
     bool updateSchedule = false;
     if (!mounted) return false;
