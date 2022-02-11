@@ -17,8 +17,8 @@ class UserBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.symmetric(vertical: 10.0.h, horizontal: 5.0.w),
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 10.0.h),
       child: ListTile(
         onTap: onTap,
         leading: ChatAvatar(
