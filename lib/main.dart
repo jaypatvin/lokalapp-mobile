@@ -237,6 +237,7 @@ class _MyAppState extends State<MyApp> {
                       fontFamily: 'Goldplay',
                       appBarTheme: AppBarTheme(
                         titleTextStyle: TextStyle(
+                          fontFamily: 'Goldplay',
                           fontWeight: FontWeight.bold,
                           fontSize: 20.0.sp,
                         ),

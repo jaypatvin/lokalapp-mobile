@@ -11,6 +11,7 @@ import '../../../state/views/hook.view.dart';
 import '../../../utils/constants/themes.dart';
 import '../../../view_models/activity/subscriptions/subscription_details.vm.dart';
 import '../../../widgets/app_button.dart';
+import '../../../widgets/overlays/constrained_scrollview.dart';
 import 'components/subscription_plan_details.dart';
 
 // This Widget will display all states/conditions of the order details to avoid
@@ -76,78 +77,80 @@ class _SubscriptionDetailsView extends HookView<SubscriptionDetailsViewModel> {
           ],
         ),
       ),
-      body: Container(
-        padding: EdgeInsets.symmetric(
-          horizontal: 36.0.w,
-        ),
-        child: Column(
-          children: [
-            SubscriptionPlanDetails(
-              isBuyer: vm.isBuyer,
-              displayHeader: false,
-              subscriptionPlan: vm.subscriptionPlan,
-            ),
-            const Divider(),
-            SizedBox(
-              width: double.infinity,
-              child: Align(
-                alignment: Alignment.centerRight,
-                child: RichText(
-                  text: TextSpan(
-                    text: 'Order Total\t',
-                    children: [
-                      TextSpan(
-                        text: 'P ${vm.orderTotal}',
-                        style: Theme.of(context)
-                            .textTheme
-                            .subtitle1!
-                            .copyWith(color: Colors.orange),
-                      ),
-                    ],
-                    style: Theme.of(context).textTheme.bodyText1,
+      body: ConstrainedScrollView(
+        child: Container(
+          padding: EdgeInsets.symmetric(
+            horizontal: 36.0.w,
+          ),
+          child: Column(
+            children: [
+              SubscriptionPlanDetails(
+                isBuyer: vm.isBuyer,
+                displayHeader: false,
+                subscriptionPlan: vm.subscriptionPlan,
+              ),
+              const Divider(),
+              SizedBox(
+                width: double.infinity,
+                child: Align(
+                  alignment: Alignment.centerRight,
+                  child: RichText(
+                    text: TextSpan(
+                      text: 'Order Total\t',
+                      children: [
+                        TextSpan(
+                          text: 'P ${vm.orderTotal}',
+                          style: Theme.of(context)
+                              .textTheme
+                              .subtitle1!
+                              .copyWith(color: Colors.orange),
+                        ),
+                      ],
+                      style: Theme.of(context).textTheme.bodyText1,
+                    ),
                   ),
                 ),
               ),
-            ),
-            SizedBox(height: 16.0.h),
-            SizedBox(
-              width: double.infinity,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Notes:',
-                    style: Theme.of(context).textTheme.subtitle1,
-                  ),
-                  Text(
-                    vm.subscriptionPlan.instruction!,
-                    style: Theme.of(context).textTheme.bodyText1,
-                  ),
-                  SizedBox(height: 16.0.h),
-                  Text(
-                    'Delivery Address:',
-                    style: Theme.of(context).textTheme.subtitle1,
-                  ),
-                  Text(
-                    _address,
-                    style: Theme.of(context).textTheme.bodyText1,
-                  ),
-                  SizedBox(height: 16.0.h),
-                ],
+              SizedBox(height: 16.0.h),
+              SizedBox(
+                width: double.infinity,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Notes:',
+                      style: Theme.of(context).textTheme.subtitle1,
+                    ),
+                    Text(
+                      vm.subscriptionPlan.instruction!,
+                      style: Theme.of(context).textTheme.bodyText1,
+                    ),
+                    SizedBox(height: 16.0.h),
+                    Text(
+                      'Delivery Address:',
+                      style: Theme.of(context).textTheme.subtitle1,
+                    ),
+                    Text(
+                      _address,
+                      style: Theme.of(context).textTheme.bodyText1,
+                    ),
+                    SizedBox(height: 16.0.h),
+                  ],
+                ),
               ),
-            ),
-            //SizedBox(height: 16.0.h),
-            const Spacer(),
-            _SubscriptionDetailsButtons(
-              isBuyer: vm.isBuyer,
-              displayWarning: vm.checkForConflicts(),
-              disabled: _disabled,
-              onSeeSchedule: vm.onSeeSchedule,
-              onMessageHandler: vm.onMessageSend,
-              onUnsubscribe: vm.onUnsubscribe,
-              onSubscribeAgain: vm.onSubscribeAgain,
-            ),
-          ],
+              //SizedBox(height: 16.0.h),
+              const Spacer(),
+              _SubscriptionDetailsButtons(
+                isBuyer: vm.isBuyer,
+                displayWarning: vm.checkForConflicts(),
+                disabled: _disabled,
+                onSeeSchedule: vm.onSeeSchedule,
+                onMessageHandler: vm.onMessageSend,
+                onUnsubscribe: vm.onUnsubscribe,
+                onSubscribeAgain: vm.onSubscribeAgain,
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -228,7 +231,6 @@ class _SubscriptionDetailsButtons extends StatelessWidget {
                   onPressed: onUnsubscribe,
                 ),
               ),
-            SizedBox(width: 10.0.w),
             Expanded(
               child: AppButton.transparent(
                 text: isBuyer ? 'Message Seller' : 'Message Buyer',

@@ -53,7 +53,7 @@ class PhotoBox extends StatelessWidget {
               image: imageSource.isFile
                   ? FileImage(imageSource.file!) as ImageProvider<FileImage>
                   : CachedNetworkImageProvider(imageSource.url!)
-                      as ImageProvider<NetworkImage>,
+                      as ImageProvider<CachedNetworkImageProvider>,
               errorBuilder: (ctx, e, stack) => const Center(
                 child: Text('Error displaying image'),
               ),

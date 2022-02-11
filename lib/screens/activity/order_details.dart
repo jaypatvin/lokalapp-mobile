@@ -7,6 +7,7 @@ import '../../state/mvvm_builder.widget.dart';
 import '../../state/views/hook.view.dart';
 import '../../utils/constants/themes.dart';
 import '../../view_models/activity/order_details.vm.dart';
+import '../../widgets/overlays/constrained_scrollview.dart';
 import '../../widgets/overlays/screen_loader.dart';
 import 'components/order_details_buttons.dart';
 import 'components/transaction_details.dart';
@@ -143,9 +144,9 @@ class _OrderDetailsView extends HookView<OrderDetailsViewModel>
           ],
         ),
       ),
-      body: Container(
-        padding: EdgeInsets.only(top: 16.0.h, left: 32.0.w, right: 32.0.w),
-        child: SingleChildScrollView(
+      body: ConstrainedScrollView(
+        child: Container(
+          padding: EdgeInsets.only(top: 16.0.h, left: 32.0.w, right: 32.0.w),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -155,7 +156,8 @@ class _OrderDetailsView extends HookView<OrderDetailsViewModel>
               ),
               SizedBox(height: 12.0.h),
               _textInfo,
-              SizedBox(height: 24.0.h),
+              const Spacer(),
+              SizedBox(height: 10.0.h),
               OrderDetailsButtons(
                 statusCode: vm.order.statusCode,
                 isBuyer: vm.isBuyer,

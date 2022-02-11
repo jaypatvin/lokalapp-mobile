@@ -287,7 +287,6 @@ class _SchedulePickerState extends State<SchedulePicker> {
       } else {
         _selectableDays.add(index!);
         widget.onSelectableDaysChanged(_selectableDays);
-        if (_markedStartDates.isNotEmpty) return;
         final now = DateTime.now();
         for (DateTime indexDay = DateTime(now.year, now.month, now.day);
             indexDay.month <= DateTime.now().month + 1;

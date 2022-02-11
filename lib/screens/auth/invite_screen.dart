@@ -10,6 +10,7 @@ import '../../utils/constants/themes.dart';
 import '../../view_models/auth/invite_screen.vm.dart';
 import '../../widgets/app_button.dart';
 import '../../widgets/custom_app_bar.dart';
+import '../../widgets/overlays/constrained_scrollview.dart';
 import '../../widgets/overlays/screen_loader.dart';
 
 class InvitePage extends StatelessWidget {
@@ -52,66 +53,68 @@ class _InvitePageView extends HookView<InviteScreenViewModel>
         leadingColor: kTealColor,
         onPressedLeading: () => Navigator.maybePop(context),
       ),
-      body: Padding(
-        padding: EdgeInsets.symmetric(
-          horizontal: 38.0.w,
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              'Enter invite code',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-            SizedBox(height: 10.0.h),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 40.0.w),
-              child: Text(
-                'An invite code is required to create an account',
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.bodyText1,
+      body: ConstrainedScrollView(
+        child: Padding(
+          padding: EdgeInsets.symmetric(
+            horizontal: 38.0.w,
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                'Enter invite code',
+                style: Theme.of(context).textTheme.headline4,
               ),
-            ),
-            SizedBox(height: 45.0.h),
-            KeyboardActions(
-              disableScroll: true,
-              config: _keyboardConfig,
-              child: TextField(
-                focusNode: _inviteFocusNode,
-                onChanged: vm.onInviteCodeChanged,
-                style: const TextStyle(fontWeight: FontWeight.w500),
-                decoration: kInputDecoration.copyWith(
-                  hintText: 'Invite Code',
-                  errorText: vm.displayError ? kErrorInviteCode : null,
-                  errorMaxLines: 2,
+              SizedBox(height: 10.0.h),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 40.0.w),
+                child: Text(
+                  'An invite code is required to create an account',
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.bodyText1,
                 ),
               ),
-            ),
-            SizedBox(height: 24.0.h),
-            SizedBox(
-              width: 100.0.w,
-              child: AppButton.filled(
-                text: 'JOIN',
-                onPressed: () async => performFuture<void>(
-                  () async {
-                    _inviteFocusNode.unfocus();
-                    await vm.validateInviteCode();
-                  },
+              SizedBox(height: 45.0.h),
+              KeyboardActions(
+                disableScroll: true,
+                config: _keyboardConfig,
+                child: TextField(
+                  focusNode: _inviteFocusNode,
+                  onChanged: vm.onInviteCodeChanged,
+                  style: const TextStyle(fontWeight: FontWeight.w500),
+                  decoration: kInputDecoration.copyWith(
+                    hintText: 'Invite Code',
+                    errorText: vm.displayError ? kErrorInviteCode : null,
+                    errorMaxLines: 2,
+                  ),
                 ),
-                textStyle: const TextStyle(color: kNavyColor),
               ),
-            ),
-            SizedBox(height: 18.0.h),
-            InkWell(
-              child: Text(
-                "WHAT'S AN INVITE CODE?",
-                style: Theme.of(context).textTheme.subtitle2,
+              SizedBox(height: 24.0.h),
+              SizedBox(
+                width: 100.0.w,
+                child: AppButton.filled(
+                  text: 'JOIN',
+                  onPressed: () async => performFuture<void>(
+                    () async {
+                      _inviteFocusNode.unfocus();
+                      await vm.validateInviteCode();
+                    },
+                  ),
+                  textStyle: const TextStyle(color: kNavyColor),
+                ),
               ),
-              onTap: () => vm.showInviteCodeDescription(
-                const _InviteCodeDescription(),
+              SizedBox(height: 18.0.h),
+              InkWell(
+                child: Text(
+                  "WHAT'S AN INVITE CODE?",
+                  style: Theme.of(context).textTheme.subtitle2,
+                ),
+                onTap: () => vm.showInviteCodeDescription(
+                  const _InviteCodeDescription(),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

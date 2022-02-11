@@ -9,6 +9,7 @@ import '../../utils/constants/themes.dart';
 import '../../view_models/auth/profile_registration.vm.dart';
 import '../../widgets/app_button.dart';
 import '../../widgets/custom_app_bar.dart';
+import '../../widgets/overlays/constrained_scrollview.dart';
 import '../../widgets/overlays/screen_loader.dart';
 import '../../widgets/photo_box.dart';
 import 'components/checkbox_form_field.dart';
@@ -90,86 +91,96 @@ class _ProfileRegistrationView extends HookView<ProfileRegistrationViewModel>
           leadingColor: kTealColor,
           onPressedLeading: () => Navigator.maybePop(context),
         ),
-        body: KeyboardActions(
-          config: _kbConfig,
-          child: Column(
-            children: [
-              Text(
-                "Let's set up your profile",
-                style: TextStyle(
-                  fontWeight: FontWeight.w500,
-                  fontSize: 16.0.sp,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              SizedBox(height: 25.0.h),
-              GestureDetector(
-                onTap: vm.picturePickerHandler,
-                child: PhotoBox(
-                  imageSource: PhotoBoxImageSource(file: vm.profilePhoto),
-                  shape: BoxShape.circle,
-                  width: 120.0.w,
-                  height: 120.0.h,
-                ),
-              ),
-              SizedBox(
-                height: 20.0.h,
-              ),
-              if (vm.hasEmptyField)
+        body: ConstrainedScrollView(
+          child: KeyboardActions(
+            disableScroll: true,
+            config: _kbConfig,
+            child: Column(
+              children: [
                 Text(
-                  'You must fill out all field to proceed.',
+                  "Let's set up your profile",
                   style: TextStyle(
-                    color: kPinkColor,
                     fontWeight: FontWeight.w500,
-                    fontSize: 12.0.sp,
+                    fontSize: 18.0.sp,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                SizedBox(height: 25.0.h),
+                GestureDetector(
+                  onTap: vm.picturePickerHandler,
+                  child: PhotoBox(
+                    imageSource: PhotoBoxImageSource(file: vm.profilePhoto),
+                    shape: BoxShape.circle,
+                    width: 120.0.w,
+                    height: 120.0.h,
                   ),
                 ),
-              SizedBox(height: 10.0.h),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 30.0.w),
-                child: _RegistrationForm(
-                  formKey: vm.formKey,
-                  firstNameController: _firstNameController,
-                  firstNameNode: _firstNameFocusNode,
-                  lastNameController: _lastNameController,
-                  lastNameNode: _lastNameFocusNode,
-                  streetAddressController: _streetNameController,
-                  streetAdddressNode: _streetNameFocusNode,
-                  onFormSubmit: () async => performFuture<void>(
-                    () async => vm.registerHandler(),
-                  ),
-                  formFieldDecoration: InputDecoration(
-                    filled: true,
-                    fillColor: Colors.white,
-                    alignLabelWithHint: true,
-                    contentPadding: EdgeInsets.symmetric(horizontal: 16.0.w),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(30.0.r)),
-                      borderSide: vm.hasEmptyField
-                          ? const BorderSide(color: kPinkColor)
-                          : BorderSide.none,
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(30.0.r)),
-                      borderSide: vm.hasEmptyField
-                          ? const BorderSide(color: kPinkColor)
-                          : BorderSide.none,
+                SizedBox(
+                  height: 20.0.h,
+                ),
+                if (vm.hasEmptyField)
+                  Text(
+                    'You must fill out all field to proceed.',
+                    style: TextStyle(
+                      color: kPinkColor,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 12.0.sp,
                     ),
                   ),
-                ),
-              ),
-              SizedBox(height: 30.0.h),
-              SizedBox(
-                width: 200.0.w,
-                child: AppButton.filled(
-                  text: 'CREATE PROFILE',
-                  onPressed: () async => performFuture<void>(
-                    () async => vm.registerHandler(),
+                SizedBox(height: 10.0.h),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 30.0.w),
+                  child: _RegistrationForm(
+                    formKey: vm.formKey,
+                    firstNameController: _firstNameController,
+                    firstNameNode: _firstNameFocusNode,
+                    lastNameController: _lastNameController,
+                    lastNameNode: _lastNameFocusNode,
+                    streetAddressController: _streetNameController,
+                    streetAdddressNode: _streetNameFocusNode,
+                    onFormSubmit: () async => performFuture<void>(
+                      () async => vm.registerHandler(),
+                    ),
+                    formFieldDecoration: InputDecoration(
+                      filled: true,
+                      fillColor: Colors.white,
+                      alignLabelWithHint: true,
+                      contentPadding: EdgeInsets.symmetric(horizontal: 16.0.w),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(30.0.r)),
+                        borderSide: vm.hasEmptyField
+                            ? const BorderSide(color: kPinkColor)
+                            : BorderSide.none,
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(30.0.r)),
+                        borderSide: vm.hasEmptyField
+                            ? const BorderSide(color: kPinkColor)
+                            : BorderSide.none,
+                      ),
+                    ),
                   ),
-                  textStyle: const TextStyle(color: kNavyColor),
                 ),
-              ),
-            ],
+                const Spacer(),
+                SizedBox(height: 10.0.h),
+                SizedBox(
+                  width: 200.0.w,
+                  child: AppButton.filled(
+                    text: 'CREATE PROFILE',
+                    onPressed: () async {
+                      _firstNameFocusNode.unfocus();
+                      _lastNameFocusNode.unfocus();
+                      _streetNameFocusNode.unfocus();
+
+                      await performFuture<void>(
+                        () async => vm.registerHandler(),
+                      );
+                    },
+                    textStyle: const TextStyle(color: kNavyColor),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -217,33 +228,27 @@ class _RegistrationForm extends StatelessWidget {
       key: formKey,
       child: Column(
         children: [
-          SizedBox(
-            height: 40.0.h,
-            child: TextFormField(
-              focusNode: firstNameNode,
-              autocorrect: false,
-              keyboardType: TextInputType.emailAddress,
-              controller: firstNameController,
-              style: TextStyle(
-                fontWeight: FontWeight.w500,
-                fontSize: 16.0.sp,
-              ),
-              decoration: formFieldDecoration!.copyWith(hintText: 'First Name'),
+          TextFormField(
+            focusNode: firstNameNode,
+            autocorrect: false,
+            keyboardType: TextInputType.emailAddress,
+            controller: firstNameController,
+            style: TextStyle(
+              fontWeight: FontWeight.w500,
+              fontSize: 16.0.sp,
             ),
+            decoration: formFieldDecoration!.copyWith(hintText: 'First Name'),
           ),
           SizedBox(height: 15.0.h),
-          SizedBox(
-            height: 40.0.h,
-            child: TextFormField(
-              focusNode: lastNameNode,
-              autocorrect: false,
-              controller: lastNameController,
-              style: TextStyle(
-                fontWeight: FontWeight.w500,
-                fontSize: 16.0.sp,
-              ),
-              decoration: formFieldDecoration!.copyWith(hintText: 'Last Name'),
+          TextFormField(
+            focusNode: lastNameNode,
+            autocorrect: false,
+            controller: lastNameController,
+            style: TextStyle(
+              fontWeight: FontWeight.w500,
+              fontSize: 16.0.sp,
             ),
+            decoration: formFieldDecoration!.copyWith(hintText: 'Last Name'),
           ),
           SizedBox(height: 15.0.h),
           CheckboxFormField(
@@ -276,23 +281,20 @@ class _RegistrationForm extends StatelessWidget {
               ),
             ),
           ),
-          SizedBox(
-            height: 30.0.h,
-          ),
-          SizedBox(
-            height: 40.0.h,
-            child: TextFormField(
-              focusNode: streetAdddressNode,
-              autocorrect: false,
-              keyboardType: TextInputType.emailAddress,
-              controller: streetAddressController,
-              style: TextStyle(
-                fontWeight: FontWeight.w500,
-                fontSize: 16.0.sp,
-              ),
-              decoration:
-                  formFieldDecoration!.copyWith(hintText: 'Street Address'),
+          // SizedBox(
+          //   height: 30.0.h,
+          // ),
+          TextFormField(
+            focusNode: streetAdddressNode,
+            autocorrect: false,
+            keyboardType: TextInputType.emailAddress,
+            controller: streetAddressController,
+            style: TextStyle(
+              fontWeight: FontWeight.w500,
+              fontSize: 16.0.sp,
             ),
+            decoration:
+                formFieldDecoration!.copyWith(hintText: 'Street Address'),
           ),
         ],
       ),
