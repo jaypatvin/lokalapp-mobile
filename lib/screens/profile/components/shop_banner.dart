@@ -68,14 +68,14 @@ class _ShopBannerView extends HookView<ShopBannerViewModel> {
                     'Verification Pending',
                     style: Theme.of(context)
                         .textTheme
-                        .headline5
+                        .headline6
                         ?.copyWith(color: Colors.black),
                   ),
                   Text(
                     'We are currently verifying your account.',
                     style: Theme.of(context)
                         .textTheme
-                        .bodyText1
+                        .bodyText2
                         ?.copyWith(color: Colors.grey),
                   ),
                 ],

@@ -161,23 +161,19 @@ class _ProfileHeaderView extends StatelessView<ProfileHeaderViewModel> {
                     SizedBox(height: 10.0.h),
                     Text(
                       user.displayName!,
-                      style: TextStyle(
-                        fontSize: 18.0.sp,
-                        color: Colors.white,
-                        fontWeight: FontWeight.w700,
-                      ),
+                      style: Theme.of(context).textTheme.headline5?.copyWith(
+                            fontWeight: FontWeight.w700,
+                            color: Colors.white,
+                          ),
                     ),
                     SizedBox(height: 10.0.h),
                     if (!vm.isCurrentUser)
-                      SizedBox(
-                        width: 140.w,
-                        child: AppButton.transparent(
-                          text: 'Send a Message',
+                      AppButton.transparent(
+                        text: 'Send a Message',
+                        color: Colors.white,
+                        onPressed: vm.onSendMessage,
+                        textStyle: const TextStyle(
                           color: Colors.white,
-                          onPressed: vm.onSendMessage,
-                          textStyle: const TextStyle(
-                            color: Colors.white,
-                          ),
                         ),
                       ),
                   ],
