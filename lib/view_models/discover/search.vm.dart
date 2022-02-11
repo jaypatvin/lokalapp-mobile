@@ -37,27 +37,17 @@ class SearchViewModel extends ViewModel {
   UnmodifiableListView<String> get recentSearches =>
       UnmodifiableListView(_recentSearches);
 
-  Timer? _timer;
+  late final String _userId;
 
   @override
   void init() {
+    _userId = context.read<Auth>().user!.id!;
     _apiService = SearchAPIService(context.read<API>());
-    _recentSearches = context.read<UserSharedPreferences>().getRecentSearches();
+    _recentSearches =
+        context.read<UserSharedPreferences>().getRecentSearches(_userId);
   }
 
-  /// Will perform the search every 750ms
-  void onChanged({
-    required String text,
-    Duration duration = const Duration(milliseconds: 750),
-  }) {
-    _timer?.cancel();
-    _timer = Timer(
-      duration,
-      () => _performSearch(text),
-    );
-  }
-
-  Future<void> _performSearch(String query) async {
+  Future<void> onSubmitted(String query) async {
     if (query.isEmpty) {
       _searchResults.clear();
       notifyListeners();
@@ -71,7 +61,7 @@ class SearchViewModel extends ViewModel {
     notifyListeners();
 
     try {
-      context.read<UserSharedPreferences>().addRecentSearches(query);
+      context.read<UserSharedPreferences>().addRecentSearches(_userId, query);
 
       final response = await _apiService.search(
         query: query,
@@ -101,13 +91,15 @@ class SearchViewModel extends ViewModel {
 
   void onSearchDelete(int index) {
     _recentSearches.removeAt(index);
-    context.read<UserSharedPreferences>().setRecentSearches(_recentSearches);
+    context
+        .read<UserSharedPreferences>()
+        .setRecentSearches(_userId, _recentSearches);
     notifyListeners();
   }
 
   void onRecentTap(int index) {
     searchController.text = _recentSearches[index];
-    _performSearch(searchController.text);
+    onSubmitted(searchController.text);
   }
 
   void onProductTap(int index) {

@@ -7,6 +7,7 @@ class SearchTextField extends StatelessWidget {
   final bool enabled;
   final void Function(String)? onChanged;
   final void Function()? onTap;
+  final void Function(String)? onSubmitted;
   const SearchTextField({
     Key? key,
     this.controller,
@@ -14,16 +15,19 @@ class SearchTextField extends StatelessWidget {
     this.enabled = false,
     this.onChanged,
     this.onTap,
+    this.onSubmitted,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return TextField(
+      textInputAction: TextInputAction.search,
       enabled: enabled,
       controller: controller,
       onChanged: onChanged,
       onTap: onTap,
       style: TextStyle(fontSize: 16.0.sp),
+      onSubmitted: onSubmitted,
       decoration: InputDecoration(
         isDense: true, // Added this
         filled: true,
