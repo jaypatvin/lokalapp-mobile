@@ -14,6 +14,7 @@ import '../../../widgets/inputs/search_text_field.dart';
 import '../../../widgets/persistent_header_delegate_builder.dart';
 import '../../../widgets/products_sliver_grid.dart';
 import 'components/shop_header.dart';
+import 'components/shop_hours.dart';
 import 'components/user_banner.dart';
 
 class UserShop extends StatelessWidget {
@@ -80,24 +81,26 @@ class _UserShopView extends HookView<UserShopViewModel> {
             SliverToBoxAdapter(
               child: Padding(
                 padding: EdgeInsets.only(bottom: 10.0.h),
-                child: Consumer<Products>(builder: (ctx, products, _) {
-                  if (products.isLoading) {
-                    return const Center(
-                      child: CircularProgressIndicator(
-                        color: kOrangeColor,
+                child: Consumer<Products>(
+                  builder: (ctx, products, _) {
+                    if (products.isLoading) {
+                      return const Center(
+                        child: CircularProgressIndicator(
+                          color: kOrangeColor,
+                        ),
+                      );
+                    }
+                    return Text(
+                      'No products added',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.grey,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 14.0.sp,
                       ),
                     );
-                  }
-                  return Text(
-                    'No products added',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.grey,
-                      fontWeight: FontWeight.w500,
-                      fontSize: 14.0.sp,
-                    ),
-                  );
-                },),
+                  },
+                ),
               ),
             ),
           if (vm.isCurrentUser)
@@ -168,6 +171,27 @@ class _UserShopView extends HookView<UserShopViewModel> {
               displayName: vm.user.displayName!,
               profilePhoto: vm.user.profilePhoto,
               onTap: vm.goToProfile,
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: ShopHours(shopOperatingHours: vm.shop.operatingHours),
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                vertical: 10.0,
+                horizontal: 16.0,
+              ),
+              child: SizedBox(
+                width: double.infinity,
+                child: Text(
+                  vm.shop.description,
+                  textAlign: TextAlign.justify,
+                ),
+              ),
             ),
           ),
           SliverPersistentHeader(
