@@ -310,20 +310,15 @@ class _CalendarPicker extends StatelessWidget {
               'Set Availability Exceptions',
               style: Theme.of(context).textTheme.headline5,
             ),
-            Container(
-              width: MediaQuery.of(context).size.width * 0.95,
-              height: MediaQuery.of(context).size.height * 0.63,
-              padding: const EdgeInsets.all(5.0),
-              child: StatefulBuilder(
-                builder: (BuildContext context, StateSetter setState) {
-                  return CalendarPicker(
-                    startDate: startDate,
-                    onDayPressed: (day) => setState(() => onDayPressed(day)),
-                    markedDates: markedDates.whereType<DateTime>().toList(),
-                    selectableDays: selectableDays,
-                  );
-                },
-              ),
+            StatefulBuilder(
+              builder: (BuildContext context, StateSetter setState) {
+                return CalendarPicker(
+                  startDate: startDate,
+                  onDayPressed: (day) => setState(() => onDayPressed(day)),
+                  markedDates: markedDates.whereType<DateTime>().toList(),
+                  selectableDays: selectableDays,
+                );
+              },
             ),
             Container(
               padding: EdgeInsets.symmetric(horizontal: 10.0.w),
@@ -337,7 +332,6 @@ class _CalendarPicker extends StatelessWidget {
                       onPressed: onCancel,
                     ),
                   ),
-                  SizedBox(width: 5.0.w),
                   Expanded(
                     child: AppButton.filled(
                       text: 'Confirm',
