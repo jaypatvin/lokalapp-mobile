@@ -96,15 +96,15 @@ class _OrdersCard extends StatelessWidget {
               child: RichText(
                 text: TextSpan(
                   text: 'Order Total\t',
-                  style: Theme.of(context).textTheme.bodyText2?.copyWith(
-                        fontSize: 12.0.sp,
+                  style: Theme.of(context).textTheme.bodyText1?.copyWith(
+                        // fontSize: 12.0.sp,
                         fontWeight: FontWeight.w500,
                       ),
                   children: [
                     TextSpan(
                       text: (product.basePrice * order.quantity).toString(),
-                      style: Theme.of(context).textTheme.bodyText2?.copyWith(
-                            fontSize: 12.0.sp,
+                      style: Theme.of(context).textTheme.bodyText1?.copyWith(
+                            // fontSize: 12.0.sp,
                             color: kOrangeColor,
                             fontWeight: FontWeight.w600,
                           ),

@@ -73,10 +73,7 @@ class OrderDetails extends StatelessWidget {
                       product.name,
                       overflow: TextOverflow.ellipsis,
                       maxLines: 2,
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyText2
-                          ?.copyWith(fontWeight: FontWeight.w600),
+                      style: Theme.of(context).textTheme.subtitle1,
                     ),
                   ),
                   SizedBox(width: 16.0.w),
@@ -88,14 +85,14 @@ class OrderDetails extends StatelessWidget {
                         product.basePrice.toString(),
                         style: Theme.of(context)
                             .textTheme
-                            .bodyText2
+                            .bodyText1
                             ?.copyWith(fontWeight: FontWeight.w400),
                       ),
                       Text(
                         'x$quantity',
                         style: Theme.of(context)
                             .textTheme
-                            .bodyText2
+                            .bodyText1
                             ?.copyWith(fontWeight: FontWeight.w600),
                       ),
                     ],
@@ -107,7 +104,6 @@ class OrderDetails extends StatelessWidget {
                 child: Text(
                   'Edit',
                   style: Theme.of(context).textTheme.bodyText2?.copyWith(
-                        fontSize: 13.0.sp,
                         fontWeight: FontWeight.w300,
                         decoration: TextDecoration.underline,
                         color: kTealColor,

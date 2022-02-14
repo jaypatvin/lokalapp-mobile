@@ -131,7 +131,7 @@ class _SchedulePickerState extends State<SchedulePicker> {
   int _startDayOfMonth = 0;
 
   String _ordinalChoice = Schedule.ordinalNumbers.first;
-  String? _monthChoice;
+  late String _monthChoice;
   String? _monthDayChoice;
 
   RepeatChoices _repeatChoice = RepeatChoices.day;
@@ -140,6 +140,7 @@ class _SchedulePickerState extends State<SchedulePicker> {
   bool _usedDatePicker = true;
 
   late List<RepeatChoices> _repeatabilityChoices;
+  TimeOfDay? _closing;
 
   @override
   void initState() {
@@ -175,6 +176,7 @@ class _SchedulePickerState extends State<SchedulePicker> {
   // Used on subscription schedule and edit-shop schedule.
   void _onOperatingHoursInit() {
     final _operatingHours = widget.operatingHours!;
+    _closing = stringToTimeOfDay(_operatingHours.endTime);
     final _schedule = _scheduleGenerator.generateSchedule(_operatingHours);
 
     if (widget.limitSelectableDates) {
@@ -313,7 +315,19 @@ class _SchedulePickerState extends State<SchedulePicker> {
       barrierDismissible: false,
       builder: (BuildContext context) {
         return _DayOfMonthPickerBody(
+          monthChoice: _monthChoice,
           markedStartDayOfMonth: _markedStartDayOfMonth,
+          selectableMonthDays: widget.limitSelectableDates
+              ? _selectableDates
+                  .map<int?>((date) {
+                    if (date?.month ==
+                        (en_USSymbols.MONTHS.indexOf(_monthChoice) + 1)) {
+                      return date?.day;
+                    }
+                  })
+                  .whereType<int>()
+                  .toList()
+              : null,
           onDayPressed: (day) {
             setState(() {
               if (_markedStartDayOfMonth == day) {
@@ -357,7 +371,7 @@ class _SchedulePickerState extends State<SchedulePicker> {
   void setMonthDayOfWeek() {
     final weekdayIndex = en_USSymbols.WEEKDAYS.indexOf(_monthDayChoice!);
     final ordinalNumber = Schedule.ordinalNumbers.indexOf(_ordinalChoice) + 1;
-    final month = en_USSymbols.MONTHS.indexOf(_monthChoice!);
+    final month = en_USSymbols.MONTHS.indexOf(_monthChoice);
     final startDates =
         RepeatedDaysGenerator.instance!.getRepeatedMonthDaysByNthDay(
       everyNMonths: int.tryParse(_repeatUnit) ?? 1,
@@ -382,10 +396,12 @@ class _SchedulePickerState extends State<SchedulePicker> {
       useSafeArea: false,
       builder: (BuildContext context) {
         return _CalendarPickerBody(
+          closing: _closing,
           repeatChoice: _repeatChoice,
           startDates: _markedStartDates,
           selectableDays: _selectableDays,
           selectableDates: widget.limitSelectableDates ? _selectableDates : [],
+          limitToSelectableDates: widget.limitSelectableDates,
           onDayPressed: (day) {
             setState(() {
               if (_markedStartDates.contains(day)) {
@@ -541,10 +557,10 @@ class _SchedulePickerState extends State<SchedulePicker> {
 
   void _onMonthChoiceChanged(String? value) {
     setState(() {
-      _monthChoice = value;
+      _monthChoice = value!;
     });
 
-    final month = en_USSymbols.MONTHS.indexOf(_monthChoice!);
+    final month = en_USSymbols.MONTHS.indexOf(_monthChoice);
     if (_usedDatePicker) {
       setMonthStartDate(month: month + 1);
     } else {
@@ -608,15 +624,19 @@ class _SchedulePickerState extends State<SchedulePicker> {
 
 class _DayOfMonthPickerBody extends StatelessWidget {
   final int markedStartDayOfMonth;
+  final String monthChoice;
   final void Function(int) onDayPressed;
   final void Function() onCancel;
   final void Function() onConfirm;
+  final List<int>? selectableMonthDays;
   const _DayOfMonthPickerBody({
     Key? key,
     required this.markedStartDayOfMonth,
     required this.onDayPressed,
     required this.onCancel,
     required this.onConfirm,
+    required this.monthChoice,
+    this.selectableMonthDays,
   }) : super(key: key);
 
   @override
@@ -641,6 +661,8 @@ class _DayOfMonthPickerBody extends StatelessWidget {
               padding: const EdgeInsets.all(5.0),
               onDayPressed: onDayPressed,
               markedDay: markedStartDayOfMonth,
+              monthChoice: monthChoice,
+              selectableMonthDays: selectableMonthDays,
             ),
             Padding(
               padding: const EdgeInsets.symmetric(
@@ -681,6 +703,8 @@ class _CalendarPickerBody extends StatelessWidget {
   final void Function(DateTime) onDayPressed;
   final void Function() onCancel;
   final void Function() onConfirm;
+  final TimeOfDay? closing;
+  final bool limitToSelectableDates;
   const _CalendarPickerBody({
     Key? key,
     required this.repeatChoice,
@@ -690,6 +714,8 @@ class _CalendarPickerBody extends StatelessWidget {
     required this.onDayPressed,
     required this.onCancel,
     required this.onConfirm,
+    required this.limitToSelectableDates,
+    this.closing,
   }) : super(key: key);
 
   @override
@@ -713,12 +739,15 @@ class _CalendarPickerBody extends StatelessWidget {
             StatefulBuilder(
               builder: (BuildContext context, StateSetter setState) {
                 return CalendarPicker(
+                  closing: closing,
                   selectedDate: startDates.firstOrNull ?? DateTime.now(),
                   selectableDates:
                       selectableDates.whereType<DateTime>().toList(),
-                  selectableDays: repeatChoice == RepeatChoices.week
-                      ? selectableDays
-                      : [0, 1, 2, 3, 4, 5, 6],
+                  selectableDays: limitToSelectableDates
+                      ? []
+                      : repeatChoice == RepeatChoices.week
+                          ? selectableDays
+                          : [0, 1, 2, 3, 4, 5, 6],
                   onDayPressed: (day) => setState(() => onDayPressed(day)),
                   markedDates: startDates.whereType<DateTime>().toList(),
                 );
@@ -757,12 +786,12 @@ class _DayOfMonth extends StatelessWidget {
   final int startDayOfMonth;
   final String? ordinalChoice;
   final String? monthDayChoice;
-  final String? monthChoice;
+  final String monthChoice;
   final List<String> ordinalNumbers;
   final void Function() onShowDayOfMonthPicker;
   final void Function(String?) onOrdinalChoiceChanged;
   final void Function(String?) onMonthDayChoiceChanged;
-  final void Function(String?) onMonthChoiceChanged;
+  final void Function(String) onMonthChoiceChanged;
   final bool editable;
   const _DayOfMonth({
     Key? key,
@@ -894,7 +923,7 @@ class _DayOfMonth extends StatelessWidget {
                 child: _StartMonthPicker(
                   monthChoice: monthChoice,
                   editable: editable,
-                  onMonthChoiceChanged: onMonthChoiceChanged,
+                  onMonthChoiceChanged: (value) => onMonthChoiceChanged(value!),
                 ),
               ),
             ),
@@ -1128,7 +1157,7 @@ class _StartMonthPicker extends StatelessWidget {
     required this.editable,
     required this.onMonthChoiceChanged,
   }) : super(key: key);
-  final String? monthChoice;
+  final String monthChoice;
   final bool editable;
   final void Function(String?) onMonthChoiceChanged;
 
@@ -1140,7 +1169,7 @@ class _StartMonthPicker extends StatelessWidget {
         child: Row(
           children: [
             Text(
-              monthChoice ?? '',
+              monthChoice,
               style: Theme.of(context).textTheme.bodyText1?.copyWith(
                     color: Colors.black,
                     fontWeight: FontWeight.w600,

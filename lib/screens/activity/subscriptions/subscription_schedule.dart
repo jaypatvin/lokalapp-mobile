@@ -127,7 +127,7 @@ class _NewSubscriptionScheduleView
                   onStartDatesChanged: vm.onStartDatesChanged,
                   onRepeatUnitChanged: vm.onRepeatUnitChanged,
                   onSelectableDaysChanged: vm.onSelectableDaysChanged,
-                  repeatabilityChoices: vm.repeatabilityChoices,
+                  // repeatabilityChoices: vm.repeatabilityChoices,
                   operatingHours: vm.operatingHours,
                   limitSelectableDates: true,
                 ),

@@ -78,7 +78,9 @@ class _WeekdayPickerState extends State<WeekdayPicker> {
                   ),
           ),
           child: TextButton(
-            onPressed: () => widget.onDayPressed?.call(weekday),
+            onPressed: widget.onDayPressed != null
+                ? () => widget.onDayPressed?.call(weekday)
+                : null,
             style: TextButton.styleFrom(
               padding: EdgeInsets.zero,
               backgroundColor: isMarked ? Colors.orange : Colors.transparent,

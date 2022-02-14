@@ -17,6 +17,7 @@ class CalendarPicker extends HookWidget {
     this.onNonSelectableDayPressed,
     this.startDate,
     this.weekdayWidgetBuilder,
+    this.closing,
   }) : super(key: key);
 
   final List<DateTime> selectableDates;
@@ -27,6 +28,7 @@ class CalendarPicker extends HookWidget {
   final void Function(DateTime date) onDayPressed;
   final void Function(DateTime date)? onNonSelectableDayPressed;
   final Widget Function(int)? weekdayWidgetBuilder;
+  final TimeOfDay? closing;
 
   @override
   Widget build(BuildContext context) {
@@ -59,12 +61,25 @@ class CalendarPicker extends HookWidget {
             );
           },
       dayWidgetBuilder: (date, isLastMonthDay, isNextMonthDay) {
-        final _startDate = startDate ?? DateTime.now();
-        final isToday = _startDate.year == date.year &&
-            _startDate.month == date.month &&
-            _startDate.day == date.day;
+        final _now = DateTime.now();
+        final _startDate = startDate ??
+            DateTime(
+              _now.year,
+              _now.month,
+              _now.day,
+            );
+        final isToday = _now.year == date.year &&
+            _now.month == date.month &&
+            _now.day == date.day;
 
-        final bool isInSelectabledDates = selectableDates.any((e) {
+        bool isBeforeClosing = true;
+        if (closing != null && isToday) {
+          final _timeOfDayNow = TimeOfDay.fromDateTime(_now);
+          isBeforeClosing = (_timeOfDayNow.hour * 60 + _timeOfDayNow.minute) <
+              (closing!.hour * 60 + closing!.minute);
+        }
+
+        final bool isInSelectableDates = selectableDates.any((e) {
           return e.year == date.year &&
               e.month == date.month &&
               e.day == date.day;
@@ -78,10 +93,11 @@ class CalendarPicker extends HookWidget {
         });
 
         final bool isAfterStartDate =
-            _startDate.difference(date).isNegative && !isToday;
+            _startDate.difference(date).inSeconds <= 0;
 
-        final bool isSelectable =
-            (isInSelectabledDates || isInSelectableDays) && isAfterStartDate;
+        final bool isSelectable = (isInSelectableDates || isInSelectableDays) &&
+            isAfterStartDate &&
+            isBeforeClosing;
 
         return LokalCalendarDay(
           dateTime: date,

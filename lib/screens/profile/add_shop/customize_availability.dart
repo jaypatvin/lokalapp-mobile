@@ -55,7 +55,6 @@ class _CustomizeAvailabilityState extends State<CustomizeAvailability>
     with ScreenLoader {
   late List<DateTime?> initialDates;
   late List<DateTime?> markedDates;
-  // bool _shopCreated = false;
   bool _customized = false;
 
   @override
