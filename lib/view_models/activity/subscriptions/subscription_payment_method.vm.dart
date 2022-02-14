@@ -1,4 +1,5 @@
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:flutter/material.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
@@ -10,6 +11,7 @@ import '../../../providers/products.dart';
 import '../../../providers/subscriptions.dart';
 import '../../../routers/app_router.dart';
 import '../../../screens/cart/cart_confirmation.dart';
+import '../../../screens/discover/discover.dart';
 import '../../../services/api/api.dart';
 import '../../../services/api/subscription_plan_api_service.dart';
 import '../../../state/view_model.dart';
@@ -54,12 +56,13 @@ class SubscriptionPaymentMethodViewModel extends ViewModel {
         context.read<ShoppingCart>().remove(subscriptionPlanBody.productId);
         // the user is making a new subscription, meaning that the app
         // is currently at the Discover Tab
-        AppRouter.discoverNavigatorKey.currentState?.push(
+        AppRouter.discoverNavigatorKey.currentState?.pushAndRemoveUntil(
           AppNavigator.appPageRoute(
             builder: (_) => const CartConfirmation(
               isSubscription: true,
             ),
           ),
+          ModalRoute.withName(Discover.routeName),
         );
       }
     } catch (e, stack) {

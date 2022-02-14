@@ -41,13 +41,12 @@ class _RootState extends State<Root> {
       if (auth.user == null) throw FailureException('user-not-registered');
 
       if (!mounted) return;
-      await Future.wait([
-        context.read<Shops>().fetch(),
-        context.read<Products>().fetch(),
-        context.read<Categories>().fetch(),
-        context.read<BankCodes>().fetch(),
-        context.read<Users>().fetch(),
-      ]);
+      context.read<Shops>().fetch();
+      context.read<Products>().fetch();
+      context.read<Categories>().fetch();
+      context.read<BankCodes>().fetch();
+      await context.read<Users>().fetch();
+
       if (!mounted) return;
       AppRouter.rootNavigatorKey.currentState?.pushNamedAndRemoveUntil(
         BottomNavigation.routeName,

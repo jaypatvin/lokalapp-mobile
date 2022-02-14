@@ -97,7 +97,6 @@ class Auth extends ChangeNotifier {
           return;
         }
 
-        debugPrint('API called by firebaseAuth changes');
         FirebaseCrashlytics.instance.setUserIdentifier(id);
         _user = await _apiService.getById(userId: id);
 
@@ -109,7 +108,6 @@ class Auth extends ChangeNotifier {
 
         _userStreamSubscription = _userStream!.listen(
           (_) async {
-            debugPrint('API called by firestore changes');
             _user = await _apiService.getById(userId: id);
             notifyListeners();
           },

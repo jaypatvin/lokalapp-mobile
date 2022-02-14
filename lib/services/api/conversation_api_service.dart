@@ -10,7 +10,7 @@ class ConversationAPIService extends APIService<Conversation> {
   final API api;
   Endpoint get endpoint => Endpoint.chat;
 
-  Future<Conversation> createConversation({
+  Future<bool> createConversation({
     required String chatId,
     required Map<String, dynamic> body,
   }) async {
@@ -24,10 +24,8 @@ class ConversationAPIService extends APIService<Conversation> {
         body: json.encode(body),
       );
 
-      return handleResponse(
-        (map) => Conversation.fromMap(map),
-        response,
-      );
+      // Let firebase handle the creation of the conversation.
+      return handleGenericResponse(response);
     } catch (e) {
       rethrow;
     }

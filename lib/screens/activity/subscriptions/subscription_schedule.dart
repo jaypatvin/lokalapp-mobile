@@ -76,9 +76,9 @@ class SubscriptionSchedule extends StatelessWidget {
 }
 
 class _NewSubscriptionScheduleView
-    extends HookView<NewSubscriptionScheduleViewModel> with HookScreenLoader {
+    extends HookView<NewSubscriptionScheduleViewModel> {
   @override
-  Widget screen(
+  Widget render(
     BuildContext context,
     NewSubscriptionScheduleViewModel vm,
   ) {
@@ -137,9 +137,7 @@ class _NewSubscriptionScheduleView
                   width: double.infinity,
                   child: AppButton.filled(
                     text: 'Next',
-                    onPressed: () async => performFuture<void>(
-                      () async => vm.onSubmitHandler(),
-                    ),
+                    onPressed: vm.onSubmitHandler,
                   ),
                 ),
               ],

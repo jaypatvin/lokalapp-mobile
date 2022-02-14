@@ -16,19 +16,19 @@ class ShopHours extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final _isNowBeforeClosing = useMemoized<bool>(
+    final _isInOpeningHours = useMemoized<bool>(
       () {
         final _now = DateTime.now();
+        final _opening = stringToTimeOfDay(shopOperatingHours.startTime);
         final _closing = stringToTimeOfDay(shopOperatingHours.endTime);
         final _timeNow = TimeOfDay.fromDateTime(_now);
 
+        final _openingInMinutes = (_opening.hour * 60) + _opening.minute;
         final _closingInMinutes = (_closing.hour * 60) + _closing.minute;
         final _nowInMinutes = (_timeNow.hour * 60) + _timeNow.minute;
 
-        if (_nowInMinutes >= _closingInMinutes) {
-          return false;
-        }
-        return true;
+        return _openingInMinutes <= _nowInMinutes &&
+            _nowInMinutes <= _closingInMinutes;
       },
       [shopOperatingHours],
     );
@@ -39,12 +39,12 @@ class ShopHours extends HookWidget {
           .selectableDates;
     }, [
       shopOperatingHours,
-      _isNowBeforeClosing,
+      _isInOpeningHours,
     ]);
 
     final _isOpen = useMemoized<bool>(
       () {
-        if (!_isNowBeforeClosing) return false;
+        if (!_isInOpeningHours) return false;
         final _now = DateTime.now();
 
         return _selectableDates.any((date) =>
@@ -53,7 +53,7 @@ class ShopHours extends HookWidget {
             // ignore: require_trailing_commas
             _now.day == date.day);
       },
-      [_selectableDates, _isNowBeforeClosing],
+      [_selectableDates, _isInOpeningHours],
     );
 
     final _openingAt = useMemoized<String>(

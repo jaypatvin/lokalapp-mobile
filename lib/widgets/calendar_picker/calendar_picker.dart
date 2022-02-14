@@ -71,8 +71,8 @@ class CalendarPicker extends HookWidget {
         });
 
         final bool isInSelectableDays = selectableDays.any((e) {
-          if (e == 7) {
-            return date.weekday == 0;
+          if (e == 0) {
+            return date.weekday == 7;
           }
           return e == date.weekday;
         });
