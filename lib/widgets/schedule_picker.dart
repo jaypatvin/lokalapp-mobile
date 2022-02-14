@@ -317,6 +317,17 @@ class _SchedulePickerState extends State<SchedulePicker> {
         return _DayOfMonthPickerBody(
           monthChoice: _monthChoice,
           markedStartDayOfMonth: _markedStartDayOfMonth,
+          selectableMonthDays: widget.limitSelectableDates
+              ? _selectableDates
+                  .map<int?>((date) {
+                    if (date?.month ==
+                        (en_USSymbols.MONTHS.indexOf(_monthChoice) + 1)) {
+                      return date?.day;
+                    }
+                  })
+                  .whereType<int>()
+                  .toList()
+              : null,
           onDayPressed: (day) {
             setState(() {
               if (_markedStartDayOfMonth == day) {
@@ -390,6 +401,7 @@ class _SchedulePickerState extends State<SchedulePicker> {
           startDates: _markedStartDates,
           selectableDays: _selectableDays,
           selectableDates: widget.limitSelectableDates ? _selectableDates : [],
+          limitToSelectableDates: widget.limitSelectableDates,
           onDayPressed: (day) {
             setState(() {
               if (_markedStartDates.contains(day)) {
@@ -616,6 +628,7 @@ class _DayOfMonthPickerBody extends StatelessWidget {
   final void Function(int) onDayPressed;
   final void Function() onCancel;
   final void Function() onConfirm;
+  final List<int>? selectableMonthDays;
   const _DayOfMonthPickerBody({
     Key? key,
     required this.markedStartDayOfMonth,
@@ -623,6 +636,7 @@ class _DayOfMonthPickerBody extends StatelessWidget {
     required this.onCancel,
     required this.onConfirm,
     required this.monthChoice,
+    this.selectableMonthDays,
   }) : super(key: key);
 
   @override
@@ -648,6 +662,7 @@ class _DayOfMonthPickerBody extends StatelessWidget {
               onDayPressed: onDayPressed,
               markedDay: markedStartDayOfMonth,
               monthChoice: monthChoice,
+              selectableMonthDays: selectableMonthDays,
             ),
             Padding(
               padding: const EdgeInsets.symmetric(
@@ -689,6 +704,7 @@ class _CalendarPickerBody extends StatelessWidget {
   final void Function() onCancel;
   final void Function() onConfirm;
   final TimeOfDay? closing;
+  final bool limitToSelectableDates;
   const _CalendarPickerBody({
     Key? key,
     required this.repeatChoice,
@@ -698,6 +714,7 @@ class _CalendarPickerBody extends StatelessWidget {
     required this.onDayPressed,
     required this.onCancel,
     required this.onConfirm,
+    required this.limitToSelectableDates,
     this.closing,
   }) : super(key: key);
 
@@ -726,9 +743,11 @@ class _CalendarPickerBody extends StatelessWidget {
                   selectedDate: startDates.firstOrNull ?? DateTime.now(),
                   selectableDates:
                       selectableDates.whereType<DateTime>().toList(),
-                  selectableDays: repeatChoice == RepeatChoices.week
-                      ? selectableDays
-                      : [0, 1, 2, 3, 4, 5, 6],
+                  selectableDays: limitToSelectableDates
+                      ? []
+                      : repeatChoice == RepeatChoices.week
+                          ? selectableDays
+                          : [0, 1, 2, 3, 4, 5, 6],
                   onDayPressed: (day) => setState(() => onDayPressed(day)),
                   markedDates: startDates.whereType<DateTime>().toList(),
                 );

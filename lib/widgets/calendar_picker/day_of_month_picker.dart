@@ -11,6 +11,7 @@ class DayOfMonthPicker extends StatefulWidget {
   final int? markedDay;
   final EdgeInsets padding;
   final String monthChoice;
+  final List<int>? selectableMonthDays;
 
   const DayOfMonthPicker({
     Key? key,
@@ -20,6 +21,7 @@ class DayOfMonthPicker extends StatefulWidget {
     this.markedDay,
     this.padding = EdgeInsets.zero,
     required this.monthChoice,
+    this.selectableMonthDays,
   }) : super(key: key);
 
   @override
@@ -38,6 +40,9 @@ class _DayOfMonthPickerState extends State<DayOfMonthPicker> {
 
   Widget _dayContainer(int day) {
     final bool _isMarked = day == _markedDay;
+    // TODO: do we limit this?
+    // final bool _isEnabled = widget.selectableMonthDays?.contains(day) ?? true;
+    const bool _isEnabled = true;
 
     return Container(
       margin: const EdgeInsets.all(1.0),
@@ -53,17 +58,20 @@ class _DayOfMonthPickerState extends State<DayOfMonthPicker> {
         ),
       ),
       child: TextButton(
-        onPressed: () {
-          // the calling method should handle the logic of the day press
-          setState(() {
-            if (_markedDay == day) {
-              _markedDay = 0;
-            } else {
-              _markedDay = day;
-            }
-          });
-          widget.onDayPressed(day);
-        },
+        onPressed: _isEnabled
+            ? () {
+                // the calling method should handle the logic of the day press
+                setState(() {
+                  if (_markedDay == day) {
+                    _markedDay = 0;
+                  } else {
+                    _markedDay = day;
+                  }
+                });
+                widget.onDayPressed(day);
+              }
+            // ignore: dead_code
+            : null,
         style: TextButton.styleFrom(
           padding: EdgeInsets.zero,
           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -82,7 +90,10 @@ class _DayOfMonthPickerState extends State<DayOfMonthPicker> {
             child: Text(
               '$day',
               semanticsLabel: day.toString(),
-              style: defaultDaysTextStyle,
+              style: _isEnabled
+                  ? defaultDaysTextStyle
+                  // ignore: dead_code
+                  : defaultInactiveDaysTextStyle,
               maxLines: 1,
             ),
           ),
@@ -92,8 +103,9 @@ class _DayOfMonthPickerState extends State<DayOfMonthPicker> {
   }
 
   List<Widget> _renderDays() {
-    final weekDays = _renderWeekDays();
-    final List<Widget> list = [...weekDays];
+    final List<Widget> list = [
+      ...List.generate(7, (_) => const SizedBox(height: 5.0))
+    ];
 
     final _index = en_USSymbols.MONTHS.indexOf(widget.monthChoice) + 1;
 
@@ -107,33 +119,33 @@ class _DayOfMonthPickerState extends State<DayOfMonthPicker> {
     return list;
   }
 
-  Widget _weekdayContainer(String weekDayName) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 4.0),
-      padding: EdgeInsets.zero,
-      child: Center(
-        child: DefaultTextStyle(
-          style: defaultWeekdayTextStyle,
-          child: Text(
-            weekDayName,
-            semanticsLabel: weekDayName,
-            style: defaultWeekdayTextStyle,
-          ),
-        ),
-      ),
-    );
-  }
+  // Widget _weekdayContainer(String weekDayName) {
+  //   return Container(
+  //     margin: const EdgeInsets.only(bottom: 4.0),
+  //     padding: EdgeInsets.zero,
+  //     child: Center(
+  //       child: DefaultTextStyle(
+  //         style: defaultWeekdayTextStyle,
+  //         child: Text(
+  //           weekDayName,
+  //           semanticsLabel: weekDayName,
+  //           style: defaultWeekdayTextStyle,
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
 
-  List<Widget> _renderWeekDays() {
-    final List<Widget> list = [];
+  // List<Widget> _renderWeekDays() {
+  //   final List<Widget> list = [];
 
-    final days = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
-    for (final day in days) {
-      list.add(_weekdayContainer(day));
-    }
+  //   final days = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+  //   for (final day in days) {
+  //     list.add(_weekdayContainer(day));
+  //   }
 
-    return list;
-  }
+  //   return list;
+  // }
 
   @override
   Widget build(BuildContext context) {
