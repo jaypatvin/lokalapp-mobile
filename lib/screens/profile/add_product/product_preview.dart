@@ -245,12 +245,14 @@ class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
       final key = entry.key;
       final value = entry.value;
 
+      if (key == 'can_subscribe') {
+        if (_product.canSubscribe == updateData[key]) updateData.remove(key);
+        
+        continue;
+      }
       if (updateData[key] == value || updateData[key] == null) {
         updateData.remove(key);
         continue;
-      }
-      if (key == 'can_subscribe' && _product.canSubscribe == updateData[key]) {
-        updateData.remove(key);
       }
     }
 
