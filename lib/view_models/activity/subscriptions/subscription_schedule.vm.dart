@@ -136,17 +136,20 @@ class NewSubscriptionScheduleViewModel extends ViewModel {
         startDates: _startDates,
       ),
     );
-    AppRouter.discoverNavigatorKey.currentState?.push(
-      AppNavigator.appPageRoute(
-        builder: (_) => SubscriptionPaymentMethod(
-          subscriptionPlanBody: subscriptionPlanBody,
-          reschedule: reschedule,
+
+    if (reschedule != null) {
+      AppRouter.discoverNavigatorKey.currentState?.push(
+        AppNavigator.appPageRoute(
+          builder: (_) => SubscriptionPaymentMethod(
+            subscriptionPlanBody: subscriptionPlanBody,
+            reschedule: reschedule,
+          ),
         ),
-      ),
-    );
+      );
+    }
   }
 
-  Future<bool> _onCreateSubscriptionPlan() async {
+  Future<bool?> _onCreateSubscriptionPlan() async {
     final repeatChoice = _generator.getRepeatChoicesFromString(_repeatType);
     final dates = _generator
         .generateInitialDates(
@@ -173,11 +176,8 @@ class NewSubscriptionScheduleViewModel extends ViewModel {
     final difference =
         dates.toSet().difference(productSchedule.toSet()).toList();
     if (difference.isNotEmpty) {
-      final setAutomatically =
-          await displayNotification?.call(context) ?? false;
-
       // We then return what the user chose, to set manually or automatically.
-      return setAutomatically;
+      return await displayNotification?.call(context);
     }
 
     // If there are no conflicts, no need to setAutomatically.

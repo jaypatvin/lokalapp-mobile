@@ -76,7 +76,6 @@ class ScheduleConflictsNotification extends StatelessWidget {
                       onPressed: onManual,
                     ),
                   ),
-                  SizedBox(width: 5.0.w),
                   Expanded(
                     child: AppButton.filled(
                       text: 'Set Automatically',
