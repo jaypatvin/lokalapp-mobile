@@ -57,6 +57,7 @@ class Products extends ChangeNotifier {
       if (index >= 0) {
         try {
           _products[index] = await _apiService.getById(productId: id);
+          _products[index].likes = await _db.getProductLikes(id);
         } catch (e) {
           if (e is FailureException && e.details is http.Response) {
             if ((e.details! as http.Response).statusCode == 404) {
@@ -102,6 +103,9 @@ class Products extends ChangeNotifier {
       _products = await _apiService.getCommunityProducts(
         communityId: _communityId!,
       );
+      for (final product in _products) {
+        product.likes = await _db.getProductLikes(product.id);
+      }
       _isLoading = false;
       notifyListeners();
     } catch (e) {

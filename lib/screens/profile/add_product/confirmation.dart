@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lottie/lottie.dart';
 
+import '../../../routers/app_router.dart';
 import '../../../utils/constants/assets.dart';
 import '../../../widgets/app_button.dart';
 import '../../../widgets/custom_app_bar.dart';
-import '../shop/user_shop.dart';
+import '../profile_screen.dart';
 
 class AddProductConfirmation extends StatelessWidget {
   const AddProductConfirmation({Key? key}) : super(key: key);
@@ -50,28 +51,13 @@ class AddProductConfirmation extends StatelessWidget {
               ),
             ),
             const Spacer(),
-            // SizedBox(
-            //   width: double.infinity,
-            //   child: AppButton.transparent(
-            //     text: 'Go to Listing',
-            //     onPressed: () async {
-            //       Navigator.popUntil(
-            //         context,
-            //         ModalRoute.withName(UserShop.routeName),
-            //       );
-
-            //     },
-            //   ),
-            // ),
             SizedBox(
               width: double.infinity,
               child: AppButton.filled(
                 text: 'Back to my Shop',
                 onPressed: () {
-                  Navigator.popUntil(
-                    context,
-                    ModalRoute.withName(UserShop.routeName),
-                  );
+                  AppRouter.profileNavigatorKey.currentState
+                      ?.popUntil(ModalRoute.withName(ProfileScreen.routeName));
                 },
               ),
             ),

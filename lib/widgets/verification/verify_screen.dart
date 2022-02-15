@@ -52,8 +52,12 @@ class _VerifyScreenState extends State<VerifyScreen> with ScreenLoader {
   void initState() {
     super.initState();
 
-    _chosenIdType = context.read<Auth>().user?.registration?.idType;
-    _uploadedImage = context.read<Auth>().user?.registration?.idPhoto;
+    final user = context.read<Auth>().user;
+
+    _chosenIdType = user?.registration?.idType?.isNotEmpty ?? false
+        ? user?.registration?.idType
+        : null;
+    _uploadedImage = user?.registration?.idPhoto;
   }
 
   Widget _androidDropDown() {

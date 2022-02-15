@@ -11,6 +11,7 @@ final inviteRef = FirebaseFirestore.instance.collection('invites');
 final shopRef = FirebaseFirestore.instance.collection('shops');
 final chatsRef = FirebaseFirestore.instance.collection('chats');
 final ordersRef = FirebaseFirestore.instance.collection('orders');
+final productsRef = FirebaseFirestore.instance.collection('products');
 final subscriptionPlansRef =
     FirebaseFirestore.instance.collection('product_subscription_plans');
 
@@ -21,6 +22,31 @@ class Database {
   static Database? _database;
   static Database get instance {
     return _database ??= Database();
+  }
+
+  Future<bool> isProductLiked({
+    required String productId,
+    required String userId,
+  }) async {
+    final snapshot = await productsRef
+        .doc(productId)
+        .collection('likes')
+        .where('user_id', isEqualTo: userId)
+        .get();
+
+    return snapshot.docs.isNotEmpty;
+  }
+
+  Future<List<String>> getProductLikes(String productId) async {
+    final snapshot = await productsRef.doc(productId).collection('likes').get();
+
+    return snapshot.docs
+        .map<String?>((doc) {
+          final data = doc.data();
+          return data['user_id'];
+        })
+        .whereType<String>()
+        .toList();
   }
 
   Future<void> onNotificationSeen({

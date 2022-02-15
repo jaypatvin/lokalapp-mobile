@@ -62,11 +62,14 @@ class AddShopConfirmation extends StatelessWidget {
               child: AppButton.transparent(
                 text: '+ Add a New Product',
                 onPressed: () {
-                  context.read<AppRouter>()
-                    ..keyOf(AppRoute.profile)
-                        .currentState!
-                        .popUntil(ModalRoute.withName(ProfileScreen.routeName))
-                    ..navigateTo(AppRoute.profile, AddProduct.routeName);
+                  final user = context.read<Auth>().user!;
+                  AppRouter.profileNavigatorKey.currentState
+                    ?..popUntil(ModalRoute.withName(ProfileScreen.routeName))
+                    ..pushNamed(
+                      UserShop.routeName,
+                      arguments: UserShopProps(user.id!),
+                    )
+                    ..pushNamed(AddProduct.routeName);
                 },
               ),
             ),
@@ -77,12 +80,9 @@ class AddShopConfirmation extends StatelessWidget {
                 text: 'Back to My Shop',
                 onPressed: () {
                   final user = context.read<Auth>().user!;
-                  context.read<AppRouter>()
-                    ..keyOf(AppRoute.profile)
-                        .currentState!
-                        .popUntil(ModalRoute.withName(ProfileScreen.routeName))
-                    ..navigateTo(
-                      AppRoute.profile,
+                  AppRouter.profileNavigatorKey.currentState
+                    ?..popUntil(ModalRoute.withName(ProfileScreen.routeName))
+                    ..pushNamed(
                       UserShop.routeName,
                       arguments: UserShopProps(user.id!),
                     );

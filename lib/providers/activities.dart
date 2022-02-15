@@ -123,6 +123,7 @@ class Activities extends ChangeNotifier {
     final index = _feed.indexWhere((a) => a.id == activityId);
     try {
       _feed[index].liked = true;
+      _feed[index].likedCount++;
       notifyListeners();
 
       await _activityService.like(
@@ -131,6 +132,7 @@ class Activities extends ChangeNotifier {
       );
     } catch (e) {
       _feed[index].liked = false;
+      _feed[index].likedCount--;
       notifyListeners();
       rethrow;
     }
@@ -143,6 +145,7 @@ class Activities extends ChangeNotifier {
     final index = _feed.indexWhere((a) => a.id == activityId);
     try {
       _feed[index].liked = false;
+      _feed[index].likedCount--;
       notifyListeners();
       await _activityService.unlike(
         activityId: activityId,
@@ -150,6 +153,7 @@ class Activities extends ChangeNotifier {
       );
     } catch (e) {
       _feed[index].liked = true;
+      _feed[index].likedCount++;
       notifyListeners();
       rethrow;
     }

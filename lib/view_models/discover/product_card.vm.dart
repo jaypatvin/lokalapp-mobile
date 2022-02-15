@@ -25,12 +25,15 @@ class ProductCardViewModel extends ViewModel {
   late Shop shop;
 
   String? get productImage =>
-      product.productPhoto ?? product.gallery?.first.url;
+      product.productPhoto ??
+      (product.gallery?.isNotEmpty ?? false
+          ? product.gallery?.first.url
+          : null);
   String get productName => product.name;
   String get productPrice => product.basePrice.toString();
   String get productRating => product.avgRating.toString();
 
-  bool get isLiked => product.likes.contains(context.read<Auth>().user!.id);
+  bool get isLiked => product.likes.contains(context.read<Auth>().user?.id);
 
   @override
   void init() {
