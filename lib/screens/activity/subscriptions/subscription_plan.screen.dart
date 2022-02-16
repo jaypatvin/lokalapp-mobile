@@ -9,15 +9,16 @@ import '../../../providers/auth.dart';
 import '../../../state/mvvm_builder.widget.dart';
 import '../../../state/views/hook.view.dart';
 import '../../../utils/constants/themes.dart';
-import '../../../view_models/activity/subscriptions/subscription_details.vm.dart';
+import '../../../view_models/activity/subscriptions/subscription_plan.screen.vm.dart';
 import '../../../widgets/app_button.dart';
 import '../../../widgets/overlays/constrained_scrollview.dart';
-import 'components/subscription_plan_details.dart';
+import '../../../widgets/overlays/screen_loader.dart';
+import 'components/subscription_plan.details.dart';
 
 // This Widget will display all states/conditions of the order details to avoid
 // code repetition.
-class SubscriptionDetails extends StatelessWidget {
-  const SubscriptionDetails({
+class SubscriptionPlanScreen extends StatelessWidget {
+  const SubscriptionPlanScreen({
     Key? key,
     required this.subscriptionPlan,
     this.isBuyer = true,
@@ -29,7 +30,7 @@ class SubscriptionDetails extends StatelessWidget {
   Widget build(BuildContext context) {
     return MVVM(
       view: (_, __) => _SubscriptionDetailsView(),
-      viewModel: SubscriptionDetailsViewModel(
+      viewModel: SubscriptionPlanScreenViewModel(
         subscriptionPlan: subscriptionPlan,
         isBuyer: isBuyer,
       ),
@@ -37,9 +38,11 @@ class SubscriptionDetails extends StatelessWidget {
   }
 }
 
-class _SubscriptionDetailsView extends HookView<SubscriptionDetailsViewModel> {
+class _SubscriptionDetailsView extends HookView<SubscriptionPlanScreenViewModel>
+    with HookScreenLoader {
   @override
-  Widget render(BuildContext context, SubscriptionDetailsViewModel vm) {
+  Widget screen(BuildContext context, SubscriptionPlanScreenViewModel vm) {
+    print(vm.subscriptionPlan.status);
     final _address = useMemoized<String>(() {
       final _address = context.read<Auth>().user!.address!;
       final _addressList = [
@@ -52,8 +55,30 @@ class _SubscriptionDetailsView extends HookView<SubscriptionDetailsViewModel> {
       return _addressList.where((text) => text.isNotEmpty).join(', ');
     });
 
-    final _disabled = useMemoized<bool>(
-      () => vm.subscriptionPlan.status == 'disabled',
+    final _subHeader = useMemoized<String>(
+      () {
+        switch (vm.subscriptionPlan.status) {
+          case SubscriptionStatus.enabled:
+            return 'Active Subscriptions';
+          case SubscriptionStatus.cancelled:
+            return 'Declined Subscriptions';
+          case SubscriptionStatus.unsubscribed:
+            return 'Past Subscriptions';
+          case SubscriptionStatus.disabled:
+            return vm.isBuyer ? 'For Confirmation' : 'To Confirm';
+        }
+      },
+      [vm, vm.isBuyer, vm.subscriptionPlan],
+    );
+
+    final _displayWarning = useMemoized<bool>(
+      () {
+        final status = vm.subscriptionPlan.status;
+        return (status == SubscriptionStatus.enabled ||
+                status == SubscriptionStatus.disabled) &&
+            vm.isBuyer;
+      },
+      [vm, vm.subscriptionPlan, vm.isBuyer],
     );
 
     return Scaffold(
@@ -69,7 +94,7 @@ class _SubscriptionDetailsView extends HookView<SubscriptionDetailsViewModel> {
                   ),
             ),
             Text(
-              _disabled ? 'Past Subscription' : 'Subscription',
+              _subHeader,
               style: Theme.of(context).textTheme.subtitle1!.copyWith(
                     color: Colors.white,
                   ),
@@ -90,26 +115,22 @@ class _SubscriptionDetailsView extends HookView<SubscriptionDetailsViewModel> {
                 subscriptionPlan: vm.subscriptionPlan,
               ),
               const Divider(),
-              SizedBox(
-                width: double.infinity,
-                child: Align(
-                  alignment: Alignment.centerRight,
-                  child: RichText(
-                    text: TextSpan(
-                      text: 'Order Total\t',
-                      children: [
-                        TextSpan(
-                          text: 'P ${vm.orderTotal}',
-                          style: Theme.of(context)
-                              .textTheme
-                              .subtitle1!
-                              .copyWith(color: Colors.orange),
-                        ),
-                      ],
-                      style: Theme.of(context).textTheme.bodyText1,
-                    ),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  const Spacer(),
+                  Text(
+                    'Order Total\t',
+                    style: Theme.of(context).textTheme.bodyText2,
                   ),
-                ),
+                  Text(
+                    'P ${vm.orderTotal}',
+                    style: Theme.of(context)
+                        .textTheme
+                        .subtitle1!
+                        .copyWith(color: Colors.orange),
+                  ),
+                ],
               ),
               SizedBox(height: 16.0.h),
               SizedBox(
@@ -122,7 +143,7 @@ class _SubscriptionDetailsView extends HookView<SubscriptionDetailsViewModel> {
                       style: Theme.of(context).textTheme.subtitle1,
                     ),
                     Text(
-                      vm.subscriptionPlan.instruction!,
+                      vm.subscriptionPlan.instruction,
                       style: Theme.of(context).textTheme.bodyText1,
                     ),
                     SizedBox(height: 16.0.h),
@@ -142,12 +163,17 @@ class _SubscriptionDetailsView extends HookView<SubscriptionDetailsViewModel> {
               const Spacer(),
               _SubscriptionDetailsButtons(
                 isBuyer: vm.isBuyer,
-                displayWarning: vm.checkForConflicts(),
-                disabled: _disabled,
+                // let's check first if we're displaying the buyer screen
+                // to avoid calling [vm.checkForConflicts] every rebuild.
+                displayWarning: _displayWarning && vm.checkForConflicts(),
+                status: vm.subscriptionPlan.status,
                 onSeeSchedule: vm.onSeeSchedule,
                 onMessageHandler: vm.onMessageSend,
-                onUnsubscribe: vm.onUnsubscribe,
+                onUnsubscribe: () async =>
+                    performFuture<void>(vm.onUnsubscribe),
                 onSubscribeAgain: vm.onSubscribeAgain,
+                onConfirmSubscription: () async =>
+                    performFuture<void>(vm.onConfirmSubscription),
               ),
             ],
           ),
@@ -160,27 +186,34 @@ class _SubscriptionDetailsView extends HookView<SubscriptionDetailsViewModel> {
 class _SubscriptionDetailsButtons extends StatelessWidget {
   final bool isBuyer;
   final bool displayWarning;
-  final bool disabled;
+  final SubscriptionStatus status;
   final void Function()? onSeeSchedule;
   final void Function()? onMessageHandler;
   final void Function()? onUnsubscribe;
   final void Function()? onSubscribeAgain;
+  final void Function()? onConfirmSubscription;
   const _SubscriptionDetailsButtons({
     Key? key,
     this.isBuyer = true,
     this.displayWarning = false,
-    this.disabled = false,
+    this.status = SubscriptionStatus.disabled,
     this.onSeeSchedule,
     this.onMessageHandler,
     this.onUnsubscribe,
     this.onSubscribeAgain,
+    this.onConfirmSubscription,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final bool _displaySellerButton = !isBuyer &&
+        (status == SubscriptionStatus.disabled ||
+            status == SubscriptionStatus.enabled);
     return Column(
       children: [
-        if (!disabled)
+        if (isBuyer &&
+            (status == SubscriptionStatus.enabled ||
+                status == SubscriptionStatus.disabled))
           SizedBox(
             width: double.infinity,
             height: kMinInteractiveDimension,
@@ -216,19 +249,19 @@ class _SubscriptionDetailsButtons extends StatelessWidget {
         SizedBox(height: 5.0.h),
         Row(
           children: [
-            if (disabled)
-              Expanded(
-                child: AppButton.transparent(
-                  text: 'Subscribe Again',
-                  onPressed: onSubscribeAgain,
-                ),
-              ),
-            if (!disabled)
+            if (isBuyer && status == SubscriptionStatus.enabled)
               Expanded(
                 child: AppButton.transparent(
                   text: 'Unsubscribe',
                   color: kPinkColor,
                   onPressed: onUnsubscribe,
+                ),
+              )
+            else if (isBuyer && status == SubscriptionStatus.cancelled)
+              Expanded(
+                child: AppButton.transparent(
+                  text: 'Subscribe Again',
+                  onPressed: onSubscribeAgain,
                 ),
               ),
             Expanded(
@@ -239,6 +272,32 @@ class _SubscriptionDetailsButtons extends StatelessWidget {
             )
           ],
         ),
+        if (_displaySellerButton)
+          Row(
+            children: [
+              if (status == SubscriptionStatus.disabled)
+                Expanded(
+                  child: AppButton.transparent(
+                    text: 'Decline Subscription',
+                    color: kPinkColor,
+                  ),
+                ),
+              if (status == SubscriptionStatus.enabled)
+                Expanded(
+                  child: AppButton.transparent(
+                    text: 'Cancel Subscription',
+                    color: kPinkColor,
+                  ),
+                ),
+              Expanded(
+                child: AppButton.filled(
+                  text: 'Confirm Subscription',
+                  onPressed: onConfirmSubscription,
+                  color: kOrangeColor,
+                ),
+              ),
+            ],
+          )
       ],
     );
   }

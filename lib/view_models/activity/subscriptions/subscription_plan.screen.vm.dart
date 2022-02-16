@@ -20,8 +20,8 @@ import '../../../services/api/subscription_plan_api_service.dart';
 import '../../../state/view_model.dart';
 import '../../../utils/repeated_days_generator/schedule_generator.dart';
 
-class SubscriptionDetailsViewModel extends ViewModel {
-  SubscriptionDetailsViewModel({
+class SubscriptionPlanScreenViewModel extends ViewModel {
+  SubscriptionPlanScreenViewModel({
     required this.subscriptionPlan,
     required this.isBuyer,
   });
@@ -36,9 +36,11 @@ class SubscriptionDetailsViewModel extends ViewModel {
   }
 
   double get orderTotal =>
-      subscriptionPlan.quantity! * subscriptionPlan.product.price!;
+      subscriptionPlan.quantity * subscriptionPlan.product.price;
 
   bool checkForConflicts() {
+    if (subscriptionPlan.plan.autoReschedule) return false;
+
     final _generator = ScheduleGenerator();
     final product = context.read<Products>().findById(
           subscriptionPlan.productId,
@@ -48,8 +50,8 @@ class SubscriptionDetailsViewModel extends ViewModel {
     final shop = context.read<Shops>().findById(subscriptionPlan.shopId)!;
 
     final operatingHours = OperatingHours(
-      repeatType: subscriptionPlan.plan.repeatType!,
-      repeatUnit: subscriptionPlan.plan.repeatUnit!,
+      repeatType: subscriptionPlan.plan.repeatType,
+      repeatUnit: subscriptionPlan.plan.repeatUnit,
       startDates: subscriptionPlan.plan.startDates
           .map<String>((date) => DateFormat('yyyy-MM-dd').format(date))
           .toList(),
@@ -84,18 +86,17 @@ class SubscriptionDetailsViewModel extends ViewModel {
 
     for (final overrideDate in subscriptionPlan.plan.overrideDates) {
       final index = markedDates.indexWhere(
-        (date) => date.compareTo(overrideDate.originalDate!) == 0,
+        (date) => date.compareTo(overrideDate.originalDate) == 0,
       );
       if (index > -1) {
         markedDates[index] = overrideDate.newDate;
       }
     }
 
-    return !subscriptionPlan.plan.autoReschedule! &&
-        markedDates
-            .toSet()
-            .difference(productSelectableDates.toSet())
-            .isNotEmpty;
+    return markedDates
+        .toSet()
+        .difference(productSelectableDates.toSet())
+        .isNotEmpty;
   }
 
   void onSeeSchedule() {
@@ -114,8 +115,8 @@ class SubscriptionDetailsViewModel extends ViewModel {
           ChatView.routeName,
           arguments: ChatViewProps(
             members: [
-              subscriptionPlan.buyerId!,
-              subscriptionPlan.shopId!,
+              subscriptionPlan.buyerId,
+              subscriptionPlan.shopId,
             ],
             shopId: subscriptionPlan.shopId,
           ),
@@ -134,6 +135,8 @@ class SubscriptionDetailsViewModel extends ViewModel {
               _product,
             ),
           );
+    } else {
+      showToast('Sorry, the product has been removed.');
     }
   }
 
@@ -141,14 +144,30 @@ class SubscriptionDetailsViewModel extends ViewModel {
     try {
       // this will throw an error if unsuccessful
       final _success = await _apiService.disableSubscriptionPlan(
-        planId: subscriptionPlan.id!,
+        planId: subscriptionPlan.id,
       );
 
       if (!_success) {
         throw FailureException('Failed to unsubscribe. Try again.');
       }
 
-      context.read<AppRouter>().popScreen(AppRoute.activity);
+      AppRouter.activityNavigatorKey.currentState?.pop();
+    } catch (e, stack) {
+      FirebaseCrashlytics.instance.recordError(e, stack);
+      showToast(e is FailureException ? e.message : e.toString());
+    }
+  }
+
+  Future<void> onConfirmSubscription() async {
+    try {
+      final _success = await _apiService.confirmSubscriptionPlan(
+        planId: subscriptionPlan.id,
+      );
+      if (!_success) {
+        throw FailureException('Failed to confirm subscription. Try again.');
+      }
+
+      AppRouter.activityNavigatorKey.currentState?.pop();
     } catch (e, stack) {
       FirebaseCrashlytics.instance.recordError(e, stack);
       showToast(e is FailureException ? e.message : e.toString());

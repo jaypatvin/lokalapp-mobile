@@ -69,7 +69,6 @@ class _TransactionsView extends HookView<TransactionsViewModel>
   @override
   Widget screen(BuildContext context, TransactionsViewModel vm) {
     useAutomaticKeepAlive();
-
     return CustomScrollView(
       slivers: [
         SliverPersistentHeader(
@@ -104,15 +103,16 @@ class _TransactionsView extends HookView<TransactionsViewModel>
         SliverPersistentHeader(
           floating: true,
           delegate: PersistentHeaderDelegateBuilder(
-            maxHeight: 71.0.h + 20,
-            minHeight: 71.0.h + 20,
+            // Sizes + padding of the children
+            maxHeight: 31.0.h + 20 + kMinInteractiveDimension,
+            minHeight: 31.0.h + 20 + kMinInteractiveDimension,
             child: SizedBox(
               child: DecoratedBox(
                 decoration: const BoxDecoration(color: Colors.white),
                 child: Column(
                   children: [
                     Container(
-                      height: 40.0.h,
+                      height: kMinInteractiveDimension,
                       color: const Color(0xFFEFEFEF),
                       padding: EdgeInsets.symmetric(horizontal: 10.0.w),
                       child: GestureDetector(

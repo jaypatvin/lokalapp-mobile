@@ -220,7 +220,7 @@ class ViewSubscriptionScheduleViewModel extends ViewModel {
 
   /// Will hold the `original_date` and `new_date` for the manual schedule setter.
   Map<DateTime?, DateTime> get overridenDates => _overridenDates;
-  final Map<DateTime?, DateTime> _overridenDates = {};
+  final Map<DateTime, DateTime> _overridenDates = {};
 
   // Since the calendar picker will give the DateTime of the date pressed,
   // we will hold the value the user wants to change.
@@ -239,13 +239,13 @@ class ViewSubscriptionScheduleViewModel extends ViewModel {
 
     final shop = context.read<Shops>().findById(subscriptionPlan.shopId)!;
 
-    quantity = subscriptionPlan.quantity ?? 1;
+    quantity = subscriptionPlan.quantity;
     product = context.read<Products>().findById(
           subscriptionPlan.productId,
         )!;
     operatingHours = OperatingHours(
-      repeatType: subscriptionPlan.plan.repeatType!,
-      repeatUnit: subscriptionPlan.plan.repeatUnit!,
+      repeatType: subscriptionPlan.plan.repeatType,
+      repeatUnit: subscriptionPlan.plan.repeatUnit,
       startDates: subscriptionPlan.plan.startDates
           .map<String>((date) => DateFormat('yyyy-MM-dd').format(date))
           .toList(),
@@ -283,7 +283,7 @@ class ViewSubscriptionScheduleViewModel extends ViewModel {
 
     for (final overrideDate in subscriptionPlan.plan.overrideDates) {
       final index = _markedDates.indexWhere(
-        (date) => date!.compareTo(overrideDate.originalDate!) == 0,
+        (date) => date!.compareTo(overrideDate.originalDate) == 0,
       );
       if (index > -1) {
         _markedDates[index] = overrideDate.newDate;
@@ -291,7 +291,7 @@ class ViewSubscriptionScheduleViewModel extends ViewModel {
     }
     _selectedDates = [..._markedDates];
 
-    _displayWarning = !subscriptionPlan.plan.autoReschedule! &&
+    _displayWarning = !subscriptionPlan.plan.autoReschedule &&
         _isConflict(_markedDates, _productSelectableDates);
 
     repeatabilityChoices = _getRepeatabilityChoices();
@@ -349,7 +349,7 @@ class ViewSubscriptionScheduleViewModel extends ViewModel {
 
     try {
       return await _apiService.manualReschedulePlan(
-        planId: subscriptionPlan.id!,
+        planId: subscriptionPlan.id,
         body: {
           'override_dates': overridenDates.map((data) => data.toMap()).toList()
         },
@@ -374,7 +374,7 @@ class ViewSubscriptionScheduleViewModel extends ViewModel {
     // When the `_originalDate` is null, it means the user has not selected
     // a date to replace.
     if (_originalDate == null) return;
-    _overridenDates[_originalDate] = date;
+    _overridenDates[_originalDate!] = date;
 
     _markedDates.remove(_originalDate);
     _markedDates.add(date);

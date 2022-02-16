@@ -20,12 +20,12 @@ class SubscriptionsViewModel extends ViewModel {
     final user = context.read<Auth>().user!;
 
     if (isBuyer) {
-      stream = _db.getUserSubscriptions(user.id);
+      stream = _db.getUserSubscriptionPlans(user.id);
     } else {
       final shops = context.read<Shops>().findByUser(user.id);
       if (shops.isNotEmpty) {
         final shop = shops.first;
-        stream = _db.getShopSubscribers(shop.id);
+        stream = _db.getShopSubscriptionPlans(shop.id);
       } else {
         context.read<Shops>().addListener(shopChangeListener);
       }
@@ -37,7 +37,7 @@ class SubscriptionsViewModel extends ViewModel {
     final shops = context.read<Shops>().findByUser(user.id);
     if (shops.isEmpty) return;
 
-    stream = _db.getShopSubscribers(shops.first.id);
+    stream = _db.getShopSubscriptionPlans(shops.first.id);
     context.read<Shops>().removeListener(shopChangeListener);
     notifyListeners();
   }

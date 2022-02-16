@@ -125,6 +125,8 @@ class SubscriptionPlanAPIService extends APIService<ProductSubscriptionPlan> {
         ),
         headers: api.authHeader(),
       );
+      print(planId);
+      print(response.body);
 
       return handleGenericResponse(response);
     } catch (e) {

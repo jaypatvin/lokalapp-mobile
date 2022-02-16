@@ -1,108 +1,70 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:grouped_list/grouped_list.dart';
 
-import '../../../models/app_navigator.dart';
-import '../../../models/product_subscription_plan.dart';
 import '../../../state/mvvm_builder.widget.dart';
-import '../../../state/views/stateless.view.dart';
+import '../../../state/views/hook.view.dart';
 import '../../../utils/constants/themes.dart';
-import '../../../view_models/activity/subscriptions/subscriptions.vm.dart';
+import '../../../utils/hooks/automatic_keep_alive.dart';
+import '../../../view_models/activity/subscriptions/subscriptions.buyer.vm.dart';
+import '../../../view_models/activity/subscriptions/subscriptions.seller.vm.dart';
 import '../../../widgets/app_button.dart';
 import '../../../widgets/custom_app_bar.dart';
-import 'components/subscription_plan_details.dart';
-import 'subscription_details.dart';
+import 'components/subscription_plan.stream.dart';
 
 class Subscriptions extends StatelessWidget {
+  static const routeName = '/activity/subscriptions';
   const Subscriptions({Key? key, required this.isBuyer}) : super(key: key);
   final bool isBuyer;
 
   @override
   Widget build(BuildContext context) {
-    return MVVM(
-      view: (_, __) => _SubscriptionsView(),
-      viewModel: SubscriptionsViewModel(
-        isBuyer: isBuyer,
+    if (isBuyer) {
+      return MVVM<SubscriptionsBuyerViewModel>(
+        view: (_, __) => _SubscriptionsBuyerView(),
+        viewModel: SubscriptionsBuyerViewModel(),
+      );
+    }
+
+    return MVVM<SubscriptionsSellerViewModel>(
+      view: (_, __) => _SubscriptionsSellerView(),
+      viewModel: SubscriptionsSellerViewModel(),
+    );
+  }
+}
+
+class _SubscriptionsBuyerView extends HookView<SubscriptionsBuyerViewModel> {
+  @override
+  Widget render(BuildContext context, SubscriptionsBuyerViewModel vm) {
+    useAutomaticKeepAlive();
+    return Scaffold(
+      appBar: const CustomAppBar(
+        titleText: 'My Subscriptions',
+        titleStyle: TextStyle(color: Colors.white),
+        backgroundColor: kTealColor,
+      ),
+      body: SubscriptionPlanStream(
+        stream: vm.subscriptionPlanStream,
+        onDetailsPressed: vm.onDetailsPressed,
       ),
     );
   }
 }
 
-class _SubscriptionsView extends StatelessView<SubscriptionsViewModel> {
+class _SubscriptionsSellerView extends HookView<SubscriptionsSellerViewModel> {
   @override
-  Widget render(BuildContext context, SubscriptionsViewModel vm) {
+  Widget render(BuildContext context, SubscriptionsSellerViewModel vm) {
+    useAutomaticKeepAlive();
     return Scaffold(
-      appBar: CustomAppBar(
-        titleText: vm.isBuyer ? 'My Subscriptions' : 'Subscription Orders',
-        titleStyle: const TextStyle(color: Colors.white),
-        backgroundColor: vm.isBuyer ? kTealColor : kPurpleColor,
-        onPressedLeading: () => Navigator.of(context).pop(),
+      appBar: const CustomAppBar(
+        titleText: 'Subscribers',
+        titleStyle: TextStyle(color: Colors.white),
       ),
-      body: vm.stream != null
-          ? StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-              stream: vm.stream,
-              builder: (context, snapshot) {
-                switch (snapshot.connectionState) {
-                  case ConnectionState.waiting:
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  default:
-                    if (snapshot.hasError) {
-                      // return Text('Error: ${snapshot.error}');
-                      return const Center(
-                        child: Text('There was an unexpected error.'),
-                      );
-                    } else if (!snapshot.hasData ||
-                        snapshot.data!.docs.isEmpty) {
-                      return Center(
-                        child: Text(
-                          'No subscriptions yet!',
-                          style: Theme.of(context).textTheme.subtitle1,
-                        ),
-                      );
-                    } else {
-                      return GroupedListView<
-                          QueryDocumentSnapshot<Map<String, dynamic>>, bool?>(
-                        physics: const AlwaysScrollableScrollPhysics(),
-                        elements: snapshot.data!.docs,
-                        groupBy: (snapshot) {
-                          final archived = snapshot['archived'] as bool?;
-                          return archived;
-                        },
-                        groupSeparatorBuilder: (bool? archived) {
-                          return const SizedBox();
-                        },
-                        order: GroupedListOrder.DESC,
-                        itemBuilder: (context, snapshot) {
-                          final subscriptionPlan =
-                              ProductSubscriptionPlan.fromDocument(snapshot);
-                          return _SubscriptionCard(
-                            subscriptionPlan: subscriptionPlan,
-                            isBuyer: vm.isBuyer,
-                            onDetailsPressed: () {
-                              Navigator.push(
-                                context,
-                                AppNavigator.appPageRoute(
-                                  builder: (_) => SubscriptionDetails(
-                                    subscriptionPlan: subscriptionPlan,
-                                  ),
-                                ),
-                              );
-                            },
-                          );
-                        },
-                        itemComparator: (a, b) {
-                          final subA = ProductSubscriptionPlan.fromDocument(a);
-                          final subB = ProductSubscriptionPlan.fromDocument(b);
-                          return subA.plan.startDates.first
-                              .compareTo(subB.plan.startDates.first);
-                        },
-                      );
-                    }
-                }
-              },
+      body: vm.subscriptionPlanStream != null
+          ? SubscriptionPlanStream(
+              stream: vm.subscriptionPlanStream!,
+              onDetailsPressed: vm.onDetailsPressed,
+              onConfirmSubscription: vm.onConfirm,
+              isBuyer: false,
             )
           : Center(
               child: Column(
@@ -121,51 +83,6 @@ class _SubscriptionsView extends StatelessView<SubscriptionsViewModel> {
                 ],
               ),
             ),
-    );
-  }
-}
-
-class _SubscriptionCard extends StatelessWidget {
-  final void Function()? onDetailsPressed;
-  final bool isBuyer;
-  final ProductSubscriptionPlan subscriptionPlan;
-  const _SubscriptionCard({
-    Key? key,
-    required this.subscriptionPlan,
-    this.onDetailsPressed,
-    this.isBuyer = true,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    final bool disabled = subscriptionPlan.status == 'disabled';
-
-    return Card(
-      margin: EdgeInsets.only(top: 10.0.h, left: 10.w, right: 10.w),
-      elevation: 0.0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20.0.r),
-      ),
-      color: disabled ? Colors.grey.shade200 : const Color(0xFFF1FAFF),
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 20.0.w, vertical: 10.0.h),
-        child: Column(
-          children: [
-            SubscriptionPlanDetails(
-              subscriptionPlan: subscriptionPlan,
-              isBuyer: isBuyer,
-            ),
-            SizedBox(height: 15.0.h),
-            SizedBox(
-              width: double.infinity,
-              child: AppButton.transparent(
-                text: 'Details',
-                onPressed: onDetailsPressed,
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 }
