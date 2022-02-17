@@ -7,11 +7,22 @@ import '../../../utils/constants/themes.dart';
 
 class ChatMember {
   final String? id;
-  final String? displayName;
+  final String displayName;
   final String? displayPhoto;
-  final ChatType? type;
+  final ChatType type;
 
-  const ChatMember({this.id, this.displayName, this.displayPhoto, this.type});
+  const ChatMember({
+    this.id,
+    required this.displayName,
+    this.displayPhoto,
+    required this.type,
+  });
+
+  @override
+  String toString() {
+    return 'type: $type id: $id, displayName: $displayName, '
+        'displayPhoto: $displayPhoto';
+  }
 }
 
 class ChatAvatar extends StatelessWidget {

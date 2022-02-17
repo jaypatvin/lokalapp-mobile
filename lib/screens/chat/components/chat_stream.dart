@@ -149,7 +149,7 @@ class _ChatList extends StatelessWidget {
           ids.map((id) {
             final user = context.read<Users>().findById(id)!;
             return ChatMember(
-              displayName: user.displayName,
+              displayName: user.displayName ?? '${user.firstName} ${user.lastName}',
               displayPhoto: user.profilePhoto,
               type: chat.chatType,
             );
@@ -183,7 +183,7 @@ class _ChatList extends StatelessWidget {
         ids.map((id) {
           final user = context.read<Users>().findById(id)!;
           return ChatMember(
-            displayName: user.displayName,
+            displayName: user.displayName ?? '${user.firstName} ${user.lastName}',
             displayPhoto: user.profilePhoto,
             type: chat.chatType,
           );

@@ -1,18 +1,22 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
 
+import '../../models/app_navigator.dart';
 import '../../models/chat_model.dart';
 import '../../providers/auth.dart';
+import '../../providers/products.dart';
 import '../../providers/shops.dart';
 import '../../providers/users.dart';
 import '../../routers/app_router.dart';
-import '../../routers/profile/props/user_shop.props.dart';
+import '../../routers/discover/product_detail.props.dart';
 import '../../utils/constants/themes.dart';
 import '../../widgets/custom_app_bar.dart';
 import '../../widgets/custom_expansion_tile.dart' as custom;
+import '../discover/product_detail.dart';
 import '../profile/profile_screen.dart';
 import '../profile/shop/user_shop.dart';
 import 'components/chat_avatar.dart';
@@ -36,48 +40,46 @@ class _ChatProfileState extends State<ChatProfile> {
   void initState() {
     super.initState();
 
-    final userId = context.read<Auth>().user!.id;
-    switch (widget.chat!.chatType) {
-      case ChatType.user:
-        final index = widget.chat!.members.indexOf(userId!);
-        widget.chat!.members
-          ..removeAt(index)
-          ..insert(0, userId)
-          ..forEach((id) {
-            final user =
-                Provider.of<Users>(context, listen: false).findById(id)!;
-            _members.add(
-              ChatMember(
-                displayName: user.displayName,
-                id: user.id,
-                displayPhoto: user.profilePhoto,
-                type: ChatType.user,
-              ),
-            );
-          });
-        break;
-      case ChatType.shop:
-      case ChatType.product:
-        final user = context.read<Auth>().user!;
-        final shop = Provider.of<Shops>(context, listen: false)
-            .findById(widget.chat!.shopId)!;
-        _members.addAll([
+    for (final chatMember in widget.chat!.members) {
+      final _user = context.read<Users>().findById(chatMember);
+      if (_user != null) {
+        _members.add(
           ChatMember(
-            displayName: user.displayName,
-            id: user.id,
-            displayPhoto: user.profilePhoto,
+            displayName:
+                _user.displayName ?? '${_user.firstName} ${_user.lastName}',
+            id: _user.id,
+            displayPhoto: _user.profilePhoto,
             type: ChatType.user,
           ),
+        );
+        continue;
+      }
+
+      final _shop = context.read<Shops>().findById(chatMember);
+      if (_shop != null) {
+        _members.add(
           ChatMember(
-            displayName: shop.name,
-            id: shop.id,
-            displayPhoto: shop.profilePhoto,
+            displayName: _shop.name,
+            id: _shop.id,
+            displayPhoto: _shop.profilePhoto,
             type: ChatType.shop,
           ),
-        ]);
-        break;
-      default:
-        break;
+        );
+        continue;
+      }
+
+      final _product = context.read<Products>().findById(chatMember);
+      if (_product != null) {
+        _members.add(
+          ChatMember(
+            displayName: _product.name,
+            id: _product.id,
+            displayPhoto:
+                _product.productPhoto ?? _product.gallery?.firstOrNull?.url,
+            type: ChatType.product,
+          ),
+        );
+      }
     }
   }
 
@@ -94,9 +96,92 @@ class _ChatProfileState extends State<ChatProfile> {
     }
 
     final title = names.join(', ');
-    return Text(
-      title,
-      style: Theme.of(context).textTheme.headline5!.copyWith(color: kNavyColor),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      child: Text(
+        title,
+        style:
+            Theme.of(context).textTheme.headline6?.copyWith(color: kNavyColor),
+        textAlign: TextAlign.center,
+      ),
+    );
+  }
+
+  Widget _memberBuilder(BuildContext ctx, int index) {
+    final bool _isCurrentUser;
+    final _member = _members[index];
+
+    switch (_member.type) {
+      case ChatType.user:
+        _isCurrentUser = _member.id == ctx.read<Auth>().user?.id;
+        break;
+      case ChatType.shop:
+        final _shop = context.read<Shops>().findById(_member.id);
+        _isCurrentUser = _shop?.userId == ctx.read<Auth>().user?.id;
+        break;
+      case ChatType.product:
+        final _product = context.read<Products>().findById(_member.id);
+        _isCurrentUser = _product?.userId == ctx.read<Auth>().user?.id;
+        break;
+    }
+
+    // final displayName = _member.displayName! + (_isCurrentUser ? ' (You)' : '');
+    final String displayName;
+    if (_isCurrentUser) {
+      displayName = '${_member.displayName} (You)';
+    } else if (_member.type == ChatType.shop) {
+      displayName = '${_member.displayName} (Shop)';
+    } else if (_member.type == ChatType.product) {
+      displayName = '${_member.displayName} (Product)';
+    } else {
+      displayName = _member.displayName;
+    }
+
+    return ListTile(
+      onTap: () {
+        if (_member.id == context.read<Auth>().user!.id) {
+          ctx.read<AppRouter>().jumpToTab(AppRoute.profile);
+          return;
+        }
+        final appRoute = ctx.read<AppRouter>().currentTabRoute;
+        switch (_member.type) {
+          case ChatType.user:
+            ctx.read<AppRouter>().pushDynamicScreen(
+                  appRoute,
+                  AppNavigator.appPageRoute(
+                    builder: (_) => ProfileScreen(
+                      userId: _member.id,
+                    ),
+                  ),
+                );
+            break;
+          case ChatType.shop:
+            final _shop = context.read<Shops>().findById(_member.id);
+            ctx.read<AppRouter>().pushDynamicScreen(
+                  appRoute,
+                  AppNavigator.appPageRoute(
+                    builder: (_) => UserShop(
+                      userId: _shop!.userId,
+                      shopId: _shop.id,
+                    ),
+                  ),
+                );
+            break;
+          case ChatType.product:
+            final _product = context.read<Products>().findById(_member.id)!;
+            ctx.read<AppRouter>().navigateTo(
+                  AppRoute.discover,
+                  ProductDetail.routeName,
+                  arguments: ProductDetailProps(_product),
+                );
+            break;
+        }
+      },
+      leading: ChatAvatar(
+        displayName: _member.displayName,
+        displayPhoto: _member.displayPhoto,
+      ),
+      title: Text(displayName),
     );
   }
 
@@ -114,7 +199,7 @@ class _ChatProfileState extends State<ChatProfile> {
           mainAxisSize: MainAxisSize.min,
           children: [
             SizedBox(
-              height: 100.0.h,
+              height: 120.0.r,
               child: CustomScrollView(
                 shrinkWrap: true,
                 scrollDirection: Axis.horizontal,
@@ -127,7 +212,7 @@ class _ChatProfileState extends State<ChatProfile> {
                         return ChatAvatar(
                           displayName: displayName,
                           displayPhoto: imgUrl,
-                          radius: 120.0.r / _members.length,
+                          radius: 120.0.r / 2,
                         );
                       },
                       childCount: _members.length,
@@ -160,44 +245,7 @@ class _ChatProfileState extends State<ChatProfile> {
                     padding: EdgeInsets.zero,
                     physics: const NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
-                    itemBuilder: (ctx, index) {
-                      final user = _members[index];
-                      final displayName =
-                          user.displayName! + (index == 0 ? ' (You)' : '');
-                      return ListTile(
-                        onTap: () {
-                          if (user.id == context.read<Auth>().user!.id) {
-                            ctx.read<AppRouter>().jumpToTab(AppRoute.profile);
-                            return;
-                          }
-                          final appRoute =
-                              ctx.read<AppRouter>().currentTabRoute;
-                          if (user.type == ChatType.shop) {
-                            final shop = ctx.read<Shops>().findById(user.id);
-
-                            ctx.read<AppRouter>().navigateTo(
-                                  appRoute,
-                                  UserShop.routeName,
-                                  arguments: UserShopProps(
-                                    shop!.userId,
-                                    user.id,
-                                  ),
-                                );
-                            return;
-                          }
-                          ctx.read<AppRouter>().navigateTo(
-                            appRoute,
-                            ProfileScreen.routeName,
-                            arguments: {'userId': user.id!},
-                          );
-                        },
-                        leading: ChatAvatar(
-                          displayName: user.displayName,
-                          displayPhoto: user.displayPhoto,
-                        ),
-                        title: Text(displayName),
-                      );
-                    },
+                    itemBuilder: _memberBuilder,
                   )
                 ],
               ),

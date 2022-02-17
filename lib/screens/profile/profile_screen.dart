@@ -36,7 +36,7 @@ class ProfileScreen extends StatelessWidget {
     }
 
     final isCurrentUser =
-        context.read<Auth>().user!.id == userId || userId == null;
+        context.read<Auth>().user?.id == userId || userId == null;
     return Scaffold(
       backgroundColor: kInviteScreenColor,
       body: AnnotatedRegion<SystemUiOverlayStyle>(
