@@ -13,9 +13,9 @@ import '../../utils/constants/themes.dart';
 import '../../view_models/profile/profile_screen.vm.dart';
 import '../../widgets/app_button.dart';
 import '../chat/components/chat_avatar.dart';
-import '../home/timeline.dart';
 import 'components/current_user_profile.dart';
 import 'components/shop_banner.dart';
+import 'components/timeline.dart';
 
 class ProfileScreen extends StatelessWidget {
   static const routeName = '/profile';
@@ -36,7 +36,7 @@ class ProfileScreen extends StatelessWidget {
     }
 
     final isCurrentUser =
-        context.read<Auth>().user!.id == userId || userId == null;
+        context.read<Auth>().user?.id == userId || userId == null;
     return Scaffold(
       backgroundColor: kInviteScreenColor,
       body: AnnotatedRegion<SystemUiOverlayStyle>(

@@ -77,6 +77,24 @@ class AppRouter {
         );
   }
 
+  Future<dynamic> pushDynamicScreen(
+    AppRoute appRoute,
+    Route<dynamic> route, {
+    bool replace = false,
+  }) async {
+    jumpToTab(appRoute);
+
+    if (keyOf(appRoute).currentState == null) {
+      await Future.delayed(const Duration(milliseconds: 500));
+    }
+
+    if (replace) {
+      return keyOf(appRoute).currentState?.pushReplacement(route);
+    }
+
+    return keyOf(appRoute).currentState?.push(route);
+  }
+
   /// Move the screen to the specified index using the [AppRoute]
   void jumpToTab(AppRoute appRoute) {
     if (appRoute == AppRoute.root ||
@@ -94,5 +112,22 @@ class AppRouter {
   /// Pop the screen on the specified tab.
   void popScreen(AppRoute appRoute, [dynamic result]) {
     return keyOf(appRoute).currentState!.pop(result);
+  }
+
+  AppRoute get currentTabRoute {
+    switch (_tabController.index) {
+      case 0:
+        return AppRoute.home;
+      case 1:
+        return AppRoute.discover;
+      case 2:
+        return AppRoute.chat;
+      case 3:
+        return AppRoute.activity;
+      case 4:
+        return AppRoute.profile;
+      default:
+        return AppRoute.root;
+    }
   }
 }

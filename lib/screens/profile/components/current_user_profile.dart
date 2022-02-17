@@ -8,8 +8,8 @@ import '../../../state/mvvm_builder.widget.dart';
 import '../../../state/views/stateless.view.dart';
 import '../../../utils/constants/themes.dart';
 import '../../../view_models/profile/components/current_user_profile.vm.dart';
-import '../../home/timeline.dart';
 import 'my_profile_list.dart';
+import 'timeline.dart';
 
 class CurrentUserProfile extends StatelessWidget {
   const CurrentUserProfile({Key? key}) : super(key: key);

@@ -412,7 +412,7 @@ class _ChatViewState extends State<ChatView> with WidgetsBindingObserver {
           Navigator.push(
             context,
             AppNavigator.appPageRoute(
-              builder: (_) => ChatProfile(_chat, _conversations),
+              builder: (_) => ChatProfile(_chat!, _conversations),
             ),
           );
         }

@@ -1,8 +1,8 @@
 import 'package:collection/collection.dart';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../models/app_navigator.dart';
 import '../../../models/failure_exception.dart';
 import '../../../models/lokal_images.dart';
 import '../../../models/lokal_user.dart';
@@ -129,15 +129,15 @@ class UserShopViewModel extends ViewModel {
               (route) => route.isFirst,
             );
     } else {
-      context.read<AppRouter>()
-        ..keyOf(AppRoute.profile).currentState?.popUntil(
-              (route) => route.isFirst,
-            )
-        ..navigateTo(
-          AppRoute.profile,
-          ProfileScreen.routeName,
-          arguments: {'userId': user.id!},
-        );
+      final appRoute = context.read<AppRouter>().currentTabRoute;
+      context.read<AppRouter>().pushDynamicScreen(
+            appRoute,
+            AppNavigator.appPageRoute(
+              builder: (_) => ProfileScreen(
+                userId: user.id,
+              ),
+            ),
+          );
     }
   }
 

@@ -2,16 +2,28 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
 
-import '../../../models/chat_model.dart';
 import '../../../utils/constants/themes.dart';
+
+enum MemberType { user, product, shop }
 
 class ChatMember {
   final String? id;
-  final String? displayName;
+  final String displayName;
   final String? displayPhoto;
-  final ChatType? type;
+  final MemberType type;
 
-  const ChatMember({this.id, this.displayName, this.displayPhoto, this.type});
+  const ChatMember({
+    this.id,
+    required this.displayName,
+    this.displayPhoto,
+    required this.type,
+  });
+
+  @override
+  String toString() {
+    return 'type: $type id: $id, displayName: $displayName, '
+        'displayPhoto: $displayPhoto';
+  }
 }
 
 class ChatAvatar extends StatelessWidget {

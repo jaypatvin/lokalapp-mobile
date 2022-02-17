@@ -4,6 +4,7 @@ import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/activity_feed_comment.dart';
+import '../../models/app_navigator.dart';
 import '../../providers/activities.dart';
 import '../../providers/auth.dart';
 import '../../routers/app_router.dart';
@@ -50,16 +51,23 @@ class CommentCardViewModel extends ViewModel {
   }
 
   void onUserPressed() {
+    // if the user is tapping on their own post, just change the tab index
+    // of the navigation bar
     if (context.read<Auth>().user!.id == comment.userId) {
       context.read<AppRouter>().jumpToTab(AppRoute.profile);
       return;
     }
 
-    context.read<AppRouter>().navigateTo(
-      AppRoute.profile,
-      ProfileScreen.routeName,
-      arguments: {'userId': comment.userId},
-    );
+    // otherwise, we push a new screen inside the current navigation stack
+    final appRoute = context.read<AppRouter>().currentTabRoute;
+    context.read<AppRouter>().pushDynamicScreen(
+          appRoute,
+          AppNavigator.appPageRoute(
+            builder: (_) => ProfileScreen(
+              userId: comment.userId,
+            ),
+          ),
+        );
   }
 
   void onLike() {

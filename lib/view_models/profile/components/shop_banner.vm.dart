@@ -62,6 +62,7 @@ class ShopBannerViewModel extends ViewModel {
   }
 
   void onAddShop() {
+    // The current user can only view this on the profile screen.
     AppRouter.profileNavigatorKey.currentState?.push(
       AppNavigator.appPageRoute(
         builder: (_) => const AddShop(),
@@ -70,6 +71,7 @@ class ShopBannerViewModel extends ViewModel {
   }
 
   void onVerify() {
+    // The current user can only view this on the profile screen.
     AppRouter.profileNavigatorKey.currentState?.push(
       AppNavigator.appPageRoute(
         builder: (_) => const VerifyScreen(
@@ -79,11 +81,25 @@ class ShopBannerViewModel extends ViewModel {
     );
   }
 
-  void goToShop() {
-    AppRouter.profileNavigatorKey.currentState?.pushNamed(
-      UserShop.routeName,
-      arguments: UserShopProps(userId),
-    );
+  Future<dynamic> goToShop() async {
+    if (userId == context.read<Auth>().user?.id) {
+      return context.read<AppRouter>().navigateTo(
+            AppRoute.profile,
+            UserShop.routeName,
+            arguments: UserShopProps(userId, shop?.id),
+          );
+    }
+
+    final appRoute = context.read<AppRouter>().currentTabRoute;
+    return context.read<AppRouter>().pushDynamicScreen(
+          appRoute,
+          AppNavigator.appPageRoute(
+            builder: (_) => UserShop(
+              userId: userId,
+              shopId: shop?.id,
+            ),
+          ),
+        );
   }
 
   void refresh() {
