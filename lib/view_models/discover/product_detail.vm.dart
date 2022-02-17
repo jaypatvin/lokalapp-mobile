@@ -3,13 +3,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
+import '../../models/app_navigator.dart';
 import '../../models/failure_exception.dart';
 import '../../models/product.dart';
 import '../../models/shop.dart';
 import '../../providers/cart.dart';
 import '../../providers/wishlist.dart';
 import '../../routers/app_router.dart';
-import '../../routers/profile/props/user_shop.props.dart';
 import '../../screens/profile/shop/user_shop.dart';
 import '../../services/bottom_nav_bar_hider.dart';
 import '../../state/view_model.dart';
@@ -122,12 +122,17 @@ class ProductDetailViewModel extends ViewModel {
     }
   }
 
-  Future<void> goToShop() async {
+  Future<dynamic> goToShop() async {
     context.read<BottomNavBarHider>().isHidden = false;
-    await context.read<AppRouter>().navigateTo(
-          AppRoute.profile,
-          UserShop.routeName,
-          arguments: UserShopProps(product.userId, product.shopId),
+    final appRoute = context.read<AppRouter>().currentTabRoute;
+    return context.read<AppRouter>().pushDynamicScreen(
+          appRoute,
+          AppNavigator.appPageRoute(
+            builder: (_) => UserShop(
+              userId: product.userId,
+              shopId: product.shopId,
+            ),
+          ),
         );
   }
 }
