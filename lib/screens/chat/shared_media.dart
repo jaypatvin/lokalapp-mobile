@@ -1,11 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-import '../../models/app_navigator.dart';
 import '../../models/conversation.dart';
 import '../../models/lokal_images.dart';
+import '../../utils/functions.utils.dart' as utils;
 import '../../widgets/custom_app_bar.dart';
-import '../../widgets/photo_view_gallery/gallery/gallery_network_photo_view.dart';
 import '../../widgets/photo_view_gallery/thumbnails/network_photo_thumbnail.dart';
 
 class SharedMedia extends StatefulWidget {
@@ -39,25 +38,6 @@ class _SharedMediaState extends State<SharedMedia> {
     return images;
   }
 
-  void openGallery(
-    BuildContext context,
-    final int index,
-    final List<LokalImages>? galleryItems,
-  ) {
-    Navigator.push(
-      context,
-      AppNavigator.appPageRoute(
-        builder: (_) => GalleryNetworkPhotoView(
-          galleryItems: galleryItems,
-          initialIndex: index,
-          backgroundDecoration: const BoxDecoration(
-            color: Colors.black,
-          ),
-        ),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -83,7 +63,8 @@ class _SharedMediaState extends State<SharedMedia> {
                 itemBuilder: (ctx, index) {
                   return NetworkPhotoThumbnail(
                     galleryItem: _sharedMedia![index],
-                    onTap: () => openGallery(context, index, _sharedMedia),
+                    onTap: () =>
+                        utils.openGallery(context, index, _sharedMedia),
                   );
                 },
               ),

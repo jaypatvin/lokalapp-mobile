@@ -170,10 +170,13 @@ class _ChatProfileState extends State<ChatProfile> {
                             ctx.read<AppRouter>().jumpToTab(AppRoute.profile);
                             return;
                           }
+                          final appRoute =
+                              ctx.read<AppRouter>().currentTabRoute;
                           if (user.type == ChatType.shop) {
                             final shop = ctx.read<Shops>().findById(user.id);
+
                             ctx.read<AppRouter>().navigateTo(
-                                  AppRoute.profile,
+                                  appRoute,
                                   UserShop.routeName,
                                   arguments: UserShopProps(
                                     shop!.userId,
@@ -183,7 +186,7 @@ class _ChatProfileState extends State<ChatProfile> {
                             return;
                           }
                           ctx.read<AppRouter>().navigateTo(
-                            AppRoute.profile,
+                            appRoute,
                             ProfileScreen.routeName,
                             arguments: {'userId': user.id!},
                           );
