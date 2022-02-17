@@ -5,6 +5,7 @@ import 'package:photo_manager/photo_manager.dart';
 import '../models/app_navigator.dart';
 import '../models/lokal_images.dart';
 import '../models/operating_hours.dart';
+import '../routers/app_router.dart';
 import '../widgets/photo_view_gallery/gallery/gallery_asset_photo_view.dart';
 import '../widgets/photo_view_gallery/gallery/gallery_network_photo_view.dart';
 
@@ -13,8 +14,7 @@ void openInputGallery(
   final int index,
   List<AssetEntity> galleryItems,
 ) {
-  Navigator.push(
-    context,
+  AppRouter.rootNavigatorKey.currentState?.push(
     AppNavigator.appPageRoute(
       builder: (_) => GalleryAssetPhotoView(
         galleryItems: galleryItems,
@@ -32,8 +32,7 @@ void openGallery(
   final int index,
   final List<LokalImages>? galleryItems,
 ) {
-  Navigator.push(
-    context,
+  AppRouter.rootNavigatorKey.currentState?.push(
     AppNavigator.appPageRoute(
       builder: (_) => GalleryNetworkPhotoView(
         galleryItems: galleryItems,

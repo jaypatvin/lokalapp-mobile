@@ -9,18 +9,17 @@ import '../../models/failure_exception.dart';
 import '../../providers/activities.dart';
 import '../../providers/auth.dart';
 import '../../routers/app_router.dart';
-import '../../routers/home/post_details.props.dart';
 import '../../screens/home/post_details.dart';
 import '../../screens/profile/profile_screen.dart';
 import '../../state/view_model.dart';
-import '../../widgets/photo_view_gallery/gallery/gallery_network_photo_view.dart';
+import '../../utils/functions.utils.dart' as utils;
 
 class PostCardViewModel extends ViewModel {
   final bool _isUserLoading = false;
   bool get isUserLoading => _isUserLoading;
 
   bool isCurrentUser(ActivityFeed activity) =>
-      context.read<Auth>().user!.id == activity.userId;
+      context.read<Auth>().user?.id == activity.userId;
 
   bool _isLiking = false;
   bool _isDeleting = false;
@@ -29,13 +28,14 @@ class PostCardViewModel extends ViewModel {
   void init() {}
 
   void goToPostDetails(ActivityFeed activity) {
-    context.read<AppRouter>().navigateTo(
+    context.read<AppRouter>().pushDynamicScreen(
           AppRoute.home,
-          PostDetails.routeName,
-          arguments: PostDetailsProps(
-            activityId: activity.id,
-            onUserPressed: (_) => onUserPressed(activity),
-            onLike: () => onLike(activity),
+          AppNavigator.appPageRoute(
+            builder: (_) => PostDetails(
+              activityId: activity.id,
+              onUserPressed: (_) => _onUserPressed(activity),
+              onLike: () => onLike(activity),
+            ),
           ),
         );
   }
@@ -64,17 +64,24 @@ class PostCardViewModel extends ViewModel {
     }
   }
 
-  void onUserPressed(ActivityFeed activity) {
+  void _onUserPressed(ActivityFeed activity) {
+    // if the user is tapping on their own post, just change the tab index
+    // of the navigation bar
     if (context.read<Auth>().user!.id == activity.userId) {
       context.read<AppRouter>().jumpToTab(AppRoute.profile);
       return;
     }
 
-    context.read<AppRouter>().navigateTo(
-      AppRoute.profile,
-      ProfileScreen.routeName,
-      arguments: {'userId': activity.userId},
-    );
+    // otherwise, we push a new screen inside the current navigation stack
+    final appRoute = context.read<AppRouter>().currentTabRoute;
+    context.read<AppRouter>().pushDynamicScreen(
+          appRoute,
+          AppNavigator.appPageRoute(
+            builder: (_) => ProfileScreen(
+              userId: activity.userId,
+            ),
+          ),
+        );
   }
 
   void onPostOptionsPressed(Widget? child) {
@@ -88,19 +95,8 @@ class PostCardViewModel extends ViewModel {
     );
   }
 
-  void openGallery(ActivityFeed activity, int index) {
-    AppRouter.rootNavigatorKey.currentState?.push(
-      AppNavigator.appPageRoute(
-        builder: (_) => GalleryNetworkPhotoView(
-          galleryItems: activity.images,
-          initialIndex: index,
-          backgroundDecoration: const BoxDecoration(
-            color: Colors.black,
-          ),
-        ),
-      ),
-    );
-  }
+  void openGallery(ActivityFeed activity, int index) =>
+      utils.openGallery(context, index, activity.images);
 
   Future<void> onDeletePost(ActivityFeed activity) async {
     if (_isDeleting) return;

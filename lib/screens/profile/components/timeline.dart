@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 
-import '../../providers/activities.dart';
-import '../../utils/constants/assets.dart';
-import 'components/post_card.dart';
+import '../../../providers/activities.dart';
+import '../../../utils/constants/assets.dart';
+import '../../home/components/post_card.dart';
 
 class Timeline extends StatelessWidget {
   final ScrollController? scrollController;
@@ -36,7 +36,7 @@ class Timeline extends StatelessWidget {
         if (activityFeed.isEmpty) {
           return const Center(
             child: Text(
-              'No posts yet! Be the first one to post.',
+              'No posts yet!',
               style: TextStyle(
                 fontWeight: FontWeight.w500,
               ),

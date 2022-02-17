@@ -30,6 +30,11 @@ class Home extends HookWidget {
           ?.pushNamed(DraftPost.routeName),
       [],
     );
+    final _onNotificationsTap = useCallback(
+      () => AppRouter.homeNavigatorKey.currentState
+          ?.pushNamed(Notifications.routeName),
+      [],
+    );
 
     return Scaffold(
       backgroundColor: const Color(0xffF1FAFF),
@@ -48,11 +53,7 @@ class Home extends HookWidget {
                   alignment: AlignmentDirectional.center,
                   children: [
                     IconButton(
-                      onPressed: () => context
-                          .read<AppRouter>()
-                          .keyOf(AppRoute.home)
-                          .currentState!
-                          .pushNamed(Notifications.routeName),
+                      onPressed: _onNotificationsTap,
                       icon: const Icon(Icons.notifications_rounded),
                     ),
                     const Positioned(
@@ -76,11 +77,7 @@ class Home extends HookWidget {
                 );
               }
               return IconButton(
-                onPressed: () => context
-                    .read<AppRouter>()
-                    .keyOf(AppRoute.home)
-                    .currentState!
-                    .pushNamed(Notifications.routeName),
+                onPressed: _onNotificationsTap,
                 icon: const Icon(Icons.notifications_outlined),
               );
             },
