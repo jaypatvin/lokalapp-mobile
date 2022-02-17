@@ -31,6 +31,12 @@ class ProductDetail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (product.archived) {
+      return const Center(
+        child: Text('Sorry, the product has been deleted.'),
+      );
+    }
+
     return MVVM(
       view: (_, __) => _ProductDetailView(),
       viewModel: ProductDetailViewModel(
