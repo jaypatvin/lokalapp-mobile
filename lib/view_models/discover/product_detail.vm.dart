@@ -7,9 +7,11 @@ import '../../models/app_navigator.dart';
 import '../../models/failure_exception.dart';
 import '../../models/product.dart';
 import '../../models/shop.dart';
+import '../../providers/auth.dart';
 import '../../providers/cart.dart';
 import '../../providers/wishlist.dart';
 import '../../routers/app_router.dart';
+import '../../routers/profile/props/user_shop.props.dart';
 import '../../screens/profile/shop/user_shop.dart';
 import '../../services/bottom_nav_bar_hider.dart';
 import '../../state/view_model.dart';
@@ -124,6 +126,15 @@ class ProductDetailViewModel extends ViewModel {
 
   Future<dynamic> goToShop() async {
     context.read<BottomNavBarHider>().isHidden = false;
+
+    if (context.read<Auth>().user?.id == product.userId) {
+      return context.read<AppRouter>().navigateTo(
+            AppRoute.profile,
+            UserShop.routeName,
+            arguments: UserShopProps(product.userId, product.shopId),
+          );
+    }
+
     final appRoute = context.read<AppRouter>().currentTabRoute;
     return context.read<AppRouter>().pushDynamicScreen(
           appRoute,
