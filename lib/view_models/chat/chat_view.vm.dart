@@ -277,7 +277,7 @@ class ChatViewViewModel extends ViewModel {
 
     AppRouter.chatNavigatorKey.currentState?.push(
       AppNavigator.appPageRoute(
-        builder: (_) => ChatProfile(_chat, _conversations),
+        builder: (_) => ChatProfile(_chat!, _conversations),
       ),
     );
   }

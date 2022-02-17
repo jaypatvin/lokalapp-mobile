@@ -138,60 +138,108 @@ class _ChatList extends StatelessWidget {
     final chat = chats[index];
     final members = <ChatMember>[];
 
-    String? title = chat.title;
+    String title = chat.title;
 
-    if (chat.chatType == ChatType.shop) {
-      final shop = context.read<Shops>().findById(chat.shopId)!;
-      if (shop.userId == cUserId) {
+    switch (chat.chatType) {
+      case ChatType.user:
         final ids = [...chat.members];
-        ids.retainWhere((id) => shop.id != id);
+        ids.retainWhere((id) => cUserId != id);
         members.addAll(
           ids.map((id) {
             final user = context.read<Users>().findById(id)!;
             return ChatMember(
-              displayName: user.displayName ?? '${user.firstName} ${user.lastName}',
+              displayName:
+                  user.displayName ?? '${user.firstName} ${user.lastName}',
               displayPhoto: user.profilePhoto,
-              type: chat.chatType,
+              type: MemberType.user,
             );
           }).toList(),
         );
         final memberNames = members.map((user) => user.displayName).toList();
         title = memberNames.join(', ');
-      } else {
-        members.add(
-          ChatMember(
-            displayName: shop.name,
-            displayPhoto: shop.profilePhoto,
-            type: chat.chatType,
-          ),
-        );
-      }
-    } else if (chat.chatType == ChatType.product) {
-      final product = context.read<Products>().findById(chat.productId);
-      members.add(
-        ChatMember(
-          displayName: product!.name,
-          displayPhoto: product.gallery![0].url,
-          type: chat.chatType,
-        ),
-      );
-    } else {
-      final ids = [...chat.members];
-      ids.retainWhere((id) => cUserId != id);
-
-      members.addAll(
-        ids.map((id) {
-          final user = context.read<Users>().findById(id)!;
-          return ChatMember(
-            displayName: user.displayName ?? '${user.firstName} ${user.lastName}',
-            displayPhoto: user.profilePhoto,
-            type: chat.chatType,
+        break;
+      case ChatType.shop:
+        final shop = context.read<Shops>().findById(chat.shopId)!;
+        if (shop.userId == cUserId) {
+          final ids = [...chat.members];
+          ids.retainWhere((id) => shop.id != id);
+          members.addAll(
+            ids.map((id) {
+              final user = context.read<Users>().findById(id)!;
+              return ChatMember(
+                id: id,
+                displayName:
+                    user.displayName ?? '${user.firstName} ${user.lastName}',
+                displayPhoto: user.profilePhoto,
+                type: MemberType.user,
+              );
+            }).toList(),
           );
-        }).toList(),
-      );
+          final memberNames = members.map((user) => user.displayName).toList();
+          title = memberNames.join(', ');
+        } else {
+          members.add(
+            ChatMember(
+              id: shop.id,
+              displayName: shop.name,
+              displayPhoto: shop.profilePhoto,
+              type: MemberType.shop,
+            ),
+          );
+        }
+        break;
+      case ChatType.product:
+        final shop = context.read<Shops>().findById(chat.shopId)!;
+        final product = context.read<Products>().findById(chat.productId);
 
-      final memberNames = members.map((user) => user.displayName).toList();
-      title = memberNames.join(', ');
+        if (shop.userId != cUserId) {
+          members.add(
+            ChatMember(
+              id: shop.id,
+              displayName: shop.name,
+              displayPhoto: shop.profilePhoto,
+              type: MemberType.shop,
+            ),
+          );
+        }
+
+        if (product != null) {
+          members.add(
+            ChatMember(
+              id: product.id,
+              displayName: product.name,
+              displayPhoto: product.gallery![0].url,
+              type: MemberType.product,
+            ),
+          );
+        } else {
+          members.add(
+            const ChatMember(
+              displayName: 'Deleted Product',
+              type: MemberType.product,
+            ),
+          );
+        }
+
+        final ids = [...chat.members];
+        ids.retainWhere((id) => cUserId != id);
+        members.addAll(
+          ids
+              .map<ChatMember?>((id) {
+                final user = context.read<Users>().findById(id);
+                if (user != null) {
+                  return ChatMember(
+                    displayName: user.displayName ??
+                        '${user.firstName} ${user.lastName}',
+                    displayPhoto: user.profilePhoto,
+                    type: MemberType.user,
+                  );
+                }
+              })
+              .whereType<ChatMember>()
+              .toList(),
+        );
+        break;
     }
 
     return Padding(

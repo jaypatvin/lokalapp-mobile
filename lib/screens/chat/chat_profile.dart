@@ -26,7 +26,7 @@ class ChatProfile extends StatefulWidget {
   static const routeName = '/chat/view/profile';
   const ChatProfile(this.chat, this.conversations);
 
-  final ChatModel? chat;
+  final ChatModel chat;
   final List<QueryDocumentSnapshot>? conversations;
 
   @override
@@ -40,7 +40,7 @@ class _ChatProfileState extends State<ChatProfile> {
   void initState() {
     super.initState();
 
-    for (final chatMember in widget.chat!.members) {
+    for (final chatMember in widget.chat.members) {
       final _user = context.read<Users>().findById(chatMember);
       if (_user != null) {
         _members.add(
@@ -49,7 +49,7 @@ class _ChatProfileState extends State<ChatProfile> {
                 _user.displayName ?? '${_user.firstName} ${_user.lastName}',
             id: _user.id,
             displayPhoto: _user.profilePhoto,
-            type: ChatType.user,
+            type: MemberType.user,
           ),
         );
         continue;
@@ -62,7 +62,7 @@ class _ChatProfileState extends State<ChatProfile> {
             displayName: _shop.name,
             id: _shop.id,
             displayPhoto: _shop.profilePhoto,
-            type: ChatType.shop,
+            type: MemberType.shop,
           ),
         );
         continue;
@@ -76,7 +76,14 @@ class _ChatProfileState extends State<ChatProfile> {
             id: _product.id,
             displayPhoto:
                 _product.productPhoto ?? _product.gallery?.firstOrNull?.url,
-            type: ChatType.product,
+            type: MemberType.product,
+          ),
+        );
+      } else {
+        _members.add(
+          const ChatMember(
+            displayName: 'Deleted Product',
+            type: MemberType.product,
           ),
         );
       }
@@ -112,14 +119,14 @@ class _ChatProfileState extends State<ChatProfile> {
     final _member = _members[index];
 
     switch (_member.type) {
-      case ChatType.user:
+      case MemberType.user:
         _isCurrentUser = _member.id == ctx.read<Auth>().user?.id;
         break;
-      case ChatType.shop:
+      case MemberType.shop:
         final _shop = context.read<Shops>().findById(_member.id);
         _isCurrentUser = _shop?.userId == ctx.read<Auth>().user?.id;
         break;
-      case ChatType.product:
+      case MemberType.product:
         final _product = context.read<Products>().findById(_member.id);
         _isCurrentUser = _product?.userId == ctx.read<Auth>().user?.id;
         break;
@@ -129,9 +136,9 @@ class _ChatProfileState extends State<ChatProfile> {
     final String displayName;
     if (_isCurrentUser) {
       displayName = '${_member.displayName} (You)';
-    } else if (_member.type == ChatType.shop) {
+    } else if (_member.type == MemberType.shop) {
       displayName = '${_member.displayName} (Shop)';
-    } else if (_member.type == ChatType.product) {
+    } else if (_member.type == MemberType.product) {
       displayName = '${_member.displayName} (Product)';
     } else {
       displayName = _member.displayName;
@@ -145,7 +152,7 @@ class _ChatProfileState extends State<ChatProfile> {
         }
         final appRoute = ctx.read<AppRouter>().currentTabRoute;
         switch (_member.type) {
-          case ChatType.user:
+          case MemberType.user:
             ctx.read<AppRouter>().pushDynamicScreen(
                   appRoute,
                   AppNavigator.appPageRoute(
@@ -155,7 +162,7 @@ class _ChatProfileState extends State<ChatProfile> {
                   ),
                 );
             break;
-          case ChatType.shop:
+          case MemberType.shop:
             final _shop = context.read<Shops>().findById(_member.id);
             ctx.read<AppRouter>().pushDynamicScreen(
                   appRoute,
@@ -167,13 +174,15 @@ class _ChatProfileState extends State<ChatProfile> {
                   ),
                 );
             break;
-          case ChatType.product:
-            final _product = context.read<Products>().findById(_member.id)!;
-            ctx.read<AppRouter>().navigateTo(
-                  AppRoute.discover,
-                  ProductDetail.routeName,
-                  arguments: ProductDetailProps(_product),
-                );
+          case MemberType.product:
+            final _product = context.read<Products>().findById(_member.id);
+            if (_product != null) {
+              ctx.read<AppRouter>().navigateTo(
+                    AppRoute.discover,
+                    ProductDetail.routeName,
+                    arguments: ProductDetailProps(_product),
+                  );
+            }
             break;
         }
       },

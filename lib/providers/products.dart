@@ -82,7 +82,7 @@ class Products extends ChangeNotifier {
   }
 
   Product? findById(String? id) {
-    return _products.firstWhereOrNull(
+    return items.firstWhereOrNull(
       (product) => product.id == id,
     );
   }
