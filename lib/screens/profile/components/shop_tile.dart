@@ -7,6 +7,7 @@ import '../../chat/components/chat_avatar.dart';
 
 class ShopTile extends StatelessWidget {
   final Shop shop;
+
   final void Function() onGoToShop;
   const ShopTile({
     Key? key,

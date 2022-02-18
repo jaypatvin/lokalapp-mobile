@@ -5,8 +5,7 @@ import 'package:provider/provider.dart';
 import '../routers/app_router.dart';
 import '../services/bottom_nav_bar_hider.dart';
 import '../utils/constants/assets.dart';
-import '../utils/shared_preference.dart';
-import '../widgets/overlays/onboarding.dart';
+import '../widgets/overlays/bottom_navigation_onboarding.dart';
 import 'activity/activity.dart';
 import 'chat/chat.dart';
 import 'discover/discover.dart';
@@ -115,48 +114,30 @@ class _BottomNavigationState extends State<BottomNavigation> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: PersistentTabView(
-        context,
-        controller: context.read<PersistentTabController>(),
-        items: _navBarsItems(),
-        resizeToAvoidBottomInset: true,
-        hideNavigationBar: context.watch<BottomNavBarHider>().isHidden,
-        navBarStyle: NavBarStyle.svg,
-        itemAnimationProperties: const ItemAnimationProperties(
-          duration: Duration(milliseconds: 200),
-          curve: Curves.ease,
+      body: BottomNavigationOnboarding(
+        child: PersistentTabView(
+          context,
+          controller: context.read<PersistentTabController>(),
+          items: _navBarsItems(),
+          resizeToAvoidBottomInset: true,
+          hideNavigationBar: context.watch<BottomNavBarHider>().isHidden,
+          navBarStyle: NavBarStyle.svg,
+          itemAnimationProperties: const ItemAnimationProperties(
+            duration: Duration(milliseconds: 200),
+            curve: Curves.ease,
+          ),
+          screenTransitionAnimation: const ScreenTransitionAnimation(
+            animateTabTransition: true,
+          ),
+          onItemSelected: _onItemSelected,
+          screens: const [
+            Home(),
+            Discover(),
+            Chat(),
+            Activity(),
+            ProfileScreen(),
+          ],
         ),
-        screenTransitionAnimation: const ScreenTransitionAnimation(
-          animateTabTransition: true,
-        ),
-        onItemSelected: _onItemSelected,
-        screens: const [
-          Onboarding(
-            key: Key('home_screen'),
-            screen: MainScreen.home,
-            child: Home(),
-          ),
-          Onboarding(
-            key: Key('discover_screen'),
-            screen: MainScreen.discover,
-            child: Discover(),
-          ),
-          Onboarding(
-            key: Key('chat_screen'),
-            screen: MainScreen.chats,
-            child: Chat(),
-          ),
-          Onboarding(
-            key: Key('activity_screen'),
-            screen: MainScreen.activity,
-            child: Activity(),
-          ),
-          Onboarding(
-            key: Key('profile_screen'),
-            screen: MainScreen.profile,
-            child: ProfileScreen(),
-          ),
-        ],
       ),
     );
   }

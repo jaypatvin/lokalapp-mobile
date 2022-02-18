@@ -30,7 +30,7 @@ class ProfileScreen extends StatelessWidget {
 
       if (user == null) {
         return const Center(
-          child: Text('Error in displaying the user!'),
+          child: Text('The user cannot be found.'),
         );
       }
     }

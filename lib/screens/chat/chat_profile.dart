@@ -3,6 +3,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/app_navigator.dart';
@@ -13,10 +14,12 @@ import '../../providers/shops.dart';
 import '../../providers/users.dart';
 import '../../routers/app_router.dart';
 import '../../routers/discover/product_detail.props.dart';
+import '../../routers/profile/props/user_shop.props.dart';
 import '../../utils/constants/themes.dart';
 import '../../widgets/custom_app_bar.dart';
 import '../../widgets/custom_expansion_tile.dart' as custom;
 import '../discover/product_detail.dart';
+import '../profile/add_product/add_product.dart';
 import '../profile/profile_screen.dart';
 import '../profile/shop/user_shop.dart';
 import 'components/chat_avatar.dart';
@@ -90,7 +93,7 @@ class _ChatProfileState extends State<ChatProfile> {
     }
   }
 
-  Widget buildTitle() {
+  Widget _buildTitle() {
     final names = <String?>[];
     final userId = context.read<Auth>().user!.id;
 
@@ -146,8 +149,33 @@ class _ChatProfileState extends State<ChatProfile> {
 
     return ListTile(
       onTap: () {
-        if (_member.id == context.read<Auth>().user!.id) {
-          ctx.read<AppRouter>().jumpToTab(AppRoute.profile);
+        if (_isCurrentUser) {
+          switch (_member.type) {
+            case MemberType.user:
+              ctx.read<AppRouter>().jumpToTab(AppRoute.profile);
+              break;
+            case MemberType.shop:
+              final _shop = ctx.read<Shops>().findById(_member.id);
+              ctx.read<AppRouter>().navigateTo(
+                    AppRoute.profile,
+                    UserShop.routeName,
+                    arguments: UserShopProps(_shop!.userId, _member.id),
+                  );
+              break;
+            case MemberType.product:
+              final _product = ctx.read<Products>().findById(_member.id);
+              if (_product == null) {
+                showToast('Sorry, product has been deleted');
+                break;
+              }
+              ctx.read<AppRouter>().navigateTo(
+                AppRoute.profile,
+                AddProduct.routeName,
+                arguments: {'productId': _member.id},
+              );
+              break;
+          }
+
           return;
         }
         final appRoute = ctx.read<AppRouter>().currentTabRoute;
@@ -182,6 +210,8 @@ class _ChatProfileState extends State<ChatProfile> {
                     ProductDetail.routeName,
                     arguments: ProductDetailProps(_product),
                   );
+            } else {
+              showToast('Sorry, product has been deleted');
             }
             break;
         }
@@ -232,7 +262,7 @@ class _ChatProfileState extends State<ChatProfile> {
             ),
             SizedBox(height: 10.0.h),
             Center(
-              child: buildTitle(),
+              child: _buildTitle(),
             ),
             ListTileTheme(
               minVerticalPadding: 0,

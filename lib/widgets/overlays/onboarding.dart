@@ -2,6 +2,7 @@ import 'package:after_layout/after_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 
 import '../../utils/constants/assets.dart';
@@ -117,6 +118,9 @@ class _OnboardingState extends State<Onboarding> with AfterLayoutMixin {
                 await context
                     .read<UserSharedPreferences>()
                     .updateOnboardingStatus(widget.screen);
+                final _tabController = context.read<PersistentTabController>();
+                if (_tabController.index == 4) return;
+                _tabController.index++;
               },
             ),
           ),
