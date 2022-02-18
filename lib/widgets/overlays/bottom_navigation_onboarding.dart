@@ -161,6 +161,9 @@ class _BottomNavigationOnboardingState extends State<BottomNavigationOnboarding>
                 await context
                     .read<UserSharedPreferences>()
                     .updateOnboardingStatus(_screen);
+                final _tabController = context.read<PersistentTabController>();
+                if (_tabController.index == 4) return;
+                _tabController.index++;
               },
             ),
           ),
@@ -171,16 +174,25 @@ class _BottomNavigationOnboardingState extends State<BottomNavigationOnboarding>
 
   @override
   Widget build(BuildContext context) {
+    final _mediaSize = MediaQuery.of(context).size;
     return Stack(
       children: [
         widget.child,
         if (_displayOnboarding)
           SizedBox(
-            width: double.infinity,
-            height: double.infinity,
+            width: _mediaSize.width,
+            height: _mediaSize.height - kBottomNavigationBarHeight,
             child: DecoratedBox(
               decoration: BoxDecoration(
                 color: Colors.black.withOpacity(0.5),
+              ),
+            ),
+          ),
+        if (_displayOnboarding)
+          SizedBox.expand(
+            child: DecoratedBox(
+              decoration: const BoxDecoration(
+                color: Colors.transparent,
               ),
               child: Center(
                 child: Padding(
