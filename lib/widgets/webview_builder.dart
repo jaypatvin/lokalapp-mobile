@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
+import 'package:oktoast/oktoast.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 import '../utils/constants/themes.dart';
@@ -66,6 +68,13 @@ class _WebViewPageState extends State<WebViewPage> {
                   setState(() {
                     _loadingPercentage = 100;
                   });
+                },
+                onWebResourceError: (error) {
+                  showToast(error.description);
+                  FirebaseCrashlytics.instance.recordError(
+                    error,
+                    StackTrace.current,
+                  );
                 },
               ),
               if (_loadingPercentage < 100)
