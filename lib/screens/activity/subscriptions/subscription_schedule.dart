@@ -310,7 +310,6 @@ class _ViewSubscriptionScheduleView
                 ),
                 SizedBox(height: 10.0.h),
                 SizedBox(
-                  height: kMinInteractiveDimension,
                   width: double.infinity,
                   child: AppButton.filled(
                     text: 'Apply',

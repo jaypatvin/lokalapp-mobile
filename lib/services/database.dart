@@ -227,7 +227,7 @@ class Database {
     return FirebaseFirestore.instance.collection('order_status');
   }
 
-  Stream<QuerySnapshot<Map<String, dynamic>>> getUserSubscriptions(
+  Stream<QuerySnapshot<Map<String, dynamic>>> getUserSubscriptionPlans(
     String? userId,
   ) {
     return subscriptionPlansRef
@@ -236,7 +236,7 @@ class Database {
         .snapshots();
   }
 
-  Stream<QuerySnapshot<Map<String, dynamic>>> getShopSubscribers(
+  Stream<QuerySnapshot<Map<String, dynamic>>> getShopSubscriptionPlans(
     String? shopId,
   ) {
     return subscriptionPlansRef
@@ -271,7 +271,10 @@ class Database {
     return data;
   }
 
-  Stream<QuerySnapshot> getUserOrders(String? userId, {int? statusCode}) {
+  Stream<QuerySnapshot<Map<String, dynamic>>> getUserOrders(
+    String? userId, {
+    int? statusCode,
+  }) {
     if (statusCode != null) {
       return ordersRef
           .where('buyer_id', isEqualTo: userId)
@@ -286,7 +289,10 @@ class Database {
         .snapshots();
   }
 
-  Stream<QuerySnapshot> getShopOrders(String? shopId, {int? statusCode}) {
+  Stream<QuerySnapshot<Map<String, dynamic>>> getShopOrders(
+    String? shopId, {
+    int? statusCode,
+  }) {
     if (statusCode != null) {
       return ordersRef
           .where('shop_id', isEqualTo: shopId)

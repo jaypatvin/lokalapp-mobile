@@ -111,6 +111,7 @@ class SubscriptionPlanAPIService extends APIService<ProductSubscriptionPlan> {
   }
 
   // --PUT
+  /// Enables the Subscription Plan. Can only be called by the seller.
   Future<bool> confirmSubscriptionPlan({
     required String planId,
   }) async {
@@ -155,6 +156,12 @@ class SubscriptionPlanAPIService extends APIService<ProductSubscriptionPlan> {
     }
   }
 
+  /// Disables the Subscription Plan. Can be called by either the buyer or the
+  /// seller.
+  ///
+  /// This shouldn't be used to cancel or unsubsribe from the subscription.
+  /// Use the methods `[cancelSubscriptionPlan]` or
+  /// `[unsubscribeFromSubscriptionPlan]` instead.
   Future<bool> disableSubscriptionPlan({required String planId}) async {
     try {
       final response = await putter(
@@ -164,6 +171,41 @@ class SubscriptionPlanAPIService extends APIService<ProductSubscriptionPlan> {
             planId,
             'disable',
           ],
+        ),
+        headers: api.authHeader(),
+      );
+
+      return handleGenericResponse(response);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  /// Cancel the Subscription Plan. Can only be called by the seller.
+  Future<bool> cancelSubscriptionPlan({required String planId}) async {
+    try {
+      final response = await putter(
+        api.endpointUri(
+          endpoint,
+          pathSegments: [planId, 'cancel'],
+        ),
+        headers: api.authHeader(),
+      );
+
+      return handleGenericResponse(response);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  /// Unsubscribe from the Subscription Plan. Can only be called by the
+  /// buyer.
+  Future<bool> unsubscribeFromSubscriptionPlan({required String planId}) async {
+    try {
+      final response = await putter(
+        api.endpointUri(
+          endpoint,
+          pathSegments: [planId, 'unsubscribe'],
         ),
         headers: api.authHeader(),
       );

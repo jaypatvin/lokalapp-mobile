@@ -49,7 +49,7 @@ class SubscriptionPaymentMethodViewModel extends ViewModel {
 
       final success = !reschedule ||
           await _apiService.autoRescheduleConflicts(
-            planId: subscriptionPlan.id!,
+            planId: subscriptionPlan.id,
           );
 
       if (success) {

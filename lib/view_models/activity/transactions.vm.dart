@@ -9,6 +9,7 @@ import '../../models/order.dart';
 import '../../models/shop.dart';
 import '../../providers/auth.dart';
 import '../../providers/shops.dart';
+import '../../routers/activity/subscriptions.props.dart';
 import '../../routers/app_router.dart';
 import '../../screens/activity/buyer/order_received.dart';
 import '../../screens/activity/buyer/payment_option.dart';
@@ -33,15 +34,15 @@ class TransactionsViewModel extends ViewModel {
   UnmodifiableMapView<int, String?> get statuses =>
       UnmodifiableMapView(_statuses);
 
-  final Map<int, Stream<QuerySnapshot>> _streams = {};
+  final Map<int, Stream<QuerySnapshot<Map<String, dynamic>>>> _streams = {};
   UnmodifiableMapView<int, Stream<QuerySnapshot>> get streams =>
       UnmodifiableMapView(_streams);
 
   int _selectedIndex = 0;
   int get selectedIndex => _selectedIndex;
 
-  Stream<QuerySnapshot>? _stream;
-  Stream<QuerySnapshot>? get stream => _stream;
+  Stream<QuerySnapshot<Map<String, dynamic>>>? _stream;
+  Stream<QuerySnapshot<Map<String, dynamic>>>? get stream => _stream;
 
   late final String subHeader;
   late final String subscriptionSubtitle;
@@ -143,10 +144,9 @@ class TransactionsViewModel extends ViewModel {
   }
 
   void onGoToSubscriptionHandler() {
-    AppRouter.activityNavigatorKey.currentState?.push(
-      AppNavigator.appPageRoute(
-        builder: (_) => Subscriptions(isBuyer: isBuyer),
-      ),
+    AppRouter.activityNavigatorKey.currentState?.pushNamed(
+      Subscriptions.routeName,
+      arguments: SubscriptionsProps(isBuyer: isBuyer),
     );
   }
 

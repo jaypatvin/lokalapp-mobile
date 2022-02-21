@@ -1,14 +1,40 @@
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
 
 import 'operating_hours.dart';
 import 'order.dart';
+import 'timestamp_time_object.dart';
+
+enum SubscriptionStatus {
+  enabled,
+  disabled,
+  unsubscribed,
+  cancelled,
+}
+
+extension SubscriptionPlanExtension on SubscriptionStatus {
+  String get value {
+    switch (this) {
+      case SubscriptionStatus.enabled:
+        return 'enabled';
+      case SubscriptionStatus.disabled:
+        return 'disabled';
+      case SubscriptionStatus.unsubscribed:
+        return 'unsubscribed';
+      case SubscriptionStatus.cancelled:
+        return 'cancelled';
+    }
+  }
+
+  int compareTo(SubscriptionStatus other) => index.compareTo(other.index);
+}
 
 class OverrideDate {
-  final DateTime? originalDate;
+  final DateTime originalDate;
   final DateTime newDate;
   const OverrideDate({
     required this.originalDate,
@@ -17,7 +43,7 @@ class OverrideDate {
 
   Map<String, dynamic> toMap() {
     return {
-      'original_date': DateFormat('yyyy-MM-dd').format(originalDate!),
+      'original_date': DateFormat('yyyy-MM-dd').format(originalDate),
       'new_date': DateFormat('yyyy-MM-dd').format(newDate),
     };
   }
@@ -52,10 +78,10 @@ class OverrideDate {
 }
 
 class SubscriptionProductDetails {
-  final String? name;
-  final String? image;
-  final String? description;
-  final double? price;
+  final String name;
+  final String image;
+  final String description;
+  final double price;
   const SubscriptionProductDetails({
     required this.name,
     required this.image,
@@ -127,9 +153,9 @@ class SubscriptionProductDetails {
 }
 
 class SubscriptionShopDetails {
-  final String? name;
-  final String? image;
-  final String? description;
+  final String name;
+  final String image;
+  final String description;
   SubscriptionShopDetails({
     required this.name,
     required this.image,
@@ -190,9 +216,9 @@ class SubscriptionShopDetails {
 class ProductSubscriptionSchedule {
   final List<DateTime> startDates;
   final DateTime? lastDate;
-  final int? repeatUnit;
-  final bool? autoReschedule;
-  final String? repeatType;
+  final int repeatUnit;
+  final bool autoReschedule;
+  final String repeatType;
   final List<CustomDates> schedule;
   final List<DateTime> customDates;
   final List<DateTime> unavailableDates;
@@ -328,17 +354,18 @@ class ProductSubscriptionSchedule {
 }
 
 class ProductSubscriptionPlan {
-  final String? id;
-  final String? productId;
-  final String? shopId;
-  final String? buyerId;
-  final String? sellerId;
-  final int? quantity;
-  final String? instruction;
-  final String? status;
+  final String id;
+  final String productId;
+  final String shopId;
+  final String buyerId;
+  final String sellerId;
+  final int quantity;
+  final String instruction;
+  final SubscriptionStatus status;
   final SubscriptionProductDetails product;
   final ProductSubscriptionSchedule plan;
   final SubscriptionShopDetails shop;
+  final DateTime createdAt;
 
   ProductSubscriptionPlan({
     required this.id,
@@ -352,6 +379,7 @@ class ProductSubscriptionPlan {
     required this.plan,
     required this.product,
     required this.shop,
+    required this.createdAt,
   });
 
   ProductSubscriptionPlan copyWith({
@@ -362,10 +390,11 @@ class ProductSubscriptionPlan {
     String? sellerId,
     int? quantity,
     String? instruction,
-    String? status,
+    SubscriptionStatus? status,
     ProductSubscriptionSchedule? plan,
     SubscriptionShopDetails? shop,
     OrderProduct? product,
+    DateTime? createdAt,
   }) {
     return ProductSubscriptionPlan(
       id: id ?? this.id,
@@ -379,10 +408,14 @@ class ProductSubscriptionPlan {
       plan: plan ?? this.plan,
       product: product as SubscriptionProductDetails? ?? this.product,
       shop: shop ?? this.shop,
+      createdAt: createdAt ?? this.createdAt,
     );
   }
 
   factory ProductSubscriptionPlan.fromMap(Map<String, dynamic> map) {
+    final _createdAt = (map['created_at'] is Timestamp)
+        ? (map['created_at'] as Timestamp).toDate()
+        : TimestampObject.fromMap(map['created_at']).toDateTime();
     return ProductSubscriptionPlan(
       id: map['id'],
       productId: map['product_id'],
@@ -391,10 +424,14 @@ class ProductSubscriptionPlan {
       sellerId: map['seller_id'],
       quantity: map['quantity'],
       instruction: map['instruction'],
-      status: map['status'],
+      status: SubscriptionStatus.values.firstWhereOrNull(
+            (e) => e.value == map['status'],
+          ) ??
+          SubscriptionStatus.disabled,
       plan: ProductSubscriptionSchedule.fromMap(map['plan']),
       product: SubscriptionProductDetails.fromMap(map['product']),
       shop: SubscriptionShopDetails.fromMap(map['shop']),
+      createdAt: _createdAt,
     );
   }
 
@@ -415,7 +452,7 @@ class ProductSubscriptionPlan {
     return 'ProductSubscriptionPlan(productId: $productId, shopId: $shopId, '
         'buyerId: $buyerId, sellerId: $sellerId, quantity: $quantity, '
         'instruction: $instruction, status: $status, plan: $plan, '
-        'product: $product, shop: $shop, id: $id)';
+        'product: $product, shop: $shop, id: $id, createdAt: $createdAt)';
   }
 
   @override
@@ -433,7 +470,8 @@ class ProductSubscriptionPlan {
         other.plan == plan &&
         other.product == product &&
         other.shop == shop &&
-        other.id == id;
+        other.id == id &&
+        other.createdAt == createdAt;
   }
 
   @override
@@ -448,6 +486,7 @@ class ProductSubscriptionPlan {
         plan.hashCode ^
         product.hashCode ^
         shop.hashCode ^
-        id.hashCode;
+        id.hashCode ^
+        createdAt.hashCode;
   }
 }

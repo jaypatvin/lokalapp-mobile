@@ -73,8 +73,7 @@ class _ChatViewState extends State<ChatView> with WidgetsBindingObserver {
   // this is placed outside of the build function to
   // avoid rebuilds on the StreamBuilder
   Stream<QuerySnapshot<Map<String, dynamic>>>? _messageStream;
-  late StreamSubscription<QuerySnapshot<Map<String, dynamic>>>?
-      _messageSubscription;
+  StreamSubscription<QuerySnapshot<Map<String, dynamic>>>? _messageSubscription;
 
   // needed to keep track if creating a new message
   bool _createNewMessage = false;

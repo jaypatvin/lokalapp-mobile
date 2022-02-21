@@ -5,13 +5,10 @@ import 'package:provider/provider.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
 
 import '../../../../models/product_subscription_plan.dart';
-import '../../../../providers/auth.dart';
+import '../../../../providers/users.dart';
 import '../../../chat/components/chat_avatar.dart';
 
 class SubscriptionPlanDetails extends StatelessWidget {
-  final bool isBuyer;
-  final bool displayHeader;
-  final ProductSubscriptionPlan subscriptionPlan;
   const SubscriptionPlanDetails({
     Key? key,
     this.isBuyer = true,
@@ -19,23 +16,35 @@ class SubscriptionPlanDetails extends StatelessWidget {
     required this.subscriptionPlan,
   }) : super(key: key);
 
+  final bool isBuyer;
+  final bool displayHeader;
+  final ProductSubscriptionPlan subscriptionPlan;
+
   @override
   Widget build(BuildContext context) {
-    final user = context.read<Auth>().user!;
-    final name = isBuyer ? subscriptionPlan.shop.name! : user.displayName!;
+    final user = context.read<Users>().findById(subscriptionPlan.buyerId)!;
+    final name = isBuyer ? subscriptionPlan.shop.name : user.displayName!;
     final displayPhoto =
         isBuyer ? subscriptionPlan.shop.image : user.profilePhoto;
     final item = subscriptionPlan.product;
-    final disabled = subscriptionPlan.status == 'disabled';
+    final disabled = subscriptionPlan.status == SubscriptionStatus.disabled;
+    final String _subHeader;
+    if (disabled) {
+      _subHeader = isBuyer ? 'For Confirmation' : 'To Confirm';
+    } else {
+      _subHeader = 'Subscription';
+    }
 
     return Column(
       children: [
         if (displayHeader)
           Row(
             children: [
-              Text(
-                disabled ? 'Past Subscription' : 'Subscription',
-                style: Theme.of(context).textTheme.subtitle1,
+              Expanded(
+                child: Text(
+                  _subHeader,
+                  style: Theme.of(context).textTheme.subtitle1,
+                ),
               ),
             ],
           ),
@@ -58,7 +67,7 @@ class SubscriptionPlanDetails extends StatelessWidget {
               width: 40.0.w,
               height: 40.0.w,
               child: CachedNetworkImage(
-                imageUrl: item.image ?? '',
+                imageUrl: item.image,
                 fit: BoxFit.cover,
                 placeholder: (_, __) => Shimmer(
                   child: DecoratedBox(
@@ -68,7 +77,7 @@ class SubscriptionPlanDetails extends StatelessWidget {
                   ),
                 ),
                 errorWidget: (ctx, url, error) {
-                  if (item.image?.isNotEmpty ?? false) {
+                  if (item.image.isNotEmpty) {
                     return const Center(
                       child: Text('Error displaying image.'),
                     );
@@ -83,7 +92,7 @@ class SubscriptionPlanDetails extends StatelessWidget {
             SizedBox(width: 10.0.w),
             Expanded(
               child: Text(
-                item.name!,
+                item.name,
                 style: Theme.of(context).textTheme.subtitle1,
                 overflow: TextOverflow.ellipsis,
               ),
@@ -93,12 +102,12 @@ class SubscriptionPlanDetails extends StatelessWidget {
               width: 50.0.w,
               child: Text(
                 'x${subscriptionPlan.quantity}',
-                style: Theme.of(context).textTheme.bodyText2,
+                style: Theme.of(context).textTheme.bodyText1,
               ),
             ),
             Text(
               'P ${item.price}',
-              style: Theme.of(context).textTheme.bodyText2,
+              style: Theme.of(context).textTheme.bodyText1,
             ),
           ],
         ),

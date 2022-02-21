@@ -78,7 +78,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
           initialRoute: Activity.routeName,
           onGenerateRoute: context
               .read<AppRouter>()
-              .navigatorOf(AppRoute.profile)
+              .navigatorOf(AppRoute.activity)
               .onGenerateRoute,
         ),
       ),

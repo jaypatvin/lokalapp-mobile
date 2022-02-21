@@ -18,7 +18,7 @@ class GroupedOrders extends StatelessWidget {
     required this.onSecondButtonPressed,
   }) : super(key: key);
 
-  final Stream<QuerySnapshot>? stream;
+  final Stream<QuerySnapshot<Map<String, dynamic>>>? stream;
   final Map<int, String?> statuses;
   final bool isBuyer;
   final void Function(Order order) onSecondButtonPressed;
