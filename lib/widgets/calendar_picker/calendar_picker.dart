@@ -18,6 +18,7 @@ class CalendarPicker extends HookWidget {
     this.startDate,
     this.weekdayWidgetBuilder,
     this.closing,
+    this.limitSelectableDates = false,
   }) : super(key: key);
 
   final List<DateTime> selectableDates;
@@ -29,6 +30,7 @@ class CalendarPicker extends HookWidget {
   final void Function(DateTime date)? onNonSelectableDayPressed;
   final Widget Function(int)? weekdayWidgetBuilder;
   final TimeOfDay? closing;
+  final bool limitSelectableDates;
 
   @override
   Widget build(BuildContext context) {
@@ -95,9 +97,12 @@ class CalendarPicker extends HookWidget {
         final bool isAfterStartDate =
             _startDate.difference(date).inSeconds <= 0;
 
-        final bool isSelectable = (isInSelectableDates || isInSelectableDays) &&
-            isAfterStartDate &&
-            isBeforeClosing;
+        final bool _isSelectable = limitSelectableDates
+            ? (isInSelectableDates && isInSelectableDays)
+            : (isInSelectableDates || isInSelectableDays);
+
+        final bool isSelectable =
+            _isSelectable && isAfterStartDate && isBeforeClosing;
 
         return LokalCalendarDay(
           dateTime: date,
