@@ -29,6 +29,7 @@ class PostDetailsImages extends StatelessWidget {
           mainAxisCellCount: 1,
           child: NetworkPhotoThumbnail(
             key: Key('post_details_${images[index].url}'),
+            heroTag: 'post_details_${images[index].url}',
             galleryItem: images[index],
             onTap: () => openGallery(context, index, images),
           ),
