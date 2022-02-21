@@ -36,7 +36,7 @@ class ChatSettings extends StatelessWidget {
                   ListTile(
                     tileColor: Colors.white,
                     leading: Text(
-                      'Show Read Receipients',
+                      'Show Read Receipts',
                       style: Theme.of(context).textTheme.bodyText1,
                     ),
                     trailing: CupertinoSwitch(

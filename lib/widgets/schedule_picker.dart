@@ -743,13 +743,12 @@ class _CalendarPickerBody extends StatelessWidget {
                   selectedDate: startDates.firstOrNull ?? DateTime.now(),
                   selectableDates:
                       selectableDates.whereType<DateTime>().toList(),
-                  selectableDays: limitToSelectableDates
-                      ? []
-                      : repeatChoice == RepeatChoices.week
-                          ? selectableDays
-                          : [0, 1, 2, 3, 4, 5, 6],
+                  selectableDays: repeatChoice == RepeatChoices.week
+                      ? selectableDays
+                      : [0, 1, 2, 3, 4, 5, 6],
                   onDayPressed: (day) => setState(() => onDayPressed(day)),
                   markedDates: startDates.whereType<DateTime>().toList(),
+                  limitSelectableDates: limitToSelectableDates,
                 );
               },
             ),

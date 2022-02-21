@@ -12,7 +12,7 @@ import '../../models/conversation.dart';
 import '../../models/lokal_images.dart';
 import '../../providers/auth.dart';
 import '../../utils/constants/themes.dart';
-import '../../utils/functions.utils.dart';
+import '../../utils/functions.utils.dart' as utils;
 import '../../widgets/photo_view_gallery/thumbnails/file_photo_thumbnail.dart';
 import '../../widgets/photo_view_gallery/thumbnails/network_photo_thumbnail.dart';
 import 'components/reply_message.dart';
@@ -192,7 +192,7 @@ class _MessageImages extends StatelessWidget {
             key: Key('chat_message_${images[index].url}'),
             heroTag: forFocus ? '_focused_${images[index].url}' : null,
             galleryItem: images[index],
-            onTap: () => openGallery(context, index, images),
+            onTap: () => utils.openGallery(context, index, images),
           ),
         );
       }).toList(),

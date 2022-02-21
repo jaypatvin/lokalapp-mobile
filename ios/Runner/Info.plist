@@ -45,8 +45,6 @@
 		<key>NSAllowsArbitraryLoadsInWebContent</key>
 		<true/>
 	</dict>
-	<key>io.flutter.embedded_views_preview</key>
-	<true/>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>We need access to your Photo Library to get Images/Videos for profile, shop, and product creation and adding images to your posts.</string>
 	<key>NSCameraUsageDescription</key>

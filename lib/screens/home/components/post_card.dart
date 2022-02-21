@@ -118,7 +118,8 @@ class _PostCardView extends StatelessView<PostCardViewModel> {
           crossAxisCellCount: crossAxisCellCount,
           mainAxisCellCount: 1,
           child: NetworkPhotoThumbnail(
-            key: Key('post_details_${images[index].url}'),
+            key: Key('post_card_${images[index].url}'),
+            heroTag: 'post_card_${images[index].url}',
             galleryItem: images[index],
             onTap: () => vm.openGallery(activity, index),
           ),
