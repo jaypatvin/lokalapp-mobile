@@ -46,12 +46,14 @@ class SubscriptionPlanStream extends StatelessWidget {
               groupBy: (subscriptionPlan) => subscriptionPlan.status,
               groupComparator: (status1, status2) {
                 if (!isBuyer && status2 == SubscriptionStatus.disabled) {
+                  if (status1 == status2) return 0;
                   return 1;
+                } else if (!isBuyer && status1 == SubscriptionStatus.disabled) {
+                  if (status1 == status2) return 0;
+                  return -1;
                 }
-                if (isBuyer && status2 == SubscriptionStatus.enabled) {
-                  return 1;
-                }
-                return 0;
+
+                return status1.compareTo(status2);
               },
               groupSeparatorBuilder: (SubscriptionStatus status) {
                 final String _header;

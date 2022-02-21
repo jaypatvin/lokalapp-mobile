@@ -29,6 +29,8 @@ extension SubscriptionPlanExtension on SubscriptionStatus {
         return 'cancelled';
     }
   }
+
+  int compareTo(SubscriptionStatus other) => index.compareTo(other.index);
 }
 
 class OverrideDate {
