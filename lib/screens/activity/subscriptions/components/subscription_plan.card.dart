@@ -57,13 +57,31 @@ class SubscriptionPlanCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bool _isActive;
+    final BorderSide _side;
+    switch (subscriptionPlan.status) {
+      case SubscriptionStatus.cancelled:
+        _side = const BorderSide(color: kPinkColor);
+        _isActive = false;
+        break;
+      case SubscriptionStatus.unsubscribed:
+        _side = BorderSide(color: Colors.grey.shade200);
+        _isActive = false;
+        break;
+      default:
+        _side = BorderSide.none;
+        _isActive = true;
+        break;
+    }
+
     return Card(
       margin: EdgeInsets.only(top: 10.0.h, left: 10.w, right: 10.w),
       elevation: 0.0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20.0.r),
+        side: _side,
       ),
-      color: const Color(0xFFF1FAFF),
+      color: _isActive ? const Color(0xFFF1FAFF) : Colors.grey.shade200,
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: 20.0.w, vertical: 10.0.h),
         child: Column(
