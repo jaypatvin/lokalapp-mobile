@@ -174,14 +174,17 @@ class _BottomNavigationOnboardingState extends State<BottomNavigationOnboarding>
 
   @override
   Widget build(BuildContext context) {
-    final _mediaSize = MediaQuery.of(context).size;
+    final _mediaQueryData = MediaQuery.of(context);
+    final _mediaSize = _mediaQueryData.size;
     return Stack(
       children: [
         widget.child,
         if (_displayOnboarding)
           SizedBox(
             width: _mediaSize.width,
-            height: _mediaSize.height - kBottomNavigationBarHeight,
+            height: _mediaSize.height -
+                kBottomNavigationBarHeight -
+                _mediaQueryData.padding.bottom,
             child: DecoratedBox(
               decoration: BoxDecoration(
                 color: Colors.black.withOpacity(0.5),
