@@ -15,8 +15,8 @@ import '../../../widgets/overlays/constrained_scrollview.dart';
 import '../../../widgets/overlays/screen_loader.dart';
 import 'components/subscription_plan.details.dart';
 
-// This Widget will display all states/conditions of the order details to avoid
-// code repetition.
+/// This Widget will display all states/conditions of the order details to avoid
+/// code repetition.
 class SubscriptionPlanScreen extends StatelessWidget {
   const SubscriptionPlanScreen({
     Key? key,
@@ -42,7 +42,6 @@ class _SubscriptionDetailsView extends HookView<SubscriptionPlanScreenViewModel>
     with HookScreenLoader {
   @override
   Widget screen(BuildContext context, SubscriptionPlanScreenViewModel vm) {
-    print(vm.subscriptionPlan.status);
     final _address = useMemoized<String>(() {
       final _address = context.read<Auth>().user!.address!;
       final _addressList = [
@@ -169,11 +168,13 @@ class _SubscriptionDetailsView extends HookView<SubscriptionPlanScreenViewModel>
                 status: vm.subscriptionPlan.status,
                 onSeeSchedule: vm.onSeeSchedule,
                 onMessageHandler: vm.onMessageSend,
+                onSubscribeAgain: vm.onSubscribeAgain,
                 onUnsubscribe: () async =>
                     performFuture<void>(vm.onUnsubscribe),
-                onSubscribeAgain: vm.onSubscribeAgain,
                 onConfirmSubscription: () async =>
                     performFuture<void>(vm.onConfirmSubscription),
+                onCancelSubscription: () async =>
+                    performFuture<void>(vm.onCancelSubscription),
               ),
             ],
           ),
@@ -192,6 +193,7 @@ class _SubscriptionDetailsButtons extends StatelessWidget {
   final void Function()? onUnsubscribe;
   final void Function()? onSubscribeAgain;
   final void Function()? onConfirmSubscription;
+  final void Function()? onCancelSubscription;
   const _SubscriptionDetailsButtons({
     Key? key,
     this.isBuyer = true,
@@ -202,6 +204,7 @@ class _SubscriptionDetailsButtons extends StatelessWidget {
     this.onUnsubscribe,
     this.onSubscribeAgain,
     this.onConfirmSubscription,
+    this.onCancelSubscription,
   }) : super(key: key);
 
   @override
@@ -257,7 +260,7 @@ class _SubscriptionDetailsButtons extends StatelessWidget {
                   onPressed: onUnsubscribe,
                 ),
               )
-            else if (isBuyer && status == SubscriptionStatus.cancelled)
+            else if (isBuyer && status == SubscriptionStatus.unsubscribed)
               Expanded(
                 child: AppButton.transparent(
                   text: 'Subscribe Again',
@@ -280,6 +283,7 @@ class _SubscriptionDetailsButtons extends StatelessWidget {
                   child: AppButton.transparent(
                     text: 'Decline Subscription',
                     color: kPinkColor,
+                    onPressed: onCancelSubscription,
                   ),
                 ),
               if (status == SubscriptionStatus.enabled)
@@ -287,6 +291,7 @@ class _SubscriptionDetailsButtons extends StatelessWidget {
                   child: AppButton.transparent(
                     text: 'Cancel Subscription',
                     color: kPinkColor,
+                    onPressed: onCancelSubscription,
                   ),
                 ),
               Expanded(

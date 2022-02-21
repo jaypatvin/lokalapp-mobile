@@ -143,7 +143,7 @@ class SubscriptionPlanScreenViewModel extends ViewModel {
   Future<void> onUnsubscribe() async {
     try {
       // this will throw an error if unsuccessful
-      final _success = await _apiService.disableSubscriptionPlan(
+      final _success = await _apiService.unsubscribeFromSubscriptionPlan(
         planId: subscriptionPlan.id,
       );
 
@@ -165,6 +165,24 @@ class SubscriptionPlanScreenViewModel extends ViewModel {
       );
       if (!_success) {
         throw FailureException('Failed to confirm subscription. Try again.');
+      }
+
+      AppRouter.activityNavigatorKey.currentState?.pop();
+    } catch (e, stack) {
+      FirebaseCrashlytics.instance.recordError(e, stack);
+      showToast(e is FailureException ? e.message : e.toString());
+    }
+  }
+
+  Future<void> onCancelSubscription() async {
+    try {
+      final _success = await _apiService.cancelSubscriptionPlan(
+        planId: subscriptionPlan.id,
+      );
+      if (!_success) {
+        throw FailureException(
+          'Failed to decline the subscription. Try again.',
+        );
       }
 
       AppRouter.activityNavigatorKey.currentState?.pop();
