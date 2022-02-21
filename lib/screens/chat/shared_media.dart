@@ -31,7 +31,7 @@ class _SharedMediaState extends State<SharedMedia> {
     final images = <LokalImages>[];
     for (final c in widget.conversations) {
       final _conversation = Conversation.fromDocument(c);
-      if (_conversation.media!.isNotEmpty) {
+      if (_conversation.media?.isNotEmpty ?? false) {
         images.addAll(_conversation.media!);
       }
     }
