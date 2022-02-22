@@ -33,7 +33,9 @@ class CommentFeed extends StatelessWidget {
             );
           default:
             if (snapshot.hasError) {
-              return Text('Error: ${snapshot.error}');
+              return const Text(
+                'There was an error loading the comments. Please try again.',
+              );
             } else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
               return const Text(
                 'No posts yet! Be the first one to post.',
