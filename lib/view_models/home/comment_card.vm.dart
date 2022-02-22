@@ -41,12 +41,12 @@ class CommentCardViewModel extends ViewModel {
 
   Future<void> refresh() async => _setup();
 
-  void onLongPress(Widget child) {
+  void onLongPress({required Widget dialog}) {
     showModalBottomSheet(
       context: context,
       useRootNavigator: true,
       isScrollControlled: true,
-      builder: (_) => child,
+      builder: (_) => dialog,
     );
   }
 
@@ -95,6 +95,19 @@ class CommentCardViewModel extends ViewModel {
       FirebaseCrashlytics.instance.recordError(e, stack);
       showToast('Error liking comment!');
       isLiked = !isLiked;
+      notifyListeners();
+    }
+  }
+
+  Future<void> onDelete() async {
+    try {
+      await context.read<Activities>().deleteComment(
+            activityId: activityId,
+            commentId: comment.id,
+          );
+    } catch (e, stack) {
+      FirebaseCrashlytics.instance.recordError(e, stack);
+      showToast('There was an error in deleting the comment');
       notifyListeners();
     }
   }

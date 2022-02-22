@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 
 import '../../../models/activity_feed_comment.dart';
 import '../../../models/lokal_user.dart';
+import '../../../providers/auth.dart';
 import '../../../providers/users.dart';
 import '../../../state/mvvm_builder.widget.dart';
 import '../../../state/views/hook.view.dart';
@@ -41,9 +42,15 @@ class CommentCard extends StatelessWidget {
 class _CommentCardView extends HookView<CommentCardViewModel> {
   @override
   Widget render(BuildContext context, CommentCardViewModel vm) {
+    final _currentUser = context.watch<Auth>().user;
     final user = useMemoized<LokalUser>(
       () => context.read<Users>().findById(vm.comment.userId)!,
       [vm.comment],
+    );
+
+    final _isCurrentUser = useMemoized<bool>(
+      () => user.id == _currentUser?.id,
+      [user, _currentUser],
     );
 
     final _images = useMemoized<SizedBox>(
@@ -72,7 +79,11 @@ class _CommentCardView extends HookView<CommentCardViewModel> {
     );
 
     return InkWell(
-      onLongPress: () => vm.onLongPress(const _CommentOptions()),
+      onLongPress: _isCurrentUser
+          ? () => vm.onLongPress(
+                dialog: _CommentOptions(onDelete: vm.onDelete),
+              )
+          : null,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -129,11 +140,13 @@ class _CommentOptions extends StatelessWidget {
     this.onReply,
     this.onHide,
     this.onReport,
+    this.onDelete,
   }) : super(key: key);
 
   final void Function()? onReply;
   final void Function()? onHide;
   final void Function()? onReport;
+  final void Function()? onDelete;
 
   @override
   Widget build(BuildContext context) {
@@ -180,6 +193,22 @@ class _CommentOptions extends StatelessWidget {
               style: Theme.of(context).textTheme.subtitle1!.copyWith(
                     color: kPinkColor,
                   ),
+            ),
+          ),
+        if (onDelete != null)
+          ListTile(
+            onTap: onDelete,
+            leading: const Icon(
+              MdiIcons.trashCanOutline,
+              color: kPinkColor,
+            ),
+            title: Text(
+              'Delete Comment',
+              softWrap: true,
+              style: Theme.of(context)
+                  .textTheme
+                  .subtitle1!
+                  .copyWith(color: kPinkColor),
             ),
           ),
       ],

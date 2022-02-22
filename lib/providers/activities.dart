@@ -225,4 +225,18 @@ class Activities extends ChangeNotifier {
       rethrow;
     }
   }
+
+  Future<bool> deleteComment({
+    required String activityId,
+    required String commentId,
+  }) {
+    try {
+      return _commentService.delete(
+        activityId: activityId,
+        commentId: commentId,
+      );
+    } catch (e) {
+      rethrow;
+    }
+  }
 }
