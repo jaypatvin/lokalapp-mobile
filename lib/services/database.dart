@@ -117,6 +117,7 @@ class Database {
     return activitiesRef
         .doc(activityId)
         .collection('comments')
+        .where('archived', isEqualTo: false)
         .orderBy('created_at', descending: false)
         .snapshots();
   }
