@@ -64,33 +64,43 @@ class _CurrentUserProfileView
               ),
             ],
           ),
-          Column(
-            children: [
-              Padding(
-                padding: EdgeInsets.fromLTRB(
-                  10.0.w,
-                  20.0.w,
-                  10.0.w,
-                  10.0.w,
-                ),
-                child: const SizedBox(
-                  width: double.infinity,
-                  child: Text(
-                    'My Posts',
-                    style: TextStyle(
-                      color: kTealColor,
-                      fontWeight: FontWeight.w600,
+          GestureDetector(
+            onPanUpdate: (details) {
+              final _pageController = context.read<PageController>();
+              if (_pageController.page == 0) return;
+              // swiping in right direction
+              if (details.delta.dx > 0) {
+                _pageController.jumpToPage(0);
+              }
+            },
+            child: Column(
+              children: [
+                Padding(
+                  padding: EdgeInsets.fromLTRB(
+                    10.0.w,
+                    20.0.w,
+                    10.0.w,
+                    10.0.w,
+                  ),
+                  child: const SizedBox(
+                    width: double.infinity,
+                    child: Text(
+                      'My Posts',
+                      style: TextStyle(
+                        color: kTealColor,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ),
                 ),
-              ),
-              Expanded(
-                child: GestureDetector(
-                  onPanUpdate: vm.onPanUpdate,
-                  child: Timeline(userId: user.id),
+                Expanded(
+                  child: GestureDetector(
+                    onPanUpdate: vm.onPanUpdate,
+                    child: Timeline(userId: user.id),
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ],
       ),
