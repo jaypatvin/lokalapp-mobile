@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:wechat_camera_picker/wechat_camera_picker.dart';
 
@@ -46,12 +45,12 @@ class ImageGalleryPicker extends StatelessWidget {
           context,
           textDelegate: EnglishCameraPickerTextDelegate(),
           onError: (e, stack) {
+            AppRouter.rootNavigatorKey.currentState?.pop();
             if (e is CameraException) {
               if (e.code == 'cameraPermission') {
-                showToast('Denied camera permissions');
+                showToast('Denied camera permissions.');
               }
             }
-            AppRouter.rootNavigatorKey.currentState?.pop();
           },
         );
         if (result != null) {
@@ -59,7 +58,7 @@ class ImageGalleryPicker extends StatelessWidget {
         }
       },
       child: const Center(
-        child: Icon(MdiIcons.camera, size: 42.0),
+        child: Icon(Icons.camera_alt_outlined, size: 42.0),
       ),
     );
   }
