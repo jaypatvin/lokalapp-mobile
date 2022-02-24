@@ -133,10 +133,10 @@ class LokalUser {
   }
 
   factory LokalUser.fromMap(Map<String, dynamic> map) {
-    late final DateTime _createdAt;
+    final DateTime _createdAt;
     if (map['created_at'] is Timestamp) {
       _createdAt = (map['created_at'] as Timestamp).toDate();
-    } else if (map['created_at'] is Map) {
+    } else {
       _createdAt = TimestampObject.fromMap(map['created_at']).toDateTime();
     }
 
@@ -164,6 +164,10 @@ class LokalUser {
 
   factory LokalUser.fromJson(String source) =>
       LokalUser.fromMap(json.decode(source));
+
+  factory LokalUser.fromDocument(DocumentSnapshot<Map<String, dynamic>> doc) {
+    return LokalUser.fromMap({'id': doc.id, ...doc.data()!});
+  }
 
   LokalUser copyWith({
     List<String>? userUids,

@@ -128,6 +128,22 @@ class Product {
   }
 
   factory Product.fromMap(Map<String, dynamic> map) {
+    final DateTime _createdAt;
+    if (map['created_at'] is Timestamp) {
+      _createdAt = (map['created_at'] as Timestamp).toDate();
+    } else {
+      _createdAt = TimestampObject.fromMap(map['created_at']).toDateTime();
+    }
+
+    final DateTime? _updatedAt;
+    if (map['updated_at'] == null) {
+      _updatedAt = null;
+    } else if (map['updated_at'] is Timestamp) {
+      _updatedAt = (map['created_at'] as Timestamp).toDate();
+    } else {
+      _updatedAt = TimestampObject.fromMap(map['created_at']).toDateTime();
+    }
+
     return Product(
       id: map['id'],
       name: map['name'],
@@ -142,10 +158,8 @@ class Product {
       status: map['status'],
       archived: map['archived'],
       canSubscribe: map['can_subscribe'] ?? false,
-      createdAt: TimestampObject.fromMap(map['created_at']).toDateTime(),
-      updatedAt: map['updated_at'] != null
-          ? TimestampObject.fromMap(map['updated_at']).toDateTime()
-          : null,
+      createdAt: _createdAt,
+      updatedAt: _updatedAt,
       gallery: map['gallery'] == null
           ? <LokalImages>[]
           : List<LokalImages>.from(
@@ -165,6 +179,10 @@ class Product {
 
   factory Product.fromJson(String source) =>
       Product.fromMap(json.decode(source));
+
+  factory Product.fromDocument(DocumentSnapshot<Map<String, dynamic>> doc) {
+    return Product.fromMap({'id': doc.id, ...doc.data()!});
+  }
 
   @override
   String toString() {

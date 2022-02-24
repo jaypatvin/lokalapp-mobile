@@ -1,23 +1,12 @@
 import 'dart:async';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 
 import '../models/lokal_user.dart';
-import '../services/api/api.dart';
-import '../services/api/user_api_service.dart';
 import '../services/database.dart';
 
 class Users extends ChangeNotifier {
-  factory Users(API api) {
-    final _apiService = UserAPIService(api);
-    return Users._(_apiService);
-  }
-
-  Users._(this._apiService);
-
-  final UserAPIService _apiService;
   final _db = Database.instance;
 
   List<LokalUser> _users = [];
@@ -25,9 +14,13 @@ class Users extends ChangeNotifier {
   String? _communityId;
 
   UnmodifiableListView<LokalUser> get users => UnmodifiableListView(_users);
-  StreamSubscription<QuerySnapshot<Map<String, dynamic>>>? _usersSubscription;
-  StreamSubscription<QuerySnapshot<Map<String, dynamic>>>?
-      get subscriptionListener => _usersSubscription;
+
+  Stream<List<LokalUser>>? _userStream;
+  Stream<List<LokalUser>>? get stream => _userStream;
+
+  StreamSubscription<List<LokalUser>>? _usersSubscription;
+  StreamSubscription<List<LokalUser>>? get subscriptionListener =>
+      _usersSubscription;
 
   bool get isLoading => _isLoading;
 
@@ -36,55 +29,38 @@ class Users extends ChangeNotifier {
   }
 
   void setCommunityId(String? id) {
-    if (id != null) {
-      if (id == _communityId) return;
-      _communityId = id;
+    if (id == _communityId) return;
+    _communityId = id;
+
+    _communityId = id;
+    if (_communityId == null) {
       _usersSubscription?.cancel();
-      _usersSubscription =
-          _db.getCommunityUsers(id).listen(_userChangesListener);
+      _users.clear();
+      if (hasListeners) notifyListeners();
+      return;
+    }
+
+    if (id != null) {
+      _isLoading = true;
+      if (hasListeners) notifyListeners();
+      _usersSubscription?.cancel();
+      _userStream = _db.getCommunityUsers(id).map((event) {
+        return event.docs.map((doc) => LokalUser.fromDocument(doc)).toList();
+      });
+      _usersSubscription = _userStream?.listen(_userChangesListener);
     }
   }
 
-  Future<void> _userChangesListener(
-    QuerySnapshot<Map<String, dynamic>> query,
-  ) async {
-    final length = query.docChanges.length;
-    if (_isLoading || length > 1) return;
-    for (final change in query.docChanges) {
-      final id = change.doc.id;
-      final user = await _apiService.getById(userId: id);
-      final index = _users.indexWhere((u) => u.id == id);
-
-      if (index >= 0) {
-        _users[index] = user;
-      } else {
-        _users.add(user);
-      }
-
-      notifyListeners();
-    }
+  Future<void> _userChangesListener(List<LokalUser> users) async {
+    _users = users;
+    _isLoading = false;
+    if (hasListeners) notifyListeners();
   }
 
   @override
   void dispose() {
     _usersSubscription?.cancel();
     super.dispose();
-  }
-
-  Future<void> fetch() async {
-    _isLoading = true;
-    notifyListeners();
-    try {
-      _users = await _apiService.getCommunityUsers(
-        communityId: _communityId!,
-      );
-      _isLoading = false;
-      notifyListeners();
-    } catch (e) {
-      _isLoading = false;
-      notifyListeners();
-      rethrow;
-    }
   }
 
   void clear() {

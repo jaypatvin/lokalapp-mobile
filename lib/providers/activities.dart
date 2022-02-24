@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 
@@ -23,26 +22,21 @@ class Activities extends ChangeNotifier {
   final CommentsAPIService _commentService;
   final Database _db = Database.instance;
 
-  // late Stream<List<ActivityFeed>> activityFeed;
-  // StreamSubscription<List<ActivityFeed>>? subscriptionListener;
-  late Stream<QuerySnapshot<Map<String, dynamic>>> _snapshotStream;
-  StreamSubscription<QuerySnapshot<Map<String, dynamic>>>?
-      _activitiesSubscription;
-  StreamSubscription<QuerySnapshot<Map<String, dynamic>>>?
-      get subscriptionListener => _activitiesSubscription;
-
-  final _feedController = StreamController<List<ActivityFeed>>.broadcast();
-  Stream<List<ActivityFeed>> get activityFeed => _feedController.stream;
-
-  List<ActivityFeed> _feed = [];
+  final List<ActivityFeed> _feed = [];
   UnmodifiableListView<ActivityFeed> get feed =>
       UnmodifiableListView(_feed.where((a) => !a.archived));
 
-  String _communityId = '';
-  String get communityId => _communityId;
+  Stream<List<ActivityFeed>>? _activityStream;
+  Stream<List<ActivityFeed>>? get stream => _activityStream;
+  StreamSubscription<List<ActivityFeed>>? _activitiesSubscription;
+  StreamSubscription<List<ActivityFeed>>? get subscriptionListener =>
+      _activitiesSubscription;
 
-  String _userId = '';
-  String get userId => _userId;
+  String? _communityId;
+  String? get communityId => _communityId;
+
+  String? _userId;
+  String? get userId => _userId;
 
   bool _isLoading = false;
   bool get isLoading => _isLoading;
@@ -50,68 +44,47 @@ class Activities extends ChangeNotifier {
   @override
   void dispose() {
     _activitiesSubscription?.cancel();
-    _feedController.close();
     super.dispose();
   }
 
   Future<void> setUserCredentials({String? userId, String? communityId}) async {
-    if (userId != null && communityId != null) {
-      if (communityId == _communityId) return;
+    _communityId = communityId;
+    _userId = userId;
+
+    if (_communityId == null || _userId == null) {
+      _activitiesSubscription?.cancel();
+      _feed.clear();
+      if (hasListeners) notifyListeners();
+      return;
+    }
+
+    if (communityId != null) {
       _isLoading = true;
       notifyListeners();
-      _communityId = communityId;
-      _userId = userId;
-      _snapshotStream = _db.getCommunityFeed(communityId);
-      await _setActivityFeed();
+      _activityStream = _db.getCommunityFeed(communityId).map((event) {
+        return event.docs.map((doc) => ActivityFeed.fromDocument(doc)).toList();
+      });
       _activitiesSubscription?.cancel();
-      _activitiesSubscription = _snapshotStream.listen(_subscriptionListener);
-      _isLoading = false;
-      notifyListeners();
+      _activitiesSubscription = _activityStream?.listen(_subscriptionListener);
     }
   }
 
-  Future<void> _subscriptionListener(
-    QuerySnapshot<Map<String, dynamic>> snapshot,
-  ) async {
-    await Future.delayed(const Duration(milliseconds: 100));
-    if (snapshot.docChanges.length == _feed.length) return;
-    for (final change in snapshot.docChanges) {
-      final doc = change.doc;
-      final activity = ActivityFeed.fromDocument(doc);
-      final index = _feed.indexWhere((a) => a.id == doc.id);
-      activity.liked = await _db.isActivityLiked(activity.id, _userId);
+  Future<void> _subscriptionListener(List<ActivityFeed> feed) async {
+    _isLoading = true;
+    if (hasListeners) notifyListeners();
 
-      if (index == -1) {
-        _feed.add(activity);
-        continue;
-      }
-
-      if (_feed[index] == activity) continue;
-      _feed[index] = activity;
+    _feed.clear();
+    for (final _activity in feed) {
+      _activity.liked = await _db.isActivityLiked(_activity.id, _userId!);
+      _feed.add(_activity);
     }
-    _feed.sort((a, b) => b.createdAt.compareTo(a.createdAt));
-    _feedController.add(_feed);
-    notifyListeners();
+
+    _isLoading = false;
+    if (hasListeners) notifyListeners();
   }
 
-  Future<void> _setActivityFeed() async {
-    final snapshot = await _snapshotStream.first;
-    final _feed = <ActivityFeed>[];
-
-    for (final doc in snapshot.docs) {
-      final activity = ActivityFeed.fromDocument(doc);
-      activity.liked = await _db.isActivityLiked(activity.id, _userId);
-
-      _feed.add(activity);
-    }
-    _feed.sort((a, b) => b.createdAt.compareTo(a.createdAt));
-    this._feed = _feed;
-    _feedController.add(this._feed);
-  }
-
-  ActivityFeed findById(String id) {
+  ActivityFeed? findById(String id) {
     final index = _feed.indexWhere((a) => a.id == id);
-    if (index < 0) throw 'No Activity with that Id.';
     return _feed[index];
   }
 

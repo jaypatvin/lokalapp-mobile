@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 
@@ -23,40 +22,47 @@ class Shops extends ChangeNotifier {
   List<Shop> _shops = [];
   bool _isLoading = false;
 
-  StreamSubscription<QuerySnapshot<Map<String, dynamic>>>? _shopsSubscription;
-  StreamSubscription<QuerySnapshot<Map<String, dynamic>>>?
-      get subscriptionListener => _shopsSubscription;
+  Stream<List<Shop>>? _shopStream;
+  Stream<List<Shop>>? get stream => _shopStream;
+  StreamSubscription<List<Shop>>? _shopsSubscription;
+  StreamSubscription<List<Shop>>? get subscriptionListener =>
+      _shopsSubscription;
+
+  // StreamSubscription<QuerySnapshot<Map<String, dynamic>>>? _shopsSubscription;
+  // StreamSubscription<QuerySnapshot<Map<String, dynamic>>>?
+  //     get subscriptionListener => _shopsSubscription;
 
   bool get isLoading => _isLoading;
   UnmodifiableListView<Shop> get items => UnmodifiableListView(_shops);
   String? get communityId => _communityId;
 
   void setCommunityId(String? id) {
-    if (id != null) {
-      if (id == _communityId) return;
-      _communityId = id;
+    if (id == _communityId) return;
+    _communityId = id;
+
+    _communityId = id;
+    if (_communityId == null) {
       _shopsSubscription?.cancel();
-      _shopsSubscription = _db.getCommunityShops(id).listen(_shopListener);
+      _shops.clear();
+      if (hasListeners) notifyListeners();
+      return;
+    }
+
+    if (id != null) {
+      _isLoading = true;
+      if (hasListeners) notifyListeners();
+      _shopsSubscription?.cancel();
+      _shopStream = _db.getCommunityShops(id).map((event) {
+        return event.docs.map((doc) => Shop.fromDocument(doc)).toList();
+      });
+      _shopsSubscription = _shopStream?.listen(_shopListener);
     }
   }
 
-  Future<void> _shopListener(QuerySnapshot<Map<String, dynamic>> query) async {
-    final length = query.docChanges.length;
-    if (_isLoading || length > 1) return;
-    for (final change in query.docChanges) {
-      final id = change.doc.id;
-      final index = _shops.indexWhere((s) => s.id == id);
-
-      if (index >= 0) {
-        _shops[index] = await _apiService.getById(id: id);
-        if (hasListeners) notifyListeners();
-        return;
-      }
-
-      final shop = await _apiService.getById(id: id);
-      _shops.add(shop);
-      if (hasListeners) notifyListeners();
-    }
+  void _shopListener(List<Shop> shops) {
+    _shops = shops;
+    _isLoading = false;
+    if (hasListeners) notifyListeners();
   }
 
   Shop? findById(String? id) {
@@ -65,23 +71,6 @@ class Shops extends ChangeNotifier {
 
   List<Shop> findByUser(String? userId) {
     return _shops.where((shop) => shop.userId == userId).toList();
-  }
-
-  Future<void> fetch() async {
-    _isLoading = true;
-    notifyListeners();
-
-    try {
-      _shops = await _apiService.getCommunityShops(
-        communityId: _communityId!,
-      );
-      _isLoading = false;
-      notifyListeners();
-    } catch (e) {
-      _isLoading = false;
-      notifyListeners();
-      rethrow;
-    }
   }
 
   Future<void> create(Map<String, dynamic> body) async {
