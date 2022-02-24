@@ -28,6 +28,8 @@ class Products extends ChangeNotifier {
 
   StreamSubscription<QuerySnapshot<Map<String, dynamic>>>?
       _productsSubscription;
+  StreamSubscription<QuerySnapshot<Map<String, dynamic>>>?
+      get subscriptionListener => _productsSubscription;
 
   UnmodifiableListView<Product> get items => UnmodifiableListView(
         _products.where((product) => !product.archived),

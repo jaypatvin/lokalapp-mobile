@@ -26,6 +26,8 @@ class Users extends ChangeNotifier {
 
   UnmodifiableListView<LokalUser> get users => UnmodifiableListView(_users);
   StreamSubscription<QuerySnapshot<Map<String, dynamic>>>? _usersSubscription;
+  StreamSubscription<QuerySnapshot<Map<String, dynamic>>>?
+      get subscriptionListener => _usersSubscription;
 
   bool get isLoading => _isLoading;
 

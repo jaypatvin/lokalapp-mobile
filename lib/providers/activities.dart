@@ -26,7 +26,10 @@ class Activities extends ChangeNotifier {
   // late Stream<List<ActivityFeed>> activityFeed;
   // StreamSubscription<List<ActivityFeed>>? subscriptionListener;
   late Stream<QuerySnapshot<Map<String, dynamic>>> _snapshotStream;
-  StreamSubscription<QuerySnapshot<Map<String, dynamic>>>? subscriptionListener;
+  StreamSubscription<QuerySnapshot<Map<String, dynamic>>>?
+      _activitiesSubscription;
+  StreamSubscription<QuerySnapshot<Map<String, dynamic>>>?
+      get subscriptionListener => _activitiesSubscription;
 
   final _feedController = StreamController<List<ActivityFeed>>.broadcast();
   Stream<List<ActivityFeed>> get activityFeed => _feedController.stream;
@@ -46,7 +49,7 @@ class Activities extends ChangeNotifier {
 
   @override
   void dispose() {
-    subscriptionListener?.cancel();
+    _activitiesSubscription?.cancel();
     _feedController.close();
     super.dispose();
   }
@@ -60,8 +63,8 @@ class Activities extends ChangeNotifier {
       _userId = userId;
       _snapshotStream = _db.getCommunityFeed(communityId);
       await _setActivityFeed();
-      subscriptionListener?.cancel();
-      subscriptionListener = _snapshotStream.listen(_subscriptionListener);
+      _activitiesSubscription?.cancel();
+      _activitiesSubscription = _snapshotStream.listen(_subscriptionListener);
       _isLoading = false;
       notifyListeners();
     }

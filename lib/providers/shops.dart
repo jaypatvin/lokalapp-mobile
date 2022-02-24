@@ -24,6 +24,8 @@ class Shops extends ChangeNotifier {
   bool _isLoading = false;
 
   StreamSubscription<QuerySnapshot<Map<String, dynamic>>>? _shopsSubscription;
+  StreamSubscription<QuerySnapshot<Map<String, dynamic>>>?
+      get subscriptionListener => _shopsSubscription;
 
   bool get isLoading => _isLoading;
   UnmodifiableListView<Shop> get items => UnmodifiableListView(_shops);
