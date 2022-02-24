@@ -123,7 +123,10 @@ class _DiscoverView extends StatelessView<DiscoverViewModel> {
       body: CartContainer(
         alwaysDisplayButton: true,
         child: RefreshIndicator(
-          onRefresh: vm.fetchRecommendedProducts,
+          onRefresh: () async {
+            await context.read<Products>().fetch();
+            await vm.fetchRecommendedProducts();
+          },
           child: Consumer2<Shops, Products>(
             builder: (ctx, shops, products, _) {
               if (shops.isLoading || products.isLoading) {
@@ -294,6 +297,12 @@ class _RecommendedProducts extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (products.isEmpty) {
+      return const Center(
+        child: Text('There are currently no products yet.'),
+      );
+    }
+
     return GridView.builder(
       scrollDirection: Axis.horizontal,
       itemCount: products.length,
