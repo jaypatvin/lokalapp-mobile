@@ -1,3 +1,5 @@
+import 'dart:io' show Platform;
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
@@ -57,20 +59,6 @@ class PostDetailViewModel extends ViewModel {
     super.dispose();
   }
 
-  @override
-  Future<void> onResume() async {
-    if (_showImagePicker) {
-      final result = await PhotoManager.requestPermissionExtend();
-      if (result.isAuth) {
-        final pathList = await PhotoManager.getAssetPathList(
-          onlyAll: true,
-          type: RequestType.image,
-        );
-        imageProvider.resetPathList(pathList);
-      }
-    }
-  }
-
   Future<void> onShowImagePicker() async {
     if (!_showImagePicker) {
       final result = await PhotoManager.requestPermissionExtend();
@@ -80,6 +68,12 @@ class PostDetailViewModel extends ViewModel {
           type: RequestType.image,
         );
         imageProvider.resetPathList(pathList);
+      } else {
+        if (Platform.isIOS) {
+          showToast('Please allow Lokal access to Photos.');
+        } else {
+          showToast('Please allow Lokal access to your Gallery.');
+        }
       }
     }
 

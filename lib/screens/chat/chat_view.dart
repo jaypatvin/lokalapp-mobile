@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io' show Platform;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
@@ -52,7 +53,7 @@ class ChatView extends StatefulWidget {
   _ChatViewState createState() => _ChatViewState();
 }
 
-class _ChatViewState extends State<ChatView> with WidgetsBindingObserver {
+class _ChatViewState extends State<ChatView> {
   // TODO: clean up repeated codes
   // these repeated codes are from post_details.dart
 
@@ -120,14 +121,10 @@ class _ChatViewState extends State<ChatView> with WidgetsBindingObserver {
       checkExistingChat();
     }
     _createNewMessage = widget.createMessage;
-
-    WidgetsBinding.instance?.addObserver(this);
   }
 
   @override
   void dispose() {
-    WidgetsBinding.instance?.removeObserver(this);
-
     // we need to clear and remove the picked images and listeners
     // so that we can use it in its initial state on other screens
     imageProvider.picked.clear();
@@ -135,27 +132,6 @@ class _ChatViewState extends State<ChatView> with WidgetsBindingObserver {
     _messageSubscription?.cancel();
 
     super.dispose();
-  }
-
-  @override
-  Future<void> didChangeAppLifecycleState(AppLifecycleState state) async {
-    switch (state) {
-      case AppLifecycleState.resumed:
-        if (showImagePicker) {
-          final result = await PhotoManager.requestPermissionExtend();
-          if (result.isAuth) {
-            final pathList = await PhotoManager.getAssetPathList(
-              onlyAll: true,
-              type: RequestType.image,
-            );
-            imageProvider.resetPathList(pathList);
-          }
-          setState(() {});
-        }
-        break;
-      default:
-        break;
-    }
   }
 
   void _messageStreamListener(QuerySnapshot<Map<String, dynamic>> snapshot) {
@@ -187,6 +163,12 @@ class _ChatViewState extends State<ChatView> with WidgetsBindingObserver {
           type: RequestType.image,
         );
         imageProvider.resetPathList(pathList);
+      } else {
+        if (Platform.isIOS) {
+          showToast('Please allow Lokal access to Photos.');
+        } else {
+          showToast('Please allow Lokal access to your Gallery.');
+        }
       }
     }
 

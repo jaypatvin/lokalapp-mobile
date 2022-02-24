@@ -1,3 +1,5 @@
+import 'dart:io' show Platform;
+
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:oktoast/oktoast.dart';
@@ -45,22 +47,8 @@ class DraftPostViewModel extends ViewModel {
     super.dispose();
   }
 
-  @override
-  Future<void> onResume() async {
-    if (showImagePicker) {
-      final result = await PhotoManager.requestPermissionExtend();
-      if (result.isAuth) {
-        final pathList = await PhotoManager.getAssetPathList(
-          onlyAll: true,
-          type: RequestType.image,
-        );
-        imageProvider.resetPathList(pathList);
-      }
-    }
-  }
-
   Future<void> onShowImagePicker({
-    Future Function()? iOSDialogPermissionCallback,
+    Future<void> Function()? iOSDialogPermissionCallback,
   }) async {
     if (!_showImagePicker) {
       final result = await PhotoManager.requestPermissionExtend();
@@ -75,6 +63,12 @@ class DraftPostViewModel extends ViewModel {
         );
 
         imageProvider.resetPathList(pathList);
+      } else {
+        if (Platform.isIOS) {
+          showToast('Please allow Lokal access to Photos.');
+        } else {
+          showToast('Please allow Lokal access to your Gallery.');
+        }
       }
     }
 
