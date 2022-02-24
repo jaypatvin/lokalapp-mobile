@@ -20,6 +20,19 @@ class ProductsSliverGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (items.isEmpty) {
+      return const SliverToBoxAdapter(
+        child: SizedBox(
+          height: 120,
+          child: Center(
+            child: Text(
+              'There are no products yet.',
+            ),
+          ),
+        ),
+      );
+    }
+
     return SliverGrid(
       delegate: SliverChildBuilderDelegate(
         (_, index) {

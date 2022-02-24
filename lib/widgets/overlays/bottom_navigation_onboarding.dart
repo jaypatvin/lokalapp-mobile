@@ -28,6 +28,7 @@ class BottomNavigationOnboarding extends StatefulWidget {
 
 class _BottomNavigationOnboardingState extends State<BottomNavigationOnboarding>
     with AfterLayoutMixin {
+  late final PersistentTabController _tabController;
   late MainScreen _screen;
   bool _displayOnboarding = false;
 
@@ -67,13 +68,14 @@ class _BottomNavigationOnboardingState extends State<BottomNavigationOnboarding>
   @override
   void initState() {
     super.initState();
+    _tabController = context.read<PersistentTabController>();
     _setScreen();
-    context.read<PersistentTabController>().addListener(_setScreen);
+    _tabController.addListener(_setScreen);
   }
 
   @override
   void dispose() {
-    context.read<PersistentTabController>().removeListener(_setScreen);
+    _tabController.removeListener(_setScreen);
     super.dispose();
   }
 
@@ -86,7 +88,6 @@ class _BottomNavigationOnboardingState extends State<BottomNavigationOnboarding>
   }
 
   void _setScreen() {
-    final _tabController = context.read<PersistentTabController>();
     switch (_tabController.index) {
       case 1:
         _screen = MainScreen.discover;
@@ -161,7 +162,6 @@ class _BottomNavigationOnboardingState extends State<BottomNavigationOnboarding>
                 await context
                     .read<UserSharedPreferences>()
                     .updateOnboardingStatus(_screen);
-                final _tabController = context.read<PersistentTabController>();
                 if (_tabController.index == 4) return;
                 _tabController.index++;
               },
