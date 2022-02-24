@@ -113,6 +113,7 @@ class _ProfileRegistrationView extends HookView<ProfileRegistrationViewModel>
                     shape: BoxShape.circle,
                     width: 120.0.w,
                     height: 120.0.h,
+                
                   ),
                 ),
                 SizedBox(

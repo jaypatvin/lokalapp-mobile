@@ -22,6 +22,7 @@ class PhotoBox extends StatelessWidget {
   final double width;
   final double height;
   final bool displayBorder;
+  final bool displayIcon;
 
   const PhotoBox({
     required this.shape,
@@ -29,10 +30,34 @@ class PhotoBox extends StatelessWidget {
     this.width = 150.0,
     this.height = 150.0,
     this.displayBorder = true,
+    this.displayIcon = true,
   });
 
   @override
   Widget build(BuildContext context) {
+    final Widget _child;
+
+    if (imageSource.isEmpty) {
+      _child = displayIcon
+          ? const Icon(
+              Icons.add,
+              color: kTealColor,
+              size: 15,
+            )
+          : const SizedBox();
+    } else {
+      _child = Image(
+        fit: BoxFit.cover,
+        image: imageSource.isFile
+            ? FileImage(imageSource.file!) as ImageProvider<FileImage>
+            : CachedNetworkImageProvider(imageSource.url!)
+                as ImageProvider<CachedNetworkImageProvider>,
+        errorBuilder: (ctx, e, stack) => const Center(
+          child: Text('Error displaying image'),
+        ),
+      );
+    }
+
     return Container(
       clipBehavior: Clip.antiAlias,
       width: width,
@@ -42,22 +67,7 @@ class PhotoBox extends StatelessWidget {
         border: displayBorder ? Border.all(color: kTealColor) : null,
         color: Colors.transparent,
       ),
-      child: imageSource.isEmpty
-          ? const Icon(
-              Icons.add,
-              color: kTealColor,
-              size: 15,
-            )
-          : Image(
-              fit: BoxFit.cover,
-              image: imageSource.isFile
-                  ? FileImage(imageSource.file!) as ImageProvider<FileImage>
-                  : CachedNetworkImageProvider(imageSource.url!)
-                      as ImageProvider<CachedNetworkImageProvider>,
-              errorBuilder: (ctx, e, stack) => const Center(
-                child: Text('Error displaying image'),
-              ),
-            ),
+      child: _child,
     );
   }
 }

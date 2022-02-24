@@ -329,6 +329,7 @@ class _VerifyScreenState extends State<VerifyScreen> with ScreenLoader {
                   width: 200.w,
                   height: 150.h,
                   displayBorder: false,
+                  displayIcon: false,
                   imageSource: PhotoBoxImageSource(
                     file: _file,
                     url: _uploadedImage,

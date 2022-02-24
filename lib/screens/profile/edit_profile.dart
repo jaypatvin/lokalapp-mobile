@@ -141,6 +141,7 @@ class _EditProfileView extends HookView<EditProfileViewModel>
                                 ),
                                 shape: BoxShape.circle,
                                 displayBorder: false,
+                                displayIcon: false,
                               ),
                             ),
                           ),
