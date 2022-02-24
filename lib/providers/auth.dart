@@ -30,10 +30,15 @@ class Auth extends ChangeNotifier {
   final UserAPIService _apiService;
   final API _api;
 
-  StreamSubscription<User?>? _authChangesSubscription;
+  // StreamSubscription<User?>? _authChangesSubscription;
   StreamSubscription<User?>? _idTokenChangesSubscription;
+  StreamSubscription<User?>? get idTokenChangesSubscription =>
+      _idTokenChangesSubscription;
+
   StreamSubscription<DocumentSnapshot<Map<String, dynamic>>>?
       _userStreamSubscription;
+  StreamSubscription<DocumentSnapshot<Map<String, dynamic>>>?
+      get userStreamSubscription => _userStreamSubscription;
 
   late Stream<DocumentSnapshot<Map<String, dynamic>>>? _userStream;
 
@@ -51,7 +56,7 @@ class Auth extends ChangeNotifier {
 
   @override
   void dispose() {
-    _authChangesSubscription?.cancel();
+    // _authChangesSubscription?.cancel();
     _idTokenChangesSubscription?.cancel();
     _userStreamSubscription?.cancel();
     super.dispose();
@@ -82,7 +87,6 @@ class Auth extends ChangeNotifier {
       if (user != null) {
         _idToken = await user.getIdToken();
         _api.setIdToken(_idToken!);
-        _idTokenChangesSubscription?.cancel();
         _onIdTokenChanges();
 
         final id = await _db.getUserDocId(user.uid);
@@ -101,14 +105,15 @@ class Auth extends ChangeNotifier {
         _user = await _apiService.getById(userId: id);
 
         _userStreamSubscription?.cancel();
+
         _userStream = FirebaseFirestore.instance
             .collection('users')
             .doc(_user!.id)
             .snapshots();
 
         _userStreamSubscription = _userStream!.listen(
-          (_) async {
-            _user = await _apiService.getById(userId: id);
+          (DocumentSnapshot<Map<String, dynamic>> doc) {
+            _user = LokalUser.fromDocument(doc);
             notifyListeners();
           },
         );
@@ -243,7 +248,7 @@ class Auth extends ChangeNotifier {
   }
 
   Future<void> logOut() async {
-    _authChangesSubscription?.cancel();
+    // _authChangesSubscription?.cancel();
     _idTokenChangesSubscription?.cancel();
     _userStreamSubscription?.cancel();
 
