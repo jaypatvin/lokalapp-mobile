@@ -99,7 +99,7 @@ class _AddBankView extends StatelessView<AddBankViewModel> {
                                         .read<BankCodes>()
                                         .getById(item.bankCode)
                                         .iconUrl,
-                                    fit: BoxFit.cover,
+                                    fit: BoxFit.contain,
                                     placeholder: (_, __) => Shimmer(
                                       child: DecoratedBox(
                                         decoration: BoxDecoration(
