@@ -1,11 +1,8 @@
 import 'dart:async';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
-import 'package:http/http.dart' as http;
 
-import '../models/failure_exception.dart';
 import '../models/product.dart';
 import '../services/api/api.dart';
 import '../services/api/product_api_service.dart';
@@ -21,58 +18,54 @@ class Products extends ChangeNotifier {
   final Database _db = Database.instance;
   final ProductApiService _apiService;
 
-  List<Product> _products = [];
+  final List<Product> _products = [];
 
   String? _communityId;
   bool _isLoading = false;
 
-  StreamSubscription<QuerySnapshot<Map<String, dynamic>>>?
+  Stream<List<Product>>? _productsStream;
+  Stream<List<Product>>? get stream => _productsStream;
+  StreamSubscription<List<Product>>? _productsSubscription;
+  StreamSubscription<List<Product>>? get subscriptionListener =>
       _productsSubscription;
 
   UnmodifiableListView<Product> get items => UnmodifiableListView(
         _products.where((product) => !product.archived),
       );
-  bool get isLoading => _isLoading;
 
+  bool get isLoading => _isLoading;
   String? get communityId => _communityId;
+
   void setCommunityId(String? id) {
-    if (id != null) {
-      if (id == _communityId) return;
-      _communityId = id;
+    if (id == _communityId) return;
+
+    _communityId = id;
+    if (_communityId == null) {
       _productsSubscription?.cancel();
-      _productsSubscription =
-          _db.getCommunityProducts(id).listen(_productListener);
+      _products.clear();
+      if (hasListeners) notifyListeners();
+      return;
+    }
+
+    if (id != null) {
+      _isLoading = true;
+      if (hasListeners) notifyListeners();
+      _productsSubscription?.cancel();
+      _productsStream = _db.getCommunityProducts(id).map((event) {
+        return event.docs.map((e) => Product.fromDocument(e)).toList();
+      });
+      _productsSubscription = _productsStream?.listen(_productListener);
     }
   }
 
-  Future<void> _productListener(
-    QuerySnapshot<Map<String, dynamic>> query,
-  ) async {
-    final length = query.docChanges.length;
-    if (_isLoading || length > 1) return;
-    for (final change in query.docChanges) {
-      final id = change.doc.id;
-      final index = _products.indexWhere((p) => p.id == id);
-
-      if (index >= 0) {
-        try {
-          _products[index] = await _apiService.getById(productId: id);
-          _products[index].likes = await _db.getProductLikes(id);
-        } catch (e) {
-          if (e is FailureException && e.details is http.Response) {
-            if ((e.details! as http.Response).statusCode == 404) {
-              _products.removeAt(index);
-            }
-          }
-        }
-        notifyListeners();
-        return;
-      }
-
-      final product = await _apiService.getById(productId: id);
+  Future<void> _productListener(List<Product> products) async {
+    _products.clear();
+    for (final product in products) {
+      product.likes = await _db.getProductLikes(product.id);
       _products.add(product);
-      notifyListeners();
     }
+    _isLoading = false;
+    if (hasListeners) notifyListeners();
   }
 
   @override
@@ -93,26 +86,6 @@ class Products extends ChangeNotifier {
 
   List<Product> findByShop(String shopId) {
     return items.where((product) => product.shopId == shopId).toList();
-  }
-
-  Future<void> fetch() async {
-    _isLoading = true;
-    notifyListeners();
-
-    try {
-      _products = await _apiService.getCommunityProducts(
-        communityId: _communityId!,
-      );
-      for (final product in _products) {
-        product.likes = await _db.getProductLikes(product.id);
-      }
-      _isLoading = false;
-      notifyListeners();
-    } catch (e) {
-      _isLoading = false;
-      notifyListeners();
-      rethrow;
-    }
   }
 
   Future<void> create(Map<String, dynamic> body) async {

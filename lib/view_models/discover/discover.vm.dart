@@ -34,7 +34,11 @@ class DiscoverViewModel extends ViewModel {
     }
 
     return UnmodifiableListView(
-      context.read<Products>().items.where((p) => p.userId != cUser.id).toList()
+      context
+          .watch<Products>()
+          .items
+          .where((p) => p.userId != cUser.id)
+          .toList()
         ..shuffle(),
     );
   }
@@ -42,7 +46,11 @@ class DiscoverViewModel extends ViewModel {
   UnmodifiableListView<Product> get otherUserProducts {
     final cUser = context.read<Auth>().user!;
     return UnmodifiableListView(
-      context.read<Products>().items.where((p) => p.userId != cUser.id).toList()
+      context
+          .watch<Products>()
+          .items
+          .where((p) => p.userId != cUser.id)
+          .toList()
         ..sort((a, b) => b.createdAt.compareTo(a.createdAt)),
     );
   }

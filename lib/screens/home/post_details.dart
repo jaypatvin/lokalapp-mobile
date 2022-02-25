@@ -107,7 +107,7 @@ class _PostDetailsView extends HookView<PostDetailViewModel>
 
     return Consumer<Activities>(
       builder: (ctx, activities, _) {
-        final activity = activities.findById(vm.activityId);
+        final activity = activities.findById(vm.activityId)!;
         final user = context.read<Users>().findById(activity.userId)!;
         return Scaffold(
           backgroundColor: Colors.white,

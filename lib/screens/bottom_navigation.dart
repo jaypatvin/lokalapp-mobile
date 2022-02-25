@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 
 import '../routers/app_router.dart';
 import '../services/bottom_nav_bar_hider.dart';
+import '../state/state_handler.dart';
 import '../utils/constants/assets.dart';
 import '../widgets/overlays/bottom_navigation_onboarding.dart';
 import 'activity/activity.dart';
@@ -113,30 +114,32 @@ class _BottomNavigationState extends State<BottomNavigation> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: BottomNavigationOnboarding(
-        child: PersistentTabView(
-          context,
-          controller: context.read<PersistentTabController>(),
-          items: _navBarsItems(),
-          resizeToAvoidBottomInset: true,
-          hideNavigationBar: context.watch<BottomNavBarHider>().isHidden,
-          navBarStyle: NavBarStyle.svg,
-          itemAnimationProperties: const ItemAnimationProperties(
-            duration: Duration(milliseconds: 200),
-            curve: Curves.ease,
+    return StateHandler(
+      child: Scaffold(
+        body: BottomNavigationOnboarding(
+          child: PersistentTabView(
+            context,
+            controller: context.read<PersistentTabController>(),
+            items: _navBarsItems(),
+            resizeToAvoidBottomInset: true,
+            hideNavigationBar: context.watch<BottomNavBarHider>().isHidden,
+            navBarStyle: NavBarStyle.svg,
+            itemAnimationProperties: const ItemAnimationProperties(
+              duration: Duration(milliseconds: 200),
+              curve: Curves.ease,
+            ),
+            screenTransitionAnimation: const ScreenTransitionAnimation(
+              animateTabTransition: true,
+            ),
+            onItemSelected: _onItemSelected,
+            screens: const [
+              Home(),
+              Discover(),
+              Chat(),
+              Activity(),
+              ProfileScreen(),
+            ],
           ),
-          screenTransitionAnimation: const ScreenTransitionAnimation(
-            animateTabTransition: true,
-          ),
-          onItemSelected: _onItemSelected,
-          screens: const [
-            Home(),
-            Discover(),
-            Chat(),
-            Activity(),
-            ProfileScreen(),
-          ],
         ),
       ),
     );

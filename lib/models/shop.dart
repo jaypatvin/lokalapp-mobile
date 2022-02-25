@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 
 import 'operating_hours.dart';
@@ -212,12 +213,18 @@ class Shop {
   }
 
   factory Shop.fromMap(Map<String, dynamic> map) {
+    final DateTime _createdAt;
+    if (map['created_at'] is Timestamp) {
+      _createdAt = (map['created_at'] as Timestamp).toDate();
+    } else {
+      _createdAt = TimestampObject.fromMap(map['created_at']).toDateTime();
+    }
     return Shop(
       id: map['id'] ?? '',
       archived: map['archived'] ?? false,
       communityId: map['community_id'] ?? '',
       coverPhoto: map['cover_photo'],
-      createdAt: TimestampObject.fromMap(map['created_at']).toDateTime(),
+      createdAt: _createdAt,
       description: map['description'] ?? '',
       isClosed: map['is_close'] ?? false,
       name: map['name'] ?? '',
@@ -238,5 +245,9 @@ class Shop {
       ),
       userId: map['user_id'] ?? '',
     );
+  }
+
+  factory Shop.fromDocument(DocumentSnapshot<Map<String, dynamic>> doc) {
+    return Shop.fromMap({'id': doc.id, ...doc.data()!});
   }
 }

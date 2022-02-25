@@ -5,6 +5,7 @@ import 'package:lottie/lottie.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
 
+import '../../models/activity_feed.dart';
 import '../../providers/activities.dart';
 import '../../providers/community.dart';
 import '../../providers/notifications.dart';
@@ -85,8 +86,11 @@ class Home extends HookWidget {
         ],
       ),
       body: CartContainer(
-        child: Consumer<Activities>(
-          builder: (ctx, activities, _) {
+        child: StreamBuilder<List<ActivityFeed>>(
+          initialData: const [],
+          stream: context.read<Activities>().stream,
+          builder: (ctx, snapshot) {
+            final _items = snapshot.data?.where((e) => !e.archived).toList();
             return CustomScrollView(
               slivers: [
                 SliverPersistentHeader(
@@ -100,7 +104,7 @@ class Home extends HookWidget {
                     ),
                   ),
                 ),
-                if (activities.isLoading)
+                if (snapshot.data == null)
                   SliverFillViewport(
                     delegate: SliverChildBuilderDelegate(
                       (context, index) {
@@ -108,7 +112,6 @@ class Home extends HookWidget {
                           offset: Offset(0, -150.h),
                           child: Lottie.asset(
                             kAnimationLoading,
-                            // fit: BoxFit.,
                             fit: BoxFit.cover,
                             repeat: true,
                           ),
@@ -117,7 +120,7 @@ class Home extends HookWidget {
                       childCount: 1,
                     ),
                   )
-                else if (activities.feed.isEmpty)
+                else if (snapshot.data!.isEmpty)
                   const SliverFillRemaining(
                     child: Center(
                       child: Text(
@@ -132,13 +135,13 @@ class Home extends HookWidget {
                   SliverList(
                     delegate: SliverChildBuilderDelegate(
                       (ctx2, index) {
-                        final activity = activities.feed[index];
+                        final activity = _items![index];
                         return PostCard(
                           key: Key(activity.id),
                           activity: activity,
                         );
                       },
-                      childCount: activities.feed.length,
+                      childCount: _items!.length,
                     ),
                   ),
               ],

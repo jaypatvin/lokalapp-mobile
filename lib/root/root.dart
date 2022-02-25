@@ -7,9 +7,6 @@ import '../models/failure_exception.dart';
 import '../providers/auth.dart';
 import '../providers/bank_codes.dart';
 import '../providers/categories.dart';
-import '../providers/products.dart';
-import '../providers/shops.dart';
-import '../providers/users.dart';
 import '../routers/app_router.dart';
 import '../screens/bottom_navigation.dart';
 import '../screens/welcome_screen.dart';
@@ -41,11 +38,8 @@ class _RootState extends State<Root> {
       if (auth.user == null) throw FailureException('user-not-registered');
 
       if (!mounted) return;
-      context.read<Shops>().fetch();
-      context.read<Products>().fetch();
       context.read<Categories>().fetch();
       context.read<BankCodes>().fetch();
-      await context.read<Users>().fetch();
 
       if (!mounted) return;
       AppRouter.rootNavigatorKey.currentState?.pushNamedAndRemoveUntil(

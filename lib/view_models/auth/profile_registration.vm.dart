@@ -12,9 +12,6 @@ import '../../providers/auth.dart';
 import '../../providers/bank_codes.dart';
 import '../../providers/categories.dart';
 import '../../providers/post_requests/auth_body.dart';
-import '../../providers/products.dart';
-import '../../providers/shops.dart';
-import '../../providers/users.dart';
 import '../../routers/app_router.dart';
 import '../../services/api/api.dart';
 import '../../services/api/invite_api_service.dart';
@@ -105,11 +102,8 @@ class ProfileRegistrationViewModel extends ViewModel {
     }
     final bool success = await _registerUser();
     if (success) {
-      context.read<Shops>().fetch();
-      context.read<Products>().fetch();
       context.read<Categories>().fetch();
       context.read<BankCodes>().fetch();
-      await context.read<Users>().fetch();
 
       AppRouter.rootNavigatorKey.currentState?.pushAndRemoveUntil(
         AppNavigator.appPageRoute(
