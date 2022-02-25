@@ -124,7 +124,6 @@ class _DiscoverView extends StatelessView<DiscoverViewModel> {
         alwaysDisplayButton: true,
         child: RefreshIndicator(
           onRefresh: () async {
-            await context.read<Products>().fetch();
             await vm.fetchRecommendedProducts();
           },
           child: Consumer2<Shops, Products>(
