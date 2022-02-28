@@ -229,9 +229,8 @@ class ChatDetailsViewModel extends ViewModel {
       this._replyId = _replyId;
       this._replyTo = _replyTo;
       imageProvider.picked.addAll(_sendingImages);
-    } finally {
-      _isSendingMessage = false;
       _currentSendingMessage = null;
+      _isSendingMessage = false;
       notifyListeners();
     }
   }

@@ -50,6 +50,67 @@ class ChatDetails extends StatelessWidget {
 }
 
 class ChatDetailsView extends HookView<ChatDetailsViewModel> {
+  Widget _buildMessageStream(ChatDetailsViewModel viewModel) {
+    if (viewModel.messageStream == null && viewModel.isSendingMessage) {
+      return ListView.builder(
+        physics: const BouncingScrollPhysics(),
+        reverse: true,
+        itemCount: 1,
+        itemBuilder: (ctx, index) {
+          return ChatBubble(
+            conversation: viewModel.currentSendingMessage,
+          );
+        },
+      );
+    }
+    if (viewModel.messageStream == null) {
+      return Center(
+        child: Text(
+          'No messages here yet...',
+          style: TextStyle(
+            fontSize: 24.0.sp,
+            color: Colors.black,
+          ),
+        ),
+      );
+    }
+    return MessageStream(
+      messageStream: viewModel.messageStream,
+      onReply: viewModel.onReply,
+      onDelete: viewModel.onDeleteMessage,
+      trailing: _buildAdditionalStates(viewModel),
+    );
+  }
+
+  Widget _buildAdditionalStates(ChatDetailsViewModel viewModel) {
+    Widget child = const SizedBox();
+    if (viewModel.isSendingMessage) {
+      child = ChatBubble(
+        conversation: viewModel.currentSendingMessage,
+        images: viewModel.sendingImages,
+      );
+    } else if (viewModel.didUserSendLastMessage) {
+      child = const SizedBox(
+        width: double.infinity,
+        child: Padding(
+          padding: EdgeInsets.only(
+            right: 10,
+            bottom: 5,
+          ),
+          child: Text(
+            'Delivered',
+            style: TextStyle(color: Colors.grey),
+            textAlign: TextAlign.right,
+          ),
+        ),
+      );
+    }
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 100),
+      child: child,
+    );
+  }
+
   @override
   Widget render(BuildContext context, ChatDetailsViewModel viewModel) {
     final _indicatorColor = useMemoized<Color>(() {
@@ -113,9 +174,10 @@ class ChatDetailsView extends HookView<ChatDetailsViewModel> {
                     onPressed: () => node.unfocus(),
                     child: Text(
                       'Done',
-                      style: Theme.of(context).textTheme.bodyText1!.copyWith(
-                            color: Colors.black,
-                          ),
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyText1
+                          ?.copyWith(color: Colors.black),
                     ),
                   );
                 },
@@ -139,69 +201,7 @@ class ChatDetailsView extends HookView<ChatDetailsViewModel> {
                     decoration: const BoxDecoration(
                       color: Colors.white,
                     ),
-                    child: Builder(
-                      builder: (ctx) {
-                        if (viewModel.messageStream == null &&
-                            viewModel.isSendingMessage) {
-                          return ListView.builder(
-                            physics: const BouncingScrollPhysics(),
-                            reverse: true,
-                            itemCount: 1,
-                            itemBuilder: (ctx, index) {
-                              return ChatBubble(
-                                conversation: viewModel.currentSendingMessage,
-                              );
-                            },
-                          );
-                        }
-                        if (viewModel.messageStream == null) {
-                          return Center(
-                            child: Text(
-                              'No messages here yet...',
-                              style: TextStyle(
-                                fontSize: 24.0.sp,
-                                color: Colors.black,
-                              ),
-                            ),
-                          );
-                        }
-                        return MessageStream(
-                          messageStream: viewModel.messageStream,
-                          onReply: viewModel.onReply,
-                          onDelete: viewModel.onDeleteMessage,
-                          trailing: Builder(
-                            builder: (ctx2) {
-                              Widget child = const SizedBox();
-                              if (viewModel.isSendingMessage) {
-                                child = ChatBubble(
-                                  conversation: viewModel.currentSendingMessage,
-                                  images: viewModel.sendingImages,
-                                );
-                              } else if (viewModel.didUserSendLastMessage) {
-                                child = const SizedBox(
-                                  width: double.infinity,
-                                  child: Padding(
-                                    padding: EdgeInsets.only(
-                                      right: 10,
-                                      bottom: 5,
-                                    ),
-                                    child: Text(
-                                      'Delivered',
-                                      style: TextStyle(color: Colors.grey),
-                                      textAlign: TextAlign.right,
-                                    ),
-                                  ),
-                                );
-                              }
-                              return AnimatedContainer(
-                                duration: const Duration(milliseconds: 100),
-                                child: child,
-                              );
-                            },
-                          ),
-                        );
-                      },
-                    ),
+                    child: _buildMessageStream(viewModel),
                   ),
                 ),
                 Container(
