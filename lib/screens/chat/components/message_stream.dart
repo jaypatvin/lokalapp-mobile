@@ -15,7 +15,7 @@ import '../../../utils/constants/themes.dart';
 import '../chat_bubble.dart';
 
 class MessageStream extends StatelessWidget {
-  final Stream<QuerySnapshot>? messageStream;
+  final Stream<QuerySnapshot<Map<String, dynamic>>>? messageStream;
   final void Function(String messageId, Conversation message) onReply;
   final void Function(String messageId) onDelete;
   final Widget? trailing;
@@ -116,7 +116,7 @@ class MessageStream extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<QuerySnapshot>(
+    return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
       stream: messageStream,
       builder: (ctx, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {

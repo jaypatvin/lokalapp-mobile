@@ -6,8 +6,8 @@ import '../../models/lokal_images.dart';
 import '../../providers/auth.dart';
 import '../../providers/users.dart';
 import '../../routers/app_router.dart';
-import '../../routers/chat/props/chat_view.props.dart';
-import '../../screens/chat/chat_view.dart';
+import '../../routers/chat/props/chat_details.props.dart';
+import '../../screens/chat/chat_details.dart';
 import '../../screens/profile/edit_profile.dart';
 import '../../screens/profile/settings/settings.dart';
 import '../../state/view_model.dart';
@@ -36,10 +36,11 @@ class ProfileHeaderViewModel extends ViewModel {
     }
     context.read<AppRouter>().navigateTo(
           AppRoute.chat,
-          ChatView.routeName,
-          arguments: ChatViewProps(
+          ChatDetails.routeName,
+          arguments: ChatDetailsProps(
             members: [context.read<Auth>().user!.id!, userId],
           ),
+
         );
   }
 

@@ -11,7 +11,7 @@ import '../../../providers/products.dart';
 import '../../../providers/shops.dart';
 import '../../../providers/users.dart';
 import '../../../routers/app_router.dart';
-import '../../../routers/chat/props/chat_view.props.dart';
+import '../../../routers/chat/props/chat_details.props.dart';
 import '../../../state/mvvm_builder.widget.dart';
 import '../../../state/views/stateless.view.dart';
 import '../../../utils/constants/assets.dart';
@@ -19,7 +19,7 @@ import '../../../utils/constants/themes.dart';
 import '../../../view_models/chat/chat_stream.vm.dart';
 import '../../../widgets/app_button.dart';
 import '../../../widgets/inputs/search_text_field.dart';
-import '../chat_view.dart';
+import '../chat_details.dart';
 import 'chat_avatar.dart';
 
 class ChatStream extends StatelessWidget {
@@ -248,8 +248,14 @@ class _ChatList extends StatelessWidget {
         onTap: () {
           context.read<AppRouter>().navigateTo(
                 AppRoute.chat,
-                ChatView.routeName,
-                arguments: ChatViewProps(createMessage: false, chat: chat),
+                ChatDetails.routeName,
+                arguments: ChatDetailsProps(
+                  members: chat.members,
+                  chat: chat,
+                  shopId: chat.shopId,
+                  productId: chat.productId,
+                ),
+
               );
         },
         child: ListTile(
