@@ -10,10 +10,10 @@ import '../../../models/product_subscription_plan.dart';
 import '../../../providers/products.dart';
 import '../../../providers/shops.dart';
 import '../../../routers/app_router.dart';
-import '../../../routers/chat/props/chat_view.props.dart';
+import '../../../routers/chat/props/chat_details.props.dart';
 import '../../../routers/discover/product_detail.props.dart';
 import '../../../screens/activity/subscriptions/subscription_schedule.dart';
-import '../../../screens/chat/chat_view.dart';
+import '../../../screens/chat/chat_details.dart';
 import '../../../screens/discover/product_detail.dart';
 import '../../../services/api/api.dart';
 import '../../../services/api/subscription_plan_api_service.dart';
@@ -112,13 +112,14 @@ class SubscriptionPlanScreenViewModel extends ViewModel {
   void onMessageSend() {
     context.read<AppRouter>().navigateTo(
           AppRoute.chat,
-          ChatView.routeName,
-          arguments: ChatViewProps(
+          ChatDetails.routeName,
+          arguments: ChatDetailsProps(
             members: [
               subscriptionPlan.buyerId,
               subscriptionPlan.shopId,
             ],
             shopId: subscriptionPlan.shopId,
+            productId: subscriptionPlan.productId,
           ),
         );
   }

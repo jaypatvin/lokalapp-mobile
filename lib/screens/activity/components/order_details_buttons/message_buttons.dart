@@ -1,14 +1,15 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../models/order.dart';
 import '../../../../routers/app_router.dart';
-import '../../../../routers/chat/props/chat_view.props.dart';
+import '../../../../routers/chat/props/chat_details.props.dart';
 import '../../../../widgets/app_button.dart';
-import '../../../chat/chat_view.dart';
+import '../../../chat/chat_details.dart';
 
 class MessageBuyerButton extends StatelessWidget {
-  final Order? order;
+  final Order order;
   const MessageBuyerButton({Key? key, required this.order}) : super(key: key);
 
   @override
@@ -18,10 +19,11 @@ class MessageBuyerButton extends StatelessWidget {
       onPressed: () {
         context.read<AppRouter>().navigateTo(
               AppRoute.chat,
-              ChatView.routeName,
-              arguments: ChatViewProps(
-                members: [order!.buyerId, order!.shopId],
-                shopId: order!.shopId,
+              ChatDetails.routeName,
+              arguments: ChatDetailsProps(
+                members: [order.buyerId, order.shopId],
+                shopId: order.shopId,
+                productId: order.productIds.firstOrNull,
               ),
             );
       },
@@ -40,10 +42,11 @@ class MessageSellerButton extends StatelessWidget {
       onPressed: () {
         context.read<AppRouter>().navigateTo(
               AppRoute.chat,
-              ChatView.routeName,
-              arguments: ChatViewProps(
+              ChatDetails.routeName,
+              arguments: ChatDetailsProps(
                 members: [order.buyerId, order.shopId],
                 shopId: order.shopId,
+                productId: order.productIds.firstOrNull,
               ),
             );
       },
