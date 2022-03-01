@@ -10,11 +10,12 @@ import '../../../routers/app_router.dart';
 import '../../../screens/activity/subscriptions/subscription_plan.screen.dart';
 import '../../../services/api/api.dart';
 import '../../../services/api/subscription_plan_api_service.dart';
-import '../../../services/database.dart';
+import '../../../services/database/collections/product_subscription_plans.collection.dart';
+import '../../../services/database/database.dart';
 import '../../../state/view_model.dart';
 
 class SubscriptionsSellerViewModel extends ViewModel {
-  late final Database _db;
+  late final ProductSubscriptionPlansCollection _db;
   late final SubscriptionPlanAPIService _subscriptionPlanApiService;
 
   Stream<List<ProductSubscriptionPlan>>? _subscriptionPlanStream;
@@ -25,7 +26,7 @@ class SubscriptionsSellerViewModel extends ViewModel {
   void init() {
     super.init();
     final _api = context.read<API>();
-    _db = Database.instance;
+    _db = context.read<Database>().productSubscriptionPlans;
     _subscriptionPlanApiService = SubscriptionPlanAPIService(_api);
 
     final _user = context.read<Auth>().user!;
@@ -52,15 +53,7 @@ class SubscriptionsSellerViewModel extends ViewModel {
     final _user = context.read<Auth>().user!;
     // we're sure that there is a shop
     final _shop = context.read<Shops>().findByUser(_user.id).first;
-
-    _subscriptionPlanStream = _db
-        .getShopSubscriptionPlans(_shop.id)
-        .map<List<ProductSubscriptionPlan>>((snapshot) => snapshot.docs
-            .map<ProductSubscriptionPlan>(
-                // ignore: require_trailing_commas
-                (doc) => ProductSubscriptionPlan.fromDocument(doc))
-            // ignore: require_trailing_commas
-            .toList());
+    _subscriptionPlanStream = _db.getShopSubscriptionPlans(_shop.id);
   }
 
   void createShopHandler() {

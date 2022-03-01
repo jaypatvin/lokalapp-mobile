@@ -6,17 +6,18 @@ import 'package:flutter/foundation.dart';
 import '../models/shop.dart';
 import '../services/api/api.dart';
 import '../services/api/shop_api_service.dart';
-import '../services/database.dart';
+import '../services/database/collections/shops.collections.dart';
+import '../services/database/database.dart';
 
 class Shops extends ChangeNotifier {
-  factory Shops(API api) {
-    return Shops._(ShopAPIService(api));
+  factory Shops(API api, Database database) {
+    return Shops._(ShopAPIService(api), database.shops);
   }
 
-  Shops._(this._apiService);
+  Shops._(this._apiService, this._db);
 
   final ShopAPIService _apiService;
-  final Database _db = Database.instance;
+  late final ShopsCollection _db;
 
   String? _communityId;
   List<Shop> _shops = [];
@@ -52,9 +53,7 @@ class Shops extends ChangeNotifier {
       _isLoading = true;
       if (hasListeners) notifyListeners();
       _shopsSubscription?.cancel();
-      _shopStream = _db.getCommunityShops(id).map((event) {
-        return event.docs.map((doc) => Shop.fromDocument(doc)).toList();
-      });
+      _shopStream = _db.getCommunityShops(id);
       _shopsSubscription = _shopStream?.listen(_shopListener);
     }
   }

@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 import '../../models/conversation.dart';
@@ -11,7 +10,7 @@ class SharedMedia extends StatefulWidget {
   static const routeName = '/chat/view/profile/shared_media';
   const SharedMedia({Key? key, required this.conversations}) : super(key: key);
 
-  final List<QueryDocumentSnapshot> conversations;
+  final List<Conversation> conversations;
 
   @override
   _SharedMediaState createState() => _SharedMediaState();
@@ -30,9 +29,8 @@ class _SharedMediaState extends State<SharedMedia> {
   List<LokalImages> _getAllChatMedia() {
     final images = <LokalImages>[];
     for (final c in widget.conversations) {
-      final _conversation = Conversation.fromDocument(c);
-      if (_conversation.media?.isNotEmpty ?? false) {
-        images.addAll(_conversation.media!);
+      if (c.media?.isNotEmpty ?? false) {
+        images.addAll(c.media!);
       }
     }
     return images;

@@ -1,15 +1,15 @@
-import 'dart:developer' as dev;
-
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:oktoast/oktoast.dart';
 
 import '../models/lokal_category.dart';
-import '../services/api/api.dart';
-import '../services/api/category_api_service.dart';
+import '../services/database/collections/categories.collection.dart';
+import '../services/database/database.dart';
 
 class Categories extends ChangeNotifier {
-  Categories(this.api);
+  Categories(Database database) : _db = database.categories;
+
+  final CategoriesCollection _db;
 
   List<LokalCategory> _categories = [];
 
@@ -17,20 +17,15 @@ class Categories extends ChangeNotifier {
 
   bool get isLoading => _isLoading;
 
-  final API api;
-
   UnmodifiableListView<LokalCategory> get categories =>
       UnmodifiableListView(_categories);
 
   Future<void> fetch() async {
     try {
-      dev.log('categories fetch called');
       _isLoading = true;
       notifyListeners();
 
-      final _service = CategoryAPIService(api);
-
-      _categories = await _service.getAll();
+      _categories = await _db.getCategories();
       _isLoading = false;
       notifyListeners();
     } catch (e) {

@@ -6,16 +6,17 @@ import 'package:flutter/foundation.dart';
 import '../models/product.dart';
 import '../services/api/api.dart';
 import '../services/api/product_api_service.dart';
-import '../services/database.dart';
+import '../services/database/collections/products.collection.dart';
+import '../services/database/database.dart';
 
 class Products extends ChangeNotifier {
-  factory Products(API api) {
-    return Products._(ProductApiService(api));
+  factory Products(API api, Database database) {
+    return Products._(ProductApiService(api), database.products);
   }
 
-  Products._(this._apiService);
+  Products._(this._apiService, this._db);
 
-  final Database _db = Database.instance;
+  final ProductsCollection _db;
   final ProductApiService _apiService;
 
   final List<Product> _products = [];
@@ -51,9 +52,7 @@ class Products extends ChangeNotifier {
       _isLoading = true;
       if (hasListeners) notifyListeners();
       _productsSubscription?.cancel();
-      _productsStream = _db.getCommunityProducts(id).map((event) {
-        return event.docs.map((e) => Product.fromDocument(e)).toList();
-      });
+      _productsStream = _db.getCommunityProducts(id);
       _productsSubscription = _productsStream?.listen(_productListener);
     }
   }

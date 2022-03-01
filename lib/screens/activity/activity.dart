@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:lottie/lottie.dart';
+import 'package:provider/provider.dart';
 
-import '../../services/database.dart';
+import '../../services/database/database.dart';
 import '../../utils/constants/assets.dart';
 import '../../utils/constants/themes.dart';
 import 'transactions.dart';
@@ -38,7 +39,7 @@ class Activity extends HookWidget {
     _tabController.animation?.addListener(_tabSelectionHandler);
 
     final future = useMemoized(
-      () async => Database.instance.getOrderStatuses().get(),
+      () async => context.read<Database>().orderStatus.getOrderStatuses(),
     );
     final snapshot = useFuture(future);
 
@@ -57,7 +58,7 @@ class Activity extends HookWidget {
 
     for (final doc in snapshot.data!.docs) {
       final statusCode = int.parse(doc.id);
-      final dataMap = doc.data()! as Map<String, dynamic>;
+      final dataMap = doc.data();
       _buyerStatuses.value[statusCode] = dataMap['buyer_status'];
       _sellerStatuses.value[statusCode] = dataMap['seller_status'];
     }

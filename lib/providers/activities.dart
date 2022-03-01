@@ -7,20 +7,22 @@ import '../models/activity_feed.dart';
 import '../services/api/activity_api_service.dart';
 import '../services/api/api.dart';
 import '../services/api/comment_api_service.dart';
-import '../services/database.dart';
+import '../services/database/collections/activities.collection.dart';
+import '../services/database/database.dart';
 
 class Activities extends ChangeNotifier {
-  factory Activities(API api) {
+  factory Activities(API api, Database database) {
     final _activityService = ActivityAPIService(api);
     final _commentService = CommentsAPIService(api);
-    return Activities._(_activityService, _commentService);
+
+    return Activities._(_activityService, _commentService, database.activities);
   }
 
-  Activities._(this._activityService, this._commentService);
+  Activities._(this._activityService, this._commentService, this._db);
 
   final ActivityAPIService _activityService;
   final CommentsAPIService _commentService;
-  final Database _db = Database.instance;
+  final ActivitiesCollection _db;
 
   final List<ActivityFeed> _feed = [];
   UnmodifiableListView<ActivityFeed> get feed =>
@@ -61,9 +63,7 @@ class Activities extends ChangeNotifier {
     if (communityId != null) {
       _isLoading = true;
       notifyListeners();
-      _activityStream = _db.getCommunityFeed(communityId).map((event) {
-        return event.docs.map((doc) => ActivityFeed.fromDocument(doc)).toList();
-      });
+      _activityStream = _db.getCommunityFeed(communityId);
       _activitiesSubscription?.cancel();
       _activitiesSubscription = _activityStream?.listen(_subscriptionListener);
     }

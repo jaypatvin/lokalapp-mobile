@@ -15,18 +15,19 @@ import '../models/failure_exception.dart';
 import '../models/lokal_user.dart';
 import '../services/api/api.dart';
 import '../services/api/user_api_service.dart';
-import '../services/database.dart';
+import '../services/database/collections/users.collection.dart';
+import '../services/database/database.dart';
 
 class Auth extends ChangeNotifier {
-  factory Auth(API api) {
+  factory Auth(API api, Database database) {
     final apiService = UserAPIService(api);
-    return Auth._(api, apiService);
+    return Auth._(api, apiService, database.users);
   }
 
-  Auth._(this._api, this._apiService);
+  Auth._(this._api, this._apiService, this._db);
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final Database _db = Database.instance;
+  final UsersCollection _db;
   final UserAPIService _apiService;
   final API _api;
 

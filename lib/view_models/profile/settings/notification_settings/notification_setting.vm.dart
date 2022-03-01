@@ -7,13 +7,18 @@ import 'package:recase/recase.dart';
 import '../../../../models/lokal_user.dart';
 import '../../../../screens/profile/settings/notification_settings/model/notification_setting.model.dart';
 import '../../../../services/api/user_api_service.dart';
-import '../../../../services/database.dart';
+import '../../../../services/database/database.dart';
 
 class NotificationSettingViewModel extends ChangeNotifier {
-  NotificationSettingViewModel(this.user, this._userAPIService);
+  NotificationSettingViewModel({
+    required this.user,
+    required this.userAPIService,
+    required this.database,
+  });
 
-  final UserAPIService _userAPIService;
+  final UserAPIService userAPIService;
   final LokalUser user;
+  final Database database;
   final _notificationTypes = <String, NotificationSettingModel>{};
 
   bool _isLoading = false;
@@ -25,7 +30,7 @@ class NotificationSettingViewModel extends ChangeNotifier {
   Future<void> init() async {
     _isLoading = true;
     notifyListeners();
-    final querySnapshots = await Database.instance.getNotificationTypes();
+    final querySnapshots = await database.notificationTypes.reference.get();
     for (final doc in querySnapshots.docs) {
       _notificationTypes[doc.id] = NotificationSettingModel(
         key: doc.id,
@@ -48,7 +53,7 @@ class NotificationSettingViewModel extends ChangeNotifier {
       _notificationTypes[key]!.value = value;
       user.notificationSettings[key] = value;
       notifyListeners();
-      success = await _userAPIService.updateNotficationSettings(
+      success = await userAPIService.updateNotficationSettings(
         userId: user.id!,
         body: body,
       );
