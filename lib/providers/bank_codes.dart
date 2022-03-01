@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:oktoast/oktoast.dart';
 
 import '../models/bank_code.dart';
 import '../services/database.dart';
@@ -10,9 +11,11 @@ class BankCodes extends ChangeNotifier {
   List<BankCode> _codes = [];
   UnmodifiableListView<BankCode> get bankCodes =>
       UnmodifiableListView(_codes.where((bank) => bank.type == BankType.bank));
+
   UnmodifiableListView<BankCode> get walletCodes => UnmodifiableListView(
-        _codes.where((bank) => bank.type == BankType.wallet),
-      );
+      // ignore: require_trailing_commas
+      _codes.where((bank) => bank.type == BankType.wallet));
+
   UnmodifiableListView<BankCode> get codes => UnmodifiableListView(_codes);
 
   bool _isLoading = false;
@@ -34,7 +37,8 @@ class BankCodes extends ChangeNotifier {
     } catch (e) {
       _isLoading = false;
       notifyListeners();
-      rethrow;
+      showToast(e.toString());
+      // don't do anything
     }
   }
 

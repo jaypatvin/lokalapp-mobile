@@ -102,7 +102,7 @@ class Auth extends ChangeNotifier {
         }
 
         FirebaseCrashlytics.instance.setUserIdentifier(id);
-        _user = await _apiService.getById(userId: id);
+        _user = await _db.getUserById(id);
 
         _userStreamSubscription?.cancel();
 
@@ -135,6 +135,11 @@ class Auth extends ChangeNotifier {
         await _firebaseUser.reload();
         await _userChangeListener(_firebaseUser);
       }
+    } on FirebaseAuthException catch (e) {
+      if (e.code != 'network-request-failed') {
+        rethrow;
+      }
+      await _userChangeListener(_auth.currentUser);
     } catch (e) {
       rethrow;
     }

@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
 import '../models/activity_feed.dart';
+import '../models/lokal_user.dart';
 
 final activitiesRef = FirebaseFirestore.instance.collection('activities');
 final usersRef = FirebaseFirestore.instance.collection('users');
@@ -20,8 +21,11 @@ final Reference storageRef = FirebaseStorage.instance.ref();
 // this class should be refactored for each collection
 class Database {
   static Database? _database;
-  static Database get instance {
-    return _database ??= Database();
+  static Database get instance => _database ??= Database();
+
+  Future<LokalUser> getUserById(String id) async {
+    final _data = await usersRef.doc(id).get();
+    return LokalUser.fromDocument(_data);
   }
 
   Future<bool> isProductLiked({

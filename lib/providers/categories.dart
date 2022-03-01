@@ -1,5 +1,8 @@
+import 'dart:developer' as dev;
+
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
+import 'package:oktoast/oktoast.dart';
 
 import '../models/lokal_category.dart';
 import '../services/api/api.dart';
@@ -20,14 +23,22 @@ class Categories extends ChangeNotifier {
       UnmodifiableListView(_categories);
 
   Future<void> fetch() async {
-    _isLoading = true;
-    notifyListeners();
+    try {
+      dev.log('categories fetch called');
+      _isLoading = true;
+      notifyListeners();
 
-    final _service = CategoryAPIService(api);
+      final _service = CategoryAPIService(api);
 
-    _categories = await _service.getAll();
-    _isLoading = false;
-    notifyListeners();
+      _categories = await _service.getAll();
+      _isLoading = false;
+      notifyListeners();
+    } catch (e) {
+      _isLoading = false;
+      notifyListeners();
+      showToast(e.toString());
+      // don't do anything
+    }
   }
 
   String getCategoryId(String name) {
