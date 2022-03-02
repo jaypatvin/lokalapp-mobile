@@ -22,7 +22,7 @@ class Activities extends ChangeNotifier {
   final CommentsAPIService _commentService;
   final Database _db = Database.instance;
 
-  final List<ActivityFeed> _feed = [];
+  List<ActivityFeed> _feed = [];
   UnmodifiableListView<ActivityFeed> get feed =>
       UnmodifiableListView(_feed.where((a) => !a.archived));
 
@@ -48,12 +48,13 @@ class Activities extends ChangeNotifier {
   }
 
   Future<void> setUserCredentials({String? userId, String? communityId}) async {
+    if (_communityId == communityId && _userId == userId) return;
     _communityId = communityId;
     _userId = userId;
 
     if (_communityId == null || _userId == null) {
       _activitiesSubscription?.cancel();
-      _feed.clear();
+      _feed = [];
       if (hasListeners) notifyListeners();
       return;
     }
@@ -70,16 +71,26 @@ class Activities extends ChangeNotifier {
   }
 
   Future<void> _subscriptionListener(List<ActivityFeed> feed) async {
-    _isLoading = true;
-    if (hasListeners) notifyListeners();
-
-    _feed.clear();
+    final _feed = <ActivityFeed>[];
     for (final _activity in feed) {
-      _activity.liked = await _db.isActivityLiked(_activity.id, _userId!);
-      _feed.add(_activity);
+      final _index = this._feed.indexWhere((a) => a.id == _activity.id);
+      if (_index >= 0 && this._feed[_index] == _activity) {
+        _feed.add(_activity);
+        continue;
+      }
+
+      final _isLiked = await _db.isActivityLiked(_activity.id, _userId!);
+      final a = _activity.copyWith(liked: _isLiked);
+      _feed.add(a);
     }
 
+    if (_feed.equals(this._feed) && _isLoading == false) {
+      return;
+    }
+
+    this._feed = _feed;
     _isLoading = false;
+
     if (hasListeners) notifyListeners();
   }
 
