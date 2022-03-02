@@ -35,7 +35,7 @@ class MessageStream extends StatelessWidget {
     return [
       FocusedMenuItem(
         title: Text(
-          'Repy',
+          'Reply',
           style: Theme.of(context).textTheme.subtitle1,
         ),
         trailingIcon: const Icon(
