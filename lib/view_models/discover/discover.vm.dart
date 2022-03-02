@@ -9,6 +9,7 @@ import '../../models/failure_exception.dart';
 import '../../models/product.dart';
 import '../../providers/auth.dart';
 import '../../providers/products.dart';
+import '../../providers/shops.dart';
 import '../../routers/app_router.dart';
 import '../../routers/discover/product_detail.props.dart';
 import '../../screens/discover/explore_categories.dart';
@@ -34,11 +35,7 @@ class DiscoverViewModel extends ViewModel {
     }
 
     return UnmodifiableListView(
-      context
-          .watch<Products>()
-          .items
-          .where((p) => p.userId != cUser.id)
-          .toList()
+      context.read<Products>().items.where((p) => p.userId != cUser.id).toList()
         ..shuffle(),
     );
   }
@@ -46,11 +43,7 @@ class DiscoverViewModel extends ViewModel {
   UnmodifiableListView<Product> get otherUserProducts {
     final cUser = context.read<Auth>().user!;
     return UnmodifiableListView(
-      context
-          .watch<Products>()
-          .items
-          .where((p) => p.userId != cUser.id)
-          .toList()
+      context.read<Products>().items.where((p) => p.userId != cUser.id).toList()
         ..sort((a, b) => b.createdAt.compareTo(a.createdAt)),
     );
   }
@@ -60,10 +53,24 @@ class DiscoverViewModel extends ViewModel {
 
   bool get isProductsLoading => context.read<Products>().isLoading;
 
+  late final Products _productsProvider;
+  late final Shops _shopsProvider;
+
   @override
   void init() {
     _apiService = ProductApiService(context.read<API>());
+    _productsProvider = context.read<Products>();
+    _shopsProvider = context.read<Shops>();
     fetchRecommendedProducts();
+    _productsProvider.addListener(_refresh);
+    _shopsProvider.addListener(_refresh);
+  }
+
+  @override
+  void dispose() {
+    _productsProvider.removeListener(_refresh);
+    _shopsProvider.removeListener(_refresh);
+    super.dispose();
   }
 
   Future<void> fetchRecommendedProducts() async {
@@ -106,5 +113,13 @@ class DiscoverViewModel extends ViewModel {
           AppRoute.discover,
           Search.routeName,
         );
+  }
+
+  Future<void> _refresh() async {
+    if (!recommendedProducts.every(
+      (product) => otherUserProducts.any((other) => other.id == product.id),
+    )) {
+      return fetchRecommendedProducts();
+    }
   }
 }

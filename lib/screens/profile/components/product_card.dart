@@ -35,13 +35,11 @@ class _ProductCardView extends HookView<ProductCardViewModel> {
 
   @override
   Widget render(BuildContext context, ProductCardViewModel vm) {
-    final _products = useMemoized<Products>(() => context.read<Products>(), []);
-    final _shops = useMemoized<Shops>(() => context.read<Shops>(), []);
-    final _cart =
-        useMemoized<ShoppingCart>(() => context.read<ShoppingCart>(), []);
-
     useEffect(
       () {
+        final _products = context.read<Products>();
+        final _shops = context.read<Shops>();
+        final _cart = context.read<ShoppingCart>();
         void _borderListener() {
           vm.updateDisplayBorder(
             displayBorder: context.read<ShoppingCart>().contains(vm.productId),
