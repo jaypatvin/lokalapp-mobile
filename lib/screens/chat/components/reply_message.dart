@@ -24,6 +24,18 @@ class ReplyMessageWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (message.archived) {
+      return Text(
+        'Deleted Message',
+        style: Theme.of(context).textTheme.bodyText2?.copyWith(
+              color: isRepliedByUser
+                  ? Colors.black.withOpacity(0.7)
+                  : const Color(0xFFF1FAFF).withOpacity(0.7),
+              fontStyle: FontStyle.italic,
+            ),
+      );
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

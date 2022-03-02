@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:focused_menu/focused_menu.dart';
 import 'package:focused_menu/modals.dart';
@@ -12,9 +14,10 @@ import 'package:swipe_to/swipe_to.dart';
 import '../../../models/conversation.dart';
 import '../../../providers/auth.dart';
 import '../../../utils/constants/themes.dart';
+import '../../../utils/hooks/automatic_keep_alive.dart';
 import '../chat_bubble.dart';
 
-class MessageStream extends StatelessWidget {
+class MessageStream extends HookWidget {
   final Stream<QuerySnapshot<Map<String, dynamic>>>? messageStream;
   final void Function(String messageId, Conversation message) onReply;
   final void Function(String messageId) onDelete;
@@ -94,7 +97,7 @@ class MessageStream extends StatelessWidget {
     required String messageId,
     required Conversation message,
     required bool userMessage,
-    DocumentReference? replyTo,
+    Conversation? replyMessage,
   }) {
     return FocusedMenuHolder(
       onPressed: () {},
@@ -107,7 +110,7 @@ class MessageStream extends StatelessWidget {
         onLeftSwipe: userMessage ? () => onReply(messageId, message) : null,
         child: ChatBubble(
           conversation: message,
-          replyMessage: replyTo,
+          replyMessage: replyMessage,
           forFocus: true,
         ),
       ),
@@ -116,6 +119,7 @@ class MessageStream extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    useAutomaticKeepAlive();
     return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
       stream: messageStream,
       builder: (ctx, snapshot) {
@@ -135,15 +139,47 @@ class MessageStream extends StatelessWidget {
               final message = Conversation.fromDocument(messages[index]);
               final userMessage =
                   message.senderId == context.read<Auth>().user!.id;
-              final replyTo = message.replyTo;
+
+              final replyTo = messages.firstWhereOrNull(
+                (e) => e.id == message.replyTo?.id,
+              );
+
+              final Conversation? replyMessage =
+                  replyTo != null ? Conversation.fromDocument(replyTo) : null;
+
+              final _message = message.archived
+                  ? Conversation(
+                      archived: true,
+                      createdAt: message.createdAt,
+                      message: 'Deleted Message',
+                      senderId: message.senderId,
+                      sentAt: message.sentAt,
+                    )
+                  : message;
+
+              final Conversation? _replyMessage;
+              if (_message.archived) {
+                _replyMessage = null;
+              } else if (replyMessage != null && replyMessage.archived) {
+                _replyMessage = Conversation(
+                  archived: replyMessage.archived,
+                  createdAt: replyMessage.createdAt,
+                  message: 'Deleted Message',
+                  senderId: replyMessage.senderId,
+                  sentAt: replyMessage.sentAt,
+                );
+              } else {
+                _replyMessage = replyMessage;
+              }
+
               return Column(
                 children: [
                   _buildItem(
                     context: context,
                     messageId: messageId,
-                    message: message,
+                    message: _message,
                     userMessage: userMessage,
-                    replyTo: replyTo,
+                    replyMessage: _replyMessage,
                   ),
                   if (index == 0 && trailing != null) trailing!,
                 ],

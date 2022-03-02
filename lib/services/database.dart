@@ -318,17 +318,8 @@ class Database {
     return chatsRef
         .doc(chatId)
         .collection('conversation')
-        .orderBy('archived')
-        .where('archived', isNotEqualTo: true)
-        .orderBy('created_at', descending: true)
-        .snapshots();
-  }
-
-  Stream<QuerySnapshot> getConversationsWithMedia(String chatId) {
-    return chatsRef
-        .doc(chatId)
-        .collection('conversation')
-        .where('media', isNotEqualTo: [])
+        // .orderBy('archived')
+        // .where('archived', isNotEqualTo: true)
         .orderBy('created_at', descending: true)
         .snapshots();
   }
