@@ -2,10 +2,16 @@ import 'dart:async';
 import 'dart:developer' as developer;
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
+
+import '../providers/auth.dart';
+import '../providers/bank_codes.dart';
+import '../providers/categories.dart';
 
 /// A widget that display a `Text` when there is no internet connection.
 class ConnectivityStatus extends StatefulWidget {
@@ -77,6 +83,7 @@ class _ConnectivityStatusState extends State<ConnectivityStatus>
 
   Future<void> _updateConnectionStatus(ConnectivityResult result) async {
     if (result == ConnectivityResult.none) {
+      await FirebaseFirestore.instance.disableNetwork();
       setState(() {
         _hasConnection = false;
       });
@@ -99,6 +106,17 @@ class _ConnectivityStatusState extends State<ConnectivityStatus>
       final result = await InternetAddress.lookup('lokalapp.ph');
       if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
         _status = true;
+        await FirebaseFirestore.instance.enableNetwork();
+
+        // TODO: change these to use Firestore
+        if (context.read<Auth>().user != null) {
+          if (context.read<Categories>().categories.isEmpty) {
+            context.read<Categories>().fetch();
+          }
+          if (context.read<BankCodes>().codes.isEmpty) {
+            context.read<BankCodes>().fetch();
+          }
+        }
       } else {
         _status = false;
       }

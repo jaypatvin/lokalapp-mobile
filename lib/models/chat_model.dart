@@ -186,34 +186,8 @@ class ChatModel {
     );
   }
 
-  factory ChatModel.fromDocument(QueryDocumentSnapshot doc) {
-    final map = doc.data() as Map<String, dynamic>?;
-    ChatType chatType;
-    switch (map!['chat_type']) {
-      case 'product':
-        chatType = ChatType.product;
-        break;
-      case 'shop':
-        chatType = ChatType.shop;
-        break;
-      default:
-        chatType = ChatType.user;
-        break;
-    }
-
-    return ChatModel(
-      id: doc.id,
-      members: List<String>.from(map['members'] ?? []),
-      title: map['title'],
-      chatType: chatType,
-      archived: map['archived'],
-      communityId: map['community_d'],
-      createdAt: (map['created_at'] as Timestamp).toDate(),
-      lastMessage: Message.fromMap(map['last_message']),
-      shopId: map['shop_id'],
-      customerName: map['customer_name'],
-      productId: map['product_id'],
-    );
+  factory ChatModel.fromDocument(DocumentSnapshot<Map<String, dynamic>> doc) {
+    return ChatModel.fromMap({'id': doc.id, ...doc.data()!});
   }
 
   String toJson() => json.encode(toMap());

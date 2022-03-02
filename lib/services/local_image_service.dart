@@ -5,12 +5,13 @@ import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
 
 import '../models/failure_exception.dart';
-import 'database.dart';
+import 'database/database.dart';
 
 class LocalImageService {
-  const LocalImageService({this.uuid = const Uuid()});
+  const LocalImageService({required this.database, this.uuid = const Uuid()});
 
   final Uuid uuid;
+  final Database database;
 
   Future<String> uploadImage({
     required File file,
@@ -23,7 +24,7 @@ class LocalImageService {
         throw FailureException('Failed to create image');
       }
 
-      return Database().uploadImage(
+      return database.storage.uploadImage(
         file: compressedFile,
         fileName: fileName,
         src: src,
@@ -33,14 +34,6 @@ class LocalImageService {
     }
   }
 
-  // Future<File> _compressImage(File file, String fileName) async {
-  //   final tempDir = await getTemporaryDirectory();
-  //   final path = tempDir.path;
-  //   final im.Image imageFile = im.decodeImage(file.readAsBytesSync())!;
-  //   final compressedImageFile = File('$path/img_$fileName.jpg')
-  //     ..writeAsBytesSync(im.encodeJpg(imageFile));
-  //   return compressedImageFile;
-  // }
   Future<File?> _compressImage(File file, String fileName) async {
     final tempDir = await getTemporaryDirectory();
     final result = await FlutterImageCompress.compressAndGetFile(

@@ -9,7 +9,8 @@ import '../../providers/activities.dart';
 import '../../providers/auth.dart';
 import '../../routers/app_router.dart';
 import '../../screens/profile/profile_screen.dart';
-import '../../services/database.dart';
+import '../../services/database/collections/activities.collection.dart';
+import '../../services/database/database.dart';
 import '../../state/view_model.dart';
 
 class CommentCardViewModel extends ViewModel {
@@ -22,10 +23,11 @@ class CommentCardViewModel extends ViewModel {
 
   bool isLiked = false;
 
-  final _db = Database.instance;
+  late final ActivitiesCollection _db;
 
   @override
   void init() {
+    _db = context.read<Database>().activities;
     _setup();
   }
 

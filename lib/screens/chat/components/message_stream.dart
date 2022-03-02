@@ -15,16 +15,17 @@ import '../../../utils/constants/themes.dart';
 import '../chat_bubble.dart';
 
 class MessageStream extends StatelessWidget {
-  final Stream<QuerySnapshot<Map<String, dynamic>>>? messageStream;
-  final void Function(String messageId, Conversation message) onReply;
-  final void Function(String messageId) onDelete;
-  final Widget? trailing;
   const MessageStream({
     required this.messageStream,
     required this.onDelete,
     required this.onReply,
     this.trailing,
   });
+
+  final Stream<List<Conversation>>? messageStream;
+  final void Function(String messageId, Conversation message) onReply;
+  final void Function(String messageId) onDelete;
+  final Widget? trailing;
 
   List<FocusedMenuItem> _buildMenuItems(
     BuildContext context,
@@ -116,7 +117,7 @@ class MessageStream extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+    return StreamBuilder<List<Conversation>>(
       stream: messageStream,
       builder: (ctx, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -124,15 +125,14 @@ class MessageStream extends StatelessWidget {
         } else if (snapshot.hasError) {
           return _buildText('Something went wrong, try again.');
         } else {
-          final messages = snapshot.data!.docs;
+          final messages = snapshot.data!;
           if (messages.isEmpty) return _buildText('Say Hi...');
           return ListView.builder(
             physics: const BouncingScrollPhysics(),
             reverse: true,
             itemCount: messages.length,
             itemBuilder: (ctx2, index) {
-              final messageId = messages[index].id;
-              final message = Conversation.fromDocument(messages[index]);
+              final message = messages[index];
               final userMessage =
                   message.senderId == context.read<Auth>().user!.id;
               final replyTo = message.replyTo;
@@ -140,7 +140,7 @@ class MessageStream extends StatelessWidget {
                 children: [
                   _buildItem(
                     context: context,
-                    messageId: messageId,
+                    messageId: message.id,
                     message: message,
                     userMessage: userMessage,
                     replyTo: replyTo,

@@ -1,17 +1,17 @@
 import 'dart:io' show Platform;
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:provider/provider.dart';
 
+import '../../models/activity_feed_comment.dart';
 import '../../models/failure_exception.dart';
 import '../../models/lokal_images.dart';
 import '../../providers/activities.dart';
 import '../../providers/auth.dart';
-import '../../services/database.dart';
+import '../../services/database/database.dart';
 import '../../services/local_image_service.dart';
 import '../../state/view_model.dart';
 import '../../utils/constants/assets.dart';
@@ -29,7 +29,7 @@ class PostDetailViewModel extends ViewModel {
   final void Function() onLike;
 
   late final CustomPickerDataProvider imageProvider;
-  late final Stream<QuerySnapshot<Map<String, dynamic>>> commentFeed;
+  late final Stream<List<ActivityFeedComment>> commentFeed;
   final TextEditingController inputController = TextEditingController();
 
   bool _isCommentUploading = false;
@@ -47,7 +47,8 @@ class PostDetailViewModel extends ViewModel {
     imageProvider = context.read<CustomPickerDataProvider>();
     imageProvider.onPickMax.addListener(_showMaxAssetsText);
     imageProvider.pickedNotifier.addListener(_onPick);
-    commentFeed = Database.instance.getCommentFeed(activityId);
+    commentFeed =
+        context.read<Database>().activities.getCommentFeed(activityId);
   }
 
   @override

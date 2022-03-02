@@ -17,7 +17,8 @@ import '../../screens/activity/order_details.dart';
 import '../../screens/activity/subscriptions/subscriptions.dart';
 import '../../services/api/api.dart';
 import '../../services/api/order_api_service.dart';
-import '../../services/database.dart';
+import '../../services/database/collections/orders.collection.dart';
+import '../../services/database/database.dart';
 import '../../state/view_model.dart';
 
 class TransactionsViewModel extends ViewModel {
@@ -48,17 +49,18 @@ class TransactionsViewModel extends ViewModel {
   late final String subscriptionSubtitle;
   late final String noOrderMessage;
 
-  final _db = Database.instance;
+  late final OrdersCollection _db;
 
   Shop? shop;
 
   @override
   void init() {
+    _apiService = OrderAPIService(context.read<API>());
+    _db = context.read<Database>().orders;
     _initializeStatuses();
     _selectedIndex = _statuses.keys.first;
     _initializeStreams();
     _stream = _streams[_selectedIndex];
-    _apiService = OrderAPIService(context.read<API>());
 
     subHeader = isBuyer
         ? 'These are the products you ordered from other stores.'

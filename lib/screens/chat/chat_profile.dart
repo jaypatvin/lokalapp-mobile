@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -8,6 +7,7 @@ import 'package:provider/provider.dart';
 
 import '../../models/app_navigator.dart';
 import '../../models/chat_model.dart';
+import '../../models/conversation.dart';
 import '../../providers/auth.dart';
 import '../../providers/products.dart';
 import '../../providers/shops.dart';
@@ -30,7 +30,7 @@ class ChatProfile extends StatefulWidget {
   const ChatProfile(this.chat, this.conversations);
 
   final ChatModel chat;
-  final List<QueryDocumentSnapshot>? conversations;
+  final List<Conversation>? conversations;
 
   @override
   _ChatProfileState createState() => _ChatProfileState();

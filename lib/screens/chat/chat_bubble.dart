@@ -120,8 +120,9 @@ class ChatBubble extends StatelessWidget {
     final width = MediaQuery.of(context).size.width;
 
     if (replyMessage != null) {
-      return FutureBuilder<DocumentSnapshot>(
-        future: replyMessage!.get(),
+      return FutureBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+        future: replyMessage!.get()
+            as Future<DocumentSnapshot<Map<String, dynamic>>>,
         builder: (ctx, snapshot) {
           if (snapshot.hasError) {
             return const Text('Error, cannot retrieve message');

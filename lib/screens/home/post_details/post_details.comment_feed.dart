@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 
@@ -11,15 +10,15 @@ class CommentFeed extends StatelessWidget {
       : super(key: key);
 
   final String _activityId;
-  final Stream<QuerySnapshot<Map<String, dynamic>>> _stream;
+  final Stream<List<ActivityFeedComment>> _stream;
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder(
+    return StreamBuilder<List<ActivityFeedComment>>(
       stream: _stream,
       builder: (
         ctx,
-        AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot,
+        snapshot,
       ) {
         switch (snapshot.connectionState) {
           case ConnectionState.waiting:
@@ -36,7 +35,7 @@ class CommentFeed extends StatelessWidget {
               return const Text(
                 'There was an error loading the comments. Please try again.',
               );
-            } else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+            } else if (snapshot.data?.isEmpty ?? true) {
               return const Text(
                 'No posts yet! Be the first one to post.',
                 style: TextStyle(
@@ -46,12 +45,10 @@ class CommentFeed extends StatelessWidget {
             } else {
               return ListView.builder(
                 physics: const NeverScrollableScrollPhysics(),
-                itemCount: snapshot.data!.docs.length,
+                itemCount: snapshot.data!.length,
                 shrinkWrap: true,
                 itemBuilder: (ctx, index) {
-                  final comment = ActivityFeedComment.fromDocument(
-                    snapshot.data!.docs[index],
-                  );
+                  final comment = snapshot.data![index];
                   return Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [

@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:io' show Platform;
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:photo_manager/photo_manager.dart';
@@ -15,7 +14,8 @@ import '../../providers/auth.dart';
 import '../../services/api/api.dart';
 import '../../services/api/chat_api_service.dart';
 import '../../services/api/conversation_api_service.dart';
-import '../../services/database.dart';
+import '../../services/database/collections/chats.collection.dart';
+import '../../services/database/database.dart';
 import '../../services/local_image_service.dart';
 import '../../state/view_model.dart';
 import '../../utils/constants/assets.dart';
@@ -37,13 +37,12 @@ class ChatDetailsViewModel extends ViewModel {
   late final ChatAPIService _chatAPIService;
   late final ConversationAPIService _conversationAPIService;
   late final CustomPickerDataProvider imageProvider;
-  late final Database _db;
+  late final ChatsCollection _db;
   late final LokalUser _currentUser;
 
-  Stream<QuerySnapshot<Map<String, dynamic>>>? _messageStream;
-  Stream<QuerySnapshot<Map<String, dynamic>>>? get messageStream =>
-      _messageStream;
-  StreamSubscription<QuerySnapshot<Map<String, dynamic>>>? _messageSubscription;
+  Stream<List<Conversation>>? _messageStream;
+  Stream<List<Conversation>>? get messageStream => _messageStream;
+  StreamSubscription<List<Conversation>>? _messageSubscription;
 
   bool _isLoading = true;
   bool get isLoading => _isLoading;
@@ -58,9 +57,8 @@ class ChatDetailsViewModel extends ViewModel {
   ChatModel? _chat;
   ChatModel? get chat => _chat;
 
-  List<QueryDocumentSnapshot<Map<String, dynamic>>> _conversations = [];
-  List<QueryDocumentSnapshot<Map<String, dynamic>>> get conversations =>
-      _conversations;
+  List<Conversation> _conversations = [];
+  List<Conversation> get conversations => _conversations;
 
   bool _isSendingMessage = false;
   bool get isSendingMessage => _isSendingMessage;
@@ -96,7 +94,7 @@ class ChatDetailsViewModel extends ViewModel {
     _chatAPIService = ChatAPIService(_api);
     _conversationAPIService = ConversationAPIService(_api);
     imageProvider = context.read<CustomPickerDataProvider>();
-    _db = Database.instance;
+    _db = context.read<Database>().chats;
     _currentUser = context.read<Auth>().user!;
 
     imageProvider.onPickMax.addListener(_showMaxAssetsText);
@@ -152,9 +150,9 @@ class ChatDetailsViewModel extends ViewModel {
     return media;
   }
 
-  void _messageStreamListener(QuerySnapshot<Map<String, dynamic>> snapshot) {
-    if (snapshot.docs.isEmpty) return;
-    final conversation = Conversation.fromDocument(snapshot.docs.first);
+  void _messageStreamListener(List<Conversation> conversations) {
+    if (conversations.isEmpty) return;
+    final conversation = conversations.first;
     final user = context.read<Auth>().user!;
     _conversations = conversations;
     if (conversation.senderId == user.id) {
@@ -188,6 +186,7 @@ class ChatDetailsViewModel extends ViewModel {
 
       _isSendingMessage = true;
       _currentSendingMessage = Conversation(
+        id: '_sending_mesage',
         archived: false,
         createdAt: DateTime.now(),
         message: _message,

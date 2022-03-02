@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import '../../../../providers/auth.dart';
 import '../../../../services/api/api.dart';
 import '../../../../services/api/user_api_service.dart';
+import '../../../../services/database/database.dart';
 import '../../../../utils/constants/assets.dart';
 import '../../../../utils/constants/themes.dart';
 import '../../../../view_models/profile/settings/notification_settings/notification_setting.vm.dart';
@@ -25,8 +26,9 @@ class _NotificationSettingsState extends State<NotificationSettings> {
   void initState() {
     super.initState();
     _viewModel = NotificationSettingViewModel(
-      context.read<Auth>().user!,
-      UserAPIService(context.read<API>()),
+      user: context.read<Auth>().user!,
+      userAPIService: UserAPIService(context.read<API>()),
+      database: context.read<Database>(),
     )..init();
   }
 
