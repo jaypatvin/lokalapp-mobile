@@ -4,10 +4,12 @@ import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 
 import '../models/lokal_user.dart';
-import '../services/database.dart';
+import '../services/database/collections/users.collection.dart';
 
 class Users extends ChangeNotifier {
-  final _db = Database.instance;
+  Users(this._db);
+
+  final UsersCollection _db;
 
   List<LokalUser> _users = [];
   bool _isLoading = false;

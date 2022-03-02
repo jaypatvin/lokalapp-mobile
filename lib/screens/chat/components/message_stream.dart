@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -18,16 +17,17 @@ import '../../../utils/hooks/automatic_keep_alive.dart';
 import '../chat_bubble.dart';
 
 class MessageStream extends HookWidget {
-  final Stream<QuerySnapshot<Map<String, dynamic>>>? messageStream;
-  final void Function(String messageId, Conversation message) onReply;
-  final void Function(String messageId) onDelete;
-  final Widget? trailing;
   const MessageStream({
     required this.messageStream,
     required this.onDelete,
     required this.onReply,
     this.trailing,
   });
+
+  final Stream<List<Conversation>>? messageStream;
+  final void Function(String messageId, Conversation message) onReply;
+  final void Function(String messageId) onDelete;
+  final Widget? trailing;
 
   List<FocusedMenuItem> _buildMenuItems(
     BuildContext context,
@@ -120,7 +120,7 @@ class MessageStream extends HookWidget {
   @override
   Widget build(BuildContext context) {
     useAutomaticKeepAlive();
-    return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+    return StreamBuilder<List<Conversation>>(
       stream: messageStream,
       builder: (ctx, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -128,7 +128,7 @@ class MessageStream extends HookWidget {
         } else if (snapshot.hasError) {
           return _buildText('Something went wrong, try again.');
         } else {
-          final messages = snapshot.data!.docs;
+          final messages = snapshot.data!;
           if (messages.isEmpty) return _buildText('Say Hi...');
           return ListView.builder(
             physics: const BouncingScrollPhysics(),
@@ -136,19 +136,17 @@ class MessageStream extends HookWidget {
             itemCount: messages.length,
             itemBuilder: (ctx2, index) {
               final messageId = messages[index].id;
-              final message = Conversation.fromDocument(messages[index]);
+              final message = messages[index];
               final userMessage =
                   message.senderId == context.read<Auth>().user!.id;
 
-              final replyTo = messages.firstWhereOrNull(
+              final replyMessage = messages.firstWhereOrNull(
                 (e) => e.id == message.replyTo?.id,
               );
 
-              final Conversation? replyMessage =
-                  replyTo != null ? Conversation.fromDocument(replyTo) : null;
-
               final _message = message.archived
                   ? Conversation(
+                      id: message.id,
                       archived: true,
                       createdAt: message.createdAt,
                       message: 'Deleted Message',
@@ -162,6 +160,7 @@ class MessageStream extends HookWidget {
                 _replyMessage = null;
               } else if (replyMessage != null && replyMessage.archived) {
                 _replyMessage = Conversation(
+                  id: replyMessage.id,
                   archived: replyMessage.archived,
                   createdAt: replyMessage.createdAt,
                   message: 'Deleted Message',

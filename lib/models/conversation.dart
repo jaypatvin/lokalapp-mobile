@@ -4,9 +4,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 
 import 'lokal_images.dart';
-import 'timestamp_time_object.dart';
 
 class Conversation {
+  final String id;
   bool archived;
   DateTime? createdAt;
   String? message;
@@ -16,6 +16,7 @@ class Conversation {
   List<LokalImages>? media;
 
   Conversation({
+    required this.id,
     required this.archived,
     required this.createdAt,
     required this.message,
@@ -26,6 +27,7 @@ class Conversation {
   });
 
   Conversation copyWith({
+    String? id,
     bool? archived,
     DateTime? createdAt,
     String? message,
@@ -35,6 +37,7 @@ class Conversation {
     List<LokalImages>? media,
   }) {
     return Conversation(
+      id: id ?? this.id,
       archived: archived ?? this.archived,
       createdAt: createdAt ?? this.createdAt,
       message: message ?? this.message,
@@ -47,6 +50,7 @@ class Conversation {
 
   Map<String, dynamic> toMap() {
     return {
+      'id': id,
       'archived': archived,
       'created_at': Timestamp.fromDate(createdAt!),
       'message': message,
@@ -65,27 +69,15 @@ class Conversation {
           );
   }
 
-  factory Conversation.fromMap(Map<String, dynamic> map) {
-    return Conversation(
-      archived: map['archived'] ?? false,
-      message: map['message'],
-      senderId: map['sender_id'] ?? '',
-      sentAt: TimestampObject.fromMap(map['sent_at']).toDateTime(),
-      createdAt: TimestampObject.fromMap(map['created_at']).toDateTime(),
-      replyTo: map['reply_to'],
-      media: _getMediaFromMap(map['media']),
-    );
-  }
-
   String toJson() => json.encode(toMap());
 
-  factory Conversation.fromJson(String source) =>
-      Conversation.fromMap(json.decode(source));
-
-  factory Conversation.fromDocument(DocumentSnapshot doc) {
-    final data = doc.data() as Map<String, dynamic>?;
+  factory Conversation.fromDocument(
+    DocumentSnapshot<Map<String, dynamic>> doc,
+  ) {
+    final data = doc.data()!;
     return Conversation(
-      archived: data!['archived'],
+      id: doc.id,
+      archived: data['archived'],
       message: data['message'] ?? '',
       sentAt: (data['sent_at'] as Timestamp?)?.toDate(),
       senderId: data['sender_id'],

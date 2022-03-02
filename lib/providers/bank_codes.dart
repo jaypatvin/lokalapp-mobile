@@ -1,18 +1,23 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:oktoast/oktoast.dart';
 
 import '../models/bank_code.dart';
-import '../services/database.dart';
+import '../services/database/collections/bank_codes.collection.dart';
+import '../services/database/database.dart';
 
 class BankCodes extends ChangeNotifier {
-  final _db = Database.instance;
+  BankCodes(Database database) : _db = database.bankCodes;
 
+  final BankCodesCollection _db;
   List<BankCode> _codes = [];
   UnmodifiableListView<BankCode> get bankCodes =>
       UnmodifiableListView(_codes.where((bank) => bank.type == BankType.bank));
+
   UnmodifiableListView<BankCode> get walletCodes => UnmodifiableListView(
-        _codes.where((bank) => bank.type == BankType.wallet),
-      );
+      // ignore: require_trailing_commas
+      _codes.where((bank) => bank.type == BankType.wallet));
+
   UnmodifiableListView<BankCode> get codes => UnmodifiableListView(_codes);
 
   bool _isLoading = false;
@@ -22,19 +27,14 @@ class BankCodes extends ChangeNotifier {
     _isLoading = true;
     notifyListeners();
     try {
-      final _snapshots = await _db.getBankCodes();
-      final _codes = <BankCode>[];
-
-      for (final doc in _snapshots.docs) {
-        _codes.add(BankCode.fromDocument(doc));
-      }
-      this._codes = _codes;
+      _codes = await _db.getBankCodes();
       _isLoading = false;
       notifyListeners();
     } catch (e) {
       _isLoading = false;
       notifyListeners();
-      rethrow;
+      showToast(e.toString());
+      // don't do anything
     }
   }
 

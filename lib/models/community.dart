@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'address.dart';
 import 'timestamp_time_object.dart';
 
@@ -60,6 +62,22 @@ class Community {
   }
 
   factory Community.fromMap(Map<String, dynamic> map) {
+    final DateTime _createdAt;
+    if (map['created_at'] is Timestamp) {
+      _createdAt = (map['created_at'] as Timestamp).toDate();
+    } else {
+      _createdAt = TimestampObject.fromMap(map['created_at']).toDateTime();
+    }
+
+    final DateTime _updatedAt;
+    if (map['updated_at'] == null) {
+      _updatedAt = _createdAt;
+    } else if (map['updated_at'] is Timestamp) {
+      _updatedAt = (map['updated_at'] as Timestamp).toDate();
+    } else {
+      _updatedAt = TimestampObject.fromMap(map['updated_at']).toDateTime();
+    }
+
     return Community(
       id: map['id'],
       name: map['name'],
@@ -67,8 +85,8 @@ class Community {
       profilePhoto: map['profile_photo'],
       archived: map['archived'],
       coverPhoto: map['cover_photo'],
-      createdAt: TimestampObject.fromMap(map['created_at']).toDateTime(),
-      updatedAt: TimestampObject.fromMap(map['updated_at']).toDateTime(),
+      createdAt: _createdAt,
+      updatedAt: _updatedAt,
     );
   }
 
@@ -76,6 +94,10 @@ class Community {
 
   factory Community.fromJson(String source) =>
       Community.fromMap(json.decode(source));
+
+  factory Community.fromDocument(DocumentSnapshot<Map<String, dynamic>> doc) {
+    return Community.fromMap({'id': doc.id, ...doc.data()!});
+  }
 
   @override
   String toString() {

@@ -69,7 +69,11 @@ class ChatBubble extends HookWidget {
         Text(
           conversation!.message!,
           style: Theme.of(context).textTheme.bodyText1?.copyWith(
-                color: isUser ? Colors.black : Colors.white,
+                color: conversation!.archived
+                    ? Colors.grey
+                    : isUser
+                        ? Colors.black
+                        : Colors.white,
                 fontStyle: conversation!.archived ? FontStyle.italic : null,
               ),
         ),

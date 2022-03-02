@@ -3,19 +3,19 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import '../models/lokal_notification.dart';
-import '../services/database.dart';
+import '../services/database/collections/users.collection.dart';
+import '../services/database/database.dart';
 
 class NotificationsProvider extends ChangeNotifier {
-  final Database _db = Database.instance;
+  NotificationsProvider(Database database) : _db = database.users;
 
+  final UsersCollection _db;
   String? _userId;
   String? get userId => _userId;
 
   Stream<List<LokalNotification>>? _stream;
   Stream<List<LokalNotification>>? get stream => _stream;
 
-  // final List<LokalNotification> _notifications = [];
-  // List<LokalNotification> get items => _notifications;
   final Map<String, LokalNotification> _notifications = {};
   Map<String, LokalNotification> get items => _notifications;
 

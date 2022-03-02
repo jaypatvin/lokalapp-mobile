@@ -28,9 +28,7 @@ class ReplyMessageWidget extends StatelessWidget {
       return Text(
         'Deleted Message',
         style: Theme.of(context).textTheme.bodyText2?.copyWith(
-              color: isRepliedByUser
-                  ? Colors.black.withOpacity(0.7)
-                  : const Color(0xFFF1FAFF).withOpacity(0.7),
+              color: Colors.grey,
               fontStyle: FontStyle.italic,
             ),
       );

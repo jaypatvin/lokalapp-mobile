@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'status.dart';
 import 'timestamp_time_object.dart';
 
@@ -65,14 +67,28 @@ class LokalCategory {
   }
 
   factory LokalCategory.fromMap(Map<String, dynamic> map) {
+    final DateTime? _updatedAt;
+    final DateTime _createdAt;
+    if (map['updated_at'] is Timestamp) {
+      _updatedAt = (map['updated_at'] as Timestamp).toDate();
+    } else if (map['updated_at'] != null) {
+      _updatedAt = TimestampObject.fromMap(map['updated_at']).toDateTime();
+    } else {
+      _updatedAt = null;
+    }
+
+    if (map['created_at'] is Timestamp) {
+      _createdAt = (map['created_at'] as Timestamp).toDate();
+    } else {
+      _createdAt = TimestampObject.fromMap(map['created_at']).toDateTime();
+    }
+
     return LokalCategory(
       id: map['id'],
-      updatedAt: map['updated_at'] != null
-          ? TimestampObject.fromMap(map['updated_at']).toDateTime()
-          : null,
+      updatedAt: _updatedAt,
       archived: map['archived'],
       name: map['name'],
-      createdAt: TimestampObject.fromMap(map['created_at']).toDateTime(),
+      createdAt: _createdAt,
       coverUrl: map['cover_url'],
       iconUrl: map['icon_url'],
       description: map['description'],
@@ -86,6 +102,12 @@ class LokalCategory {
 
   factory LokalCategory.fromJson(String source) =>
       LokalCategory.fromMap(json.decode(source));
+
+  factory LokalCategory.fromDocument(
+    QueryDocumentSnapshot<Map<String, dynamic>> doc,
+  ) {
+    return LokalCategory.fromMap({'id': doc.id, ...doc.data()});
+  }
 
   @override
   String toString() {

@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
@@ -13,9 +12,10 @@ import '../../../providers/users.dart';
 import '../../../routers/app_router.dart';
 import '../../../routers/chat/props/chat_details.props.dart';
 import '../../../state/mvvm_builder.widget.dart';
-import '../../../state/views/stateless.view.dart';
+import '../../../state/views/hook.view.dart';
 import '../../../utils/constants/assets.dart';
 import '../../../utils/constants/themes.dart';
+import '../../../utils/hooks/automatic_keep_alive.dart';
 import '../../../view_models/chat/chat_stream.vm.dart';
 import '../../../widgets/app_button.dart';
 import '../../../widgets/inputs/search_text_field.dart';
@@ -27,7 +27,7 @@ class ChatStream extends StatelessWidget {
     Key? key,
     required this.chatStream,
   }) : super(key: key);
-  final Stream<QuerySnapshot<Map<String, dynamic>>>? chatStream;
+  final Stream<List<ChatModel>>? chatStream;
 
   @override
   Widget build(BuildContext context) {
@@ -38,9 +38,10 @@ class ChatStream extends StatelessWidget {
   }
 }
 
-class _ChatStreamView extends StatelessView<ChatStreamViewModel> {
+class _ChatStreamView extends HookView<ChatStreamViewModel> {
   @override
   Widget render(BuildContext context, ChatStreamViewModel vm) {
+    useAutomaticKeepAlive();
     // the user chat stream is always not null, it can only be empty so no need
     // for additional checks
     if (vm.chatStream == null) {
@@ -58,13 +59,13 @@ class _ChatStreamView extends StatelessView<ChatStreamViewModel> {
       );
     }
 
-    return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+    return StreamBuilder<List<ChatModel>>(
       stream: vm.chatStream,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(child: Lottie.asset(kAnimationLoading));
         }
-        if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+        if (snapshot.data?.isEmpty ?? true) {
           return const Center(
             child: Text(
               "It's lonely here. No Chats yet!",
@@ -255,7 +256,6 @@ class _ChatList extends StatelessWidget {
                   shopId: chat.shopId,
                   productId: chat.productId,
                 ),
-
               );
         },
         child: ListTile(

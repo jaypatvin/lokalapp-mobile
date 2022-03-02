@@ -32,6 +32,7 @@ import 'root/root.dart';
 import 'routers/app_router.dart';
 import 'services/api/api.dart';
 import 'services/bottom_nav_bar_hider.dart';
+import 'services/database/database.dart';
 import 'services/local_image_service.dart';
 import 'utils/connectivity_status.dart';
 import 'utils/constants/assets.dart';
@@ -83,6 +84,7 @@ class _MyAppState extends State<MyApp> {
   late final PersistentTabController _tabController;
   late final API _api;
   late final PageController _profilePageController;
+  late final Database _db;
 
   @override
   void initState() {
@@ -92,6 +94,7 @@ class _MyAppState extends State<MyApp> {
     _prefs.init();
     _tabController = PersistentTabController();
     _api = API();
+    _db = Database();
     _profilePageController = PageController();
     _router = AppRouter(_tabController);
   }
@@ -117,8 +120,11 @@ class _MyAppState extends State<MyApp> {
       ChangeNotifierProvider(create: (_) => BottomNavBarHider()),
 
       // auth:
-      ChangeNotifierProvider<Auth>(create: (_) => Auth(_api)),
+      ChangeNotifierProvider<Auth>(create: (_) => Auth(_api, _db)),
       ChangeNotifierProvider<API>.value(value: _api),
+
+      // database:
+      Provider<Database>.value(value: _db),
 
       ChangeNotifierProxyProvider<Auth, CommunityProvider>(
         create: (_) => CommunityProvider(_api),
@@ -129,7 +135,7 @@ class _MyAppState extends State<MyApp> {
       ),
 
       ChangeNotifierProxyProvider<Auth, Activities?>(
-        create: (_) => Activities(_api),
+        create: (_) => Activities(_api, _db),
         update: (_, auth, activities) => activities!
           ..setUserCredentials(
             userId: auth.user?.id,
@@ -137,13 +143,13 @@ class _MyAppState extends State<MyApp> {
           ),
       ),
       ChangeNotifierProxyProvider<Auth, Users?>(
-        create: (_) => Users(),
+        create: (_) => Users(_db.users),
         update: (_, auth, users) =>
             users!..setCommunityId(auth.user?.communityId),
       ),
 
       ChangeNotifierProxyProvider<Auth, Products?>(
-        create: (_) => Products(_api),
+        create: (_) => Products(_api, _db),
         update: (_, auth, products) =>
             products!..setCommunityId(auth.user?.communityId),
       ),
@@ -154,19 +160,19 @@ class _MyAppState extends State<MyApp> {
       ),
 
       ChangeNotifierProxyProvider<Auth, Shops?>(
-        create: (_) => Shops(_api),
+        create: (_) => Shops(_api, _db),
         update: (_, auth, shops) =>
             shops!..setCommunityId(auth.user?.communityId),
       ),
 
       ChangeNotifierProxyProvider<Auth, NotificationsProvider?>(
-        create: (_) => NotificationsProvider(),
+        create: (_) => NotificationsProvider(_db),
         update: (_, auth, notifications) =>
             notifications?..setUserId(auth.user?.id),
       ),
 
-      ChangeNotifierProvider<Categories>(create: (_) => Categories(_api)),
-      ChangeNotifierProvider<BankCodes>(create: (_) => BankCodes()),
+      ChangeNotifierProvider<Categories>(create: (_) => Categories(_db)),
+      ChangeNotifierProvider<BankCodes>(create: (_) => BankCodes(_db)),
 
       // This is used in 3 Separate Screens (Tabs) - Home, Discover, and Profile
       ChangeNotifierProvider<ShoppingCart?>(create: (_) => ShoppingCart()),
@@ -198,7 +204,9 @@ class _MyAppState extends State<MyApp> {
       // services:
       ListenableProvider<PageController>.value(value: _profilePageController),
       Provider<MediaUtility?>(create: (_) => MediaUtility()),
-      Provider<LocalImageService?>(create: (_) => const LocalImageService()),
+      Provider<LocalImageService?>(
+        create: (_) => LocalImageService(database: _db),
+      ),
     ];
   }
 

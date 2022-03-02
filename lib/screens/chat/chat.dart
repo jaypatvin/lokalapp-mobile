@@ -1,14 +1,15 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 
+import '../../models/chat_model.dart';
 import '../../models/shop.dart';
 import '../../providers/auth.dart';
 import '../../providers/products.dart';
 import '../../providers/shops.dart';
-import '../../services/database.dart';
+import '../../services/database/collections/chats.collection.dart';
+import '../../services/database/database.dart';
 import '../../utils/constants/assets.dart';
 import '../../utils/constants/themes.dart';
 import 'components/chat_avatar.dart';
@@ -27,13 +28,15 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
 
   late AnimationController _animationController;
   late Animation<Color?> _colorAnimation;
+  late final ChatsCollection _db;
 
-  late Stream<QuerySnapshot<Map<String, dynamic>>> _userChatStream;
-  Stream<QuerySnapshot<Map<String, dynamic>>>? _shopChatStream;
+  late Stream<List<ChatModel>> _userChatStream;
+  Stream<List<ChatModel>>? _shopChatStream;
 
   @override
   void initState() {
     super.initState();
+    _db = context.read<Database>().chats;
     _tabController = TabController(length: 2, vsync: this);
     _animationController = AnimationController(
       vsync: this,
@@ -51,9 +54,9 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
 
     final user = context.read<Auth>().user!;
     final shops = context.read<Shops>().findByUser(user.id);
-    _userChatStream = Database.instance.getUserChats(user.id);
+    _userChatStream = _db.getUserChats(user.id!);
     if (shops.isNotEmpty) {
-      _shopChatStream = Database.instance.getUserChats(shops.first.id);
+      _shopChatStream = _db.getUserChats(shops.first.id);
     }
   }
 
@@ -92,7 +95,7 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
           final _shops = shops.findByUser(user.id);
 
           if (_shopChatStream == null && _shops.isNotEmpty) {
-            _shopChatStream = Database.instance.getUserChats(_shops.first.id);
+            _shopChatStream = _db.getUserChats(_shops.first.id);
           }
 
           return TabBarView(
