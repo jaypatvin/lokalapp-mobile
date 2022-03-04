@@ -1,7 +1,7 @@
 import 'dart:io';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:oktoast/oktoast.dart';
@@ -17,7 +17,7 @@ import '../../widgets/photo_view_gallery/thumbnails/file_photo_thumbnail.dart';
 import '../../widgets/photo_view_gallery/thumbnails/network_photo_thumbnail.dart';
 import 'components/reply_message.dart';
 
-class ChatBubble extends StatelessWidget {
+class ChatBubble extends HookWidget {
   const ChatBubble({
     required this.conversation,
     Key? key,
@@ -27,7 +27,7 @@ class ChatBubble extends StatelessWidget {
   }) : super(key: key);
 
   final Conversation? conversation;
-  final DocumentReference? replyMessage;
+  final Conversation? replyMessage;
   final bool forFocus;
   final List<AssetEntity> images;
 
@@ -68,8 +68,13 @@ class ChatBubble extends StatelessWidget {
       messageWidgets.add(
         Text(
           conversation!.message!,
-          style: Theme.of(context).textTheme.bodyText1!.copyWith(
-                color: isUser ? Colors.black : Colors.white,
+          style: Theme.of(context).textTheme.bodyText1?.copyWith(
+                color: conversation!.archived
+                    ? Colors.grey
+                    : isUser
+                        ? Colors.black
+                        : Colors.white,
+                fontStyle: conversation!.archived ? FontStyle.italic : null,
               ),
         ),
       );
@@ -119,36 +124,6 @@ class ChatBubble extends StatelessWidget {
     final isUser = conversation!.senderId == cUser.id;
     final width = MediaQuery.of(context).size.width;
 
-    if (replyMessage != null) {
-      return FutureBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-        future: replyMessage!.get()
-            as Future<DocumentSnapshot<Map<String, dynamic>>>,
-        builder: (ctx, snapshot) {
-          if (snapshot.hasError) {
-            return const Text('Error, cannot retrieve message');
-          }
-          if (snapshot.hasData && snapshot.data!.data() != null) {
-            final conversation = Conversation.fromDocument(snapshot.data!);
-            return Row(
-              mainAxisAlignment:
-                  isUser ? MainAxisAlignment.end : MainAxisAlignment.start,
-              children: [
-                Container(
-                  constraints: BoxConstraints(maxWidth: width * 3 / 4),
-                  child: _buildChatBubble(
-                    context: context,
-                    isUser: isUser,
-                    replyMessage: conversation,
-                  ),
-                ),
-              ],
-            );
-          }
-          return const Center(child: CircularProgressIndicator());
-        },
-      );
-    }
-
     return Row(
       mainAxisAlignment:
           isUser ? MainAxisAlignment.end : MainAxisAlignment.start,
@@ -158,6 +133,7 @@ class ChatBubble extends StatelessWidget {
           child: _buildChatBubble(
             context: context,
             isUser: isUser,
+            replyMessage: replyMessage,
           ),
         ),
       ],

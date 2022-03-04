@@ -22,8 +22,8 @@ class ChatsCollection extends CollectionImpl {
     return reference
         .doc(chatId)
         .collection('conversation')
-        .orderBy('archived')
-        .where('archived', isNotEqualTo: true)
+        // .orderBy('archived')
+        // .where('archived', isNotEqualTo: true)
         .orderBy('created_at', descending: true)
         .snapshots()
         .map(

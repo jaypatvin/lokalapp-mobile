@@ -1,3 +1,4 @@
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -123,9 +124,7 @@ class _DiscoverView extends StatelessView<DiscoverViewModel> {
       body: CartContainer(
         alwaysDisplayButton: true,
         child: RefreshIndicator(
-          onRefresh: () async {
-            await vm.fetchRecommendedProducts();
-          },
+          onRefresh: vm.fetchRecommendedProducts,          
           child: Consumer2<Shops, Products>(
             builder: (ctx, shops, products, _) {
               if (shops.isLoading || products.isLoading) {
@@ -187,6 +186,7 @@ class _DiscoverView extends StatelessView<DiscoverViewModel> {
                         height: 250.0.h,
                         width: MediaQuery.of(context).size.width,
                         child: _RecommendedProducts(
+                          key: const Key('recommended_products'),
                           products: vm.recommendedProducts,
                           onProductTap: vm.onProductTap,
                         ),
@@ -303,6 +303,7 @@ class _RecommendedProducts extends StatelessWidget {
     }
 
     return GridView.builder(
+      key: const Key('recommended_gridview_builder'),
       scrollDirection: Axis.horizontal,
       itemCount: products.length,
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(

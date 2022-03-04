@@ -1,6 +1,7 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:focused_menu/focused_menu.dart';
 import 'package:focused_menu/modals.dart';
@@ -12,9 +13,10 @@ import 'package:swipe_to/swipe_to.dart';
 import '../../../models/conversation.dart';
 import '../../../providers/auth.dart';
 import '../../../utils/constants/themes.dart';
+import '../../../utils/hooks/automatic_keep_alive.dart';
 import '../chat_bubble.dart';
 
-class MessageStream extends StatelessWidget {
+class MessageStream extends HookWidget {
   const MessageStream({
     required this.messageStream,
     required this.onDelete,
@@ -36,7 +38,7 @@ class MessageStream extends StatelessWidget {
     return [
       FocusedMenuItem(
         title: Text(
-          'Repy',
+          'Reply',
           style: Theme.of(context).textTheme.subtitle1,
         ),
         trailingIcon: const Icon(
@@ -95,7 +97,7 @@ class MessageStream extends StatelessWidget {
     required String messageId,
     required Conversation message,
     required bool userMessage,
-    DocumentReference? replyTo,
+    Conversation? replyMessage,
   }) {
     return FocusedMenuHolder(
       onPressed: () {},
@@ -108,7 +110,7 @@ class MessageStream extends StatelessWidget {
         onLeftSwipe: userMessage ? () => onReply(messageId, message) : null,
         child: ChatBubble(
           conversation: message,
-          replyMessage: replyTo,
+          replyMessage: replyMessage,
           forFocus: true,
         ),
       ),
@@ -117,6 +119,7 @@ class MessageStream extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    useAutomaticKeepAlive();
     return StreamBuilder<List<Conversation>>(
       stream: messageStream,
       builder: (ctx, snapshot) {
@@ -132,18 +135,50 @@ class MessageStream extends StatelessWidget {
             reverse: true,
             itemCount: messages.length,
             itemBuilder: (ctx2, index) {
+              final messageId = messages[index].id;
               final message = messages[index];
               final userMessage =
                   message.senderId == context.read<Auth>().user!.id;
-              final replyTo = message.replyTo;
+
+              final replyMessage = messages.firstWhereOrNull(
+                (e) => e.id == message.replyTo?.id,
+              );
+
+              final _message = message.archived
+                  ? Conversation(
+                      id: message.id,
+                      archived: true,
+                      createdAt: message.createdAt,
+                      message: 'Deleted Message',
+                      senderId: message.senderId,
+                      sentAt: message.sentAt,
+                    )
+                  : message;
+
+              final Conversation? _replyMessage;
+              if (_message.archived) {
+                _replyMessage = null;
+              } else if (replyMessage != null && replyMessage.archived) {
+                _replyMessage = Conversation(
+                  id: replyMessage.id,
+                  archived: replyMessage.archived,
+                  createdAt: replyMessage.createdAt,
+                  message: 'Deleted Message',
+                  senderId: replyMessage.senderId,
+                  sentAt: replyMessage.sentAt,
+                );
+              } else {
+                _replyMessage = replyMessage;
+              }
+
               return Column(
                 children: [
                   _buildItem(
                     context: context,
-                    messageId: message.id,
-                    message: message,
+                    messageId: messageId,
+                    message: _message,
                     userMessage: userMessage,
-                    replyTo: replyTo,
+                    replyMessage: _replyMessage,
                   ),
                   if (index == 0 && trailing != null) trailing!,
                 ],
