@@ -19,7 +19,7 @@ class UserAPIService extends APIService<LokalUser> {
         api.endpointUri(endpoint),
         headers: api.withBodyHeader(),
         body: json.encode(trimBodyFields(body)),
-      );
+      );    
 
       return handleResponse((map) => LokalUser.fromMap(map), response);
     } catch (e) {

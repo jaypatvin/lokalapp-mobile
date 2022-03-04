@@ -342,6 +342,7 @@ class Auth extends ChangeNotifier {
   Future<void> register(Map<String, dynamic> body) async {
     try {
       _user = await _apiService.create(body: body);
+      _userChangeListener(firebaseUser);
       notifyListeners();
     } catch (e) {
       rethrow;
