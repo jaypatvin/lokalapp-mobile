@@ -26,7 +26,7 @@ class ProductApiService extends APIService<Product> {
     }
   }
 
-  Future<bool> rate({
+  Future<bool> review({
     required String productId,
     required Map<String, dynamic> body,
   }) async {
@@ -34,7 +34,7 @@ class ProductApiService extends APIService<Product> {
       final response = await poster(
         api.endpointUri(
           endpoint,
-          pathSegments: [productId, 'ratings'],
+          pathSegments: [productId, 'reviews'],
         ),
         headers: api.withBodyHeader(),
         body: json.encode(trimBodyFields(body)),
