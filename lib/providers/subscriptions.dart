@@ -83,7 +83,16 @@ class SubscriptionPlanBody {
       'payment_method': paymentMethod,
       'plan': plan!.toMap(),
       'instruction': instruction,
-    };
+    }..removeWhere((key, value) {
+        if (key.isEmpty || value == null) return true;
+        if (value is String) {
+          return value.isEmpty;
+        } else if (value is List) {
+          return value.isEmpty;
+        }
+
+        return false;
+      });
   }
 
   String toJson() => json.encode(toMap());
