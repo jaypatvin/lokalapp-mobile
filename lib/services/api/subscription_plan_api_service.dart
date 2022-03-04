@@ -77,7 +77,7 @@ class SubscriptionPlanAPIService extends APIService<ProductSubscriptionPlan> {
       final response = await poster(
         api.endpointUri(endpoint),
         headers: api.withBodyHeader(),
-        body: json.encode(body),
+        body: json.encode(trimBodyFields(body)),
       );
 
       return handleResponse(
@@ -135,7 +135,7 @@ class SubscriptionPlanAPIService extends APIService<ProductSubscriptionPlan> {
 
   Future<bool> manualReschedulePlan({
     required String planId,
-    required Map body,
+    required Map<String, dynamic> body,
   }) async {
     try {
       final response = await putter(
@@ -147,7 +147,7 @@ class SubscriptionPlanAPIService extends APIService<ProductSubscriptionPlan> {
           ],
         ),
         headers: api.withBodyHeader(),
-        body: json.encode(body),
+        body: json.encode(trimBodyFields(body)),
       );
 
       return handleGenericResponse(response);

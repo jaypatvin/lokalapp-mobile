@@ -36,7 +36,7 @@ class ChatAPIService extends APIService<ChatModel> {
       final response = await poster(
         api.endpointUri(endpoint),
         headers: api.withBodyHeader(),
-        body: json.encode(body),
+        body: json.encode(trimBodyFields(body)),
       );
 
       return handleResponse((map) => ChatModel.fromMap(map), response);
@@ -62,7 +62,7 @@ class ChatAPIService extends APIService<ChatModel> {
           ],
         ),
         headers: api.withBodyHeader(),
-        body: json.encode(body),
+        body: json.encode(trimBodyFields(body)),
       );
 
       return handleGenericResponse(response);
@@ -79,7 +79,7 @@ class ChatAPIService extends APIService<ChatModel> {
       final response = await putter(
         api.endpointUri(endpoint, pathSegments: [chatId, 'invite']),
         headers: api.withBodyHeader(),
-        body: json.encode(body),
+        body: json.encode(trimBodyFields(body)),
       );
 
       return handleGenericResponse(response);
@@ -96,7 +96,7 @@ class ChatAPIService extends APIService<ChatModel> {
       final response = await putter(
         api.endpointUri(endpoint, pathSegments: [chatId, 'removeUser']),
         headers: api.withBodyHeader(),
-        body: json.encode(body),
+        body: json.encode(trimBodyFields(body)),
       );
 
       return handleGenericResponse(response);

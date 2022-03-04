@@ -18,7 +18,7 @@ class ProductApiService extends APIService<Product> {
       final response = await poster(
         api.endpointUri(endpoint),
         headers: api.withBodyHeader(),
-        body: json.encode(body),
+        body: json.encode(trimBodyFields(body)),
       );
       return handleResponse((map) => Product.fromMap(map), response);
     } catch (e) {
@@ -37,7 +37,7 @@ class ProductApiService extends APIService<Product> {
           pathSegments: [productId, 'ratings'],
         ),
         headers: api.withBodyHeader(),
-        body: json.encode(body),
+        body: json.encode(trimBodyFields(body)),
       );
 
       return handleGenericResponse(response);
@@ -81,7 +81,7 @@ class ProductApiService extends APIService<Product> {
   // --PUT
   Future<bool> update({
     required String productId,
-    required Map body,
+    required Map<String, dynamic> body,
   }) async {
     try {
       final response = await putter(
@@ -92,7 +92,7 @@ class ProductApiService extends APIService<Product> {
           ],
         ),
         headers: api.withBodyHeader(),
-        body: json.encode(body),
+        body: json.encode(trimBodyFields(body)),
       );
 
       return handleGenericResponse(response);
@@ -103,7 +103,7 @@ class ProductApiService extends APIService<Product> {
 
   Future<bool> setAvailability({
     required String productId,
-    required Map body,
+    required Map<String, dynamic> body,
   }) async {
     try {
       final response = await putter(
@@ -115,7 +115,7 @@ class ProductApiService extends APIService<Product> {
           ],
         ),
         headers: api.withBodyHeader(),
-        body: json.encode(body),
+        body: json.encode(trimBodyFields(body)),
       );
 
       return handleGenericResponse(response);

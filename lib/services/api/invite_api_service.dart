@@ -15,7 +15,7 @@ class InviteAPIService extends APIService<LokalInvite> {
       final response = await poster(
         api.endpointUri(endpoint),
         headers: api.withBodyHeader(),
-        body: json.encode(body),
+        body: json.encode(trimBodyFields(body)),
       );
 
       return handleResponse((map) => LokalInvite.fromMap(map), response);

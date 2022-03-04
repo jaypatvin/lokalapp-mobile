@@ -18,13 +18,13 @@ class ShopAPIService extends APIService<Shop> {
 
   // --POST
   Future<Shop> create({
-    required Map body,
+    required Map<String, dynamic> body,
   }) async {
     try {
       final response = await poster(
         api.endpointUri(endpoint),
         headers: api.withBodyHeader(),
-        body: json.encode(body),
+        body: json.encode(trimBodyFields(body)),
       );
 
       return handleResponse((map) => Shop.fromMap(map), response);
@@ -35,14 +35,14 @@ class ShopAPIService extends APIService<Shop> {
 
   // --PUT
   Future<bool> update({
-    required Map body,
+    required Map<String, dynamic> body,
     required String id,
   }) async {
     try {
       final response = await putter(
         api.endpointUri(endpoint, pathSegments: [id]),
         headers: api.withBodyHeader(),
-        body: json.encode(body),
+        body: json.encode(trimBodyFields(body)),
       );
 
       return handleGenericResponse(response);
@@ -52,14 +52,14 @@ class ShopAPIService extends APIService<Shop> {
   }
 
   Future<bool> setOperatingHours({
-    required Map body,
+    required Map<String, dynamic> body,
     required String id,
   }) async {
     try {
       final response = await putter(
         api.endpointUri(endpoint, pathSegments: [id, 'operatingHours']),
         headers: api.withBodyHeader(),
-        body: json.encode(body),
+        body: json.encode(trimBodyFields(body)),
       );
 
       return handleGenericResponse(response);

@@ -21,7 +21,7 @@ class ConversationAPIService extends APIService<Conversation> {
           pathSegments: [chatId, 'conversation'],
         ),
         headers: api.withBodyHeader(),
-        body: json.encode(body),
+        body: json.encode(trimBodyFields(body)),
       );
 
       // Let firebase handle the creation of the conversation.

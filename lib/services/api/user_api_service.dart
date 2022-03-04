@@ -18,7 +18,7 @@ class UserAPIService extends APIService<LokalUser> {
       final response = await poster(
         api.endpointUri(endpoint),
         headers: api.withBodyHeader(),
-        body: json.encode(body),
+        body: json.encode(trimBodyFields(body)),
       );
 
       return handleResponse((map) => LokalUser.fromMap(map), response);
@@ -63,14 +63,14 @@ class UserAPIService extends APIService<LokalUser> {
 
   // --PUT
   Future<bool> update({
-    required Map body,
+    required Map<String, dynamic> body,
     required String userId,
   }) async {
     try {
       final response = await putter(
         api.endpointUri(endpoint, pathSegments: [userId]),
         headers: api.withBodyHeader(),
-        body: json.encode(body),
+        body: json.encode(trimBodyFields(body)),
       );
 
       return handleGenericResponse(response);
@@ -90,7 +90,7 @@ class UserAPIService extends APIService<LokalUser> {
           pathSegments: [userId, 'toggleNotificationSetting'],
         ),
         headers: api.withBodyHeader(),
-        body: json.encode(body),
+        body: json.encode(trimBodyFields(body)),
       );
       return handleGenericResponse(response);
     } catch (e) {
@@ -109,7 +109,7 @@ class UserAPIService extends APIService<LokalUser> {
           pathSegments: [userId, 'chatSettings'],
         ),
         headers: api.withBodyHeader(),
-        body: json.encode(body),
+        body: json.encode(trimBodyFields(body)),
       );
       return handleGenericResponse(response);
     } catch (e) {
@@ -128,7 +128,7 @@ class UserAPIService extends APIService<LokalUser> {
           pathSegments: [userId, 'register'],
         ),
         headers: api.withBodyHeader(),
-        body: json.encode(body),
+        body: json.encode(trimBodyFields(body)),
       );
       return handleGenericResponse(response);
     } catch (e) {

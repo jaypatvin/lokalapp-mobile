@@ -183,7 +183,7 @@ class Activities extends ChangeNotifier {
 
   Future<void> post(Map<String, dynamic> data) async {
     try {
-      await _activityService.create(data: data);
+      await _activityService.create(body: data);
     } catch (e) {
       rethrow;
     }
