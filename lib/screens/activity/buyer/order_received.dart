@@ -10,6 +10,7 @@ import '../../../state/views/stateless.view.dart';
 import '../../../utils/constants/assets.dart';
 import '../../../view_models/activity/order_received.vm.dart';
 import '../../../widgets/app_button.dart';
+import '../../../widgets/overlays/constrained_scrollview.dart';
 import '../components/order_details_buttons/message_buttons.dart';
 import '../components/transaction_details.dart';
 
@@ -30,7 +31,7 @@ class _OrderReceivedView extends StatelessView<OrderReceivedViewModel> {
   Widget render(BuildContext context, OrderReceivedViewModel vm) {
     return Scaffold(
       body: SafeArea(
-        child: SingleChildScrollView(
+        child: ConstrainedScrollView(
           child: Column(
             children: [
               SizedBox(height: 20.0.h),
@@ -96,7 +97,7 @@ class _OrderReceivedView extends StatelessView<OrderReceivedViewModel> {
               if (vm.ratingSubmitted)
                 Padding(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: 16.0,
+                    horizontal: 36.0,
                   ),
                   child: _RatingMessage(
                     assetName: vm.assetName,
@@ -104,7 +105,7 @@ class _OrderReceivedView extends StatelessView<OrderReceivedViewModel> {
                     ratingMessage: vm.ratingMessage,
                   ),
                 ),
-              SizedBox(height: 16.0.h),
+              const Spacer(),
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16.0.w),
                 child: Column(
@@ -145,6 +146,8 @@ class _RatingMessage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
+      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         SvgPicture.asset(assetName),
         const SizedBox(width: 8.0),

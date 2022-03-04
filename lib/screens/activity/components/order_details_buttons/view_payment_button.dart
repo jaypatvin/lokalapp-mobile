@@ -9,9 +9,12 @@ class ViewPaymentButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppButton.transparent(
-      text: 'View Proof of Payment',
-      onPressed: () => onPress(OrderAction.viewPayment),
+    return SizedBox(
+      width: double.infinity,
+      child: AppButton.transparent(
+        text: 'View Proof of Payment',
+        onPressed: () => onPress(OrderAction.viewPayment),
+      ),
     );
   }
 }
