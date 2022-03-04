@@ -123,7 +123,6 @@ class DraftPostViewModel extends ViewModel {
 
     try {
       final _body = <String, dynamic>{
-        'community_id': user.communityId!,
         'user_id': user.id!,
       };
       if (_postMessage?.isNotEmpty ?? false) {
