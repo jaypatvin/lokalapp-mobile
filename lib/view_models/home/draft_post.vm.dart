@@ -122,12 +122,18 @@ class DraftPostViewModel extends ViewModel {
     }
 
     try {
-      await activities.post({
-        'community_id': user.communityId,
-        'user_id': user.id,
-        'message': _postMessage,
-        'images': gallery.map((x) => x.toMap()).toList(),
-      });
+      final _body = <String, dynamic>{
+        'community_id': user.communityId!,
+        'user_id': user.id!,
+      };
+      if (_postMessage?.isNotEmpty ?? false) {
+        _body['message'] = _postMessage;
+      }
+      if (gallery.isNotEmpty) {
+        _body['images'] = gallery.map((x) => x.toMap()).toList();
+      }
+
+      await activities.post(_body);
 
       Navigator.pop(context, true);
     } catch (e, stack) {

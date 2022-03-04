@@ -112,11 +112,16 @@ class PostDetailViewModel extends ViewModel {
       );
     }
 
-    final Map<String, dynamic> body = {
-      'user_id': cUser.id,
-      'message': inputController.text,
-      'images': gallery.map((x) => x.toMap()).toList(),
+    final body = <String, dynamic>{
+      'user_id': cUser.id!,
     };
+
+    if (inputController.text.isNotEmpty) {
+      body['message'] = inputController.text;
+    }
+    if (gallery.isNotEmpty) {
+      body['images'] = gallery.map((x) => x.toMap()).toList();
+    }
 
     try {
       await context
