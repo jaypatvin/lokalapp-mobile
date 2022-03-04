@@ -80,7 +80,7 @@ class OrderAPIService extends APIService<Order> {
 
   Future<bool> decline({
     required String orderId,
-    String? reason,
+    String reason = '',
   }) async {
     try {
       final response = await putter(
