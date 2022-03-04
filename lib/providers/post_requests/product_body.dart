@@ -13,7 +13,18 @@ class ProductBody extends ChangeNotifier {
     'can_subscribe': true,
     'availability': <String, dynamic>{},
   };
-  Map<String, dynamic> get data => _productBody;
+  Map<String, dynamic> get data => _productBody
+    ..removeWhere((key, value) {
+      if (key.isEmpty || value == null) return true;
+
+      if (value is String) {
+        return value.isEmpty;
+      } else if (value is List) {
+        return value.isEmpty;
+      }
+
+      return false;
+    });
 
   String? get name => data['name'];
   String? get description => data['description'];
