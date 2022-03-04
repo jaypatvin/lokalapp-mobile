@@ -178,6 +178,18 @@ class ChatDetailsViewModel extends ViewModel {
     final _replyTo = this._replyTo;
     _sendingImages = [...imageProvider.picked];
 
+    void _onError(Object e, [StackTrace? stack]) {
+      FirebaseCrashlytics.instance.recordError(e, stack);
+      showToast('Error sending message, try again.');
+      this._message = _message;
+      this._replyId = _replyId;
+      this._replyTo = _replyTo;
+      imageProvider.picked.addAll(_sendingImages);
+      _currentSendingMessage = null;
+      _isSendingMessage = false;
+      notifyListeners();
+    }
+
     try {
       imageProvider.picked.clear();
       this._message = '';
@@ -198,14 +210,14 @@ class ChatDetailsViewModel extends ViewModel {
 
       final _media = await _getMedia(_sendingImages);
       if (_chat != null) {
-        _conversationAPIService.createConversation(
-          chatId: _chat!.id,
-          body: {
+        _createConversation(
+          {
             'user_id': _currentUser.id,
             'reply_to': _replyId,
             'message': _message,
             'media': _media,
           },
+          _onError,
         );
       } else {
         _chat = await _chatAPIService.createChat(
@@ -221,16 +233,23 @@ class ChatDetailsViewModel extends ViewModel {
         );
         _messageStream = _db.getConversations(_chat!.id);
       }
-    } catch (e, stack) {
-      FirebaseCrashlytics.instance.recordError(e, stack);
-      showToast('Error sending message, try again.');
-      this._message = _message;
-      this._replyId = _replyId;
-      this._replyTo = _replyTo;
-      imageProvider.picked.addAll(_sendingImages);
-      _currentSendingMessage = null;
-      _isSendingMessage = false;
       notifyListeners();
+    } catch (e, stack) {
+      _onError(e, stack);
+    }
+  }
+
+  Future<void> _createConversation(
+    Map<String, dynamic> body, [
+    void Function(Object, [StackTrace])? onError,
+  ]) async {
+    try {
+      await _conversationAPIService.createConversation(
+        chatId: _chat!.id,
+        body: body,
+      );
+    } catch (e, stack) {
+      onError?.call(e, stack);
     }
   }
 
