@@ -70,7 +70,17 @@ class ShopRequestBody {
       'operating_hours': operatingHoursBody.toMap(),
       'payment_options': paymentOptions.map((x) => x.toMap()).toList(),
       'delivery_options': deliveryOptions.toMap(),
-    };
+    }..removeWhere((key, value) {
+        if (key.isEmpty || value == null) return true;
+
+        if (value is String) {
+          return value.isEmpty;
+        } else if (value is List) {
+          return value.isEmpty;
+        }
+
+        return false;
+      });
   }
 
   @override
