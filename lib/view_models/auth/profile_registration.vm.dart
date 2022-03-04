@@ -73,7 +73,6 @@ class ProfileRegistrationViewModel extends ViewModel {
       firstName: _firstName,
       lastName: _lastName,
       address: _streetName,
-      userUid: auth.authUid,
       email: auth.authEmail,
     );
 

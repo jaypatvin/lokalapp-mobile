@@ -1,15 +1,106 @@
 import 'package:flutter/foundation.dart';
 
+class _AuthBodyRequest {
+  const _AuthBodyRequest({
+    this.firstName,
+    this.lastName,
+    this.street,
+    this.communityId,
+    this.profilePhoto,
+    this.email,
+    this.displayName,
+  });
+
+  final String? firstName;
+  final String? lastName;
+  final String? street;
+  final String? communityId;
+  final String? profilePhoto;
+  final String? email;
+  final String? displayName;
+
+  _AuthBodyRequest copyWith({
+    String? firstName,
+    String? lastName,
+    String? street,
+    String? communityId,
+    String? profilePhoto,
+    String? email,
+    String? displayName,
+  }) {
+    return _AuthBodyRequest(
+      firstName: firstName ?? this.firstName,
+      lastName: lastName ?? this.lastName,
+      street: street ?? this.street,
+      communityId: communityId ?? this.communityId,
+      profilePhoto: profilePhoto ?? this.profilePhoto,
+      email: email ?? this.email,
+      displayName: displayName ?? this.displayName,
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'first_name': firstName,
+      'last_name': lastName,
+      'street': street,
+      'community_id': communityId,
+      'profile_photo': profilePhoto,
+      'email': email,
+      'display_name': displayName,
+    }..removeWhere((key, value) {
+        if (key.isEmpty || value == null) return true;
+        if (value is String) {
+          return value.isEmpty;
+        }
+
+        return false;
+      });
+  }
+
+  @override
+  String toString() {
+    return '_AuthBodyRequest(firstName: $firstName, lastName: $lastName, '
+        'street: $street, communityId: $communityId, '
+        'profilePhoto: $profilePhoto, email: $email, '
+        'displayName: $displayName)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is _AuthBodyRequest &&
+        other.firstName == firstName &&
+        other.lastName == lastName &&
+        other.street == street &&
+        other.communityId == communityId &&
+        other.profilePhoto == profilePhoto &&
+        other.email == email &&
+        other.displayName == displayName;
+  }
+
+  @override
+  int get hashCode {
+    return firstName.hashCode ^
+        lastName.hashCode ^
+        street.hashCode ^
+        communityId.hashCode ^
+        profilePhoto.hashCode ^
+        email.hashCode ^
+        displayName.hashCode;
+  }
+}
+
 class AuthBody extends ChangeNotifier {
-  final Map<String, dynamic> _authBody = <String, dynamic>{};
+  _AuthBodyRequest _authBody = const _AuthBodyRequest();
+  Map<String, dynamic> get data => _authBody.toMap();
 
-  Map<String, dynamic> get data => _authBody;
-
-  String? get firstName => _authBody['first_name'];
-  String? get lastName => _authBody['last_name'];
-  String? get profilePhoto => _authBody['profile_photo'];
-  String? get email => _authBody['email'];
-  String? get street => _authBody['street'];
+  String? get firstName => _authBody.firstName;
+  String? get lastName => _authBody.lastName;
+  String? get profilePhoto => _authBody.profilePhoto;
+  String? get email => _authBody.email;
+  String? get street => _authBody.street;
 
   String? _inviteCode;
   String? get inviteCode => _inviteCode;
@@ -25,14 +116,15 @@ class AuthBody extends ChangeNotifier {
     String? displayName,
     bool notify = true,
   }) {
-    _authBody['first_name'] = firstName ?? _authBody['first_name'];
-    _authBody['last_name'] = lastName ?? _authBody['last_name'];
-    _authBody['user_uid'] = userUid ?? _authBody['user_uid'];
-    _authBody['street'] = address ?? _authBody['street'];
-    _authBody['community_id'] = communityId ?? _authBody['community_id'];
-    _authBody['profile_photo'] = profilePhoto ?? _authBody['profile_photo'];
-    _authBody['email'] = email ?? _authBody['email'];
-    _authBody['display_name'] = displayName ?? _authBody['display_name'];
+    _authBody = _authBody.copyWith(
+      firstName: firstName,
+      lastName: lastName,
+      street: address,
+      communityId: communityId,
+      profilePhoto: profilePhoto,
+      email: email,
+      displayName: displayName,
+    );
 
     if (notify) notifyListeners();
   }
