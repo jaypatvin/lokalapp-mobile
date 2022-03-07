@@ -35,6 +35,7 @@ class NotificationsProvider extends ChangeNotifier {
       // this means we have logged out.
       _subscription?.cancel();
       _stream = null;
+      _notifications.clear();
       notifyListeners();
       return;
     }

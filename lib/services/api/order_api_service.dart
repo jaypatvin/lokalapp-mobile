@@ -85,7 +85,7 @@ class OrderAPIService extends APIService<Order> {
     try {
       final response = await putter(
         api.endpointUri(endpoint, pathSegments: [orderId, 'decline']),
-        headers: api.authHeader(),
+        headers: api.withBodyHeader(),
         body: json.encode({'reason': reason}),
       );
 

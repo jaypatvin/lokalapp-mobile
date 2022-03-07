@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:developer';
 
 import '../../models/lokal_invite.dart';
 import 'api.dart';
@@ -42,6 +41,7 @@ class InviteAPIService extends APIService<LokalInvite> {
   }
 
   Future<bool> claim({
+    required String userId,
     required String code,
   }) async {
     try {
@@ -49,11 +49,10 @@ class InviteAPIService extends APIService<LokalInvite> {
         api.endpointUri(endpoint, pathSegments: ['claim']),
         headers: api.withBodyHeader(),
         body: json.encode({
+          'user_id': userId,
           'code': code,
         }),
       );
-
-      log(response.body);
 
       return handleGenericResponse(response);
     } catch (e) {

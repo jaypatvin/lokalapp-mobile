@@ -231,9 +231,12 @@ class EditShopViewModel extends ViewModel {
     );
 
     try {
-      return context
-          .read<Shops>()
-          .update(id: shop.id, data: shopBody.data..remove('user_id'));
+      return context.read<Shops>().update(
+            id: shop.id,
+            data: shopBody.data
+              ..remove('user_id')
+              ..remove('operating_hours'),
+          );
     } catch (e) {
       rethrow;
     }
