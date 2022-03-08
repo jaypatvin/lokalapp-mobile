@@ -202,7 +202,6 @@ class _SchedulePickerState extends State<SchedulePicker> {
           }
         }
       }
-
       _startDates = [_startDate!];
     }
 
@@ -219,7 +218,7 @@ class _SchedulePickerState extends State<SchedulePicker> {
     var _ordinal = 0;
     _markedStartDayOfMonth = _startDayOfMonth;
     for (DateTime indexDay = DateTime(_startDate!.year, _startDate!.month);
-        indexDay.day <= _startDate!.day;
+        indexDay.isBefore(_startDate!.add(const Duration(days: 1)));
         indexDay = indexDay.add(const Duration(days: 1))) {
       if (indexDay.weekday == _startDate!.weekday) {
         _ordinal++;

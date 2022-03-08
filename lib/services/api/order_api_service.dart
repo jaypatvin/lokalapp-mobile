@@ -18,7 +18,7 @@ class OrderAPIService extends APIService<Order> {
       final response = await poster(
         api.endpointUri(endpoint),
         headers: api.withBodyHeader(),
-        body: json.encode(body),
+        body: json.encode(trimBodyFields(body)),
       );
 
       return handleResponse((map) => Order.fromMap(map), response);
@@ -80,12 +80,12 @@ class OrderAPIService extends APIService<Order> {
 
   Future<bool> decline({
     required String orderId,
-    String? reason,
+    String reason = '',
   }) async {
     try {
       final response = await putter(
         api.endpointUri(endpoint, pathSegments: [orderId, 'decline']),
-        headers: api.authHeader(),
+        headers: api.withBodyHeader(),
         body: json.encode({'reason': reason}),
       );
 
@@ -103,7 +103,7 @@ class OrderAPIService extends APIService<Order> {
       final response = await putter(
         api.endpointUri(endpoint, pathSegments: [orderId, 'pay']),
         headers: api.withBodyHeader(),
-        body: json.encode(body),
+        body: json.encode(trimBodyFields(body)),
       );
 
       return handleGenericResponse(response);

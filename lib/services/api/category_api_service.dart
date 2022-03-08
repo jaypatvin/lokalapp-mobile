@@ -43,7 +43,7 @@ class CategoryAPIService extends APIService<LokalCategory> {
       final response = await poster(
         api.endpointUri(endpoint),
         headers: api.withBodyHeader(),
-        body: json.encode(body),
+        body: json.encode(trimBodyFields(body)),
       );
 
       return handleGenericResponse(response);
@@ -62,7 +62,7 @@ class CategoryAPIService extends APIService<LokalCategory> {
       final response = await putter(
         api.endpointUri(endpoint, pathSegments: [id]),
         headers: api.withBodyHeader(),
-        body: json.encode(body),
+        body: json.encode(trimBodyFields(body)),
       );
 
       return handleGenericResponse(response);

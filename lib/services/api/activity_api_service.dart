@@ -89,14 +89,13 @@ class ActivityAPIService extends APIService<ActivityFeed> {
 
   //#region -- POST
   Future<ActivityFeed> create({
-    required Map data,
+    required Map<String, dynamic> body,
   }) async {
     try {
-      final body = json.encode(data);
       final response = await poster(
         api.endpointUri(endpoint),
         headers: api.withBodyHeader(),
-        body: body,
+        body: json.encode(trimBodyFields(body)),
       );
 
       return handleResponse(
@@ -156,7 +155,7 @@ class ActivityAPIService extends APIService<ActivityFeed> {
       final response = await deleter(
         uri,
         headers: api.withBodyHeader(),
-        body: jsonEncode({'user_id': userId}),
+        body: json.encode({'user_id': userId}),
       );
 
       return handleGenericResponse(response);
@@ -169,7 +168,7 @@ class ActivityAPIService extends APIService<ActivityFeed> {
   //#region --PUT
   Future<bool> update({
     required String activityId,
-    required Map<String, dynamic> udpateData,
+    required Map<String, dynamic> body,
   }) async {
     try {
       final uri = api.endpointUri(endpoint, pathSegments: [activityId]);
@@ -177,7 +176,7 @@ class ActivityAPIService extends APIService<ActivityFeed> {
       final response = await putter(
         uri,
         headers: api.withBodyHeader(),
-        body: jsonEncode(udpateData),
+        body: json.encode(trimBodyFields(body)),
       );
 
       return handleGenericResponse(response);

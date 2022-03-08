@@ -73,23 +73,31 @@ class ProfileRegistrationViewModel extends ViewModel {
       firstName: _firstName,
       lastName: _lastName,
       address: _streetName,
-      userUid: auth.authUid,
       email: auth.authEmail,
     );
 
-    await auth.register(authBody.data);
+    try {
+      await auth.register(authBody.data);
+    } catch (e, stack) {
+      FirebaseCrashlytics.instance.recordError(e, stack);
+      showToast('Cannot create profile. Please try again');
+      return false;
+    }
+
     bool inviteCodeClaimed = false;
-    if (auth.user != null) {
-      try {
+    try {
+      if (auth.user != null) {
         inviteCodeClaimed = await _apiService.claim(
           userId: auth.user!.id!,
           code: inviteCode,
         );
-      } catch (e, stack) {
-        FirebaseCrashlytics.instance.recordError(e, stack);
-        showToast(e is FailureException ? e.message : e.toString());
       }
+    } catch (e, stack) {
+      FirebaseCrashlytics.instance.recordError(e, stack);
+      showToast('Cannot claim invite code.');
+      return true;
     }
+
     return inviteCodeClaimed;
   }
 

@@ -68,9 +68,20 @@ class ShopRequestBody {
       'profile_photo': profilePhoto,
       'cover_photo': coverPhoto,
       'operating_hours': operatingHoursBody.toMap(),
-      'payment_options': paymentOptions.map((x) => x.toMap()).toList(),
+      'payment_options':
+          paymentOptions.map((x) => x.toMap()..remove('type')).toList(),
       'delivery_options': deliveryOptions.toMap(),
-    };
+    }..removeWhere((key, value) {
+        if (key.isEmpty || value == null) return true;
+
+        if (value is String) {
+          return value.isEmpty;
+        } else if (value is List) {
+          return value.isEmpty;
+        }
+
+        return false;
+      });
   }
 
   @override

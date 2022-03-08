@@ -97,7 +97,7 @@ class Auth extends ChangeNotifier {
           notifyListeners();
           return;
         }
-        if (_user != null && id == _user!.id) {
+        if (id == _user?.id) {
           notifyListeners();
           return;
         }
@@ -121,6 +121,10 @@ class Auth extends ChangeNotifier {
       } else {
         _user = null;
         _idToken = null;
+        _firebaseUser = null;
+        _userStreamSubscription?.cancel();
+        _userStream = null;
+        idTokenChangesSubscription?.cancel();
       }
 
       notifyListeners();
@@ -341,7 +345,8 @@ class Auth extends ChangeNotifier {
 
   Future<void> register(Map<String, dynamic> body) async {
     try {
-      _user = await _apiService.create(body: body);
+      final _ = await _apiService.create(body: body);
+      await _userChangeListener(firebaseUser);
       notifyListeners();
     } catch (e) {
       rethrow;

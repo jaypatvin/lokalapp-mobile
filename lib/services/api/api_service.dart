@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 import '../../models/failure_exception.dart';
@@ -13,6 +14,7 @@ abstract class APIService<T> {
 
   /// A wrapper for `http.getter` that throws corresponding apprioriate
   /// `[SocketException]` or `[HttpException]` error messages.
+  @protected
   Future<http.Response> getter(
     Uri endpointUri, {
     required Map<String, String> headers,
@@ -33,10 +35,13 @@ abstract class APIService<T> {
 
   /// A wrapper for `http.post` that throws corresponding apprioriate
   /// `[SocketException]` or `[HttpException]` error messages.
+  ///
+  /// Only accepts `"application/json"` as encoding (can be included in header).
+  @protected
   Future<http.Response> poster(
     Uri endpointUri, {
     Map<String, String>? headers,
-    Object? body,
+    String? body,
     Encoding? encoding,
   }) async {
     try {
@@ -57,10 +62,13 @@ abstract class APIService<T> {
 
   /// A wrapper for `http.delete` that throws corresponding apprioriate
   /// `[SocketException]` or `[HttpException]` error messages.
+  ///
+  /// Only accepts `"application/json"` as encoding (can be included in header).
+  @protected
   Future<http.Response> deleter(
     Uri endpointUri, {
     Map<String, String>? headers,
-    Object? body,
+    String? body,
     Encoding? encoding,
   }) async {
     try {
@@ -81,10 +89,13 @@ abstract class APIService<T> {
 
   /// A wrapper for `http.put` that throws corresponding apprioriate
   /// `[SocketException]` or `[HttpException]` error messages.
+  ///
+  /// Only accepts `"application/json"` as encoding (can be included in header).
+  @protected
   Future<http.Response> putter(
     Uri endpointUri, {
     Map<String, String>? headers,
-    Object? body,
+    String? body,
     Encoding? encoding,
   }) async {
     try {
@@ -109,6 +120,7 @@ abstract class APIService<T> {
   /// map of object T.
   /// Will throw an error message found in the `response.body`. If there is
   /// no error message, will throw the `response.reasonPhrase`.
+  @protected
   T handleResponse(
     T Function(Map<String, dynamic>) fromMap,
     http.Response response,
@@ -145,6 +157,7 @@ abstract class APIService<T> {
   /// map of the object T.
   /// Will throw an error message found in the `response.body`. If there is
   /// no error message, will throw the `response.reasonPhrase`.
+  @protected
   List<T> handleResponseList(
     T Function(Map<String, dynamic>) fromMap,
     http.Response response,
@@ -187,6 +200,7 @@ abstract class APIService<T> {
   /// `"status": "ok"` or `"status": "error"`.
   /// This will throw an error message found in the `response.body`. If there is
   /// no error message, will throw the `response.reasonPhrase`.
+  @protected
   bool handleGenericResponse(http.Response response) {
     if (response.statusCode == 200) {
       final map = json.decode(response.body);
@@ -212,5 +226,29 @@ abstract class APIService<T> {
         rethrow;
       }
     }
+  }
+
+  /// Removes empty keys and values from the map.
+  @protected
+  Map<String, dynamic>? trimBodyFields(Map<String, dynamic>? body) {
+    final Map<String, dynamic>? _body;
+    if (body != null) {
+      _body = {...body};
+    } else {
+      _body = null;
+    }
+
+    _body?.removeWhere((key, value) {
+      if (key.isEmpty || value == null) return true;
+
+      if (value is String) {
+        return value.isEmpty;
+      } else if (value is List) {
+        return value.isEmpty;
+      }
+      return false;
+    });
+
+    return _body;
   }
 }

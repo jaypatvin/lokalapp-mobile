@@ -55,7 +55,17 @@ class OperatingHoursRequestBody {
       'start_dates': startDates,
       'unavailable_dates': unavailableDates,
       'custom_dates': customDates.map((x) => x.toMap()).toList(),
-    };
+    }..removeWhere((key, value) {
+        if (key.isEmpty || value == null) return true;
+
+        if (value is String) {
+          return value.isEmpty;
+        } else if (value is List) {
+          return value.isEmpty;
+        }
+
+        return false;
+      });
   }
 
   @override

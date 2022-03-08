@@ -58,10 +58,10 @@ class OrderReceivedViewModel extends ViewModel {
     final _apiService = ProductApiService(_api);
 
     try {
-      ratingSubmitted = await _apiService.rate(
+      ratingSubmitted = await _apiService.review(
         productId: order.productIds.first,
         body: {
-          'value': this.rating,
+          'rating': this.rating,
           'order_id': order.id,
         },
       );

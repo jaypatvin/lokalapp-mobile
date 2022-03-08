@@ -79,7 +79,7 @@ class CommentsAPIService extends APIService<ActivityFeedComment> {
       final response = await poster(
         api.endpointUri(endpoint, pathSegments: [activityId, 'comments']),
         headers: api.withBodyHeader(),
-        body: json.encode(body),
+        body: json.encode(trimBodyFields(body)),
       );
 
       return handleResponse(
@@ -126,7 +126,7 @@ class CommentsAPIService extends APIService<ActivityFeedComment> {
           pathSegments: [activityId, 'comments', commentId],
         ),
         headers: api.withBodyHeader(),
-        body: json.encode(body),
+        body: json.encode(trimBodyFields(body)),
       );
 
       return handleGenericResponse(response);

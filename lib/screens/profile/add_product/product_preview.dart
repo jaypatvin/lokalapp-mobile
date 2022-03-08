@@ -201,6 +201,7 @@ class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
     final _productBody = context.read<ProductBody>();
     final _product = context.read<Products>().findById(widget.productId)!;
     final updateBody = ProductBody();
+    updateBody.update(shopId: _product.shopId);
     updateBody.data.remove('gallery');
 
     if (_productBody.name != _product.name) {
@@ -238,7 +239,6 @@ class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
     }
 
     final updateData = updateBody.data;
-    updateData.remove('shop_id');
     updateData.remove('availability');
 
     for (final entry in ProductBody().data.entries) {
@@ -247,12 +247,18 @@ class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
 
       if (key == 'can_subscribe') {
         if (_product.canSubscribe == updateData[key]) updateData.remove(key);
-        
+
         continue;
       }
       if (updateData[key] == value || updateData[key] == null) {
         updateData.remove(key);
         continue;
+      }
+    }
+
+    if (updateData.length <= 1) {
+      if (updateData['shop_id'] == _product.shopId) {
+        updateData.remove('shop_id');
       }
     }
 
@@ -296,9 +302,12 @@ class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
 
       if (updateSchedule) {
         if (!mounted) return false;
+        final _shop = context.read<Shops>().findById(_product.shopId);
         updatedProductSchedule = await context.read<Products>().setAvailability(
               id: _product.id,
-              data: context.read<OperatingHoursBody>().data,
+              data: widget.scheduleState == ProductScheduleState.custom
+                  ? context.read<OperatingHoursBody>().data
+                  : _shop!.operatingHours.toMap(),
             );
       }
 

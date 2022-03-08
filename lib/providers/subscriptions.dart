@@ -25,7 +25,16 @@ class SubscriptionPlanBodySchedule {
       'repeat_type': repeatType,
       'last_date':
           lastDate != null ? DateFormat('yyyy-MM-dd').format(lastDate!) : '',
-    };
+    }..removeWhere((key, value) {
+        if (key.isEmpty || value == null) return true;
+        if (value is String) {
+          return value.isEmpty;
+        } else if (value is List) {
+          return value.isEmpty;
+        }
+
+        return false;
+      });
   }
 
   String toJson() => json.encode(toMap());
@@ -83,7 +92,16 @@ class SubscriptionPlanBody {
       'payment_method': paymentMethod,
       'plan': plan!.toMap(),
       'instruction': instruction,
-    };
+    }..removeWhere((key, value) {
+        if (key.isEmpty || value == null) return true;
+        if (value is String) {
+          return value.isEmpty;
+        } else if (value is List) {
+          return value.isEmpty;
+        }
+
+        return false;
+      });
   }
 
   String toJson() => json.encode(toMap());

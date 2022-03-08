@@ -7,6 +7,7 @@ import '../../../models/order.dart';
 import '../../../routers/app_router.dart';
 import '../../../utils/constants/assets.dart';
 import '../../../widgets/app_button.dart';
+import '../../../widgets/overlays/constrained_scrollview.dart';
 import '../activity.dart';
 import '../components/order_details_buttons/message_buttons.dart';
 import '../components/transaction_details.dart';
@@ -38,7 +39,7 @@ class ProcessingPayment extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: SingleChildScrollView(
+        child: ConstrainedScrollView(
           child: Column(
             children: [
               SizedBox(height: 20.0.h),
@@ -92,7 +93,7 @@ class ProcessingPayment extends StatelessWidget {
                   isBuyer: true,
                 ),
               ),
-              SizedBox(height: 24.0.h),
+              const Spacer(),
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16.0.w),
                 child: Column(
