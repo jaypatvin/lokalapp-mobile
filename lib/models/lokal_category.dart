@@ -27,13 +27,15 @@ class LokalCategory {
 
   @JsonKey(required: true)
   final String id;
-  @JsonKey(fromJson: nullableDateTimeFromJson)
+  @JsonKey(fromJson: nullableDateTimeFromJson,
+    toJson: dateTimeToString,)
   final DateTime? updatedAt;
   @JsonKey(required: true, defaultValue: false)
   final bool archived;
   @JsonKey(required: true)
   final String name;
-  @JsonKey(required: true, fromJson: createdAtFromJson)
+  @JsonKey(required: true, fromJson: createdAtFromJson,
+    toJson: dateTimeToString,)
   final DateTime createdAt;
   @JsonKey(required: true)
   final String coverUrl;

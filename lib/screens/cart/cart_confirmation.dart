@@ -105,12 +105,10 @@ class CartConfirmation extends StatelessWidget {
                 width: MediaQuery.of(context).size.width * 0.75,
                 child: AppButton.filled(
                   text: 'GO TO MY ACTIVITY',
-                  onPressed: () {
-                    context.read<AppRouter>()
-                      ..keyOf(AppRoute.discover)
-                          .currentState!
-                          .popUntil(ModalRoute.withName(Discover.routeName))
-                      ..jumpToTab(AppRoute.activity);
+                  onPressed: () async {
+                    AppRouter.discoverNavigatorKey.currentState
+                        ?.popUntil(ModalRoute.withName(Discover.routeName));
+                    context.read<AppRouter>().jumpToTab(AppRoute.activity);
                   },
                 ),
               ),

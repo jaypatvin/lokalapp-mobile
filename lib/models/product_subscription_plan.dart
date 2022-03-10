@@ -42,9 +42,17 @@ class OverrideDate {
     required this.originalDate,
     required this.newDate,
   });
-  @JsonKey(required: true, fromJson: createdAtFromJson)
+  @JsonKey(
+    required: true,
+    fromJson: createdAtFromJson,
+    toJson: dateTimeToString,
+  )
   final DateTime originalDate;
-  @JsonKey(required: true, fromJson: createdAtFromJson)
+  @JsonKey(
+    required: true,
+    fromJson: createdAtFromJson,
+    toJson: dateTimeToString,
+  )
   final DateTime newDate;
 
   Map<String, dynamic> toJson() => _$OverrideDateToJson(this);
@@ -208,12 +216,20 @@ class ProductSubscriptionSchedule {
 
   @JsonKey(required: true)
   final bool autoReschedule;
+  @JsonKey(
+    fromJson: nullableDateTimeFromJson,
+    toJson: dateTimeToString,
+  )
   final DateTime? lastDate;
   @JsonKey(required: true)
   final String repeatType;
   @JsonKey(required: true)
   final int repeatUnit;
-  @JsonKey(required: true, fromJson: _startDatesFromJson)
+  @JsonKey(
+    required: true,
+    fromJson: _startDatesFromJson,
+    toJson: _startDatesToJson,
+  )
   final List<DateTime> startDates;
   @JsonKey(fromJson: _overrideDatesFromJson)
   final List<OverrideDate> overrideDates;
@@ -310,7 +326,11 @@ class ProductSubscriptionPlan {
   final String buyerId;
   @JsonKey(required: true)
   final String communityId;
-  @JsonKey(required: true, fromJson: createdAtFromJson)
+  @JsonKey(
+    required: true,
+    fromJson: createdAtFromJson,
+    toJson: dateTimeToString,
+  )
   final DateTime createdAt;
   @JsonKey(required: true)
   final String instruction;
@@ -336,7 +356,10 @@ class ProductSubscriptionPlan {
     toJson: _subscriptionStatusToJson,
   )
   final SubscriptionStatus status;
-  @JsonKey(fromJson: nullableDateTimeFromJson)
+  @JsonKey(
+    fromJson: nullableDateTimeFromJson,
+    toJson: dateTimeToString,
+  )
   DateTime? updatedAt;
 
   ProductSubscriptionPlan copyWith({
@@ -383,10 +406,12 @@ class ProductSubscriptionPlan {
   factory ProductSubscriptionPlan.fromDocument(
     QueryDocumentSnapshot<Map<String, dynamic>> document,
   ) {
-    return ProductSubscriptionPlan.fromJson({
+    final _data = ProductSubscriptionPlan.fromJson({
       ...document.data(),
       'id': document.id,
     });
+
+    return _data;
   }
 
   @override
@@ -449,10 +474,11 @@ SubscriptionStatus _subscriptionStatusFromJson(String status) {
 
 String _subscriptionStatusToJson(SubscriptionStatus status) => status.value;
 
-List<DateTime> _startDatesFromJson(List<String> startDates) {
+List<DateTime> _startDatesFromJson(List<dynamic>? startDates) {
   return startDates
-      .map<DateTime>((date) => DateFormat('yyyy-MM-dd').parse(date))
-      .toList();
+          ?.map<DateTime>((date) => DateFormat('yyyy-MM-dd').parse(date))
+          .toList() ??
+      const [];
 }
 
 List<OverrideDate> _overrideDatesFromJson(Map<String, dynamic> overrideDates) {
@@ -464,5 +490,11 @@ List<OverrideDate> _overrideDatesFromJson(Map<String, dynamic> overrideDates) {
           newDate: _format.parse(entry.value),
         ),
       )
+      .toList();
+}
+
+List<String> _startDatesToJson(List<DateTime> startDates) {
+  return startDates
+      .map((date) => DateFormat('yyyy-MM-dd').format(date))
       .toList();
 }

@@ -86,6 +86,8 @@ extension StringExtension on String {
 DateTime createdAtFromJson(dynamic map) {
   if (map is Timestamp) {
     return map.toDate();
+  } else if (map is String) {
+    return DateFormat('yyyy-MM-dd').parse(map);
   }
   return TimestampObject.fromMap(map).toDateTime();
 }
@@ -94,6 +96,8 @@ DateTime? nullableDateTimeFromJson(dynamic map) {
   try {
     if (map is Timestamp) {
       return map.toDate();
+    } else if (map is String) {
+      return DateFormat('yyyy-MM-dd').parse(map);
     } else if (map != null) {
       return TimestampObject.fromMap(map).toDateTime();
     } else {
@@ -112,3 +116,10 @@ Status statusFromJson(String bankType) {
 }
 
 String statusToJson(Status type) => type.value;
+
+String? dateTimeToString(DateTime? date) {
+  if (date != null) {
+    return DateFormat('yyyy-MM-dd').format(date);
+  }
+  return null;
+}

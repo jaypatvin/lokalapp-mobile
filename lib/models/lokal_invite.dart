@@ -1,4 +1,3 @@
-
 import 'package:json_annotation/json_annotation.dart';
 
 import '../utils/functions.utils.dart';
@@ -38,7 +37,10 @@ class LokalInvite {
   final String? updatedBy;
   final bool? claimed;
   final String? inviter;
-  @JsonKey(fromJson: nullableDateTimeFromJson)
+  @JsonKey(
+    fromJson: nullableDateTimeFromJson,
+    toJson: dateTimeToString,
+  )
   final DateTime? createdAt;
   final String? inviteeEmail;
   final String? status;

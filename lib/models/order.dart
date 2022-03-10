@@ -1,4 +1,3 @@
-
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -285,22 +284,22 @@ class Order {
     required this.createdAt,
     required this.deliveryAddress,
     required this.deliveryDate,
-    required this.deliveredDate,
     required this.deliveryOption,
     required this.instruction,
     required this.isPaid,
-    required this.paymentMethod,
     required this.productIds,
     required this.products,
-    required this.proofOfPayment,
     required this.sellerId,
     required this.shopId,
     required this.shop,
     required this.statusCode,
-    required this.cancellationReason,
-    required this.declineReason,
-    required this.productSubscriptionId,
-    required this.productSubscriptionDate,
+    this.deliveredDate,
+    this.cancellationReason,
+    this.declineReason,
+    this.productSubscriptionId,
+    this.productSubscriptionDate,
+    this.proofOfPayment,
+    this.paymentMethod,
   });
 
   @JsonKey(required: true)
@@ -309,11 +308,19 @@ class Order {
   final String buyerId;
   @JsonKey(required: true)
   final String communityId;
-  @JsonKey(required: true, fromJson: createdAtFromJson)
+  @JsonKey(
+    required: true,
+    fromJson: createdAtFromJson,
+    toJson: dateTimeToString,
+  )
   final DateTime createdAt;
   @JsonKey(required: true)
   final DeliveryAddress deliveryAddress;
-  @JsonKey(required: true, fromJson: createdAtFromJson)
+  @JsonKey(
+    required: true,
+    fromJson: createdAtFromJson,
+    toJson: dateTimeToString,
+  )
   final DateTime deliveryDate;
   @JsonKey(
     required: true,
@@ -338,7 +345,10 @@ class Order {
   @JsonKey(required: true)
   final int statusCode;
 
-  @JsonKey(fromJson: nullableDateTimeFromJson)
+  @JsonKey(
+    fromJson: nullableDateTimeFromJson,
+    toJson: dateTimeToString,
+  )
   final DateTime? deliveredDate;
   final String? cancellationReason;
   final String? declineReason;
@@ -486,7 +496,7 @@ DeliveryOption _deliveryOptionFromJson(String value) {
 
 String? _deliveryOptionToJson(DeliveryOption? option) => option?.value;
 
-PaymentMethod? _paymentMethodFromJson(String value) {
+PaymentMethod? _paymentMethodFromJson(String? value) {
   return PaymentMethod.values.firstWhereOrNull((e) => e.value == value);
 }
 

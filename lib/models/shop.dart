@@ -2,9 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:json_annotation/json_annotation.dart';
 
+import '../utils/functions.utils.dart';
 import 'operating_hours.dart';
 import 'payment_option.dart';
-import 'timestamp_time_object.dart';
 
 part 'shop.g.dart';
 
@@ -78,7 +78,11 @@ class Shop {
   @JsonKey(required: true)
   final String communityId;
   final String? coverPhoto;
-  @JsonKey(required: true, fromJson: _createdAtFromJson)
+  @JsonKey(
+    required: true,
+    fromJson: createdAtFromJson,
+    toJson: dateTimeToString,
+  )
   final DateTime createdAt;
   @JsonKey(required: true)
   final String description;
@@ -202,13 +206,6 @@ class Shop {
   factory Shop.fromDocument(DocumentSnapshot<Map<String, dynamic>> doc) {
     return Shop.fromJson({'id': doc.id, ...doc.data()!});
   }
-}
-
-DateTime _createdAtFromJson(dynamic map) {
-  if (map is Timestamp) {
-    return map.toDate();
-  }
-  return TimestampObject.fromMap(map).toDateTime();
 }
 
 ShopStatus _statusFromJson(String json) {

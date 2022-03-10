@@ -29,7 +29,7 @@ class Address {
   final String zipCode;
   @JsonKey(required: true)
   final String barangay;
-  @JsonKey(required: true)
+  @JsonKey(defaultValue: '')
   final String street;
 
   Address copyWith({

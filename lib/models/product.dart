@@ -1,4 +1,3 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -31,8 +30,8 @@ class Product {
     required this.updatedAt,
     required this.numRatings,
     required this.avgRating,
-    required this.availability,
     required this.description,
+    this.availability = const OperatingHours(),
     this.likes = const [],
     this.gallery,
   });
@@ -41,7 +40,7 @@ class Product {
   final String id;
   @JsonKey(required: true)
   final bool archived;
-  @JsonKey(required: true)
+  // @JsonKey(defaultValue: OperatingHours())
   final OperatingHours availability;
   @JsonKey(required: true)
   final double basePrice;
@@ -49,7 +48,11 @@ class Product {
   final bool canSubscribe;
   @JsonKey(required: true)
   final String communityId;
-  @JsonKey(required: true, fromJson: createdAtFromJson)
+  @JsonKey(
+    required: true,
+    fromJson: createdAtFromJson,
+    toJson: dateTimeToString,
+  )
   final DateTime createdAt;
   @JsonKey(required: true)
   final String description;
@@ -73,7 +76,10 @@ class Product {
   final List<String> likes;
 
   final List<LokalImages>? gallery;
-  @JsonKey(fromJson: nullableDateTimeFromJson)
+  @JsonKey(
+    fromJson: nullableDateTimeFromJson,
+    toJson: dateTimeToString,
+  )
   final DateTime? updatedAt;
 
   Product copyWith({
@@ -196,6 +202,6 @@ int? _numRatingsReadValue(Map<dynamic, dynamic> map, String key) {
   return map['_meta']?['reviews_count'];
 }
 
-double? _avgRatingReadValue(Map<dynamic, dynamic> map, String key) {
+num? _avgRatingReadValue(Map<dynamic, dynamic> map, String key) {
   return map['_meta']?['average_rating'];
 }

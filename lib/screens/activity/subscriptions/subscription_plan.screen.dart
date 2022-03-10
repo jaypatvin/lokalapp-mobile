@@ -294,13 +294,14 @@ class _SubscriptionDetailsButtons extends StatelessWidget {
                     onPressed: onCancelSubscription,
                   ),
                 ),
-              Expanded(
-                child: AppButton.filled(
-                  text: 'Confirm Subscription',
-                  onPressed: onConfirmSubscription,
-                  color: kOrangeColor,
+              if (status == SubscriptionStatus.disabled)
+                Expanded(
+                  child: AppButton.filled(
+                    text: 'Confirm Subscription',
+                    onPressed: onConfirmSubscription,
+                    color: kOrangeColor,
+                  ),
                 ),
-              ),
             ],
           )
       ],

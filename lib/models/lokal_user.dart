@@ -1,4 +1,3 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -163,7 +162,7 @@ class LokalUser {
     required this.id,
     required this.address,
     required this.archived,
-    required this.birthDate,
+    required this.birthdate,
     required this.communityId,
     required this.createdAt,
     required this.displayName,
@@ -186,10 +185,14 @@ class LokalUser {
   @JsonKey(required: true)
   final bool archived;
   @JsonKey(required: true)
-  final String birthDate;
+  final String birthdate;
   @JsonKey(required: true)
   final String communityId;
-  @JsonKey(required: true, fromJson: createdAtFromJson)
+  @JsonKey(
+    required: true,
+    fromJson: createdAtFromJson,
+    toJson: dateTimeToString,
+  )
   final DateTime createdAt;
   @JsonKey(required: true)
   final String displayName;
@@ -229,7 +232,7 @@ class LokalUser {
     String? id,
     Address? address,
     bool? archived,
-    String? birthDate,
+    String? birthdate,
     String? communityId,
     DateTime? createdAt,
     String? displayName,
@@ -248,7 +251,7 @@ class LokalUser {
       id: id ?? this.id,
       address: address ?? this.address,
       archived: archived ?? this.archived,
-      birthDate: birthDate ?? this.birthDate,
+      birthdate: birthdate ?? this.birthdate,
       communityId: communityId ?? this.communityId,
       createdAt: createdAt ?? this.createdAt,
       displayName: displayName ?? this.displayName,
@@ -268,7 +271,7 @@ class LokalUser {
   @override
   String toString() {
     return 'LokalUser(id: $id, address: $address, archived: $archived, '
-        'birthDate: $birthDate, communityId: $communityId, '
+        'birthDate: $birthdate, communityId: $communityId, '
         'createdAt: $createdAt, displayName: $displayName, '
         'email: $email, firstName: $firstName, lastName: $lastName, '
         'notificationSettings: $notificationSettings, '
@@ -285,7 +288,7 @@ class LokalUser {
         other.id == id &&
         other.address == address &&
         other.archived == archived &&
-        other.birthDate == birthDate &&
+        other.birthdate == birthdate &&
         other.communityId == communityId &&
         other.createdAt == createdAt &&
         other.displayName == displayName &&
@@ -306,7 +309,7 @@ class LokalUser {
     return id.hashCode ^
         address.hashCode ^
         archived.hashCode ^
-        birthDate.hashCode ^
+        birthdate.hashCode ^
         communityId.hashCode ^
         createdAt.hashCode ^
         displayName.hashCode ^

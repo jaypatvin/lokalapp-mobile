@@ -1,4 +1,3 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -50,19 +49,32 @@ class LokalNotification {
   final String? image;
   @JsonKey(required: true)
   final bool viewed;
-  @JsonKey(fromJson: nullableDateTimeFromJson)
+  @JsonKey(
+    fromJson: nullableDateTimeFromJson,
+    toJson: dateTimeToString,
+  )
   final DateTime? dateViewed;
   @JsonKey(required: true)
   final bool opened;
-  @JsonKey(fromJson: nullableDateTimeFromJson)
+  @JsonKey(
+    fromJson: nullableDateTimeFromJson,
+    toJson: dateTimeToString,
+  )
   final DateTime? dateOpened;
   @JsonKey(required: true)
   final bool unread;
   @JsonKey(required: true)
   final bool archived;
-  @JsonKey(required: true, fromJson: createdAtFromJson)
+  @JsonKey(
+    required: true,
+    fromJson: createdAtFromJson,
+    toJson: dateTimeToString,
+  )
   final DateTime createdAt;
-  @JsonKey(fromJson: nullableDateTimeFromJson)
+  @JsonKey(
+    fromJson: nullableDateTimeFromJson,
+    toJson: dateTimeToString,
+  )
   final DateTime? updatedAt;
 
   LokalNotification copyWith({

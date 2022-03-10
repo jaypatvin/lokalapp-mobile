@@ -12,11 +12,11 @@ extension ChatTypeExtension on ChatType {
   String get value {
     switch (this) {
       case ChatType.user:
-        return 'Day';
+        return 'user';
       case ChatType.shop:
-        return 'Week';
+        return 'shop';
       case ChatType.product:
-        return 'Month';
+        return 'product';
     }
   }
 }
@@ -29,7 +29,11 @@ extension ChatTypeExtension on ChatType {
 class Message {
   @JsonKey(required: true)
   String content;
-  @JsonKey(required: true, fromJson: createdAtFromJson)
+  @JsonKey(
+    required: true,
+    fromJson: createdAtFromJson,
+    toJson: dateTimeToString,
+  )
   DateTime createdAt;
   Message({
     required this.content,
@@ -86,7 +90,11 @@ class ChatModel {
   bool archived;
   @JsonKey(required: true)
   String communityId;
-  @JsonKey(required: true, fromJson: createdAtFromJson)
+  @JsonKey(
+    required: true,
+    fromJson: createdAtFromJson,
+    toJson: dateTimeToString,
+  )
   DateTime createdAt;
   @JsonKey(required: true)
   Message lastMessage;

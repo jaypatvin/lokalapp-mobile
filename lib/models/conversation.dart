@@ -1,4 +1,3 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -18,11 +17,19 @@ class Conversation {
   final String id;
   @JsonKey(defaultValue: false)
   final bool archived;
-  @JsonKey(required: true, fromJson: createdAtFromJson)
+  @JsonKey(
+    required: true,
+    fromJson: createdAtFromJson,
+    toJson: dateTimeToString,
+  )
   final DateTime createdAt;
   @JsonKey(required: true)
   final String senderId;
-  @JsonKey(required: true, fromJson: createdAtFromJson)
+  @JsonKey(
+    required: true,
+    fromJson: createdAtFromJson,
+    toJson: dateTimeToString,
+  )
   final DateTime sentAt;
   final String? message;
   @JsonKey(fromJson: _replyToFromJson, toJson: _replyToToJson)
@@ -107,5 +114,5 @@ class Conversation {
   }
 }
 
-DocumentReference? _replyToFromJson(DocumentReference reference) => reference;
+DocumentReference? _replyToFromJson(DocumentReference? reference) => reference;
 DocumentReference? _replyToToJson(DocumentReference? reference) => reference;

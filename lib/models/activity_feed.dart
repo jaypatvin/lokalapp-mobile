@@ -1,4 +1,3 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -44,11 +43,13 @@ class ActivityFeed {
   List<ActivityFeedComment> comments;
   @JsonKey(defaultValue: false)
   bool liked;
-  @JsonKey(fromJson: createdAtFromJson)
+  @JsonKey(fromJson: createdAtFromJson, toJson: dateTimeToString)
   DateTime createdAt;
   @JsonKey(defaultValue: false)
   bool archived;
+  @JsonKey(readValue: _likedCountReadValue)
   int likedCount;
+  @JsonKey(readValue: _commentCountReadValue)
   int commentCount;
   String status;
 
@@ -137,3 +138,8 @@ class ActivityFeed {
         status.hashCode;
   }
 }
+
+int? _likedCountReadValue(Map<dynamic, dynamic> map, String key) =>
+    map['_meta']?['likes_count'];
+int? _commentCountReadValue(Map<dynamic, dynamic> map, String key) =>
+    map['_meta']?['comment_count'];
