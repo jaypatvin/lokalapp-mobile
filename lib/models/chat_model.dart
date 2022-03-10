@@ -21,11 +21,7 @@ extension ChatTypeExtension on ChatType {
   }
 }
 
-@JsonSerializable(
-  fieldRename: FieldRename.snake,
-  explicitToJson: true,
-  includeIfNull: false,
-)
+@JsonSerializable()
 class Message {
   @JsonKey(required: true)
   String content;
@@ -71,11 +67,7 @@ class Message {
   int get hashCode => content.hashCode ^ createdAt.hashCode;
 }
 
-@JsonSerializable(
-  fieldRename: FieldRename.snake,
-  explicitToJson: true,
-  includeIfNull: false,
-)
+@JsonSerializable()
 class ChatModel {
   // Common:
   @JsonKey(required: true)

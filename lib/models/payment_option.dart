@@ -1,15 +1,10 @@
-
 import 'package:json_annotation/json_annotation.dart';
 
 import 'bank_code.dart';
 
 part 'payment_option.g.dart';
 
-@JsonSerializable(
-  fieldRename: FieldRename.snake,
-  explicitToJson: true,
-  includeIfNull: false,
-)
+@JsonSerializable()
 class PaymentOption {
   PaymentOption({
     required this.bankCode,

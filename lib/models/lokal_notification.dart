@@ -7,11 +7,7 @@ import '../utils/functions.utils.dart';
 part 'lokal_notification.g.dart';
 
 // this will only be used with Firestore database
-@JsonSerializable(
-  fieldRename: FieldRename.snake,
-  explicitToJson: true,
-  includeIfNull: false,
-)
+@JsonSerializable()
 class LokalNotification {
   const LokalNotification({
     required this.id,

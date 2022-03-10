@@ -18,11 +18,7 @@ extension NotificationTypesExtenstion on NotificationType {
   String get value => toString().split('.').last.snakeCase;
 }
 
-@JsonSerializable(
-  fieldRename: FieldRename.snake,
-  explicitToJson: true,
-  includeIfNull: false,
-)
+@JsonSerializable()
 class NotificationSettings {
   const NotificationSettings({
     this.likes = true,

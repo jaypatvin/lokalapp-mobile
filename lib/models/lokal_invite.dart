@@ -4,11 +4,7 @@ import '../utils/functions.utils.dart';
 
 part 'lokal_invite.g.dart';
 
-@JsonSerializable(
-  fieldRename: FieldRename.snake,
-  explicitToJson: true,
-  includeIfNull: false,
-)
+@JsonSerializable()
 class LokalInvite {
   /// The model for Lokal's [Invite Code].
   ///

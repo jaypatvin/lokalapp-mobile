@@ -21,11 +21,7 @@ extension ShopStatusExtension on ShopStatus {
   }
 }
 
-@JsonSerializable(
-  fieldRename: FieldRename.snake,
-  explicitToJson: true,
-  includeIfNull: false,
-)
+@JsonSerializable()
 class DeliveryOptions {
   const DeliveryOptions({
     this.delivery = true,
@@ -65,11 +61,7 @@ class DeliveryOptions {
   int get hashCode => delivery.hashCode ^ pickup.hashCode;
 }
 
-@JsonSerializable(
-  fieldRename: FieldRename.snake,
-  explicitToJson: true,
-  includeIfNull: false,
-)
+@JsonSerializable()
 class Shop {
   @JsonKey(required: true)
   final String id;

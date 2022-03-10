@@ -8,11 +8,7 @@ import 'lokal_images.dart';
 
 part 'activity_feed.g.dart';
 
-@JsonSerializable(
-  fieldRename: FieldRename.snake,
-  includeIfNull: false,
-  explicitToJson: true,
-)
+@JsonSerializable()
 class ActivityFeed {
   ActivityFeed({
     required this.id,

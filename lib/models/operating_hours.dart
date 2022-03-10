@@ -3,11 +3,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'operating_hours.g.dart';
 
-@JsonSerializable(
-  fieldRename: FieldRename.snake,
-  explicitToJson: true,
-  includeIfNull: false,
-)
+@JsonSerializable()
 class CustomDates {
   const CustomDates({
     required this.date,
@@ -59,11 +55,7 @@ String _dateReadValueFrom(Map<dynamic, dynamic> map, String key) {
 
 String _dateFromJson(String date) => date;
 
-@JsonSerializable(
-  fieldRename: FieldRename.snake,
-  explicitToJson: true,
-  includeIfNull: false,
-)
+@JsonSerializable()
 class OperatingHours {
   const OperatingHours({
     this.startTime = '8:00 AM',

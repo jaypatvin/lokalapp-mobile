@@ -33,11 +33,7 @@ extension PaymentMethodExtension on PaymentMethod {
   }
 }
 
-@JsonSerializable(
-  fieldRename: FieldRename.snake,
-  explicitToJson: true,
-  includeIfNull: false,
-)
+@JsonSerializable()
 class DeliveryAddress {
   const DeliveryAddress({
     required this.barangay,
@@ -122,11 +118,7 @@ class DeliveryAddress {
   }
 }
 
-@JsonSerializable(
-  fieldRename: FieldRename.snake,
-  explicitToJson: true,
-  includeIfNull: false,
-)
+@JsonSerializable()
 class OrderProduct {
   OrderProduct({
     required this.instruction,
@@ -218,11 +210,7 @@ class OrderProduct {
   }
 }
 
-@JsonSerializable(
-  fieldRename: FieldRename.snake,
-  explicitToJson: true,
-  includeIfNull: false,
-)
+@JsonSerializable()
 class OrderShop {
   @JsonKey(required: true)
   final String name;
@@ -271,11 +259,7 @@ class OrderShop {
   int get hashCode => name.hashCode ^ description.hashCode ^ image.hashCode;
 }
 
-@JsonSerializable(
-  fieldRename: FieldRename.snake,
-  explicitToJson: true,
-  includeIfNull: false,
-)
+@JsonSerializable()
 class Order {
   const Order({
     required this.id,

@@ -7,11 +7,7 @@ import 'lokal_images.dart';
 
 part 'conversation.g.dart';
 
-@JsonSerializable(
-  fieldRename: FieldRename.snake,
-  explicitToJson: true,
-  includeIfNull: false,
-)
+@JsonSerializable()
 class Conversation {
   @JsonKey(required: true)
   final String id;

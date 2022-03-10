@@ -2,11 +2,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'address.g.dart';
 
-@JsonSerializable(
-  fieldRename: FieldRename.snake,
-  explicitToJson: true,
-  includeIfNull: false,
-)
+@JsonSerializable()
 class Address {
   Address({
     required this.state,

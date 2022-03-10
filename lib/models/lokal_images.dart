@@ -2,11 +2,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'lokal_images.g.dart';
 
-@JsonSerializable(
-  fieldRename: FieldRename.snake,
-  includeIfNull: false,
-  explicitToJson: true,
-)
+@JsonSerializable()
 class LokalImages {
   LokalImages({
     required this.url,

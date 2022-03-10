@@ -8,11 +8,7 @@ import 'operating_hours.dart';
 
 part 'product.g.dart';
 
-@JsonSerializable(
-  fieldRename: FieldRename.snake,
-  explicitToJson: true,
-  includeIfNull: false,
-)
+@JsonSerializable()
 class Product {
   const Product({
     required this.id,

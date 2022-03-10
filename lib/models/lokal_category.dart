@@ -1,4 +1,3 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -7,11 +6,7 @@ import 'status.dart';
 
 part 'lokal_category.g.dart';
 
-@JsonSerializable(
-  fieldRename: FieldRename.snake,
-  explicitToJson: true,
-  includeIfNull: false,
-)
+@JsonSerializable()
 class LokalCategory {
   const LokalCategory({
     required this.id,
@@ -27,15 +22,20 @@ class LokalCategory {
 
   @JsonKey(required: true)
   final String id;
-  @JsonKey(fromJson: nullableDateTimeFromJson,
-    toJson: dateTimeToString,)
+  @JsonKey(
+    fromJson: nullableDateTimeFromJson,
+    toJson: dateTimeToString,
+  )
   final DateTime? updatedAt;
   @JsonKey(required: true, defaultValue: false)
   final bool archived;
   @JsonKey(required: true)
   final String name;
-  @JsonKey(required: true, fromJson: createdAtFromJson,
-    toJson: dateTimeToString,)
+  @JsonKey(
+    required: true,
+    fromJson: createdAtFromJson,
+    toJson: dateTimeToString,
+  )
   final DateTime createdAt;
   @JsonKey(required: true)
   final String coverUrl;

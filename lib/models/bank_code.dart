@@ -9,11 +9,7 @@ extension BankTypeExtension on BankType {
   String get value => toString().split('.').last;
 }
 
-@JsonSerializable(
-  fieldRename: FieldRename.snake,
-  explicitToJson: true,
-  includeIfNull: false,
-)
+@JsonSerializable()
 class BankCode {
   const BankCode({
     required this.id,

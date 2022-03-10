@@ -32,11 +32,7 @@ extension SubscriptionPlanExtension on SubscriptionStatus {
   int compareTo(SubscriptionStatus other) => index.compareTo(other.index);
 }
 
-@JsonSerializable(
-  fieldRename: FieldRename.snake,
-  explicitToJson: true,
-  includeIfNull: false,
-)
+@JsonSerializable()
 class OverrideDate {
   const OverrideDate({
     required this.originalDate,
@@ -77,11 +73,7 @@ class OverrideDate {
   int get hashCode => originalDate.hashCode ^ newDate.hashCode;
 }
 
-@JsonSerializable(
-  fieldRename: FieldRename.snake,
-  explicitToJson: true,
-  includeIfNull: false,
-)
+@JsonSerializable()
 class SubscriptionProductDetails {
   const SubscriptionProductDetails({
     required this.name,
@@ -144,11 +136,7 @@ class SubscriptionProductDetails {
   }
 }
 
-@JsonSerializable(
-  fieldRename: FieldRename.snake,
-  explicitToJson: true,
-  includeIfNull: false,
-)
+@JsonSerializable()
 class SubscriptionShopDetails {
   SubscriptionShopDetails({
     required this.name,
@@ -198,11 +186,7 @@ class SubscriptionShopDetails {
   int get hashCode => name.hashCode ^ image.hashCode ^ description.hashCode;
 }
 
-@JsonSerializable(
-  fieldRename: FieldRename.snake,
-  explicitToJson: true,
-  includeIfNull: false,
-)
+@JsonSerializable()
 class ProductSubscriptionSchedule {
   const ProductSubscriptionSchedule({
     required this.startDates,
@@ -294,11 +278,7 @@ class ProductSubscriptionSchedule {
   }
 }
 
-@JsonSerializable(
-  fieldRename: FieldRename.snake,
-  explicitToJson: true,
-  includeIfNull: false,
-)
+@JsonSerializable()
 class ProductSubscriptionPlan {
   ProductSubscriptionPlan({
     required this.id,

@@ -1,4 +1,3 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -8,11 +7,7 @@ import 'lokal_images.dart';
 
 part 'activity_feed_comment.g.dart';
 
-@JsonSerializable(
-  fieldRename: FieldRename.snake,
-  includeIfNull: false,
-  explicitToJson: true,
-)
+@JsonSerializable()
 class ActivityFeedComment {
   ActivityFeedComment({
     required this.id,
@@ -31,7 +26,7 @@ class ActivityFeedComment {
   @JsonKey(defaultValue: '')
   String message;
 
-  @JsonKey(defaultValue:  <LokalImages>[])
+  @JsonKey(defaultValue: <LokalImages>[])
   List<LokalImages> images;
 
   @JsonKey(fromJson: createdAtFromJson, toJson: dateTimeToString)

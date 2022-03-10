@@ -6,11 +6,7 @@ import 'address.dart';
 
 part 'community.g.dart';
 
-@JsonSerializable(
-  fieldRename: FieldRename.snake,
-  explicitToJson: true,
-  includeIfNull: false,
-)
+@JsonSerializable()
 class Community {
   @JsonKey(required: true)
   final String id;

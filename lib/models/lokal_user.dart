@@ -25,11 +25,7 @@ extension UserStatusExtension on UserStatus {
   }
 }
 
-@JsonSerializable(
-  fieldRename: FieldRename.snake,
-  explicitToJson: true,
-  includeIfNull: false,
-)
+@JsonSerializable()
 class UserRegistrationStatus {
   @JsonKey(required: true)
   final String idPhoto;
@@ -99,11 +95,7 @@ class UserRegistrationStatus {
   }
 }
 
-@JsonSerializable(
-  fieldRename: FieldRename.snake,
-  explicitToJson: true,
-  includeIfNull: false,
-)
+@JsonSerializable()
 class UserRoles {
   const UserRoles({
     required this.member,
@@ -152,11 +144,7 @@ class UserRoles {
   int get hashCode => member.hashCode ^ admin.hashCode ^ editor.hashCode;
 }
 
-@JsonSerializable(
-  fieldRename: FieldRename.snake,
-  explicitToJson: true,
-  includeIfNull: false,
-)
+@JsonSerializable()
 class LokalUser {
   const LokalUser({
     required this.id,
