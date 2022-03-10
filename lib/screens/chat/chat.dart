@@ -54,7 +54,7 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
 
     final user = context.read<Auth>().user!;
     final shops = context.read<Shops>().findByUser(user.id);
-    _userChatStream = _db.getUserChats(user.id!);
+    _userChatStream = _db.getUserChats(user.id);
     if (shops.isNotEmpty) {
       _shopChatStream = _db.getUserChats(shops.first.id);
     }
@@ -210,7 +210,7 @@ class _ChatAppBarBottom extends StatelessWidget implements PreferredSizeWidget {
           tabs: [
             _tabChild(
               imgUrl: user.profilePhoto,
-              name: user.displayName!,
+              name: user.displayName,
               index: 0,
             ),
             _tabChild(

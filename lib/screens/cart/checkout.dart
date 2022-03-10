@@ -63,6 +63,7 @@ class Checkout extends HookWidget {
                 notify: false,
               );
         }
+        return;
       },
       [shop, product],
     );

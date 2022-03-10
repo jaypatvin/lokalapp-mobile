@@ -323,6 +323,7 @@ class _SchedulePickerState extends State<SchedulePicker> {
                         (en_USSymbols.MONTHS.indexOf(_monthChoice) + 1)) {
                       return date?.day;
                     }
+                    return null;
                   })
                   .whereType<int>()
                   .toList()

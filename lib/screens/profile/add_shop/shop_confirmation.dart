@@ -67,7 +67,7 @@ class AddShopConfirmation extends StatelessWidget {
                     ?..popUntil(ModalRoute.withName(ProfileScreen.routeName))
                     ..pushNamed(
                       UserShop.routeName,
-                      arguments: UserShopProps(user.id!),
+                      arguments: UserShopProps(user.id),
                     )
                     ..pushNamed(AddProduct.routeName);
                 },
@@ -84,7 +84,7 @@ class AddShopConfirmation extends StatelessWidget {
                     ?..popUntil(ModalRoute.withName(ProfileScreen.routeName))
                     ..pushNamed(
                       UserShop.routeName,
-                      arguments: UserShopProps(user.id!),
+                      arguments: UserShopProps(user.id),
                     );
                 },
               ),

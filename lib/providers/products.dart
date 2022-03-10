@@ -60,8 +60,10 @@ class Products extends ChangeNotifier {
   Future<void> _productListener(List<Product> products) async {
     _products.clear();
     for (final product in products) {
-      product.likes = await _db.getProductLikes(product.id);
-      _products.add(product);
+      final _product = product.copyWith(
+        likes: await _db.getProductLikes(product.id),
+      );
+      _products.add(_product);
     }
     _isLoading = false;
     if (hasListeners) notifyListeners();

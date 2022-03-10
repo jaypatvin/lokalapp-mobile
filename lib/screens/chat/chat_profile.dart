@@ -48,8 +48,9 @@ class _ChatProfileState extends State<ChatProfile> {
       if (_user != null) {
         _members.add(
           ChatMember(
-            displayName:
-                _user.displayName ?? '${_user.firstName} ${_user.lastName}',
+            displayName: _user.displayName.isNotEmpty
+                ? _user.displayName
+                : '${_user.firstName} ${_user.lastName}',
             id: _user.id,
             displayPhoto: _user.profilePhoto,
             type: MemberType.user,
@@ -77,8 +78,7 @@ class _ChatProfileState extends State<ChatProfile> {
           ChatMember(
             displayName: _product.name,
             id: _product.id,
-            displayPhoto:
-                _product.productPhoto ?? _product.gallery?.firstOrNull?.url,
+            displayPhoto: _product.gallery?.firstOrNull?.url,
             type: MemberType.product,
           ),
         );

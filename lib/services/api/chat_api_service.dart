@@ -23,7 +23,7 @@ class ChatAPIService extends APIService<ChatModel> {
         headers: api.authHeader(),
       );
 
-      return handleResponse((map) => ChatModel.fromMap(map), response);
+      return handleResponse((map) => ChatModel.fromJson(map), response);
     } catch (e) {
       rethrow;
     }
@@ -39,7 +39,7 @@ class ChatAPIService extends APIService<ChatModel> {
         body: json.encode(trimBodyFields(body)),
       );
 
-      return handleResponse((map) => ChatModel.fromMap(map), response);
+      return handleResponse((map) => ChatModel.fromJson(map), response);
     } catch (e) {
       rethrow;
     }

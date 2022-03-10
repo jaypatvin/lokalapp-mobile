@@ -1,13 +1,12 @@
-import 'dart:convert';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
+import 'package:json_annotation/json_annotation.dart';
 
-import 'operating_hours.dart';
+import '../utils/functions.utils.dart';
 import 'order.dart';
-import 'timestamp_time_object.dart';
+
+part 'product_subscription_plan.g.dart';
 
 enum SubscriptionStatus {
   enabled,
@@ -33,32 +32,29 @@ extension SubscriptionPlanExtension on SubscriptionStatus {
   int compareTo(SubscriptionStatus other) => index.compareTo(other.index);
 }
 
+@JsonSerializable()
 class OverrideDate {
-  final DateTime originalDate;
-  final DateTime newDate;
   const OverrideDate({
     required this.originalDate,
     required this.newDate,
   });
+  @JsonKey(
+    required: true,
+    fromJson: createdAtFromJson,
+    toJson: dateTimeToString,
+  )
+  final DateTime originalDate;
+  @JsonKey(
+    required: true,
+    fromJson: createdAtFromJson,
+    toJson: dateTimeToString,
+  )
+  final DateTime newDate;
 
-  Map<String, dynamic> toMap() {
-    return {
-      'original_date': DateFormat('yyyy-MM-dd').format(originalDate),
-      'new_date': DateFormat('yyyy-MM-dd').format(newDate),
-    };
-  }
+  Map<String, dynamic> toJson() => _$OverrideDateToJson(this);
 
-  factory OverrideDate.fromMap(Map<String, dynamic> map) {
-    return OverrideDate(
-      originalDate: DateFormat('yyyy-MM-dd').parse(map['original_date']),
-      newDate: DateFormat('yyyy-MM-dd').parse(map['new_date']),
-    );
-  }
-
-  String toJson() => json.encode(toMap());
-
-  factory OverrideDate.fromJson(String source) =>
-      OverrideDate.fromMap(json.decode(source));
+  factory OverrideDate.fromJson(Map<String, dynamic> json) =>
+      _$OverrideDateFromJson(json);
 
   @override
   String toString() =>
@@ -77,17 +73,23 @@ class OverrideDate {
   int get hashCode => originalDate.hashCode ^ newDate.hashCode;
 }
 
+@JsonSerializable()
 class SubscriptionProductDetails {
-  final String name;
-  final String image;
-  final String description;
-  final double price;
   const SubscriptionProductDetails({
     required this.name,
     required this.image,
     required this.description,
     required this.price,
   });
+
+  @JsonKey(required: true)
+  final String name;
+  @JsonKey(required: true)
+  final String image;
+  @JsonKey(required: true)
+  final String description;
+  @JsonKey(required: true)
+  final double price;
 
   SubscriptionProductDetails copyWith({
     String? name,
@@ -103,28 +105,10 @@ class SubscriptionProductDetails {
     );
   }
 
-  Map<String, dynamic> toMap() {
-    return {
-      'name': name,
-      'image': image,
-      'description': description,
-      'price': price,
-    };
-  }
+  Map<String, dynamic> toJson() => _$SubscriptionProductDetailsToJson(this);
 
-  factory SubscriptionProductDetails.fromMap(Map<String, dynamic> map) {
-    return SubscriptionProductDetails(
-      name: map['name'],
-      image: map['image'],
-      description: map['description'],
-      price: map['price'] + .0,
-    );
-  }
-
-  String toJson() => json.encode(toMap());
-
-  factory SubscriptionProductDetails.fromJson(String source) =>
-      SubscriptionProductDetails.fromMap(json.decode(source));
+  factory SubscriptionProductDetails.fromJson(Map<String, dynamic> json) =>
+      _$SubscriptionProductDetailsFromJson(json);
 
   @override
   String toString() {
@@ -152,15 +136,20 @@ class SubscriptionProductDetails {
   }
 }
 
+@JsonSerializable()
 class SubscriptionShopDetails {
-  final String name;
-  final String image;
-  final String description;
   SubscriptionShopDetails({
     required this.name,
     required this.image,
     required this.description,
   });
+
+  @JsonKey(required: true)
+  final String name;
+  @JsonKey(required: true)
+  final String image;
+  @JsonKey(required: true)
+  final String description;
 
   SubscriptionShopDetails copyWith({
     String? name,
@@ -174,26 +163,10 @@ class SubscriptionShopDetails {
     );
   }
 
-  Map<String, dynamic> toMap() {
-    return {
-      'name': name,
-      'image': image,
-      'description': description,
-    };
-  }
+  Map<String, dynamic> toJson() => _$SubscriptionShopDetailsToJson(this);
 
-  factory SubscriptionShopDetails.fromMap(Map<String, dynamic> map) {
-    return SubscriptionShopDetails(
-      name: map['name'],
-      image: map['image'],
-      description: map['description'],
-    );
-  }
-
-  String toJson() => json.encode(toMap());
-
-  factory SubscriptionShopDetails.fromJson(String source) =>
-      SubscriptionShopDetails.fromMap(json.decode(source));
+  factory SubscriptionShopDetails.fromJson(Map<String, dynamic> json) =>
+      _$SubscriptionShopDetailsFromJson(json);
 
   @override
   String toString() =>
@@ -213,37 +186,45 @@ class SubscriptionShopDetails {
   int get hashCode => name.hashCode ^ image.hashCode ^ description.hashCode;
 }
 
+@JsonSerializable()
 class ProductSubscriptionSchedule {
-  final List<DateTime> startDates;
-  final DateTime? lastDate;
-  final int repeatUnit;
-  final bool autoReschedule;
-  final String repeatType;
-  final List<CustomDates> schedule;
-  final List<DateTime> customDates;
-  final List<DateTime> unavailableDates;
-  final List<OverrideDate> overrideDates;
-
   const ProductSubscriptionSchedule({
     required this.startDates,
-    required this.lastDate,
     required this.repeatUnit,
     required this.repeatType,
-    required this.schedule,
-    required this.customDates,
-    required this.unavailableDates,
     required this.autoReschedule,
-    required this.overrideDates,
+    this.schedule = const {},
+    this.overrideDates = const [],
+    this.lastDate,
   });
+
+  @JsonKey(required: true)
+  final bool autoReschedule;
+  @JsonKey(
+    fromJson: nullableDateTimeFromJson,
+    toJson: dateTimeToString,
+  )
+  final DateTime? lastDate;
+  @JsonKey(required: true)
+  final String repeatType;
+  @JsonKey(required: true)
+  final int repeatUnit;
+  @JsonKey(
+    required: true,
+    fromJson: _startDatesFromJson,
+    toJson: _startDatesToJson,
+  )
+  final List<DateTime> startDates;
+  @JsonKey(fromJson: _overrideDatesFromJson)
+  final List<OverrideDate> overrideDates;
+  final Map<String, dynamic> schedule;
 
   ProductSubscriptionSchedule copyWith({
     List<DateTime>? startDates,
     DateTime? lastDate,
     int? repeatUnit,
     String? repeatType,
-    List<CustomDates>? schedule,
-    List<DateTime>? customDates,
-    List<DateTime>? unavailableDates,
+    Map<String, dynamic>? schedule,
     bool? autoReschedule,
     List<OverrideDate>? overrideDates,
   }) {
@@ -253,71 +234,15 @@ class ProductSubscriptionSchedule {
       repeatUnit: repeatUnit ?? this.repeatUnit,
       repeatType: repeatType ?? this.repeatType,
       schedule: schedule ?? this.schedule,
-      customDates: customDates ?? this.customDates,
-      unavailableDates: unavailableDates ?? this.unavailableDates,
       autoReschedule: autoReschedule ?? this.autoReschedule,
       overrideDates: overrideDates ?? this.overrideDates,
     );
   }
 
-  factory ProductSubscriptionSchedule.fromMap(Map<String, dynamic> map) {
-    final _customDates = <DateTime>[];
-    final _unavailableDates = <DateTime>[];
-    final _startDates = <DateTime>[];
-    final _overrideDates = <OverrideDate>[];
+  Map<String, dynamic> toJson() => _$ProductSubscriptionScheduleToJson(this);
 
-    if (map['custom_dates'] != null) {
-      final List<String> customDates = List<String>.from(map['custom_dates']);
-
-      for (final date in customDates) {
-        _customDates.add(DateFormat('yyyy-MM-dd').parse(date));
-      }
-    }
-    if (map['unavailable_dates'] != null) {
-      final List<String> unavailableDates =
-          List<String>.from(map['unavailable_dates']);
-
-      for (final date in unavailableDates) {
-        _unavailableDates.add(DateFormat('yyyy-MM-dd').parse(date));
-      }
-    }
-
-    if (map['override_dates'] != null) {
-      final Map<String, String> overrideDates = Map.from(map['override_dates']);
-      overrideDates.forEach((key, value) {
-        _overrideDates.add(
-          OverrideDate(
-            originalDate: DateFormat('yyyy-MM-dd').parse(key),
-            newDate: DateFormat('yyyy-MM-dd').parse(value),
-          ),
-        );
-      });
-    }
-
-    if (map['start_dates'] != null) {
-      final startDates = List<String>.from(map['start_dates']);
-      for (final date in startDates) {
-        _startDates.add(DateFormat('yyyy-MM-dd').parse(date));
-      }
-    }
-
-    return ProductSubscriptionSchedule(
-      startDates: _startDates,
-      lastDate: map['last_date'] != null && map['last_date'].isNotEmpty
-          ? DateFormat('yyyy-MM-dd').parse(map['last_date'])
-          : null,
-      repeatUnit: map['repeat_unit'],
-      repeatType: map['repeat_type'],
-      autoReschedule: map['auto_reschedule'],
-      schedule: [],
-      customDates: _customDates,
-      unavailableDates: _unavailableDates,
-      overrideDates: _overrideDates,
-    );
-  }
-
-  factory ProductSubscriptionSchedule.fromJson(String source) =>
-      ProductSubscriptionSchedule.fromMap(json.decode(source));
+  factory ProductSubscriptionSchedule.fromJson(Map<String, dynamic> json) =>
+      _$ProductSubscriptionScheduleFromJson(json);
 
   @override
   String toString() {
@@ -337,7 +262,7 @@ class ProductSubscriptionSchedule {
         other.repeatUnit == repeatUnit &&
         other.repeatType == repeatType &&
         other.autoReschedule == autoReschedule &&
-        listEquals(other.schedule, schedule) &&
+        mapEquals(other.schedule, schedule) &&
         listEquals(other.overrideDates, overrideDates);
   }
 
@@ -353,106 +278,129 @@ class ProductSubscriptionSchedule {
   }
 }
 
+@JsonSerializable()
 class ProductSubscriptionPlan {
-  final String id;
-  final String productId;
-  final String shopId;
-  final String buyerId;
-  final String sellerId;
-  final int quantity;
-  final String instruction;
-  final SubscriptionStatus status;
-  final SubscriptionProductDetails product;
-  final ProductSubscriptionSchedule plan;
-  final SubscriptionShopDetails shop;
-  final DateTime createdAt;
-
   ProductSubscriptionPlan({
     required this.id,
-    required this.productId,
-    required this.shopId,
+    required this.archived,
     required this.buyerId,
-    required this.sellerId,
-    required this.quantity,
+    required this.communityId,
+    required this.createdAt,
     required this.instruction,
-    required this.status,
+    required this.paymentMethod,
     required this.plan,
     required this.product,
+    required this.productId,
+    required this.quantity,
+    required this.sellerId,
     required this.shop,
-    required this.createdAt,
+    required this.shopId,
+    required this.status,
   });
+
+  @JsonKey(required: true)
+  final String id;
+  @JsonKey(required: true)
+  final bool archived;
+  @JsonKey(required: true)
+  final String buyerId;
+  @JsonKey(required: true)
+  final String communityId;
+  @JsonKey(
+    required: true,
+    fromJson: createdAtFromJson,
+    toJson: dateTimeToString,
+  )
+  final DateTime createdAt;
+  @JsonKey(required: true)
+  final String instruction;
+  @JsonKey(required: true)
+  final PaymentMethod paymentMethod;
+  @JsonKey(required: true)
+  final ProductSubscriptionSchedule plan;
+  @JsonKey(required: true)
+  final SubscriptionProductDetails product;
+  @JsonKey(required: true)
+  final String productId;
+  @JsonKey(required: true)
+  final int quantity;
+  @JsonKey(required: true)
+  final String sellerId;
+  @JsonKey(required: true)
+  final SubscriptionShopDetails shop;
+  @JsonKey(required: true)
+  final String shopId;
+  @JsonKey(
+    required: true,
+    fromJson: _subscriptionStatusFromJson,
+    toJson: _subscriptionStatusToJson,
+  )
+  final SubscriptionStatus status;
+  @JsonKey(
+    fromJson: nullableDateTimeFromJson,
+    toJson: dateTimeToString,
+  )
+  DateTime? updatedAt;
 
   ProductSubscriptionPlan copyWith({
     String? id,
-    String? productId,
-    String? shopId,
+    bool? archived,
     String? buyerId,
-    String? sellerId,
-    int? quantity,
-    String? instruction,
-    SubscriptionStatus? status,
-    ProductSubscriptionSchedule? plan,
-    SubscriptionShopDetails? shop,
-    OrderProduct? product,
+    String? communityId,
     DateTime? createdAt,
+    String? instruction,
+    PaymentMethod? paymentMethod,
+    ProductSubscriptionSchedule? plan,
+    SubscriptionProductDetails? product,
+    String? productId,
+    int? quantity,
+    String? sellerId,
+    SubscriptionShopDetails? shop,
+    String? shopId,
+    SubscriptionStatus? status,
   }) {
     return ProductSubscriptionPlan(
       id: id ?? this.id,
-      productId: productId ?? this.productId,
-      shopId: shopId ?? this.shopId,
+      archived: archived ?? this.archived,
       buyerId: buyerId ?? this.buyerId,
-      sellerId: sellerId ?? this.sellerId,
-      quantity: quantity ?? this.quantity,
-      instruction: instruction ?? this.instruction,
-      status: status ?? this.status,
-      plan: plan ?? this.plan,
-      product: product as SubscriptionProductDetails? ?? this.product,
-      shop: shop ?? this.shop,
+      communityId: communityId ?? this.communityId,
       createdAt: createdAt ?? this.createdAt,
+      instruction: instruction ?? this.instruction,
+      paymentMethod: paymentMethod ?? this.paymentMethod,
+      plan: plan ?? this.plan,
+      product: product ?? this.product,
+      productId: productId ?? this.productId,
+      quantity: quantity ?? this.quantity,
+      sellerId: sellerId ?? this.sellerId,
+      shop: shop ?? this.shop,
+      shopId: shopId ?? this.shopId,
+      status: status ?? this.status,
     );
   }
 
-  factory ProductSubscriptionPlan.fromMap(Map<String, dynamic> map) {
-    final _createdAt = (map['created_at'] is Timestamp)
-        ? (map['created_at'] as Timestamp).toDate()
-        : TimestampObject.fromMap(map['created_at']).toDateTime();
-    return ProductSubscriptionPlan(
-      id: map['id'],
-      productId: map['product_id'],
-      shopId: map['shop_id'],
-      buyerId: map['buyer_id'],
-      sellerId: map['seller_id'],
-      quantity: map['quantity'],
-      instruction: map['instruction'],
-      status: SubscriptionStatus.values.firstWhereOrNull(
-            (e) => e.value == map['status'],
-          ) ??
-          SubscriptionStatus.disabled,
-      plan: ProductSubscriptionSchedule.fromMap(map['plan']),
-      product: SubscriptionProductDetails.fromMap(map['product']),
-      shop: SubscriptionShopDetails.fromMap(map['shop']),
-      createdAt: _createdAt,
-    );
-  }
+  Map<String, dynamic> toJson() => _$ProductSubscriptionPlanToJson(this);
+
+  factory ProductSubscriptionPlan.fromJson(Map<String, dynamic> json) =>
+      _$ProductSubscriptionPlanFromJson(json);
 
   factory ProductSubscriptionPlan.fromDocument(
     QueryDocumentSnapshot<Map<String, dynamic>> document,
   ) {
-    return ProductSubscriptionPlan.fromMap({
+    final _data = ProductSubscriptionPlan.fromJson({
       ...document.data(),
       'id': document.id,
     });
-  }
 
-  factory ProductSubscriptionPlan.fromJson(String source) =>
-      ProductSubscriptionPlan.fromMap(json.decode(source));
+    return _data;
+  }
 
   @override
   String toString() {
-    return 'ProductSubscriptionPlan(productId: $productId, shopId: $shopId, '
-        'buyerId: $buyerId, sellerId: $sellerId, quantity: $quantity, '
-        'instruction: $instruction, status: $status, plan: $plan, '
-        'product: $product, shop: $shop, id: $id, createdAt: $createdAt)';
+    return 'ProductSubscriptionPlan(id: $id, archived: $archived, '
+        'buyerId: $buyerId, communityId: $communityId, createdAt: $createdAt, '
+        'instruction: $instruction, paymentMethod: $paymentMethod, plan: $plan, '
+        'product: $product, productId: $productId, quantity: $quantity, '
+        'sellerId: $sellerId, shop: $shop, shopId: $shopId, status: $status)';
   }
 
   @override
@@ -460,33 +408,73 @@ class ProductSubscriptionPlan {
     if (identical(this, other)) return true;
 
     return other is ProductSubscriptionPlan &&
-        other.productId == productId &&
-        other.shopId == shopId &&
+        other.id == id &&
+        other.archived == archived &&
         other.buyerId == buyerId &&
-        other.sellerId == sellerId &&
-        other.quantity == quantity &&
+        other.communityId == communityId &&
+        other.createdAt == createdAt &&
         other.instruction == instruction &&
-        other.status == status &&
+        other.paymentMethod == paymentMethod &&
         other.plan == plan &&
         other.product == product &&
+        other.productId == productId &&
+        other.quantity == quantity &&
+        other.sellerId == sellerId &&
         other.shop == shop &&
-        other.id == id &&
-        other.createdAt == createdAt;
+        other.shopId == shopId &&
+        other.status == status;
   }
 
   @override
   int get hashCode {
-    return productId.hashCode ^
-        shopId.hashCode ^
+    return id.hashCode ^
+        archived.hashCode ^
         buyerId.hashCode ^
-        sellerId.hashCode ^
-        quantity.hashCode ^
+        communityId.hashCode ^
+        createdAt.hashCode ^
         instruction.hashCode ^
-        status.hashCode ^
+        paymentMethod.hashCode ^
         plan.hashCode ^
         product.hashCode ^
+        productId.hashCode ^
+        quantity.hashCode ^
+        sellerId.hashCode ^
         shop.hashCode ^
-        id.hashCode ^
-        createdAt.hashCode;
+        shopId.hashCode ^
+        status.hashCode;
   }
+}
+
+SubscriptionStatus _subscriptionStatusFromJson(String status) {
+  return SubscriptionStatus.values.firstWhere(
+    (e) => e.value == status,
+    orElse: () => SubscriptionStatus.disabled,
+  );
+}
+
+String _subscriptionStatusToJson(SubscriptionStatus status) => status.value;
+
+List<DateTime> _startDatesFromJson(List<dynamic>? startDates) {
+  return startDates
+          ?.map<DateTime>((date) => DateFormat('yyyy-MM-dd').parse(date))
+          .toList() ??
+      const [];
+}
+
+List<OverrideDate> _overrideDatesFromJson(Map<String, dynamic> overrideDates) {
+  final _format = DateFormat('yyyy-MM-dd');
+  return overrideDates.entries
+      .map<OverrideDate>(
+        (entry) => OverrideDate(
+          originalDate: _format.parse(entry.key),
+          newDate: _format.parse(entry.value),
+        ),
+      )
+      .toList();
+}
+
+List<String> _startDatesToJson(List<DateTime> startDates) {
+  return startDates
+      .map((date) => DateFormat('yyyy-MM-dd').format(date))
+      .toList();
 }

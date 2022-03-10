@@ -61,9 +61,7 @@ class NewSubscriptionScheduleViewModel extends ViewModel {
     _generator = ScheduleGenerator();
     quantity = orderDetails.quantity;
     product = _product;
-    operatingHours = product.availability ??
-        context.read<Shops>().findById(product.shopId)?.operatingHours ??
-        const OperatingHours();
+    operatingHours = product.availability;
     repeatabilityChoices = _getRepeatabilityChoices();
   }
 
@@ -249,9 +247,6 @@ class ViewSubscriptionScheduleViewModel extends ViewModel {
       startDates: subscriptionPlan.plan.startDates
           .map<String>((date) => DateFormat('yyyy-MM-dd').format(date))
           .toList(),
-      unavailableDates: subscriptionPlan.plan.unavailableDates
-          .map<String>((date) => DateFormat('yyyy-MM-dd').format(date))
-          .toList(),
       customDates: [],
       startTime: shop.operatingHours.startTime,
       endTime: shop.operatingHours.endTime,
@@ -260,7 +255,7 @@ class ViewSubscriptionScheduleViewModel extends ViewModel {
     // Product initialization. We get the available dates the of the product's
     // schedule. Will look into 45 days in the future.
     _productSelectableDates = _generator
-        .getSelectableDates(product.availability!)
+        .getSelectableDates(product.availability)
         .where(
           (date) =>
               date.difference(DateTime.now()).inDays <= 45 &&
@@ -351,7 +346,7 @@ class ViewSubscriptionScheduleViewModel extends ViewModel {
       return await _apiService.manualReschedulePlan(
         planId: subscriptionPlan.id,
         body: {
-          'override_dates': overridenDates.map((data) => data.toMap()).toList()
+          'override_dates': overridenDates.map((data) => data.toJson()).toList()
         },
       );
     } catch (e, stack) {

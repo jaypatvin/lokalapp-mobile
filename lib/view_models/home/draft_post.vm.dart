@@ -123,13 +123,13 @@ class DraftPostViewModel extends ViewModel {
 
     try {
       final _body = <String, dynamic>{
-        'user_id': user.id!,
+        'user_id': user.id,
       };
       if (_postMessage?.isNotEmpty ?? false) {
         _body['message'] = _postMessage;
       }
       if (gallery.isNotEmpty) {
-        _body['images'] = gallery.map((x) => x.toMap()).toList();
+        _body['images'] = gallery.map((x) => x.toJson()).toList();
       }
 
       await activities.post(_body);

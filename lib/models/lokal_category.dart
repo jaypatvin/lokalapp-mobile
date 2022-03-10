@@ -1,14 +1,15 @@
-import 'dart:convert';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:json_annotation/json_annotation.dart';
 
+import '../utils/functions.utils.dart';
 import 'status.dart';
-import 'timestamp_time_object.dart';
 
+part 'lokal_category.g.dart';
+
+@JsonSerializable()
 class LokalCategory {
   const LokalCategory({
     required this.id,
-    required this.updatedAt,
     required this.archived,
     required this.name,
     required this.createdAt,
@@ -16,16 +17,33 @@ class LokalCategory {
     required this.iconUrl,
     required this.description,
     required this.status,
+    this.updatedAt,
   });
 
+  @JsonKey(required: true)
   final String id;
+  @JsonKey(
+    fromJson: nullableDateTimeFromJson,
+    toJson: dateTimeToString,
+  )
   final DateTime? updatedAt;
+  @JsonKey(required: true, defaultValue: false)
   final bool archived;
+  @JsonKey(required: true)
   final String name;
+  @JsonKey(
+    required: true,
+    fromJson: createdAtFromJson,
+    toJson: dateTimeToString,
+  )
   final DateTime createdAt;
+  @JsonKey(required: true)
   final String coverUrl;
+  @JsonKey(required: true)
   final String iconUrl;
+  @JsonKey(required: true)
   final String description;
+  @JsonKey(required: true, toJson: statusToJson, fromJson: statusFromJson)
   final Status status;
 
   LokalCategory copyWith({
@@ -52,62 +70,15 @@ class LokalCategory {
     );
   }
 
-  Map<String, dynamic> toMap() {
-    return {
-      'id': id,
-      'updatedAt': updatedAt?.millisecondsSinceEpoch,
-      'archived': archived,
-      'name': name,
-      'createdAt': createdAt.millisecondsSinceEpoch,
-      'coverUrl': coverUrl,
-      'iconUrl': iconUrl,
-      'description': description,
-      'status': status.value,
-    };
-  }
+  Map<String, dynamic> toJson() => _$LokalCategoryToJson(this);
 
-  factory LokalCategory.fromMap(Map<String, dynamic> map) {
-    final DateTime? _updatedAt;
-    final DateTime _createdAt;
-    if (map['updated_at'] is Timestamp) {
-      _updatedAt = (map['updated_at'] as Timestamp).toDate();
-    } else if (map['updated_at'] != null) {
-      _updatedAt = TimestampObject.fromMap(map['updated_at']).toDateTime();
-    } else {
-      _updatedAt = null;
-    }
-
-    if (map['created_at'] is Timestamp) {
-      _createdAt = (map['created_at'] as Timestamp).toDate();
-    } else {
-      _createdAt = TimestampObject.fromMap(map['created_at']).toDateTime();
-    }
-
-    return LokalCategory(
-      id: map['id'],
-      updatedAt: _updatedAt,
-      archived: map['archived'],
-      name: map['name'],
-      createdAt: _createdAt,
-      coverUrl: map['cover_url'],
-      iconUrl: map['icon_url'],
-      description: map['description'],
-      status: map['status'] == Status.enabled.value
-          ? Status.enabled
-          : Status.disabled,
-    );
-  }
-
-  String toJson() => json.encode(toMap());
-
-  factory LokalCategory.fromJson(String source) =>
-      LokalCategory.fromMap(json.decode(source));
+  factory LokalCategory.fromJson(Map<String, dynamic> json) =>
+      _$LokalCategoryFromJson(json);
 
   factory LokalCategory.fromDocument(
     QueryDocumentSnapshot<Map<String, dynamic>> doc,
-  ) {
-    return LokalCategory.fromMap({'id': doc.id, ...doc.data()});
-  }
+  ) =>
+      LokalCategory.fromJson({'id': doc.id, ...doc.data()});
 
   @override
   String toString() {

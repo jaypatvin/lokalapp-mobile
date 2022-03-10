@@ -21,7 +21,7 @@ class OrderAPIService extends APIService<Order> {
         body: json.encode(trimBodyFields(body)),
       );
 
-      return handleResponse((map) => Order.fromMap(map), response);
+      return handleResponse((map) => Order.fromJson(map), response);
     } catch (e) {
       rethrow;
     }

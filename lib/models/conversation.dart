@@ -1,19 +1,37 @@
-import 'dart:convert';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
+import 'package:json_annotation/json_annotation.dart';
 
+import '../utils/functions.utils.dart';
 import 'lokal_images.dart';
 
+part 'conversation.g.dart';
+
+@JsonSerializable()
 class Conversation {
+  @JsonKey(required: true)
   final String id;
-  bool archived;
-  DateTime? createdAt;
-  String? message;
-  String senderId;
-  DateTime? sentAt;
-  DocumentReference? replyTo;
-  List<LokalImages>? media;
+  @JsonKey(defaultValue: false)
+  final bool archived;
+  @JsonKey(
+    required: true,
+    fromJson: createdAtFromJson,
+    toJson: dateTimeToString,
+  )
+  final DateTime createdAt;
+  @JsonKey(required: true)
+  final String senderId;
+  @JsonKey(
+    required: true,
+    fromJson: createdAtFromJson,
+    toJson: dateTimeToString,
+  )
+  final DateTime sentAt;
+  final String? message;
+  @JsonKey(fromJson: _replyToFromJson, toJson: _replyToToJson)
+  final DocumentReference? replyTo;
+  @JsonKey(defaultValue: <LokalImages>[])
+  final List<LokalImages>? media;
 
   Conversation({
     required this.id,
@@ -48,43 +66,15 @@ class Conversation {
     );
   }
 
-  Map<String, dynamic> toMap() {
-    return {
-      'id': id,
-      'archived': archived,
-      'created_at': Timestamp.fromDate(createdAt!),
-      'message': message,
-      'sender_id': senderId,
-      'sent_at': Timestamp.fromDate(sentAt!),
-      'reply_to': replyTo,
-      'media': media?.map((x) => x.toMap()).toList(),
-    };
-  }
-
-  static List<LokalImages> _getMediaFromMap(data) {
-    return data == null
-        ? const []
-        : List<LokalImages>.from(
-            data?.map((x) => LokalImages.fromMap(x)),
-          );
-  }
-
-  String toJson() => json.encode(toMap());
+  Map<String, dynamic> toJson() => _$ConversationToJson(this);
+  factory Conversation.fromJson(Map<String, dynamic> json) =>
+      _$ConversationFromJson(json);
 
   factory Conversation.fromDocument(
     DocumentSnapshot<Map<String, dynamic>> doc,
   ) {
     final data = doc.data()!;
-    return Conversation(
-      id: doc.id,
-      archived: data['archived'],
-      message: data['message'] ?? '',
-      sentAt: (data['sent_at'] as Timestamp?)?.toDate(),
-      senderId: data['sender_id'],
-      createdAt: (data['created_at'] as Timestamp?)?.toDate(),
-      replyTo: data['reply_to'],
-      media: _getMediaFromMap(data['media']),
-    );
+    return Conversation.fromJson({'id': doc.id, ...data});
   }
 
   @override
@@ -119,3 +109,6 @@ class Conversation {
         media.hashCode;
   }
 }
+
+DocumentReference? _replyToFromJson(DocumentReference? reference) => reference;
+DocumentReference? _replyToToJson(DocumentReference? reference) => reference;

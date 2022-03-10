@@ -13,6 +13,7 @@ import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 import '../models/failure_exception.dart';
 import '../models/lokal_user.dart';
+import '../models/notification_settings.dart';
 import '../services/api/api.dart';
 import '../services/api/user_api_service.dart';
 import '../services/database/collections/users.collection.dart';
@@ -268,6 +269,7 @@ class Auth extends ChangeNotifier {
         false) {
       await GoogleSignIn().signOut().onError((error, stackTrace) {
         FirebaseCrashlytics.instance.recordError(error, stackTrace);
+        return null;
       });
     }
 
@@ -357,5 +359,15 @@ class Auth extends ChangeNotifier {
     final bytes = utf8.encode(input);
     final digest = sha256.convert(bytes);
     return digest.toString();
+  }
+
+  void updateReadReceipts({bool? showReadReceipts}) {
+    _user = _user?.copyWith(showReadReceipts: showReadReceipts);
+  }
+
+  void updateNotificationSettings({
+    NotificationSettings? notificationSettings,
+  }) {
+    _user = _user?.copyWith(notificationSettings: notificationSettings);
   }
 }

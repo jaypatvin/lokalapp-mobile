@@ -20,7 +20,7 @@ class ProductApiService extends APIService<Product> {
         headers: api.withBodyHeader(),
         body: json.encode(trimBodyFields(body)),
       );
-      return handleResponse((map) => Product.fromMap(map), response);
+      return handleResponse((map) => Product.fromJson(map), response);
     } catch (e) {
       rethrow;
     }
@@ -140,7 +140,7 @@ class ProductApiService extends APIService<Product> {
         headers: api.authHeader(),
       );
 
-      return handleResponseList((map) => Product.fromMap(map), response);
+      return handleResponseList((map) => Product.fromJson(map), response);
     } catch (e) {
       rethrow;
     }
@@ -153,7 +153,7 @@ class ProductApiService extends APIService<Product> {
         headers: api.authHeader(),
       );
 
-      return handleResponseList((map) => Product.fromMap(map), response);
+      return handleResponseList((map) => Product.fromJson(map), response);
     } catch (e) {
       rethrow;
     }
@@ -174,7 +174,7 @@ class ProductApiService extends APIService<Product> {
         headers: api.authHeader(),
       );
 
-      return handleResponseList((map) => Product.fromMap(map), response);
+      return handleResponseList((map) => Product.fromJson(map), response);
     } catch (e) {
       rethrow;
     }
@@ -196,7 +196,7 @@ class ProductApiService extends APIService<Product> {
         headers: api.authHeader(),
       );
 
-      return handleResponseList((map) => Product.fromMap(map), response);
+      return handleResponseList((map) => Product.fromJson(map), response);
     } catch (e) {
       rethrow;
     }
@@ -211,7 +211,7 @@ class ProductApiService extends APIService<Product> {
         headers: api.authHeader(),
       );
 
-      return handleResponseList((map) => Product.fromMap(map), response);
+      return handleResponseList((map) => Product.fromJson(map), response);
     } catch (e) {
       rethrow;
     }
@@ -226,7 +226,7 @@ class ProductApiService extends APIService<Product> {
         headers: api.authHeader(),
       );
 
-      return handleResponse((map) => Product.fromMap(map), response);
+      return handleResponse((map) => Product.fromJson(map), response);
     } catch (e) {
       rethrow;
     }
@@ -241,7 +241,7 @@ class ProductApiService extends APIService<Product> {
         headers: api.authHeader(),
       );
 
-      return handleResponse((map) => Product.fromMap(map), response);
+      return handleResponse((map) => Product.fromJson(map), response);
     } catch (e) {
       rethrow;
     }

@@ -187,7 +187,7 @@ class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
     final productBody = context.read<ProductBody>();
     try {
       productBody.update(
-        gallery: gallery.map((image) => image.toMap()).toList(),
+        gallery: gallery.map((image) => image.toJson()).toList(),
         shopId: shop.id,
         availability: context.read<OperatingHoursBody>().data,
       );
@@ -233,7 +233,7 @@ class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
       }
       if (!listEquals(gallery, _product.gallery)) {
         updateBody.update(
-          gallery: gallery.map((image) => image.toMap()).toList(),
+          gallery: gallery.map((image) => image.toJson()).toList(),
         );
       }
     }
@@ -274,7 +274,7 @@ class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
       }
     } else {
       final _operatingHoursRequest = context.read<OperatingHoursBody>();
-      final availability = _product.availability!;
+      final availability = _product.availability;
       if (!listEquals(
         _operatingHoursRequest.body.unavailableDates..sort(),
         availability.unavailableDates..sort(),
@@ -307,7 +307,7 @@ class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
               id: _product.id,
               data: widget.scheduleState == ProductScheduleState.custom
                   ? context.read<OperatingHoursBody>().data
-                  : _shop!.operatingHours.toMap(),
+                  : _shop!.operatingHours.toJson(),
             );
       }
 

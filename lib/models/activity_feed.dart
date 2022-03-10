@@ -1,25 +1,15 @@
-import 'dart:convert';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
+import 'package:json_annotation/json_annotation.dart';
 
+import '../utils/functions.utils.dart';
 import 'activity_feed_comment.dart';
 import 'lokal_images.dart';
-import 'timestamp_time_object.dart';
 
+part 'activity_feed.g.dart';
+
+@JsonSerializable()
 class ActivityFeed {
-  String id;
-  String communityId;
-  String userId;
-  String message;
-  List<LokalImages> images;
-  List<ActivityFeedComment> comments;
-  bool liked;
-  DateTime createdAt;
-  int likedCount;
-  int commentCount;
-  bool archived;
-  String status;
   ActivityFeed({
     required this.id,
     required this.communityId,
@@ -34,6 +24,30 @@ class ActivityFeed {
     this.likedCount = 0,
     this.commentCount = 0,
   });
+
+  @JsonKey(required: true)
+  String id;
+  @JsonKey(required: true)
+  String communityId;
+  @JsonKey(required: true)
+  String userId;
+  @JsonKey(defaultValue: '')
+  String message;
+  @JsonKey(defaultValue: <LokalImages>[])
+  List<LokalImages> images;
+  @JsonKey(defaultValue: <ActivityFeedComment>[])
+  List<ActivityFeedComment> comments;
+  @JsonKey(defaultValue: false)
+  bool liked;
+  @JsonKey(fromJson: createdAtFromJson, toJson: dateTimeToString)
+  DateTime createdAt;
+  @JsonKey(defaultValue: false)
+  bool archived;
+  @JsonKey(readValue: _likedCountReadValue)
+  int likedCount;
+  @JsonKey(readValue: _commentCountReadValue)
+  int commentCount;
+  String status;
 
   ActivityFeed copyWith({
     String? id,
@@ -65,68 +79,17 @@ class ActivityFeed {
     );
   }
 
-  Map<String, dynamic> toMap() {
-    return {
-      'id': id,
-      'community_id': communityId,
-      'user_id': userId,
-      'message': message,
-      'images': images.map((x) => x.toMap()).toList(),
-      'comments': comments.map((x) => x.toMap()).toList(),
-      'liked': liked,
-      'created_at': Timestamp.fromDate(createdAt),
-    };
-  }
-
-  factory ActivityFeed.fromMap(Map<String, dynamic> map) {
-    return ActivityFeed(
-      id: map['id'] ?? '',
-      communityId: map['community_id'] ?? '',
-      userId: map['user_id'] ?? '',
-      message: map['message'] ?? '',
-      images: List<LokalImages>.from(
-        map['images']?.map((x) => LokalImages.fromMap(x)) ?? [],
-      ),
-      liked: map['liked'] ?? false,
-      comments: List<ActivityFeedComment>.from(
-        map['comments']?.map((x) => ActivityFeedComment.fromMap(map)) ?? [],
-      ),
-      createdAt: TimestampObject.fromMap(map['created_at']).toDateTime(),
-      likedCount: map['_meta']?['likes_count'] ?? 0,
-      commentCount: map['_meta']?['comment_count'] ?? 0,
-      archived: map['archived'],
-      status: map['status'],
-    );
-  }
-
   factory ActivityFeed.fromDocument(
     DocumentSnapshot<Map<String, dynamic>> snapshot,
   ) {
     final map = snapshot.data()!;
-    return ActivityFeed(
-      id: snapshot.id,
-      communityId: map['community_id'] ?? '',
-      userId: map['user_id'] ?? '',
-      message: map['message'] ?? '',
-      images: List<LokalImages>.from(
-        map['images']?.map((x) => LokalImages.fromMap(x)) ?? [],
-      ),
-      liked: map['liked'] ?? false,
-      comments: List<ActivityFeedComment>.from(
-        map['comments']?.map((x) => ActivityFeedComment.fromMap(map)) ?? [],
-      ),
-      createdAt: (map['created_at'] as Timestamp).toDate(),
-      likedCount: map['_meta']?['likes_count'] ?? 0,
-      commentCount: map['_meta']?['comment_count'] ?? 0,
-      archived: map['archived'],
-      status: map['status'],
-    );
+    return ActivityFeed.fromJson({'id': snapshot.id, ...map});
   }
 
-  String toJson() => json.encode(toMap());
+  Map<String, dynamic> toJson() => _$ActivityFeedToJson(this);
 
-  factory ActivityFeed.fromJson(String source) =>
-      ActivityFeed.fromMap(json.decode(source));
+  factory ActivityFeed.fromJson(Map<String, dynamic> json) =>
+      _$ActivityFeedFromJson(json);
 
   @override
   String toString() {
@@ -171,3 +134,8 @@ class ActivityFeed {
         status.hashCode;
   }
 }
+
+int? _likedCountReadValue(Map<dynamic, dynamic> map, String key) =>
+    map['_meta']?['likes_count'];
+int? _commentCountReadValue(Map<dynamic, dynamic> map, String key) =>
+    map['_meta']?['comment_count'];

@@ -46,10 +46,10 @@ class ProfileScreen extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               _ProfileHeader(
-                userId: userId ?? context.read<Auth>().user!.id!,
+                userId: userId ?? context.read<Auth>().user!.id,
               ),
               ShopBanner(
-                userId: userId ?? context.read<Auth>().user!.id!,
+                userId: userId ?? context.read<Auth>().user!.id,
               ),
               Expanded(
                 child: !isCurrentUser
@@ -160,7 +160,7 @@ class _ProfileHeaderView extends StatelessView<ProfileHeaderViewModel> {
                     ),
                     SizedBox(height: 10.0.h),
                     Text(
-                      user.displayName!,
+                      user.displayName,
                       style: Theme.of(context).textTheme.headline5?.copyWith(
                             fontWeight: FontWeight.w700,
                             color: Colors.white,

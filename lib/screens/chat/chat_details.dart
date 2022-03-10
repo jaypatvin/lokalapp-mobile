@@ -127,6 +127,7 @@ class ChatDetailsView extends HookView<ChatDetailsViewModel> {
       }
 
       _chatInputController.addListener(listener);
+      return;
     }, [
       _chatInputController,
       viewModel,

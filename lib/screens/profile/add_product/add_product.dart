@@ -70,7 +70,7 @@ class _AddProductState extends State<AddProduct> with ScreenLoader {
 
         _nameController.text = product.name;
         _priceController.text = product.basePrice.toString();
-        _descriptionController.text = product.description!;
+        _descriptionController.text = product.description;
         _title = 'Edit Product';
 
         List<LokalImages>? _productGallery = <LokalImages>[];
@@ -89,7 +89,7 @@ class _AddProductState extends State<AddProduct> with ScreenLoader {
             productCategory: product.productCategory,
             status: product.status,
             canSubscribe: product.canSubscribe,
-            gallery: _productGallery!.map((e) => e.toMap()).toList(),
+            gallery: _productGallery!.map((e) => e.toJson()).toList(),
           );
         return;
       }

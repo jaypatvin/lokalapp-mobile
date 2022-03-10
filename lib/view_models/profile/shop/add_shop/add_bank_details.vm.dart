@@ -130,6 +130,7 @@ class AddBankDetailsViewModel extends ViewModel {
     if (value?.isEmpty ?? true) {
       return 'Account Name should not be empty!';
     }
+    return null;
   }
 
   String? accountNumberValidator(String? value) {
@@ -140,5 +141,7 @@ class AddBankDetailsViewModel extends ViewModel {
     if (int.tryParse(value!) == null) {
       return 'Account Number should only contain numbers.';
     }
+
+    return null;
   }
 }

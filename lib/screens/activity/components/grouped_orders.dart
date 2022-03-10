@@ -85,7 +85,7 @@ class GroupedOrders extends StatelessWidget {
                   final snapshotData = snapshot.data()! as Map<String, dynamic>;
                   final int? code = snapshotData['status_code'];
                   final data = {...snapshotData, 'id': snapshot.id};
-                  final order = Order.fromMap(data);
+                  final order = Order.fromJson(data);
                   return Padding(
                     padding: EdgeInsets.symmetric(horizontal: 16.0.w),
                     child: TransactionCard(

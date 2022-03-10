@@ -27,7 +27,7 @@ class ShopAPIService extends APIService<Shop> {
         body: json.encode(trimBodyFields(body)),
       );
 
-      return handleResponse((map) => Shop.fromMap(map), response);
+      return handleResponse((map) => Shop.fromJson(map), response);
     } catch (e) {
       rethrow;
     }
@@ -76,7 +76,7 @@ class ShopAPIService extends APIService<Shop> {
         headers: api.authHeader(),
       );
 
-      return handleResponse((map) => Shop.fromMap(map), response);
+      return handleResponse((map) => Shop.fromJson(map), response);
     } catch (e) {
       rethrow;
     }
@@ -94,7 +94,7 @@ class ShopAPIService extends APIService<Shop> {
         headers: api.authHeader(),
       );
 
-      return handleResponseList((map) => Shop.fromMap(map), response);
+      return handleResponseList((map) => Shop.fromJson(map), response);
     } catch (e) {
       rethrow;
     }
@@ -109,7 +109,7 @@ class ShopAPIService extends APIService<Shop> {
         headers: api.authHeader(),
       );
 
-      return handleResponseList((map) => Shop.fromMap(map), response);
+      return handleResponseList((map) => Shop.fromJson(map), response);
     } catch (e) {
       rethrow;
     }
@@ -130,7 +130,7 @@ class ShopAPIService extends APIService<Shop> {
         headers: api.authHeader(),
       );
 
-      return handleResponseList((map) => Shop.fromMap(map), response);
+      return handleResponseList((map) => Shop.fromJson(map), response);
     } catch (e) {
       rethrow;
     }
@@ -152,11 +152,11 @@ class ShopAPIService extends APIService<Shop> {
     //     final _unavailableShops = <ShopModel>[];
 
     //     for (final data in map['data']) {
-    //       final _shop = ShopModel.fromMap(data);
+    //       final _shop = ShopModel.fromJson(data);
     //       _availableShops.add(_shop);
     //     }
     //     for (final data in map['unavailable_shops']) {
-    //       final _shop = ShopModel.fromMap(data);
+    //       final _shop = ShopModel.fromJson(data);
     //       _unavailableShops.add(_shop);
     //     }
 
@@ -203,7 +203,7 @@ class _OperatingHoursAPIService extends APIService<OperatingHours> {
         headers: api.authHeader(),
       );
 
-      return handleResponse((map) => OperatingHours.fromMap(map), response);
+      return handleResponse((map) => OperatingHours.fromJson(map), response);
     } catch (e) {
       rethrow;
     }

@@ -113,14 +113,14 @@ class PostDetailViewModel extends ViewModel {
     }
 
     final body = <String, dynamic>{
-      'user_id': cUser.id!,
+      'user_id': cUser.id,
     };
 
     if (inputController.text.isNotEmpty) {
       body['message'] = inputController.text;
     }
     if (gallery.isNotEmpty) {
-      body['images'] = gallery.map((x) => x.toMap()).toList();
+      body['images'] = gallery.map((x) => x.toJson()).toList();
     }
 
     try {

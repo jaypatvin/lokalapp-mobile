@@ -1,11 +1,12 @@
-import 'dart:convert';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
+import 'package:json_annotation/json_annotation.dart';
 
+import '../utils/functions.utils.dart';
 import 'operating_hours.dart';
 import 'payment_option.dart';
-import 'timestamp_time_object.dart';
+
+part 'shop.g.dart';
 
 enum ShopStatus { enabled, disabled }
 
@@ -20,6 +21,7 @@ extension ShopStatusExtension on ShopStatus {
   }
 }
 
+@JsonSerializable()
 class DeliveryOptions {
   const DeliveryOptions({
     this.delivery = true,
@@ -39,24 +41,9 @@ class DeliveryOptions {
     );
   }
 
-  Map<String, dynamic> toMap() {
-    return {
-      'delivery': delivery,
-      'pickup': pickup,
-    };
-  }
-
-  factory DeliveryOptions.fromMap(Map<String, dynamic> map) {
-    return DeliveryOptions(
-      delivery: map['delivery'] ?? false,
-      pickup: map['pickup'] ?? false,
-    );
-  }
-
-  String toJson() => json.encode(toMap());
-
-  factory DeliveryOptions.fromJson(String source) =>
-      DeliveryOptions.fromMap(json.decode(source));
+  Map<String, dynamic> toJson() => _$DeliveryOptionsToJson(this);
+  factory DeliveryOptions.fromJson(Map<String, dynamic> json) =>
+      _$DeliveryOptionsFromJson(json);
 
   @override
   String toString() => 'DeliveryOptions(delivery: $delivery, pickup: $pickup)';
@@ -74,19 +61,35 @@ class DeliveryOptions {
   int get hashCode => delivery.hashCode ^ pickup.hashCode;
 }
 
+@JsonSerializable()
 class Shop {
+  @JsonKey(required: true)
   final String id;
+  @JsonKey(required: true)
   final bool archived;
+  @JsonKey(required: true)
   final String communityId;
   final String? coverPhoto;
+  @JsonKey(
+    required: true,
+    fromJson: createdAtFromJson,
+    toJson: dateTimeToString,
+  )
   final DateTime createdAt;
+  @JsonKey(required: true)
   final String description;
-  final bool isClosed;
+  @JsonKey(required: true)
+  final bool isClose;
+  @JsonKey(required: true)
   final String name;
+  @JsonKey(required: true)
   final OperatingHours operatingHours;
   final List<PaymentOption>? paymentOptions;
+  @JsonKey(required: true)
   final DeliveryOptions deliveryOptions;
   final String? profilePhoto;
+
+  @JsonKey(fromJson: _statusFromJson, toJson: _statusToJson)
   final ShopStatus status;
   final String userId;
   const Shop({
@@ -96,7 +99,7 @@ class Shop {
     required this.coverPhoto,
     required this.createdAt,
     required this.description,
-    required this.isClosed,
+    required this.isClose,
     required this.name,
     required this.operatingHours,
     required this.paymentOptions,
@@ -106,15 +109,14 @@ class Shop {
     required this.userId,
   });
 
-  String toJson() => json.encode(toMap());
-
-  factory Shop.fromJson(String source) => Shop.fromMap(json.decode(source));
+  Map<String, dynamic> toJson() => _$ShopToJson(this);
+  factory Shop.fromJson(Map<String, dynamic> json) => _$ShopFromJson(json);
 
   @override
   String toString() {
     return 'Shop(id: $id, archived: $archived, communityId: $communityId, '
         'coverPhoto: $coverPhoto, createdAt: $createdAt, '
-        'description: $description, isClosed: $isClosed, name: $name, '
+        'description: $description, isClosed: $isClose, name: $name, '
         'operatingHours: $operatingHours, paymentOptions: $paymentOptions, '
         'deliveryOptions: $deliveryOptions, profilePhoto: $profilePhoto, '
         'status: $status, userId: $userId)';
@@ -131,7 +133,7 @@ class Shop {
         other.coverPhoto == coverPhoto &&
         other.createdAt == createdAt &&
         other.description == description &&
-        other.isClosed == isClosed &&
+        other.isClose == isClose &&
         other.name == name &&
         other.operatingHours == operatingHours &&
         listEquals(other.paymentOptions, paymentOptions) &&
@@ -149,7 +151,7 @@ class Shop {
         coverPhoto.hashCode ^
         createdAt.hashCode ^
         description.hashCode ^
-        isClosed.hashCode ^
+        isClose.hashCode ^
         name.hashCode ^
         operatingHours.hashCode ^
         paymentOptions.hashCode ^
@@ -166,7 +168,7 @@ class Shop {
     String? coverPhoto,
     DateTime? createdAt,
     String? description,
-    bool? isClosed,
+    bool? isClose,
     String? name,
     OperatingHours? operatingHours,
     List<PaymentOption>? paymentOptions,
@@ -182,7 +184,7 @@ class Shop {
       coverPhoto: coverPhoto ?? this.coverPhoto,
       createdAt: createdAt ?? this.createdAt,
       description: description ?? this.description,
-      isClosed: isClosed ?? this.isClosed,
+      isClose: isClose ?? this.isClose,
       name: name ?? this.name,
       operatingHours: operatingHours ?? this.operatingHours,
       paymentOptions: paymentOptions ?? this.paymentOptions,
@@ -193,61 +195,16 @@ class Shop {
     );
   }
 
-  Map<String, dynamic> toMap() {
-    return {
-      'id': id,
-      'archived': archived,
-      'community_id': communityId,
-      'cover_photo': coverPhoto,
-      'created_at': createdAt.millisecondsSinceEpoch,
-      'description': description,
-      'is_close': isClosed,
-      'name': name,
-      'operating_hours': operatingHours.toMap(),
-      'payment_options': paymentOptions?.map((x) => x.toMap()).toList(),
-      'delivery_options': deliveryOptions.toMap(),
-      'profile_photo': profilePhoto,
-      'status': status.value,
-      'user_id': userId,
-    };
-  }
-
-  factory Shop.fromMap(Map<String, dynamic> map) {
-    final DateTime _createdAt;
-    if (map['created_at'] is Timestamp) {
-      _createdAt = (map['created_at'] as Timestamp).toDate();
-    } else {
-      _createdAt = TimestampObject.fromMap(map['created_at']).toDateTime();
-    }
-    return Shop(
-      id: map['id'] ?? '',
-      archived: map['archived'] ?? false,
-      communityId: map['community_id'] ?? '',
-      coverPhoto: map['cover_photo'],
-      createdAt: _createdAt,
-      description: map['description'] ?? '',
-      isClosed: map['is_close'] ?? false,
-      name: map['name'] ?? '',
-      operatingHours: OperatingHours.fromMap(map['operating_hours']),
-      paymentOptions: List<PaymentOption>.from(
-        map['payment_options']?.map(
-              (x) => PaymentOption.fromMap(x),
-            ) ??
-            [],
-      ),
-      deliveryOptions: map['delivery_options'] != null
-          ? DeliveryOptions.fromMap(map['delivery_options'])
-          : const DeliveryOptions(),
-      profilePhoto: map['profile_photo'],
-      status: ShopStatus.values.firstWhere(
-        (e) => e.value == map['status'],
-        orElse: () => ShopStatus.enabled,
-      ),
-      userId: map['user_id'] ?? '',
-    );
-  }
-
   factory Shop.fromDocument(DocumentSnapshot<Map<String, dynamic>> doc) {
-    return Shop.fromMap({'id': doc.id, ...doc.data()!});
+    return Shop.fromJson({'id': doc.id, ...doc.data()!});
   }
 }
+
+ShopStatus _statusFromJson(String json) {
+  return ShopStatus.values.firstWhere(
+    (e) => e.value == json,
+    orElse: () => ShopStatus.enabled,
+  );
+}
+
+String _statusToJson(ShopStatus status) => status.value;

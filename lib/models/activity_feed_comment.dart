@@ -1,20 +1,14 @@
-import 'dart:convert';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
+import 'package:json_annotation/json_annotation.dart';
 
+import '../utils/functions.utils.dart';
 import 'lokal_images.dart';
-import 'timestamp_time_object.dart';
 
+part 'activity_feed_comment.g.dart';
+
+@JsonSerializable()
 class ActivityFeedComment {
-  String id;
-  String userId;
-  String message;
-  List<LokalImages> images;
-  DateTime createdAt;
-  bool archived;
-  bool liked;
-
   ActivityFeedComment({
     required this.id,
     required this.userId,
@@ -24,6 +18,25 @@ class ActivityFeedComment {
     required this.liked,
     required this.archived,
   });
+
+  @JsonKey(required: true)
+  String id;
+  @JsonKey(required: true)
+  String userId;
+  @JsonKey(defaultValue: '')
+  String message;
+
+  @JsonKey(defaultValue: <LokalImages>[])
+  List<LokalImages> images;
+
+  @JsonKey(fromJson: createdAtFromJson, toJson: dateTimeToString)
+  DateTime createdAt;
+
+  @JsonKey(defaultValue: false)
+  bool archived;
+
+  @JsonKey(defaultValue: false)
+  bool liked;
 
   ActivityFeedComment copyWith({
     String? id,
@@ -45,58 +58,17 @@ class ActivityFeedComment {
     );
   }
 
-  Map<String, dynamic> toMap() {
-    return {
-      'id': id,
-      'user_id': userId,
-      'message': message,
-      'images': images.map((x) => x.toMap()).toList(),
-      'created_at': Timestamp.fromDate(createdAt),
-      'archived': archived,
-      'liked': liked,
-    };
-  }
-
-  factory ActivityFeedComment.fromMap(Map<String, dynamic> map) {
-    return ActivityFeedComment(
-      id: map['id'] ?? '',
-      userId: map['user_id'] ?? '',
-      message: map['message'] ?? '',
-      images: map['images'] != null
-          ? List<LokalImages>.from(
-              map['images']?.map((x) => LokalImages.fromMap(x)),
-            )
-          : const [],
-      createdAt: DateTime.fromMicrosecondsSinceEpoch(
-        TimestampObject.fromMap(map['created_at']).seconds! * 1000000 +
-            TimestampObject.fromMap(map['created_at']).nanoseconds! ~/ 1000,
-      ),
-      archived: map['archived'] ?? false,
-      liked: map['liked'] ?? false,
-    );
-  }
-
   factory ActivityFeedComment.fromDocument(
     DocumentSnapshot<Map<String, dynamic>> snapshot,
   ) {
     final map = snapshot.data()!;
-    return ActivityFeedComment(
-      id: snapshot.id,
-      userId: map['user_id'] ?? '',
-      message: map['message'] ?? '',
-      images: List<LokalImages>.from(
-        map['images']?.map((x) => LokalImages.fromMap(x)) ?? [],
-      ),
-      createdAt: (map['created_at'] as Timestamp).toDate(),
-      archived: map['archived'] ?? false,
-      liked: map['liked'] ?? false,
-    );
+    return ActivityFeedComment.fromJson({'id': snapshot.id, ...map});
   }
 
-  String toJson() => json.encode(toMap());
+  Map<String, dynamic> toJson() => _$ActivityFeedCommentToJson(this);
 
-  factory ActivityFeedComment.fromJson(String source) =>
-      ActivityFeedComment.fromMap(json.decode(source));
+  factory ActivityFeedComment.fromJson(Map<String, dynamic> json) =>
+      _$ActivityFeedCommentFromJson(json);
 
   @override
   String toString() {

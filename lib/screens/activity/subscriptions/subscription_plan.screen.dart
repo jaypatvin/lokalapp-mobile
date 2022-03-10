@@ -43,7 +43,7 @@ class _SubscriptionDetailsView extends HookView<SubscriptionPlanScreenViewModel>
   @override
   Widget screen(BuildContext context, SubscriptionPlanScreenViewModel vm) {
     final _address = useMemoized<String>(() {
-      final _address = context.read<Auth>().user!.address!;
+      final _address = context.read<Auth>().user!.address;
       final _addressList = [
         _address.street,
         _address.barangay,
@@ -294,13 +294,14 @@ class _SubscriptionDetailsButtons extends StatelessWidget {
                     onPressed: onCancelSubscription,
                   ),
                 ),
-              Expanded(
-                child: AppButton.filled(
-                  text: 'Confirm Subscription',
-                  onPressed: onConfirmSubscription,
-                  color: kOrangeColor,
+              if (status == SubscriptionStatus.disabled)
+                Expanded(
+                  child: AppButton.filled(
+                    text: 'Confirm Subscription',
+                    onPressed: onConfirmSubscription,
+                    color: kOrangeColor,
+                  ),
                 ),
-              ),
             ],
           )
       ],

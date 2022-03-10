@@ -25,7 +25,7 @@ class ChatSettings extends StatelessWidget {
       ),
       body: ChangeNotifierProvider(
         create: (_) => ChatSettingsViewModel(
-          context.read<Auth>().user!,
+          context.read<Auth>(),
           UserAPIService(context.read<API>()),
         ),
         builder: (ctx, _) {
