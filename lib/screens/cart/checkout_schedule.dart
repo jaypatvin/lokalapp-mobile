@@ -249,6 +249,7 @@ class _DeliverySchedule extends HookWidget {
                 );
           }
         }
+        return;
       },
       [operatingHours, selectableDates],
     );

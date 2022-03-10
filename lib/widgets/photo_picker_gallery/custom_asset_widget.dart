@@ -183,7 +183,9 @@ class AssetEntityThumbImage extends ImageProvider<AssetEntityThumbImage> {
     DecoderCallback decode,
   ) async {
     assert(key == this);
-    final bytes = await entity.thumbDataWithSize(width, height);
+    final bytes = await entity.thumbnailDataWithSize(
+      ThumbnailSize(width, height),
+    );
     return decode(bytes!);
   }
 

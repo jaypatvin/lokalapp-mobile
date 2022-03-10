@@ -239,6 +239,7 @@ class _ChatList extends StatelessWidget {
                     type: MemberType.user,
                   );
                 }
+                return null;
               })
               .whereType<ChatMember>()
               .toList(),

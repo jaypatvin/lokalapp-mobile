@@ -269,6 +269,7 @@ class Auth extends ChangeNotifier {
         false) {
       await GoogleSignIn().signOut().onError((error, stackTrace) {
         FirebaseCrashlytics.instance.recordError(error, stackTrace);
+        return null;
       });
     }
 

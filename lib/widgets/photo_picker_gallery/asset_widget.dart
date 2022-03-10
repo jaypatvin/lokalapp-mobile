@@ -95,7 +95,9 @@ class AssetEntityFileImage extends ImageProvider<AssetEntityFileImage> {
   ) async {
     assert(key == this);
     if (Platform.isIOS) {
-      final asset = await entity.thumbDataWithSize(entity.width, entity.height);
+      final asset = await entity.thumbnailDataWithSize(
+        ThumbnailSize(entity.width, entity.height),
+      );
       return decode(asset!);
     } else {
       final bytes = (await entity.file)!.readAsBytesSync();
@@ -153,7 +155,8 @@ class AssetEntityThumbImage extends ImageProvider<AssetEntityThumbImage> {
     DecoderCallback decode,
   ) async {
     assert(key == this);
-    final bytes = await entity.thumbDataWithSize(width, height);
+    final bytes =
+        await entity.thumbnailDataWithSize(ThumbnailSize(width, height));
     return decode(bytes!);
   }
 
@@ -222,9 +225,13 @@ class PathItemImageProvider extends ImageProvider<PathItemImageProvider> {
     Uint8List? bytes;
 
     if (w == 0 || h == 0) {
-      bytes = await asset.thumbDataWithSize(1080, 1080);
+      bytes = await asset.thumbnailDataWithSize(
+        const ThumbnailSize(1080, 1080),
+      );
     } else {
-      bytes = await asset.thumbDataWithSize(w.toInt(), w.toInt());
+      bytes = await asset.thumbnailDataWithSize(
+        ThumbnailSize(w.toInt(), w.toInt()),
+      );
     }
     return decode(bytes);
   }

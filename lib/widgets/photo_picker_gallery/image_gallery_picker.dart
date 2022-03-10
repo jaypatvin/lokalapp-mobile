@@ -43,15 +43,17 @@ class ImageGalleryPicker extends StatelessWidget {
       onTap: () async {
         final AssetEntity? result = await CameraPicker.pickFromCamera(
           context,
-          textDelegate: EnglishCameraPickerTextDelegate(),
-          onError: (e, stack) {
-            AppRouter.rootNavigatorKey.currentState?.pop();
-            if (e is CameraException) {
-              if (e.code == 'cameraPermission') {
-                showToast('Denied camera permissions.');
+          pickerConfig: CameraPickerConfig(
+            textDelegate: EnglishCameraPickerTextDelegate(),
+            onError: (e, stack) {
+              AppRouter.rootNavigatorKey.currentState?.pop();
+              if (e is CameraException) {
+                if (e.code == 'cameraPermission') {
+                  showToast('Denied camera permissions.');
+                }
               }
-            }
-          },
+            },
+          ),
         );
         if (result != null) {
           provider.pickEntity(result);
