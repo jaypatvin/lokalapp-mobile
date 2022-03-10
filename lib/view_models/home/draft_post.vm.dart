@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 import '../../models/app_navigator.dart';
 import '../../models/failure_exception.dart';
 import '../../models/lokal_images.dart';
+import '../../models/post_requests/activities/activity.request.dart';
 import '../../providers/activities.dart';
 import '../../providers/auth.dart';
 import '../../routers/app_router.dart';
@@ -132,7 +133,13 @@ class DraftPostViewModel extends ViewModel {
         _body['images'] = gallery.map((x) => x.toJson()).toList();
       }
 
-      await activities.post(_body);
+      await activities.post(
+        ActivityRequest(
+          userId: user.id,
+          message: _postMessage,
+          images: gallery,
+        ),
+      );
 
       Navigator.pop(context, true);
     } catch (e, stack) {
