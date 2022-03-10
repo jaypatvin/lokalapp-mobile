@@ -14,6 +14,7 @@ import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import '../models/failure_exception.dart';
 import '../models/lokal_user.dart';
 import '../models/notification_settings.dart';
+import '../models/post_requests/user/user_create.request.dart';
 import '../services/api/api.dart';
 import '../services/api/user_api_service.dart';
 import '../services/database/collections/users.collection.dart';
@@ -345,9 +346,9 @@ class Auth extends ChangeNotifier {
 
   void manualFetch(User? user) => _userChangeListener(user);
 
-  Future<void> register(Map<String, dynamic> body) async {
+  Future<void> register(UserCreateRequest request) async {
     try {
-      final _ = await _apiService.create(body: body);
+      final _ = await _apiService.create(request: request);
       await _userChangeListener(firebaseUser);
       notifyListeners();
     } catch (e) {

@@ -5,8 +5,8 @@ import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/failure_exception.dart';
+import '../../models/post_requests/user/user_update.request.dart';
 import '../../providers/auth.dart';
-import '../../providers/post_requests/auth_body.dart';
 import '../../routers/app_router.dart';
 import '../../services/api/api.dart';
 import '../../services/api/user_api_service.dart';
@@ -38,22 +38,12 @@ class EditProfileViewModel extends ViewModel {
     _firstName = user.firstName;
     _lastName = user.lastName;
     _street = user.address.street;
-
-    context.read<AuthBody>().update(
-          firstName: user.firstName,
-          lastName: user.lastName,
-          profilePhoto: user.profilePhoto,
-          email: user.email,
-          communityId: user.communityId,
-          displayName: user.displayName,
-          notify: false,
-        );
   }
 
   Future<String?> _uploadProfilePhoto() async {
-    final authBody = context.read<AuthBody>();
+    final userPhoto = context.read<Auth>().user?.profilePhoto;
     final imageService = context.read<LocalImageService>();
-    var userPhotoUrl = authBody.profilePhoto;
+    var userPhotoUrl = userPhoto;
     if (_profilePhoto == null) return userPhotoUrl;
 
     try {
@@ -64,26 +54,23 @@ class EditProfileViewModel extends ViewModel {
     } catch (e, stack) {
       FirebaseCrashlytics.instance.recordError(e, stack);
       showToast('Error changing the image');
-      userPhotoUrl = authBody.profilePhoto;
+      userPhotoUrl = userPhoto;
     }
     return userPhotoUrl;
   }
 
   Future<void> updateUser() async {
     final user = context.read<Auth>().user!;
-    final authBody = context.read<AuthBody>();
     try {
       final userPhotoUrl = await _uploadProfilePhoto();
-      authBody.update(
-        firstName: _firstName,
-        lastName: _lastName,
-        address: _street,
-        profilePhoto: userPhotoUrl,
-        displayName: '$_firstName $_lastName',
-      );
-
       await _apiService.update(
-        body: authBody.data,
+        request: UserUpdateRequest(
+          firstName: _firstName,
+          lastName: _lastName,
+          street: _street,
+          profilePhoto: userPhotoUrl,
+          displayName: '$_firstName $_lastName',
+        ),
         userId: user.id,
       );
       AppRouter.profileNavigatorKey.currentState?.pop();

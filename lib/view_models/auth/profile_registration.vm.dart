@@ -75,10 +75,11 @@ class ProfileRegistrationViewModel extends ViewModel {
       lastName: _lastName,
       address: _streetName,
       email: auth.authEmail,
+      displayName: '$_firstName $_lastName',
     );
 
     try {
-      await auth.register(authBody.data);
+      await auth.register(authBody.request);
     } catch (e, stack) {
       FirebaseCrashlytics.instance.recordError(e, stack);
       showToast('Cannot create profile. Please try again');
