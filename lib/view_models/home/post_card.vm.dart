@@ -48,12 +48,12 @@ class PostCardViewModel extends ViewModel {
       if (activity.liked) {
         await context.read<Activities>().unlikePost(
               activityId: activity.id,
-              userId: user.id!,
+              userId: user.id,
             );
       } else {
         await context.read<Activities>().likePost(
               activityId: activity.id,
-              userId: user.id!,
+              userId: user.id,
             );
       }
     } catch (e, stack) {

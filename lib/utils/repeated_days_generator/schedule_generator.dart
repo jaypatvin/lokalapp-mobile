@@ -238,7 +238,7 @@ class ScheduleGenerator {
         .removeWhere((element) => unavailableDates.contains(element));
 
     for (final element in operatingHours.customDates) {
-      final date = DateFormat('yyyy-MM-dd').parse(element.date!);
+      final date = DateFormat('yyyy-MM-dd').parse(element.date);
       if (!selectableDates.contains(date)) {
         selectableDates.add(date);
       }

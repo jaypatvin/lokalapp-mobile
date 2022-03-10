@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
@@ -24,11 +25,7 @@ class ProductCardViewModel extends ViewModel {
   late Product product;
   late Shop shop;
 
-  String? get productImage =>
-      product.productPhoto ??
-      (product.gallery?.isNotEmpty ?? false
-          ? product.gallery?.first.url
-          : null);
+  String? get productImage => product.gallery?.firstOrNull?.url;
   String get productName => product.name;
   String get productPrice => product.basePrice.toString();
   String get productRating => product.avgRating.toString();
@@ -58,13 +55,13 @@ class ProductCardViewModel extends ViewModel {
       if (isLiked) {
         context.read<Products>().unlikeProduct(
               productId: productId,
-              userId: context.read<Auth>().user!.id!,
+              userId: context.read<Auth>().user!.id,
             );
         showToast('Unliked!');
       } else {
         context.read<Products>().likeProduct(
               productId: productId,
-              userId: context.read<Auth>().user!.id!,
+              userId: context.read<Auth>().user!.id,
             );
         showToast('Liked!');
       }

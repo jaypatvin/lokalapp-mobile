@@ -55,9 +55,6 @@ class SubscriptionPlanScreenViewModel extends ViewModel {
       startDates: subscriptionPlan.plan.startDates
           .map<String>((date) => DateFormat('yyyy-MM-dd').format(date))
           .toList(),
-      unavailableDates: subscriptionPlan.plan.unavailableDates
-          .map<String>((date) => DateFormat('yyyy-MM-dd').format(date))
-          .toList(),
       customDates: [],
       startTime: shop.operatingHours.startTime,
       endTime: shop.operatingHours.endTime,
@@ -65,7 +62,7 @@ class SubscriptionPlanScreenViewModel extends ViewModel {
 
     // product schedule initialization
     final productSelectableDates = _generator
-        .getSelectableDates(product!.availability!)
+        .getSelectableDates(product!.availability)
         .where(
           (date) =>
               date.difference(DateTime.now()).inDays <= 45 &&

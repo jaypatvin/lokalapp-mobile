@@ -41,7 +41,7 @@ class SearchViewModel extends ViewModel {
 
   @override
   void init() {
-    _userId = context.read<Auth>().user!.id!;
+    _userId = context.read<Auth>().user!.id;
     _apiService = SearchAPIService(context.read<API>());
     _recentSearches =
         context.read<UserSharedPreferences>().getRecentSearches(_userId);
@@ -65,7 +65,7 @@ class SearchViewModel extends ViewModel {
 
       final response = await _apiService.search(
         query: query,
-        communityId: context.read<Auth>().user!.communityId!,
+        communityId: context.read<Auth>().user!.communityId,
       );
 
       if (response['products']!.isEmpty) {

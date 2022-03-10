@@ -74,7 +74,7 @@ class _CustomizeAvailabilityState extends State<CustomizeAvailability>
     markedDates = [...initialDates];
 
     for (final customDate in operatingHours.customDates) {
-      markedDates.add(DateTime.parse(customDate.date!));
+      markedDates.add(DateTime.parse(customDate.date));
     }
     for (final dateString in operatingHours.unavailableDates) {
       final _date = DateTime.parse(dateString);
@@ -137,7 +137,11 @@ class _CustomizeAvailabilityState extends State<CustomizeAvailability>
     operatingHours.update(
       customDates: customDates
           .map(
-            (date) => CustomDates(date: DateFormat('yyyy-MM-dd').format(date!)),
+            (date) => CustomDates(
+              startTime: operatingHours.body.startTime,
+              endTime: operatingHours.body.endTime,
+              date: DateFormat('yyyy-MM-dd').format(date!),
+            ),
           )
           .toList(),
       unavailableDates: unavailableDates

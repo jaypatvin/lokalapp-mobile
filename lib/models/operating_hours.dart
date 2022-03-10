@@ -1,16 +1,23 @@
-import 'dart:convert';
-
 import 'package:flutter/foundation.dart';
+import 'package:json_annotation/json_annotation.dart';
 
+part 'operating_hours.g.dart';
+
+@JsonSerializable(
+  fieldRename: FieldRename.snake,
+  explicitToJson: true,
+  includeIfNull: false,
+)
 class CustomDates {
-  String? date;
-  String? endTime;
-  String? startTime;
-  CustomDates({
-    this.date,
-    this.endTime,
-    this.startTime,
+  const CustomDates({
+    required this.date,
+    required this.endTime,
+    required this.startTime,
   });
+  @JsonKey(readValue: _dateReadValueFrom, fromJson: _dateFromJson)
+  final String date;
+  final String endTime;
+  final String startTime;
 
   CustomDates copyWith({
     String? date,
@@ -24,26 +31,9 @@ class CustomDates {
     );
   }
 
-  Map<String, dynamic> toMap() {
-    return {
-      'date': date,
-      'end_time': endTime,
-      'start_time': startTime,
-    };
-  }
-
-  factory CustomDates.fromMap(Map<String, dynamic> map) {
-    return CustomDates(
-      date: map['date'],
-      endTime: map['end_time'],
-      startTime: map['start_time'],
-    );
-  }
-
-  String toJson() => json.encode(toMap());
-
-  factory CustomDates.fromJson(String source) =>
-      CustomDates.fromMap(json.decode(source));
+  Map<String, dynamic> toJson() => _$CustomDatesToJson(this);
+  factory CustomDates.fromJson(Map<String, dynamic> json) =>
+      _$CustomDatesFromJson(json);
 
   @override
   String toString() =>
@@ -63,14 +53,18 @@ class CustomDates {
   int get hashCode => date.hashCode ^ endTime.hashCode ^ startTime.hashCode;
 }
 
+String _dateReadValueFrom(Map<dynamic, dynamic> map, String key) {
+  return key;
+}
+
+String _dateFromJson(String date) => date;
+
+@JsonSerializable(
+  fieldRename: FieldRename.snake,
+  explicitToJson: true,
+  includeIfNull: false,
+)
 class OperatingHours {
-  final String startTime;
-  final String endTime;
-  final String repeatType;
-  final int repeatUnit;
-  final List<String> startDates;
-  final List<String> unavailableDates;
-  final List<CustomDates> customDates;
   const OperatingHours({
     this.startTime = '8:00 AM',
     this.endTime = '5:00 PM',
@@ -80,6 +74,18 @@ class OperatingHours {
     this.unavailableDates = const [],
     this.customDates = const [],
   });
+  final String startTime;
+  final String endTime;
+  final String repeatType;
+  final int repeatUnit;
+  final List<String> startDates;
+  @JsonKey(
+    readValue: _unavailableDatesReadValue,
+    fromJson: _unavailableDatesFromJson,
+  )
+  final List<String> unavailableDates;
+  @JsonKey(readValue: _customDatesReadValue, fromJson: _customDatesFromJson)
+  final List<CustomDates> customDates;
 
   OperatingHours copyWith({
     String? startTime,
@@ -101,56 +107,10 @@ class OperatingHours {
     );
   }
 
-  Map<String, dynamic> toMap() {
-    return {
-      'start_time': startTime,
-      'end_time': endTime,
-      'repeat_type': repeatType.toLowerCase(),
-      'repeat_unit': repeatUnit,
-      'start_dates': startDates,
-      'unavailable_dates': unavailableDates,
-      'custom_dates': customDates.map((x) => x.toMap()).toList(),
-    };
-  }
+  Map<String, dynamic> toJson() => _$OperatingHoursToJson(this);
 
-  factory OperatingHours.fromMap(Map<String, dynamic> map) {
-    final _customDates = <CustomDates>[];
-    final _unavailableDates = <String>[];
-
-    if (map['schedule'] != null && map['schedule']['custom'] != null) {
-      final Map<String, dynamic> schedule = map['schedule']['custom'];
-      schedule.forEach((key, value) {
-        if (value['unavailable'] != null && value['unavailable']) {
-          _unavailableDates.add(key);
-        } else {
-          _customDates.add(
-            CustomDates(
-              date: key,
-              startTime: value['start_time'],
-              endTime: value['end_time'],
-            ),
-          );
-        }
-      });
-    }
-
-    return OperatingHours(
-      startTime: map['start_time'] ?? '',
-      endTime: map['end_time'] ?? '',
-      repeatType: map['repeat_type'] ?? '',
-      repeatUnit: map['repeat_unit'] ?? 0,
-      startDates: map['start_dates'] != null
-          ? List<String>.from(map['start_dates'])
-          : <String>[],
-      unavailableDates: _unavailableDates,
-      customDates: _customDates,
-    );
-  }
-
-  String toJson() => json.encode(toMap());
-
-  factory OperatingHours.fromJson(String source) =>
-      OperatingHours.fromMap(json.decode(source));
+  factory OperatingHours.fromJson(Map<String, dynamic> json) =>
+      _$OperatingHoursFromJson(json);
 
   @override
   String toString() {
@@ -185,3 +145,42 @@ class OperatingHours {
         customDates.hashCode;
   }
 }
+
+List<String>? _unavailableDatesReadValue(
+  Map<dynamic, dynamic> map,
+  String key,
+) {
+  final _unavailableDates = <String>[];
+  if (map['schedule'] != null && map['schedule']['custom'] != null) {
+    final Map<String, dynamic> schedule = map['schedule']['custom'];
+    schedule.forEach((key, value) {
+      if (value['unavailable'] != null && value['unavailable']) {
+        _unavailableDates.add(key);
+      }
+    });
+  }
+  return _unavailableDates;
+}
+
+List<String> _unavailableDatesFromJson(List<String> value) => value;
+
+List<CustomDates> _customDatesReadValue(Map<dynamic, dynamic> map, String key) {
+  final _customDates = <CustomDates>[];
+  if (map['schedule'] != null && map['schedule']['custom'] != null) {
+    final Map<String, dynamic> schedule = map['schedule']['custom'];
+    schedule.forEach((key, value) {
+      if (!(value['unavailable'] ?? false)) {
+        _customDates.add(
+          CustomDates(
+            date: key,
+            endTime: value['end_time'],
+            startTime: value['start_time'],
+          ),
+        );
+      }
+    });
+  }
+  return _customDates;
+}
+
+List<CustomDates> _customDatesFromJson(List<CustomDates> value) => value;

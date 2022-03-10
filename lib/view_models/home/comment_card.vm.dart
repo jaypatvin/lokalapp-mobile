@@ -34,7 +34,7 @@ class CommentCardViewModel extends ViewModel {
   Future<void> _setup() async {
     isLiked = await _db.isCommentLiked(
       activityId: activityId,
-      userId: context.read<Auth>().user!.id!,
+      userId: context.read<Auth>().user!.id,
       commentId: comment.id,
     );
 
@@ -78,7 +78,7 @@ class CommentCardViewModel extends ViewModel {
         context.read<Activities>().unlikeComment(
               activityId: activityId,
               commentId: comment.id,
-              userId: context.read<Auth>().user!.id!,
+              userId: context.read<Auth>().user!.id,
             );
         isLiked = false;
         notifyListeners();
@@ -87,7 +87,7 @@ class CommentCardViewModel extends ViewModel {
         context.read<Activities>().likeComment(
               activityId: activityId,
               commentId: comment.id,
-              userId: context.read<Auth>().user!.id!,
+              userId: context.read<Auth>().user!.id,
             );
         isLiked = true;
         notifyListeners();

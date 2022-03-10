@@ -59,7 +59,7 @@ class _ProductScheduleState extends State<ProductSchedule> {
     if (widget.productId != null && widget.productId!.isNotEmpty) {
       final product = context.read<Products>().findById(widget.productId);
       if (product != null) {
-        final _productSched = product.availability!;
+        final _productSched = product.availability;
         final _productSelectableDates =
             _generator.getSelectableDates(_productSched);
 

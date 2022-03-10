@@ -1,10 +1,11 @@
-import 'dart:convert';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
+import 'package:json_annotation/json_annotation.dart';
 
-import 'timestamp_time_object.dart';
+import '../utils/functions.utils.dart';
+
+part 'order.g.dart';
 
 enum DeliveryOption { delivery, pickup }
 enum PaymentMethod { bank, cod, eWallet }
@@ -33,15 +34,13 @@ extension PaymentMethodExtension on PaymentMethod {
   }
 }
 
+@JsonSerializable(
+  fieldRename: FieldRename.snake,
+  explicitToJson: true,
+  includeIfNull: false,
+)
 class DeliveryAddress {
-  String barangay;
-  String city;
-  String country;
-  String state;
-  String street;
-  String subdivision;
-  String zipCode;
-  DeliveryAddress({
+  const DeliveryAddress({
     required this.barangay,
     required this.city,
     required this.country,
@@ -50,6 +49,21 @@ class DeliveryAddress {
     required this.subdivision,
     required this.zipCode,
   });
+
+  @JsonKey(required: true)
+  final String barangay;
+  @JsonKey(required: true)
+  final String city;
+  @JsonKey(required: true)
+  final String country;
+  @JsonKey(required: true)
+  final String state;
+  @JsonKey(required: true)
+  final String street;
+  @JsonKey(required: true)
+  final String subdivision;
+  @JsonKey(required: true)
+  final String zipCode;
 
   DeliveryAddress copyWith({
     String? barangay,
@@ -71,34 +85,10 @@ class DeliveryAddress {
     );
   }
 
-  Map<String, dynamic> toMap() {
-    return {
-      'barangay': barangay,
-      'city': city,
-      'country': country,
-      'state': state,
-      'street': street,
-      'subdivision': subdivision,
-      'zip_code': zipCode,
-    };
-  }
+  Map<String, dynamic> toJson() => _$DeliveryAddressToJson(this);
 
-  factory DeliveryAddress.fromMap(Map<String, dynamic> map) {
-    return DeliveryAddress(
-      barangay: map['barangay'],
-      city: map['city'],
-      country: map['country'],
-      state: map['state'],
-      street: map['street'],
-      subdivision: map['subdivision'],
-      zipCode: map['zip_code'],
-    );
-  }
-
-  String toJson() => json.encode(toMap());
-
-  factory DeliveryAddress.fromJson(String source) =>
-      DeliveryAddress.fromMap(json.decode(source));
+  factory DeliveryAddress.fromJson(Map<String, dynamic> json) =>
+      _$DeliveryAddressFromJson(json);
 
   @override
   String toString() {
@@ -133,15 +123,12 @@ class DeliveryAddress {
   }
 }
 
+@JsonSerializable(
+  fieldRename: FieldRename.snake,
+  explicitToJson: true,
+  includeIfNull: false,
+)
 class OrderProduct {
-  String instruction;
-  String description;
-  String id;
-  String name;
-  String image;
-  double price;
-  int quantity;
-  String? category;
   OrderProduct({
     required this.instruction,
     required this.description,
@@ -152,6 +139,22 @@ class OrderProduct {
     required this.quantity,
     this.category,
   });
+
+  @JsonKey(required: true)
+  final String instruction;
+  @JsonKey(required: true)
+  final String description;
+  @JsonKey(required: true)
+  final String id;
+  @JsonKey(required: true)
+  final String name;
+  @JsonKey(required: true)
+  final String image;
+  @JsonKey(required: true)
+  final double price;
+  @JsonKey(required: true)
+  final int quantity;
+  final String? category;
 
   OrderProduct copyWith({
     String? instruction,
@@ -175,35 +178,10 @@ class OrderProduct {
     );
   }
 
-  Map<String, dynamic> toMap() {
-    return {
-      'instruction': instruction,
-      'description': description,
-      'id': id,
-      'name': name,
-      'price': price,
-      'quantity': quantity,
-      'category': category,
-    };
-  }
+  Map<String, dynamic> toJson() => _$OrderProductToJson(this);
 
-  factory OrderProduct.fromMap(Map<String, dynamic> map) {
-    return OrderProduct(
-      instruction: map['instruction'],
-      description: map['description'],
-      id: map['id'],
-      name: map['name'],
-      image: map['image'],
-      price: map['price'] + .0,
-      quantity: map['quantity'],
-      category: map['category'],
-    );
-  }
-
-  String toJson() => json.encode(toMap());
-
-  factory OrderProduct.fromJson(String source) =>
-      OrderProduct.fromMap(json.decode(source));
+  factory OrderProduct.fromJson(Map<String, dynamic> json) =>
+      _$OrderProductFromJson(json);
 
   @override
   String toString() {
@@ -241,8 +219,15 @@ class OrderProduct {
   }
 }
 
+@JsonSerializable(
+  fieldRename: FieldRename.snake,
+  explicitToJson: true,
+  includeIfNull: false,
+)
 class OrderShop {
+  @JsonKey(required: true)
   final String name;
+  @JsonKey(required: true)
   final String description;
   final String? image;
 
@@ -264,26 +249,10 @@ class OrderShop {
     );
   }
 
-  Map<String, dynamic> toMap() {
-    return {
-      'name': name,
-      'description': description,
-      'image': image,
-    };
-  }
+  Map<String, dynamic> toJson() => _$OrderShopToJson(this);
 
-  factory OrderShop.fromMap(Map<String, dynamic> map) {
-    return OrderShop(
-      name: map['name'] ?? '',
-      description: map['description'] ?? '',
-      image: map['image'],
-    );
-  }
-
-  String toJson() => json.encode(toMap());
-
-  factory OrderShop.fromJson(String source) =>
-      OrderShop.fromMap(json.decode(source));
+  factory OrderShop.fromJson(Map<String, dynamic> json) =>
+      _$OrderShopFromJson(json);
 
   @override
   String toString() =>
@@ -303,32 +272,13 @@ class OrderShop {
   int get hashCode => name.hashCode ^ description.hashCode ^ image.hashCode;
 }
 
+@JsonSerializable(
+  fieldRename: FieldRename.snake,
+  explicitToJson: true,
+  includeIfNull: false,
+)
 class Order {
-  final String id;
-  final String buyerId;
-  final String communityId;
-  final DateTime createdAt;
-  final DeliveryAddress deliveryAddress;
-  final DateTime deliveryDate;
-  final DateTime? deliveredDate;
-  final DeliveryOption deliveryOption;
-  final String instruction;
-  final bool isPaid;
-  final PaymentMethod? paymentMethod;
-  final List<String> productIds;
-  final List<OrderProduct> products;
-  final String? proofOfPayment;
-  final String sellerId;
-  final String shopId;
-  final OrderShop shop;
-  final int statusCode;
-
-  final String? cancellationReason;
-  final String? declineReason;
-  final String? productSubscriptionId;
-  final String? productSubscriptionDate;
   const Order({
-    // Non-required:
     required this.id,
     required this.buyerId,
     required this.communityId,
@@ -352,6 +302,52 @@ class Order {
     required this.productSubscriptionId,
     required this.productSubscriptionDate,
   });
+
+  @JsonKey(required: true)
+  final String id;
+  @JsonKey(required: true)
+  final String buyerId;
+  @JsonKey(required: true)
+  final String communityId;
+  @JsonKey(required: true, fromJson: createdAtFromJson)
+  final DateTime createdAt;
+  @JsonKey(required: true)
+  final DeliveryAddress deliveryAddress;
+  @JsonKey(required: true, fromJson: createdAtFromJson)
+  final DateTime deliveryDate;
+  @JsonKey(
+    required: true,
+    fromJson: _deliveryOptionFromJson,
+    toJson: _deliveryOptionToJson,
+  )
+  final DeliveryOption deliveryOption;
+  @JsonKey(required: true)
+  final String instruction;
+  @JsonKey(required: true)
+  final bool isPaid;
+  @JsonKey(required: true, defaultValue: [])
+  final List<String> productIds;
+  @JsonKey(required: true, defaultValue: [])
+  final List<OrderProduct> products;
+  @JsonKey(required: true)
+  final String sellerId;
+  @JsonKey(required: true)
+  final String shopId;
+  @JsonKey(required: true)
+  final OrderShop shop;
+  @JsonKey(required: true)
+  final int statusCode;
+
+  @JsonKey(fromJson: nullableDateTimeFromJson)
+  final DateTime? deliveredDate;
+  final String? cancellationReason;
+  final String? declineReason;
+  final String? productSubscriptionId;
+  final String? productSubscriptionDate;
+  final String? proofOfPayment;
+
+  @JsonKey(fromJson: _paymentMethodFromJson, toJson: _paymentMethodToJson)
+  final PaymentMethod? paymentMethod;
 
   Order copyWith({
     String? id,
@@ -405,95 +401,9 @@ class Order {
     );
   }
 
-  Map<String, dynamic> toMap() {
-    return {
-      'id': id,
-      'buyer_id': buyerId,
-      'community_id': communityId,
-      'created_at': createdAt.millisecondsSinceEpoch,
-      'delivery_date': deliveryDate.millisecondsSinceEpoch,
-      'delivery_option': deliveryOption.value,
-      'delivered_date': deliveredDate?.millisecondsSinceEpoch,
-      'instruction': instruction,
-      'is_paid': isPaid,
-      'product_ids': productIds,
-      'products': products.map((x) => x.toMap()).toList(),
-      'seller_id': sellerId,
-      'shop_id': shopId,
-      'shop': shop.toMap(),
-      'status_code': statusCode,
-      'delivery_address': deliveryAddress.toMap(),
-      'proof_of_payment': proofOfPayment,
-      'payment_method': paymentMethod?.value,
-      'cancellation_reason': cancellationReason,
-      'decline_reason': declineReason,
-      'product_subscription_id': productSubscriptionId,
-      'product_subscription_date': productSubscriptionDate,
-    };
-  }
+  Map<String, dynamic> toJson() => _$OrderToJson(this);
 
-  factory Order.fromMap(Map<String, dynamic> map) {
-    late final DateTime _createdAt;
-    late final DateTime _deliveryDate;
-    late final DateTime? _deliveredDate;
-
-    if (map['created_at'] is Timestamp) {
-      _createdAt = (map['created_at'] as Timestamp).toDate();
-    } else {
-      _createdAt = TimestampObject.fromMap(map['created_at']).toDateTime();
-    }
-
-    if (map['delivery_date'] is Timestamp) {
-      _deliveryDate = (map['delivery_date'] as Timestamp).toDate();
-    } else {
-      _deliveryDate = TimestampObject.fromMap(map['created_at']).toDateTime();
-    }
-
-    if (map['delivered_date'] == null) {
-      _deliveredDate = null;
-    } else if (map['delivered_date'] is Timestamp) {
-      _deliveredDate = (map['delivered_date'] as Timestamp).toDate();
-    } else {
-      _deliveredDate =
-          TimestampObject.fromMap(map['delivered_date']).toDateTime();
-    }
-
-    return Order(
-      id: map['id'],
-      buyerId: map['buyer_id'],
-      communityId: map['community_id'],
-      createdAt: _createdAt,
-      deliveryDate: _deliveryDate,
-      deliveryOption: DeliveryOption.values.firstWhere(
-        (e) => e.value == map['delivery_option'],
-        orElse: () => DeliveryOption.pickup,
-      ),
-      instruction: map['instruction'],
-      isPaid: map['is_paid'],
-      productIds: List<String>.from(map['product_ids']),
-      products: List<OrderProduct>.from(
-        map['products']?.map((x) => OrderProduct.fromMap(x)) ?? [],
-      ),
-      sellerId: map['seller_id'],
-      shopId: map['shop_id'],
-      shop: OrderShop.fromMap(map['shop']),
-      statusCode: int.parse(map['status_code'].toString()),
-      deliveryAddress: DeliveryAddress.fromMap(map['delivery_address']),
-      proofOfPayment: map['proof_of_payment'],
-      paymentMethod: PaymentMethod.values.firstWhereOrNull(
-        (e) => e.value == map['payment_method'],
-      ),
-      deliveredDate: _deliveredDate,
-      cancellationReason: map['cancellation_reason'],
-      declineReason: map['decline_reason'],
-      productSubscriptionId: map['product_subscription_id'],
-      productSubscriptionDate: map['product_subscription_date'],
-    );
-  }
-
-  String toJson() => json.encode(toMap());
-
-  factory Order.fromJson(String source) => Order.fromMap(json.decode(source));
+  factory Order.fromJson(Map<String, dynamic> json) => _$OrderFromJson(json);
 
   @override
   String toString() {
@@ -566,3 +476,18 @@ class Order {
         productSubscriptionDate.hashCode;
   }
 }
+
+DeliveryOption _deliveryOptionFromJson(String value) {
+  return DeliveryOption.values.firstWhere(
+    (e) => e.value == value,
+    orElse: () => DeliveryOption.pickup,
+  );
+}
+
+String? _deliveryOptionToJson(DeliveryOption? option) => option?.value;
+
+PaymentMethod? _paymentMethodFromJson(String value) {
+  return PaymentMethod.values.firstWhereOrNull((e) => e.value == value);
+}
+
+String? _paymentMethodToJson(PaymentMethod? method) => method?.value;

@@ -23,7 +23,7 @@ class SubscriptionPlanDetails extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final user = context.read<Users>().findById(subscriptionPlan.buyerId)!;
-    final name = isBuyer ? subscriptionPlan.shop.name : user.displayName!;
+    final name = isBuyer ? subscriptionPlan.shop.name : user.displayName;
     final displayPhoto =
         isBuyer ? subscriptionPlan.shop.image : user.profilePhoto;
     final item = subscriptionPlan.product;

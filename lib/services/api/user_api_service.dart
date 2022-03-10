@@ -21,7 +21,7 @@ class UserAPIService extends APIService<LokalUser> {
         body: json.encode(trimBodyFields(body)),
       );    
 
-      return handleResponse((map) => LokalUser.fromMap(map), response);
+      return handleResponse((map) => LokalUser.fromJson(map), response);
     } catch (e) {
       rethrow;
     }
@@ -37,7 +37,7 @@ class UserAPIService extends APIService<LokalUser> {
         headers: api.authHeader(),
       );
 
-      return handleResponse((map) => LokalUser.fromMap(map), response);
+      return handleResponse((map) => LokalUser.fromJson(map), response);
     } catch (e) {
       rethrow;
     }
@@ -55,7 +55,7 @@ class UserAPIService extends APIService<LokalUser> {
         headers: api.authHeader(),
       );
 
-      return handleResponseList((map) => LokalUser.fromMap(map), response);
+      return handleResponseList((map) => LokalUser.fromJson(map), response);
     } catch (e) {
       rethrow;
     }

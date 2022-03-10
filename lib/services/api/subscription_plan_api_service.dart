@@ -81,7 +81,7 @@ class SubscriptionPlanAPIService extends APIService<ProductSubscriptionPlan> {
       );
 
       return handleResponse(
-        (map) => ProductSubscriptionPlan.fromMap(map),
+        (map) => ProductSubscriptionPlan.fromJson(map),
         response,
       );
     } catch (e) {

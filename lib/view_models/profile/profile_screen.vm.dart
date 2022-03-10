@@ -38,7 +38,7 @@ class ProfileHeaderViewModel extends ViewModel {
           AppRoute.chat,
           ChatDetails.routeName,
           arguments: ChatDetailsProps(
-            members: [context.read<Auth>().user!.id!, userId],
+            members: [context.read<Auth>().user!.id, userId],
           ),
 
         );

@@ -1,12 +1,20 @@
-import 'dart:convert';
+import 'package:json_annotation/json_annotation.dart';
 
+part 'lokal_images.g.dart';
+
+@JsonSerializable(
+  fieldRename: FieldRename.snake,
+  includeIfNull: false,
+  explicitToJson: true,
+)
 class LokalImages {
-  final String url;
-  final int order;
   LokalImages({
     required this.url,
     required this.order,
   });
+
+  final String url;
+  final int order;
 
   LokalImages copyWith({
     String? url,
@@ -18,24 +26,9 @@ class LokalImages {
     );
   }
 
-  Map<String, dynamic> toMap() {
-    return {
-      'url': url,
-      'order': order,
-    };
-  }
-
-  factory LokalImages.fromMap(Map<String, dynamic> map) {
-    return LokalImages(
-      url: map['url'] ?? '',
-      order: map['order'] ?? '',
-    );
-  }
-
-  String toJson() => json.encode(toMap());
-
-  factory LokalImages.fromJson(String source) =>
-      LokalImages.fromMap(json.decode(source));
+  Map<String, dynamic> toJson() => _$LokalImagesToJson(this);
+  factory LokalImages.fromJson(Map<String, dynamic> json) =>
+      _$LokalImagesFromJson(json);
 
   @override
   String toString() => 'LokalImages(url: $url, order: $order)';

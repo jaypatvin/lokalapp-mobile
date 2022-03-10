@@ -1,35 +1,21 @@
-import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
+import 'package:json_annotation/json_annotation.dart';
 
+import '../utils/functions.utils.dart';
 import 'lokal_images.dart';
 import 'operating_hours.dart';
-import 'timestamp_time_object.dart';
 
+part 'product.g.dart';
+
+@JsonSerializable(
+  fieldRename: FieldRename.snake,
+  explicitToJson: true,
+  includeIfNull: false,
+)
 class Product {
-  String id;
-  String name;
-  String? description;
-  String shopId;
-  String userId;
-  String communityId;
-  double basePrice;
-  int quantity;
-  String productCategory;
-  String? productPhoto;
-  String status;
-  bool archived;
-  bool canSubscribe;
-  OperatingHours? availability;
-  List<LokalImages>? gallery;
-  DateTime createdAt;
-  DateTime? updatedAt;
-  int numRatings;
-  double avgRating;
-  String updatedFrom;
-  List<String> likes;
-  Product({
+  const Product({
     required this.id,
     required this.name,
     required this.shopId,
@@ -45,13 +31,50 @@ class Product {
     required this.updatedAt,
     required this.numRatings,
     required this.avgRating,
-    required this.updatedFrom,
-    required this.likes,
-    this.description,
-    this.productPhoto,
+    required this.availability,
+    required this.description,
+    this.likes = const [],
     this.gallery,
-    this.availability,
   });
+
+  @JsonKey(required: true)
+  final String id;
+  @JsonKey(required: true)
+  final bool archived;
+  @JsonKey(required: true)
+  final OperatingHours availability;
+  @JsonKey(required: true)
+  final double basePrice;
+  @JsonKey(required: true)
+  final bool canSubscribe;
+  @JsonKey(required: true)
+  final String communityId;
+  @JsonKey(required: true, fromJson: createdAtFromJson)
+  final DateTime createdAt;
+  @JsonKey(required: true)
+  final String description;
+  @JsonKey(required: true)
+  final String name;
+  @JsonKey(required: true)
+  final String productCategory;
+  @JsonKey(required: true)
+  final int quantity;
+  @JsonKey(required: true)
+  final String shopId;
+  @JsonKey(required: true)
+  final String status;
+  @JsonKey(required: true)
+  final String userId;
+
+  @JsonKey(readValue: _numRatingsReadValue, defaultValue: 0)
+  final int numRatings;
+  @JsonKey(readValue: _avgRatingReadValue, defaultValue: 0)
+  final double avgRating;
+  final List<String> likes;
+
+  final List<LokalImages>? gallery;
+  @JsonKey(fromJson: nullableDateTimeFromJson)
+  final DateTime? updatedAt;
 
   Product copyWith({
     String? id,
@@ -86,7 +109,6 @@ class Product {
       basePrice: basePrice ?? this.basePrice,
       quantity: quantity ?? this.quantity,
       productCategory: productCategory ?? this.productCategory,
-      productPhoto: productPhoto ?? this.productPhoto,
       status: status ?? this.status,
       gallery: gallery ?? this.gallery,
       availability: availability ?? this.availability,
@@ -96,92 +118,16 @@ class Product {
       updatedAt: updatedAt ?? this.updatedAt,
       numRatings: numRatings ?? this.numRatings,
       avgRating: avgRating ?? this.avgRating,
-      updatedFrom: updatedFrom ?? this.updatedFrom,
       likes: likes ?? this.likes,
     );
   }
 
-  Map<String, dynamic> toMap() {
-    return {
-      'id': id,
-      'name': name,
-      'description': description,
-      'shop_id': shopId,
-      'user_id': userId,
-      'community_id': communityId,
-      'base_price': basePrice,
-      'quantity': quantity,
-      'product_category': productCategory,
-      'product_photo': productPhoto,
-      'status': status,
-      'gallery': gallery?.map((x) => x.toMap()).toList(),
-      'availability': availability?.toMap(),
-      'archived': archived,
-      'can_subscribe': canSubscribe,
-      'created_at': Timestamp.fromDate(createdAt),
-      'updated_at': updatedAt != null ? Timestamp.fromDate(updatedAt!) : null,
-      'numRatings': numRatings,
-      'avgRating': avgRating,
-      'updated_from': updatedFrom,
-      'likes': likes,
-    };
-  }
-
-  factory Product.fromMap(Map<String, dynamic> map) {
-    final DateTime _createdAt;
-    if (map['created_at'] is Timestamp) {
-      _createdAt = (map['created_at'] as Timestamp).toDate();
-    } else {
-      _createdAt = TimestampObject.fromMap(map['created_at']).toDateTime();
-    }
-
-    final DateTime? _updatedAt;
-    if (map['updated_at'] == null) {
-      _updatedAt = null;
-    } else if (map['updated_at'] is Timestamp) {
-      _updatedAt = (map['created_at'] as Timestamp).toDate();
-    } else {
-      _updatedAt = TimestampObject.fromMap(map['created_at']).toDateTime();
-    }
-
-    return Product(
-      id: map['id'],
-      name: map['name'],
-      description: map['description'],
-      shopId: map['shop_id'],
-      userId: map['user_id'],
-      communityId: map['community_id'],
-      basePrice: map['base_price'] == null ? 0.0 : map['base_price'].toDouble(),
-      quantity: map['quantity'],
-      productCategory: map['product_category'],
-      productPhoto: map['product_photo'],
-      status: map['status'],
-      archived: map['archived'],
-      canSubscribe: map['can_subscribe'] ?? false,
-      createdAt: _createdAt,
-      updatedAt: _updatedAt,
-      gallery: map['gallery'] == null
-          ? <LokalImages>[]
-          : List<LokalImages>.from(
-              map['gallery']?.map((x) => LokalImages.fromMap(x)),
-            ),
-      availability: map['availability'] != null
-          ? OperatingHours.fromMap(map['availability'])
-          : const OperatingHours(),
-      numRatings: map['numRatings'] ?? 0,
-      avgRating: map['avgRating']?.toDouble() ?? 0.0,
-      updatedFrom: map['updated_from'] ?? '',
-      likes: List<String>.from(map['likes'] ?? []),
-    );
-  }
-
-  String toJson() => json.encode(toMap());
-
-  factory Product.fromJson(String source) =>
-      Product.fromMap(json.decode(source));
+  Map<String, dynamic> toJson() => _$ProductToJson(this);
+  factory Product.fromJson(Map<String, dynamic> json) =>
+      _$ProductFromJson(json);
 
   factory Product.fromDocument(DocumentSnapshot<Map<String, dynamic>> doc) {
-    return Product.fromMap({'id': doc.id, ...doc.data()!});
+    return Product.fromJson({'id': doc.id, ...doc.data()!});
   }
 
   @override
@@ -189,11 +135,11 @@ class Product {
     return 'UserProduct(id: $id, name: $name, description: $description, '
         'shopId: $shopId, userId: $userId, communityId: $communityId, '
         'basePrice: $basePrice, quantity: $quantity, productCategory: '
-        '$productCategory, productPhoto: $productPhoto, status: $status, '
+        '$productCategory, status: $status, '
         'gallery: $gallery, availability: $availability, archived: $archived '
         'canSubscribe: $canSubscribe, createdAt: $createdAt, '
         'updatedAt: $updatedAt, numRatings: $numRatings, avgRating: $avgRating, '
-        'updatedFrom: $updatedFrom, likes: $likes)';
+        'likes: $likes)';
   }
 
   @override
@@ -210,7 +156,6 @@ class Product {
         o.basePrice == basePrice &&
         o.quantity == quantity &&
         o.productCategory == productCategory &&
-        o.productPhoto == productPhoto &&
         o.status == status &&
         o.archived == archived &&
         listEquals(o.gallery, gallery) &&
@@ -220,7 +165,6 @@ class Product {
         o.updatedAt == updatedAt &&
         o.numRatings == numRatings &&
         o.avgRating == avgRating &&
-        o.updatedFrom == updatedFrom &&
         listEquals(o.likes, likes);
   }
 
@@ -235,7 +179,6 @@ class Product {
         basePrice.hashCode ^
         quantity.hashCode ^
         productCategory.hashCode ^
-        productPhoto.hashCode ^
         status.hashCode ^
         archived.hashCode ^
         gallery.hashCode ^
@@ -245,7 +188,14 @@ class Product {
         updatedAt.hashCode ^
         numRatings.hashCode ^
         avgRating.hashCode ^
-        updatedFrom.hashCode ^
         likes.hashCode;
   }
+}
+
+int? _numRatingsReadValue(Map<dynamic, dynamic> map, String key) {
+  return map['_meta']?['reviews_count'];
+}
+
+double? _avgRatingReadValue(Map<dynamic, dynamic> map, String key) {
+  return map['_meta']?['average_rating'];
 }

@@ -20,7 +20,7 @@ class ActivityAPIService extends APIService<ActivityFeed> {
       );
 
       return handleResponse(
-        (map) => ActivityFeed.fromMap(map),
+        (map) => ActivityFeed.fromJson(map),
         response,
       );
     } catch (e) {
@@ -36,7 +36,7 @@ class ActivityAPIService extends APIService<ActivityFeed> {
       );
 
       return handleResponseList(
-        (map) => ActivityFeed.fromMap(map),
+        (map) => ActivityFeed.fromJson(map),
         response,
       );
     } catch (e) {
@@ -56,7 +56,7 @@ class ActivityAPIService extends APIService<ActivityFeed> {
       );
 
       return handleResponseList(
-        (map) => ActivityFeed.fromMap(map),
+        (map) => ActivityFeed.fromJson(map),
         response,
       );
     } catch (e) {
@@ -78,7 +78,7 @@ class ActivityAPIService extends APIService<ActivityFeed> {
       );
 
       return handleResponseList(
-        (map) => ActivityFeed.fromMap(map),
+        (map) => ActivityFeed.fromJson(map),
         response,
       );
     } catch (e) {
@@ -99,7 +99,7 @@ class ActivityAPIService extends APIService<ActivityFeed> {
       );
 
       return handleResponse(
-        (map) => ActivityFeed.fromMap(map),
+        (map) => ActivityFeed.fromJson(map),
         response,
       );
     } catch (e) {

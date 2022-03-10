@@ -202,7 +202,7 @@ class ChatDetailsViewModel extends ViewModel {
         archived: false,
         createdAt: DateTime.now(),
         message: _message,
-        senderId: _currentUser.id!,
+        senderId: _currentUser.id,
         sentAt: DateTime.now(),
         media: [],
       );

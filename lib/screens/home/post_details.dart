@@ -158,9 +158,9 @@ class _PostDetailsView extends HookView<PostDetailViewModel>
                                   vertical: 20.0.h,
                                 ),
                                 child: PostDetailsHeader(
-                                  onTap: () => vm.onUserPressed(user.id!),
-                                  firstName: user.firstName!,
-                                  lastName: user.lastName!,
+                                  onTap: () => vm.onUserPressed(user.id),
+                                  firstName: user.firstName,
+                                  lastName: user.lastName,
                                   photo: user.profilePhoto,
                                   spacing: 10.0.w,
                                 ),

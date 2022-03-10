@@ -88,7 +88,7 @@ class ProfileRegistrationViewModel extends ViewModel {
     try {
       if (auth.user != null) {
         inviteCodeClaimed = await _apiService.claim(
-          userId: auth.user!.id!,
+          userId: auth.user!.id,
           code: inviteCode,
         );
       }

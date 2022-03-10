@@ -54,7 +54,7 @@ class OperatingHoursRequestBody {
       'repeat_unit': repeatUnit,
       'start_dates': startDates,
       'unavailable_dates': unavailableDates,
-      'custom_dates': customDates.map((x) => x.toMap()).toList(),
+      'custom_dates': customDates.map((x) => x.toJson()).toList(),
     }..removeWhere((key, value) {
         if (key.isEmpty || value == null) return true;
 

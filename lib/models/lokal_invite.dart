@@ -1,7 +1,15 @@
-import 'dart:convert';
 
-import 'timestamp_time_object.dart';
+import 'package:json_annotation/json_annotation.dart';
 
+import '../utils/functions.utils.dart';
+
+part 'lokal_invite.g.dart';
+
+@JsonSerializable(
+  fieldRename: FieldRename.snake,
+  explicitToJson: true,
+  includeIfNull: false,
+)
 class LokalInvite {
   /// The model for Lokal's [Invite Code].
   ///
@@ -21,13 +29,16 @@ class LokalInvite {
     this.archived,
   });
 
+  @JsonKey(required: true)
   final String id;
+  @JsonKey(required: true)
   final String communityId;
 
   final String? updatedFrom;
   final String? updatedBy;
   final bool? claimed;
   final String? inviter;
+  @JsonKey(fromJson: nullableDateTimeFromJson)
   final DateTime? createdAt;
   final String? inviteeEmail;
   final String? status;
@@ -62,44 +73,10 @@ class LokalInvite {
     );
   }
 
-  Map<String, dynamic> toMap() {
-    return {
-      'id': id,
-      'community_id': communityId,
-      'updated_from': updatedFrom,
-      'updated_by': updatedBy,
-      'claimed': claimed,
-      'inviter': inviter,
-      'created_at': createdAt?.millisecondsSinceEpoch,
-      'invitee_email': inviteeEmail,
-      'status': status,
-      'code': code,
-      'archived': archived,
-    };
-  }
+  Map<String, dynamic> toJson() => _$LokalInviteToJson(this);
 
-  factory LokalInvite.fromMap(Map<String, dynamic> map) {
-    return LokalInvite(
-      id: map['id'],
-      communityId: map['community_id'],
-      updatedFrom: map['updated_from'],
-      updatedBy: map['updated_by'],
-      claimed: map['claimed'],
-      inviter: map['inviter'],
-      createdAt: map['created_at'] != null
-          ? TimestampObject.fromMap(map['created_at']).toDateTime()
-          : null,
-      inviteeEmail: map['invitee_email'],
-      status: map['status'],
-      code: map['code'],
-      archived: map['archived'],
-    );
-  }
-
-  String toJson() => json.encode(toMap());
-
-  factory LokalInvite.fromJson(String source) =>
-      LokalInvite.fromMap(json.decode(source));
+  factory LokalInvite.fromJson(Map<String, dynamic> json) =>
+      _$LokalInviteFromJson(json);
 
   @override
   String toString() {

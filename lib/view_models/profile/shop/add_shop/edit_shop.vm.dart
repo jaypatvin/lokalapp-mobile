@@ -74,7 +74,7 @@ class EditShopViewModel extends ViewModel {
         description: shop.description,
         coverPhoto: shop.coverPhoto,
         profilePhoto: shop.profilePhoto,
-        isClose: shop.isClosed,
+        isClose: shop.isClose,
         status: shop.status,
         userId: shop.userId,
         paymentOptions: [...(shop.paymentOptions ?? const [])],

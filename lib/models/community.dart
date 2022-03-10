@@ -1,19 +1,34 @@
-import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:json_annotation/json_annotation.dart';
 
+import '../utils/functions.utils.dart';
 import 'address.dart';
-import 'timestamp_time_object.dart';
 
+part 'community.g.dart';
+
+@JsonSerializable(
+  fieldRename: FieldRename.snake,
+  explicitToJson: true,
+  includeIfNull: false,
+)
 class Community {
+  @JsonKey(required: true)
   final String id;
+  @JsonKey(required: true)
   final String name;
+  @JsonKey(required: true)
   final Address address;
+  @JsonKey(defaultValue: '')
   final String profilePhoto;
+  @JsonKey(defaultValue: false)
   final bool archived;
+  @JsonKey(required: true)
   final String coverPhoto;
+  @JsonKey(required: true, fromJson: createdAtFromJson)
   final DateTime createdAt;
-  final DateTime updatedAt;
+  @JsonKey(fromJson: nullableDateTimeFromJson)
+  final DateTime? updatedAt;
 
   Community({
     required this.id,
@@ -23,7 +38,7 @@ class Community {
     required this.archived,
     required this.coverPhoto,
     required this.createdAt,
-    required this.updatedAt,
+    this.updatedAt,
   });
 
   Community copyWith({
@@ -48,55 +63,13 @@ class Community {
     );
   }
 
-  Map<String, dynamic> toMap() {
-    return {
-      'id': id,
-      'name': name,
-      'address': address.toMap(),
-      'profilePhoto': profilePhoto,
-      'archivedAt': archived,
-      'coverPhoto': coverPhoto,
-      'createdAt': createdAt.millisecondsSinceEpoch,
-      'updatedAt': updatedAt.millisecondsSinceEpoch,
-    };
-  }
+  Map<String, dynamic> toJson() => _$CommunityToJson(this);
 
-  factory Community.fromMap(Map<String, dynamic> map) {
-    final DateTime _createdAt;
-    if (map['created_at'] is Timestamp) {
-      _createdAt = (map['created_at'] as Timestamp).toDate();
-    } else {
-      _createdAt = TimestampObject.fromMap(map['created_at']).toDateTime();
-    }
-
-    final DateTime _updatedAt;
-    if (map['updated_at'] == null) {
-      _updatedAt = _createdAt;
-    } else if (map['updated_at'] is Timestamp) {
-      _updatedAt = (map['updated_at'] as Timestamp).toDate();
-    } else {
-      _updatedAt = TimestampObject.fromMap(map['updated_at']).toDateTime();
-    }
-
-    return Community(
-      id: map['id'],
-      name: map['name'],
-      address: Address.fromMap(map['address']),
-      profilePhoto: map['profile_photo'],
-      archived: map['archived'],
-      coverPhoto: map['cover_photo'],
-      createdAt: _createdAt,
-      updatedAt: _updatedAt,
-    );
-  }
-
-  String toJson() => json.encode(toMap());
-
-  factory Community.fromJson(String source) =>
-      Community.fromMap(json.decode(source));
+  factory Community.fromJson(Map<String, dynamic> json) =>
+      _$CommunityFromJson(json);
 
   factory Community.fromDocument(DocumentSnapshot<Map<String, dynamic>> doc) {
-    return Community.fromMap({'id': doc.id, ...doc.data()!});
+    return Community.fromJson({'id': doc.id, ...doc.data()!});
   }
 
   @override

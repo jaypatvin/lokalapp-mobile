@@ -1,6 +1,7 @@
-import 'dart:convert';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:json_annotation/json_annotation.dart';
+
+part 'bank_code.g.dart';
 
 enum BankType { bank, wallet }
 
@@ -8,17 +9,27 @@ extension BankTypeExtension on BankType {
   String get value => toString().split('.').last;
 }
 
+@JsonSerializable(
+  fieldRename: FieldRename.snake,
+  explicitToJson: true,
+  includeIfNull: false,
+)
 class BankCode {
-  final String id;
-  final String iconUrl;
-  final String name;
-  final BankType type;
   const BankCode({
     required this.id,
     required this.iconUrl,
     required this.name,
     required this.type,
   });
+
+  @JsonKey(required: true)
+  final String id;
+  @JsonKey(required: true)
+  final String iconUrl;
+  @JsonKey(required: true)
+  final String name;
+  @JsonKey(required: true, fromJson: _bankTypeFromJson, toJson: _bankTypeToJson)
+  final BankType type;
 
   BankCode copyWith({
     String? id,
@@ -34,46 +45,17 @@ class BankCode {
     );
   }
 
-  Map<String, dynamic> toMap() {
-    return {
-      'id': id,
-      'icon_url': iconUrl,
-      'name': name,
-      'type': type.value,
-    };
-  }
-
-  factory BankCode.fromMap(Map<String, dynamic> map) {
-    return BankCode(
-      id: map['id'],
-      iconUrl: map['icon_url'] ?? '',
-      name: map['name'],
-      type: BankType.values.firstWhere(
-        (type) => type.value == map['type'],
-        orElse: () => BankType.bank,
-      ),
-    );
-  }
-
   factory BankCode.fromDocument(
     QueryDocumentSnapshot<Map<String, dynamic>> doc,
   ) {
     final map = doc.data();
-    return BankCode(
-      id: doc.id,
-      iconUrl: map['icon_url'] ?? '',
-      name: map['name'],
-      type: BankType.values.firstWhere(
-        (type) => type.value == map['type'],
-        orElse: () => BankType.bank,
-      ),
-    );
+    return BankCode.fromJson({'id': doc.id, ...map});
   }
 
-  String toJson() => json.encode(toMap());
+  Map<String, dynamic> toJson() => _$BankCodeToJson(this);
 
-  factory BankCode.fromJson(String source) =>
-      BankCode.fromMap(json.decode(source));
+  factory BankCode.fromJson(Map<String, dynamic> json) =>
+      _$BankCodeFromJson(json);
 
   @override
   String toString() =>
@@ -94,3 +76,12 @@ class BankCode {
   int get hashCode =>
       id.hashCode ^ iconUrl.hashCode ^ name.hashCode ^ type.hashCode;
 }
+
+BankType _bankTypeFromJson(String bankType) {
+  return BankType.values.firstWhere(
+    (e) => e.value == bankType,
+    orElse: () => BankType.bank,
+  );
+}
+
+String _bankTypeToJson(BankType type) => type.value;

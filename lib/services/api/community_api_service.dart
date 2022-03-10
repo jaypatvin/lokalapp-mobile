@@ -14,7 +14,7 @@ class CommunityAPIService extends APIService<Community> {
         headers: api.authHeader(),
       );
 
-      return handleResponse((map) => Community.fromMap(map), response);
+      return handleResponse((map) => Community.fromJson(map), response);
     } catch (e) {
       rethrow;
     }

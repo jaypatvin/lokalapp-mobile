@@ -54,10 +54,10 @@ class _VerifyScreenState extends State<VerifyScreen> with ScreenLoader {
 
     final user = context.read<Auth>().user;
 
-    _chosenIdType = user?.registration?.idType?.isNotEmpty ?? false
-        ? user?.registration?.idType
+    _chosenIdType = user?.registration.idType.isNotEmpty ?? false
+        ? user?.registration.idType
         : null;
-    _uploadedImage = user?.registration?.idPhoto;
+    _uploadedImage = user?.registration.idPhoto;
   }
 
   Widget _androidDropDown() {
@@ -205,7 +205,7 @@ class _VerifyScreenState extends State<VerifyScreen> with ScreenLoader {
       }
 
       final success = await UserAPIService(context.read<API>()).registerUser(
-        userId: user.id!,
+        userId: user.id,
         body: {
           'id_type': _chosenIdType!,
           'id_photo': mediaUrl,

@@ -85,10 +85,9 @@ class _CurrentUserShopBanner extends StatelessWidget {
         ),
         Consumer<Auth>(
           builder: (context, auth, child) {
-            final _isUserRegistered =
-                auth.user?.registration?.verified ?? false;
+            final _isUserRegistered = auth.user?.registration.verified ?? false;
             if (!_isUserRegistered &&
-                (auth.user?.registration?.idPhoto?.isNotEmpty ?? false)) {
+                (auth.user?.registration.idPhoto.isNotEmpty ?? false)) {
               return GestureDetector(
                 onTap: onVerifyPressed,
                 child: Container(

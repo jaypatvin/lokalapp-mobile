@@ -1,18 +1,31 @@
-import 'dart:convert';
+
+import 'package:json_annotation/json_annotation.dart';
 
 import 'bank_code.dart';
 
+part 'payment_option.g.dart';
+
+@JsonSerializable(
+  fieldRename: FieldRename.snake,
+  explicitToJson: true,
+  includeIfNull: false,
+)
 class PaymentOption {
-  String bankCode;
-  String accountName;
-  String accountNumber;
-  BankType type;
   PaymentOption({
     required this.bankCode,
     required this.accountName,
     required this.accountNumber,
     required this.type,
   });
+
+  @JsonKey(required: true)
+  String bankCode;
+  @JsonKey(required: true)
+  String accountName;
+  @JsonKey(required: true)
+  String accountNumber;
+  @JsonKey(required: true, fromJson: _bankTypeFromJson, toJson: _bankTypeToJson)
+  BankType type;
 
   PaymentOption copyWith({
     String? bank,
@@ -28,31 +41,9 @@ class PaymentOption {
     );
   }
 
-  Map<String, dynamic> toMap() {
-    return {
-      'bank_code': bankCode,
-      'account_name': accountName,
-      'account_number': accountNumber,
-      'type': type.value,
-    };
-  }
-
-  @override
-  factory PaymentOption.fromMap(Map<String, dynamic> map) {
-    return PaymentOption(
-      bankCode: map['bank_code'],
-      accountName: map['account_name'],
-      accountNumber: map['account_number'],
-      type:
-          map['type'] == BankType.bank.value ? BankType.bank : BankType.wallet,
-    );
-  }
-
-  String toJson() => json.encode(toMap());
-
-  @override
-  factory PaymentOption.fromJson(String source) =>
-      PaymentOption.fromMap(json.decode(source));
+  Map<String, dynamic> toJson() => _$PaymentOptionToJson(this);
+  factory PaymentOption.fromJson(Map<String, dynamic> json) =>
+      _$PaymentOptionFromJson(json);
 
   @override
   String toString() =>
@@ -77,3 +68,12 @@ class PaymentOption {
       accountNumber.hashCode ^
       type.hashCode;
 }
+
+BankType _bankTypeFromJson(String bankType) {
+  return BankType.values.firstWhere(
+    (e) => e.value == bankType,
+    orElse: () => BankType.bank,
+  );
+}
+
+String _bankTypeToJson(BankType type) => type.value;

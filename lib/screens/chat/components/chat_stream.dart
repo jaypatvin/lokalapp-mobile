@@ -149,8 +149,9 @@ class _ChatList extends StatelessWidget {
           ids.map((id) {
             final user = context.read<Users>().findById(id)!;
             return ChatMember(
-              displayName:
-                  user.displayName ?? '${user.firstName} ${user.lastName}',
+              displayName: user.displayName.isNotEmpty
+                  ? user.displayName
+                  : '${user.firstName} ${user.lastName}',
               displayPhoto: user.profilePhoto,
               type: MemberType.user,
             );
@@ -169,8 +170,9 @@ class _ChatList extends StatelessWidget {
               final user = context.read<Users>().findById(id)!;
               return ChatMember(
                 id: id,
-                displayName:
-                    user.displayName ?? '${user.firstName} ${user.lastName}',
+                displayName: user.displayName.isNotEmpty
+                    ? user.displayName
+                    : '${user.firstName} ${user.lastName}',
                 displayPhoto: user.profilePhoto,
                 type: MemberType.user,
               );
@@ -230,8 +232,9 @@ class _ChatList extends StatelessWidget {
                 final user = context.read<Users>().findById(id);
                 if (user != null) {
                   return ChatMember(
-                    displayName: user.displayName ??
-                        '${user.firstName} ${user.lastName}',
+                    displayName: user.displayName.isNotEmpty
+                        ? user.displayName
+                        : '${user.firstName} ${user.lastName}',
                     displayPhoto: user.profilePhoto,
                     type: MemberType.user,
                   );

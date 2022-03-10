@@ -1,13 +1,13 @@
-import 'dart:convert';
+import 'package:json_annotation/json_annotation.dart';
 
+part 'address.g.dart';
+
+@JsonSerializable(
+  fieldRename: FieldRename.snake,
+  explicitToJson: true,
+  includeIfNull: false,
+)
 class Address {
-  final String state;
-  final String subdivision;
-  final String city;
-  final String country;
-  final String zipCode;
-  final String barangay;
-  final String street;
   Address({
     required this.state,
     required this.subdivision,
@@ -17,6 +17,20 @@ class Address {
     required this.barangay,
     required this.street,
   });
+  @JsonKey(required: true)
+  final String state;
+  @JsonKey(required: true)
+  final String subdivision;
+  @JsonKey(required: true)
+  final String city;
+  @JsonKey(required: true)
+  final String country;
+  @JsonKey(required: true)
+  final String zipCode;
+  @JsonKey(required: true)
+  final String barangay;
+  @JsonKey(required: true)
+  final String street;
 
   Address copyWith({
     String? state,
@@ -38,34 +52,9 @@ class Address {
     );
   }
 
-  Map<String, dynamic> toMap() {
-    return {
-      'state': state,
-      'subdivision': subdivision,
-      'city': city,
-      'country': country,
-      'zip_code': zipCode,
-      'barangay': barangay,
-      'street': street,
-    };
-  }
-
-  factory Address.fromMap(Map<String, dynamic> map) {
-    return Address(
-      state: map['state'] ?? '',
-      subdivision: map['subdivision'] ?? '',
-      city: map['city'] ?? '',
-      country: map['country'] ?? '',
-      zipCode: map['zip_code'] ?? '',
-      barangay: map['barangay'] ?? '',
-      street: map['street'] ?? '',
-    );
-  }
-
-  String toJson() => json.encode(toMap());
-
-  factory Address.fromJson(String source) =>
-      Address.fromMap(json.decode(source));
+  Map<String, dynamic> toJson() => _$AddressToJson(this);
+  factory Address.fromJson(Map<String, dynamic> json) =>
+      _$AddressFromJson(json);
 
   @override
   String toString() {

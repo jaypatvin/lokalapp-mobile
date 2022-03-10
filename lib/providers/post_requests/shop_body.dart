@@ -69,8 +69,8 @@ class ShopRequestBody {
       'cover_photo': coverPhoto,
       'operating_hours': operatingHoursBody.toMap(),
       'payment_options':
-          paymentOptions.map((x) => x.toMap()..remove('type')).toList(),
-      'delivery_options': deliveryOptions.toMap(),
+          paymentOptions.map((x) => x.toJson()..remove('type')).toList(),
+      'delivery_options': deliveryOptions.toJson(),
     }..removeWhere((key, value) {
         if (key.isEmpty || value == null) return true;
 

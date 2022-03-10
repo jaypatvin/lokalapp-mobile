@@ -1,221 +1,280 @@
-import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
+import 'package:json_annotation/json_annotation.dart';
 
+import '../utils/functions.utils.dart';
 import 'address.dart';
-import 'timestamp_time_object.dart';
+import 'notification_settings.dart';
 
-class UserRegistrationStatus {
-  int? step;
-  String? idPhoto;
-  bool? verified;
-  String? notes;
-  String? idType;
-  UserRegistrationStatus({
-    this.step,
-    this.idPhoto,
-    this.verified,
-    this.notes,
-    this.idType,
-  });
+part 'lokal_user.g.dart';
 
-  Map<String, dynamic> toMap() {
-    return {
-      'step': step,
-      'id_photo': idPhoto,
-      'verified': verified,
-      'notes': notes,
-      'id_type': idType,
-    };
-  }
+enum UserStatus { active, suspended, pending, locked }
 
-  factory UserRegistrationStatus.fromMap(Map<String, dynamic> map) {
-    return UserRegistrationStatus(
-      step: map['step'],
-      idPhoto: map['id_photo'],
-      verified: map['verified'],
-      notes: map['notes'],
-      idType: map['id_type'],
-    );
-  }
-
-  String toJson() => json.encode(toMap());
-
-  factory UserRegistrationStatus.fromJson(String source) =>
-      UserRegistrationStatus.fromMap(json.decode(source));
-}
-
-class UserRoles {
-  bool member;
-  bool admin;
-  UserRoles({
-    required this.member,
-    required this.admin,
-  });
-
-  Map<String, dynamic> toMap() {
-    return {
-      'member': member,
-      'admin': admin,
-    };
-  }
-
-  factory UserRoles.fromMap(Map<String, dynamic> map) {
-    return UserRoles(
-      member: map['member'],
-      admin: map['admin'],
-    );
-  }
-
-  String toJson() => json.encode(toMap());
-
-  factory UserRoles.fromJson(String source) =>
-      UserRoles.fromMap(json.decode(source));
-}
-
-class LokalUser {
-  List<String>? userUids;
-  String? id;
-  String? firstName;
-  String? lastName;
-  String? profilePhoto;
-  String? email;
-  String? displayName;
-  String? communityId;
-  String? birthDate;
-  String? status;
-  Address? address;
-  UserRegistrationStatus? registration;
-  UserRoles? roles;
-  DateTime? createdAt;
-  Map<String, dynamic> notificationSettings;
-  bool showReadReceipts;
-
-  LokalUser({
-    this.userUids,
-    this.id,
-    this.firstName,
-    this.lastName,
-    this.profilePhoto,
-    this.email,
-    this.displayName,
-    this.communityId,
-    this.birthDate,
-    this.status,
-    this.address,
-    this.registration,
-    this.roles,
-    this.createdAt,
-    this.notificationSettings = const <String, dynamic>{},
-    this.showReadReceipts = false,
-  });
-
-  Map<String, dynamic> toMap() {
-    return {
-      'user_uids': userUids,
-      'id': id,
-      'first_name': firstName,
-      'last_name': lastName,
-      'profile_photo': profilePhoto,
-      'email': email,
-      'display_name': displayName,
-      'community_id': communityId,
-      'birth_date': birthDate,
-      'status': status,
-      'address': address!.toMap(),
-      'registration': registration!.toMap(),
-      'roles': roles!.toMap(),
-      'created_at': createdAt,
-      'notification_settings': notificationSettings,
-      'chat_settings': showReadReceipts
-    };
-  }
-
-  factory LokalUser.fromMap(Map<String, dynamic> map) {
-    final DateTime _createdAt;
-    if (map['created_at'] is Timestamp) {
-      _createdAt = (map['created_at'] as Timestamp).toDate();
-    } else {
-      _createdAt = TimestampObject.fromMap(map['created_at']).toDateTime();
+extension UserStatusExtension on UserStatus {
+  String get value {
+    switch (this) {
+      case UserStatus.active:
+        return 'active';
+      case UserStatus.locked:
+        return 'locked';
+      case UserStatus.pending:
+        return 'pending';
+      case UserStatus.suspended:
+        return 'suspended';
     }
-
-    return LokalUser(
-      userUids: List<String>.from(map['user_uids']),
-      id: map['id'],
-      firstName: map['first_name'],
-      lastName: map['last_name'],
-      profilePhoto: map['profile_photo'],
-      email: map['email'],
-      displayName: map['display_name'],
-      communityId: map['community_id'],
-      birthDate: map['birth_date'],
-      status: map['status'],
-      address: Address.fromMap(map['address'] ?? {}),
-      registration: UserRegistrationStatus.fromMap(map['registration'] ?? {}),
-      roles: UserRoles.fromMap(map['roles'] ?? {}),
-      createdAt: _createdAt,
-      notificationSettings: map['notification_settings'] ?? {},
-      showReadReceipts: map['chat_settings']?['show_read_receipts'] ?? true,
-    );
   }
+}
 
-  String toJson() => json.encode(toMap());
+@JsonSerializable(
+  fieldRename: FieldRename.snake,
+  explicitToJson: true,
+  includeIfNull: false,
+)
+class UserRegistrationStatus {
+  @JsonKey(required: true)
+  final String idPhoto;
+  @JsonKey(required: true)
+  final String idType;
+  @JsonKey(required: true)
+  final String notes;
+  @JsonKey(required: true)
+  final int step;
+  @JsonKey(required: true)
+  final bool verified;
 
-  factory LokalUser.fromJson(String source) =>
-      LokalUser.fromMap(json.decode(source));
+  UserRegistrationStatus({
+    required this.idPhoto,
+    required this.idType,
+    required this.notes,
+    required this.step,
+    required this.verified,
+  });
 
-  factory LokalUser.fromDocument(DocumentSnapshot<Map<String, dynamic>> doc) {
-    return LokalUser.fromMap({'id': doc.id, ...doc.data()!});
-  }
+  Map<String, dynamic> toJson() => _$UserRegistrationStatusToJson(this);
 
-  LokalUser copyWith({
-    List<String>? userUids,
-    String? id,
-    String? firstName,
-    String? lastName,
-    String? profilePhoto,
-    String? email,
-    String? displayName,
-    String? communityId,
-    String? birthDate,
-    String? status,
-    Address? address,
-    UserRegistrationStatus? registration,
-    UserRoles? roles,
-    DateTime? createdAt,
-    Map<String, dynamic>? notificationSettings,
-    bool? showReadReceipts,
+  factory UserRegistrationStatus.fromJson(Map<String, dynamic> json) =>
+      _$UserRegistrationStatusFromJson(json);
+
+  UserRegistrationStatus copyWith({
+    String? idPhoto,
+    String? idType,
+    String? notes,
+    int? step,
+    bool? verified,
   }) {
-    return LokalUser(
-      userUids: userUids ?? this.userUids,
-      id: id ?? this.id,
-      firstName: firstName ?? this.firstName,
-      lastName: lastName ?? this.lastName,
-      profilePhoto: profilePhoto ?? this.profilePhoto,
-      email: email ?? this.email,
-      displayName: displayName ?? this.displayName,
-      communityId: communityId ?? this.communityId,
-      birthDate: birthDate ?? this.birthDate,
-      status: status ?? this.status,
-      address: address ?? this.address,
-      registration: registration ?? this.registration,
-      roles: roles ?? this.roles,
-      createdAt: createdAt ?? this.createdAt,
-      notificationSettings: notificationSettings ?? this.notificationSettings,
-      showReadReceipts: showReadReceipts ?? this.showReadReceipts,
+    return UserRegistrationStatus(
+      idPhoto: idPhoto ?? this.idPhoto,
+      idType: idType ?? this.idType,
+      notes: notes ?? this.notes,
+      step: step ?? this.step,
+      verified: verified ?? this.verified,
     );
   }
 
   @override
   String toString() {
-    return 'LokalUser(userUids: $userUids, id: $id, firstName: $firstName, '
-        'lastName: $lastName, profilePhoto: $profilePhoto, email: $email, '
-        'displayName: $displayName, communityId: $communityId, '
-        'birthDate: $birthDate, status: $status, address: $address, '
-        'registration: $registration, roles: $roles, createdAt: $createdAt, '
+    return 'UserRegistrationStatus(idPhoto: $idPhoto, idType: $idType, '
+        'notes: $notes, step: $step, verified: $verified)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is UserRegistrationStatus &&
+        other.idPhoto == idPhoto &&
+        other.idType == idType &&
+        other.notes == notes &&
+        other.step == step &&
+        other.verified == verified;
+  }
+
+  @override
+  int get hashCode {
+    return idPhoto.hashCode ^
+        idType.hashCode ^
+        notes.hashCode ^
+        step.hashCode ^
+        verified.hashCode;
+  }
+}
+
+@JsonSerializable(
+  fieldRename: FieldRename.snake,
+  explicitToJson: true,
+  includeIfNull: false,
+)
+class UserRoles {
+  const UserRoles({
+    required this.member,
+    required this.admin,
+    this.editor,
+  });
+
+  @JsonKey(required: true)
+  final bool member;
+  @JsonKey(required: true)
+  final bool admin;
+  final bool? editor;
+
+  Map<String, dynamic> toJson() => _$UserRolesToJson(this);
+
+  factory UserRoles.fromJson(Map<String, dynamic> json) =>
+      _$UserRolesFromJson(json);
+
+  UserRoles copyWith({
+    bool? member,
+    bool? admin,
+    bool? editor,
+  }) {
+    return UserRoles(
+      member: member ?? this.member,
+      admin: admin ?? this.admin,
+      editor: editor ?? this.editor,
+    );
+  }
+
+  @override
+  String toString() =>
+      'UserRoles(member: $member, admin: $admin, editor: $editor)';
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is UserRoles &&
+        other.member == member &&
+        other.admin == admin &&
+        other.editor == editor;
+  }
+
+  @override
+  int get hashCode => member.hashCode ^ admin.hashCode ^ editor.hashCode;
+}
+
+@JsonSerializable(
+  fieldRename: FieldRename.snake,
+  explicitToJson: true,
+  includeIfNull: false,
+)
+class LokalUser {
+  const LokalUser({
+    required this.id,
+    required this.address,
+    required this.archived,
+    required this.birthDate,
+    required this.communityId,
+    required this.createdAt,
+    required this.displayName,
+    required this.email,
+    required this.firstName,
+    required this.lastName,
+    required this.registration,
+    required this.roles,
+    required this.status,
+    required this.userUids,
+    this.notificationSettings = const NotificationSettings(),
+    this.showReadReceipts = false,
+    this.profilePhoto,
+  });
+
+  @JsonKey(required: true)
+  final String id;
+  @JsonKey(required: true)
+  final Address address;
+  @JsonKey(required: true)
+  final bool archived;
+  @JsonKey(required: true)
+  final String birthDate;
+  @JsonKey(required: true)
+  final String communityId;
+  @JsonKey(required: true, fromJson: createdAtFromJson)
+  final DateTime createdAt;
+  @JsonKey(required: true)
+  final String displayName;
+  @JsonKey(required: true)
+  final String email;
+  @JsonKey(required: true)
+  final String firstName;
+  @JsonKey(required: true)
+  final String lastName;
+  final NotificationSettings notificationSettings;
+  final String? profilePhoto;
+  @JsonKey(required: true)
+  final UserRegistrationStatus registration;
+  @JsonKey(required: true)
+  final UserRoles roles;
+  @JsonKey(
+    required: true,
+    fromJson: _userStatusFromJson,
+    toJson: _userStatusToJson,
+  )
+  final UserStatus status;
+  @JsonKey(readValue: _showReadReceiptsFromMap)
+  final bool showReadReceipts;
+  @JsonKey(required: true)
+  final List<String> userUids;
+
+  Map<String, dynamic> toJson() => _$LokalUserToJson(this);
+
+  factory LokalUser.fromJson(Map<String, dynamic> json) =>
+      _$LokalUserFromJson(json);
+
+  factory LokalUser.fromDocument(DocumentSnapshot<Map<String, dynamic>> doc) {
+    return LokalUser.fromJson({'id': doc.id, ...doc.data()!});
+  }
+
+  LokalUser copyWith({
+    String? id,
+    Address? address,
+    bool? archived,
+    String? birthDate,
+    String? communityId,
+    DateTime? createdAt,
+    String? displayName,
+    String? email,
+    String? firstName,
+    String? lastName,
+    NotificationSettings? notificationSettings,
+    String? profilePhoto,
+    UserRegistrationStatus? registration,
+    UserRoles? roles,
+    UserStatus? status,
+    bool? showReadReceipts,
+    List<String>? userUids,
+  }) {
+    return LokalUser(
+      id: id ?? this.id,
+      address: address ?? this.address,
+      archived: archived ?? this.archived,
+      birthDate: birthDate ?? this.birthDate,
+      communityId: communityId ?? this.communityId,
+      createdAt: createdAt ?? this.createdAt,
+      displayName: displayName ?? this.displayName,
+      email: email ?? this.email,
+      firstName: firstName ?? this.firstName,
+      lastName: lastName ?? this.lastName,
+      notificationSettings: notificationSettings ?? this.notificationSettings,
+      profilePhoto: profilePhoto ?? this.profilePhoto,
+      registration: registration ?? this.registration,
+      roles: roles ?? this.roles,
+      status: status ?? this.status,
+      showReadReceipts: showReadReceipts ?? this.showReadReceipts,
+      userUids: userUids ?? this.userUids,
+    );
+  }
+
+  @override
+  String toString() {
+    return 'LokalUser(id: $id, address: $address, archived: $archived, '
+        'birthDate: $birthDate, communityId: $communityId, '
+        'createdAt: $createdAt, displayName: $displayName, '
+        'email: $email, firstName: $firstName, lastName: $lastName, '
         'notificationSettings: $notificationSettings, '
-        'showReadReceipts: $showReadReceipts)';
+        'profilePhoto: $profilePhoto, registration: $registration, '
+        'roles: $roles, status: $status, showReadReceipts: $showReadReceipts, '
+        'userUids: $userUids)';
   }
 
   @override
@@ -223,41 +282,56 @@ class LokalUser {
     if (identical(this, other)) return true;
 
     return other is LokalUser &&
-        listEquals(other.userUids, userUids) &&
         other.id == id &&
+        other.address == address &&
+        other.archived == archived &&
+        other.birthDate == birthDate &&
+        other.communityId == communityId &&
+        other.createdAt == createdAt &&
+        other.displayName == displayName &&
+        other.email == email &&
         other.firstName == firstName &&
         other.lastName == lastName &&
+        other.notificationSettings == notificationSettings &&
         other.profilePhoto == profilePhoto &&
-        other.email == email &&
-        other.displayName == displayName &&
-        other.communityId == communityId &&
-        other.birthDate == birthDate &&
-        other.status == status &&
-        other.address == address &&
         other.registration == registration &&
         other.roles == roles &&
-        other.createdAt == createdAt &&
-        mapEquals(other.notificationSettings, notificationSettings) &&
-        other.showReadReceipts == showReadReceipts;
+        other.status == status &&
+        other.showReadReceipts == showReadReceipts &&
+        listEquals(other.userUids, userUids);
   }
 
   @override
   int get hashCode {
-    return userUids.hashCode ^
-        id.hashCode ^
+    return id.hashCode ^
+        address.hashCode ^
+        archived.hashCode ^
+        birthDate.hashCode ^
+        communityId.hashCode ^
+        createdAt.hashCode ^
+        displayName.hashCode ^
+        email.hashCode ^
         firstName.hashCode ^
         lastName.hashCode ^
+        notificationSettings.hashCode ^
         profilePhoto.hashCode ^
-        email.hashCode ^
-        displayName.hashCode ^
-        communityId.hashCode ^
-        birthDate.hashCode ^
-        status.hashCode ^
-        address.hashCode ^
         registration.hashCode ^
         roles.hashCode ^
-        createdAt.hashCode ^
-        notificationSettings.hashCode ^
-        showReadReceipts.hashCode;
+        status.hashCode ^
+        showReadReceipts.hashCode ^
+        userUids.hashCode;
   }
+}
+
+UserStatus _userStatusFromJson(String status) {
+  for (final userStatus in UserStatus.values) {
+    if (status == userStatus.value) return userStatus;
+  }
+  return UserStatus.pending;
+}
+
+String _userStatusToJson(UserStatus status) => status.value;
+
+bool? _showReadReceiptsFromMap(Map<dynamic, dynamic> map, String key) {
+  return map['chat_settings']?[key] ?? false;
 }

@@ -159,7 +159,7 @@ class _ProductDetailView extends HookView<ProductDetailViewModel> {
         Align(
           alignment: Alignment.centerLeft,
           child: Text(
-            vm.product.description ?? '',
+            vm.product.description,
             style: Theme.of(context).textTheme.bodyText1,
             textAlign: TextAlign.left,
           ),

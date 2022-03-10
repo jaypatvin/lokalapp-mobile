@@ -18,7 +18,7 @@ class InviteAPIService extends APIService<LokalInvite> {
         body: json.encode(trimBodyFields(body)),
       );
 
-      return handleResponse((map) => LokalInvite.fromMap(map), response);
+      return handleResponse((map) => LokalInvite.fromJson(map), response);
     } catch (e) {
       rethrow;
     }
@@ -34,7 +34,7 @@ class InviteAPIService extends APIService<LokalInvite> {
         headers: api.authHeader(),
       );
 
-      return handleResponse((map) => LokalInvite.fromMap(map), response);
+      return handleResponse((map) => LokalInvite.fromJson(map), response);
     } catch (e) {
       rethrow;
     }

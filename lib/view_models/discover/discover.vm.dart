@@ -80,8 +80,8 @@ class DiscoverViewModel extends ViewModel {
     try {
       final user = context.read<Auth>().user!;
       _recommendedProducts = await _apiService.getRecommendedProducts(
-        userId: user.id!,
-        communityId: user.communityId!,
+        userId: user.id,
+        communityId: user.communityId,
       );
     } catch (e, stack) {
       FirebaseCrashlytics.instance.recordError(e, stack);

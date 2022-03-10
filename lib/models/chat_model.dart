@@ -1,9 +1,10 @@
-import 'dart:convert';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
+import 'package:json_annotation/json_annotation.dart';
 
-import 'timestamp_time_object.dart';
+import '../utils/functions.utils.dart';
+
+part 'chat_model.g.dart';
 
 enum ChatType { user, shop, product }
 
@@ -20,8 +21,15 @@ extension ChatTypeExtension on ChatType {
   }
 }
 
+@JsonSerializable(
+  fieldRename: FieldRename.snake,
+  explicitToJson: true,
+  includeIfNull: false,
+)
 class Message {
+  @JsonKey(required: true)
   String content;
+  @JsonKey(required: true, fromJson: createdAtFromJson)
   DateTime createdAt;
   Message({
     required this.content,
@@ -38,26 +46,10 @@ class Message {
     );
   }
 
-  Map<String, dynamic> toMap() {
-    return {
-      'content': content,
-      'created_at': Timestamp.fromDate(createdAt),
-    };
-  }
+  Map<String, dynamic> toJson() => _$MessageToJson(this);
 
-  factory Message.fromMap(Map<String, dynamic> map) {
-    return Message(
-      content: map['content'],
-      createdAt: map['created_at'] is Timestamp
-          ? (map['created_at'] as Timestamp).toDate()
-          : TimestampObject.fromMap(map['created_at']).toDateTime(),
-    );
-  }
-
-  String toJson() => json.encode(toMap());
-
-  factory Message.fromJson(String source) =>
-      Message.fromMap(json.decode(source));
+  factory Message.fromJson(Map<String, dynamic> json) =>
+      _$MessageFromJson(json);
 
   @override
   String toString() => 'Message(content: $content, createdAt: $createdAt)';
@@ -75,15 +67,28 @@ class Message {
   int get hashCode => content.hashCode ^ createdAt.hashCode;
 }
 
+@JsonSerializable(
+  fieldRename: FieldRename.snake,
+  explicitToJson: true,
+  includeIfNull: false,
+)
 class ChatModel {
   // Common:
+  @JsonKey(required: true)
   String id;
+  @JsonKey(required: true)
   List<String> members;
+  @JsonKey(required: true)
   String title;
+  @JsonKey(required: true, fromJson: _chatTypeFromJson, toJson: _chatTypeToJson)
   ChatType chatType;
+  @JsonKey(required: true)
   bool archived;
+  @JsonKey(required: true)
   String communityId;
+  @JsonKey(required: true, fromJson: createdAtFromJson)
   DateTime createdAt;
+  @JsonKey(required: true)
   Message lastMessage;
 
   // Shop
@@ -135,65 +140,14 @@ class ChatModel {
     );
   }
 
-  Map<String, dynamic> toMap() {
-    return {
-      'id': id,
-      'members': members,
-      'title': title,
-      'chat_type': chatType.value,
-      'archived': archived,
-      'community_id': communityId,
-      'created_at': Timestamp.fromDate(createdAt),
-      'last_message': lastMessage.toMap(),
-      'shop_id': shopId,
-      'customer_name': customerName,
-      'product_id': productId,
-    };
-  }
-
-  factory ChatModel.fromMap(Map<String, dynamic> map) {
-    ChatType chatType;
-    switch (map['chat_type']) {
-      case 'product':
-        chatType = ChatType.product;
-        break;
-      case 'shop':
-        chatType = ChatType.shop;
-        break;
-      default:
-        chatType = ChatType.user;
-        break;
-    }
-
-    return ChatModel(
-      id: map['id'],
-      members: map['members'] != null
-          ? List<String>.from(
-              map['members'],
-            )
-          : const [],
-      title: map['title'],
-      chatType: chatType,
-      archived: map['archived'],
-      communityId: map['community_id'],
-      createdAt: map['created_at'] is Timestamp
-          ? (map['created_at'] as Timestamp).toDate()
-          : TimestampObject.fromMap(map['created_at']).toDateTime(),
-      lastMessage: Message.fromMap(map['last_message']),
-      shopId: map['shop_id'],
-      customerName: map['customer_name'],
-      productId: map['product_id'],
-    );
-  }
-
   factory ChatModel.fromDocument(DocumentSnapshot<Map<String, dynamic>> doc) {
-    return ChatModel.fromMap({'id': doc.id, ...doc.data()!});
+    return ChatModel.fromJson({'id': doc.id, ...doc.data()!});
   }
 
-  String toJson() => json.encode(toMap());
+  Map<String, dynamic> toJson() => _$ChatModelToJson(this);
 
-  factory ChatModel.fromJson(String source) =>
-      ChatModel.fromMap(json.decode(source));
+  factory ChatModel.fromJson(Map<String, dynamic> json) =>
+      _$ChatModelFromJson(json);
 
   @override
   String toString() {
@@ -236,3 +190,12 @@ class ChatModel {
         productId.hashCode;
   }
 }
+
+ChatType _chatTypeFromJson(String chatType) {
+  return ChatType.values.firstWhere(
+    (e) => e.value == chatType,
+    orElse: () => ChatType.user,
+  );
+}
+
+String _chatTypeToJson(ChatType type) => type.value;

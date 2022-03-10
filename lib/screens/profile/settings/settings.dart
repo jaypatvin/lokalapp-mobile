@@ -88,7 +88,7 @@ class Settings extends StatelessWidget {
               onTap: () => Navigator.push(
                 context,
                 AppNavigator.appPageRoute(
-                  builder: (_) => const NotificationSettings(),
+                  builder: (_) => const NotificationSettingsScreen(),
                 ),
               ),
               tileColor: Colors.white,

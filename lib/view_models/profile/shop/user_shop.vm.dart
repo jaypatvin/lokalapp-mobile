@@ -61,7 +61,7 @@ class UserShopViewModel extends ViewModel {
   @override
   void init() {
     _shopSetup();
-    isCurrentUser = context.read<Auth>().user!.id! == userId;
+    isCurrentUser = context.read<Auth>().user!.id== userId;
     user = isCurrentUser
         ? context.read<Auth>().user!
         : context.read<Users>().findById(userId)!;

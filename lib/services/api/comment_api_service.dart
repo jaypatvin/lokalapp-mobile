@@ -25,7 +25,7 @@ class CommentsAPIService extends APIService<ActivityFeedComment> {
       );
 
       return handleResponse(
-        (map) => ActivityFeedComment.fromMap(map),
+        (map) => ActivityFeedComment.fromJson(map),
         response,
       );
     } catch (e) {
@@ -43,7 +43,7 @@ class CommentsAPIService extends APIService<ActivityFeedComment> {
       );
 
       return handleResponseList(
-        (map) => ActivityFeedComment.fromMap(map),
+        (map) => ActivityFeedComment.fromJson(map),
         response,
       );
     } catch (e) {
@@ -61,7 +61,7 @@ class CommentsAPIService extends APIService<ActivityFeedComment> {
       );
 
       return handleResponseList(
-        (map) => ActivityFeedComment.fromMap(map),
+        (map) => ActivityFeedComment.fromJson(map),
         response,
       );
     } catch (e) {
@@ -83,7 +83,7 @@ class CommentsAPIService extends APIService<ActivityFeedComment> {
       );
 
       return handleResponse(
-        (map) => ActivityFeedComment.fromMap(map),
+        (map) => ActivityFeedComment.fromJson(map),
         response,
       );
     } catch (e) {

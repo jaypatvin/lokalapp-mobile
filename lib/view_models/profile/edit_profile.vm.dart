@@ -35,9 +35,9 @@ class EditProfileViewModel extends ViewModel {
     _apiService = UserAPIService(context.read<API>());
     final user = context.read<Auth>().user!;
 
-    _firstName = user.firstName!;
-    _lastName = user.lastName!;
-    _street = user.address!.street;
+    _firstName = user.firstName;
+    _lastName = user.lastName;
+    _street = user.address.street;
 
     context.read<AuthBody>().update(
           firstName: user.firstName,
@@ -84,7 +84,7 @@ class EditProfileViewModel extends ViewModel {
 
       await _apiService.update(
         body: authBody.data,
-        userId: user.id!,
+        userId: user.id,
       );
       AppRouter.profileNavigatorKey.currentState?.pop();
     } catch (e, stack) {

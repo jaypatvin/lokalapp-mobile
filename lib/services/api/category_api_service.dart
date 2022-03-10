@@ -18,7 +18,7 @@ class CategoryAPIService extends APIService<LokalCategory> {
         headers: api.authHeader(),
       );
 
-      return handleResponseList((map) => LokalCategory.fromMap(map), response);
+      return handleResponseList((map) => LokalCategory.fromJson(map), response);
     } catch (e) {
       rethrow;
     }
@@ -30,7 +30,7 @@ class CategoryAPIService extends APIService<LokalCategory> {
         api.endpointUri(endpoint, pathSegments: [id]),
         headers: api.authHeader(),
       );
-      return handleResponse((map) => LokalCategory.fromMap(map), response);
+      return handleResponse((map) => LokalCategory.fromJson(map), response);
     } catch (e) {
       rethrow;
     }
