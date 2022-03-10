@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 
 import '../../models/app_navigator.dart';
 import '../../models/failure_exception.dart';
+import '../../models/post_requests/invite.request.dart';
 import '../../providers/auth.dart';
 import '../../providers/bank_codes.dart';
 import '../../providers/categories.dart';
@@ -88,8 +89,7 @@ class ProfileRegistrationViewModel extends ViewModel {
     try {
       if (auth.user != null) {
         inviteCodeClaimed = await _apiService.claim(
-          userId: auth.user!.id,
-          code: inviteCode,
+          request: InviteRequest(userId: auth.user!.id, code: inviteCode),
         );
       }
     } catch (e, stack) {
