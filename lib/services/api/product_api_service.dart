@@ -1,5 +1,9 @@
 import 'dart:convert';
 
+import '../../models/post_requests/product/product_create.request.dart';
+import '../../models/post_requests/product/product_review.request.dart';
+import '../../models/post_requests/product/product_update.request.dart';
+import '../../models/post_requests/shop/operating_hours.request.dart';
 import '../../models/product.dart';
 import 'api.dart';
 import 'api_service.dart';
@@ -12,13 +16,13 @@ class ProductApiService extends APIService<Product> {
 
   // --POST
   Future<Product> create({
-    required Map<String, dynamic> body,
+    required ProductCreateRequest request,
   }) async {
     try {
       final response = await poster(
         api.endpointUri(endpoint),
         headers: api.withBodyHeader(),
-        body: json.encode(trimBodyFields(body)),
+        body: json.encode(trimBodyFields(request.toJson())),
       );
       return handleResponse((map) => Product.fromJson(map), response);
     } catch (e) {
@@ -28,7 +32,7 @@ class ProductApiService extends APIService<Product> {
 
   Future<bool> review({
     required String productId,
-    required Map<String, dynamic> body,
+    required ProductReviewRequest request,
   }) async {
     try {
       final response = await poster(
@@ -37,7 +41,7 @@ class ProductApiService extends APIService<Product> {
           pathSegments: [productId, 'reviews'],
         ),
         headers: api.withBodyHeader(),
-        body: json.encode(trimBodyFields(body)),
+        body: json.encode(request.toJson()),
       );
 
       return handleGenericResponse(response);
@@ -81,7 +85,7 @@ class ProductApiService extends APIService<Product> {
   // --PUT
   Future<bool> update({
     required String productId,
-    required Map<String, dynamic> body,
+    required ProductUpdateRequest request,
   }) async {
     try {
       final response = await putter(
@@ -92,7 +96,7 @@ class ProductApiService extends APIService<Product> {
           ],
         ),
         headers: api.withBodyHeader(),
-        body: json.encode(trimBodyFields(body)),
+        body: json.encode(trimBodyFields(request.toJson())),
       );
 
       return handleGenericResponse(response);
@@ -103,7 +107,7 @@ class ProductApiService extends APIService<Product> {
 
   Future<bool> setAvailability({
     required String productId,
-    required Map<String, dynamic> body,
+    required OperatingHoursRequest request,
   }) async {
     try {
       final response = await putter(
@@ -115,7 +119,7 @@ class ProductApiService extends APIService<Product> {
           ],
         ),
         headers: api.withBodyHeader(),
-        body: json.encode(trimBodyFields(body)),
+        body: json.encode(trimBodyFields(request.toJson())),
       );
 
       return handleGenericResponse(response);

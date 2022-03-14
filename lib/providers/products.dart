@@ -3,6 +3,9 @@ import 'dart:async';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 
+import '../models/post_requests/product/product_create.request.dart';
+import '../models/post_requests/product/product_update.request.dart';
+import '../models/post_requests/shop/operating_hours.request.dart';
 import '../models/product.dart';
 import '../services/api/api.dart';
 import '../services/api/product_api_service.dart';
@@ -89,9 +92,9 @@ class Products extends ChangeNotifier {
     return items.where((product) => product.shopId == shopId).toList();
   }
 
-  Future<void> create(Map<String, dynamic> body) async {
+  Future<void> create(ProductCreateRequest request) async {
     try {
-      await _apiService.create(body: body);
+      await _apiService.create(request: request);
       notifyListeners();
     } catch (e) {
       rethrow;
@@ -100,10 +103,10 @@ class Products extends ChangeNotifier {
 
   Future<bool> update({
     required String id,
-    required Map<String, dynamic> data,
+    required ProductUpdateRequest request,
   }) async {
     try {
-      return await _apiService.update(productId: id, body: data);
+      return await _apiService.update(productId: id, request: request);
     } catch (e) {
       rethrow;
     }
@@ -111,12 +114,12 @@ class Products extends ChangeNotifier {
 
   Future<bool> setAvailability({
     required String id,
-    required Map<String, dynamic> data,
+    required OperatingHoursRequest request,
   }) async {
     try {
       return await _apiService.setAvailability(
         productId: id,
-        body: data,
+        request: request,
       );
     } catch (e) {
       rethrow;

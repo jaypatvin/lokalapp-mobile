@@ -5,6 +5,7 @@ import 'package:json_annotation/json_annotation.dart';
 import '../utils/functions.utils.dart';
 import 'lokal_images.dart';
 import 'operating_hours.dart';
+import 'status.dart';
 
 part 'product.g.dart';
 
@@ -60,8 +61,8 @@ class Product {
   final int quantity;
   @JsonKey(required: true)
   final String shopId;
-  @JsonKey(required: true)
-  final String status;
+  @JsonKey(required: true, fromJson: statusFromJson, toJson: statusToJson)
+  final Status status;
   @JsonKey(required: true)
   final String userId;
 
@@ -89,7 +90,7 @@ class Product {
     int? quantity,
     String? productCategory,
     String? productPhoto,
-    String? status,
+    Status? status,
     List<LokalImages>? gallery,
     OperatingHours? availability,
     bool? archived,

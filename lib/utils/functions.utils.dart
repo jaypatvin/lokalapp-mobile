@@ -108,14 +108,14 @@ DateTime? nullableDateTimeFromJson(dynamic map) {
   }
 }
 
-Status statusFromJson(String bankType) {
+Status statusFromJson(String? status) {
   return Status.values.firstWhere(
-    (e) => e.value == bankType,
-    orElse: () => Status.disabled,
+    (e) => e.value == status,
+    orElse: () => Status.enabled,
   );
 }
 
-String statusToJson(Status type) => type.value;
+String statusToJson(Status? status) => status?.value ?? Status.enabled.value;
 
 String? dateTimeToString(DateTime? date) {
   if (date != null) {

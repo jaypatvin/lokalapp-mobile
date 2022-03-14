@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 import '../../../models/app_navigator.dart';
 import '../../../models/failure_exception.dart';
 import '../../../models/lokal_images.dart';
+import '../../../models/status.dart';
 import '../../../providers/post_requests/product_body.dart';
 import '../../../providers/products.dart';
 import '../../../utils/constants/themes.dart';
@@ -87,7 +88,7 @@ class _AddProductState extends State<AddProduct> with ScreenLoader {
             basePrice: product.basePrice,
             quantity: product.quantity,
             productCategory: product.productCategory,
-            status: product.status,
+            status: product.status.value,
             canSubscribe: product.canSubscribe,
             gallery: _productGallery!.map((e) => e.toJson()).toList(),
           );
