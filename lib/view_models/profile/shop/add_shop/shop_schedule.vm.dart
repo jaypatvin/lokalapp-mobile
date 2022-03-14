@@ -115,7 +115,7 @@ class ShopScheduleViewModel extends ViewModel {
   }
 
   RepeatChoices _getRepeatChoice() {
-    final repeatType = context.read<OperatingHoursBody>().body.repeatType;
+    final repeatType = context.read<OperatingHoursBody>().request.repeatType;
     var repeatChoice = RepeatChoices.month;
     if (repeatType.split('-').length <= 1) {
       for (final choice in RepeatChoices.values) {
@@ -150,7 +150,7 @@ class ShopScheduleViewModel extends ViewModel {
   }
 
   void onConfirm() {
-    final operatingHours = context.read<OperatingHoursBody>().body;
+    final operatingHours = context.read<OperatingHoursBody>().request;
     final startDates = operatingHours.startDates;
     final repeatUnit = operatingHours.repeatUnit;
     if (startDates.isEmpty) {
@@ -167,13 +167,13 @@ class ShopScheduleViewModel extends ViewModel {
           CustomizeAvailability.routeName,
           arguments: CustomizeAvailabilityProps(
             repeatChoice: _getRepeatChoice(),
-            repeatEvery: context.read<OperatingHoursBody>().body.repeatUnit,
+            repeatEvery: context.read<OperatingHoursBody>().request.repeatUnit,
             selectableDays: _selectableDays,
             startDate: _startDate ?? DateTime.now(),
             shopPhoto: shopPhoto,
             usedDatePicker: context
                     .read<OperatingHoursBody>()
-                    .body
+                    .request
                     .repeatType
                     .split('-')
                     .length <=

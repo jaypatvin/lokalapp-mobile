@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 
 import '../../../../models/app_navigator.dart';
 import '../../../../models/failure_exception.dart';
+import '../../../../models/post_requests/shop/shop_update.request.dart';
 import '../../../../models/shop.dart';
 import '../../../../providers/post_requests/operating_hours_body.dart';
 import '../../../../providers/post_requests/shop_body.dart';
@@ -110,9 +111,10 @@ class EditShopViewModel extends ViewModel {
 
   Future<bool> updateShopSchedule() async {
     final operatingHoursBody = context.read<OperatingHoursBody>();
-    return context
-        .read<Shops>()
-        .setOperatingHours(id: shop.id, data: operatingHoursBody.data);
+    return context.read<Shops>().setOperatingHours(
+          id: shop.id,
+          request: operatingHoursBody.request,
+        );
   }
 
   void onShopNameChanged(String value) {
@@ -233,9 +235,14 @@ class EditShopViewModel extends ViewModel {
     try {
       return context.read<Shops>().update(
             id: shop.id,
-            data: shopBody.data
-              ..remove('user_id')
-              ..remove('operating_hours'),
+            request: ShopUpdateRequest(
+              name: shopName,
+              description: shopDescription,
+              profilePhoto: shopPhotoUrl,
+              coverPhoto: shopCoverPhotoUrl,
+              status: isShopOpen ? ShopStatus.enabled : ShopStatus.disabled,
+              paymentOptions: shopBody.request.paymentOptions,
+            ),
           );
     } catch (e) {
       rethrow;
@@ -247,7 +254,7 @@ class EditShopViewModel extends ViewModel {
       final operatingHoursBody = context.read<OperatingHoursBody>();
       return context
           .read<Shops>()
-          .setOperatingHours(id: shop.id, data: operatingHoursBody.data);
+          .setOperatingHours(id: shop.id, request: operatingHoursBody.request);
     } catch (e) {
       rethrow;
     }

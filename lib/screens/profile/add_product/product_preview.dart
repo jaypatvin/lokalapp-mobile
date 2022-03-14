@@ -189,7 +189,7 @@ class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
       productBody.update(
         gallery: gallery.map((image) => image.toJson()).toList(),
         shopId: shop.id,
-        availability: context.read<OperatingHoursBody>().data,
+        availability: context.read<OperatingHoursBody>().request.toJson(),
       );
       return await products.create(productBody.data);
     } catch (e) {
@@ -276,7 +276,7 @@ class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
       final _operatingHoursRequest = context.read<OperatingHoursBody>();
       final availability = _product.availability;
       if (!listEquals(
-        _operatingHoursRequest.body.unavailableDates..sort(),
+        _operatingHoursRequest.request.unavailableDates..sort(),
         availability.unavailableDates..sort(),
       )) {
         // We update the availability of the product.
@@ -306,7 +306,7 @@ class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
         updatedProductSchedule = await context.read<Products>().setAvailability(
               id: _product.id,
               data: widget.scheduleState == ProductScheduleState.custom
-                  ? context.read<OperatingHoursBody>().data
+                  ? context.read<OperatingHoursBody>().request.toJson()
                   : _shop!.operatingHours.toJson(),
             );
       }
