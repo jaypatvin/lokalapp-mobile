@@ -9,6 +9,7 @@ import '../../../models/bank_code.dart';
 import '../../../models/failure_exception.dart';
 import '../../../models/order.dart';
 import '../../../models/payment_option.dart';
+import '../../../models/post_requests/orders/order_pay.request.dart';
 import '../../../providers/shops.dart';
 import '../../../routers/app_router.dart';
 import '../../../screens/activity/buyer/processing_payment.dart';
@@ -76,10 +77,10 @@ class BankDetailsViewModel extends ViewModel {
 
       final success = await _apiService.pay(
         orderId: order.id,
-        body: <String, String>{
-          'payment_method': paymentMode.value,
-          'proof_of_payment': _url,
-        },
+        request: OrderPayRequest(
+          paymentMethod: paymentMode,
+          proofOfPayment: _url,
+        ),
       );
 
       if (!success) throw 'Error in submitting image! Try again.';

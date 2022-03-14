@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import '../../../models/app_navigator.dart';
 import '../../../models/failure_exception.dart';
 import '../../../models/order.dart';
+import '../../../models/post_requests/orders/order_pay.request.dart';
 import '../../../routers/app_router.dart';
 import '../../../screens/activity/buyer/processing_payment.dart';
 import '../../../services/api/api.dart';
@@ -26,9 +27,7 @@ class CashOnDeliveryViewModel extends ViewModel {
     try {
       final _success = await _apiService.pay(
         orderId: order.id,
-        body: <String, String>{
-          'payment_method': 'cod',
-        },
+        request: OrderPayRequest(paymentMethod: PaymentMethod.cod),
       );
 
       if (_success) {
