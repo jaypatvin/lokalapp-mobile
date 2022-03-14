@@ -117,7 +117,9 @@ Status statusFromJson(String? status) {
 
 String statusToJson(Status? status) => status?.value ?? Status.enabled.value;
 
-String? dateTimeToString(DateTime? date) {
+String dateTimeToString(DateTime date) => DateFormat('yyyy-MM-dd').format(date);
+
+String? nullableDateTimeToString(DateTime? date) {
   if (date != null) {
     return DateFormat('yyyy-MM-dd').format(date);
   }

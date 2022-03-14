@@ -295,7 +295,7 @@ class Order {
   @JsonKey(
     required: true,
     fromJson: createdAtFromJson,
-    toJson: dateTimeToString,
+    toJson: nullableDateTimeToString,
   )
   final DateTime createdAt;
   @JsonKey(required: true)
@@ -303,7 +303,7 @@ class Order {
   @JsonKey(
     required: true,
     fromJson: createdAtFromJson,
-    toJson: dateTimeToString,
+    toJson: nullableDateTimeToString,
   )
   final DateTime deliveryDate;
   @JsonKey(
@@ -331,7 +331,7 @@ class Order {
 
   @JsonKey(
     fromJson: nullableDateTimeFromJson,
-    toJson: dateTimeToString,
+    toJson: nullableDateTimeToString,
   )
   final DateTime? deliveredDate;
   final String? cancellationReason;

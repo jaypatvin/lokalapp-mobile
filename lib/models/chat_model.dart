@@ -28,7 +28,7 @@ class Message {
   @JsonKey(
     required: true,
     fromJson: createdAtFromJson,
-    toJson: dateTimeToString,
+    toJson: nullableDateTimeToString,
   )
   DateTime createdAt;
   Message({
@@ -85,7 +85,7 @@ class ChatModel {
   @JsonKey(
     required: true,
     fromJson: createdAtFromJson,
-    toJson: dateTimeToString,
+    toJson: nullableDateTimeToString,
   )
   DateTime createdAt;
   @JsonKey(required: true)

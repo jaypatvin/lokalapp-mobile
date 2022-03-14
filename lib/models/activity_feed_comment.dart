@@ -29,7 +29,7 @@ class ActivityFeedComment {
   @JsonKey(defaultValue: <LokalImages>[])
   List<LokalImages> images;
 
-  @JsonKey(fromJson: createdAtFromJson, toJson: dateTimeToString)
+  @JsonKey(fromJson: createdAtFromJson, toJson: nullableDateTimeToString)
   DateTime createdAt;
 
   @JsonKey(defaultValue: false)
