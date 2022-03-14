@@ -59,6 +59,7 @@ class ChatDetailsView extends HookView<ChatDetailsViewModel> {
         itemBuilder: (ctx, index) {
           return ChatBubble(
             conversation: viewModel.currentSendingMessage,
+            images: viewModel.sendingImages,
           );
         },
       );
