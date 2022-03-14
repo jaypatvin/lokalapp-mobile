@@ -235,6 +235,7 @@ class ChatDetailsViewModel extends ViewModel {
           ),
         );
         _messageStream = _db.getConversations(_chat!.id);
+        _messageSubscription = _messageStream?.listen(_messageStreamListener);
       }
       notifyListeners();
     } catch (e, stack) {
