@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-import '../../../providers/subscriptions.dart';
+import '../../../models/post_requests/product_subscription_plan/product_subscription_plan.request.dart';
 import '../../../state/mvvm_builder.widget.dart';
 import '../../../state/views/hook.view.dart';
 import '../../../utils/constants/assets.dart';
@@ -15,11 +15,11 @@ import '../../../widgets/payment_options.widget.dart';
 class SubscriptionPaymentMethod extends StatelessWidget {
   const SubscriptionPaymentMethod({
     Key? key,
-    required this.subscriptionPlanBody,
+    required this.request,
     required this.reschedule,
   }) : super(key: key);
 
-  final SubscriptionPlanBody subscriptionPlanBody;
+  final ProductSubscriptionPlanRequest request;
   final bool reschedule;
 
   @override
@@ -27,7 +27,7 @@ class SubscriptionPaymentMethod extends StatelessWidget {
     return MVVM(
       view: (_, __) => _SubscriptionPaymentMethodView(),
       viewModel: SubscriptionPaymentMethodViewModel(
-        subscriptionPlanBody: subscriptionPlanBody,
+        request: request,
         reschedule: reschedule,
       ),
     );
