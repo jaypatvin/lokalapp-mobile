@@ -1,5 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 
+import '../../../utils/functions.utils.dart';
 import '../../order.dart';
 import 'product_subscription_schedule.request.dart';
 
@@ -22,7 +23,7 @@ class ProductSubscriptionPlanRequest {
   final String? buyerId;
   final int quantity;
   final String? instruction;
-  @JsonKey(fromJson: _paymentMethodFromJson, toJson: _paymentMethodToJson)
+  @JsonKey(fromJson: paymentMethodFromJson, toJson: paymentMethodToJson)
   final PaymentMethod paymentMethod;
   final ProductSubscriptionScheduleRequest plan;
 
@@ -82,12 +83,3 @@ class ProductSubscriptionPlanRequest {
         plan.hashCode;
   }
 }
-
-PaymentMethod _paymentMethodFromJson(String? value) {
-  return PaymentMethod.values.firstWhere(
-    (e) => e.value == value,
-    orElse: () => PaymentMethod.cod,
-  );
-}
-
-String _paymentMethodToJson(PaymentMethod method) => method.value;

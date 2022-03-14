@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart' show DateFormat;
 import 'package:photo_manager/photo_manager.dart';
@@ -6,6 +7,7 @@ import 'package:photo_manager/photo_manager.dart';
 import '../models/app_navigator.dart';
 import '../models/lokal_images.dart';
 import '../models/operating_hours.dart';
+import '../models/order.dart';
 import '../models/status.dart';
 import '../models/timestamp_time_object.dart';
 import '../routers/app_router.dart';
@@ -125,3 +127,19 @@ String? nullableDateTimeToString(DateTime? date) {
   }
   return null;
 }
+
+PaymentMethod? nullablePaymentMethodFromJson(String? value) {
+  return PaymentMethod.values.firstWhereOrNull((e) => e.value == value);
+}
+
+String? nullablePaymentMethodToJson(PaymentMethod? method) => method?.value;
+
+PaymentMethod paymentMethodFromJson(String? value) {
+  return PaymentMethod.values.firstWhere(
+    (e) => e.value == value,
+    orElse: () => PaymentMethod.cod,
+  );
+}
+
+String paymentMethodToJson(PaymentMethod? method) =>
+    method?.value ?? PaymentMethod.cod.value;

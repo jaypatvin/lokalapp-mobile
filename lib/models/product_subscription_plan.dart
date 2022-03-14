@@ -316,8 +316,8 @@ class ProductSubscriptionPlan {
   final String instruction;
   @JsonKey(
     required: true,
-    fromJson: _paymentMethodFromJson,
-    toJson: _paymentMethodToJson,
+    fromJson: paymentMethodFromJson,
+    toJson: paymentMethodToJson,
   )
   final PaymentMethod paymentMethod;
   @JsonKey(required: true)
@@ -482,13 +482,3 @@ List<String> _startDatesToJson(List<DateTime> startDates) {
       .map((date) => DateFormat('yyyy-MM-dd').format(date))
       .toList();
 }
-
-PaymentMethod _paymentMethodFromJson(String? value) {
-  return PaymentMethod.values.firstWhere(
-    (e) => e.value == value,
-    orElse: () => PaymentMethod.cod,
-  );
-}
-
-String _paymentMethodToJson(PaymentMethod? method) =>
-    method?.value ?? PaymentMethod.cod.value;
