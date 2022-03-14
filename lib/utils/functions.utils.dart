@@ -5,6 +5,7 @@ import 'package:intl/intl.dart' show DateFormat;
 import 'package:photo_manager/photo_manager.dart';
 
 import '../models/app_navigator.dart';
+import '../models/conversation.dart';
 import '../models/lokal_images.dart';
 import '../models/operating_hours.dart';
 import '../models/order.dart';
@@ -143,3 +144,10 @@ PaymentMethod paymentMethodFromJson(String? value) {
 
 String paymentMethodToJson(PaymentMethod? method) =>
     method?.value ?? PaymentMethod.cod.value;
+
+MediaType mediaTypeFromJson(String json) => MediaType.values.firstWhere(
+      (e) => e.value == json,
+      orElse: () => MediaType.image,
+    );
+
+String mediaTypeToJson(MediaType type) => type.value;
