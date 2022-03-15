@@ -288,12 +288,16 @@ class Auth extends ChangeNotifier {
       for (final userInfo in userInfos) {
         if (userInfo.providerId == EmailAuthProvider.PROVIDER_ID) {
           debugPrint('Signed in with Email.');
+          break;
         } else if (userInfo.providerId == GoogleAuthProvider.PROVIDER_ID) {
           debugPrint('Signed in with Google.');
-          throw FailureException('Signed in with Google.');
+          throw FailureException('google-sign-in', 'Signed in with Google.');
         } else if (userInfo.providerId == FacebookAuthProvider.PROVIDER_ID) {
           debugPrint('Signed in with Google.');
-          throw FailureException('Signed in with Facebook');
+          throw FailureException('facebook-sign-in', 'Signed in with Facebook');
+        } else if (userInfo.providerId == 'apple.com') {
+          debugPrint('Signed in with Apple');
+          throw FailureException('apple-sign-in', 'Signed in with Apple.');
         }
       }
     }
