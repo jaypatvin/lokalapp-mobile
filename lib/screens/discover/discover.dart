@@ -1,4 +1,3 @@
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -59,52 +58,55 @@ class _DiscoverView extends StatelessView<DiscoverViewModel> {
           itemBuilder: (ctx, index) {
             return SizedBox(
               width: 100.0.w,
-              child: Column(
-                children: [
-                  // TODO: separate widget
-                  Container(
-                    height: 70.0.r,
-                    width: 70.0.r,
-                    decoration: const BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Color(0XFFF1FAFF),
-                    ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(30.0.r),
-                      child: CachedNetworkImage(
-                        imageUrl: categories[index].iconUrl,
-                        fit: BoxFit.cover,
-                        placeholder: (_, __) => Shimmer(
-                          child: DecoratedBox(
-                            decoration: BoxDecoration(
-                              color: Colors.grey.shade300,
+              child: GestureDetector(
+                onTap: () => provider.onCategoryTap(index),
+                child: Column(
+                  children: [
+                    // TODO: separate widget
+                    Container(
+                      height: 70.0.r,
+                      width: 70.0.r,
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Color(0XFFF1FAFF),
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(30.0.r),
+                        child: CachedNetworkImage(
+                          imageUrl: categories[index].iconUrl,
+                          fit: BoxFit.cover,
+                          placeholder: (_, __) => Shimmer(
+                            child: DecoratedBox(
+                              decoration: BoxDecoration(
+                                color: Colors.grey.shade300,
+                              ),
                             ),
                           ),
+                          errorWidget: (ctx, url, err) {
+                            if (categories[index].iconUrl.isEmpty) {
+                              return const Center(child: Text('No image.'));
+                            }
+                            return const Center(
+                              child: Text('Error displaying image.'),
+                            );
+                          },
                         ),
-                        errorWidget: (ctx, url, err) {
-                          if (categories[index].iconUrl.isEmpty) {
-                            return const Center(child: Text('No image.'));
-                          }
-                          return const Center(
-                            child: Text('Error displaying image.'),
-                          );
-                        },
                       ),
                     ),
-                  ),
-                  SizedBox(height: 10.0.h),
-                  Text(
-                    categories[index].name,
-                    maxLines: 2,
-                    softWrap: true,
-                    overflow: TextOverflow.ellipsis,
-                    textAlign: TextAlign.center,
-                    style: Theme.of(ctx)
-                        .textTheme
-                        .subtitle2
-                        ?.copyWith(fontWeight: FontWeight.w600),
-                  ),
-                ],
+                    SizedBox(height: 10.0.h),
+                    Text(
+                      categories[index].name,
+                      maxLines: 2,
+                      softWrap: true,
+                      overflow: TextOverflow.ellipsis,
+                      textAlign: TextAlign.center,
+                      style: Theme.of(ctx)
+                          .textTheme
+                          .subtitle2
+                          ?.copyWith(fontWeight: FontWeight.w600),
+                    ),
+                  ],
+                ),
               ),
             );
           },
@@ -124,7 +126,7 @@ class _DiscoverView extends StatelessView<DiscoverViewModel> {
       body: CartContainer(
         alwaysDisplayButton: true,
         child: RefreshIndicator(
-          onRefresh: vm.fetchRecommendedProducts,          
+          onRefresh: vm.fetchRecommendedProducts,
           child: Consumer2<Shops, Products>(
             builder: (ctx, shops, products, _) {
               if (shops.isLoading || products.isLoading) {
@@ -139,7 +141,7 @@ class _DiscoverView extends StatelessView<DiscoverViewModel> {
                   ),
                   SliverToBoxAdapter(
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      padding: EdgeInsets.symmetric(horizontal: 16.0.w),
                       child: GestureDetector(
                         onTap: vm.onSearch,
                         child: const Hero(
@@ -270,9 +272,12 @@ class _DiscoverView extends StatelessView<DiscoverViewModel> {
                       ),
                     )
                   else
-                    ProductsSliverGrid(
-                      items: vm.otherUserProducts,
-                      onProductTap: vm.onProductTap,
+                    SliverPadding(
+                      padding: EdgeInsets.symmetric(horizontal: 16.0.w),
+                      sliver: ProductsSliverGrid(
+                        items: vm.otherUserProducts,
+                        onProductTap: vm.onProductTap,
+                      ),
                     ),
                 ],
               );

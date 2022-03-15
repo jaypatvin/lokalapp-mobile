@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 
+import '../../../../models/failure_exception.dart';
 import '../../../../providers/auth.dart';
 
 class MyAccountViewModel {
@@ -22,7 +23,9 @@ class MyAccountViewModel {
       return _userAuth.checkSignInMethod();
     } catch (e, stack) {
       FirebaseCrashlytics.instance.recordError(e, stack);
-      _errorStream.add('Cannot change Email Address/Password: $e');
+      if (e is FailureException) {
+        _errorStream.add('Cannot change Email Address/Password: ${e.details}');
+      }
       return false;
     }
   }
