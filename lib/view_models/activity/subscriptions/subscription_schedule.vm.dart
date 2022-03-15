@@ -7,13 +7,16 @@ import 'package:provider/provider.dart';
 import '../../../models/app_navigator.dart';
 import '../../../models/failure_exception.dart';
 import '../../../models/operating_hours.dart';
+import '../../../models/order.dart';
+import '../../../models/post_requests/product_subscription_plan/override_dates.request.dart';
+import '../../../models/post_requests/product_subscription_plan/product_subscription_plan.request.dart';
+import '../../../models/post_requests/product_subscription_plan/product_subscription_schedule.request.dart';
 import '../../../models/product.dart';
 import '../../../models/product_subscription_plan.dart';
 import '../../../providers/auth.dart';
 import '../../../providers/cart.dart';
 import '../../../providers/products.dart';
 import '../../../providers/shops.dart';
-import '../../../providers/subscriptions.dart';
 import '../../../routers/app_router.dart';
 import '../../../screens/activity/activity.dart';
 import '../../../screens/activity/subscriptions/subscription_payment_method.dart';
@@ -120,15 +123,15 @@ class NewSubscriptionScheduleViewModel extends ViewModel {
 
     final reschedule = await _onCreateSubscriptionPlan();
 
-    // create subscription plan body for API endpoint
-    final subscriptionPlanBody = SubscriptionPlanBody(
+    final request = ProductSubscriptionPlanRequest(
       productId: product.id,
-      buyerId: context.read<Auth>().user!.id,
+      buyerId: context.read<Auth>().user?.id,
       shopId: product.shopId,
       quantity: quantity,
+      paymentMethod: PaymentMethod.cod,
       instruction:
-          context.read<ShoppingCart>().getProductOrder(product.id)!.notes,
-      plan: SubscriptionPlanBodySchedule(
+          context.read<ShoppingCart>().getProductOrder(product.id)?.notes,
+      plan: ProductSubscriptionScheduleRequest(
         repeatType: _repeatType,
         repeatUnit: _repeatUnit,
         startDates: _startDates,
@@ -139,7 +142,7 @@ class NewSubscriptionScheduleViewModel extends ViewModel {
       AppRouter.discoverNavigatorKey.currentState?.push(
         AppNavigator.appPageRoute(
           builder: (_) => SubscriptionPaymentMethod(
-            subscriptionPlanBody: subscriptionPlanBody,
+            request: request,
             reschedule: reschedule,
           ),
         ),
@@ -345,9 +348,7 @@ class ViewSubscriptionScheduleViewModel extends ViewModel {
     try {
       return await _apiService.manualReschedulePlan(
         planId: subscriptionPlan.id,
-        body: {
-          'override_dates': overridenDates.map((data) => data.toJson()).toList()
-        },
+        request: OverrideDatesRequest(overridenDates),
       );
     } catch (e, stack) {
       FirebaseCrashlytics.instance.recordError(e, stack);

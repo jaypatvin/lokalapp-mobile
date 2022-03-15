@@ -3,6 +3,9 @@ import 'dart:async';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 
+import '../models/post_requests/shop/operating_hours.request.dart';
+import '../models/post_requests/shop/shop_create.request.dart';
+import '../models/post_requests/shop/shop_update.request.dart';
 import '../models/shop.dart';
 import '../services/api/api.dart';
 import '../services/api/shop_api_service.dart';
@@ -72,9 +75,9 @@ class Shops extends ChangeNotifier {
     return _shops.where((shop) => shop.userId == userId).toList();
   }
 
-  Future<void> create(Map<String, dynamic> body) async {
+  Future<void> create(ShopCreateRequest request) async {
     try {
-      final _shop = await _apiService.create(body: body);
+      final _shop = await _apiService.create(request: request);
       _shops.add(_shop);
       notifyListeners();
     } catch (e) {
@@ -84,10 +87,10 @@ class Shops extends ChangeNotifier {
 
   Future<bool> update({
     required String id,
-    required Map<String, dynamic> data,
+    required ShopUpdateRequest request,
   }) async {
     try {
-      return await _apiService.update(id: id, body: data);
+      return await _apiService.update(id: id, request: request);
     } catch (e) {
       rethrow;
     }
@@ -95,10 +98,10 @@ class Shops extends ChangeNotifier {
 
   Future<bool> setOperatingHours({
     required String id,
-    required Map<String, dynamic> data,
+    required OperatingHoursRequest request,
   }) async {
     try {
-      return await _apiService.setOperatingHours(id: id, body: data);
+      return await _apiService.setOperatingHours(id: id, request: request);
     } catch (e) {
       rethrow;
     }

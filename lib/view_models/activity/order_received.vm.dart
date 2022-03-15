@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 
 import '../../models/failure_exception.dart';
 import '../../models/order.dart';
+import '../../models/post_requests/product/product_review.request.dart';
 import '../../routers/app_router.dart';
 import '../../screens/activity/activity.dart';
 import '../../services/api/api.dart';
@@ -60,10 +61,10 @@ class OrderReceivedViewModel extends ViewModel {
     try {
       ratingSubmitted = await _apiService.review(
         productId: order.productIds.first,
-        body: {
-          'rating': this.rating,
-          'order_id': order.id,
-        },
+        request: ProductReviewRequest(
+          orderId: order.id,
+          rating: this.rating,
+        ),
       );
     } catch (e, stack) {
       FirebaseCrashlytics.instance.recordError(e, stack);

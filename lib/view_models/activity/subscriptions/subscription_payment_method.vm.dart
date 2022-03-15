@@ -6,9 +6,9 @@ import 'package:provider/provider.dart';
 import '../../../models/app_navigator.dart';
 import '../../../models/failure_exception.dart';
 import '../../../models/order.dart';
+import '../../../models/post_requests/product_subscription_plan/product_subscription_plan.request.dart';
 import '../../../providers/cart.dart';
 import '../../../providers/products.dart';
-import '../../../providers/subscriptions.dart';
 import '../../../routers/app_router.dart';
 import '../../../screens/cart/cart_confirmation.dart';
 import '../../../screens/discover/discover.dart';
@@ -18,11 +18,11 @@ import '../../../state/view_model.dart';
 
 class SubscriptionPaymentMethodViewModel extends ViewModel {
   SubscriptionPaymentMethodViewModel({
-    required this.subscriptionPlanBody,
+    required this.request,
     required this.reschedule,
   });
 
-  final SubscriptionPlanBody subscriptionPlanBody;
+  final ProductSubscriptionPlanRequest request;
   final bool reschedule;
 
   late final double totalPrice;
@@ -32,19 +32,19 @@ class SubscriptionPaymentMethodViewModel extends ViewModel {
   void init() {
     _apiService = SubscriptionPlanAPIService(context.read<API>());
 
-    final _productId = subscriptionPlanBody.productId;
-    final _quantity = subscriptionPlanBody.quantity!;
+    final _productId = request.productId;
+    final _quantity = request.quantity;
     final _product = context.read<Products>().findById(_productId);
     totalPrice = _quantity * _product!.basePrice;
   }
 
   Future<void> onSubmitHandler(PaymentMethod paymentMode) async {
     try {
-      subscriptionPlanBody.paymentMethod = paymentMode.value;
+      final _request = request.copyWith(paymentMethod: paymentMode);
 
       // this will throw if there are any errors
       final subscriptionPlan = await _apiService.createSubscriptionPlan(
-        body: subscriptionPlanBody.toMap(),
+        request: _request,
       );
 
       final success = !reschedule ||
@@ -53,7 +53,7 @@ class SubscriptionPaymentMethodViewModel extends ViewModel {
           );
 
       if (success) {
-        context.read<ShoppingCart>().remove(subscriptionPlanBody.productId);
+        context.read<ShoppingCart>().remove(request.productId);
         // the user is making a new subscription, meaning that the app
         // is currently at the Discover Tab
         AppRouter.discoverNavigatorKey.currentState?.pushAndRemoveUntil(

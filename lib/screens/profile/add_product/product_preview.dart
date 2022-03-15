@@ -13,6 +13,9 @@ import 'package:provider/provider.dart';
 import '../../../models/app_navigator.dart';
 import '../../../models/failure_exception.dart';
 import '../../../models/lokal_images.dart';
+import '../../../models/post_requests/product/product_create.request.dart';
+import '../../../models/post_requests/product/product_update.request.dart';
+import '../../../models/post_requests/shop/operating_hours.request.dart';
 import '../../../providers/auth.dart';
 import '../../../providers/post_requests/operating_hours_body.dart';
 import '../../../providers/post_requests/product_body.dart';
@@ -22,6 +25,7 @@ import '../../../routers/app_router.dart';
 import '../../../services/local_image_service.dart';
 import '../../../utils/constants/assets.dart';
 import '../../../utils/constants/themes.dart';
+import '../../../utils/functions.utils.dart';
 import '../../../widgets/app_button.dart';
 import '../../../widgets/custom_app_bar.dart';
 import '../../../widgets/overlays/constrained_scrollview.dart';
@@ -189,9 +193,22 @@ class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
       productBody.update(
         gallery: gallery.map((image) => image.toJson()).toList(),
         shopId: shop.id,
-        availability: context.read<OperatingHoursBody>().data,
+        availability: context.read<OperatingHoursBody>().request.toJson(),
       );
-      return await products.create(productBody.data);
+      return await products.create(
+        ProductCreateRequest(
+          name: productBody.name!,
+          description: productBody.description!,
+          shopId: productBody.shopId!,
+          basePrice: productBody.basePrice!,
+          quantity: productBody.quantity!,
+          productCategory: productBody.productCategory!,
+          status: statusFromJson(productBody.status),
+          canSubscribe: productBody.canSubscribe,
+          gallery: gallery,
+          availability: context.read<OperatingHoursBody>().request,
+        ),
+      );
     } catch (e) {
       rethrow;
     }
@@ -276,7 +293,7 @@ class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
       final _operatingHoursRequest = context.read<OperatingHoursBody>();
       final availability = _product.availability;
       if (!listEquals(
-        _operatingHoursRequest.body.unavailableDates..sort(),
+        _operatingHoursRequest.request.unavailableDates..sort(),
         availability.unavailableDates..sort(),
       )) {
         // We update the availability of the product.
@@ -296,18 +313,27 @@ class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
       if (updateData.isNotEmpty) {
         updatedProductDetails = await context.read<Products>().update(
               id: _product.id,
-              data: updateBody.data,
+              request: ProductUpdateRequest.fromJson(updateData),
             );
       }
 
       if (updateSchedule) {
         if (!mounted) return false;
-        final _shop = context.read<Shops>().findById(_product.shopId);
+        final _operatingHours =
+            context.read<Shops>().findById(_product.shopId)!.operatingHours;
         updatedProductSchedule = await context.read<Products>().setAvailability(
               id: _product.id,
-              data: widget.scheduleState == ProductScheduleState.custom
-                  ? context.read<OperatingHoursBody>().data
-                  : _shop!.operatingHours.toJson(),
+              request: widget.scheduleState == ProductScheduleState.custom
+                  ? context.read<OperatingHoursBody>().request
+                  : OperatingHoursRequest(
+                      startTime: _operatingHours.startTime,
+                      endTime: _operatingHours.endTime,
+                      repeatType: _operatingHours.repeatType,
+                      repeatUnit: _operatingHours.repeatUnit,
+                      startDates: _operatingHours.startDates,
+                      unavailableDates: _operatingHours.unavailableDates,
+                      customDates: _operatingHours.customDates,
+                    ),
             );
       }
 
@@ -336,6 +362,7 @@ class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
         }
       } else {
         await _createProduct();
+        context.read<ProductBody>().clear();
         if (!mounted) return;
         AppRouter.profileNavigatorKey.currentState?.pushAndRemoveUntil(
           AppNavigator.appPageRoute(

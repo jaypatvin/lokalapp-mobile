@@ -228,7 +228,10 @@ abstract class APIService<T> {
     }
   }
 
-  /// Removes empty keys and values from the map.
+  /// Removes empty/null keys and values from the map.
+  /// 
+  /// This function also trims maps recursively: empty/null keys and values from
+  /// submaps are also removed (and checked again if is empty)
   @protected
   Map<String, dynamic>? trimBodyFields(Map<String, dynamic>? body) {
     final Map<String, dynamic>? _body;
@@ -238,16 +241,31 @@ abstract class APIService<T> {
       _body = null;
     }
 
-    _body?.removeWhere((key, value) {
-      if (key.isEmpty || value == null) return true;
+    for (final entry in body?.entries ?? {}.entries) {
+      final key = entry.key;
+      final value = entry.value;
+
+      if (key.isEmpty || value == null) {
+        _body?.remove(key);
+        continue;
+      }
 
       if (value is String) {
-        return value.isEmpty;
+        if (value.isEmpty) _body?.remove(key);
+        continue;
       } else if (value is List) {
-        return value.isEmpty;
+        if (value.isEmpty) _body?.remove(key);
+        continue;
+      } else if (value is Map) {
+        final _value = trimBodyFields({...value});
+        if (_value?.isEmpty ?? true) {
+          _body?.remove(key);
+        } else {
+          _body?[key] = _value;
+        }
+        continue;
       }
-      return false;
-    });
+    }
 
     return _body;
   }

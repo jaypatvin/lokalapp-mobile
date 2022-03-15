@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 import '../../models/activity_feed_comment.dart';
 import '../../models/failure_exception.dart';
 import '../../models/lokal_images.dart';
+import '../../models/post_requests/activities/comment.request.dart';
 import '../../providers/activities.dart';
 import '../../providers/auth.dart';
 import '../../services/database/database.dart';
@@ -92,7 +93,8 @@ class PostDetailViewModel extends ViewModel {
   }
 
   Future<void> createComment() async {
-    if (_isCommentUploading || inputController.text.isEmpty) return;
+    if (_isCommentUploading ||
+        (inputController.text.isEmpty && imageProvider.picked.isEmpty)) return;
 
     _isCommentUploading = true;
     final cUser = context.read<Auth>().user!;
@@ -112,21 +114,15 @@ class PostDetailViewModel extends ViewModel {
       );
     }
 
-    final body = <String, dynamic>{
-      'user_id': cUser.id,
-    };
-
-    if (inputController.text.isNotEmpty) {
-      body['message'] = inputController.text;
-    }
-    if (gallery.isNotEmpty) {
-      body['images'] = gallery.map((x) => x.toJson()).toList();
-    }
-
     try {
-      await context
-          .read<Activities>()
-          .createComment(activityId: activityId, body: body);
+      await context.read<Activities>().createComment(
+            activityId: activityId,
+            request: CommentRequest(
+              userId: cUser.id,
+              message: inputController.text,
+              images: gallery,
+            ),
+          );
 
       _isCommentUploading = false;
       inputController.clear();

@@ -47,14 +47,14 @@ class LokalNotification {
   final bool viewed;
   @JsonKey(
     fromJson: nullableDateTimeFromJson,
-    toJson: dateTimeToString,
+    toJson: nullableDateTimeToString,
   )
   final DateTime? dateViewed;
   @JsonKey(required: true)
   final bool opened;
   @JsonKey(
     fromJson: nullableDateTimeFromJson,
-    toJson: dateTimeToString,
+    toJson: nullableDateTimeToString,
   )
   final DateTime? dateOpened;
   @JsonKey(required: true)
@@ -64,12 +64,12 @@ class LokalNotification {
   @JsonKey(
     required: true,
     fromJson: createdAtFromJson,
-    toJson: dateTimeToString,
+    toJson: nullableDateTimeToString,
   )
   final DateTime createdAt;
   @JsonKey(
     fromJson: nullableDateTimeFromJson,
-    toJson: dateTimeToString,
+    toJson: nullableDateTimeToString,
   )
   final DateTime? updatedAt;
 

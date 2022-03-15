@@ -41,13 +41,13 @@ class OverrideDate {
   @JsonKey(
     required: true,
     fromJson: createdAtFromJson,
-    toJson: dateTimeToString,
+    toJson: nullableDateTimeToString,
   )
   final DateTime originalDate;
   @JsonKey(
     required: true,
     fromJson: createdAtFromJson,
-    toJson: dateTimeToString,
+    toJson: nullableDateTimeToString,
   )
   final DateTime newDate;
 
@@ -202,7 +202,7 @@ class ProductSubscriptionSchedule {
   final bool autoReschedule;
   @JsonKey(
     fromJson: nullableDateTimeFromJson,
-    toJson: dateTimeToString,
+    toJson: nullableDateTimeToString,
   )
   final DateTime? lastDate;
   @JsonKey(required: true)
@@ -309,12 +309,16 @@ class ProductSubscriptionPlan {
   @JsonKey(
     required: true,
     fromJson: createdAtFromJson,
-    toJson: dateTimeToString,
+    toJson: nullableDateTimeToString,
   )
   final DateTime createdAt;
   @JsonKey(required: true)
   final String instruction;
-  @JsonKey(required: true)
+  @JsonKey(
+    required: true,
+    fromJson: paymentMethodFromJson,
+    toJson: paymentMethodToJson,
+  )
   final PaymentMethod paymentMethod;
   @JsonKey(required: true)
   final ProductSubscriptionSchedule plan;
@@ -338,7 +342,7 @@ class ProductSubscriptionPlan {
   final SubscriptionStatus status;
   @JsonKey(
     fromJson: nullableDateTimeFromJson,
-    toJson: dateTimeToString,
+    toJson: nullableDateTimeToString,
   )
   DateTime? updatedAt;
 

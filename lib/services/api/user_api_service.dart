@@ -1,6 +1,8 @@
 import 'dart:convert';
 
 import '../../models/lokal_user.dart';
+import '../../models/post_requests/user/user_create.request.dart';
+import '../../models/post_requests/user/user_update.request.dart';
 import 'api.dart';
 import 'api_service.dart';
 
@@ -11,15 +13,13 @@ class UserAPIService extends APIService<LokalUser> {
   Endpoint get endpoint => Endpoint.user;
 
   // --POST
-  Future<LokalUser> create({
-    required Map<String, dynamic> body,
-  }) async {
+  Future<LokalUser> create({required UserCreateRequest request}) async {
     try {
       final response = await poster(
         api.endpointUri(endpoint),
         headers: api.withBodyHeader(),
-        body: json.encode(trimBodyFields(body)),
-      );    
+        body: json.encode(trimBodyFields(request.toJson())),
+      );
 
       return handleResponse((map) => LokalUser.fromJson(map), response);
     } catch (e) {
@@ -63,14 +63,14 @@ class UserAPIService extends APIService<LokalUser> {
 
   // --PUT
   Future<bool> update({
-    required Map<String, dynamic> body,
+    required UserUpdateRequest request,
     required String userId,
   }) async {
     try {
       final response = await putter(
         api.endpointUri(endpoint, pathSegments: [userId]),
         headers: api.withBodyHeader(),
-        body: json.encode(trimBodyFields(body)),
+        body: json.encode(trimBodyFields(request.toJson())),
       );
 
       return handleGenericResponse(response);

@@ -1,6 +1,8 @@
 import 'dart:convert';
 
 import '../../models/order.dart';
+import '../../models/post_requests/orders/order_create.request.dart';
+import '../../models/post_requests/orders/order_pay.request.dart';
 import 'api.dart';
 import 'api_service.dart';
 
@@ -12,13 +14,13 @@ class OrderAPIService extends APIService<Order> {
 
   //#region --POST
   Future<Order> create({
-    required Map<String, dynamic> body,
+    required OrderCreateRequest request,
   }) async {
     try {
       final response = await poster(
         api.endpointUri(endpoint),
         headers: api.withBodyHeader(),
-        body: json.encode(trimBodyFields(body)),
+        body: json.encode(trimBodyFields(request.toJson())),
       );
 
       return handleResponse((map) => Order.fromJson(map), response);
@@ -97,13 +99,13 @@ class OrderAPIService extends APIService<Order> {
 
   Future<bool> pay({
     required String orderId,
-    required Map<String, dynamic> body,
+    required OrderPayRequest request,
   }) async {
     try {
       final response = await putter(
         api.endpointUri(endpoint, pathSegments: [orderId, 'pay']),
         headers: api.withBodyHeader(),
-        body: json.encode(trimBodyFields(body)),
+        body: json.encode(trimBodyFields(request.toJson())),
       );
 
       return handleGenericResponse(response);

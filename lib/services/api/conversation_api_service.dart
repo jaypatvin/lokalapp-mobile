@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import '../../models/conversation.dart';
+import '../../models/post_requests/chat/conversation.request.dart';
 import 'api.dart';
 import 'api_service.dart';
 
@@ -12,7 +13,7 @@ class ConversationAPIService extends APIService<Conversation> {
 
   Future<bool> createConversation({
     required String chatId,
-    required Map<String, dynamic> body,
+    required ConversationRequest request,
   }) async {
     try {
       final response = await poster(
@@ -21,7 +22,7 @@ class ConversationAPIService extends APIService<Conversation> {
           pathSegments: [chatId, 'conversation'],
         ),
         headers: api.withBodyHeader(),
-        body: json.encode(trimBodyFields(body)),
+        body: json.encode(trimBodyFields(request.toJson())),
       );
 
       // Let firebase handle the creation of the conversation.

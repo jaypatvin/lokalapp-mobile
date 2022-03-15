@@ -1,6 +1,8 @@
 import 'dart:convert';
 
 import '../../models/activity_feed_comment.dart';
+import '../../models/post_requests/activities/comment.like.request.dart';
+import '../../models/post_requests/activities/comment.request.dart';
 import 'api.dart';
 import 'api_service.dart';
 
@@ -73,13 +75,13 @@ class CommentsAPIService extends APIService<ActivityFeedComment> {
   //#region --POST
   Future<ActivityFeedComment> create({
     required String activityId,
-    required Map<String, dynamic> body,
+    required CommentRequest request,
   }) async {
     try {
       final response = await poster(
         api.endpointUri(endpoint, pathSegments: [activityId, 'comments']),
         headers: api.withBodyHeader(),
-        body: json.encode(trimBodyFields(body)),
+        body: json.encode(trimBodyFields(request.toJson())),
       );
 
       return handleResponse(
@@ -103,7 +105,7 @@ class CommentsAPIService extends APIService<ActivityFeedComment> {
           pathSegments: [activityId, 'comments', commentId, 'like'],
         ),
         headers: api.withBodyHeader(),
-        body: json.encode({'user_id': userId}),
+        body: json.encode(CommentLikeRequest(userId: userId)),
       );
 
       return handleGenericResponse(response);
@@ -168,7 +170,7 @@ class CommentsAPIService extends APIService<ActivityFeedComment> {
           pathSegments: [activityId, 'comments', commentId, 'unlike'],
         ),
         headers: api.withBodyHeader(),
-        body: json.encode({'user_id': userId}),
+        body: json.encode(CommentLikeRequest(userId: userId)),
       );
 
       return handleGenericResponse(response);

@@ -1,6 +1,8 @@
 import 'dart:convert';
 
 import '../../models/chat_model.dart';
+import '../../models/post_requests/chat/chat_create.request.dart';
+import '../../models/post_requests/chat/chat_invite.request.dart';
 import 'api.dart';
 import 'api_service.dart';
 
@@ -31,12 +33,12 @@ class ChatAPIService extends APIService<ChatModel> {
   //#endregion
 
   //#region --POST
-  Future<ChatModel> createChat({required Map<String, dynamic> body}) async {
+  Future<ChatModel> createChat({required ChatCreateRequest request}) async {
     try {
       final response = await poster(
         api.endpointUri(endpoint),
         headers: api.withBodyHeader(),
-        body: json.encode(trimBodyFields(body)),
+        body: json.encode(trimBodyFields(request.toJson())),
       );
 
       return handleResponse((map) => ChatModel.fromJson(map), response);
@@ -50,7 +52,7 @@ class ChatAPIService extends APIService<ChatModel> {
   //#region -- PUT
   Future<bool> updateTitle({
     required String chatId,
-    required Map<String, String> body,
+    required String title,
   }) async {
     try {
       final response = await putter(
@@ -62,7 +64,7 @@ class ChatAPIService extends APIService<ChatModel> {
           ],
         ),
         headers: api.withBodyHeader(),
-        body: json.encode(trimBodyFields(body)),
+        body: json.encode({'title': title}),
       );
 
       return handleGenericResponse(response);
@@ -73,13 +75,13 @@ class ChatAPIService extends APIService<ChatModel> {
 
   Future<bool> inviteUser({
     required String chatId,
-    required Map<String, dynamic> body,
+    required ChatInviteRequest request,
   }) async {
     try {
       final response = await putter(
         api.endpointUri(endpoint, pathSegments: [chatId, 'invite']),
         headers: api.withBodyHeader(),
-        body: json.encode(trimBodyFields(body)),
+        body: json.encode(trimBodyFields(request.toJson())),
       );
 
       return handleGenericResponse(response);
@@ -90,13 +92,13 @@ class ChatAPIService extends APIService<ChatModel> {
 
   Future<bool> removeUser({
     required String chatId,
-    required Map<String, String> body,
+    required String userId,
   }) async {
     try {
       final response = await putter(
         api.endpointUri(endpoint, pathSegments: [chatId, 'removeUser']),
         headers: api.withBodyHeader(),
-        body: json.encode(trimBodyFields(body)),
+        body: json.encode({'user_id': userId}),
       );
 
       return handleGenericResponse(response);

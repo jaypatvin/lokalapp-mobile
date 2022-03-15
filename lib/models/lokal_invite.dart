@@ -35,7 +35,7 @@ class LokalInvite {
   final String? inviter;
   @JsonKey(
     fromJson: nullableDateTimeFromJson,
-    toJson: dateTimeToString,
+    toJson: nullableDateTimeToString,
   )
   final DateTime? createdAt;
   final String? inviteeEmail;

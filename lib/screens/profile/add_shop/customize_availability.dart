@@ -62,7 +62,7 @@ class _CustomizeAvailabilityState extends State<CustomizeAvailability>
     super.initState();
     final _generator = ScheduleGenerator();
 
-    final operatingHours = context.read<OperatingHoursBody>().body;
+    final operatingHours = context.read<OperatingHoursBody>().request;
 
     initialDates = _generator.generateInitialDates(
       repeatChoice: widget.repeatChoice,
@@ -138,8 +138,8 @@ class _CustomizeAvailabilityState extends State<CustomizeAvailability>
       customDates: customDates
           .map(
             (date) => CustomDates(
-              startTime: operatingHours.body.startTime,
-              endTime: operatingHours.body.endTime,
+              startTime: operatingHours.request.startTime,
+              endTime: operatingHours.request.endTime,
               date: DateFormat('yyyy-MM-dd').format(date!),
             ),
           )
@@ -157,7 +157,7 @@ class _CustomizeAvailabilityState extends State<CustomizeAvailability>
     final operatingHours = context.read<OperatingHoursBody>();
     return shops.setOperatingHours(
       id: userShop.id,
-      data: operatingHours.data,
+      request: operatingHours.request,
     );
   }
 
@@ -177,11 +177,11 @@ class _CustomizeAvailabilityState extends State<CustomizeAvailability>
     shopBody.update(
       profilePhoto: mediaUrl,
       userId: user.id,
-      operatingHours: context.read<OperatingHoursBody>().body,
+      operatingHours: context.read<OperatingHoursBody>().request,
     );
 
     try {
-      await shops.create(shopBody.data);
+      await shops.create(shopBody.request);
     } catch (e) {
       debugPrint(e.toString());
       rethrow;

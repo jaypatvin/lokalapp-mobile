@@ -7,6 +7,70 @@ import 'lokal_images.dart';
 
 part 'conversation.g.dart';
 
+enum MediaType { image, audio, video }
+
+extension MediaTypeExtension on MediaType {
+  String get value {
+    switch (this) {
+      case MediaType.audio:
+        return 'audio';
+      case MediaType.image:
+        return 'image';
+      case MediaType.video:
+        return 'video';
+    }
+  }
+}
+
+@JsonSerializable()
+class ConversationMedia extends LokalImages {
+  const ConversationMedia({
+    required String url,
+    required int order,
+    required this.type,
+  }) : super(url: url, order: order);
+
+  @JsonKey(fromJson: mediaTypeFromJson, toJson: mediaTypeToJson)
+  final MediaType type;
+
+  @override
+  Map<String, dynamic> toJson() => _$ConversationMediaToJson(this);
+
+  @override
+  factory ConversationMedia.fromJson(Map<String, dynamic> json) =>
+      _$ConversationMediaFromJson(json);
+
+  @override
+  ConversationMedia copyWith({
+    String? url,
+    int? order,
+    MediaType? type,
+  }) {
+    return ConversationMedia(
+      url: url ?? this.url,
+      order: order ?? this.order,
+      type: type ?? this.type,
+    );
+  }
+
+  @override
+  String toString() =>
+      'ConversationMedia(url: $url, order: $order, type: $type)';
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is ConversationMedia &&
+        other.url == url &&
+        other.order == order &&
+        other.type == type;
+  }
+
+  @override
+  int get hashCode => url.hashCode ^ order.hashCode ^ type.hashCode;
+}
+
 @JsonSerializable()
 class Conversation {
   @JsonKey(required: true)
@@ -16,7 +80,7 @@ class Conversation {
   @JsonKey(
     required: true,
     fromJson: createdAtFromJson,
-    toJson: dateTimeToString,
+    toJson: nullableDateTimeToString,
   )
   final DateTime createdAt;
   @JsonKey(required: true)
@@ -24,14 +88,14 @@ class Conversation {
   @JsonKey(
     required: true,
     fromJson: createdAtFromJson,
-    toJson: dateTimeToString,
+    toJson: nullableDateTimeToString,
   )
   final DateTime sentAt;
   final String? message;
   @JsonKey(fromJson: _replyToFromJson, toJson: _replyToToJson)
   final DocumentReference? replyTo;
-  @JsonKey(defaultValue: <LokalImages>[])
-  final List<LokalImages>? media;
+  @JsonKey(defaultValue: <ConversationMedia>[])
+  final List<ConversationMedia>? media;
 
   Conversation({
     required this.id,
@@ -52,7 +116,7 @@ class Conversation {
     String? senderId,
     DateTime? sentAt,
     DocumentReference? replyTo,
-    List<LokalImages>? media,
+    List<ConversationMedia>? media,
   }) {
     return Conversation(
       id: id ?? this.id,

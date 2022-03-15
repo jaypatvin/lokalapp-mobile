@@ -5,7 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
-import '../../models/order.dart';
+import '../../models/post_requests/orders/order_create.request.dart';
 import '../../providers/auth.dart';
 import '../../providers/cart.dart';
 import '../../providers/products.dart';
@@ -45,9 +45,7 @@ class _CheckoutScheduleState extends State<CheckoutSchedule> with ScreenLoader {
     _apiService = OrderAPIService(context.read<API>());
   }
 
-  Future<void> _placeOrderHandler(
-    String? shopId,
-  ) async {
+  Future<void> _placeOrderHandler(String shopId) async {
     try {
       final auth = context.read<Auth>();
       final user = auth.user!;
@@ -55,19 +53,19 @@ class _CheckoutScheduleState extends State<CheckoutSchedule> with ScreenLoader {
           context.read<ShoppingCart>().orders[shopId]![widget.productId]!;
       final _cart = context.read<ShoppingCart>();
       await _apiService.create(
-        body: {
-          'products': [
-            {
-              'id': widget.productId,
-              'quantity': order.quantity,
-            }
+        request: OrderCreateRequest(
+          products: [
+            OrderProduct(
+              id: widget.productId,
+              quantity: order.quantity,
+            ),
           ],
-          'buyer_id': user.id,
-          'shop_id': shopId,
-          'delivery_option': order.deliveryOption.value,
-          'delivery_date': order.schedule!.toIso8601String(),
-          'instruction': order.notes,
-        },
+          buyerId: user.id,
+          shopId: shopId,
+          deliveryOption: order.deliveryOption,
+          deliveryDate: order.schedule!,
+          instruction: order.notes,
+        ),
       );
 
       AppRouter.discoverNavigatorKey.currentState

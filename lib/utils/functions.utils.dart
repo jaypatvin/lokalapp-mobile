@@ -1,11 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart' show DateFormat;
 import 'package:photo_manager/photo_manager.dart';
 
 import '../models/app_navigator.dart';
+import '../models/conversation.dart';
 import '../models/lokal_images.dart';
 import '../models/operating_hours.dart';
+import '../models/order.dart';
 import '../models/status.dart';
 import '../models/timestamp_time_object.dart';
 import '../routers/app_router.dart';
@@ -108,18 +111,43 @@ DateTime? nullableDateTimeFromJson(dynamic map) {
   }
 }
 
-Status statusFromJson(String bankType) {
+Status statusFromJson(String? status) {
   return Status.values.firstWhere(
-    (e) => e.value == bankType,
-    orElse: () => Status.disabled,
+    (e) => e.value == status,
+    orElse: () => Status.enabled,
   );
 }
 
-String statusToJson(Status type) => type.value;
+String statusToJson(Status? status) => status?.value ?? Status.enabled.value;
 
-String? dateTimeToString(DateTime? date) {
+String dateTimeToString(DateTime date) => DateFormat('yyyy-MM-dd').format(date);
+
+String? nullableDateTimeToString(DateTime? date) {
   if (date != null) {
     return DateFormat('yyyy-MM-dd').format(date);
   }
   return null;
 }
+
+PaymentMethod? nullablePaymentMethodFromJson(String? value) {
+  return PaymentMethod.values.firstWhereOrNull((e) => e.value == value);
+}
+
+String? nullablePaymentMethodToJson(PaymentMethod? method) => method?.value;
+
+PaymentMethod paymentMethodFromJson(String? value) {
+  return PaymentMethod.values.firstWhere(
+    (e) => e.value == value,
+    orElse: () => PaymentMethod.cod,
+  );
+}
+
+String paymentMethodToJson(PaymentMethod? method) =>
+    method?.value ?? PaymentMethod.cod.value;
+
+MediaType mediaTypeFromJson(String json) => MediaType.values.firstWhere(
+      (e) => e.value == json,
+      orElse: () => MediaType.image,
+    );
+
+String mediaTypeToJson(MediaType type) => type.value;

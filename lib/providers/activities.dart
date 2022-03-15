@@ -4,6 +4,8 @@ import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 
 import '../models/activity_feed.dart';
+import '../models/post_requests/activities/activity.request.dart';
+import '../models/post_requests/activities/comment.request.dart';
 import '../services/api/activity_api_service.dart';
 import '../services/api/api.dart';
 import '../services/api/comment_api_service.dart';
@@ -180,21 +182,21 @@ class Activities extends ChangeNotifier {
 
   Future<void> createComment({
     required String activityId,
-    required Map<String, dynamic> body,
+    required CommentRequest request,
   }) async {
     try {
       await _commentService.create(
         activityId: activityId,
-        body: body,
+        request: request,
       );
     } catch (e) {
       rethrow;
     }
   }
 
-  Future<void> post(Map<String, dynamic> data) async {
+  Future<void> post(ActivityRequest request) async {
     try {
-      await _activityService.create(body: data);
+      await _activityService.create(request: request);
     } catch (e) {
       rethrow;
     }

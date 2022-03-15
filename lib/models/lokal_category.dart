@@ -24,7 +24,7 @@ class LokalCategory {
   final String id;
   @JsonKey(
     fromJson: nullableDateTimeFromJson,
-    toJson: dateTimeToString,
+    toJson: nullableDateTimeToString,
   )
   final DateTime? updatedAt;
   @JsonKey(required: true, defaultValue: false)
@@ -34,7 +34,7 @@ class LokalCategory {
   @JsonKey(
     required: true,
     fromJson: createdAtFromJson,
-    toJson: dateTimeToString,
+    toJson: nullableDateTimeToString,
   )
   final DateTime createdAt;
   @JsonKey(required: true)

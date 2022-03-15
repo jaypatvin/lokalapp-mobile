@@ -1,6 +1,8 @@
 import 'dart:convert';
 
 import '../../models/failure_exception.dart';
+import '../../models/post_requests/product_subscription_plan/override_dates.request.dart';
+import '../../models/post_requests/product_subscription_plan/product_subscription_plan.request.dart';
 import '../../models/product_subscription_plan.dart';
 import 'api.dart';
 import 'api_service.dart';
@@ -71,13 +73,13 @@ class SubscriptionPlanAPIService extends APIService<ProductSubscriptionPlan> {
   // -- POST
 
   Future<ProductSubscriptionPlan> createSubscriptionPlan({
-    required Map<String, dynamic> body,
+    required ProductSubscriptionPlanRequest request,
   }) async {
     try {
       final response = await poster(
         api.endpointUri(endpoint),
         headers: api.withBodyHeader(),
-        body: json.encode(trimBodyFields(body)),
+        body: json.encode(trimBodyFields(request.toJson())),
       );
 
       return handleResponse(
@@ -135,7 +137,7 @@ class SubscriptionPlanAPIService extends APIService<ProductSubscriptionPlan> {
 
   Future<bool> manualReschedulePlan({
     required String planId,
-    required Map<String, dynamic> body,
+    required OverrideDatesRequest request,
   }) async {
     try {
       final response = await putter(
@@ -147,7 +149,7 @@ class SubscriptionPlanAPIService extends APIService<ProductSubscriptionPlan> {
           ],
         ),
         headers: api.withBodyHeader(),
-        body: json.encode(trimBodyFields(body)),
+        body: json.encode(request.toJson()),
       );
 
       return handleGenericResponse(response);

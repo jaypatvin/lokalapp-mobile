@@ -10,6 +10,8 @@ import '../../models/chat_model.dart';
 import '../../models/conversation.dart';
 import '../../models/failure_exception.dart';
 import '../../models/lokal_user.dart';
+import '../../models/post_requests/chat/chat_create.request.dart';
+import '../../models/post_requests/chat/conversation.request.dart';
 import '../../providers/auth.dart';
 import '../../services/api/api.dart';
 import '../../services/api/chat_api_service.dart';
@@ -128,11 +130,11 @@ class ChatDetailsViewModel extends ViewModel {
   void _showMaxAssetsText() =>
       showToast('You have reached the limit of 5 media per message.');
 
-  Future<List<Map<String, dynamic>>> _getMedia(
+  Future<List<ConversationMedia>> _getMedia(
     List<AssetEntity> assets,
   ) async {
     final _imageService = context.read<LocalImageService>();
-    final media = <Map<String, dynamic>>[];
+    final media = <ConversationMedia>[];
 
     for (int index = 0; index < assets.length; index++) {
       final asset = assets[index];
@@ -141,11 +143,13 @@ class ChatDetailsViewModel extends ViewModel {
         file: file!,
         src: kChatImagesSrc,
       );
-      media.add({
-        'url': url,
-        'type': 'image',
-        'order': index,
-      });
+      media.add(
+        ConversationMedia(
+          url: url,
+          order: index,
+          type: MediaType.image,
+        ),
+      );
     }
     return media;
   }
@@ -158,7 +162,7 @@ class ChatDetailsViewModel extends ViewModel {
     if (conversation.senderId == user.id) {
       _isSendingMessage = false;
       _currentSendingMessage = null;
-      _didUserSendLastMessage = true;
+      _didUserSendLastMessage = !conversation.archived;
     } else {
       _didUserSendLastMessage = false;
     }
@@ -211,27 +215,27 @@ class ChatDetailsViewModel extends ViewModel {
       final _media = await _getMedia(_sendingImages);
       if (_chat != null) {
         _createConversation(
-          {
-            'user_id': _currentUser.id,
-            'reply_to': _replyId,
-            'message': _message,
-            'media': _media,
-          },
+          ConversationRequest(
+            userId: _currentUser.id,
+            replyTo: _replyId,
+            media: _media,
+            message: _message,
+          ),
           _onError,
         );
       } else {
         _chat = await _chatAPIService.createChat(
-          body: {
-            'user_id': _currentUser.id,
-            'reply_to': _replyId,
-            'message': _message,
-            'media': _media,
-            'members': members,
-            'shop_id': shopId,
-            'product_id': productId,
-          },
+          request: ChatCreateRequest(
+            userId: _currentUser.id,
+            members: members,
+            shopId: shopId,
+            productId: productId,
+            message: _message,
+            media: _media,
+          ),
         );
         _messageStream = _db.getConversations(_chat!.id);
+        _messageSubscription = _messageStream?.listen(_messageStreamListener);
       }
       notifyListeners();
     } catch (e, stack) {
@@ -240,13 +244,13 @@ class ChatDetailsViewModel extends ViewModel {
   }
 
   Future<void> _createConversation(
-    Map<String, dynamic> body, [
+    ConversationRequest request, [
     void Function(Object, [StackTrace])? onError,
   ]) async {
     try {
       await _conversationAPIService.createConversation(
         chatId: _chat!.id,
-        body: body,
+        request: request,
       );
     } catch (e, stack) {
       onError?.call(e, stack);

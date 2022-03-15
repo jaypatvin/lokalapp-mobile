@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import '../../models/lokal_invite.dart';
+import '../../models/post_requests/invite.request.dart';
 import 'api.dart';
 import 'api_service.dart';
 
@@ -41,17 +42,13 @@ class InviteAPIService extends APIService<LokalInvite> {
   }
 
   Future<bool> claim({
-    required String userId,
-    required String code,
+    required InviteRequest request,
   }) async {
     try {
       final response = await poster(
         api.endpointUri(endpoint, pathSegments: ['claim']),
         headers: api.withBodyHeader(),
-        body: json.encode({
-          'user_id': userId,
-          'code': code,
-        }),
+        body: json.encode(request),
       );
 
       return handleGenericResponse(response);

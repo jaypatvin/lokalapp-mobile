@@ -1,4 +1,3 @@
-import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -295,7 +294,7 @@ class Order {
   @JsonKey(
     required: true,
     fromJson: createdAtFromJson,
-    toJson: dateTimeToString,
+    toJson: nullableDateTimeToString,
   )
   final DateTime createdAt;
   @JsonKey(required: true)
@@ -303,7 +302,7 @@ class Order {
   @JsonKey(
     required: true,
     fromJson: createdAtFromJson,
-    toJson: dateTimeToString,
+    toJson: nullableDateTimeToString,
   )
   final DateTime deliveryDate;
   @JsonKey(
@@ -331,7 +330,7 @@ class Order {
 
   @JsonKey(
     fromJson: nullableDateTimeFromJson,
-    toJson: dateTimeToString,
+    toJson: nullableDateTimeToString,
   )
   final DateTime? deliveredDate;
   final String? cancellationReason;
@@ -340,7 +339,10 @@ class Order {
   final String? productSubscriptionDate;
   final String? proofOfPayment;
 
-  @JsonKey(fromJson: _paymentMethodFromJson, toJson: _paymentMethodToJson)
+  @JsonKey(
+    fromJson: nullablePaymentMethodFromJson,
+    toJson: nullablePaymentMethodToJson,
+  )
   final PaymentMethod? paymentMethod;
 
   Order copyWith({
@@ -479,9 +481,3 @@ DeliveryOption _deliveryOptionFromJson(String value) {
 }
 
 String? _deliveryOptionToJson(DeliveryOption? option) => option?.value;
-
-PaymentMethod? _paymentMethodFromJson(String? value) {
-  return PaymentMethod.values.firstWhereOrNull((e) => e.value == value);
-}
-
-String? _paymentMethodToJson(PaymentMethod? method) => method?.value;

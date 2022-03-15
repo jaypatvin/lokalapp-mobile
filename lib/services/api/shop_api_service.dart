@@ -1,6 +1,9 @@
 import 'dart:convert';
 
 import '../../models/operating_hours.dart';
+import '../../models/post_requests/shop/operating_hours.request.dart';
+import '../../models/post_requests/shop/shop_create.request.dart';
+import '../../models/post_requests/shop/shop_update.request.dart';
 import '../../models/shop.dart';
 import 'api.dart';
 import 'api_service.dart';
@@ -18,13 +21,13 @@ class ShopAPIService extends APIService<Shop> {
 
   // --POST
   Future<Shop> create({
-    required Map<String, dynamic> body,
+    required ShopCreateRequest request,
   }) async {
     try {
       final response = await poster(
         api.endpointUri(endpoint),
         headers: api.withBodyHeader(),
-        body: json.encode(trimBodyFields(body)),
+        body: json.encode(trimBodyFields(request.toJson())),
       );
 
       return handleResponse((map) => Shop.fromJson(map), response);
@@ -35,14 +38,14 @@ class ShopAPIService extends APIService<Shop> {
 
   // --PUT
   Future<bool> update({
-    required Map<String, dynamic> body,
+    required ShopUpdateRequest request,
     required String id,
   }) async {
     try {
       final response = await putter(
         api.endpointUri(endpoint, pathSegments: [id]),
         headers: api.withBodyHeader(),
-        body: json.encode(trimBodyFields(body)),
+        body: json.encode(trimBodyFields(request.toJson())),
       );
 
       return handleGenericResponse(response);
@@ -52,14 +55,14 @@ class ShopAPIService extends APIService<Shop> {
   }
 
   Future<bool> setOperatingHours({
-    required Map<String, dynamic> body,
+    required OperatingHoursRequest request,
     required String id,
   }) async {
     try {
       final response = await putter(
         api.endpointUri(endpoint, pathSegments: [id, 'operatingHours']),
         headers: api.withBodyHeader(),
-        body: json.encode(trimBodyFields(body)),
+        body: json.encode(trimBodyFields(request.toJson())),
       );
 
       return handleGenericResponse(response);

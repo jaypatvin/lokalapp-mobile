@@ -1,6 +1,8 @@
 import 'dart:convert';
 
 import '../../models/activity_feed.dart';
+import '../../models/post_requests/activities/activity.like.request.dart';
+import '../../models/post_requests/activities/activity.request.dart';
 import 'api.dart';
 import 'api_service.dart';
 
@@ -89,13 +91,13 @@ class ActivityAPIService extends APIService<ActivityFeed> {
 
   //#region -- POST
   Future<ActivityFeed> create({
-    required Map<String, dynamic> body,
+    required ActivityRequest request,
   }) async {
     try {
       final response = await poster(
         api.endpointUri(endpoint),
         headers: api.withBodyHeader(),
-        body: json.encode(trimBodyFields(body)),
+        body: json.encode(trimBodyFields(request.toJson())),
       );
 
       return handleResponse(
@@ -119,7 +121,7 @@ class ActivityAPIService extends APIService<ActivityFeed> {
       final response = await poster(
         uri,
         headers: api.withBodyHeader(),
-        body: json.encode({'user_id': userId}),
+        body: json.encode(ActivityLikeRequest(userId: userId).toJson()),
       );
 
       return handleGenericResponse(response);
@@ -155,7 +157,7 @@ class ActivityAPIService extends APIService<ActivityFeed> {
       final response = await deleter(
         uri,
         headers: api.withBodyHeader(),
-        body: json.encode({'user_id': userId}),
+        body: json.encode(ActivityLikeRequest(userId: userId).toJson()),
       );
 
       return handleGenericResponse(response);
@@ -168,7 +170,7 @@ class ActivityAPIService extends APIService<ActivityFeed> {
   //#region --PUT
   Future<bool> update({
     required String activityId,
-    required Map<String, dynamic> body,
+    required ActivityRequest request,
   }) async {
     try {
       final uri = api.endpointUri(endpoint, pathSegments: [activityId]);
@@ -176,7 +178,7 @@ class ActivityAPIService extends APIService<ActivityFeed> {
       final response = await putter(
         uri,
         headers: api.withBodyHeader(),
-        body: json.encode(trimBodyFields(body)),
+        body: json.encode(trimBodyFields(request.toJson())),
       );
 
       return handleGenericResponse(response);

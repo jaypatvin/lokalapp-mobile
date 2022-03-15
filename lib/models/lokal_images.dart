@@ -4,7 +4,7 @@ part 'lokal_images.g.dart';
 
 @JsonSerializable()
 class LokalImages {
-  LokalImages({
+  const LokalImages({
     required this.url,
     required this.order,
   });

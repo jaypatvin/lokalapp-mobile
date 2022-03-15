@@ -4,7 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:keyboard_actions/keyboard_actions.dart';
 import 'package:provider/provider.dart';
 
-import '../../providers/post_requests/auth_body.dart';
+import '../../providers/auth.dart';
 import '../../state/mvvm_builder.widget.dart';
 import '../../state/views/hook.view.dart';
 import '../../utils/constants/themes.dart';
@@ -35,6 +35,7 @@ class _EditProfileView extends HookView<EditProfileViewModel>
 
   @override
   Widget screen(BuildContext context, EditProfileViewModel vm) {
+    final _auth = context.watch<Auth>();
     final double width = MediaQuery.of(context).size.width;
     final double height = MediaQuery.of(context).size.height;
 
@@ -137,7 +138,7 @@ class _EditProfileView extends HookView<EditProfileViewModel>
                               child: PhotoBox(
                                 imageSource: PhotoBoxImageSource(
                                   file: vm.profilePhoto,
-                                  url: context.watch<AuthBody>().profilePhoto,
+                                  url: _auth.user?.profilePhoto,
                                 ),
                                 shape: BoxShape.circle,
                                 displayBorder: false,
@@ -147,9 +148,8 @@ class _EditProfileView extends HookView<EditProfileViewModel>
                           ),
                           Builder(
                             builder: (ctx) {
-                              final authBody = context.read<AuthBody>();
                               if (vm.profilePhoto != null ||
-                                  (authBody.profilePhoto?.isNotEmpty ??
+                                  (_auth.user?.profilePhoto?.isNotEmpty ??
                                       false)) {
                                 return Center(
                                   child: Text(
