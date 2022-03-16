@@ -198,9 +198,6 @@ class ViewSubscriptionScheduleViewModel extends ViewModel {
   late final ScheduleGenerator _generator;
   late final SubscriptionPlanAPIService _apiService;
 
-  String _repeatType = RepeatChoices.day.value;
-  int _repeatUnit = 1;
-
   // This will hold the initial dates from the product schedule: the only days
   // selectable when manual set of the schedule is chosen.
   List<DateTime?> _productSelectableDates = [];
@@ -296,16 +293,6 @@ class ViewSubscriptionScheduleViewModel extends ViewModel {
 
     _loaded = true;
     // notifyListeners();
-  }
-
-  void onRepeatTypeChanged(String? choice) {
-    _repeatType = choice ?? _repeatType;
-    notifyListeners();
-  }
-
-  void onRepeatUnitChanged(int? repeatUnit) {
-    _repeatUnit = repeatUnit ?? _repeatUnit;
-    notifyListeners();
   }
 
   // We only want to have subscriptions when the product is available.

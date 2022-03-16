@@ -157,7 +157,7 @@ class ScheduleGenerator {
     }
   }
 
-  /// Returns a generated list of dates from existing operating-hours.
+  /// Returns a generated list of dates from existing operating-hours for 1 year.
   ///
   /// This function already filters out unavailable dates and adds custom ones.
   List<DateTime> getSelectableDates(OperatingHours operatingHours) {

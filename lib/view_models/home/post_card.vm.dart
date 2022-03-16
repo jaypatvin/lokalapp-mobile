@@ -21,7 +21,7 @@ class PostCardViewModel extends ViewModel {
   bool isCurrentUser(ActivityFeed activity) =>
       context.read<Auth>().user?.id == activity.userId;
 
-  bool _isLiking = false;
+  // bool _isLiking = false;
   bool _isDeleting = false;
 
   @override
@@ -41,10 +41,10 @@ class PostCardViewModel extends ViewModel {
   }
 
   Future<void> onLike(ActivityFeed activity) async {
-    if (_isLiking) return;
+    // if (_isLiking) return;
     final user = context.read<Auth>().user!;
     try {
-      _isLiking = true;
+      // _isLiking = true;
       if (activity.liked) {
         await context.read<Activities>().unlikePost(
               activityId: activity.id,
@@ -60,7 +60,7 @@ class PostCardViewModel extends ViewModel {
       FirebaseCrashlytics.instance.recordError(e, stack);
       showToast(e is FailureException ? e.message : e.toString());
     } finally {
-      _isLiking = false;
+      // _isLiking = false;
     }
   }
 

@@ -87,6 +87,7 @@ class SubscriptionPlanStream extends StatelessWidget {
                   ),
                 );
               },
+              itemComparator: (a, b) => b.createdAt.compareTo(a.createdAt),
               itemBuilder: (ctx, subscriptionPlan) {
                 return SubscriptionPlanCard(
                   key: Key('card_${subscriptionPlan.id}'),

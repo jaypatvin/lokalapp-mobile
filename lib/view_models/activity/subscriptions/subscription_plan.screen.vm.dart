@@ -97,11 +97,20 @@ class SubscriptionPlanScreenViewModel extends ViewModel {
   }
 
   void onSeeSchedule() {
+    final SubscriptionSchedule _screen;
+    if (isBuyer) {
+      _screen = SubscriptionSchedule.view(
+        subscriptionPlan: subscriptionPlan,
+      );
+    } else {
+      _screen = SubscriptionSchedule.seller(
+        subscriptionPlan: subscriptionPlan,
+      );
+    }
+
     AppRouter.activityNavigatorKey.currentState?.push(
       AppNavigator.appPageRoute(
-        builder: (_) => SubscriptionSchedule.view(
-          subscriptionPlan: subscriptionPlan,
-        ),
+        builder: (_) => _screen,
       ),
     );
   }
@@ -172,7 +181,7 @@ class SubscriptionPlanScreenViewModel extends ViewModel {
     }
   }
 
-  Future<void> onCancelSubscription() async {
+  Future<void> onDeclineSubscription() async {
     try {
       final _success = await _apiService.cancelSubscriptionPlan(
         planId: subscriptionPlan.id,

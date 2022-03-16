@@ -173,8 +173,8 @@ class _SubscriptionDetailsView extends HookView<SubscriptionPlanScreenViewModel>
                     performFuture<void>(vm.onUnsubscribe),
                 onConfirmSubscription: () async =>
                     performFuture<void>(vm.onConfirmSubscription),
-                onCancelSubscription: () async =>
-                    performFuture<void>(vm.onCancelSubscription),
+                onDeclineSubscription: () async =>
+                    performFuture<void>(vm.onDeclineSubscription),
               ),
             ],
           ),
@@ -193,7 +193,7 @@ class _SubscriptionDetailsButtons extends StatelessWidget {
   final void Function()? onUnsubscribe;
   final void Function()? onSubscribeAgain;
   final void Function()? onConfirmSubscription;
-  final void Function()? onCancelSubscription;
+  final void Function()? onDeclineSubscription;
   const _SubscriptionDetailsButtons({
     Key? key,
     this.isBuyer = true,
@@ -204,7 +204,7 @@ class _SubscriptionDetailsButtons extends StatelessWidget {
     this.onUnsubscribe,
     this.onSubscribeAgain,
     this.onConfirmSubscription,
-    this.onCancelSubscription,
+    this.onDeclineSubscription,
   }) : super(key: key);
 
   @override
@@ -214,19 +214,18 @@ class _SubscriptionDetailsButtons extends StatelessWidget {
             status == SubscriptionStatus.enabled);
     return Column(
       children: [
-        if (isBuyer &&
-            (status == SubscriptionStatus.enabled ||
-                status == SubscriptionStatus.disabled))
-          SizedBox(
+        if (status == SubscriptionStatus.enabled ||
+            status == SubscriptionStatus.disabled)
+          Container(
             width: double.infinity,
-            height: kMinInteractiveDimension,
+            margin: const EdgeInsets.all(2.5),
             child: ElevatedButton(
               onPressed: onSeeSchedule,
               style: ElevatedButton.styleFrom(
                 shape: const StadiumBorder(),
                 elevation: 0.0,
                 primary: Colors.transparent,
-                minimumSize: Size(0, 40.0.h),
+                minimumSize: const Size(0, kMinInteractiveDimension),
                 side: const BorderSide(color: kTealColor),
               ),
               child: Row(
@@ -249,7 +248,7 @@ class _SubscriptionDetailsButtons extends StatelessWidget {
               ),
             ),
           ),
-        SizedBox(height: 5.0.h),
+        // SizedBox(height: 5.0.h),
         Row(
           children: [
             if (isBuyer && status == SubscriptionStatus.enabled)
@@ -283,7 +282,7 @@ class _SubscriptionDetailsButtons extends StatelessWidget {
                   child: AppButton.transparent(
                     text: 'Decline Subscription',
                     color: kPinkColor,
-                    onPressed: onCancelSubscription,
+                    onPressed: onDeclineSubscription,
                   ),
                 ),
               if (status == SubscriptionStatus.enabled)
@@ -291,7 +290,7 @@ class _SubscriptionDetailsButtons extends StatelessWidget {
                   child: AppButton.transparent(
                     text: 'Cancel Subscription',
                     color: kPinkColor,
-                    onPressed: onCancelSubscription,
+                    onPressed: onDeclineSubscription,
                   ),
                 ),
               if (status == SubscriptionStatus.disabled)

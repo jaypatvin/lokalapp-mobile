@@ -89,6 +89,7 @@ class ChatDetailsView extends HookView<ChatDetailsViewModel> {
       child = ChatBubble(
         conversation: viewModel.currentSendingMessage,
         images: viewModel.sendingImages,
+        replyMessage: viewModel.sendingReplyTo,
       );
     } else if (viewModel.didUserSendLastMessage) {
       child = const SizedBox(
