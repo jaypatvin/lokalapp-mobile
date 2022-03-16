@@ -90,6 +90,9 @@ class ChatDetailsViewModel extends ViewModel {
   List<AssetEntity> _sendingImages = [];
   List<AssetEntity> get sendingImages => _sendingImages;
 
+  Conversation? _sendingReplyTo;
+  Conversation? get sendingReplyTo => _sendingReplyTo;
+
   @override
   void init() {
     final _api = context.read<API>();
@@ -181,6 +184,7 @@ class ChatDetailsViewModel extends ViewModel {
     final _message = this._message;
     final _replyTo = this._replyTo;
     _sendingImages = [...imageProvider.picked];
+    _sendingReplyTo = this._replyTo;
 
     void _onError(Object e, [StackTrace? stack]) {
       FirebaseCrashlytics.instance.recordError(e, stack);
