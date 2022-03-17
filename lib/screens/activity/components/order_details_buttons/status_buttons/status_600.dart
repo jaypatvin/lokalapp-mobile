@@ -23,12 +23,8 @@ class Status600Buttons extends StatelessWidget {
       return Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (order.proofOfPayment?.isNotEmpty ?? false)
-            Container(
-              margin: const EdgeInsets.only(bottom: 5),
-              width: double.infinity,
-              child: ViewPaymentButton(onPress: onPress),
-            ),
+          if (order.paymentMethod != PaymentMethod.cod)
+            ViewPaymentButton(onPress: onPress),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -50,12 +46,8 @@ class Status600Buttons extends StatelessWidget {
 
     return Column(
       children: [
-        if (order.proofOfPayment?.isNotEmpty ?? false)
-          Container(
-            margin: const EdgeInsets.only(bottom: 5.0),
-            width: double.infinity,
-            child: ViewPaymentButton(onPress: onPress),
-          ),
+        if (order.paymentMethod != PaymentMethod.cod)
+          ViewPaymentButton(onPress: onPress),
         SizedBox(
           width: double.infinity,
           child: MessageBuyerButton(order: order),

@@ -23,11 +23,8 @@ class Status500Buttons extends StatelessWidget {
     if (isBuyer) {
       return Column(
         children: [
-          if (order.proofOfPayment?.isNotEmpty ?? false)
-            SizedBox(
-              width: double.infinity,
-              child: ViewPaymentButton(onPress: onPress),
-            ),
+          if (order.paymentMethod != PaymentMethod.cod)
+            ViewPaymentButton(onPress: onPress),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -50,10 +47,8 @@ class Status500Buttons extends StatelessWidget {
 
     return Column(
       children: [
-        SizedBox(
-          width: double.infinity,
-          child: ViewPaymentButton(onPress: onPress),
-        ),
+        if (order.paymentMethod != PaymentMethod.cod)
+          ViewPaymentButton(onPress: onPress),
         SizedBox(
           width: double.infinity,
           child: MessageBuyerButton(order: order),
