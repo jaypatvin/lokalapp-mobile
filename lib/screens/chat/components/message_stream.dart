@@ -105,15 +105,23 @@ class MessageStream extends HookWidget {
       bottomOffsetHeight: kBottomNavigationBarHeight,
       blurBackgroundColor: Colors.grey.shade200.withOpacity(0.3),
       blurSize: 2.0,
-      child: SwipeTo(
-        onRightSwipe: userMessage ? null : () => onReply(messageId, message),
-        onLeftSwipe: userMessage ? () => onReply(messageId, message) : null,
-        child: ChatBubble(
-          conversation: message,
-          replyMessage: replyMessage,
-          forFocus: true,
-        ),
-      ),
+      child: message.archived
+          ? ChatBubble(
+              conversation: message,
+              replyMessage: replyMessage,
+              forFocus: true,
+            )
+          : SwipeTo(
+              onRightSwipe:
+                  userMessage ? null : () => onReply(messageId, message),
+              onLeftSwipe:
+                  userMessage ? () => onReply(messageId, message) : null,
+              child: ChatBubble(
+                conversation: message,
+                replyMessage: replyMessage,
+                forFocus: true,
+              ),
+            ),
     );
   }
 

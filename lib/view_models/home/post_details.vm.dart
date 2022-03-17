@@ -147,6 +147,14 @@ class PostDetailViewModel extends ViewModel {
     );
   }
 
+  Future<bool> onWillPop() async {
+    if (_showImagePicker) {
+      showImagePicker = false;
+      return false;
+    }
+    return true;
+  }
+
   Future<void> onDelete() async {
     if (_isPostDeleting) return;
     try {
