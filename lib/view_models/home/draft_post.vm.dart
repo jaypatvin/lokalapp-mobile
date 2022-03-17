@@ -149,6 +149,11 @@ class DraftPostViewModel extends ViewModel {
   }
 
   Future<bool> onWillPop(Widget displayMessage) async {
+    if (_showImagePicker) {
+      _showImagePicker = false;
+      notifyListeners();
+      return false;
+    }
     if (_postMessage == null && imageProvider.picked.isEmpty) {
       return true;
     }

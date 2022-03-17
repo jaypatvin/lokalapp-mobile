@@ -3,6 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:keyboard_actions/keyboard_actions.dart';
 import 'package:lottie/lottie.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/app_navigator.dart';
@@ -135,114 +136,117 @@ class ChatDetailsView extends HookView<ChatDetailsViewModel> {
       viewModel,
     ]);
 
-    return Scaffold(
-      appBar: CustomAppBar(
-        backgroundColor: _indicatorColor,
-        titleText: viewModel.chat?.title ?? '',
-        titleStyle: const TextStyle(color: Colors.white, fontSize: 16.0),
-        onPressedLeading: () => Navigator.pop(context),
-        actions: [
-          IconButton(
-            icon: Icon(
-              Icons.more_horiz,
-              color: Colors.white,
-              size: 30.r,
-            ),
-            onPressed: () {
-              if (viewModel.chat != null) {
-                Navigator.push(
-                  context,
-                  AppNavigator.appPageRoute(
-                    builder: (_) => ChatProfile(
-                      viewModel.chat!,
-                      viewModel.conversations,
-                    ),
-                  ),
-                );
-              }
-            },
-          )
-        ],
-      ),
-      body: KeyboardActions(
-        config: KeyboardActionsConfig(
-          keyboardBarColor: Colors.transparent,
+    return NestedWillPopScope(
+      onWillPop: viewModel.onWillPop,
+      child: Scaffold(
+        appBar: CustomAppBar(
+          backgroundColor: _indicatorColor,
+          titleText: viewModel.chat?.title ?? '',
+          titleStyle: const TextStyle(color: Colors.white, fontSize: 16.0),
+          onPressedLeading: () => Navigator.pop(context),
           actions: [
-            KeyboardActionsItem(
-              focusNode: _chatInputNode,
-              displayActionBar: false,
-              toolbarButtons: [
-                (node) {
-                  return TextButton(
-                    onPressed: () => node.unfocus(),
-                    child: Text(
-                      'Done',
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyText1
-                          ?.copyWith(color: Colors.black),
+            IconButton(
+              icon: Icon(
+                Icons.more_horiz,
+                color: Colors.white,
+                size: 30.r,
+              ),
+              onPressed: () {
+                if (viewModel.chat != null) {
+                  Navigator.push(
+                    context,
+                    AppNavigator.appPageRoute(
+                      builder: (_) => ChatProfile(
+                        viewModel.chat!,
+                        viewModel.conversations,
+                      ),
                     ),
                   );
-                },
-              ],
-            ),
+                }
+              },
+            )
           ],
         ),
-        disableScroll: true,
-        tapOutsideBehavior: TapOutsideBehavior.translucentDismiss,
-        child: Builder(
-          builder: (context) {
-            if (viewModel.isLoading) {
-              return SizedBox.expand(
-                child: Lottie.asset(kAnimationLoading),
-              );
-            }
-            return Column(
-              children: [
-                Expanded(
-                  child: Container(
-                    decoration: const BoxDecoration(
-                      color: Colors.white,
+        body: KeyboardActions(
+          config: KeyboardActionsConfig(
+            keyboardBarColor: Colors.transparent,
+            actions: [
+              KeyboardActionsItem(
+                focusNode: _chatInputNode,
+                displayActionBar: false,
+                toolbarButtons: [
+                  (node) {
+                    return TextButton(
+                      onPressed: () => node.unfocus(),
+                      child: Text(
+                        'Done',
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodyText1
+                            ?.copyWith(color: Colors.black),
+                      ),
+                    );
+                  },
+                ],
+              ),
+            ],
+          ),
+          disableScroll: true,
+          tapOutsideBehavior: TapOutsideBehavior.translucentDismiss,
+          child: Builder(
+            builder: (context) {
+              if (viewModel.isLoading) {
+                return SizedBox.expand(
+                  child: Lottie.asset(kAnimationLoading),
+                );
+              }
+              return Column(
+                children: [
+                  Expanded(
+                    child: Container(
+                      decoration: const BoxDecoration(
+                        color: Colors.white,
+                      ),
+                      child: _buildMessageStream(viewModel),
                     ),
-                    child: _buildMessageStream(viewModel),
                   ),
-                ),
-                Container(
-                  color: kInviteScreenColor,
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 10.0.w,
-                    vertical: 10.0.h,
+                  Container(
+                    color: kInviteScreenColor,
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 10.0.w,
+                      vertical: 10.0.h,
+                    ),
+                    child: ChatInput(
+                      onMessageSend: () {
+                        viewModel.onSendMessage();
+                        _chatInputController.clear();
+                      },
+                      onShowImagePicker: viewModel.onShowImagePicker,
+                      onCancelReply: () => viewModel.replyTo = null,
+                      onImageRemove: viewModel.onImageRemove,
+                      chatInputController: _chatInputController,
+                      replyMessage: viewModel.replyTo,
+                      images: viewModel.imageProvider.picked,
+                      onTextFieldTap: () => viewModel.showImagePicker = false,
+                      chatFocusNode: _chatInputNode,
+                    ),
                   ),
-                  child: ChatInput(
-                    onMessageSend: () {
-                      viewModel.onSendMessage();
-                      _chatInputController.clear();
-                    },
-                    onShowImagePicker: viewModel.onShowImagePicker,
-                    onCancelReply: () => viewModel.replyTo = null,
-                    onImageRemove: viewModel.onImageRemove,
-                    chatInputController: _chatInputController,
-                    replyMessage: viewModel.replyTo,
-                    images: viewModel.imageProvider.picked,
-                    onTextFieldTap: () => viewModel.showImagePicker = false,
-                    chatFocusNode: _chatInputNode,
+                  AnimatedContainer(
+                    duration: const Duration(milliseconds: 100),
+                    height: viewModel.showImagePicker ? 150.0.h : 0.0.h,
+                    child: ImageGalleryPicker(
+                      viewModel.imageProvider,
+                      pickerHeight: 150.h,
+                      assetHeight: 150.h,
+                      assetWidth: 150.h,
+                      thumbSize: 200,
+                      enableSpecialItemBuilder: true,
+                    ),
                   ),
-                ),
-                AnimatedContainer(
-                  duration: const Duration(milliseconds: 100),
-                  height: viewModel.showImagePicker ? 150.0.h : 0.0.h,
-                  child: ImageGalleryPicker(
-                    viewModel.imageProvider,
-                    pickerHeight: 150.h,
-                    assetHeight: 150.h,
-                    assetWidth: 150.h,
-                    thumbSize: 200,
-                    enableSpecialItemBuilder: true,
-                  ),
-                ),
-              ],
-            );
-          },
+                ],
+              );
+            },
+          ),
         ),
       ),
     );

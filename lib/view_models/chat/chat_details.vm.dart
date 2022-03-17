@@ -173,9 +173,22 @@ class ChatDetailsViewModel extends ViewModel {
   }
 
   void onReply(String id, Conversation replyTo) {
+    if (replyTo.archived) return;
+
     _replyId = id;
     _replyTo = replyTo;
+
     notifyListeners();
+  }
+
+  Future<bool> onWillPop() async {
+    if (_showImagePicker) {
+      _showImagePicker = false;
+      notifyListeners();
+      return false;
+    }
+
+    return true;
   }
 
   Future<void> onSendMessage() async {
