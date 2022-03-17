@@ -297,18 +297,14 @@ class _ChatProfileState extends State<ChatProfile> {
                   'Shared Media',
                   style: TextStyle(fontWeight: FontWeight.w500),
                 ),
-                trailing: IconButton(
-                  constraints: const BoxConstraints(),
-                  padding: EdgeInsets.zero,
-                  icon: const Icon(MdiIcons.chevronRight),
-                  onPressed: () {
-                    context.read<AppRouter>().navigateTo(
-                      AppRoute.chat,
-                      SharedMedia.routeName,
-                      arguments: {'conversations': widget.conversations},
-                    );
-                  },
-                ),
+                onTap: () {
+                  context.read<AppRouter>().navigateTo(
+                    AppRoute.chat,
+                    SharedMedia.routeName,
+                    arguments: {'conversations': widget.conversations},
+                  );
+                },
+                trailing: const Icon(MdiIcons.chevronRight),
               ),
             )
           ],
