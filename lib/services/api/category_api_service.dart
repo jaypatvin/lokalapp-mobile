@@ -56,7 +56,7 @@ class CategoryAPIService extends APIService<LokalCategory> {
   //#endregion
 
   //#region --PUT
-  Future<bool> udpate({
+  Future<bool> update({
     required String id,
     required Map<String, dynamic> body,
   }) async {
