@@ -6,9 +6,11 @@ import '../../models/post_requests/product_subscription_plan/product_subscriptio
 import '../../models/product_subscription_plan.dart';
 import 'api.dart';
 import 'api_service.dart';
+import 'client/lokal_http_client.dart';
 
 class SubscriptionPlanAPIService extends APIService<ProductSubscriptionPlan> {
-  const SubscriptionPlanAPIService(this.api);
+  SubscriptionPlanAPIService(this.api, {LokalHttpClient? client})
+      : super(client: client ?? LokalHttpClient());
 
   final API api;
   Endpoint get endpoint => Endpoint.subscriptionPlan;
@@ -29,7 +31,7 @@ class SubscriptionPlanAPIService extends APIService<ProductSubscriptionPlan> {
         queryParameters['end_date'] = endDate;
       }
 
-      final response = await getter(
+      final response = await client.get(
         api.endpointUri(
           endpoint,
           pathSegments: [planId],
@@ -76,7 +78,7 @@ class SubscriptionPlanAPIService extends APIService<ProductSubscriptionPlan> {
     required ProductSubscriptionPlanRequest request,
   }) async {
     try {
-      final response = await poster(
+      final response = await client.post(
         api.endpointUri(endpoint),
         headers: api.withBodyHeader(),
         body: json.encode(trimBodyFields(request.toJson())),
@@ -95,7 +97,7 @@ class SubscriptionPlanAPIService extends APIService<ProductSubscriptionPlan> {
     required String planId,
   }) async {
     try {
-      final response = await poster(
+      final response = await client.post(
         api.endpointUri(
           endpoint,
           pathSegments: [
@@ -118,7 +120,7 @@ class SubscriptionPlanAPIService extends APIService<ProductSubscriptionPlan> {
     required String planId,
   }) async {
     try {
-      final response = await putter(
+      final response = await client.put(
         api.endpointUri(
           endpoint,
           pathSegments: [
@@ -140,7 +142,7 @@ class SubscriptionPlanAPIService extends APIService<ProductSubscriptionPlan> {
     required OverrideDatesRequest request,
   }) async {
     try {
-      final response = await putter(
+      final response = await client.put(
         api.endpointUri(
           endpoint,
           pathSegments: [
@@ -166,7 +168,7 @@ class SubscriptionPlanAPIService extends APIService<ProductSubscriptionPlan> {
   /// `[unsubscribeFromSubscriptionPlan]` instead.
   Future<bool> disableSubscriptionPlan({required String planId}) async {
     try {
-      final response = await putter(
+      final response = await client.put(
         api.endpointUri(
           endpoint,
           pathSegments: [
@@ -186,7 +188,7 @@ class SubscriptionPlanAPIService extends APIService<ProductSubscriptionPlan> {
   /// Cancel the Subscription Plan. Can only be called by the seller.
   Future<bool> cancelSubscriptionPlan({required String planId}) async {
     try {
-      final response = await putter(
+      final response = await client.put(
         api.endpointUri(
           endpoint,
           pathSegments: [planId, 'cancel'],
@@ -204,7 +206,7 @@ class SubscriptionPlanAPIService extends APIService<ProductSubscriptionPlan> {
   /// buyer.
   Future<bool> unsubscribeFromSubscriptionPlan({required String planId}) async {
     try {
-      final response = await putter(
+      final response = await client.put(
         api.endpointUri(
           endpoint,
           pathSegments: [planId, 'unsubscribe'],

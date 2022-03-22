@@ -5,10 +5,12 @@ import '../../models/post_requests/activities/activity.like.request.dart';
 import '../../models/post_requests/activities/activity.request.dart';
 import 'api.dart';
 import 'api_service.dart';
+import 'client/lokal_http_client.dart';
 
 ///
 class ActivityAPIService extends APIService<ActivityFeed> {
-  const ActivityAPIService(this.api);
+  ActivityAPIService(this.api, {LokalHttpClient? client})
+      : super(client: client ?? LokalHttpClient());
 
   final API api;
   Endpoint get endpoint => Endpoint.activity;
@@ -16,7 +18,7 @@ class ActivityAPIService extends APIService<ActivityFeed> {
   //#region -- GET
   Future<ActivityFeed> getById({required String activityId}) async {
     try {
-      final response = await getter(
+      final response = await client.get(
         api.endpointUri(endpoint, pathSegments: [activityId]),
         headers: api.authHeader(),
       );
@@ -32,7 +34,7 @@ class ActivityAPIService extends APIService<ActivityFeed> {
 
   Future<List<ActivityFeed>> getAll() async {
     try {
-      final response = await getter(
+      final response = await client.get(
         api.endpointUri(endpoint),
         headers: api.authHeader(),
       );
@@ -52,7 +54,7 @@ class ActivityAPIService extends APIService<ActivityFeed> {
         Endpoint.user,
         pathSegments: [userId, 'activities'],
       );
-      final response = await getter(
+      final response = await client.get(
         uri,
         headers: api.authHeader(),
       );
@@ -74,7 +76,7 @@ class ActivityAPIService extends APIService<ActivityFeed> {
         Endpoint.community,
         pathSegments: [communityId, 'activities'],
       );
-      final response = await getter(
+      final response = await client.get(
         uri,
         headers: api.authHeader(),
       );
@@ -94,7 +96,7 @@ class ActivityAPIService extends APIService<ActivityFeed> {
     required ActivityRequest request,
   }) async {
     try {
-      final response = await poster(
+      final response = await client.post(
         api.endpointUri(endpoint),
         headers: api.withBodyHeader(),
         body: json.encode(trimBodyFields(request.toJson())),
@@ -118,7 +120,7 @@ class ActivityAPIService extends APIService<ActivityFeed> {
         endpoint,
         pathSegments: [activityId, 'like'],
       );
-      final response = await poster(
+      final response = await client.post(
         uri,
         headers: api.withBodyHeader(),
         body: json.encode(ActivityLikeRequest(userId: userId).toJson()),
@@ -135,7 +137,7 @@ class ActivityAPIService extends APIService<ActivityFeed> {
   Future<bool> delete({required String activityId}) async {
     try {
       final uri = api.endpointUri(endpoint, pathSegments: [activityId]);
-      final response = await deleter(
+      final response = await client.delete(
         uri,
         headers: api.authHeader(),
       );
@@ -154,7 +156,7 @@ class ActivityAPIService extends APIService<ActivityFeed> {
       final uri =
           api.endpointUri(endpoint, pathSegments: [activityId, 'unlike']);
 
-      final response = await deleter(
+      final response = await client.delete(
         uri,
         headers: api.withBodyHeader(),
         body: json.encode(ActivityLikeRequest(userId: userId).toJson()),
@@ -175,7 +177,7 @@ class ActivityAPIService extends APIService<ActivityFeed> {
     try {
       final uri = api.endpointUri(endpoint, pathSegments: [activityId]);
 
-      final response = await putter(
+      final response = await client.put(
         uri,
         headers: api.withBodyHeader(),
         body: json.encode(trimBodyFields(request.toJson())),

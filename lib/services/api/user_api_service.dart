@@ -5,9 +5,11 @@ import '../../models/post_requests/user/user_create.request.dart';
 import '../../models/post_requests/user/user_update.request.dart';
 import 'api.dart';
 import 'api_service.dart';
+import 'client/lokal_http_client.dart';
 
 class UserAPIService extends APIService<LokalUser> {
-  const UserAPIService(this.api);
+  UserAPIService(this.api, {LokalHttpClient? client})
+      : super(client: client ?? LokalHttpClient());
 
   final API api;
   Endpoint get endpoint => Endpoint.user;
@@ -15,7 +17,7 @@ class UserAPIService extends APIService<LokalUser> {
   // --POST
   Future<LokalUser> create({required UserCreateRequest request}) async {
     try {
-      final response = await poster(
+      final response = await client.post(
         api.endpointUri(endpoint),
         headers: api.withBodyHeader(),
         body: json.encode(trimBodyFields(request.toJson())),
@@ -32,7 +34,7 @@ class UserAPIService extends APIService<LokalUser> {
     required String userId,
   }) async {
     try {
-      final response = await getter(
+      final response = await client.get(
         api.endpointUri(endpoint, pathSegments: [userId]),
         headers: api.authHeader(),
       );
@@ -47,7 +49,7 @@ class UserAPIService extends APIService<LokalUser> {
     required String communityId,
   }) async {
     try {
-      final response = await getter(
+      final response = await client.get(
         api.endpointUri(
           Endpoint.community,
           pathSegments: [communityId, 'users'],
@@ -67,7 +69,7 @@ class UserAPIService extends APIService<LokalUser> {
     required String userId,
   }) async {
     try {
-      final response = await putter(
+      final response = await client.put(
         api.endpointUri(endpoint, pathSegments: [userId]),
         headers: api.withBodyHeader(),
         body: json.encode(trimBodyFields(request.toJson())),
@@ -84,7 +86,7 @@ class UserAPIService extends APIService<LokalUser> {
     required Map<String, bool> body,
   }) async {
     try {
-      final response = await putter(
+      final response = await client.put(
         api.endpointUri(
           endpoint,
           pathSegments: [userId, 'toggleNotificationSetting'],
@@ -103,7 +105,7 @@ class UserAPIService extends APIService<LokalUser> {
     required Map<String, bool> body,
   }) async {
     try {
-      final response = await putter(
+      final response = await client.put(
         api.endpointUri(
           endpoint,
           pathSegments: [userId, 'chatSettings'],
@@ -122,7 +124,7 @@ class UserAPIService extends APIService<LokalUser> {
     required Map<String, String> body,
   }) async {
     try {
-      final response = await putter(
+      final response = await client.put(
         api.endpointUri(
           endpoint,
           pathSegments: [userId, 'register'],
@@ -139,7 +141,7 @@ class UserAPIService extends APIService<LokalUser> {
   // --DELETE
   Future<bool> delete({required String userId, required String idToken}) async {
     try {
-      final response = await deleter(
+      final response = await client.delete(
         api.endpointUri(endpoint, pathSegments: [userId]),
         headers: api.authHeader(),
       );

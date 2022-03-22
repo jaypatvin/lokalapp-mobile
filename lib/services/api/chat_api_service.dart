@@ -5,9 +5,11 @@ import '../../models/post_requests/chat/chat_create.request.dart';
 import '../../models/post_requests/chat/chat_invite.request.dart';
 import 'api.dart';
 import 'api_service.dart';
+import 'client/lokal_http_client.dart';
 
 class ChatAPIService extends APIService<ChatModel> {
-  const ChatAPIService(this.api);
+  ChatAPIService(this.api, {LokalHttpClient? client})
+      : super(client: client ?? LokalHttpClient());
 
   final API api;
   Endpoint get endpoint => Endpoint.chat;
@@ -15,7 +17,7 @@ class ChatAPIService extends APIService<ChatModel> {
   //#region --GET
   Future<ChatModel> getChatByMembers({required List<String> members}) async {
     try {
-      final response = await getter(
+      final response = await client.get(
         api.baseUri(
           pathSegments: const ['getChatByMemberIds'],
           queryParameters: <String, List<String>>{
@@ -35,7 +37,7 @@ class ChatAPIService extends APIService<ChatModel> {
   //#region --POST
   Future<ChatModel> createChat({required ChatCreateRequest request}) async {
     try {
-      final response = await poster(
+      final response = await client.post(
         api.endpointUri(endpoint),
         headers: api.withBodyHeader(),
         body: json.encode(trimBodyFields(request.toJson())),
@@ -55,7 +57,7 @@ class ChatAPIService extends APIService<ChatModel> {
     required String title,
   }) async {
     try {
-      final response = await putter(
+      final response = await client.put(
         api.endpointUri(
           endpoint,
           pathSegments: [
@@ -78,7 +80,7 @@ class ChatAPIService extends APIService<ChatModel> {
     required ChatInviteRequest request,
   }) async {
     try {
-      final response = await putter(
+      final response = await client.put(
         api.endpointUri(endpoint, pathSegments: [chatId, 'invite']),
         headers: api.withBodyHeader(),
         body: json.encode(trimBodyFields(request.toJson())),
@@ -95,7 +97,7 @@ class ChatAPIService extends APIService<ChatModel> {
     required String userId,
   }) async {
     try {
-      final response = await putter(
+      final response = await client.put(
         api.endpointUri(endpoint, pathSegments: [chatId, 'removeUser']),
         headers: api.withBodyHeader(),
         body: json.encode({'user_id': userId}),
