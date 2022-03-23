@@ -25,16 +25,12 @@ class ActivityFeedComment {
   String userId;
   @JsonKey(defaultValue: '')
   String message;
-
   @JsonKey(defaultValue: <LokalImages>[])
   List<LokalImages> images;
-
   @JsonKey(fromJson: createdAtFromJson, toJson: nullableDateTimeToString)
   DateTime createdAt;
-
   @JsonKey(defaultValue: false)
   bool archived;
-
   @JsonKey(defaultValue: false)
   bool liked;
 
