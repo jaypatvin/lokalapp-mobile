@@ -1,3 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+
 import '../../../models/activity_feed.dart';
 import '../../../models/activity_feed_comment.dart';
 import '../collection_impl.dart';
@@ -48,7 +51,17 @@ class ActivitiesCollection extends CollectionImpl {
         .snapshots()
         .map<List<ActivityFeedComment>>(
           (event) => event.docs
-              .map((doc) => ActivityFeedComment.fromDocument(doc))
+              .map<ActivityFeedComment?>(
+                (doc) {
+                  try {
+                    return ActivityFeedComment.fromDocument(doc);
+                  } catch (e, stack) {
+                    FirebaseCrashlytics.instance.recordError(e, stack);
+                    return null;
+                  }
+                },
+              )
+              .whereType<ActivityFeedComment>()
               .toList(),
         );
   }
@@ -58,9 +71,7 @@ class ActivitiesCollection extends CollectionImpl {
         .where('user_id', isEqualTo: userId)
         .orderBy('created_at', descending: true)
         .snapshots()
-        .map<List<ActivityFeed>>(
-          (e) => e.docs.map((doc) => ActivityFeed.fromDocument(doc)).toList(),
-        );
+        .map<List<ActivityFeed>>(_convertStream);
   }
 
   Stream<List<ActivityFeed>> getCommunityFeed(
@@ -70,10 +81,24 @@ class ActivitiesCollection extends CollectionImpl {
         .where('community_id', isEqualTo: communityId)
         .orderBy('created_at', descending: true)
         .snapshots()
-        .map<List<ActivityFeed>>(
-          (snapshot) => snapshot.docs
-              .map((doc) => ActivityFeed.fromDocument(doc))
-              .toList(),
-        );
+        .map<List<ActivityFeed>>(_convertStream);
+  }
+
+  List<ActivityFeed> _convertStream(
+    QuerySnapshot<Map<String, dynamic>> snapshot,
+  ) {
+    return snapshot.docs
+        .map<ActivityFeed?>(_toElement)
+        .whereType<ActivityFeed>()
+        .toList();
+  }
+
+  ActivityFeed? _toElement(QueryDocumentSnapshot<Map<String, dynamic>> doc) {
+    try {
+      return ActivityFeed.fromDocument(doc);
+    } catch (e, stack) {
+      FirebaseCrashlytics.instance.recordError(e, stack);
+      return null;
+    }
   }
 }

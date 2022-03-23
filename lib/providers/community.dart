@@ -3,8 +3,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:oktoast/oktoast.dart';
 
 import '../models/community.dart';
-import '../services/api/api.dart';
-import '../services/api/community_api_service.dart';
 import '../services/database/database.dart';
 
 class CommunityProvider extends ChangeNotifier {

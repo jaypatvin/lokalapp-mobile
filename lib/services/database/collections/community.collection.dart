@@ -1,3 +1,5 @@
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+
 import '../../../models/community.dart';
 import '../collection_impl.dart';
 import '../database.dart';
@@ -9,7 +11,12 @@ class CommunityCollection extends CollectionImpl {
     final _doc = await reference.doc(id).get();
     if (!_doc.exists) return null;
 
-    return Community.fromDocument(_doc);
+    try {
+      return Community.fromDocument(_doc);
+    } catch (e, stack) {
+      FirebaseCrashlytics.instance.recordError(e, stack);
+      return null;
+    }
   }
 
   Stream<Community> getCommunityStream(String id) {

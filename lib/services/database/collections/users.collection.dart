@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 
 import '../../../models/failure_exception.dart';
 import '../../../models/lokal_user.dart';
@@ -33,20 +34,29 @@ class UsersCollection extends CollectionImpl {
     return retVal;
   }
 
-  Future<LokalUser> getUserById(String id) async {
-    final _data = await reference.doc(id).get();
-    return LokalUser.fromDocument(_data);
+  Future<LokalUser?> getUserById(String id) async {
+    try {
+      final _data = await reference.doc(id).get();
+      return LokalUser.fromDocument(_data);
+    } catch (e, stack) {
+      FirebaseCrashlytics.instance.recordError(e, stack);
+      return null;
+    }
   }
 
   Future<void> onNotificationSeen({
     required String userId,
     required String notificationId,
   }) {
-    return reference
-        .doc(userId)
-        .collection('notifications')
-        .doc(notificationId)
-        .update({'viewed': true});
+    try {
+      return reference
+          .doc(userId)
+          .collection('notifications')
+          .doc(notificationId)
+          .update({'viewed': true});
+    } catch (e, stack) {
+      return FirebaseCrashlytics.instance.recordError(e, stack);
+    }
   }
 
   Stream<DocumentSnapshot<Map<String, dynamic>>> getUserStream(String userId) {

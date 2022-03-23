@@ -1,3 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+
 import '../../../models/lokal_category.dart';
 import '../collection_impl.dart';
 import '../database.dart';
@@ -9,13 +12,26 @@ class CategoriesCollection extends CollectionImpl {
     final _snapshot = await reference.get();
 
     return _snapshot.docs
-        .map<LokalCategory>((doc) => LokalCategory.fromDocument(doc))
+        .map<LokalCategory?>(_toElement)
+        .whereType<LokalCategory>()
         .toList();
   }
 
   Stream<List<LokalCategory>> getCategoriesStream() {
     return reference.snapshots().map(
-          (e) => e.docs.map((doc) => LokalCategory.fromDocument(doc)).toList(),
+          (e) => e.docs
+              .map<LokalCategory?>(_toElement)
+              .whereType<LokalCategory>()
+              .toList(),
         );
+  }
+
+  LokalCategory? _toElement(QueryDocumentSnapshot<Map<String, dynamic>> doc) {
+    try {
+      return LokalCategory.fromDocument(doc);
+    } catch (e, stack) {
+      FirebaseCrashlytics.instance.recordError(e, stack);
+      return null;
+    }
   }
 }
