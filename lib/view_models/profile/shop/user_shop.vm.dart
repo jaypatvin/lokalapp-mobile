@@ -30,7 +30,7 @@ class UserShopViewModel extends ViewModel {
   final String? shopId;
 
   late final bool isCurrentUser;
-  late final LokalUser user;
+  late final LokalUser? user;
   late Shop shop;
 
   late List<Product> _products;
@@ -61,10 +61,10 @@ class UserShopViewModel extends ViewModel {
   @override
   void init() {
     _shopSetup();
-    isCurrentUser = context.read<Auth>().user!.id== userId;
+    isCurrentUser = context.read<Auth>().user!.id == userId;
     user = isCurrentUser
-        ? context.read<Auth>().user!
-        : context.read<Users>().findById(userId)!;
+        ? context.read<Auth>().user
+        : context.read<Users>().findById(userId);
 
     _products = context.read<Products>().findByShop(shop.id);
   }
@@ -130,14 +130,16 @@ class UserShopViewModel extends ViewModel {
             );
     } else {
       final appRoute = context.read<AppRouter>().currentTabRoute;
-      context.read<AppRouter>().pushDynamicScreen(
-            appRoute,
-            AppNavigator.appPageRoute(
-              builder: (_) => ProfileScreen(
-                userId: user.id,
+      if (user != null) {
+        context.read<AppRouter>().pushDynamicScreen(
+              appRoute,
+              AppNavigator.appPageRoute(
+                builder: (_) => ProfileScreen(
+                  userId: user!.id,
+                ),
               ),
-            ),
-          );
+            );
+      }
     }
   }
 

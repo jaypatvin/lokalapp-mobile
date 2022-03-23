@@ -47,19 +47,19 @@ class _PostCardView extends StatelessView<PostCardViewModel> {
       createdSince += '${difference.inSeconds}s';
     }
 
-    final user = vm.context.read<Users>().findById(activity.userId)!;
+    final user = vm.context.read<Users>().findById(activity.userId);
 
     return ListTile(
       // onTap: () => vm.onUserPressed(activity),
       leading: ChatAvatar(
-        displayName: user.displayName,
-        displayPhoto: user.profilePhoto,
+        displayName: user?.displayName,
+        displayPhoto: user?.profilePhoto,
         radius: 24.0.r,
       ),
       title: Row(
         children: [
           Text(
-            '${user.firstName} ${user.lastName}',
+            '${user?.firstName} ${user?.lastName}',
             style: Theme.of(vm.context).textTheme.subtitle1,
           ),
           Text(

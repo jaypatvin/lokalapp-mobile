@@ -66,7 +66,7 @@ class ChatAvatar extends StatelessWidget {
               child: MediaQuery(
                 data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
                 child: Text(
-                  displayName![0],
+                  displayName?[0] ?? '',
                   style: Theme.of(context)
                       .primaryTextTheme
                       .subtitle1

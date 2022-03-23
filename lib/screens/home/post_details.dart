@@ -111,13 +111,13 @@ class _PostDetailsView extends HookView<PostDetailViewModel>
       child: Consumer<Activities>(
         builder: (ctx, activities, _) {
           final activity = activities.findById(vm.activityId)!;
-          final user = context.read<Users>().findById(activity.userId)!;
+          final user = context.read<Users>().findById(activity.userId);
           return Scaffold(
             backgroundColor: Colors.white,
             resizeToAvoidBottomInset: false,
             appBar: CustomAppBar(
               backgroundColor: kTealColor,
-              titleText: "${user.firstName}'s Post",
+              titleText: "${user?.firstName}'s Post",
               titleStyle: const TextStyle(color: Colors.white),
               actions: [
                 IconButton(
@@ -160,13 +160,16 @@ class _PostDetailsView extends HookView<PostDetailViewModel>
                                   padding: EdgeInsets.symmetric(
                                     vertical: 20.0.h,
                                   ),
-                                  child: PostDetailsHeader(
-                                    onTap: () => vm.onUserPressed(user.id),
-                                    firstName: user.firstName,
-                                    lastName: user.lastName,
-                                    photo: user.profilePhoto,
-                                    spacing: 10.0.w,
-                                  ),
+                                  child: user != null
+                                      ? PostDetailsHeader(
+                                          onTap: () =>
+                                              vm.onUserPressed(user.id),
+                                          firstName: user.firstName,
+                                          lastName: user.lastName,
+                                          photo: user.profilePhoto,
+                                          spacing: 10.0.w,
+                                        )
+                                      : const SizedBox(),
                                 ),
                                 Text(
                                   activity.message,
@@ -233,7 +236,8 @@ class _PostDetailsView extends HookView<PostDetailViewModel>
                           ),
                           onTap: () async {
                             await vm.onShowImagePicker();
-                            Future.delayed(const Duration(milliseconds: 300), () {
+                            Future.delayed(const Duration(milliseconds: 300),
+                                () {
                               _scrollController.animateTo(
                                 _scrollController.position.maxScrollExtent,
                                 duration: const Duration(milliseconds: 200),
@@ -242,7 +246,9 @@ class _PostDetailsView extends HookView<PostDetailViewModel>
                             });
                           },
                         ),
-                        SizedBox(width: MediaQuery.of(context).size.width * 0.02),
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.02,
+                        ),
                         Expanded(
                           child: AnimatedContainer(
                             duration: const Duration(milliseconds: 200),

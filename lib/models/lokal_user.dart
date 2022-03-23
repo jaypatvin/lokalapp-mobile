@@ -160,7 +160,7 @@ class LokalUser {
     required this.roles,
     required this.status,
     required this.userUids,
-    this.birthdate,
+    required this.birthdate,
     this.notificationSettings = const NotificationSettings(),
     this.showReadReceipts = false,
     this.profilePhoto,
@@ -172,7 +172,8 @@ class LokalUser {
   final Address address;
   @JsonKey(required: true)
   final bool archived;
-  final String? birthdate;
+  @JsonKey(required: true)
+  final String birthdate;
   @JsonKey(required: true)
   final String communityId;
   @JsonKey(

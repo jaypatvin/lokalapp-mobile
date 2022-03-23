@@ -40,7 +40,6 @@ class ProfileHeaderViewModel extends ViewModel {
           arguments: ChatDetailsProps(
             members: [context.read<Auth>().user!.id, userId],
           ),
-
         );
   }
 
@@ -63,11 +62,11 @@ class ProfileHeaderViewModel extends ViewModel {
   }
 
   void onPhotoTap() {
-    final user = context.read<Users>().findById(userId)!;
-    if (user.profilePhoto != null) {
+    final user = context.read<Users>().findById(userId);
+    if (user?.profilePhoto != null) {
       openGallery(context, 0, [
         LokalImages(
-          url: user.profilePhoto!,
+          url: user!.profilePhoto!,
           order: 0,
         ),
       ]);
