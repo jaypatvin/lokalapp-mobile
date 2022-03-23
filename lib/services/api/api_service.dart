@@ -125,11 +125,11 @@ abstract class APIService<T> {
     T Function(Map<String, dynamic>) fromMap,
     http.Response response,
   ) {
-    if (response.statusCode == 200) {
-      final map = json.decode(response.body);
-      return fromMap(map['data']!);
-    } else {
-      try {
+    try {
+      if (response.statusCode == 200) {
+        final map = json.decode(response.body);
+        return fromMap(map['data']!);
+      } else {
         final map = json.decode(response.body);
         if (map['data'] != null) {
           throw FailureException(map['data'], response);
@@ -143,11 +143,11 @@ abstract class APIService<T> {
           response.reasonPhrase ?? 'Error parsing data.',
           response,
         );
-      } on FormatException {
-        throw FailureException('Bad response format', response.body);
-      } catch (e) {
-        rethrow;
       }
+    } on FormatException {
+      throw FailureException('Bad response format', response.body);
+    } catch (e) {
+      rethrow;
     }
   }
 
@@ -162,17 +162,17 @@ abstract class APIService<T> {
     T Function(Map<String, dynamic>) fromMap,
     http.Response response,
   ) {
-    if (response.statusCode == 200) {
-      final map = json.decode(response.body);
-      final List<T> objects = [];
+    try {
+      if (response.statusCode == 200) {
+        final map = json.decode(response.body);
+        final List<T> objects = [];
 
-      for (final data in map['data']) {
-        final _activity = fromMap(data);
-        objects.add(_activity);
-      }
-      return objects;
-    } else {
-      try {
+        for (final data in map['data']) {
+          final _activity = fromMap(data);
+          objects.add(_activity);
+        }
+        return objects;
+      } else {
         final map = json.decode(response.body);
         if (map['data'] != null) {
           throw throw FailureException(map['data']);
@@ -186,11 +186,11 @@ abstract class APIService<T> {
           response.reasonPhrase ?? 'Error parsing data.',
           response.body,
         );
-      } on FormatException {
-        throw FailureException('Bad response format', response.body);
-      } catch (e) {
-        rethrow;
       }
+    } on FormatException {
+      throw FailureException('Bad response format', response.body);
+    } catch (e) {
+      rethrow;
     }
   }
 
@@ -202,11 +202,11 @@ abstract class APIService<T> {
   /// no error message, will throw the `response.reasonPhrase`.
   @protected
   bool handleGenericResponse(http.Response response) {
-    if (response.statusCode == 200) {
-      final map = json.decode(response.body);
-      return map['status']! == 'ok';
-    } else {
-      try {
+    try {
+      if (response.statusCode == 200) {
+        final map = json.decode(response.body);
+        return map['status']! == 'ok';
+      } else {
         final map = json.decode(response.body);
         if (map['data'] != null) {
           throw throw FailureException(map['data']);
@@ -220,16 +220,16 @@ abstract class APIService<T> {
           response.reasonPhrase ?? 'Error parsing data.',
           response.body,
         );
-      } on FormatException {
-        throw FailureException('Bad response format', response.body);
-      } catch (e) {
-        rethrow;
       }
+    } on FormatException {
+      throw FailureException('Bad response format', response.body);
+    } catch (e) {
+      rethrow;
     }
   }
 
   /// Removes empty/null keys and values from the map.
-  /// 
+  ///
   /// This function also trims maps recursively: empty/null keys and values from
   /// submaps are also removed (and checked again if is empty)
   @protected
