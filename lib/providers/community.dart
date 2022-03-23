@@ -5,16 +5,11 @@ import 'package:oktoast/oktoast.dart';
 import '../models/community.dart';
 import '../services/api/api.dart';
 import '../services/api/community_api_service.dart';
+import '../services/database/database.dart';
 
 class CommunityProvider extends ChangeNotifier {
-  factory CommunityProvider(API api) {
-    final apiService = CommunityAPIService(api);
-    return CommunityProvider._(apiService);
-  }
-
-  CommunityProvider._(this._apiService);
-
-  final CommunityAPIService _apiService;
+  CommunityProvider(this._db);
+  final Database _db;
 
   String? _communityId;
   String? get communityId => _communityId;
@@ -27,7 +22,7 @@ class CommunityProvider extends ChangeNotifier {
     try {
       _communityId = id;
       if (id != null) {
-        _community = await _apiService.getById(id);
+        _community = await _db.community.getCommunity(id);
       } else {
         _community = null;
       }
