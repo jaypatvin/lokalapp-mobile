@@ -256,8 +256,7 @@ void main() {
         );
       });
 
-      test(
-          'A FormatException should be thrown on error response with a status 200',
+      test('A TypeError should be thrown on error response with a status 200',
           () {
         when(api.endpointUri(Endpoint.activity)).thenReturn(unsucessfulUri);
         when(
@@ -270,7 +269,7 @@ void main() {
 
         expect(
           () async => service.create(request: request),
-          throwsException,
+          throwsA(isA<TypeError>()),
         );
       });
 
