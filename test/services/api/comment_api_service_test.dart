@@ -14,7 +14,7 @@ import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
 
-import 'activity_api_service_test.mocks.dart';
+import 'comment_api_service_test.mocks.dart';
 import 'responses/comment_api_service.responses.dart' as response;
 
 @GenerateMocks([API, LokalHttpClient])
@@ -423,7 +423,10 @@ void main() {
 
         expect(
           await service.update(
-              activityId: activityId, commentId: commentId, message: message),
+            activityId: activityId,
+            commentId: commentId,
+            message: message,
+          ),
           isTrue,
         );
       });

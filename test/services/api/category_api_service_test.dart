@@ -9,7 +9,7 @@ import 'package:lokalapp/services/api/client/lokal_http_client.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 
-import 'activity_api_service_test.mocks.dart';
+import 'category_api_service_test.mocks.dart';
 import 'responses/category_api_service.responses.dart' as response;
 
 @GenerateMocks([API, LokalHttpClient])

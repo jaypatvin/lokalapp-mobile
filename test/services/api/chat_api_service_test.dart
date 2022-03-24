@@ -13,7 +13,7 @@ import 'package:lokalapp/services/api/client/lokal_http_client.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 
-import 'activity_api_service_test.mocks.dart';
+import 'chat_api_service_test.mocks.dart';
 import 'responses/chat_api_service.responses.dart' as response;
 
 @GenerateMocks([API, LokalHttpClient])

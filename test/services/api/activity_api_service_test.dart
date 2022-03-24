@@ -298,8 +298,10 @@ void main() {
 
       test('Value [true] should be return when successful', () async {
         when(
-          api.endpointUri(Endpoint.activity,
-              pathSegments: [activityId, 'like']),
+          api.endpointUri(
+            Endpoint.activity,
+            pathSegments: [activityId, 'like'],
+          ),
         ).thenReturn(successUri);
         when(
           client.post(
@@ -317,8 +319,10 @@ void main() {
 
       test('A failure exception should be thrown when unsucessful', () {
         when(
-          api.endpointUri(Endpoint.activity,
-              pathSegments: [activityId, 'like']),
+          api.endpointUri(
+            Endpoint.activity,
+            pathSegments: [activityId, 'like'],
+          ),
         ).thenReturn(unsucessfulUri);
         when(
           client.post(
