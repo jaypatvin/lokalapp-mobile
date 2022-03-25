@@ -121,16 +121,16 @@ class CommentsAPIService extends APIService<ActivityFeedComment> {
   Future<bool> update({
     required String activityId,
     required String commentId,
-    required Map<String, dynamic> body,
+    required String message,
   }) async {
     try {
-      final response = await client.post(
+      final response = await client.put(
         api.endpointUri(
           endpoint,
           pathSegments: [activityId, 'comments', commentId],
         ),
         headers: api.withBodyHeader(),
-        body: json.encode(trimBodyFields(body)),
+        body: json.encode({'message': message}),
       );
 
       return handleGenericResponse(response);
