@@ -13,12 +13,12 @@ class InviteAPIService extends APIService<LokalInvite> {
   final API api;
   Endpoint get endpoint => Endpoint.invite;
 
-  Future<LokalInvite> inviteAFriend(Map<String, dynamic> body) async {
+  Future<LokalInvite> inviteAFriend(String email) async {
     try {
       final response = await client.post(
         api.endpointUri(endpoint),
         headers: api.withBodyHeader(),
-        body: json.encode(trimBodyFields(body)),
+        body: json.encode({'email': email}),
       );
 
       return handleResponse((map) => LokalInvite.fromJson(map), response);
