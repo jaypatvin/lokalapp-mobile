@@ -127,7 +127,7 @@ class _MyAppState extends State<MyApp> {
       Provider<Database>.value(value: _db),
 
       ChangeNotifierProxyProvider<Auth, CommunityProvider>(
-        create: (_) => CommunityProvider(_api),
+        create: (_) => CommunityProvider(_db),
         update: (_, auth, comm) => comm!
           ..setCommunityId(
             auth.user?.communityId,

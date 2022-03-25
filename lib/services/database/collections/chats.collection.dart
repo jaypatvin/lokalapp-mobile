@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 
 import '../../../models/chat_model.dart';
 import '../../../models/conversation.dart';
@@ -14,7 +15,10 @@ class ChatsCollection extends CollectionImpl {
         .orderBy('last_message.created_at', descending: true)
         .snapshots()
         .map(
-          (e) => e.docs.map((doc) => ChatModel.fromDocument(doc)).toList(),
+          (e) => e.docs
+              .map<ChatModel?>(_toChatModel)
+              .whereType<ChatModel>()
+              .toList(),
         );
   }
 
@@ -26,9 +30,7 @@ class ChatsCollection extends CollectionImpl {
         // .where('archived', isNotEqualTo: true)
         .orderBy('created_at', descending: true)
         .snapshots()
-        .map(
-          (e) => e.docs.map((doc) => Conversation.fromDocument(doc)).toList(),
-        );
+        .map(_convertToConversation);
   }
 
   Stream<List<Conversation>> getConversationsWithMedia(String chatId) {
@@ -38,33 +40,71 @@ class ChatsCollection extends CollectionImpl {
         .where('media', isNotEqualTo: [])
         .orderBy('created_at', descending: true)
         .snapshots()
-        .map(
-          (e) => e.docs.map((doc) => Conversation.fromDocument(doc)).toList(),
-        );
+        .map(_convertToConversation);
   }
 
-  Future<Conversation> getConversation(
+  Future<Conversation?> getConversation(
     String chatId,
     String conversationId,
   ) async {
-    final _doc = await reference
-        .doc(chatId)
-        .collection('conversation')
-        .doc(conversationId)
-        .get();
+    try {
+      final _doc = await reference
+          .doc(chatId)
+          .collection('conversation')
+          .doc(conversationId)
+          .get();
 
-    return Conversation.fromDocument(_doc);
+      return Conversation.fromDocument(_doc);
+    } catch (e, stack) {
+      FirebaseCrashlytics.instance.recordError(e, stack);
+      return null;
+    }
   }
 
-  Future<Conversation> getConversationByReference(
+  Future<Conversation?> getConversationByReference(
     DocumentReference<Map<String, dynamic>> reference,
   ) async {
-    final _doc = await reference.get();
-    return Conversation.fromDocument(_doc);
+    try {
+      final _doc = await reference.get();
+      return Conversation.fromDocument(_doc);
+    } catch (e, stack) {
+      FirebaseCrashlytics.instance.recordError(e, stack);
+      return null;
+    }
   }
 
-  Future<ChatModel> getChat(String chatId) async {
-    final _doc = await reference.doc(chatId).get();
-    return ChatModel.fromDocument(_doc);
+  Future<ChatModel?> getChat(String chatId) async {
+    try {
+      final _doc = await reference.doc(chatId).get();
+      return ChatModel.fromDocument(_doc);
+    } catch (e, stack) {
+      FirebaseCrashlytics.instance.recordError(e, stack);
+      return null;
+    }
+  }
+
+  ChatModel? _toChatModel(QueryDocumentSnapshot<Map<String, dynamic>> doc) {
+    try {
+      return ChatModel.fromDocument(doc);
+    } catch (e, stack) {
+      FirebaseCrashlytics.instance.recordError(e, stack);
+      return null;
+    }
+  }
+
+  List<Conversation> _convertToConversation(
+    QuerySnapshot<Map<String, dynamic>> snapshot,
+  ) {
+    return snapshot.docs
+        .map<Conversation?>((doc) {
+          try {
+            return Conversation.fromDocument(doc);
+          } catch (e, stack) {
+            FirebaseCrashlytics.instance.recordError(e, stack);
+            return null;
+          }
+        })
+        .whereType<Conversation>()
+        .toList();
   }
 }

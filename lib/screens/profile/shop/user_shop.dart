@@ -167,11 +167,13 @@ class _UserShopView extends HookView<UserShopViewModel> {
             ),
           ),
           SliverToBoxAdapter(
-            child: UserBanner(
-              displayName: vm.user.displayName,
-              profilePhoto: vm.user.profilePhoto,
-              onTap: vm.goToProfile,
-            ),
+            child: vm.user != null
+                ? UserBanner(
+                    displayName: vm.user!.displayName,
+                    profilePhoto: vm.user!.profilePhoto,
+                    onTap: vm.goToProfile,
+                  )
+                : const SizedBox(),
           ),
           SliverToBoxAdapter(
             child: Padding(

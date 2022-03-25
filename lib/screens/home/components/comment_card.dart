@@ -42,14 +42,14 @@ class CommentCard extends StatelessWidget {
 class _CommentCardView extends HookView<CommentCardViewModel> {
   @override
   Widget render(BuildContext context, CommentCardViewModel vm) {
-    final _currentUser = context.watch<Auth>().user;
-    final user = useMemoized<LokalUser>(
-      () => context.read<Users>().findById(vm.comment.userId)!,
+    final _currentUser = context.watch<Auth>().user!;
+    final user = useMemoized<LokalUser?>(
+      () => context.read<Users>().findById(vm.comment.userId),
       [vm.comment],
     );
 
     final _isCurrentUser = useMemoized<bool>(
-      () => user.id == _currentUser?.id,
+      () => user?.id == _currentUser.id,
       [user, _currentUser],
     );
 
@@ -90,8 +90,8 @@ class _CommentCardView extends HookView<CommentCardViewModel> {
           ListTile(
             contentPadding: EdgeInsets.zero,
             leading: ChatAvatar(
-              displayName: user.displayName,
-              displayPhoto: user.profilePhoto,
+              displayName: user?.displayName,
+              displayPhoto: user?.profilePhoto,
               radius: 18.0.r,
               onTap: vm.onUserPressed,
             ),
@@ -99,7 +99,7 @@ class _CommentCardView extends HookView<CommentCardViewModel> {
               text: TextSpan(
                 children: [
                   TextSpan(
-                    text: '${user.firstName} ${user.lastName}',
+                    text: '${user?.firstName} ${user?.lastName}',
                     style: Theme.of(context)
                         .textTheme
                         .subtitle2!

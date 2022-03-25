@@ -22,10 +22,10 @@ class SubscriptionPlanDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final user = context.read<Users>().findById(subscriptionPlan.buyerId)!;
-    final name = isBuyer ? subscriptionPlan.shop.name : user.displayName;
+    final user = context.read<Users>().findById(subscriptionPlan.buyerId);
+    final name = isBuyer ? subscriptionPlan.shop.name : user?.displayName;
     final displayPhoto =
-        isBuyer ? subscriptionPlan.shop.image : user.profilePhoto;
+        isBuyer ? subscriptionPlan.shop.image : user?.profilePhoto;
     final item = subscriptionPlan.product;
     final disabled = subscriptionPlan.status == SubscriptionStatus.disabled;
     final String _subHeader;
@@ -57,7 +57,10 @@ class SubscriptionPlanDetails extends StatelessWidget {
               radius: 20.0.r,
             ),
             SizedBox(width: 10.0.w),
-            Text(name, style: Theme.of(context).textTheme.bodyText2),
+            Text(
+              name ?? 'Error displaying name',
+              style: Theme.of(context).textTheme.bodyText2,
+            ),
           ],
         ),
         SizedBox(height: 10.0.h),

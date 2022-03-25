@@ -9,7 +9,9 @@ class LokalImages {
     required this.order,
   });
 
+  @JsonKey(required: true)
   final String url;
+  @JsonKey(defaultValue: 0)
   final int order;
 
   LokalImages copyWith({

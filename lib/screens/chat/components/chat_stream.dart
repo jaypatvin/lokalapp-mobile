@@ -146,16 +146,22 @@ class _ChatList extends StatelessWidget {
         final ids = [...chat.members];
         ids.retainWhere((id) => cUserId != id);
         members.addAll(
-          ids.map((id) {
-            final user = context.read<Users>().findById(id)!;
-            return ChatMember(
-              displayName: user.displayName.isNotEmpty
-                  ? user.displayName
-                  : '${user.firstName} ${user.lastName}',
-              displayPhoto: user.profilePhoto,
-              type: MemberType.user,
-            );
-          }).toList(),
+          ids
+              .map<ChatMember?>((id) {
+                final user = context.read<Users>().findById(id);
+                if (user == null) {
+                  return null;
+                }
+                return ChatMember(
+                  displayName: user.displayName.isNotEmpty
+                      ? user.displayName
+                      : '${user.firstName} ${user.lastName}',
+                  displayPhoto: user.profilePhoto,
+                  type: MemberType.user,
+                );
+              })
+              .whereType<ChatMember>()
+              .toList(),
         );
         final memberNames = members.map((user) => user.displayName).toList();
         title = memberNames.join(', ');
@@ -166,17 +172,23 @@ class _ChatList extends StatelessWidget {
           final ids = [...chat.members];
           ids.retainWhere((id) => shop.id != id);
           members.addAll(
-            ids.map((id) {
-              final user = context.read<Users>().findById(id)!;
-              return ChatMember(
-                id: id,
-                displayName: user.displayName.isNotEmpty
-                    ? user.displayName
-                    : '${user.firstName} ${user.lastName}',
-                displayPhoto: user.profilePhoto,
-                type: MemberType.user,
-              );
-            }).toList(),
+            ids
+                .map<ChatMember?>((id) {
+                  final user = context.read<Users>().findById(id);
+                  if (user == null) {
+                    return null;
+                  }
+                  return ChatMember(
+                    id: id,
+                    displayName: user.displayName.isNotEmpty
+                        ? user.displayName
+                        : '${user.firstName} ${user.lastName}',
+                    displayPhoto: user.profilePhoto,
+                    type: MemberType.user,
+                  );
+                })
+                .whereType<ChatMember>()
+                .toList(),
           );
           final memberNames = members.map((user) => user.displayName).toList();
           title = memberNames.join(', ');

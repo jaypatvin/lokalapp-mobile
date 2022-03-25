@@ -46,8 +46,17 @@ class Users extends ChangeNotifier {
       _isLoading = true;
       if (hasListeners) notifyListeners();
       _usersSubscription?.cancel();
-      _userStream = _db.getCommunityUsers(id).map((event) {
-        return event.docs.map((doc) => LokalUser.fromDocument(doc)).toList();
+      _userStream = _db.getCommunityUsers(id).map<List<LokalUser>>((event) {
+        return event.docs
+            .map<LokalUser?>((doc) {
+              try {
+                return LokalUser.fromDocument(doc);
+              } catch (e) {
+                return null;
+              }
+            })
+            .whereType<LokalUser>()
+            .toList();
       });
       _usersSubscription = _userStream?.listen(_userChangesListener);
     }

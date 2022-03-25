@@ -1,3 +1,5 @@
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+
 import '../../../models/product.dart';
 import '../collection_impl.dart';
 import '../database.dart';
@@ -36,6 +38,18 @@ class ProductsCollection extends CollectionImpl {
     return reference
         .where('community_id', isEqualTo: communityId)
         .snapshots()
-        .map((e) => e.docs.map((doc) => Product.fromDocument(doc)).toList());
+        .map(
+          (e) => e.docs
+              .map<Product?>((doc) {
+                try {
+                  return Product.fromDocument(doc);
+                } catch (e, stack) {
+                  FirebaseCrashlytics.instance.recordError(e, stack);
+                  return null;
+                }
+              })
+              .whereType<Product>()
+              .toList(),
+        );
   }
 }
