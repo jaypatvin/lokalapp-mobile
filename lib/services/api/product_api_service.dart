@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import '../../models/failure_exception.dart';
+import '../../models/operating_hours.dart';
 import '../../models/post_requests/product/product_create.request.dart';
 import '../../models/post_requests/product/product_review.request.dart';
 import '../../models/post_requests/product/product_update.request.dart';
@@ -171,7 +173,7 @@ class ProductApiService extends APIService<Product> {
     try {
       final response = await client.get(
         api.endpointUri(
-          Endpoint.community,
+          Endpoint.user,
           pathSegments: [
             userId,
             'products',
@@ -238,7 +240,7 @@ class ProductApiService extends APIService<Product> {
     }
   }
 
-  Future<Product> getAvailability({
+  Future<OperatingHours> getAvailability({
     required String productId,
   }) async {
     try {
@@ -247,7 +249,24 @@ class ProductApiService extends APIService<Product> {
         headers: api.authHeader(),
       );
 
-      return handleResponse((map) => Product.fromJson(map), response);
+      if (response.statusCode == 200) {
+        final map = json.decode(response.body);
+        return OperatingHours.fromJson(map['data']!);
+      } else {
+        final map = json.decode(response.body);
+        if (map['data'] != null) {
+          throw FailureException(map['data'], response);
+        }
+
+        if (map['message'] != null) {
+          throw FailureException(map['message'], response);
+        }
+
+        throw FailureException(
+          response.reasonPhrase ?? 'Error parsing data.',
+          response,
+        );
+      }
     } catch (e) {
       rethrow;
     }
