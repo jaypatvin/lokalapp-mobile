@@ -1,7 +1,5 @@
 import 'dart:convert';
 
-import 'package:http/http.dart' as http;
-
 import '../../models/failure_exception.dart';
 import 'api.dart';
 import 'api_service.dart';
@@ -28,7 +26,7 @@ class SearchAPIService extends APIService {
     if (category != null) qp['category'] = category;
 
     try {
-      final response = await http.get(
+      final response = await client.get(
         api.endpointUri(
           endpoint,
           queryParameters: qp,
