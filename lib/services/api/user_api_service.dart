@@ -139,7 +139,7 @@ class UserAPIService extends APIService<LokalUser> {
   }
 
   // --DELETE
-  Future<bool> delete({required String userId, required String idToken}) async {
+  Future<bool> delete({required String userId}) async {
     try {
       final response = await client.delete(
         api.endpointUri(endpoint, pathSegments: [userId]),
