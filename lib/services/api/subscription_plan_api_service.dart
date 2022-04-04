@@ -34,7 +34,7 @@ class SubscriptionPlanAPIService extends APIService<ProductSubscriptionPlan> {
       final response = await client.get(
         api.endpointUri(
           endpoint,
-          pathSegments: [planId],
+          pathSegments: [planId, 'getDates'],
           queryParameters: queryParameters,
         ),
         headers: api.authHeader(),
