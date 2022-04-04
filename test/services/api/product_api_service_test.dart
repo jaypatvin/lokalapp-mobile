@@ -533,7 +533,7 @@ void main() {
       when(
         api.endpointUri(
           Endpoint.product,
-          pathSegments: [productId, 'availability'],
+          pathSegments: [productId],
         ),
       ).thenReturn(someUri);
 

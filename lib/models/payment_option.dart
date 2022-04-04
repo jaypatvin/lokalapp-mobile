@@ -6,7 +6,7 @@ part 'payment_option.g.dart';
 
 @JsonSerializable()
 class PaymentOption {
-  PaymentOption({
+  const PaymentOption({
     required this.bankCode,
     required this.accountName,
     required this.accountNumber,
@@ -14,13 +14,13 @@ class PaymentOption {
   });
 
   @JsonKey(required: true)
-  String bankCode;
+  final String bankCode;
   @JsonKey(required: true)
-  String accountName;
+  final String accountName;
   @JsonKey(required: true)
-  String accountNumber;
+  final String accountNumber;
   @JsonKey(required: true, fromJson: _bankTypeFromJson, toJson: _bankTypeToJson)
-  BankType type;
+  final BankType type;
 
   PaymentOption copyWith({
     String? bank,
