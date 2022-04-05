@@ -40,6 +40,7 @@ void main() {
         ).thenAnswer((_) async => http.Response(response.success, 200));
 
         expect(await service.inviteAFriend(email), isA<LokalInvite>());
+        reset(client);
       });
 
       test('A [FailureException] should be thrown when unsuccessful', () {
@@ -59,6 +60,7 @@ void main() {
           () async => service.inviteAFriend(email),
           throwsA(isA<FailureException>()),
         );
+        reset(client);
       });
 
       test(
@@ -78,6 +80,7 @@ void main() {
           () async => service.inviteAFriend(email),
           throwsA(isA<MissingRequiredKeysException>()),
         );
+        reset(client);
       });
     });
     group('check', () {
@@ -96,6 +99,7 @@ void main() {
         ).thenAnswer((_) async => http.Response(response.check, 200));
 
         expect(await service.check(code), isA<LokalInvite>());
+        reset(client);
       });
 
       test('A [FailureException] should be thrown when unsuccessful', () {
@@ -117,6 +121,7 @@ void main() {
           () async => service.check(code),
           throwsA(isA<FailureException>()),
         );
+        reset(client);
       });
 
       test(
@@ -139,6 +144,7 @@ void main() {
           () async => service.check(code),
           throwsA(isA<MissingRequiredKeysException>()),
         );
+        reset(client);
       });
     });
 
@@ -162,6 +168,7 @@ void main() {
           await service.claim(request: request),
           isTrue,
         );
+        reset(client);
       });
 
       test('A value of [false] should be returned when unsuccessful', () async {
@@ -182,6 +189,7 @@ void main() {
           await service.claim(request: request),
           isFalse,
         );
+        reset(client);
       });
 
       test(
@@ -204,6 +212,7 @@ void main() {
           () async => service.claim(request: request),
           throwsA(isA<FailureException>()),
         );
+        reset(client);
       });
     });
   });

@@ -43,6 +43,7 @@ void main() {
           await service.createConversation(chatId: chatId, request: request),
           isTrue,
         );
+        reset(client);
       });
 
       test(
@@ -63,6 +64,7 @@ void main() {
           await service.createConversation(chatId: chatId, request: request),
           isFalse,
         );
+        reset(client);
       });
 
       test('A [FailureException] should be thrown when unsuccessful', () {
@@ -86,6 +88,7 @@ void main() {
               service.createConversation(chatId: chatId, request: request),
           throwsA(isA<FailureException>()),
         );
+        reset(client);
       });
     });
 
@@ -111,6 +114,7 @@ void main() {
           ),
           isTrue,
         );
+        reset(client);
       });
 
       test(
@@ -133,6 +137,7 @@ void main() {
           ),
           isFalse,
         );
+        reset(client);
       });
 
       test('A [FailureException] should be thrown when unsuccessful', () {
@@ -151,6 +156,7 @@ void main() {
               service.deleteConversation(chatId: chatId, messageId: messageId),
           throwsA(isA<FailureException>()),
         );
+        reset(client);
       });
     });
   });

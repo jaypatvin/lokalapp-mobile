@@ -69,25 +69,24 @@ void main() {
         ).thenAnswer((_) async => http.Response(response.success, 200));
 
         expect(await service.create(request: request), isA<Shop>());
+        reset(client);
       });
 
-      test(
-        'A [FailureException] should be thrown when unsuccessful',
-        () {
-          when(
-            client.post(
-              uri,
-              headers: headers,
-              body: json.encode(request.toJson()),
-            ),
-          ).thenAnswer((_) async => http.Response(response.error, 400));
+      test('A [FailureException] should be thrown when unsuccessful', () {
+        when(
+          client.post(
+            uri,
+            headers: headers,
+            body: json.encode(request.toJson()),
+          ),
+        ).thenAnswer((_) async => http.Response(response.error, 400));
 
-          expect(
-            () async => service.create(request: request),
-            throwsA(isA<FailureException>()),
-          );
-        },
-      );
+        expect(
+          () async => service.create(request: request),
+          throwsA(isA<FailureException>()),
+        );
+        reset(client);
+      });
 
       test(
           'A [MissingRequiredKeysException] should be thrown when payload is '
@@ -104,6 +103,7 @@ void main() {
           () async => service.create(request: request),
           throwsA(isA<MissingRequiredKeysException>()),
         );
+        reset(client);
       });
     });
 
@@ -125,6 +125,7 @@ void main() {
           await service.update(id: id, request: request),
           isTrue,
         );
+        reset(client);
       });
 
       test('A value of [false] should be returned when unsuccessful', () async {
@@ -135,6 +136,7 @@ void main() {
           await service.update(id: id, request: request),
           isFalse,
         );
+        reset(client);
       });
 
       test(
@@ -147,6 +149,7 @@ void main() {
           () async => service.update(id: id, request: request),
           throwsA(isA<FailureException>()),
         );
+        reset(client);
       });
     });
 
@@ -176,6 +179,7 @@ void main() {
           await service.setOperatingHours(id: id, request: request),
           isTrue,
         );
+        reset(client);
       });
 
       test('A value of [false] should be returned when unsuccessful', () async {
@@ -186,6 +190,7 @@ void main() {
           await service.setOperatingHours(id: id, request: request),
           isFalse,
         );
+        reset(client);
       });
 
       test(
@@ -198,6 +203,7 @@ void main() {
           () async => service.setOperatingHours(id: id, request: request),
           throwsA(isA<FailureException>()),
         );
+        reset(client);
       });
     });
 
@@ -226,6 +232,7 @@ void main() {
           () async => service.getById(id: id),
           throwsA(isA<FailureException>()),
         );
+        reset(client);
       });
 
       test(
@@ -237,6 +244,7 @@ void main() {
           () async => service.getById(id: id),
           throwsA(isA<MissingRequiredKeysException>()),
         );
+        reset(client);
       });
     });
 
@@ -258,6 +266,7 @@ void main() {
           await service.getCommunityShops(communityId: communityId),
           isA<List<Shop>>(),
         );
+        reset(client);
       });
 
       test('A [FailureException] should be thrown when unsuccessful', () {
@@ -267,6 +276,7 @@ void main() {
           () async => service.getCommunityShops(communityId: communityId),
           throwsA(isA<FailureException>()),
         );
+        reset(client);
       });
 
       test(
@@ -279,6 +289,7 @@ void main() {
           () async => service.getCommunityShops(communityId: communityId),
           throwsA(isA<MissingRequiredKeysException>()),
         );
+        reset(client);
       });
     });
 
@@ -300,6 +311,7 @@ void main() {
           await service.getByUserId(userId: userId),
           isA<List<Shop>>(),
         );
+        reset(client);
       });
 
       test('A [FailureException] should be thrown when unsuccessful', () {
@@ -309,6 +321,7 @@ void main() {
           () async => service.getByUserId(userId: userId),
           throwsA(isA<FailureException>()),
         );
+        reset(client);
       });
 
       test(
@@ -321,6 +334,7 @@ void main() {
           () async => service.getByUserId(userId: userId),
           throwsA(isA<MissingRequiredKeysException>()),
         );
+        reset(client);
       });
     });
 
@@ -344,6 +358,7 @@ void main() {
           await service.getOperatingHours(shopId: shopId),
           isA<OperatingHours>(),
         );
+        reset(client);
       });
 
       test('A [FailureException] should be thrown when unsuccessful', () {
@@ -354,6 +369,7 @@ void main() {
           () async => service.getOperatingHours(shopId: shopId),
           throwsA(isA<FailureException>()),
         );
+        reset(client);
       });
 
       test(
@@ -366,6 +382,7 @@ void main() {
           () async => service.getOperatingHours(shopId: shopId),
           throwsA(isA<MissingRequiredKeysException>()),
         );
+        reset(client);
       });
     });
 
@@ -387,6 +404,7 @@ void main() {
           await service.getAvailableShops(communityId: communityId),
           isA<List<Shop>>(),
         );
+        reset(client);
       });
 
       test('A [FailureException] should be thrown when unsuccessful', () {
@@ -396,6 +414,7 @@ void main() {
           () async => service.getAvailableShops(communityId: communityId),
           throwsA(isA<FailureException>()),
         );
+        reset(client);
       });
 
       test(
@@ -408,6 +427,7 @@ void main() {
           () async => service.getAvailableShops(communityId: communityId),
           throwsA(isA<MissingRequiredKeysException>()),
         );
+        reset(client);
       });
     });
   });

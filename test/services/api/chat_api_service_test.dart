@@ -46,6 +46,7 @@ void main() {
           await service.getChatByMembers(members: members),
           isA<ChatModel>(),
         );
+        reset(client);
       });
 
       test('A [FailureException] should be thrown when unsuccessful', () {
@@ -66,6 +67,7 @@ void main() {
           () async => service.getChatByMembers(members: members),
           throwsA(isA<FailureException>()),
         );
+        reset(client);
       });
 
       test(
@@ -88,6 +90,7 @@ void main() {
           () async => service.getChatByMembers(members: members),
           throwsA(isA<TypeError>()),
         );
+        reset(client);
       });
     });
 
@@ -108,6 +111,7 @@ void main() {
         ).thenAnswer((_) async => http.Response(response.successResponse, 200));
 
         expect(await service.createChat(request: request), isA<ChatModel>());
+        reset(client);
       });
       test('A [FailureException] should be thrown when unsuccessful', () async {
         when(api.withBodyHeader()).thenReturn(headers);
@@ -124,53 +128,52 @@ void main() {
           () async => service.createChat(request: request),
           throwsA(isA<FailureException>()),
         );
+        reset(client);
       });
 
       test(
-        'A [MissingRequiredKeysException] should be thrown when returned '
-        'payload is missing required fields',
-        () {
-          when(api.withBodyHeader()).thenReturn(headers);
-          when(api.endpointUri(Endpoint.chat)).thenReturn(successUri);
-          when(
-            client.post(
-              successUri,
-              headers: headers,
-              body: json.encode(request.toJson()),
-            ),
-          ).thenAnswer(
-            (_) async => http.Response(response.missingKeyResponse, 200),
-          );
+          'A [MissingRequiredKeysException] should be thrown when returned '
+          'payload is missing required fields', () {
+        when(api.withBodyHeader()).thenReturn(headers);
+        when(api.endpointUri(Endpoint.chat)).thenReturn(successUri);
+        when(
+          client.post(
+            successUri,
+            headers: headers,
+            body: json.encode(request.toJson()),
+          ),
+        ).thenAnswer(
+          (_) async => http.Response(response.missingKeyResponse, 200),
+        );
 
-          expect(
-            () async => service.createChat(request: request),
-            throwsA(isA<MissingRequiredKeysException>()),
-          );
-        },
-      );
+        expect(
+          () async => service.createChat(request: request),
+          throwsA(isA<MissingRequiredKeysException>()),
+        );
+        reset(client);
+      });
 
       test(
-        'A [FailureException] should be thrown when there is no payload with a '
-        'status 200 response.',
-        () async {
-          when(api.withBodyHeader()).thenReturn(headers);
-          when(api.endpointUri(Endpoint.chat)).thenReturn(successUri);
-          when(
-            client.post(
-              successUri,
-              headers: headers,
-              body: json.encode(request.toJson()),
-            ),
-          ).thenAnswer(
-            (_) async => http.Response('', 200),
-          );
+          'A [FormatException] should be thrown when there is no payload with a '
+          'status 200 response.', () async {
+        when(api.withBodyHeader()).thenReturn(headers);
+        when(api.endpointUri(Endpoint.chat)).thenReturn(successUri);
+        when(
+          client.post(
+            successUri,
+            headers: headers,
+            body: json.encode(request.toJson()),
+          ),
+        ).thenAnswer(
+          (_) async => http.Response('', 200),
+        );
 
-          expect(
-            () async => service.createChat(request: request),
-            throwsA(isA<FailureException>()),
-          );
-        },
-      );
+        expect(
+          () async => service.createChat(request: request),
+          throwsA(isA<FormatException>()),
+        );
+        reset(client);
+      });
     });
 
     group('updateTitle', () {
@@ -195,6 +198,7 @@ void main() {
           await service.updateTitle(chatId: chatId, title: title),
           isTrue,
         );
+        reset(client);
       });
 
       test('A value of [false] should be returned when unsuccessful', () async {
@@ -215,6 +219,7 @@ void main() {
           await service.updateTitle(chatId: chatId, title: title),
           isFalse,
         );
+        reset(client);
       });
 
       test(
@@ -237,6 +242,7 @@ void main() {
           () async => service.updateTitle(chatId: chatId, title: title),
           throwsA(isA<FailureException>()),
         );
+        reset(client);
       });
     });
 
@@ -263,6 +269,7 @@ void main() {
           await service.inviteUser(chatId: chatId, request: request),
           isTrue,
         );
+        reset(client);
       });
 
       test('A value of [false] should be returned when unsuccessful', () async {
@@ -283,6 +290,7 @@ void main() {
           await service.inviteUser(chatId: chatId, request: request),
           isFalse,
         );
+        reset(client);
       });
 
       test(
@@ -305,6 +313,7 @@ void main() {
           () async => service.inviteUser(chatId: chatId, request: request),
           throwsA(isA<FailureException>()),
         );
+        reset(client);
       });
     });
 
@@ -330,6 +339,7 @@ void main() {
           await service.removeUser(chatId: chatId, userId: userId),
           isTrue,
         );
+        reset(client);
       });
 
       test('A value of [false] should be returned when unsuccessful', () async {
@@ -350,6 +360,7 @@ void main() {
           await service.removeUser(chatId: chatId, userId: userId),
           isFalse,
         );
+        reset(client);
       });
 
       test(
@@ -372,6 +383,7 @@ void main() {
           () async => service.removeUser(chatId: chatId, userId: userId),
           throwsA(isA<FailureException>()),
         );
+        reset(client);
       });
     });
   });

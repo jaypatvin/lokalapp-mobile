@@ -17,7 +17,6 @@ void main() {
   final service = SearchAPIService(api, client: client);
 
   final uriWithParameters = Uri.parse('https://success.example.com');
-  final uriWithNoParameters = Uri.parse('https://unsuccessful.example.com');
   const headers = <String, String>{'idToken': 'valid'};
 
   group('SearchAPIService', () {
@@ -43,27 +42,27 @@ void main() {
           await service.search(query: query, communityId: communityId),
           isA<Map<String, dynamic>>(),
         );
+        reset(client);
       });
 
-      test(
-        'A [FailureException] should be thrown when there are no results',
-        () {
-          const qp = {'q': query, 'community_id': communityId};
-          when(api.endpointUri(Endpoint.search, queryParameters: qp))
-              .thenReturn(uriWithParameters);
-          when(
-            client.get(
-              uriWithParameters,
-              headers: headers,
-            ),
-          ).thenAnswer((_) async => http.Response(response.emptyResult, 200));
+      test('A [FailureException] should be thrown when there are no results',
+          () {
+        const qp = {'q': query, 'community_id': communityId};
+        when(api.endpointUri(Endpoint.search, queryParameters: qp))
+            .thenReturn(uriWithParameters);
+        when(
+          client.get(
+            uriWithParameters,
+            headers: headers,
+          ),
+        ).thenAnswer((_) async => http.Response(response.emptyResult, 200));
 
-          expect(
-            () async => service.search(query: query, communityId: communityId),
-            throwsA(isA<FailureException>()),
-          );
-        },
-      );
+        expect(
+          () async => service.search(query: query, communityId: communityId),
+          throwsA(isA<FailureException>()),
+        );
+        reset(client);
+      });
 
       test('A [FailureException] should be thrown when unsucessful', () {
         const qp = {'q': query, 'community_id': communityId};
@@ -80,6 +79,7 @@ void main() {
           () async => service.search(query: query, communityId: communityId),
           throwsA(isA<FailureException>()),
         );
+        reset(client);
       });
     });
   });

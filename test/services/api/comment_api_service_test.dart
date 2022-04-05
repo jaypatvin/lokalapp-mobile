@@ -49,6 +49,7 @@ void main() {
           await service.getById(activityId: activityId, commentId: commentId),
           isA<ActivityFeedComment>(),
         );
+        reset(client);
       });
 
       test('A [FailureException] should be thrown when unsuccessful', () {
@@ -69,6 +70,7 @@ void main() {
               service.getById(activityId: activityId, commentId: commentId),
           throwsA(isA<FailureException>()),
         );
+        reset(client);
       });
 
       test(
@@ -91,6 +93,7 @@ void main() {
               service.getById(activityId: activityId, commentId: commentId),
           throwsA(isA<MissingRequiredKeysException>()),
         );
+        reset(client);
       });
     });
 
@@ -115,6 +118,7 @@ void main() {
           await service.getActivityComments(activityId: activityId),
           isA<List<ActivityFeedComment>>(),
         );
+        reset(client);
       });
 
       test('A [FailureException] should be thrown when unsuccessful', () {
@@ -134,6 +138,7 @@ void main() {
           () async => service.getActivityComments(activityId: activityId),
           throwsA(isA<FailureException>()),
         );
+        reset(client);
       });
 
       test(
@@ -155,6 +160,7 @@ void main() {
           () async => service.getActivityComments(activityId: activityId),
           throwsA(isA<MissingRequiredKeysException>()),
         );
+        reset(client);
       });
     });
 
@@ -179,6 +185,7 @@ void main() {
           await service.getUserComments(userId: userId),
           isA<List<ActivityFeedComment>>(),
         );
+        reset(client);
       });
 
       test('A [FailureException] should be thrown when unsuccessful', () {
@@ -198,6 +205,7 @@ void main() {
           () async => service.getUserComments(userId: userId),
           throwsA(isA<FailureException>()),
         );
+        reset(client);
       });
 
       test(
@@ -219,6 +227,7 @@ void main() {
           () async => service.getUserComments(userId: userId),
           throwsA(isA<MissingRequiredKeysException>()),
         );
+        reset(client);
       });
     });
 
@@ -254,6 +263,7 @@ void main() {
           await service.create(activityId: activityId, request: request),
           isA<ActivityFeedComment>(),
         );
+        reset(client);
       });
 
       test('A [FailureException] should be thrown when unsuccessful', () async {
@@ -279,6 +289,7 @@ void main() {
           () async => service.create(activityId: activityId, request: request),
           throwsA(isA<FailureException>()),
         );
+        reset(client);
       });
 
       test(
@@ -306,6 +317,7 @@ void main() {
           () async => service.create(activityId: activityId, request: request),
           throwsA(isA<MissingRequiredKeysException>()),
         );
+        reset(client);
       });
     });
 
@@ -340,6 +352,7 @@ void main() {
           ),
           isTrue,
         );
+        reset(client);
       });
 
       test('A value of [false] should be returned when unsuccessful', () async {
@@ -367,6 +380,7 @@ void main() {
           ),
           isFalse,
         );
+        reset(client);
       });
 
       test(
@@ -396,6 +410,7 @@ void main() {
           ),
           throwsA(isA<FailureException>()),
         );
+        reset(client);
       });
     });
 
@@ -429,6 +444,7 @@ void main() {
           ),
           isTrue,
         );
+        reset(client);
       });
 
       test('A value of [false] should be returned when unsuccessful', () async {
@@ -456,6 +472,7 @@ void main() {
           ),
           isFalse,
         );
+        reset(client);
       });
 
       test(
@@ -485,6 +502,7 @@ void main() {
           ),
           throwsA(isA<FailureException>()),
         );
+        reset(client);
       });
     });
 
@@ -511,6 +529,7 @@ void main() {
           await service.delete(activityId: activityId, commentId: commentId),
           isTrue,
         );
+        reset(client);
       });
 
       test('A value of [false] should be returned when unsuccessful', () async {
@@ -533,6 +552,7 @@ void main() {
           await service.delete(activityId: activityId, commentId: commentId),
           isFalse,
         );
+        reset(client);
       });
 
       test(
@@ -558,6 +578,7 @@ void main() {
               service.delete(activityId: activityId, commentId: commentId),
           throwsA(isA<FailureException>()),
         );
+        reset(client);
       });
     });
 
@@ -592,6 +613,7 @@ void main() {
           ),
           isTrue,
         );
+        reset(client);
       });
 
       test('A value of [false] should be returned when unsuccessful', () async {
@@ -619,6 +641,7 @@ void main() {
           ),
           isFalse,
         );
+        reset(client);
       });
 
       test(
@@ -648,6 +671,7 @@ void main() {
           ),
           throwsA(isA<FailureException>()),
         );
+        reset(client);
       });
     });
   });

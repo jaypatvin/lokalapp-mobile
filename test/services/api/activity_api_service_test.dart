@@ -49,6 +49,7 @@ void main() {
           await service.getById(activityId: activityId),
           isA<ActivityFeed>(),
         );
+        reset(client);
       });
 
       test(
@@ -61,6 +62,7 @@ void main() {
           () async => service.getById(activityId: unusableActivityId),
           throwsA(isA<FailureException>()),
         );
+        reset(client);
       });
 
       test(
@@ -74,6 +76,7 @@ void main() {
           () async => service.getById(activityId: activityId),
           throwsA(isA<MissingRequiredKeysException>()),
         );
+        reset(client);
       });
 
       test('A TimeoutException whould be thrown on timeout', () {
@@ -85,6 +88,7 @@ void main() {
           () async => service.getById(activityId: activityId),
           throwsA(isA<TimeoutException>()),
         );
+        reset(client);
       });
     });
 
@@ -96,6 +100,7 @@ void main() {
         );
 
         expect(await service.getAll(), isA<List<ActivityFeed>>());
+        reset(client);
       });
 
       test('A FailureException should be thrown on error response', () {
@@ -104,6 +109,7 @@ void main() {
             .thenAnswer((_) async => http.Response(activity.error404, 404));
 
         expect(() async => service.getAll(), throwsA(isA<FailureException>()));
+        reset(client);
       });
 
       test(
@@ -118,6 +124,7 @@ void main() {
           () async => service.getAll(),
           throwsA(isA<MissingRequiredKeysException>()),
         );
+        reset(client);
       });
     });
 
@@ -145,6 +152,7 @@ void main() {
           await service.getUserActivities(userId: userId),
           isA<List<ActivityFeed>>(),
         );
+        reset(client);
       });
 
       test('A FailureException should be thrown on error response', () {
@@ -155,6 +163,7 @@ void main() {
           () async => service.getUserActivities(userId: nonUserId),
           throwsA(isA<FailureException>()),
         );
+        reset(client);
       });
 
       test(
@@ -168,6 +177,7 @@ void main() {
           () async => service.getUserActivities(userId: userId),
           throwsA(isA<MissingRequiredKeysException>()),
         );
+        reset(client);
       });
     });
     group('getCommunityActivities', () {
@@ -195,6 +205,7 @@ void main() {
           await service.getCommunityActivities(communityId: communityId),
           isA<List<ActivityFeed>>(),
         );
+        reset(client);
       });
 
       test('A FailureException should be thrown on error response', () {
@@ -206,6 +217,7 @@ void main() {
               service.getCommunityActivities(communityId: nonCommunityId),
           throwsA(isA<FailureException>()),
         );
+        reset(client);
       });
 
       test(
@@ -219,6 +231,7 @@ void main() {
           () async => service.getCommunityActivities(communityId: communityId),
           throwsA(isA<MissingRequiredKeysException>()),
         );
+        reset(client);
       });
     });
 
@@ -238,6 +251,7 @@ void main() {
         ).thenAnswer((_) async => http.Response(activity.successResponse, 200));
 
         expect(await service.create(request: request), isA<ActivityFeed>());
+        reset(client);
       });
 
       test('A FailureException should be thrown on error response', () {
@@ -254,6 +268,7 @@ void main() {
           () async => service.create(request: request),
           throwsA(isA<FailureException>()),
         );
+        reset(client);
       });
 
       test('A TypeError should be thrown on error response with a status 200',
@@ -271,6 +286,7 @@ void main() {
           () async => service.create(request: request),
           throwsA(isA<TypeError>()),
         );
+        reset(client);
       });
 
       test(
@@ -290,6 +306,7 @@ void main() {
           () async => service.create(request: request),
           throwsA(isA<MissingRequiredKeysException>()),
         );
+        reset(client);
       });
     });
 
@@ -315,6 +332,7 @@ void main() {
           await service.like(activityId: activityId, userId: 'userId'),
           isTrue,
         );
+        reset(client);
       });
 
       test('A failure exception should be thrown when unsucessful', () {
@@ -336,6 +354,7 @@ void main() {
           () async => service.like(activityId: activityId, userId: 'userId'),
           throwsA(isA<FailureException>()),
         );
+        reset(client);
       });
     });
 
@@ -361,6 +380,7 @@ void main() {
           await service.unlike(activityId: activityId, userId: 'userId'),
           isTrue,
         );
+        reset(client);
       });
 
       test('A failure exception should be thrown when unsucessful', () {
@@ -382,6 +402,7 @@ void main() {
           () async => service.unlike(activityId: activityId, userId: 'userId'),
           throwsA(isA<FailureException>()),
         );
+        reset(client);
       });
     });
 
@@ -391,6 +412,7 @@ void main() {
             .thenAnswer((_) async => http.Response(activity.okStatus, 200));
 
         expect(await service.delete(activityId: activityId), isTrue);
+        reset(client);
       });
 
       test('A failure exception should be thrown when unsucessful', () {
@@ -403,6 +425,7 @@ void main() {
           () async => service.delete(activityId: activityId),
           throwsA(isA<FailureException>()),
         );
+        reset(client);
       });
     });
 
@@ -419,6 +442,7 @@ void main() {
           await service.update(activityId: activityId, request: request),
           isTrue,
         );
+        reset(client);
       });
 
       test('A failure exception should be thrown when unsucessful', () {
@@ -436,6 +460,7 @@ void main() {
           () async => service.update(activityId: activityId, request: request),
           throwsA(isA<FailureException>()),
         );
+        reset(client);
       });
     });
   });

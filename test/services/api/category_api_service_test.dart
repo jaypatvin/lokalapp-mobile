@@ -35,6 +35,7 @@ void main() {
         );
 
         expect(await service.getAll(), isA<List<LokalCategory>>());
+        reset(client);
       });
 
       test('A [FailureException] should be thrown when unsucessful', () {
@@ -44,6 +45,7 @@ void main() {
         );
 
         expect(() async => service.getAll(), throwsA(isA<FailureException>()));
+        reset(client);
       });
 
       test(
@@ -58,38 +60,36 @@ void main() {
           () async => service.getAll(),
           throwsA(isA<MissingRequiredKeysException>()),
         );
+        reset(client);
       });
     });
 
     group('getById', () {
-      test(
-        'An instance of [LokalCategory] should be returned when successful',
-        () async {
-          when(api.endpointUri(Endpoint.category, pathSegments: ['id']))
-              .thenReturn(successUri);
-          when(client.get(successUri, headers: headers)).thenAnswer(
-            (_) async => http.Response(response.successResponse, 200),
-          );
+      test('An instance of [LokalCategory] should be returned when successful',
+          () async {
+        when(api.endpointUri(Endpoint.category, pathSegments: ['id']))
+            .thenReturn(successUri);
+        when(client.get(successUri, headers: headers)).thenAnswer(
+          (_) async => http.Response(response.successResponse, 200),
+        );
 
-          expect(await service.getById(id: 'id'), isA<LokalCategory>());
-        },
-      );
+        expect(await service.getById(id: 'id'), isA<LokalCategory>());
+        reset(client);
+      });
 
-      test(
-        'A [FailureException] should be thrown when unsuccessful',
-        () async {
-          when(api.endpointUri(Endpoint.category, pathSegments: ['id']))
-              .thenReturn(unsucessfulUri);
-          when(client.get(unsucessfulUri, headers: headers)).thenAnswer(
-            (_) async => http.Response(response.errorResponse, 400),
-          );
+      test('A [FailureException] should be thrown when unsuccessful', () async {
+        when(api.endpointUri(Endpoint.category, pathSegments: ['id']))
+            .thenReturn(unsucessfulUri);
+        when(client.get(unsucessfulUri, headers: headers)).thenAnswer(
+          (_) async => http.Response(response.errorResponse, 400),
+        );
 
-          expect(
-            () async => service.getById(id: 'id'),
-            throwsA(isA<FailureException>()),
-          );
-        },
-      );
+        expect(
+          () async => service.getById(id: 'id'),
+          throwsA(isA<FailureException>()),
+        );
+        reset(client);
+      });
 
       test(
           'A MissingRequiredKeysException should be thrown when the returned '
@@ -104,6 +104,7 @@ void main() {
           () async => service.getById(id: 'id'),
           throwsA(isA<MissingRequiredKeysException>()),
         );
+        reset(client);
       });
     });
   });

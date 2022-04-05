@@ -47,6 +47,7 @@ void main() {
         ).thenAnswer((_) async => http.Response(response.success, 200));
 
         expect(await service.create(request: request), isA<order.Order>());
+        reset(client);
       });
 
       test('A [FailureException] should be thrown when unsuccessful', () async {
@@ -62,6 +63,7 @@ void main() {
           () async => service.create(request: request),
           throwsA(isA<FailureException>()),
         );
+        reset(client);
       });
 
       test(
@@ -79,6 +81,7 @@ void main() {
           () async => service.create(request: request),
           throwsA(isA<MissingRequiredKeysException>()),
         );
+        reset(client);
       });
     });
 
@@ -95,6 +98,7 @@ void main() {
         ).thenAnswer((_) async => http.Response(response.ok, 200));
 
         expect(await service.confirm(orderId: orderId), isTrue);
+        reset(client);
       });
       test('A value of [false] should be returned when unsuccessful', () async {
         when(
@@ -102,6 +106,7 @@ void main() {
         ).thenAnswer((_) async => http.Response(response.error, 200));
 
         expect(await service.confirm(orderId: orderId), isFalse);
+        reset(client);
       });
       test(
           'A [FailureException] should be thrown when response status is not '
@@ -114,6 +119,7 @@ void main() {
           () async => service.confirm(orderId: orderId),
           throwsA(isA<FailureException>()),
         );
+        reset(client);
       });
     });
 
@@ -133,6 +139,7 @@ void main() {
         ).thenAnswer((_) async => http.Response(response.ok, 200));
 
         expect(await service.confirmPayment(orderId: orderId), isTrue);
+        reset(client);
       });
 
       test('A value of [false] should be returned when unsuccessful', () async {
@@ -141,6 +148,7 @@ void main() {
         ).thenAnswer((_) async => http.Response(response.error, 200));
 
         expect(await service.confirmPayment(orderId: orderId), isFalse);
+        reset(client);
       });
 
       test(
@@ -154,6 +162,7 @@ void main() {
           () async => service.confirmPayment(orderId: orderId),
           throwsA(isA<FailureException>()),
         );
+        reset(client);
       });
     });
 
@@ -170,6 +179,7 @@ void main() {
         ).thenAnswer((_) async => http.Response(response.ok, 200));
 
         expect(await service.decline(orderId: orderId), isTrue);
+        reset(client);
       });
 
       test('A value of [false] should be returned when unsuccessful', () async {
@@ -178,6 +188,7 @@ void main() {
         ).thenAnswer((_) async => http.Response(response.error, 200));
 
         expect(await service.decline(orderId: orderId), isFalse);
+        reset(client);
       });
 
       test(
@@ -191,6 +202,7 @@ void main() {
           () async => service.decline(orderId: orderId),
           throwsA(isA<FailureException>()),
         );
+        reset(client);
       });
     });
 
@@ -208,6 +220,7 @@ void main() {
         ).thenAnswer((_) async => http.Response(response.ok, 200));
 
         expect(await service.pay(orderId: orderId, request: request), isTrue);
+        reset(client);
       });
 
       test('A value of [false] should be returned when unsuccessful', () async {
@@ -216,6 +229,7 @@ void main() {
         ).thenAnswer((_) async => http.Response(response.error, 200));
 
         expect(await service.pay(orderId: orderId, request: request), isFalse);
+        reset(client);
       });
 
       test(
@@ -229,6 +243,7 @@ void main() {
           () async => service.pay(orderId: orderId, request: request),
           throwsA(isA<FailureException>()),
         );
+        reset(client);
       });
     });
 
@@ -248,6 +263,7 @@ void main() {
         ).thenAnswer((_) async => http.Response(response.ok, 200));
 
         expect(await service.receive(orderId: orderId), isTrue);
+        reset(client);
       });
 
       test('A value of [false] should be returned when unsuccessful', () async {
@@ -256,6 +272,7 @@ void main() {
         ).thenAnswer((_) async => http.Response(response.error, 200));
 
         expect(await service.receive(orderId: orderId), isFalse);
+        reset(client);
       });
 
       test(
@@ -269,6 +286,7 @@ void main() {
           () async => service.receive(orderId: orderId),
           throwsA(isA<FailureException>()),
         );
+        reset(client);
       });
     });
 
@@ -288,6 +306,7 @@ void main() {
         ).thenAnswer((_) async => http.Response(response.ok, 200));
 
         expect(await service.shipOut(orderId: orderId), isTrue);
+        reset(client);
       });
 
       test('A value of [false] should be returned when unsuccessful', () async {
@@ -296,6 +315,7 @@ void main() {
         ).thenAnswer((_) async => http.Response(response.error, 200));
 
         expect(await service.shipOut(orderId: orderId), isFalse);
+        reset(client);
       });
 
       test(

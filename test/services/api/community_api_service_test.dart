@@ -35,6 +35,7 @@ void main() {
         );
 
         expect(await service.getById(communityId), isA<Community>());
+        reset(client);
       });
 
       test('A [FailureException] should be thrown when unsuccessful', () {
@@ -50,6 +51,7 @@ void main() {
           () async => service.getById(communityId),
           throwsA(isA<FailureException>()),
         );
+        reset(client);
       });
 
       test(
@@ -67,6 +69,7 @@ void main() {
           () async => service.getById(communityId),
           throwsA(isA<MissingRequiredKeysException>()),
         );
+        reset(client);
       });
     });
   });

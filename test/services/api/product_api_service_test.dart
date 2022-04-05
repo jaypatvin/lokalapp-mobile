@@ -62,22 +62,22 @@ void main() {
           () async => service.create(request: request),
           throwsA(isA<FailureException>()),
         );
+        reset(client);
       });
 
       test(
-        'A [MissingRequiredKeysException] should be thrown when payload is '
-        'missing a required Key (i.e., ID)',
-        () {
-          when(
-            client.post(someUri, headers: headers, body: json.encode(request)),
-          ).thenAnswer((_) async => http.Response(response.missingKeys, 200));
+          'A [MissingRequiredKeysException] should be thrown when payload is '
+          'missing a required Key (i.e., ID)', () {
+        when(
+          client.post(someUri, headers: headers, body: json.encode(request)),
+        ).thenAnswer((_) async => http.Response(response.missingKeys, 200));
 
-          expect(
-            () async => service.create(request: request),
-            throwsA(isA<MissingRequiredKeysException>()),
-          );
-        },
-      );
+        expect(
+          () async => service.create(request: request),
+          throwsA(isA<MissingRequiredKeysException>()),
+        );
+        reset(client);
+      });
     });
 
     group('review', () {
@@ -98,6 +98,7 @@ void main() {
           await service.review(productId: productId, request: request),
           isTrue,
         );
+        reset(client);
       });
 
       test('A value of [false] should be returned when unsuccessful', () async {
@@ -109,6 +110,7 @@ void main() {
           await service.review(productId: productId, request: request),
           isFalse,
         );
+        reset(client);
       });
 
       test(
@@ -122,6 +124,7 @@ void main() {
           () async => service.review(productId: productId, request: request),
           throwsA(isA<FailureException>()),
         );
+        reset(client);
       });
     });
 
@@ -141,6 +144,7 @@ void main() {
           await service.like(productId: productId),
           isTrue,
         );
+        reset(client);
       });
 
       test('A value of [false] should be returned when unsuccessful', () async {
@@ -151,6 +155,7 @@ void main() {
           await service.like(productId: productId),
           isFalse,
         );
+        reset(client);
       });
 
       test(
@@ -163,6 +168,7 @@ void main() {
           () async => service.like(productId: productId),
           throwsA(isA<FailureException>()),
         );
+        reset(client);
       });
     });
 
@@ -185,6 +191,7 @@ void main() {
           await service.addToWishlist(productId: productId),
           isTrue,
         );
+        reset(client);
       });
 
       test('A value of [false] should be returned when unsuccessful', () async {
@@ -195,6 +202,7 @@ void main() {
           await service.addToWishlist(productId: productId),
           isFalse,
         );
+        reset(client);
       });
 
       test(
@@ -207,6 +215,7 @@ void main() {
           () async => service.addToWishlist(productId: productId),
           throwsA(isA<FailureException>()),
         );
+        reset(client);
       });
     });
 
@@ -230,6 +239,7 @@ void main() {
           await service.update(productId: productId, request: request),
           isTrue,
         );
+        reset(client);
       });
 
       test('A value of [false] should be returned when unsuccessful', () async {
@@ -240,6 +250,7 @@ void main() {
           await service.update(productId: productId, request: request),
           isFalse,
         );
+        reset(client);
       });
 
       test(
@@ -252,6 +263,7 @@ void main() {
           () async => service.update(productId: productId, request: request),
           throwsA(isA<FailureException>()),
         );
+        reset(client);
       });
     });
 
@@ -285,6 +297,7 @@ void main() {
           await service.setAvailability(productId: productId, request: request),
           isTrue,
         );
+        reset(client);
       });
 
       test('A value of [false] should be returned when unsuccessful', () async {
@@ -295,6 +308,7 @@ void main() {
           await service.setAvailability(productId: productId, request: request),
           isFalse,
         );
+        reset(client);
       });
 
       test(
@@ -308,6 +322,7 @@ void main() {
               service.setAvailability(productId: productId, request: request),
           throwsA(isA<FailureException>()),
         );
+        reset(client);
       });
     });
 
@@ -328,6 +343,7 @@ void main() {
           await service.getCommunityProducts(communityId: communityId),
           isA<List<Product>>(),
         );
+        reset(client);
       });
 
       test('A [FailureException] should be thrown when unsuccessful', () {
@@ -337,6 +353,7 @@ void main() {
           () async => service.getCommunityProducts(communityId: communityId),
           throwsA(isA<FailureException>()),
         );
+        reset(client);
       });
 
       test(
@@ -349,6 +366,7 @@ void main() {
           () async => service.getCommunityProducts(communityId: communityId),
           throwsA(isA<MissingRequiredKeysException>()),
         );
+        reset(client);
       });
     });
 
@@ -367,6 +385,7 @@ void main() {
           await service.getAvailableProducts(),
           isA<List<Product>>(),
         );
+        reset(client);
       });
 
       test('A [FailureException] should be thrown when unsuccessful', () {
@@ -376,6 +395,7 @@ void main() {
           () async => service.getAvailableProducts(),
           throwsA(isA<FailureException>()),
         );
+        reset(client);
       });
 
       test(
@@ -388,6 +408,7 @@ void main() {
           () async => service.getAvailableProducts(),
           throwsA(isA<MissingRequiredKeysException>()),
         );
+        reset(client);
       });
     });
 
@@ -408,6 +429,7 @@ void main() {
           await service.getUserProducts(userId: userId),
           isA<List<Product>>(),
         );
+        reset(client);
       });
 
       test('A [FailureException] should be thrown when unsuccessful', () {
@@ -417,6 +439,7 @@ void main() {
           () async => service.getUserProducts(userId: userId),
           throwsA(isA<FailureException>()),
         );
+        reset(client);
       });
 
       test(
@@ -429,6 +452,7 @@ void main() {
           () async => service.getUserProducts(userId: userId),
           throwsA(isA<MissingRequiredKeysException>()),
         );
+        reset(client);
       });
     });
 
@@ -456,6 +480,7 @@ void main() {
           ),
           isA<List<Product>>(),
         );
+        reset(client);
       });
 
       test('A [FailureException] should be thrown when unsuccessful', () {
@@ -468,6 +493,7 @@ void main() {
           ),
           throwsA(isA<FailureException>()),
         );
+        reset(client);
       });
 
       test(
@@ -483,6 +509,7 @@ void main() {
           ),
           throwsA(isA<MissingRequiredKeysException>()),
         );
+        reset(client);
       });
     });
 
@@ -503,6 +530,7 @@ void main() {
           await service.getUserWishlist(userId: userId),
           isA<List<Product>>(),
         );
+        reset(client);
       });
 
       test('A [FailureException] should be thrown when unsuccessful', () {
@@ -512,6 +540,7 @@ void main() {
           () async => service.getUserWishlist(userId: userId),
           throwsA(isA<FailureException>()),
         );
+        reset(client);
       });
 
       test(
@@ -524,6 +553,7 @@ void main() {
           () async => service.getUserWishlist(userId: userId),
           throwsA(isA<MissingRequiredKeysException>()),
         );
+        reset(client);
       });
     });
 
@@ -542,6 +572,7 @@ void main() {
             .thenAnswer((_) async => http.Response(response.product, 200));
 
         expect(await service.getById(productId: productId), isA<Product>());
+        reset(client);
       });
 
       test('A [FailureException] should be thrown when unsuccessful', () {
@@ -552,6 +583,7 @@ void main() {
           () async => service.getById(productId: productId),
           throwsA(isA<FailureException>()),
         );
+        reset(client);
       });
 
       test(
@@ -563,6 +595,7 @@ void main() {
           () async => service.getById(productId: productId),
           throwsA(isA<MissingRequiredKeysException>()),
         );
+        reset(client);
       });
     });
 
@@ -585,6 +618,7 @@ void main() {
           await service.getAvailability(productId: productId),
           isA<OperatingHours>(),
         );
+        reset(client);
       });
 
       test('A [FailureException] should be thrown when unsuccessful', () {
@@ -595,6 +629,7 @@ void main() {
           () async => service.getAvailability(productId: productId),
           throwsA(isA<FailureException>()),
         );
+        reset(client);
       });
 
       test(
@@ -607,6 +642,7 @@ void main() {
           () async => service.getAvailability(productId: productId),
           throwsA(isA<MissingRequiredKeysException>()),
         );
+        reset(client);
       });
     });
 
@@ -626,6 +662,7 @@ void main() {
           await service.deleteProduct(productId: productId),
           isTrue,
         );
+        reset(client);
       });
 
       test('A value of [false] should be returned when unsuccessful', () async {
@@ -636,6 +673,7 @@ void main() {
           await service.deleteProduct(productId: productId),
           isFalse,
         );
+        reset(client);
       });
 
       test(
@@ -648,6 +686,7 @@ void main() {
           () async => service.deleteProduct(productId: productId),
           throwsA(isA<FailureException>()),
         );
+        reset(client);
       });
     });
 
@@ -667,6 +706,7 @@ void main() {
           await service.unlike(productId: productId),
           isTrue,
         );
+        reset(client);
       });
 
       test('A value of [false] should be returned when unsuccessful', () async {
@@ -677,6 +717,7 @@ void main() {
           await service.unlike(productId: productId),
           isFalse,
         );
+        reset(client);
       });
 
       test(
@@ -689,6 +730,7 @@ void main() {
           () async => service.unlike(productId: productId),
           throwsA(isA<FailureException>()),
         );
+        reset(client);
       });
     });
 
@@ -711,16 +753,7 @@ void main() {
           await service.removeFromWishlist(productId: productId),
           isTrue,
         );
-      });
-
-      test('A value of [false] should be returned when unsuccessful', () async {
-        when(client.delete(someUri, headers: headers))
-            .thenAnswer((_) async => http.Response(response.error, 200));
-
-        expect(
-          await service.removeFromWishlist(productId: productId),
-          isFalse,
-        );
+        reset(client);
       });
 
       test(
@@ -733,6 +766,18 @@ void main() {
           () async => service.removeFromWishlist(productId: productId),
           throwsA(isA<FailureException>()),
         );
+        reset(client);
+      });
+
+      test('A value of [false] should be returned when unsuccessful', () async {
+        when(client.delete(someUri, headers: headers))
+            .thenAnswer((_) async => http.Response(response.error, 200));
+
+        expect(
+          await service.removeFromWishlist(productId: productId),
+          isFalse,
+        );
+        reset(client);
       });
     });
   });
