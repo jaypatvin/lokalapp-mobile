@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import '../../models/failure_exception.dart';
+import '../../models/operating_hours.dart';
 import '../../models/post_requests/product/product_create.request.dart';
 import '../../models/post_requests/product/product_review.request.dart';
 import '../../models/post_requests/product/product_update.request.dart';
@@ -7,9 +9,11 @@ import '../../models/post_requests/shop/operating_hours.request.dart';
 import '../../models/product.dart';
 import 'api.dart';
 import 'api_service.dart';
+import 'client/lokal_http_client.dart';
 
 class ProductApiService extends APIService<Product> {
-  const ProductApiService(this.api);
+  ProductApiService(this.api, {LokalHttpClient? client})
+      : super(client: client ?? LokalHttpClient());
 
   final API api;
   Endpoint get endpoint => Endpoint.product;
@@ -19,7 +23,7 @@ class ProductApiService extends APIService<Product> {
     required ProductCreateRequest request,
   }) async {
     try {
-      final response = await poster(
+      final response = await client.post(
         api.endpointUri(endpoint),
         headers: api.withBodyHeader(),
         body: json.encode(trimBodyFields(request.toJson())),
@@ -35,7 +39,7 @@ class ProductApiService extends APIService<Product> {
     required ProductReviewRequest request,
   }) async {
     try {
-      final response = await poster(
+      final response = await client.post(
         api.endpointUri(
           endpoint,
           pathSegments: [productId, 'reviews'],
@@ -52,7 +56,7 @@ class ProductApiService extends APIService<Product> {
 
   Future<bool> like({required String productId}) async {
     try {
-      final response = await poster(
+      final response = await client.post(
         api.endpointUri(
           endpoint,
           pathSegments: [productId, 'like'],
@@ -68,7 +72,7 @@ class ProductApiService extends APIService<Product> {
 
   Future<bool> addToWishlist({required String productId}) async {
     try {
-      final response = await poster(
+      final response = await client.post(
         api.endpointUri(
           endpoint,
           pathSegments: [productId, 'wishlist'],
@@ -88,7 +92,7 @@ class ProductApiService extends APIService<Product> {
     required ProductUpdateRequest request,
   }) async {
     try {
-      final response = await putter(
+      final response = await client.put(
         api.endpointUri(
           endpoint,
           pathSegments: [
@@ -110,7 +114,7 @@ class ProductApiService extends APIService<Product> {
     required OperatingHoursRequest request,
   }) async {
     try {
-      final response = await putter(
+      final response = await client.put(
         api.endpointUri(
           endpoint,
           pathSegments: [
@@ -133,7 +137,7 @@ class ProductApiService extends APIService<Product> {
     required String communityId,
   }) async {
     try {
-      final response = await getter(
+      final response = await client.get(
         api.endpointUri(
           Endpoint.community,
           pathSegments: [
@@ -152,7 +156,7 @@ class ProductApiService extends APIService<Product> {
 
   Future<List<Product>> getAvailableProducts() async {
     try {
-      final response = await getter(
+      final response = await client.get(
         api.baseUri(pathSegments: const ['availableProducts']),
         headers: api.authHeader(),
       );
@@ -167,9 +171,9 @@ class ProductApiService extends APIService<Product> {
     required String userId,
   }) async {
     try {
-      final response = await getter(
+      final response = await client.get(
         api.endpointUri(
-          Endpoint.community,
+          Endpoint.user,
           pathSegments: [
             userId,
             'products',
@@ -189,7 +193,7 @@ class ProductApiService extends APIService<Product> {
     required String communityId,
   }) async {
     try {
-      final response = await getter(
+      final response = await client.get(
         api.baseUri(
           pathSegments: ['recommendedProducts'],
           queryParameters: {
@@ -210,7 +214,7 @@ class ProductApiService extends APIService<Product> {
     required String userId,
   }) async {
     try {
-      final response = await getter(
+      final response = await client.get(
         api.endpointUri(Endpoint.user, pathSegments: [userId, 'wishlist']),
         headers: api.authHeader(),
       );
@@ -225,7 +229,7 @@ class ProductApiService extends APIService<Product> {
     required String productId,
   }) async {
     try {
-      final response = await getter(
+      final response = await client.get(
         api.endpointUri(endpoint, pathSegments: [productId]),
         headers: api.authHeader(),
       );
@@ -236,16 +240,33 @@ class ProductApiService extends APIService<Product> {
     }
   }
 
-  Future<Product> getAvailability({
+  Future<OperatingHours> getAvailability({
     required String productId,
   }) async {
     try {
-      final response = await getter(
+      final response = await client.get(
         api.endpointUri(endpoint, pathSegments: [productId, 'availability']),
         headers: api.authHeader(),
       );
 
-      return handleResponse((map) => Product.fromJson(map), response);
+      if (response.statusCode == 200) {
+        final map = json.decode(response.body);
+        return OperatingHours.fromJson(map['data']!);
+      } else {
+        final map = json.decode(response.body);
+        if (map['data'] != null) {
+          throw FailureException(map['data'], response);
+        }
+
+        if (map['message'] != null) {
+          throw FailureException(map['message'], response);
+        }
+
+        throw FailureException(
+          response.reasonPhrase ?? 'Error parsing data.',
+          response,
+        );
+      }
     } catch (e) {
       rethrow;
     }
@@ -256,7 +277,7 @@ class ProductApiService extends APIService<Product> {
     required String productId,
   }) async {
     try {
-      final response = await deleter(
+      final response = await client.delete(
         api.endpointUri(endpoint, pathSegments: [productId]),
         headers: api.authHeader(),
       );
@@ -269,7 +290,7 @@ class ProductApiService extends APIService<Product> {
 
   Future<bool> unlike({required String productId}) async {
     try {
-      final response = await deleter(
+      final response = await client.delete(
         api.endpointUri(
           endpoint,
           pathSegments: [productId, 'unlike'],
@@ -285,7 +306,7 @@ class ProductApiService extends APIService<Product> {
 
   Future<bool> removeFromWishlist({required String productId}) async {
     try {
-      final response = await deleter(
+      final response = await client.delete(
         api.endpointUri(
           endpoint,
           pathSegments: [productId, 'wishlist'],

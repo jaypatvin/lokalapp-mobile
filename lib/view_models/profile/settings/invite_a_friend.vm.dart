@@ -61,11 +61,7 @@ class InviteAFriendViewModel extends ViewModel {
       late final LokalInvite invite;
       // We give priority to the email address
       if (_emailAddress.isNotEmpty) {
-        invite = await _inviteApiService.inviteAFriend(
-          {
-            'email': _emailAddress,
-          },
-        );
+        invite = await _inviteApiService.inviteAFriend(_emailAddress);
       } else if (_phoneNumber.isNotEmpty) {
         throw UnimplementedError('Phone number is not yet supported');
       }

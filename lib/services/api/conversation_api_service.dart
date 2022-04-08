@@ -4,9 +4,11 @@ import '../../models/conversation.dart';
 import '../../models/post_requests/chat/conversation.request.dart';
 import 'api.dart';
 import 'api_service.dart';
+import 'client/lokal_http_client.dart';
 
 class ConversationAPIService extends APIService<Conversation> {
-  const ConversationAPIService(this.api);
+  ConversationAPIService(this.api, {LokalHttpClient? client})
+      : super(client: client ?? LokalHttpClient());
 
   final API api;
   Endpoint get endpoint => Endpoint.chat;
@@ -16,7 +18,7 @@ class ConversationAPIService extends APIService<Conversation> {
     required ConversationRequest request,
   }) async {
     try {
-      final response = await poster(
+      final response = await client.post(
         api.endpointUri(
           endpoint,
           pathSegments: [chatId, 'conversation'],
@@ -37,7 +39,7 @@ class ConversationAPIService extends APIService<Conversation> {
     required String messageId,
   }) async {
     try {
-      final response = await deleter(
+      final response = await client.delete(
         api.endpointUri(
           endpoint,
           pathSegments: [

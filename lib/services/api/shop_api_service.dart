@@ -7,13 +7,20 @@ import '../../models/post_requests/shop/shop_update.request.dart';
 import '../../models/shop.dart';
 import 'api.dart';
 import 'api_service.dart';
+import 'client/lokal_http_client.dart';
 
 class ShopAPIService extends APIService<Shop> {
-  factory ShopAPIService(API api) {
-    return ShopAPIService._(api, _OperatingHoursAPIService(api));
+  factory ShopAPIService(API api, {LokalHttpClient? client}) {
+    return ShopAPIService._(
+      api,
+      _OperatingHoursAPIService(api, client: client),
+      client: client,
+    );
   }
 
-  const ShopAPIService._(this.api, this._operatingHoursService);
+  ShopAPIService._(this.api, this._operatingHoursService,
+      {LokalHttpClient? client})
+      : super(client: client ?? LokalHttpClient());
 
   final API api;
   Endpoint get endpoint => Endpoint.shop;
@@ -24,7 +31,7 @@ class ShopAPIService extends APIService<Shop> {
     required ShopCreateRequest request,
   }) async {
     try {
-      final response = await poster(
+      final response = await client.post(
         api.endpointUri(endpoint),
         headers: api.withBodyHeader(),
         body: json.encode(trimBodyFields(request.toJson())),
@@ -42,7 +49,7 @@ class ShopAPIService extends APIService<Shop> {
     required String id,
   }) async {
     try {
-      final response = await putter(
+      final response = await client.put(
         api.endpointUri(endpoint, pathSegments: [id]),
         headers: api.withBodyHeader(),
         body: json.encode(trimBodyFields(request.toJson())),
@@ -59,7 +66,7 @@ class ShopAPIService extends APIService<Shop> {
     required String id,
   }) async {
     try {
-      final response = await putter(
+      final response = await client.put(
         api.endpointUri(endpoint, pathSegments: [id, 'operatingHours']),
         headers: api.withBodyHeader(),
         body: json.encode(trimBodyFields(request.toJson())),
@@ -74,7 +81,7 @@ class ShopAPIService extends APIService<Shop> {
   // --GET
   Future<Shop> getById({required String id}) async {
     try {
-      final response = await getter(
+      final response = await client.get(
         api.endpointUri(endpoint, pathSegments: [id]),
         headers: api.authHeader(),
       );
@@ -89,7 +96,7 @@ class ShopAPIService extends APIService<Shop> {
     required String communityId,
   }) async {
     try {
-      final response = await getter(
+      final response = await client.get(
         api.endpointUri(
           Endpoint.community,
           pathSegments: [communityId, 'shops'],
@@ -107,7 +114,7 @@ class ShopAPIService extends APIService<Shop> {
     required String userId,
   }) async {
     try {
-      final response = await getter(
+      final response = await client.get(
         api.endpointUri(Endpoint.user, pathSegments: [userId, 'shops']),
         headers: api.authHeader(),
       );
@@ -125,7 +132,7 @@ class ShopAPIService extends APIService<Shop> {
     required String communityId,
   }) async {
     try {
-      final response = await getter(
+      final response = await client.get(
         api.baseUri(
           pathSegments: ['availableShops'],
           queryParameters: <String, String>{'community_id': communityId},
@@ -141,7 +148,7 @@ class ShopAPIService extends APIService<Shop> {
     // the code below is for when the API endpoint follows the documentation
 
     // try {
-    //   final response = await this.getter(
+    //   final response = await this.client.get(
     //     api.baseUri(
     //       pathSegments: ['availableShops'],
     //       queryParameters: <String, String>{'community_id': communityId},
@@ -188,14 +195,16 @@ class ShopAPIService extends APIService<Shop> {
 }
 
 class _OperatingHoursAPIService extends APIService<OperatingHours> {
-  const _OperatingHoursAPIService(this.api);
+  _OperatingHoursAPIService(this.api, {LokalHttpClient? client})
+      : super(client: client ?? LokalHttpClient());
+
   final API api;
 
   Future<OperatingHours> getOperatingHours({
     required String shopId,
   }) async {
     try {
-      final response = await getter(
+      final response = await client.get(
         api.endpointUri(
           Endpoint.shop,
           pathSegments: [

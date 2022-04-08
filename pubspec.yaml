@@ -39,6 +39,7 @@ dependencies:
   localstorage: ^4.0.0+1
   lottie: ^1.2.1
   material_design_icons_flutter: ^5.0.6295
+  mockito: ^5.1.0
   oktoast: ^3.1.5
   path_provider: ^2.0.5
   permission_handler: ^9.2.0

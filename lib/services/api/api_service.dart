@@ -1,118 +1,17 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 import '../../models/failure_exception.dart';
+import 'client/lokal_http_client.dart';
 
 /// Class that supports handling of responses.
 ///
 /// `T` is an object that will be created from the http response.
 abstract class APIService<T> {
-  const APIService();
-
-  /// A wrapper for `http.getter` that throws corresponding apprioriate
-  /// `[SocketException]` or `[HttpException]` error messages.
-  @protected
-  Future<http.Response> getter(
-    Uri endpointUri, {
-    required Map<String, String> headers,
-  }) async {
-    try {
-      return await http.get(
-        endpointUri,
-        headers: headers,
-      );
-    } on SocketException {
-      throw FailureException('No Internet Connection!');
-    } on HttpException {
-      throw FailureException('Failed lookup!');
-    } catch (e) {
-      rethrow;
-    }
-  }
-
-  /// A wrapper for `http.post` that throws corresponding apprioriate
-  /// `[SocketException]` or `[HttpException]` error messages.
-  ///
-  /// Only accepts `"application/json"` as encoding (can be included in header).
-  @protected
-  Future<http.Response> poster(
-    Uri endpointUri, {
-    Map<String, String>? headers,
-    String? body,
-    Encoding? encoding,
-  }) async {
-    try {
-      return await http.post(
-        endpointUri,
-        headers: headers,
-        body: body,
-        encoding: encoding,
-      );
-    } on SocketException {
-      throw FailureException('No Internet Connection!');
-    } on HttpException {
-      throw FailureException('Failed lookup!');
-    } catch (e) {
-      rethrow;
-    }
-  }
-
-  /// A wrapper for `http.delete` that throws corresponding apprioriate
-  /// `[SocketException]` or `[HttpException]` error messages.
-  ///
-  /// Only accepts `"application/json"` as encoding (can be included in header).
-  @protected
-  Future<http.Response> deleter(
-    Uri endpointUri, {
-    Map<String, String>? headers,
-    String? body,
-    Encoding? encoding,
-  }) async {
-    try {
-      return await http.delete(
-        endpointUri,
-        headers: headers,
-        body: body,
-        encoding: encoding,
-      );
-    } on SocketException {
-      throw FailureException('No Internet Connection!');
-    } on HttpException {
-      throw FailureException('Failed lookup!');
-    } catch (e) {
-      rethrow;
-    }
-  }
-
-  /// A wrapper for `http.put` that throws corresponding apprioriate
-  /// `[SocketException]` or `[HttpException]` error messages.
-  ///
-  /// Only accepts `"application/json"` as encoding (can be included in header).
-  @protected
-  Future<http.Response> putter(
-    Uri endpointUri, {
-    Map<String, String>? headers,
-    String? body,
-    Encoding? encoding,
-  }) async {
-    try {
-      return await http.put(
-        endpointUri,
-        headers: headers,
-        body: body,
-        encoding: encoding,
-      );
-    } on SocketException {
-      throw FailureException('No Internet Connection!');
-    } on HttpException {
-      throw FailureException('Failed lookup!');
-    } catch (e) {
-      rethrow;
-    }
-  }
+  const APIService({required this.client});
+  final LokalHttpClient client;
 
   /// Returns an object `T` from the given response.
   ///

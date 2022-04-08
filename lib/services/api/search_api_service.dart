@@ -1,13 +1,13 @@
 import 'dart:convert';
 
-import 'package:http/http.dart' as http;
-
 import '../../models/failure_exception.dart';
 import 'api.dart';
 import 'api_service.dart';
+import 'client/lokal_http_client.dart';
 
 class SearchAPIService extends APIService {
-  const SearchAPIService(this.api);
+  SearchAPIService(this.api, {LokalHttpClient? client})
+      : super(client: client ?? LokalHttpClient());
 
   final API api;
   Endpoint get endpoint => Endpoint.search;
@@ -26,7 +26,7 @@ class SearchAPIService extends APIService {
     if (category != null) qp['category'] = category;
 
     try {
-      final response = await http.get(
+      final response = await client.get(
         api.endpointUri(
           endpoint,
           queryParameters: qp,
