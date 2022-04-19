@@ -63,7 +63,7 @@ class _ProductCardView extends HookView<ProductCardViewModel> {
       decoration: BoxDecoration(
         border: vm.displayBorder
             ? Border.all(color: Colors.orange, width: 3)
-            : Border.all(color: Colors.grey.shade300),
+            : Border.all(color: Colors.white),
       ),
       child: Stack(
         children: [
@@ -89,23 +89,22 @@ class _ProductCardView extends HookView<ProductCardViewModel> {
           Align(
             alignment: Alignment.bottomCenter,
             child: Container(
-              margin: EdgeInsets.zero,
-              padding: EdgeInsets.symmetric(
-                horizontal: 5.0.w,
-                vertical: 2.0.h,
-              ),
               color: Colors.white,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    '${vm.productName}\n',
+                    vm.productName,
                     softWrap: true,
-                    maxLines: 2,
+                    maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: Theme.of(context).textTheme.subtitle1,
+                    style: Theme.of(context)
+                        .textTheme
+                        .subtitle1
+                        ?.copyWith(fontSize: 18.0.sp),
                   ),
+                  SizedBox(height: 2.5.h),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -114,20 +113,20 @@ class _ProductCardView extends HookView<ProductCardViewModel> {
                         textAlign: TextAlign.start,
                         style: Theme.of(context)
                             .textTheme
-                            .subtitle1!
-                            .copyWith(color: kOrangeColor),
+                            .subtitle1
+                            ?.copyWith(color: kOrangeColor),
                       ),
                       GestureDetector(
                         onTap: vm.onLike,
                         child: !vm.isLiked
                             ? Icon(
                                 MdiIcons.heartOutline,
-                                size: 24.0.r,
+                                size: 16.0.r,
                                 color: Colors.black,
                               )
                             : Icon(
                                 MdiIcons.heart,
-                                size: 24.0.r,
+                                size: 16.0.r,
                                 color: kPinkColor,
                               ),
                       ),
