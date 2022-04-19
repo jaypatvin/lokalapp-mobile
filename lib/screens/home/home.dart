@@ -129,16 +129,19 @@ class Home extends HookWidget {
                     ),
                   )
                 else
-                  SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                      (ctx2, index) {
-                        final activity = activities.feed[index];
-                        return PostCard(
-                          key: Key(activity.id),
-                          activity: activity,
-                        );
-                      },
-                      childCount: activities.feed.length,
+                  SliverPadding(
+                    padding: const EdgeInsets.only(bottom: 6),
+                    sliver: SliverList(
+                      delegate: SliverChildBuilderDelegate(
+                        (ctx2, index) {
+                          final activity = activities.feed[index];
+                          return PostCard(
+                            key: Key(activity.id),
+                            activity: activity,
+                          );
+                        },
+                        childCount: activities.feed.length,
+                      ),
                     ),
                   ),
               ],

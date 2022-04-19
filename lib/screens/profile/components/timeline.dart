@@ -47,6 +47,7 @@ class Timeline extends StatelessWidget {
           physics: const ScrollPhysics(),
           controller: scrollController,
           itemCount: activityFeed.length, //snapshot.data!.length,
+          padding: const EdgeInsets.only(bottom: 6.0),
           itemBuilder: (context, index) {
             final activity = activityFeed[index];
             return Container(
