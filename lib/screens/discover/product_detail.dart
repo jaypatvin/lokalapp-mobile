@@ -224,6 +224,7 @@ class _ProductDetailView extends HookView<ProductDetailViewModel> {
                   child: AppButton.filled(
                     text: vm.buttonLabel,
                     onPressed: vm.onSubmit,
+                    color: vm.buttonColor,
                   ),
                 ),
               ],
