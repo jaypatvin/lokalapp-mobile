@@ -2,8 +2,12 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:oktoast/oktoast.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 
+import '../../app/app.locator.dart';
+import '../../app/app.router.dart';
+import '../../app/app_router.dart';
 import '../../models/app_navigator.dart';
 import '../../models/chat_model.dart';
 import '../../models/conversation.dart';
@@ -11,21 +15,15 @@ import '../../providers/auth.dart';
 import '../../providers/products.dart';
 import '../../providers/shops.dart';
 import '../../providers/users.dart';
-import '../../routers/app_router.dart';
-import '../../routers/discover/product_detail.props.dart';
-import '../../routers/profile/props/user_shop.props.dart';
+import '../../utils/constants/navigation_keys.dart';
 import '../../utils/constants/themes.dart';
 import '../../widgets/custom_app_bar.dart';
 import '../../widgets/custom_expansion_tile.dart' as custom;
-import '../discover/product_detail.dart';
-import '../profile/add_product/add_product.dart';
 import '../profile/profile_screen.dart';
 import '../profile/shop/user_shop.dart';
 import 'components/chat_avatar.dart';
-import 'shared_media.dart';
 
 class ChatProfile extends StatefulWidget {
-  static const routeName = '/chat/view/profile';
   const ChatProfile(this.chat, this.conversations);
 
   final ChatModel chat;
@@ -151,15 +149,20 @@ class _ChatProfileState extends State<ChatProfile> {
         if (_isCurrentUser) {
           switch (_member.type) {
             case MemberType.user:
-              ctx.read<AppRouter>().jumpToTab(AppRoute.profile);
+              ctx
+                  .read<PersistentTabController>()
+                  .jumpToTab(kProfileNavigationKey);
               break;
             case MemberType.shop:
               final _shop = ctx.read<Shops>().findById(_member.id);
-              ctx.read<AppRouter>().navigateTo(
-                    AppRoute.profile,
-                    UserShop.routeName,
-                    arguments: UserShopProps(_shop!.userId, _member.id),
-                  );
+              locator<AppRouter>().navigateTo(
+                AppRoute.profile,
+                ProfileScreenRoutes.userShop,
+                arguments: UserShopArguments(
+                  userId: _shop!.userId,
+                  shopId: _member.id,
+                ),
+              );
               break;
             case MemberType.product:
               final _product = ctx.read<Products>().findById(_member.id);
@@ -167,48 +170,48 @@ class _ChatProfileState extends State<ChatProfile> {
                 showToast('Sorry, product has been deleted');
                 break;
               }
-              ctx.read<AppRouter>().navigateTo(
+              locator<AppRouter>().navigateTo(
                 AppRoute.profile,
-                AddProduct.routeName,
-                arguments: {'productId': _member.id},
+                ProfileScreenRoutes.addProduct,
+                arguments: AddProductArguments(productId: _member.id),
               );
               break;
           }
 
           return;
         }
-        final appRoute = ctx.read<AppRouter>().currentTabRoute;
+        final appRoute = locator<AppRouter>().currentTabRoute;
         switch (_member.type) {
           case MemberType.user:
-            ctx.read<AppRouter>().pushDynamicScreen(
-                  appRoute,
-                  AppNavigator.appPageRoute(
-                    builder: (_) => ProfileScreen(
-                      userId: _member.id,
-                    ),
-                  ),
-                );
+            locator<AppRouter>().pushDynamicScreen(
+              appRoute,
+              AppNavigator.appPageRoute(
+                builder: (_) => ProfileScreen(
+                  userId: _member.id,
+                ),
+              ),
+            );
             break;
           case MemberType.shop:
             final _shop = context.read<Shops>().findById(_member.id);
-            ctx.read<AppRouter>().pushDynamicScreen(
-                  appRoute,
-                  AppNavigator.appPageRoute(
-                    builder: (_) => UserShop(
-                      userId: _shop!.userId,
-                      shopId: _shop.id,
-                    ),
-                  ),
-                );
+            locator<AppRouter>().pushDynamicScreen(
+              appRoute,
+              AppNavigator.appPageRoute(
+                builder: (_) => UserShop(
+                  userId: _shop!.userId,
+                  shopId: _shop.id,
+                ),
+              ),
+            );
             break;
           case MemberType.product:
             final _product = context.read<Products>().findById(_member.id);
             if (_product != null) {
-              ctx.read<AppRouter>().navigateTo(
-                    AppRoute.discover,
-                    ProductDetail.routeName,
-                    arguments: ProductDetailProps(_product),
-                  );
+              locator<AppRouter>().navigateTo(
+                AppRoute.discover,
+                DiscoverRoutes.productDetail,
+                arguments: ProductDetailArguments(product: _product),
+              );
             } else {
               showToast('Sorry, product has been deleted');
             }
@@ -304,10 +307,12 @@ class _ChatProfileState extends State<ChatProfile> {
                       ?.copyWith(color: Colors.black),
                 ),
                 onTap: () {
-                  context.read<AppRouter>().navigateTo(
+                  locator<AppRouter>().navigateTo(
                     AppRoute.chat,
-                    SharedMedia.routeName,
-                    arguments: {'conversations': widget.conversations},
+                    ChatRoutes.sharedMedia,
+                    arguments: SharedMediaArguments(
+                      conversations: widget.conversations ?? [],
+                    ),
                   );
                 },
                 trailing: const Icon(MdiIcons.chevronRight),

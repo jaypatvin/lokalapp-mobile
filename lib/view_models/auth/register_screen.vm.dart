@@ -4,11 +4,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
+import '../../app/app.locator.dart';
+import '../../app/app.router.dart';
+import '../../app/app_router.dart';
 import '../../models/failure_exception.dart';
 import '../../providers/auth.dart';
-import '../../routers/app_router.dart';
-import '../../screens/auth/profile_registration.dart';
-import '../../screens/bottom_navigation.dart';
 import '../../state/view_model.dart';
 
 class RegisterScreenViewModel extends ViewModel {
@@ -17,18 +17,22 @@ class RegisterScreenViewModel extends ViewModel {
   String? _errorMessage;
   String? get errorMessage => _errorMessage;
 
+  final _appRouter = locator<AppRouter>();
+
   @override
   void init() {}
 
   void _registerHandler() {
     if (context.read<Auth>().user == null) {
-      AppRouter.rootNavigatorKey.currentState?.pushReplacementNamed(
-        ProfileRegistration.routeName,
+      _appRouter.navigateTo(
+        AppRoute.root,
+        Routes.profileRegistration,
+        replace: true,
       );
     } else {
-      AppRouter.rootNavigatorKey.currentState?.pushNamedAndRemoveUntil(
-        BottomNavigation.routeName,
-        (route) => false,
+      _appRouter.pushNamedAndRemoveUntil(
+        AppRoute.root,
+        Routes.bottomNavigation,
       );
     }
   }
@@ -42,15 +46,17 @@ class RegisterScreenViewModel extends ViewModel {
 
       await context.read<Auth>().signUp(email, password);
 
-      AppRouter.rootNavigatorKey.currentState?.pushReplacementNamed(
-        ProfileRegistration.routeName,
+      _appRouter.navigateTo(
+        AppRoute.root,
+        Routes.profileRegistration,
+        replace: true,
       );
     } on FirebaseAuthException catch (e, stack) {
       if (e.code == 'email-already-in-use') {
         if (context.read<Auth>().user != null) {
-          AppRouter.rootNavigatorKey.currentState?.pushNamedAndRemoveUntil(
-            BottomNavigation.routeName,
-            (route) => false,
+          _appRouter.pushNamedAndRemoveUntil(
+            AppRoute.root,
+            Routes.bottomNavigation,
           );
           return;
         }

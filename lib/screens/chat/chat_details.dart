@@ -21,7 +21,6 @@ import 'components/chat_input.dart';
 import 'components/message_stream.dart';
 
 class ChatDetails extends StatelessWidget {
-  static const routeName = '/chat/details';
   const ChatDetails({
     Key? key,
     required this.members,

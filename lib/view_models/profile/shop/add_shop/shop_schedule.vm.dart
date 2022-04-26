@@ -5,12 +5,12 @@ import 'package:intl/intl.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../app/app.locator.dart';
+import '../../../../app/app.router.dart';
+import '../../../../app/app_router.dart';
 import '../../../../providers/auth.dart';
 import '../../../../providers/post_requests/operating_hours_body.dart';
 import '../../../../providers/shops.dart';
-import '../../../../routers/app_router.dart';
-import '../../../../routers/profile/props/customize_availability.props.dart';
-import '../../../../screens/profile/add_shop/customize_availability.dart';
 import '../../../../state/view_model.dart';
 import '../../../../utils/functions.utils.dart';
 import '../../../../widgets/schedule_picker.dart';
@@ -37,6 +37,8 @@ class ShopScheduleViewModel extends ViewModel {
   final File? shopPhoto;
   final bool forEditing;
   final Function()? onShopEdit;
+
+  final _appRouter = locator<AppRouter>();
 
   @override
   void init() {
@@ -162,25 +164,25 @@ class ShopScheduleViewModel extends ViewModel {
       showToast('Enter a valid repeat number.');
       return;
     }
-    context.read<AppRouter>().navigateTo(
-          AppRoute.profile,
-          CustomizeAvailability.routeName,
-          arguments: CustomizeAvailabilityProps(
-            repeatChoice: _getRepeatChoice(),
-            repeatEvery: context.read<OperatingHoursBody>().request.repeatUnit,
-            selectableDays: _selectableDays,
-            startDate: _startDate ?? DateTime.now(),
-            shopPhoto: shopPhoto,
-            usedDatePicker: context
-                    .read<OperatingHoursBody>()
-                    .request
-                    .repeatType
-                    .split('-')
-                    .length <=
-                1,
-            forEditing: forEditing,
-            onShopEdit: onShopEdit,
-          ),
-        );
+    _appRouter.navigateTo(
+      AppRoute.profile,
+      ProfileScreenRoutes.customizeAvailability,
+      arguments: CustomizeAvailabilityArguments(
+        repeatChoice: _getRepeatChoice(),
+        repeatEvery: context.read<OperatingHoursBody>().request.repeatUnit,
+        selectableDays: _selectableDays,
+        startDate: _startDate ?? DateTime.now(),
+        shopPhoto: shopPhoto,
+        usedDatePicker: context
+                .read<OperatingHoursBody>()
+                .request
+                .repeatType
+                .split('-')
+                .length <=
+            1,
+        forEditing: forEditing,
+        onShopEdit: onShopEdit,
+      ),
+    );
   }
 }

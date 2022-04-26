@@ -5,32 +5,30 @@ import 'package:lottie/lottie.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
 
+import '../../app/app.locator.dart';
+import '../../app/app.router.dart';
+import '../../app/app_router.dart';
 import '../../providers/activities.dart';
 import '../../providers/community.dart';
 import '../../providers/notifications.dart';
-import '../../routers/app_router.dart';
 import '../../utils/constants/assets.dart';
 import '../../utils/constants/themes.dart';
 import '../../widgets/custom_app_bar.dart';
 import '../cart/cart_container.dart';
 import 'components/post_card.dart';
-import 'draft_post.dart';
-import 'notifications.dart';
 
 class Home extends HookWidget {
-  static const routeName = '/home';
   const Home({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final _onDraftPostTap = useCallback(
-      () => AppRouter.rootNavigatorKey.currentState
-          ?.pushNamed(DraftPost.routeName),
+      () => locator<AppRouter>().navigateTo(AppRoute.root, Routes.draftPost),
       [],
     );
     final _onNotificationsTap = useCallback(
-      () => AppRouter.homeNavigatorKey.currentState
-          ?.pushNamed(Notifications.routeName),
+      () =>
+          locator<AppRouter>().navigateTo(AppRoute.root, Routes.notifications),
       [],
     );
 

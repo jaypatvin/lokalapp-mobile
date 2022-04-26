@@ -24,7 +24,6 @@ import 'product_detail/product_detail.quantity_controller.dart';
 import 'product_detail/product_detail.special_instructions.dart';
 
 class ProductDetail extends StatelessWidget {
-  static const routeName = '/discover/productDetail';
   const ProductDetail(this.product, {Key? key}) : super(key: key);
 
   final Product product;

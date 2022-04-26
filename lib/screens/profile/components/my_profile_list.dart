@@ -2,12 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
 
-import '../../../models/app_navigator.dart';
-import '../../../routers/app_router.dart';
+import '../../../app/app.locator.dart';
+import '../../../app/app.router.dart';
+import '../../../app/app_router.dart';
 import '../../../utils/constants/themes.dart';
-import '../profile_posts.dart';
-import '../settings/invite_a_friend/invite_a_friend.dart';
-import '../wishlist_screen.dart';
 
 class MyProfileList extends HookWidget {
   const MyProfileList({Key? key}) : super(key: key);
@@ -16,24 +14,25 @@ class MyProfileList extends HookWidget {
   Widget build(BuildContext context) {
     // TODO: separate ViewModel (without BuildContext)
     final onMyPostsTap = useCallback<VoidCallback>(
-      () => AppRouter.profileNavigatorKey.currentState?.push(
-        AppNavigator.appPageRoute(builder: (_) => const ProfilePosts()),
+      () => locator<AppRouter>().navigateTo(
+        AppRoute.profile,
+        ProfileScreenRoutes.profilePosts,
       ),
       [],
     );
 
     final onWishlistTap = useCallback<VoidCallback>(
-      () => context.read<AppRouter>().navigateTo(
-            AppRoute.profile,
-            WishlistScreen.routeName,
-          ),
+      () => locator<AppRouter>().navigateTo(
+        AppRoute.profile,
+        ProfileScreenRoutes.wishlistScreen,
+      ),
       [],
     );
 
     final onInviteFriend = useCallback<VoidCallback>(
       () => context.read<AppRouter>().navigateTo(
             AppRoute.profile,
-            InviteAFriend.routeName,
+            ProfileScreenRoutes.inviteAFriend,
           ),
       [],
     );

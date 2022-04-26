@@ -15,7 +15,6 @@ import '../../widgets/overlays/screen_loader.dart';
 import '../../widgets/photo_box.dart';
 
 class EditProfile extends StatelessWidget {
-  static const routeName = '/profile/edit';
   const EditProfile({Key? key}) : super(key: key);
 
   @override

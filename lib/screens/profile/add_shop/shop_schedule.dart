@@ -19,7 +19,6 @@ import '../../../widgets/overlays/constrained_scrollview.dart';
 import '../../../widgets/schedule_picker.dart';
 
 class ShopSchedule extends StatelessWidget {
-  static const routeName = '/profile/addShop/schedule';
   const ShopSchedule({
     Key? key,
     this.shopPhoto,

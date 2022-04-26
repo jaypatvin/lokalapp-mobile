@@ -2,23 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
 
+import '../../app/app.locator.dart';
+import '../../app/app.router.dart';
+import '../../app/app_router.dart';
 import '../../models/order.dart';
 import '../../providers/cart.dart';
 import '../../providers/products.dart';
 import '../../providers/shops.dart';
-import '../../routers/app_router.dart';
-import '../../routers/discover/cart/checkout_schedule.props.dart';
-import '../../routers/discover/product_detail.props.dart';
 import '../../utils/constants/themes.dart';
 import '../../widgets/app_button.dart';
 import '../../widgets/custom_app_bar.dart';
 import '../../widgets/overlays/constrained_scrollview.dart';
-import '../discover/product_detail.dart';
-import 'checkout_schedule.dart';
 import 'components/order_details.dart';
 
 class Checkout extends HookWidget {
-  static const routeName = '/cart/checkout/shop/checkout';
   final String productId;
   const Checkout({
     Key? key,
@@ -109,11 +106,11 @@ class Checkout extends HookWidget {
                         product: product,
                         quantity: order.quantity,
                         onEditTap: () {
-                          context.read<AppRouter>().navigateTo(
-                                AppRoute.discover,
-                                ProductDetail.routeName,
-                                arguments: ProductDetailProps(product),
-                              );
+                          locator<AppRouter>().navigateTo(
+                            AppRoute.discover,
+                            DiscoverRoutes.productDetail,
+                            arguments: ProductDetailArguments(product: product),
+                          );
                         },
                       ),
                     ),
@@ -204,11 +201,12 @@ class Checkout extends HookWidget {
                     child: AppButton.filled(
                       text: 'Continue',
                       onPressed: () {
-                        context.read<AppRouter>().navigateTo(
-                              AppRoute.discover,
-                              CheckoutSchedule.routeName,
-                              arguments: CheckoutScheduleProps(productId),
-                            );
+                        locator<AppRouter>().navigateTo(
+                          AppRoute.discover,
+                          DiscoverRoutes.checkoutSchedule,
+                          arguments:
+                              CheckoutScheduleArguments(productId: productId),
+                        );
                       },
                     ),
                   )

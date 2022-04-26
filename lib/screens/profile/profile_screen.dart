@@ -18,8 +18,7 @@ import '../home/components/post_card.dart';
 import 'components/my_profile_list.dart';
 import 'components/shop_banner.dart';
 
-class ProfileScreen extends HookWidget {
-  static const routeName = '/profile';
+class ProfileScreen extends StatelessWidget {
   const ProfileScreen({Key? key, this.userId}) : super(key: key);
   final String? userId;
 

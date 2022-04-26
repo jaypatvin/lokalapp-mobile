@@ -3,13 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
+import '../../app/app.locator.dart';
+import '../../app/app.router.dart';
+import '../../app/app_router.dart';
 import '../../models/activity_feed.dart';
 import '../../models/app_navigator.dart';
 import '../../models/failure_exception.dart';
 import '../../providers/activities.dart';
 import '../../providers/auth.dart';
-import '../../routers/app_router.dart';
-import '../../screens/home/post_details.dart';
 import '../../screens/home/report_post.dart';
 import '../../screens/profile/profile_screen.dart';
 import '../../state/view_model.dart';
@@ -28,20 +29,21 @@ class PostCardViewModel extends ViewModel {
   // bool _isLiking = false;
   bool _isDeleting = false;
 
+  final _appRouter = locator<AppRouter>();
+
   @override
   void init() {}
 
   void goToPostDetails(ActivityFeed activity) {
-    context.read<AppRouter>().pushDynamicScreen(
-          AppRoute.home,
-          AppNavigator.appPageRoute(
-            builder: (_) => PostDetails(
-              activityId: activity.id,
-              onUserPressed: (_) => _onUserPressed(activity),
-              onLike: () => onLike(activity),
-            ),
-          ),
-        );
+    _appRouter.navigateTo(
+      AppRoute.home,
+      HomeRoutes.postDetails,
+      arguments: PostDetailsArguments(
+        activityId: activity.id,
+        onUserPressed: (_) => _onUserPressed(activity),
+        onLike: () => onLike(activity),
+      ),
+    );
   }
 
   Future<void> onLike(ActivityFeed activity) async {
@@ -72,20 +74,20 @@ class PostCardViewModel extends ViewModel {
     // if the user is tapping on their own post, just change the tab index
     // of the navigation bar
     if (context.read<Auth>().user!.id == activity.userId) {
-      context.read<AppRouter>().jumpToTab(AppRoute.profile);
+      _appRouter.jumpToTab(AppRoute.profile);
       return;
     }
 
     // otherwise, we push a new screen inside the current navigation stack
-    final appRoute = context.read<AppRouter>().currentTabRoute;
-    context.read<AppRouter>().pushDynamicScreen(
-          appRoute,
-          AppNavigator.appPageRoute(
-            builder: (_) => ProfileScreen(
-              userId: activity.userId,
-            ),
-          ),
-        );
+    final appRoute = _appRouter.currentTabRoute;
+    _appRouter.pushDynamicScreen(
+      appRoute,
+      AppNavigator.appPageRoute(
+        builder: (_) => ProfileScreen(
+          userId: activity.userId,
+        ),
+      ),
+    );
   }
 
   void onPostOptionsPressed(Widget? child) {
@@ -137,11 +139,11 @@ class PostCardViewModel extends ViewModel {
     );
 
     if (response == null || !response) {
-      AppRouter.rootNavigatorKey.currentState?.pop();
+      AppRouter.rootNavigatorKey?.currentState?.pop();
       return;
     } else {
-      AppRouter.rootNavigatorKey.currentState?.pop();
-      AppRouter.homeNavigatorKey.currentState?.push(
+      AppRouter.rootNavigatorKey?.currentState?.pop();
+      AppRouter.homeNavigatorKey?.currentState?.push(
         AppNavigator.appPageRoute(
           builder: (_) => ReportPost(
             activityId: activityId,

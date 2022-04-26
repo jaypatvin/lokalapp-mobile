@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lottie/lottie.dart';
 
-import '../../../../routers/app_router.dart';
+import '../../../../app/app.locator.dart';
+import '../../../../app/app.router.dart';
+import '../../../../app/app_router.dart';
 import '../../../../utils/constants/assets.dart';
 import '../../../../widgets/app_button.dart';
-import '../settings.dart';
 
 class MyAccountConfirmation extends StatelessWidget {
   const MyAccountConfirmation({this.isPassword = false});
@@ -45,9 +46,9 @@ class MyAccountConfirmation extends StatelessWidget {
               width: double.infinity,
               child: AppButton.filled(
                 text: 'Back to Settings',
-                onPressed: () =>
-                    AppRouter.profileNavigatorKey.currentState?.popUntil(
-                  ModalRoute.withName(Settings.routeName),
+                onPressed: () => locator<AppRouter>().popUntil(
+                  AppRoute.profile,
+                  predicate: ModalRoute.withName(ProfileScreenRoutes.settings),
                 ),
               ),
             )

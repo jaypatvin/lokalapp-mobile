@@ -12,6 +12,8 @@ analyzer:
   exclude:
     - '**.freezed.dart'
     - '**.g.dart'
+    - 'lib/app/**.router.dart'
+    - 'lib/app/**.locator.dart'
   strong-mode:
     implicit-casts: true
 

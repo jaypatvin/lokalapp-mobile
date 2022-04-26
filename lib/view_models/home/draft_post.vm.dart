@@ -6,18 +6,18 @@ import 'package:oktoast/oktoast.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:provider/provider.dart';
 
-import '../../models/app_navigator.dart';
+import '../../app/app.locator.dart';
+import '../../app/app.router.dart';
+import '../../app/app_router.dart';
 import '../../models/failure_exception.dart';
 import '../../models/lokal_images.dart';
 import '../../models/post_requests/activities/activity.request.dart';
 import '../../providers/activities.dart';
 import '../../providers/auth.dart';
-import '../../routers/app_router.dart';
 import '../../services/local_image_service.dart';
 import '../../state/view_model.dart';
 import '../../utils/constants/assets.dart';
 import '../../widgets/photo_picker_gallery/provider/custom_photo_provider.dart';
-import '../../widgets/photo_view_gallery/gallery/gallery_asset_photo_view.dart';
 
 class DraftPostViewModel extends ViewModel {
   DraftPostViewModel();
@@ -32,6 +32,8 @@ class DraftPostViewModel extends ViewModel {
     _showImagePicker = value;
     notifyListeners();
   }
+
+  final _appRouter = locator<AppRouter>();
 
   @override
   void init() {
@@ -87,17 +89,17 @@ class DraftPostViewModel extends ViewModel {
   }
 
   void openGallery(final int index) {
-    AppRouter.rootNavigatorKey.currentState?.push(
-      AppNavigator.appPageRoute(
-        builder: (_) => GalleryAssetPhotoView(
-          initialIndex: index,
-          galleryItems: imageProvider.picked,
-          backgroundDecoration: const BoxDecoration(
-            color: Colors.black,
-          ),
-          loadingBuilder: (_, __) =>
-              const Center(child: CircularProgressIndicator()),
+    _appRouter.navigateTo(
+      AppRoute.root,
+      Routes.galleryAssetPhotoView,
+      arguments: GalleryAssetPhotoViewArguments(
+        initialIndex: index,
+        galleryItems: imageProvider.picked,
+        backgroundDecoration: const BoxDecoration(
+          color: Colors.black,
         ),
+        loadingBuilder: (_, __) =>
+            const Center(child: CircularProgressIndicator()),
       ),
     );
   }

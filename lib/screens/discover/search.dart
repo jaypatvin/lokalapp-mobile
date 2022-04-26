@@ -13,7 +13,6 @@ import '../../widgets/inputs/search_text_field.dart';
 import '../profile/components/product_card.dart';
 
 class Search extends StatelessWidget {
-  static const routeName = '/discover/search';
   const Search({Key? key}) : super(key: key);
 
   @override

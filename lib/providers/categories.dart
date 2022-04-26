@@ -2,10 +2,10 @@ import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:oktoast/oktoast.dart';
 
-import '../models/app_navigator.dart';
+import '../app/app.locator.dart';
+import '../app/app.router.dart';
+import '../app/app_router.dart';
 import '../models/lokal_category.dart';
-import '../routers/app_router.dart';
-import '../screens/discover/categories_landing.dart';
 import '../services/database/collections/categories.collection.dart';
 import '../services/database/database.dart';
 
@@ -45,10 +45,11 @@ class Categories extends ChangeNotifier {
 
   void onCategoryTap(int index) {
     final _category = _categories[index];
-    AppRouter.discoverNavigatorKey.currentState?.push(
-      AppNavigator.appPageRoute(
-        builder: (_) => CategoriesLanding(category: _category),
-      ),
+
+    locator<AppRouter>().navigateTo(
+      AppRoute.discover,
+      DiscoverRoutes.categoriesLanding,
+      arguments: CategoriesLandingArguments(category: _category),
     );
   }
 }

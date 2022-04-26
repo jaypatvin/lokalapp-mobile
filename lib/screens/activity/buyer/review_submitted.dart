@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
 
-import '../../../routers/app_router.dart';
+import '../../../app/app.locator.dart';
+import '../../../app/app.router.dart';
+import '../../../app/app_router.dart';
 import '../../../utils/constants/themes.dart';
 import '../../../widgets/app_button.dart';
-import '../activity.dart';
 
 class ReviewSubmitted extends StatelessWidget {
   const ReviewSubmitted({Key? key}) : super(key: key);
 
+  // TODO: move to ViewModel
   void _onBackToActivity() {
-    AppRouter.activityNavigatorKey.currentState?.popUntil(
-      ModalRoute.withName(Activity.routeName),
+    locator<AppRouter>().popUntil(
+      AppRoute.activity,
+      predicate: ModalRoute.withName(ActivityRoutes.activity),
     );
   }
 

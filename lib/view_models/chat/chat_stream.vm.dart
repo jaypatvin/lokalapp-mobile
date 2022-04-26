@@ -3,10 +3,11 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 
+import '../../app/app.locator.dart';
+import '../../app/app_router.dart';
 import '../../models/chat_model.dart';
 import '../../providers/shops.dart';
 import '../../providers/users.dart';
-import '../../routers/app_router.dart';
 import '../../state/view_model.dart';
 
 class ChatStreamViewModel extends ViewModel {
@@ -54,6 +55,6 @@ class ChatStreamViewModel extends ViewModel {
   }
 
   void createShopHandler() {
-    context.read<AppRouter>().jumpToTab(AppRoute.profile);
+    locator<AppRouter>().jumpToTab(AppRoute.profile);
   }
 }

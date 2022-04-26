@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lottie/lottie.dart';
 
-import '../../../routers/app_router.dart';
+import '../../../app/app.locator.dart';
+import '../../../app/app.router.dart';
+import '../../../app/app_router.dart';
 import '../../../utils/constants/assets.dart';
 import '../../../widgets/app_button.dart';
 import '../../../widgets/custom_app_bar.dart';
-import '../profile_screen.dart';
 
 class AddProductConfirmation extends StatelessWidget {
   const AddProductConfirmation({Key? key}) : super(key: key);
@@ -62,8 +63,11 @@ class AddProductConfirmation extends StatelessWidget {
               child: AppButton.filled(
                 text: 'Back to my Shop',
                 onPressed: () {
-                  AppRouter.profileNavigatorKey.currentState
-                      ?.popUntil(ModalRoute.withName(ProfileScreen.routeName));
+                  locator<AppRouter>().popUntil(
+                    AppRoute.profile,
+                    predicate:
+                        ModalRoute.withName(ProfileScreenRoutes.profileScreen),
+                  );
                 },
               ),
             ),

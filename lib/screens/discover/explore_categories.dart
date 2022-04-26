@@ -10,8 +10,6 @@ import '../../widgets/custom_app_bar.dart';
 import '../cart/cart_container.dart';
 
 class ExploreCategories extends StatelessWidget {
-  static const routeName = '/discover/categories';
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

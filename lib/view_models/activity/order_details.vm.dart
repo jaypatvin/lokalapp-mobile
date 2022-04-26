@@ -2,18 +2,12 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
-import '../../models/app_navigator.dart';
+import '../../app/app.locator.dart';
+import '../../app/app.router.dart';
+import '../../app/app_router.dart';
 import '../../models/lokal_images.dart';
 import '../../models/order.dart';
-import '../../routers/app_router.dart';
-import '../../screens/activity/buyer/order_received.dart';
-import '../../screens/activity/buyer/payment_option.dart';
-import '../../screens/activity/buyer/review_order.dart';
-import '../../screens/activity/buyer/view_reviews.dart';
 import '../../screens/activity/components/order_details_buttons/order_actions.dart';
-import '../../screens/activity/seller/order_confirmed.dart';
-import '../../screens/activity/seller/payment_confirmed.dart';
-import '../../screens/activity/seller/shipped_out.dart';
 import '../../services/api/api.dart';
 import '../../services/api/order_api_service.dart';
 import '../../state/view_model.dart';
@@ -28,6 +22,7 @@ class OrderDetailsViewModel extends ViewModel {
   final bool isBuyer;
 
   late final OrderAPIService _apiService;
+  final _appRouter = locator<AppRouter>();
 
   @override
   void init() {
@@ -39,30 +34,30 @@ class OrderDetailsViewModel extends ViewModel {
       switch (action) {
         case OrderAction.cancel:
           await _apiService.cancel(orderId: order.id);
-          AppRouter.activityNavigatorKey.currentState?.pop();
+          _appRouter.popScreen(AppRoute.activity);
           break;
         case OrderAction.decline:
           await _apiService.decline(orderId: order.id);
-          AppRouter.activityNavigatorKey.currentState?.pop();
+          _appRouter.popScreen(AppRoute.activity);
           break;
         case OrderAction.confirm:
           final success = await _apiService.confirm(orderId: order.id);
           if (success) {
-            AppRouter.activityNavigatorKey.currentState?.push(
-              AppNavigator.appPageRoute(
-                builder: (_) => OrderConfirmed(
-                  order: order,
-                  isBuyer: isBuyer,
-                ),
+            _appRouter.navigateTo(
+              AppRoute.activity,
+              ActivityRoutes.orderConfirmed,
+              arguments: OrderConfirmedArguments(
+                order: order,
+                isBuyer: isBuyer,
               ),
             );
           }
           break;
         case OrderAction.pay:
-          AppRouter.activityNavigatorKey.currentState?.push(
-            AppNavigator.appPageRoute(
-              builder: (_) => PaymentOptionScreen(order: order),
-            ),
+          _appRouter.navigateTo(
+            AppRoute.activity,
+            ActivityRoutes.paymentOptionScreen,
+            arguments: PaymentOptionScreenArguments(order: order),
           );
           break;
         case OrderAction.viewPayment:
@@ -77,10 +72,10 @@ class OrderDetailsViewModel extends ViewModel {
           final success = await _apiService.confirmPayment(orderId: order.id);
 
           if (success) {
-            AppRouter.activityNavigatorKey.currentState?.push(
-              AppNavigator.appPageRoute(
-                builder: (_) => PaymentConfirmed(order: order),
-              ),
+            _appRouter.navigateTo(
+              AppRoute.activity,
+              ActivityRoutes.paymentConfirmed,
+              arguments: PaymentConfirmedArguments(order: order),
             );
           }
           break;
@@ -88,10 +83,10 @@ class OrderDetailsViewModel extends ViewModel {
           final success = await _apiService.shipOut(orderId: order.id);
 
           if (success) {
-            AppRouter.activityNavigatorKey.currentState?.push(
-              AppNavigator.appPageRoute(
-                builder: (_) => ShippedOut(order: order),
-              ),
+            _appRouter.navigateTo(
+              AppRoute.activity,
+              ActivityRoutes.shippedOut,
+              arguments: ShippedOutArguments(order: order),
             );
           }
           break;
@@ -99,10 +94,10 @@ class OrderDetailsViewModel extends ViewModel {
           final success = await _apiService.receive(orderId: order.id);
 
           if (success) {
-            AppRouter.activityNavigatorKey.currentState?.push(
-              AppNavigator.appPageRoute(
-                builder: (_) => OrderReceived(order: order),
-              ),
+            _appRouter.navigateTo(
+              AppRoute.activity,
+              ActivityRoutes.orderReceived,
+              arguments: OrderReceivedArguments(order: order),
             );
           }
 
@@ -111,18 +106,20 @@ class OrderDetailsViewModel extends ViewModel {
           //TODO: add logic for order again
           break;
         case OrderAction.addReview:
-          AppRouter.activityNavigatorKey.currentState?.push(
-            AppNavigator.appPageRoute(
-              builder: (_) => ReviewOrder(
-                order: order,
-              ),
+          _appRouter.navigateTo(
+            AppRoute.activity,
+            ActivityRoutes.reviewOrder,
+            arguments: ReviewOrderArguments(
+              order: order,
             ),
           );
           break;
         case OrderAction.viewReview:
-          AppRouter.activityNavigatorKey.currentState?.push(
-            AppNavigator.appPageRoute(
-              builder: (_) => ViewReviews(order: order),
+          _appRouter.navigateTo(
+            AppRoute.activity,
+            ActivityRoutes.viewReviews,
+            arguments: ViewReviewsArguments(
+              order: order,
             ),
           );
           break;

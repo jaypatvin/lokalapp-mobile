@@ -7,13 +7,13 @@ import 'package:flutter/material.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
+import '../../app/app.locator.dart';
+import '../../app/app.router.dart';
+import '../../app/app_router.dart';
 import '../../models/failure_exception.dart';
 import '../../models/product.dart';
 import '../../providers/auth.dart';
 import '../../providers/products.dart';
-import '../../routers/app_router.dart';
-import '../../routers/discover/product_detail.props.dart';
-import '../../screens/discover/product_detail.dart';
 import '../../services/api/api.dart';
 import '../../services/api/search_api_service.dart';
 import '../../state/view_model.dart';
@@ -38,6 +38,8 @@ class SearchViewModel extends ViewModel {
       UnmodifiableListView(_recentSearches);
 
   late final String _userId;
+
+  final _appRouter = locator<AppRouter>();
 
   @override
   void init() {
@@ -114,10 +116,10 @@ class SearchViewModel extends ViewModel {
 
   void onProductTap(int index) {
     final product = searchResults[index];
-    context.read<AppRouter>().navigateTo(
-          AppRoute.discover,
-          ProductDetail.routeName,
-          arguments: ProductDetailProps(product),
-        );
+    _appRouter.navigateTo(
+      AppRoute.discover,
+      DiscoverRoutes.productDetail,
+      arguments: ProductDetailArguments(product: product),
+    );
   }
 }

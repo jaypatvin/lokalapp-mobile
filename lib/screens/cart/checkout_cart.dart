@@ -2,21 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
+import '../../app/app.locator.dart';
+import '../../app/app.router.dart';
+import '../../app/app_router.dart';
 import '../../providers/cart.dart';
 import '../../providers/products.dart';
 import '../../providers/shops.dart';
-import '../../routers/app_router.dart';
-import '../../routers/discover/cart/checkout_shop.props.dart';
-import '../../routers/discover/product_detail.props.dart';
 import '../../utils/constants/assets.dart';
 import '../../utils/constants/themes.dart';
 import '../../widgets/app_button.dart';
-import '../discover/product_detail.dart';
-import 'checkout_shop.dart';
 import 'components/order_details.dart';
 
 class CheckoutCart extends StatelessWidget {
-  static const routeName = '/cart/checkout';
   const CheckoutCart({Key? key}) : super(key: key);
 
   @override
@@ -126,13 +123,13 @@ class CheckoutCart extends StatelessWidget {
                                   product: product!,
                                   quantity: orders[_key]!.quantity,
                                   onEditTap: () {
-                                    context.read<AppRouter>().navigateTo(
-                                          AppRoute.discover,
-                                          ProductDetail.routeName,
-                                          arguments: ProductDetailProps(
-                                            product,
-                                          ),
-                                        );
+                                    locator<AppRouter>().navigateTo(
+                                      AppRoute.discover,
+                                      DiscoverRoutes.productDetail,
+                                      arguments: ProductDetailArguments(
+                                        product: product,
+                                      ),
+                                    );
                                   },
                                 );
                               },
@@ -142,11 +139,11 @@ class CheckoutCart extends StatelessWidget {
                               text: 'Checkout',
                               width: double.infinity,
                               onPressed: () {
-                                context.read<AppRouter>().navigateTo(
-                                      AppRoute.discover,
-                                      ShopCheckout.routeName,
-                                      arguments: ShopCheckoutProps(shop),
-                                    );
+                                locator<AppRouter>().navigateTo(
+                                  AppRoute.discover,
+                                  DiscoverRoutes.shopCheckout,
+                                  arguments: ShopCheckoutArguments(shop: shop),
+                                );
                               },
                             ),
                           ],

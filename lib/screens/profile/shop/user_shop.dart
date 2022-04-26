@@ -18,7 +18,6 @@ import 'components/shop_options.dart';
 import 'components/user_banner.dart';
 
 class UserShop extends StatelessWidget {
-  static const String routeName = '/profile/shop';
   const UserShop({
     Key? key,
     required this.userId,

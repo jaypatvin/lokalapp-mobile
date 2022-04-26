@@ -13,7 +13,6 @@ import '../../widgets/overlays/constrained_scrollview.dart';
 import '../../widgets/overlays/screen_loader.dart';
 
 class InvitePage extends StatelessWidget {
-  static const routeName = '/invite';
   const InvitePage({Key? key}) : super(key: key);
 
   @override

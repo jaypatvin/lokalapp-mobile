@@ -5,6 +5,9 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
+import '../../../app/app.locator.dart';
+import '../../../app/app.router.dart';
+import '../../../app/app_router.dart';
 import '../../../models/app_navigator.dart';
 import '../../../models/failure_exception.dart';
 import '../../../models/lokal_images.dart';
@@ -20,12 +23,10 @@ import '../../../widgets/inputs/input_name_field.dart';
 import '../../../widgets/overlays/constrained_scrollview.dart';
 import '../../../widgets/overlays/screen_loader.dart';
 import '../../../widgets/photo_box.dart';
-import '../shop/user_shop.dart';
 import 'components/add_product_gallery.dart';
 import 'product_details.dart';
 
 class AddProduct extends StatefulWidget {
-  static const routeName = '/profile/addProduct';
   const AddProduct({this.productId});
 
   final String? productId;
@@ -317,9 +318,9 @@ class _AddProductState extends State<AddProduct> with ScreenLoader {
           () async => context.read<Products>().deleteProduct(widget.productId!),
         );
         if (!mounted) return;
-        Navigator.popUntil(
-          context,
-          ModalRoute.withName(UserShop.routeName),
+        locator<AppRouter>().popUntil(
+          AppRoute.profile,
+          predicate: ModalRoute.withName(ProfileScreenRoutes.userShop),
         );
       }
     } catch (e, stack) {

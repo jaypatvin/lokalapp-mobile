@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../app/app.locator.dart';
+import '../../../app/app.router.dart';
+import '../../../app/app_router.dart';
 import '../../../models/app_navigator.dart';
-import '../../../models/post_requests/shared/application_log.dart';
 import '../../../providers/auth.dart';
 import '../../../providers/cart.dart';
-import '../../../routers/app_router.dart';
-import '../../../services/application_logger.dart';
 import '../../../utils/constants/themes.dart';
 import '../../../widgets/app_button.dart';
 import '../../../widgets/custom_app_bar.dart';
-import '../../welcome_screen.dart';
 import 'about/about.dart';
 import 'chat/chat_settings.dart';
 import 'help_center/help_center.dart';
@@ -22,7 +21,6 @@ import 'privacy_settings/privacy_setting.dart';
 import 'terms_of_service/terms_of_service.dart';
 
 class Settings extends StatelessWidget {
-  static const routeName = '/profile/settings';
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -267,18 +265,13 @@ class Settings extends StatelessWidget {
                     color: kPinkColor,
                     onPressed: () async {
                       final _auth = context.read<Auth>();
-                      context
-                          .read<ApplicationLogger>()
-                          .log(actionType: ActionTypes.userLogout);
                       context.read<ShoppingCart>().clear();
-                      context.read<AppRouter>()
+                      locator<AppRouter>()
                         ..jumpToTab(AppRoute.home)
-                        ..keyOf(AppRoute.root)
-                            .currentState!
-                            .pushNamedAndRemoveUntil(
-                              WelcomeScreen.routeName,
-                              (route) => false,
-                            );
+                        ..pushNamedAndRemoveUntil(
+                          AppRoute.root,
+                          Routes.welcomeScreen,
+                        );
 
                       Future.delayed(const Duration(milliseconds: 500), () {
                         _auth.logOut();

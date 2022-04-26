@@ -2,14 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
+import '../../app/app.locator.dart';
+import '../../app/app.router.dart';
+import '../../app/app_router.dart';
 import '../../models/lokal_images.dart';
 import '../../providers/auth.dart';
 import '../../providers/users.dart';
-import '../../routers/app_router.dart';
-import '../../routers/chat/props/chat_details.props.dart';
-import '../../screens/chat/chat_details.dart';
-import '../../screens/profile/edit_profile.dart';
-import '../../screens/profile/settings/settings.dart';
 import '../../state/view_model.dart';
 import '../../utils/constants/themes.dart';
 import '../../utils/functions.utils.dart';
@@ -25,6 +23,8 @@ class ProfileHeaderViewModel extends ViewModel {
 
   late final Auth _authProvider;
 
+  final _appRouter = locator<AppRouter>();
+
   @override
   void init() {
     _authProvider = context.read<Auth>();
@@ -34,18 +34,18 @@ class ProfileHeaderViewModel extends ViewModel {
     if (_authProvider.user?.id == userId) {
       throw 'Cannot send message to self.';
     }
-    context.read<AppRouter>().navigateTo(
-          AppRoute.chat,
-          ChatDetails.routeName,
-          arguments: ChatDetailsProps(
-            members: [context.read<Auth>().user!.id, userId],
-          ),
-        );
+    _appRouter.navigateTo(
+      AppRoute.chat,
+      ChatRoutes.chatDetails,
+      arguments: ChatDetailsArguments(
+        members: [context.read<Auth>().user!.id, userId],
+      ),
+    );
   }
 
   void onSettingsPressed() {
     if (isCurrentUser) {
-      AppRouter.profileNavigatorKey.currentState?.pushNamed(Settings.routeName);
+      _appRouter.navigateTo(AppRoute.profile, ProfileScreenRoutes.settings);
     } else {
       showToast('Nothing to do here!');
     }
@@ -53,9 +53,7 @@ class ProfileHeaderViewModel extends ViewModel {
 
   void onTripleDotsPressed() {
     if (isCurrentUser) {
-      AppRouter.profileNavigatorKey.currentState?.pushNamed(
-        EditProfile.routeName,
-      );
+      _appRouter.navigateTo(AppRoute.profile, ProfileScreenRoutes.editProfile);
     } else {
       showToast('Nothing to do here!');
     }

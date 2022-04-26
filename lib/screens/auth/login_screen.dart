@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-import '../../models/app_navigator.dart';
-import '../../routers/app_router.dart';
+import '../../app/app.locator.dart';
+import '../../app/app.router.dart';
+import '../../app/app_router.dart';
 import '../../state/mvvm_builder.widget.dart';
 import '../../state/views/hook.view.dart';
 import '../../utils/constants/assets.dart';
@@ -12,10 +13,8 @@ import '../../view_models/auth/login_screen.vm.dart';
 import '../../widgets/overlays/screen_loader.dart';
 import 'components/auth_input_form.dart';
 import 'components/sso_block.dart';
-import 'forgot_password_screen.dart';
 
 class LoginScreen extends StatelessWidget {
-  static const routeName = '/login';
   const LoginScreen({Key? key}) : super(key: key);
 
   @override
@@ -136,10 +135,9 @@ class _LoginScreenView extends HookView<LoginScreenViewModel>
                       style: Theme.of(context).textTheme.subtitle2,
                     ),
                     onTap: () {
-                      AppRouter.rootNavigatorKey.currentState?.push(
-                        AppNavigator.appPageRoute(
-                          builder: (_) => const ForgotPasswordScreen(),
-                        ),
+                      locator<AppRouter>().navigateTo(
+                        AppRoute.root,
+                        Routes.forgotPasswordScreen,
                       );
                     },
                   ),

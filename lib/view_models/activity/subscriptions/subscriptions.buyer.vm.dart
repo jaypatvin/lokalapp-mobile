@@ -1,10 +1,10 @@
 import 'package:provider/provider.dart';
 
-import '../../../models/app_navigator.dart';
+import '../../../app/app.locator.dart';
+import '../../../app/app.router.dart';
+import '../../../app/app_router.dart';
 import '../../../models/product_subscription_plan.dart';
 import '../../../providers/auth.dart';
-import '../../../routers/app_router.dart';
-import '../../../screens/activity/subscriptions/subscription_plan.screen.dart';
 import '../../../services/database/collections/product_subscription_plans.collection.dart';
 import '../../../services/database/database.dart';
 import '../../../state/view_model.dart';
@@ -15,6 +15,8 @@ class SubscriptionsBuyerViewModel extends ViewModel {
   late Stream<List<ProductSubscriptionPlan>> _subscriptionPlanStream;
   Stream<List<ProductSubscriptionPlan>> get subscriptionPlanStream =>
       _subscriptionPlanStream;
+
+  final _appRouter = locator<AppRouter>();
 
   @override
   void init() {
@@ -27,11 +29,11 @@ class SubscriptionsBuyerViewModel extends ViewModel {
   }
 
   void onDetailsPressed(ProductSubscriptionPlan subscriptionPlan) {
-    AppRouter.activityNavigatorKey.currentState?.push(
-      AppNavigator.appPageRoute(
-        builder: (_) => SubscriptionPlanScreen(
-          subscriptionPlan: subscriptionPlan,
-        ),
+    _appRouter.navigateTo(
+      AppRoute.activity,
+      ActivityRoutes.subscriptionPlanScreen,
+      arguments: SubscriptionPlanScreenArguments(
+        subscriptionPlan: subscriptionPlan,
       ),
     );
   }

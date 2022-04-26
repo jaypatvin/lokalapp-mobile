@@ -2,16 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 
+import '../../app/app.locator.dart';
+import '../../app/app.router.dart';
+import '../../app/app_router.dart';
 import '../../models/lokal_category.dart';
 import '../../providers/products.dart';
-import '../../routers/app_router.dart';
-import '../../routers/discover/product_detail.props.dart';
 import '../../utils/constants/assets.dart';
 import '../../utils/constants/themes.dart';
 import '../../widgets/custom_app_bar.dart';
 import '../../widgets/products_list.dart';
 import '../cart/cart_container.dart';
-import 'product_detail.dart';
 
 class CategoriesLanding extends StatelessWidget {
   const CategoriesLanding({
@@ -77,9 +77,10 @@ class CategoriesLanding extends StatelessWidget {
                       onProductTap: (String id) {
                         final _product =
                             products.items.firstWhere((p) => p.id == id);
-                        AppRouter.discoverNavigatorKey.currentState?.pushNamed(
-                          ProductDetail.routeName,
-                          arguments: ProductDetailProps(_product),
+                        locator<AppRouter>().navigateTo(
+                          AppRoute.discover,
+                          DiscoverRoutes.productDetail,
+                          arguments: ProductDetailArguments(product: _product),
                         );
                       },
                     ),

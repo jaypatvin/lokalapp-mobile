@@ -6,13 +6,14 @@ import 'package:intl/intl.dart' show DateFormat;
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
+import '../../../app/app.locator.dart';
+import '../../../app/app.router.dart';
+import '../../../app/app_router.dart';
 import '../../../models/operating_hours.dart';
 import '../../../providers/auth.dart';
 import '../../../providers/post_requests/operating_hours_body.dart';
 import '../../../providers/post_requests/shop_body.dart';
 import '../../../providers/shops.dart';
-import '../../../routers/app_router.dart';
-import '../../../routers/profile/props/payment_options.props.dart';
 import '../../../services/local_image_service.dart';
 import '../../../utils/constants/assets.dart';
 import '../../../utils/repeated_days_generator/schedule_generator.dart';
@@ -21,11 +22,8 @@ import '../../../widgets/calendar_picker/calendar_picker.dart';
 import '../../../widgets/custom_app_bar.dart';
 import '../../../widgets/overlays/screen_loader.dart';
 import '../../../widgets/schedule_picker.dart';
-import 'payment_options.dart';
-import 'shop_confirmation.dart';
 
 class CustomizeAvailability extends StatefulWidget {
-  static const routeName = '/profile/addShop/availability';
   const CustomizeAvailability({
     required this.repeatChoice,
     required this.selectableDays,
@@ -192,10 +190,10 @@ class _CustomizeAvailabilityState extends State<CustomizeAvailability>
       await _createShop();
       if (!mounted) return;
 
-      context.read<AppRouter>().navigateTo(
-            AppRoute.profile,
-            AddShopConfirmation.routeName,
-          );
+      locator<AppRouter>().navigateTo(
+        AppRoute.profile,
+        ProfileScreenRoutes.addShopConfirmation,
+      );
     } catch (e, stack) {
       FirebaseCrashlytics.instance.recordError(e, stack);
       showToast('Failed to create shop. Try again.');
@@ -210,11 +208,11 @@ class _CustomizeAvailabilityState extends State<CustomizeAvailability>
       return;
     }
 
-    context.read<AppRouter>().navigateTo(
-          AppRoute.profile,
-          SetUpPaymentOptions.routeName,
-          arguments: SetUpPaymentOptionsProps(onSubmit: _onSubmit),
-        );
+    locator<AppRouter>().navigateTo(
+      AppRoute.profile,
+      ProfileScreenRoutes.setUpPaymentOptions,
+      arguments: SetUpPaymentOptionsArguments(onSubmit: _onSubmit, edit: false),
+    );
   }
 
   @override

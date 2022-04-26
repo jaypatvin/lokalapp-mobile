@@ -1,21 +1,20 @@
 import 'package:provider/provider.dart';
 
+import '../../../app/app.locator.dart';
+import '../../../app/app.router.dart';
+import '../../../app/app_router.dart';
 import '../../../models/app_navigator.dart';
 import '../../../models/shop.dart';
 import '../../../providers/auth.dart';
-import '../../../routers/app_router.dart';
-import '../../../routers/profile/props/user_shop.props.dart';
-import '../../../screens/profile/add_shop/add_shop.dart';
 import '../../../screens/profile/shop/user_shop.dart';
 import '../../../state/view_model.dart';
-import '../../../widgets/verification/verify_screen.dart';
 
 class ShopBannerViewModel extends ViewModel {
   ShopBannerViewModel({required this.userId});
   final String userId;
 
   late final bool isCurrentUser;
-
+  final _appRouter = locator<AppRouter>();
 
   @override
   void init() {
@@ -24,42 +23,38 @@ class ShopBannerViewModel extends ViewModel {
 
   void onAddShop() {
     // The current user can only view this on the profile screen.
-    AppRouter.profileNavigatorKey.currentState?.push(
-      AppNavigator.appPageRoute(
-        builder: (_) => const AddShop(),
-      ),
-    );
+    _appRouter.navigateTo(AppRoute.profile, ProfileScreenRoutes.addShop);
   }
 
   void onVerify() {
     // The current user can only view this on the profile screen.
-    AppRouter.profileNavigatorKey.currentState?.push(
-      AppNavigator.appPageRoute(
-        builder: (_) => const VerifyScreen(
-          skippable: false,
-        ),
+    _appRouter.navigateTo(
+      AppRoute.profile,
+      ProfileScreenRoutes.verifyScreen,
+      arguments: VerifyScreenArguments(
+        skippable: false,
       ),
     );
   }
 
   Future<dynamic> goToShop(Shop shop) async {
     if (isCurrentUser) {
-      return context.read<AppRouter>().navigateTo(
-            AppRoute.profile,
-            UserShop.routeName,
-            arguments: UserShopProps(userId, shop.id),
-          );
+      return _appRouter.navigateTo(
+        AppRoute.profile,
+        ProfileScreenRoutes.userShop,
+        arguments: UserShopArguments(userId: userId, shopId: shop.id),
+      );
     }
 
-    final appRoute = context.read<AppRouter>().currentTabRoute;
-    return context.read<AppRouter>().pushDynamicScreen(
-          appRoute,
-          AppNavigator.appPageRoute(
-            builder: (_) => UserShop(
-              userId: userId,
-              shopId: shop.id,
-            ),
-          ),
-        );
+    final appRoute = _appRouter.currentTabRoute;
+    return _appRouter.pushDynamicScreen(
+      appRoute,
+      AppNavigator.appPageRoute(
+        builder: (_) => UserShop(
+          userId: userId,
+          shopId: shop.id,
+        ),
+      ),
+    );
   }
 }

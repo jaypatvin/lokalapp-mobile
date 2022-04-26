@@ -2,12 +2,12 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
-import '../../../models/app_navigator.dart';
+import '../../../app/app.locator.dart';
+import '../../../app/app.router.dart';
+import '../../../app/app_router.dart';
 import '../../../models/product_subscription_plan.dart';
 import '../../../providers/auth.dart';
 import '../../../providers/shops.dart';
-import '../../../routers/app_router.dart';
-import '../../../screens/activity/subscriptions/subscription_plan.screen.dart';
 import '../../../services/api/api.dart';
 import '../../../services/api/subscription_plan_api_service.dart';
 import '../../../services/database/collections/product_subscription_plans.collection.dart';
@@ -21,6 +21,8 @@ class SubscriptionsSellerViewModel extends ViewModel {
   Stream<List<ProductSubscriptionPlan>>? _subscriptionPlanStream;
   Stream<List<ProductSubscriptionPlan>>? get subscriptionPlanStream =>
       _subscriptionPlanStream;
+
+  final _appRouter = locator<AppRouter>();
 
   @override
   void init() {
@@ -57,18 +59,18 @@ class SubscriptionsSellerViewModel extends ViewModel {
   }
 
   void createShopHandler() {
-    context.read<AppRouter>().jumpToTab(AppRoute.profile);
+    _appRouter.jumpToTab(AppRoute.profile);
   }
 
   void onDetailsPressed(
     ProductSubscriptionPlan productSubscriptionPlan,
   ) {
-    AppRouter.activityNavigatorKey.currentState?.push(
-      AppNavigator.appPageRoute(
-        builder: (_) => SubscriptionPlanScreen(
-          subscriptionPlan: productSubscriptionPlan,
-          isBuyer: false,
-        ),
+    _appRouter.navigateTo(
+      AppRoute.activity,
+      ActivityRoutes.subscriptionPlanScreen,
+      arguments: SubscriptionPlanScreenArguments(
+        subscriptionPlan: productSubscriptionPlan,
+        isBuyer: false,
       ),
     );
   }

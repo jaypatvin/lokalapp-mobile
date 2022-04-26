@@ -4,10 +4,11 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
+import '../../app/app.locator.dart';
+import '../../app/app_router.dart';
 import '../../models/failure_exception.dart';
 import '../../models/post_requests/user/user_update.request.dart';
 import '../../providers/auth.dart';
-import '../../routers/app_router.dart';
 import '../../services/api/api.dart';
 import '../../services/api/user_api_service.dart';
 import '../../services/local_image_service.dart';
@@ -29,6 +30,8 @@ class EditProfileViewModel extends ViewModel {
   File? get profilePhoto => _profilePhoto;
 
   late UserAPIService _apiService;
+
+  final _appRouter = locator<AppRouter>();
 
   @override
   void init() {
@@ -73,7 +76,7 @@ class EditProfileViewModel extends ViewModel {
         ),
         userId: user.id,
       );
-      AppRouter.profileNavigatorKey.currentState?.pop();
+      _appRouter.popScreen(AppRoute.profile);
     } catch (e, stack) {
       FirebaseCrashlytics.instance.recordError(e, stack);
       showToast(e is FailureException ? e.message : e.toString());

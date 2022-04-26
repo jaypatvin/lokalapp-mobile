@@ -15,7 +15,6 @@ import '../../widgets/photo_box.dart';
 import 'components/checkbox_form_field.dart';
 
 class ProfileRegistration extends StatelessWidget {
-  static const routeName = '/register/profile';
   const ProfileRegistration({Key? key}) : super(key: key);
 
   @override

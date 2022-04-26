@@ -4,74 +4,33 @@ import 'package:keyboard_actions/keyboard_actions.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 import '../../../models/app_navigator.dart';
-import '../../../models/product_subscription_plan.dart';
 import '../../../state/mvvm_builder.widget.dart';
 import '../../../state/views/hook.view.dart';
-import '../../../view_models/activity/subscriptions/seller_subscription_schedule.vm.dart';
 import '../../../view_models/activity/subscriptions/subscription_schedule.vm.dart';
 import '../../../widgets/app_button.dart';
 import '../../../widgets/custom_app_bar.dart';
 import '../../../widgets/overlays/constrained_scrollview.dart';
 import '../../../widgets/schedule_picker.dart';
 import '../../discover/product_detail.dart';
-import 'components/buyer_subscription_schedule.view.dart';
-import 'components/seller_subscription_schedule.view.dart';
 import 'subscription_schedule/subscription_schedule.product_card.dart';
 
-class SubscriptionSchedule extends StatelessWidget {
-  const SubscriptionSchedule._({
-    Key? key,
-    required this.child,
-  }) : super(key: key);
-
-  factory SubscriptionSchedule.seller({
-    required ProductSubscriptionPlan subscriptionPlan,
-  }) {
-    return SubscriptionSchedule._(
-      child: MVVM(
-        view: (_, __) => SellerSubscriptionScheduleView(),
-        viewModel: SellerSubscriptionScheduleViewModel(
-          subscriptionPlan: subscriptionPlan,
-        ),
-      ),
-    );
-  }
-
-  factory SubscriptionSchedule.view({
-    required ProductSubscriptionPlan subscriptionPlan,
-  }) {
-    return SubscriptionSchedule._(
-      child: MVVM(
-        view: (_, __) => BuyerSubscriptionScheduleView(),
-        viewModel: ViewSubscriptionScheduleViewModel(
-          subscriptionPlan: subscriptionPlan,
-        ),
-      ),
-    );
-  }
-
-  factory SubscriptionSchedule.create({
-    required String productId,
-  }) {
-    return SubscriptionSchedule._(
-      child: MVVM(
-        view: (_, __) => _NewSubscriptionScheduleView(),
-        viewModel: NewSubscriptionScheduleViewModel(
-          productId: productId,
-        ),
-      ),
-    );
-  }
-
-  final Widget child;
+class SubscriptionScheduleCreate extends StatelessWidget {
+  const SubscriptionScheduleCreate({Key? key, required this.productId})
+      : super(key: key);
+  final String productId;
 
   @override
   Widget build(BuildContext context) {
-    return child;
+    return MVVM(
+      view: (_, __) => _SubscriptionScheduleCreateView(),
+      viewModel: NewSubscriptionScheduleViewModel(
+        productId: productId,
+      ),
+    );
   }
 }
 
-class _NewSubscriptionScheduleView
+class _SubscriptionScheduleCreateView
     extends HookView<NewSubscriptionScheduleViewModel> {
   @override
   Widget render(

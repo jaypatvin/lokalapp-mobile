@@ -14,34 +14,14 @@ import '../../../widgets/custom_app_bar.dart';
 import '../../../widgets/overlays/screen_loader.dart';
 
 class SetUpPaymentOptions extends StatelessWidget {
-  static const routeName = '/profile/shop/paymentOptions';
   final void Function() onSubmit;
   final bool edit;
 
-  factory SetUpPaymentOptions.edit({
+  const SetUpPaymentOptions({
     Key? key,
-    required void Function() onSubmit,
-  }) {
-    return SetUpPaymentOptions._(
-      onSubmit,
-      true,
-      key: key,
-    );
-  }
-
-  factory SetUpPaymentOptions.create({
-    Key? key,
-    required void Function() onSubmit,
-  }) {
-    return SetUpPaymentOptions._(
-      onSubmit,
-      false,
-      key: key,
-    );
-  }
-
-  const SetUpPaymentOptions._(this.onSubmit, this.edit, {Key? key})
-      : super(key: key);
+    required this.onSubmit,
+    required this.edit,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

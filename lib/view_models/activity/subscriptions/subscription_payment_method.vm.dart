@@ -3,15 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
-import '../../../models/app_navigator.dart';
+import '../../../app/app.locator.dart';
+import '../../../app/app.router.dart';
+import '../../../app/app_router.dart';
 import '../../../models/failure_exception.dart';
 import '../../../models/order.dart';
 import '../../../models/post_requests/product_subscription_plan/product_subscription_plan.request.dart';
 import '../../../providers/cart.dart';
 import '../../../providers/products.dart';
-import '../../../routers/app_router.dart';
-import '../../../screens/cart/cart_confirmation.dart';
-import '../../../screens/discover/discover.dart';
 import '../../../services/api/api.dart';
 import '../../../services/api/subscription_plan_api_service.dart';
 import '../../../state/view_model.dart';
@@ -24,6 +23,8 @@ class SubscriptionPaymentMethodViewModel extends ViewModel {
 
   final ProductSubscriptionPlanRequest request;
   final bool reschedule;
+
+  final _appRouter = locator<AppRouter>();
 
   late final double totalPrice;
   late final SubscriptionPlanAPIService _apiService;
@@ -54,15 +55,13 @@ class SubscriptionPaymentMethodViewModel extends ViewModel {
 
       if (success) {
         context.read<ShoppingCart>().remove(request.productId);
-        // the user is making a new subscription, meaning that the app
-        // is currently at the Discover Tab
-        AppRouter.discoverNavigatorKey.currentState?.pushAndRemoveUntil(
-          AppNavigator.appPageRoute(
-            builder: (_) => const CartConfirmation(
-              isSubscription: true,
-            ),
+        _appRouter.pushNamedAndRemoveUntil(
+          AppRoute.discover,
+          DiscoverRoutes.cartConfirmation,
+          arguments: CartConfirmationArguments(
+            isSubscription: true,
           ),
-          ModalRoute.withName(Discover.routeName),
+          predicate: ModalRoute.withName(DiscoverRoutes.discover),
         );
       }
     } catch (e, stack) {

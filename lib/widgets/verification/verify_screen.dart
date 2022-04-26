@@ -7,11 +7,11 @@ import 'package:oktoast/oktoast.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 
-import '../../models/app_navigator.dart';
+import '../../app/app.locator.dart';
+import '../../app/app.router.dart';
+import '../../app/app_router.dart';
 import '../../models/failure_exception.dart';
 import '../../providers/auth.dart';
-import '../../routers/app_router.dart';
-import '../../screens/bottom_navigation.dart';
 import '../../services/api/api.dart';
 import '../../services/api/user_api_service.dart';
 import '../../services/local_image_service.dart';
@@ -23,7 +23,6 @@ import '../../widgets/custom_app_bar.dart';
 import '../overlays/constrained_scrollview.dart';
 import '../overlays/screen_loader.dart';
 import '../photo_box.dart';
-import 'verify_confirmation_screen.dart';
 
 class VerifyScreen extends StatefulWidget {
   final bool skippable;
@@ -215,21 +214,19 @@ class _VerifyScreenState extends State<VerifyScreen> with ScreenLoader {
 
       if (success) {
         if (widget.skippable) {
-          AppRouter.rootNavigatorKey.currentState?.pushAndRemoveUntil(
-            AppNavigator.appPageRoute(
-              builder: (_) => VerifyConfirmationScreen(
-                skippable: widget.skippable,
-              ),
-            ),
-            (route) => false,
+          locator<AppRouter>().pushNamedAndRemoveUntil(
+            AppRoute.root,
+            Routes.verifyConfirmationScreen,
+            arguments:
+                VerifyConfirmationScreenArguments(skippable: widget.skippable),
           );
         } else {
-          AppRouter.profileNavigatorKey.currentState?.pushReplacement(
-            AppNavigator.appPageRoute(
-              builder: (_) => VerifyConfirmationScreen(
-                skippable: widget.skippable,
-              ),
-            ),
+          locator<AppRouter>().navigateTo(
+            AppRoute.profile,
+            ProfileScreenRoutes.verifyConfirmationScreen,
+            arguments:
+                VerifyConfirmationScreenArguments(skippable: widget.skippable),
+            replace: true,
           );
         }
       }
@@ -244,10 +241,9 @@ class _VerifyScreenState extends State<VerifyScreen> with ScreenLoader {
       return [
         TextButton(
           onPressed: () {
-            AppRouter.rootNavigatorKey.currentState?.push(
-              AppNavigator.appPageRoute(
-                builder: (_) => const BottomNavigation(),
-              ),
+            locator<AppRouter>().navigateTo(
+              AppRoute.root,
+              Routes.bottomNavigation,
             );
           },
           child: Text(
@@ -271,10 +267,9 @@ class _VerifyScreenState extends State<VerifyScreen> with ScreenLoader {
 
   Future<bool> _onWillPop() async {
     if (widget.skippable) {
-      AppRouter.rootNavigatorKey.currentState?.push(
-        AppNavigator.appPageRoute(
-          builder: (_) => const BottomNavigation(),
-        ),
+      locator<AppRouter>().navigateTo(
+        AppRoute.root,
+        Routes.bottomNavigation,
       );
     }
     return true;

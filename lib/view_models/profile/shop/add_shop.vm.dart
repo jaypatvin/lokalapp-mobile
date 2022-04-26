@@ -2,11 +2,11 @@ import 'dart:io';
 
 import 'package:provider/provider.dart';
 
+import '../../../app/app.locator.dart';
+import '../../../app/app.router.dart';
+import '../../../app/app_router.dart';
 import '../../../models/shop.dart';
 import '../../../providers/post_requests/shop_body.dart';
-import '../../../routers/app_router.dart';
-import '../../../routers/profile/props/shop_schedule.props.dart';
-import '../../../screens/profile/add_shop/shop_schedule.dart';
 import '../../../state/view_model.dart';
 import '../../../utils/media_utility.dart';
 
@@ -37,6 +37,8 @@ class AddShopViewModel extends ViewModel {
 
   bool _forPickup = true;
   bool get forPickup => _forPickup;
+
+  final _appRouter = locator<AppRouter>();
 
   Future<void> onAddPhoto() async {
     _shopPhoto = await mediaUtility.showMediaDialog(context);
@@ -103,9 +105,10 @@ class AddShopViewModel extends ViewModel {
       return;
     }
 
-    AppRouter.profileNavigatorKey.currentState?.pushNamed(
-      ShopSchedule.routeName,
-      arguments: ShopScheduleProps(_shopPhoto),
+    _appRouter.navigateTo(
+      AppRoute.profile,
+      ProfileScreenRoutes.shopSchedule,
+      arguments: ShopScheduleArguments(shopPhoto: _shopPhoto),
     );
   }
 }

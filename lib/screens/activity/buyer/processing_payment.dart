@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:lottie/lottie.dart';
 
+import '../../../app/app.locator.dart';
+import '../../../app/app_router.dart';
 import '../../../models/order.dart';
-import '../../../routers/app_router.dart';
 import '../../../utils/constants/assets.dart';
 import '../../../widgets/app_button.dart';
 import '../../../widgets/overlays/constrained_scrollview.dart';
-import '../activity.dart';
 import '../components/order_details_buttons/message_buttons.dart';
 import '../components/transaction_details.dart';
 
@@ -108,9 +108,7 @@ class ProcessingPayment extends StatelessWidget {
                       child: AppButton.filled(
                         text: 'Back to Activity',
                         onPressed: () {
-                          AppRouter.activityNavigatorKey.currentState?.popUntil(
-                            ModalRoute.withName(Activity.routeName),
-                          );
+                          locator<AppRouter>().popUntil(AppRoute.activity);
                         },
                       ),
                     ),

@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
-import 'package:provider/provider.dart';
 
-import '../../routers/app_router.dart';
-import '../../screens/cart/checkout_cart.dart';
+import '../../app/app.locator.dart';
+import '../../app/app.router.dart';
+import '../../app/app_router.dart';
 
 class CartContainerViewModel extends ChangeNotifier {
   CartContainerViewModel(
@@ -24,9 +24,7 @@ class CartContainerViewModel extends ChangeNotifier {
   }
 
   void onPressed() {
-    context.read<AppRouter>().navigateTo(
-          AppRoute.discover,
-          CheckoutCart.routeName,
-        );
+    locator<AppRouter>()
+        .navigateTo(AppRoute.discover, DiscoverRoutes.checkoutCart);
   }
 }

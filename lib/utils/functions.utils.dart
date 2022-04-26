@@ -4,30 +4,29 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart' show DateFormat;
 import 'package:photo_manager/photo_manager.dart';
 
-import '../models/app_navigator.dart';
+import '../app/app.locator.dart';
+import '../app/app.router.dart';
+import '../app/app_router.dart';
 import '../models/conversation.dart';
 import '../models/lokal_images.dart';
 import '../models/operating_hours.dart';
 import '../models/order.dart';
 import '../models/status.dart';
 import '../models/timestamp_time_object.dart';
-import '../routers/app_router.dart';
-import '../widgets/photo_view_gallery/gallery/gallery_asset_photo_view.dart';
-import '../widgets/photo_view_gallery/gallery/gallery_network_photo_view.dart';
 
 void openInputGallery(
   BuildContext context,
   final int index,
   List<AssetEntity> galleryItems,
 ) {
-  AppRouter.rootNavigatorKey.currentState?.push(
-    AppNavigator.appPageRoute(
-      builder: (_) => GalleryAssetPhotoView(
-        galleryItems: galleryItems,
-        initialIndex: index,
-        backgroundDecoration: const BoxDecoration(
-          color: Colors.black,
-        ),
+  locator<AppRouter>().navigateTo(
+    AppRoute.root,
+    Routes.galleryAssetPhotoView,
+    arguments: GalleryAssetPhotoViewArguments(
+      galleryItems: galleryItems,
+      initialIndex: index,
+      backgroundDecoration: const BoxDecoration(
+        color: Colors.black,
       ),
     ),
   );
@@ -38,14 +37,14 @@ void openGallery(
   final int index,
   final List<LokalImages>? galleryItems,
 ) {
-  AppRouter.rootNavigatorKey.currentState?.push(
-    AppNavigator.appPageRoute(
-      builder: (_) => GalleryNetworkPhotoView(
-        galleryItems: galleryItems,
-        initialIndex: index,
-        backgroundDecoration: const BoxDecoration(
-          color: Colors.black,
-        ),
+  locator<AppRouter>().navigateTo(
+    AppRoute.root,
+    Routes.galleryNetworkPhotoView,
+    arguments: GalleryNetworkPhotoViewArguments(
+      galleryItems: galleryItems,
+      initialIndex: index,
+      backgroundDecoration: const BoxDecoration(
+        color: Colors.black,
       ),
     ),
   );

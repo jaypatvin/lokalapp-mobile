@@ -5,18 +5,15 @@ import 'package:flutter/cupertino.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../models/app_navigator.dart';
+import '../../../../app/app.locator.dart';
+import '../../../../app/app.router.dart';
+import '../../../../app/app_router.dart';
 import '../../../../models/failure_exception.dart';
 import '../../../../models/post_requests/shop/shop_update.request.dart';
 import '../../../../models/shop.dart';
 import '../../../../providers/post_requests/operating_hours_body.dart';
 import '../../../../providers/post_requests/shop_body.dart';
 import '../../../../providers/shops.dart';
-import '../../../../routers/app_router.dart';
-import '../../../../routers/profile/props/payment_options.props.dart';
-import '../../../../screens/profile/add_shop/edit_shop.dart';
-import '../../../../screens/profile/add_shop/payment_options.dart';
-import '../../../../screens/profile/add_shop/shop_schedule.dart';
 import '../../../../services/local_image_service.dart';
 import '../../../../state/view_model.dart';
 import '../../../../utils/constants/assets.dart';
@@ -58,6 +55,8 @@ class EditShopViewModel extends ViewModel {
 
   late bool _forPickup;
   bool get forPickup => _forPickup;
+
+  final _appRouter = locator<AppRouter>();
 
   @override
   void init() {
@@ -136,30 +135,29 @@ class EditShopViewModel extends ViewModel {
   }
 
   void onChangeShopSchedule() {
-    AppRouter.profileNavigatorKey.currentState?.push(
-      AppNavigator.appPageRoute(
-        builder: (_) => ShopSchedule(
-          shopPhoto: shopPhoto,
-          forEditing: true,
-          onShopEdit: () {
-            _editedShopSchedule = true;
-            Navigator.popUntil(
-              context,
-              ModalRoute.withName(
-                EditShop.routeName,
-              ),
-            );
-          },
-        ),
+    _appRouter.navigateTo(
+      AppRoute.profile,
+      ProfileScreenRoutes.shopSchedule,
+      arguments: ShopScheduleArguments(
+        shopPhoto: shopPhoto,
+        forEditing: true,
+        onShopEdit: () {
+          _editedShopSchedule = true;
+          _appRouter.popUntil(
+            AppRoute.profile,
+            predicate: ModalRoute.withName(ProfileScreenRoutes.editShop),
+          );
+        },
       ),
     );
   }
 
   void onEditPaymentOptions() {
-    AppRouter.profileNavigatorKey.currentState?.pushNamed(
-      SetUpPaymentOptions.routeName,
-      arguments: SetUpPaymentOptionsProps(
-        onSubmit: () => AppRouter.profileNavigatorKey.currentState?.pop(),
+    _appRouter.navigateTo(
+      AppRoute.profile,
+      ProfileScreenRoutes.setUpPaymentOptions,
+      arguments: SetUpPaymentOptionsArguments(
+        onSubmit: () => _appRouter.popScreen(AppRoute.profile),
         edit: true,
       ),
     );
@@ -288,7 +286,7 @@ class EditShopViewModel extends ViewModel {
         if (!success) throw FailureException('Update operating hours error');
       }
 
-      AppRouter.profileNavigatorKey.currentState?.pop();
+      _appRouter.popScreen(AppRoute.profile);
     } catch (e, stack) {
       FirebaseCrashlytics.instance.recordError(e, stack);
       showToast(e is FailureException ? e.message : e.toString());

@@ -16,7 +16,6 @@ import '../../widgets/photo_picker_gallery/image_gallery_picker.dart';
 import '../../widgets/photo_view_gallery/thumbnails/asset_photo_thumbnail.dart';
 
 class DraftPost extends StatelessWidget {
-  static const routeName = '/home/draft_post';
   const DraftPost({Key? key}) : super(key: key);
 
   @override

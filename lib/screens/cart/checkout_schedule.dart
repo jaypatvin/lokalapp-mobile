@@ -4,13 +4,14 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
+import '../../app/app.locator.dart';
+import '../../app/app.router.dart';
+import '../../app/app_router.dart';
 import '../../models/post_requests/orders/order_create.request.dart';
 import '../../providers/auth.dart';
 import '../../providers/cart.dart';
 import '../../providers/products.dart';
 import '../../providers/shops.dart';
-import '../../routers/app_router.dart';
-import '../../routers/discover/product_detail.props.dart';
 import '../../services/api/api.dart';
 import '../../services/api/order_api_service.dart';
 import '../../utils/constants/themes.dart';
@@ -21,13 +22,9 @@ import '../../widgets/calendar_picker/calendar_picker.dart';
 import '../../widgets/custom_app_bar.dart';
 import '../../widgets/overlays/constrained_scrollview.dart';
 import '../../widgets/overlays/screen_loader.dart';
-import '../discover/discover.dart';
-import '../discover/product_detail.dart';
-import 'cart_confirmation.dart';
 import 'components/order_details.dart';
 
 class CheckoutSchedule extends StatefulWidget {
-  static const routeName = '/cart/checkout/shop/checkout/schedule';
   final String productId;
   const CheckoutSchedule({Key? key, required this.productId}) : super(key: key);
 
@@ -67,14 +64,14 @@ class _CheckoutScheduleState extends State<CheckoutSchedule> with ScreenLoader {
         ),
       );
 
-      AppRouter.discoverNavigatorKey.currentState
-          ?.pushNamedAndRemoveUntil(
-            CartConfirmation.routeName,
-            ModalRoute.withName(
-              Discover.routeName,
-            ),
+      locator<AppRouter>()
+          .pushNamedAndRemoveUntil(
+            AppRoute.discover,
+            DiscoverRoutes.cartConfirmation,
+            arguments: CartConfirmationArguments(),
+            predicate: ModalRoute.withName(DiscoverRoutes.discover),
           )
-          .then((_) => _cart.remove(widget.productId));
+          .then((value) => _cart.remove(widget.productId));
     } catch (e, stack) {
       FirebaseCrashlytics.instance.recordError(e, stack);
       showToast('Failed to place order!');
@@ -127,11 +124,11 @@ class _CheckoutScheduleState extends State<CheckoutSchedule> with ScreenLoader {
                         product: product,
                         quantity: order.quantity,
                         onEditTap: () {
-                          context.read<AppRouter>().navigateTo(
-                                AppRoute.discover,
-                                ProductDetail.routeName,
-                                arguments: ProductDetailProps(product),
-                              );
+                          locator<AppRouter>().navigateTo(
+                            AppRoute.discover,
+                            DiscoverRoutes.productDetail,
+                            arguments: ProductDetailArguments(product: product),
+                          );
                         },
                       ),
                     ),

@@ -2,9 +2,10 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
+import '../../app/app.locator.dart';
+import '../../app/app_router.dart';
 import '../../models/app_navigator.dart';
 import '../../models/post_requests/shared/report.dart';
-import '../../routers/app_router.dart';
 import '../../services/api/activity_api_service.dart';
 import '../../services/api/api.dart';
 import '../../state/view_model.dart';
@@ -38,7 +39,7 @@ class ReportPostViewModel extends ViewModel {
       );
 
       if (success) {
-        final _appRouter = context.read<AppRouter>();
+        final _appRouter = locator<AppRouter>();
         final _route = _appRouter.currentTabRoute;
         _appRouter.pushDynamicScreen(
           _route,

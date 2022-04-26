@@ -61,6 +61,10 @@ linked_*.ds
 unlinked.ds
 unlinked_spec.ds
 
+# State management related (using Stacked)
+**.locator.dart
+**.router.dart
+
 # Android related
 **/android/**/gradle-wrapper.jar
 **/android/.gradle

@@ -4,7 +4,9 @@ import 'package:intl/intl.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
-import '../../../models/app_navigator.dart';
+import '../../../app/app.locator.dart';
+import '../../../app/app.router.dart';
+import '../../../app/app_router.dart';
 import '../../../models/failure_exception.dart';
 import '../../../models/operating_hours.dart';
 import '../../../models/order.dart';
@@ -17,9 +19,6 @@ import '../../../providers/auth.dart';
 import '../../../providers/cart.dart';
 import '../../../providers/products.dart';
 import '../../../providers/shops.dart';
-import '../../../routers/app_router.dart';
-import '../../../screens/activity/activity.dart';
-import '../../../screens/activity/subscriptions/subscription_payment_method.dart';
 import '../../../services/api/api.dart';
 import '../../../services/api/subscription_plan_api_service.dart';
 import '../../../state/view_model.dart';
@@ -30,6 +29,7 @@ class NewSubscriptionScheduleViewModel extends ViewModel {
   NewSubscriptionScheduleViewModel({
     required this.productId,
   }) : assert(productId.isNotEmpty, 'productId should not be empty');
+
   final String productId;
 
   late final int quantity;
@@ -47,6 +47,8 @@ class NewSubscriptionScheduleViewModel extends ViewModel {
   List<DateTime> _startDates = [];
   DateTime? _startDate;
   List<int> _selectableDays = [];
+
+  final _appRouter = locator<AppRouter>();
 
   @override
   void init() {
@@ -146,15 +148,12 @@ class NewSubscriptionScheduleViewModel extends ViewModel {
       ),
     );
 
-    // if (reschedule != null) {
-
-    // }
-    AppRouter.discoverNavigatorKey.currentState?.push(
-      AppNavigator.appPageRoute(
-        builder: (_) => SubscriptionPaymentMethod(
-          request: request,
-          reschedule: false,
-        ),
+    _appRouter.navigateTo(
+      AppRoute.discover,
+      DiscoverRoutes.subscriptionPaymentMethod,
+      arguments: SubscriptionPaymentMethodArguments(
+        request: request,
+        reschedule: false,
       ),
     );
   }
@@ -273,6 +272,8 @@ class ViewSubscriptionScheduleViewModel extends ViewModel {
   bool _loaded = false;
   bool get loaded => _loaded;
 
+  final _appRouter = locator<AppRouter>();
+
   @override
   Future<void> init() async {
     _generator = ScheduleGenerator();
@@ -364,8 +365,10 @@ class ViewSubscriptionScheduleViewModel extends ViewModel {
       return;
     }
 
-    AppRouter.activityNavigatorKey.currentState
-        ?.popUntil(ModalRoute.withName(Activity.routeName));
+    _appRouter.popUntil(
+      AppRoute.activity,
+      predicate: ModalRoute.withName(ActivityRoutes.activity),
+    );
   }
 
   Future<bool> _onOverrideSchedule() async {

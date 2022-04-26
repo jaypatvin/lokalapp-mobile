@@ -1,18 +1,19 @@
 import 'package:provider/provider.dart';
 
-import '../../../models/app_navigator.dart';
+import '../../../app/app.locator.dart';
+import '../../../app/app.router.dart';
+import '../../../app/app_router.dart';
 import '../../../models/bank_code.dart';
 import '../../../models/order.dart';
 import '../../../models/payment_option.dart';
 import '../../../providers/shops.dart';
-import '../../../routers/app_router.dart';
-import '../../../screens/activity/buyer/bank_details.dart';
-import '../../../screens/activity/buyer/cash_on_delivery.dart';
 import '../../../state/view_model.dart';
 
 class PaymentOptionViewModel extends ViewModel {
   PaymentOptionViewModel(this.order);
   final Order order;
+
+  final _appRouter = locator<AppRouter>();
 
   late final List<PaymentOption> _paymentOptions;
 
@@ -36,20 +37,20 @@ class PaymentOptionViewModel extends ViewModel {
     switch (paymentMode) {
       case PaymentMethod.bank:
       case PaymentMethod.eWallet:
-        AppRouter.activityNavigatorKey.currentState?.push(
-          AppNavigator.appPageRoute(
-            builder: (_) => BankDetails(
-              order: order,
-              paymentMethod: paymentMode,
-            ),
+        _appRouter.navigateTo(
+          AppRoute.activity,
+          ActivityRoutes.bankDetails,
+          arguments: BankDetailsArguments(
+            order: order,
+            paymentMethod: paymentMode,
           ),
         );
         break;
       case PaymentMethod.cod:
-        AppRouter.activityNavigatorKey.currentState?.push(
-          AppNavigator.appPageRoute(
-            builder: (_) => CashOnDelivery(order: order),
-          ),
+        _appRouter.navigateTo(
+          AppRoute.activity,
+          ActivityRoutes.cashOnDelivery,
+          arguments: CashOnDeliveryArguments(order: order),
         );
         break;
     }

@@ -1,11 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:oktoast/oktoast.dart';
 
+import '../../../../app/app.locator.dart';
+import '../../../../app/app_router.dart';
 import '../../../../models/bank_code.dart';
 import '../../../../models/payment_option.dart';
 import '../../../../providers/bank_codes.dart';
 import '../../../../providers/post_requests/shop_body.dart';
-import '../../../../routers/app_router.dart';
 import '../../../../state/view_model.dart';
 
 class AddBankDetailsViewModel extends ViewModel {
@@ -38,6 +39,8 @@ class AddBankDetailsViewModel extends ViewModel {
 
   List<BankCode> get codes =>
       type == BankType.bank ? _bankCodes.bankCodes : _bankCodes.walletCodes;
+
+  final _appRouter = locator<AppRouter>();
 
   @override
   void init() {
@@ -106,7 +109,7 @@ class AddBankDetailsViewModel extends ViewModel {
     ];
     _shopBody.update(paymentOptions: _newPaymentOptions);
 
-    AppRouter.profileNavigatorKey.currentState?.pop();
+    _appRouter.popScreen(AppRoute.profile);
   }
 
   void onDeleteAccount() {
@@ -123,7 +126,7 @@ class AddBankDetailsViewModel extends ViewModel {
     final _newPaymentOptions = [..._initialAccounts];
     _shopBody.update(paymentOptions: _newPaymentOptions);
 
-    AppRouter.profileNavigatorKey.currentState?.pop();
+    _appRouter.popScreen(AppRoute.profile);
   }
 
   String? accountNameValidator(String? value) {

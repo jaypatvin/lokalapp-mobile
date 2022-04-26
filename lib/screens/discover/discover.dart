@@ -20,7 +20,6 @@ import '../cart/cart_container.dart';
 import '../profile/components/product_card.dart';
 
 class Discover extends StatelessWidget {
-  static const routeName = '/discover';
   const Discover({Key? key}) : super(key: key);
 
   @override

@@ -3,6 +3,9 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
+import '../../app/app.locator.dart';
+import '../../app/app.router.dart';
+import '../../app/app_router.dart';
 import '../../models/failure_exception.dart';
 import '../../models/post_requests/shared/application_log.dart';
 import '../../models/product.dart';
@@ -11,9 +14,6 @@ import '../../providers/auth.dart';
 import '../../providers/cart.dart';
 import '../../providers/products.dart';
 import '../../providers/shops.dart';
-import '../../routers/app_router.dart';
-import '../../routers/profile/props/user_shop.props.dart';
-import '../../screens/profile/shop/user_shop.dart';
 import '../../services/application_logger.dart';
 import '../../state/view_model.dart';
 
@@ -33,6 +33,8 @@ class ProductCardViewModel extends ViewModel {
   String get productRating => product.avgRating.toStringAsFixed(2);
 
   bool get isLiked => product.likes.contains(context.read<Auth>().user?.id);
+
+  final _appRouter = locator<AppRouter>();
 
   @override
   void init() {
@@ -83,10 +85,13 @@ class ProductCardViewModel extends ViewModel {
   }
 
   void onShopTap() {
-    context.read<AppRouter>().navigateTo(
-          AppRoute.profile,
-          UserShop.routeName,
-          arguments: UserShopProps(product.userId, product.shopId),
-        );
+    _appRouter.navigateTo(
+      AppRoute.profile,
+      ProfileScreenRoutes.userShop,
+      arguments: UserShopArguments(
+        userId: product.userId,
+        shopId: product.shopId,
+      ),
+    );
   }
 }

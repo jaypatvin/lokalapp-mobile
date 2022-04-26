@@ -1,9 +1,9 @@
-import '../../../../models/app_navigator.dart';
+import '../../../../app/app.locator.dart';
+import '../../../../app/app.router.dart';
+import '../../../../app/app_router.dart';
 import '../../../../models/bank_code.dart';
 import '../../../../models/payment_option.dart';
 import '../../../../providers/bank_codes.dart';
-import '../../../../routers/app_router.dart';
-import '../../../../screens/profile/add_shop/add_bank_details.dart';
 import '../../../../state/view_model.dart';
 
 class AddBankViewModel extends ViewModel {
@@ -20,6 +20,8 @@ class AddBankViewModel extends ViewModel {
 
   late final String header;
   late final String addButtonLabel;
+
+  final _appRouter = locator<AppRouter>();
 
   @override
   void init() {
@@ -40,29 +42,26 @@ class AddBankViewModel extends ViewModel {
   }
 
   void onAddBankDetails() {
-    AppRouter.profileNavigatorKey.currentState?.push(
-      AppNavigator.appPageRoute(
-        builder: (_) => AddBankDetails(
-          bankType: _bankType,
-          edit: edit,
-        ),
-      ),
+    _appRouter.navigateTo(
+      AppRoute.profile,
+      ProfileScreenRoutes.addBankDetails,
+      arguments: AddBankDetailsArguments(bankType: _bankType, edit: edit),
     );
   }
 
   void onEditBankDetails(PaymentOption account) {
-    AppRouter.profileNavigatorKey.currentState?.push(
-      AppNavigator.appPageRoute(
-        builder: (_) => AddBankDetails(
-          bankAccount: account,
-          bankType: _bankType,
-          edit: edit,
-        ),
+    _appRouter.navigateTo(
+      AppRoute.profile,
+      ProfileScreenRoutes.addBankDetails,
+      arguments: AddBankDetailsArguments(
+        bankAccount: account,
+        bankType: _bankType,
+        edit: edit,
       ),
     );
   }
 
   void onBackToPaymentOptions() {
-    AppRouter.profileNavigatorKey.currentState?.pop();
+    _appRouter.popScreen(AppRoute.profile);
   }
 }

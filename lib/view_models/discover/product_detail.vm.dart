@@ -4,6 +4,9 @@ import 'package:intl/intl.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
+import '../../app/app.locator.dart';
+import '../../app/app.router.dart';
+import '../../app/app_router.dart';
 import '../../models/app_navigator.dart';
 import '../../models/failure_exception.dart';
 import '../../models/post_requests/shared/application_log.dart';
@@ -13,9 +16,6 @@ import '../../providers/auth.dart';
 import '../../providers/cart.dart';
 import '../../providers/products.dart';
 import '../../providers/wishlist.dart';
-import '../../routers/app_router.dart';
-import '../../routers/profile/props/user_shop.props.dart';
-import '../../screens/activity/subscriptions/subscription_schedule.dart';
 import '../../screens/discover/product_reviews.dart';
 import '../../screens/discover/report_product.dart';
 import '../../screens/profile/shop/user_shop.dart';
@@ -56,6 +56,7 @@ class ProductDetailViewModel extends ViewModel {
   late final String? nearestDate;
 
   bool get isLiked => product.likes.contains(context.read<Auth>().user?.id);
+  final _appRouter = locator<AppRouter>();
 
   @override
   void init() {
@@ -170,14 +171,11 @@ class ProductDetailViewModel extends ViewModel {
   }
 
   void onSubscribe() {
-    context.read<AppRouter>().pushDynamicScreen(
-          AppRoute.discover,
-          AppNavigator.appPageRoute(
-            builder: (_) => SubscriptionSchedule.create(
-              productId: product.id,
-            ),
-          ),
-        );
+    _appRouter.navigateTo(
+      AppRoute.discover,
+      DiscoverRoutes.subscriptionScheduleCreate,
+      arguments: SubscriptionScheduleCreateArguments(productId: product.id),
+    );
   }
 
   Future<void> onWishlistPressed() async {
@@ -224,23 +222,26 @@ class ProductDetailViewModel extends ViewModel {
     context.read<BottomNavBarHider>().isHidden = false;
 
     if (context.read<Auth>().user?.id == product.userId) {
-      return context.read<AppRouter>().navigateTo(
-            AppRoute.profile,
-            UserShop.routeName,
-            arguments: UserShopProps(product.userId, product.shopId),
-          );
+      return _appRouter.navigateTo(
+        AppRoute.profile,
+        ProfileScreenRoutes.userShop,
+        arguments: UserShopArguments(
+          userId: product.userId,
+          shopId: product.shopId,
+        ),
+      );
     }
 
-    final appRoute = context.read<AppRouter>().currentTabRoute;
-    return context.read<AppRouter>().pushDynamicScreen(
-          appRoute,
-          AppNavigator.appPageRoute(
-            builder: (_) => UserShop(
-              userId: product.userId,
-              shopId: product.shopId,
-            ),
-          ),
-        );
+    final appRoute = _appRouter.currentTabRoute;
+    return _appRouter.pushDynamicScreen(
+      appRoute,
+      AppNavigator.appPageRoute(
+        builder: (_) => UserShop(
+          userId: product.userId,
+          shopId: product.shopId,
+        ),
+      ),
+    );
   }
 
   void onLike() {
@@ -277,7 +278,6 @@ class ProductDetailViewModel extends ViewModel {
   }
 
   void onReport() {
-    final _appRouter = context.read<AppRouter>();
     final _route = _appRouter.currentTabRoute;
     _appRouter.pushDynamicScreen(
       _route,
@@ -288,7 +288,6 @@ class ProductDetailViewModel extends ViewModel {
   }
 
   void viewReviews() {
-    final _appRouter = context.read<AppRouter>();
     final _route = _appRouter.currentTabRoute;
     _appRouter.pushDynamicScreen(
       _route,

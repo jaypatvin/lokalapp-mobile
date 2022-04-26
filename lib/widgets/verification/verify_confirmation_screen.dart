@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 
-import '../../models/app_navigator.dart';
-import '../../routers/app_router.dart';
-import '../../screens/bottom_navigation.dart';
-import '../../screens/profile/profile_screen.dart';
+import '../../app/app.locator.dart';
+import '../../app/app.router.dart';
+import '../../app/app_router.dart';
 import '../../utils/constants/themes.dart';
 import '../../widgets/custom_app_bar.dart';
 
@@ -15,11 +14,7 @@ class VerifyConfirmationScreen extends StatelessWidget {
 
   Future<bool> _onWillPop() async {
     if (skippable) {
-      AppRouter.rootNavigatorKey.currentState?.push(
-        AppNavigator.appPageRoute(
-          builder: (_) => const BottomNavigation(),
-        ),
-      );
+      locator<AppRouter>().navigateTo(AppRoute.root, Routes.bottomNavigation);
     }
     return true;
   }
@@ -39,10 +34,10 @@ class VerifyConfirmationScreen extends StatelessWidget {
                 if (skippable) {
                   Navigator.of(context).maybePop();
                 } else {
-                  AppRouter.profileNavigatorKey.currentState?.popUntil(
-                    ModalRoute.withName(
-                      ProfileScreen.routeName,
-                    ),
+                  locator<AppRouter>().popUntil(
+                    AppRoute.profile,
+                    predicate:
+                        ModalRoute.withName(ProfileScreenRoutes.profileScreen),
                   );
                 }
               },

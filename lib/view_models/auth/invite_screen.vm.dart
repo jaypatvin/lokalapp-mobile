@@ -2,13 +2,12 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../models/app_navigator.dart';
+import '../../app/app.locator.dart';
+import '../../app/app.router.dart';
+import '../../app/app_router.dart';
 import '../../providers/auth.dart';
 import '../../providers/community.dart';
 import '../../providers/post_requests/auth_body.dart';
-import '../../routers/app_router.dart';
-import '../../screens/auth/profile_registration.dart';
-import '../../screens/auth/register_screen.dart';
 import '../../services/api/api.dart';
 import '../../services/api/invite_api_service.dart';
 import '../../state/view_model.dart';
@@ -21,6 +20,8 @@ class InviteScreenViewModel extends ViewModel {
 
   bool _displayError = false;
   bool get displayError => _displayError;
+
+  final _appRouter = locator<AppRouter>();
 
   @override
   void init() {
@@ -55,16 +56,16 @@ class InviteScreenViewModel extends ViewModel {
 
       final fireUser = auth.firebaseUser;
       if (fireUser != null) {
-        AppRouter.rootNavigatorKey.currentState?.pushReplacement(
-          AppNavigator.appPageRoute(
-            builder: (_) => const ProfileRegistration(),
-          ),
+        _appRouter.navigateTo(
+          AppRoute.root,
+          Routes.profileRegistration,
+          replace: true,
         );
       } else {
-        AppRouter.rootNavigatorKey.currentState?.pushReplacement(
-          AppNavigator.appPageRoute(
-            builder: (_) => const RegisterScreen(),
-          ),
+        _appRouter.navigateTo(
+          AppRoute.root,
+          Routes.registerScreen,
+          replace: true,
         );
       }
     } catch (e, stack) {

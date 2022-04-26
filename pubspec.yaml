@@ -55,6 +55,9 @@ dependencies:
   shared_preferences: ^2.0.8
   shimmer_animation: ^2.1.0+1
   sign_in_with_apple: ^4.0.0
+  stacked: ^2.3.3
+  stacked_hooks: ^0.2.2
+  stacked_services: ^0.8.17
   swipe_to: ^1.0.2
   uuid: ^3.0.5
   validators: ^3.0.0
@@ -68,6 +71,7 @@ dev_dependencies:
     sdk: flutter
   json_serializable: ^6.1.5
   lint: ^1.8.1
+  stacked_generator: ^0.5.6
   test: ^1.17.12
 
 flutter:

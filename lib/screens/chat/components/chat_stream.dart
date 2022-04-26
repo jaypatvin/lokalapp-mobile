@@ -5,13 +5,14 @@ import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 
+import '../../../app/app.locator.dart';
+import '../../../app/app.router.dart';
+import '../../../app/app_router.dart';
 import '../../../models/chat_model.dart';
 import '../../../providers/auth.dart';
 import '../../../providers/products.dart';
 import '../../../providers/shops.dart';
 import '../../../providers/users.dart';
-import '../../../routers/app_router.dart';
-import '../../../routers/chat/props/chat_details.props.dart';
 import '../../../state/mvvm_builder.widget.dart';
 import '../../../state/views/hook.view.dart';
 import '../../../utils/constants/assets.dart';
@@ -19,7 +20,6 @@ import '../../../utils/constants/themes.dart';
 import '../../../view_models/chat/chat_stream.vm.dart';
 import '../../../widgets/app_button.dart';
 import '../../../widgets/inputs/search_text_field.dart';
-import '../chat_details.dart';
 import 'chat_avatar.dart';
 
 class ChatStream extends StatelessWidget {
@@ -308,16 +308,16 @@ class _ChatList extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 16),
       child: GestureDetector(
         onTap: () {
-          context.read<AppRouter>().navigateTo(
-                AppRoute.chat,
-                ChatDetails.routeName,
-                arguments: ChatDetailsProps(
-                  members: chat.members,
-                  chat: chat,
-                  shopId: chat.shopId,
-                  productId: chat.productId,
-                ),
-              );
+          locator<AppRouter>().navigateTo(
+            AppRoute.chat,
+            ChatRoutes.chatDetails,
+            arguments: ChatDetailsArguments(
+              members: chat.members,
+              chat: chat,
+              shopId: chat.shopId,
+              productId: chat.productId,
+            ),
+          );
         },
         child: ListTile(
           leading: _buildCircleAvatar(members),

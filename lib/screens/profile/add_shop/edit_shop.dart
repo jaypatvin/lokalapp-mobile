@@ -21,7 +21,6 @@ import '../../../widgets/overlays/screen_loader.dart';
 import '../../../widgets/photo_box.dart';
 
 class EditShop extends StatelessWidget {
-  static const routeName = '/profile/shop/edit';
   const EditShop({Key? key}) : super(key: key);
 
   @override

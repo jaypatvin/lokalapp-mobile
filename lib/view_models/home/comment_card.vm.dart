@@ -3,11 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
+import '../../app/app.locator.dart';
+import '../../app/app_router.dart';
 import '../../models/activity_feed_comment.dart';
 import '../../models/app_navigator.dart';
 import '../../providers/activities.dart';
 import '../../providers/auth.dart';
-import '../../routers/app_router.dart';
 import '../../screens/profile/profile_screen.dart';
 import '../../services/database/collections/activities.collection.dart';
 import '../../services/database/database.dart';
@@ -24,6 +25,7 @@ class CommentCardViewModel extends ViewModel {
   bool isLiked = false;
 
   late final ActivitiesCollection _db;
+  final _appRouter = locator<AppRouter>();
 
   @override
   void init() {
@@ -56,20 +58,20 @@ class CommentCardViewModel extends ViewModel {
     // if the user is tapping on their own post, just change the tab index
     // of the navigation bar
     if (context.read<Auth>().user!.id == comment.userId) {
-      context.read<AppRouter>().jumpToTab(AppRoute.profile);
+      _appRouter.jumpToTab(AppRoute.profile);
       return;
     }
 
     // otherwise, we push a new screen inside the current navigation stack
-    final appRoute = context.read<AppRouter>().currentTabRoute;
-    context.read<AppRouter>().pushDynamicScreen(
-          appRoute,
-          AppNavigator.appPageRoute(
-            builder: (_) => ProfileScreen(
-              userId: comment.userId,
-            ),
-          ),
-        );
+    final appRoute = _appRouter.currentTabRoute;
+    _appRouter.pushDynamicScreen(
+      appRoute,
+      AppNavigator.appPageRoute(
+        builder: (_) => ProfileScreen(
+          userId: comment.userId,
+        ),
+      ),
+    );
   }
 
   void onLike() {

@@ -2,12 +2,12 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
-import '../../../models/app_navigator.dart';
+import '../../../app/app.locator.dart';
+import '../../../app/app.router.dart';
+import '../../../app/app_router.dart';
 import '../../../models/failure_exception.dart';
 import '../../../models/order.dart';
 import '../../../models/post_requests/orders/order_pay.request.dart';
-import '../../../routers/app_router.dart';
-import '../../../screens/activity/buyer/processing_payment.dart';
 import '../../../services/api/api.dart';
 import '../../../services/api/order_api_service.dart';
 import '../../../state/view_model.dart';
@@ -15,6 +15,8 @@ import '../../../state/view_model.dart';
 class CashOnDeliveryViewModel extends ViewModel {
   CashOnDeliveryViewModel(this.order);
   final Order order;
+
+  final _appRouter = locator<AppRouter>();
 
   late final OrderAPIService _apiService;
 
@@ -31,12 +33,12 @@ class CashOnDeliveryViewModel extends ViewModel {
       );
 
       if (_success) {
-        AppRouter.activityNavigatorKey.currentState?.push(
-          AppNavigator.appPageRoute(
-            builder: (_) => ProcessingPayment(
-              order: order,
-              paymentMode: PaymentMethod.cod,
-            ),
+        _appRouter.navigateTo(
+          AppRoute.activity,
+          ActivityRoutes.processingPayment,
+          arguments: ProcessingPaymentArguments(
+            order: order,
+            paymentMode: PaymentMethod.cod,
           ),
         );
       } else {

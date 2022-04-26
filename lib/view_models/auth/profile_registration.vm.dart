@@ -6,21 +6,21 @@ import 'package:flutter/cupertino.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
-import '../../models/app_navigator.dart';
+import '../../app/app.locator.dart';
+import '../../app/app.router.dart';
+import '../../app/app_router.dart';
 import '../../models/failure_exception.dart';
 import '../../models/post_requests/invite.request.dart';
 import '../../providers/auth.dart';
 import '../../providers/bank_codes.dart';
 import '../../providers/categories.dart';
 import '../../providers/post_requests/auth_body.dart';
-import '../../routers/app_router.dart';
 import '../../services/api/api.dart';
 import '../../services/api/invite_api_service.dart';
 import '../../services/local_image_service.dart';
 import '../../state/view_model.dart';
 import '../../utils/constants/assets.dart';
 import '../../utils/media_utility.dart';
-import '../../widgets/verification/verify_screen.dart';
 
 class ProfileRegistrationViewModel extends ViewModel {
   File? _profilePhoto;
@@ -39,6 +39,8 @@ class ProfileRegistrationViewModel extends ViewModel {
   String get streetName => _streetName;
 
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
+  final _appRouter = locator<AppRouter>();
 
   void onFirstNameChanged(String firstName) {
     _firstName = firstName;
@@ -114,11 +116,9 @@ class ProfileRegistrationViewModel extends ViewModel {
       context.read<Categories>().fetch();
       context.read<BankCodes>().fetch();
 
-      AppRouter.rootNavigatorKey.currentState?.pushAndRemoveUntil(
-        AppNavigator.appPageRoute(
-          builder: (context) => const VerifyScreen(),
-        ),
-        (route) => false,
+      _appRouter.pushNamedAndRemoveUntil(
+        AppRoute.root,
+        Routes.verifyScreen,
       );
     }
   }

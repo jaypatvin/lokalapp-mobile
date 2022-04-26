@@ -2,6 +2,9 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../app/app.locator.dart';
+import '../../../app/app.router.dart';
+import '../../../app/app_router.dart';
 import '../../../models/app_navigator.dart';
 import '../../../models/failure_exception.dart';
 import '../../../models/lokal_images.dart';
@@ -13,11 +16,6 @@ import '../../../providers/auth.dart';
 import '../../../providers/products.dart';
 import '../../../providers/shops.dart';
 import '../../../providers/users.dart';
-import '../../../routers/app_router.dart';
-import '../../../routers/discover/product_detail.props.dart';
-import '../../../screens/discover/product_detail.dart';
-import '../../../screens/profile/add_product/add_product.dart';
-import '../../../screens/profile/add_shop/edit_shop.dart';
 import '../../../screens/profile/profile_screen.dart';
 import '../../../screens/profile/settings/settings.dart';
 import '../../../screens/profile/shop/report_shop.dart';
@@ -61,6 +59,8 @@ class UserShopViewModel extends ViewModel {
   String? _searchTerm;
   String? get searchTerm => _searchTerm;
 
+  final _appRouter = locator<AppRouter>();
+
   @override
   void init() {
     _shopSetup();
@@ -103,11 +103,11 @@ class UserShopViewModel extends ViewModel {
   }
 
   void onSettingsTap() {
-    AppRouter.profileNavigatorKey.currentState?.pushNamed(Settings.routeName);
+    _appRouter.navigateTo(AppRoute.profile, ProfileScreenRoutes.settings);
   }
 
   void onEditTap() {
-    AppRouter.profileNavigatorKey.currentState?.pushNamed(EditShop.routeName);
+    _appRouter.navigateTo(AppRoute.profile, ProfileScreenRoutes.editShop);
   }
 
   void onOptionsTap({Widget? options}) {
@@ -131,11 +131,10 @@ class UserShopViewModel extends ViewModel {
         builder: (_) => message,
       );
       if (response == null || !response) {
-        AppRouter.rootNavigatorKey.currentState?.pop();
+        _appRouter.popScreen(AppRoute.root);
         return;
       } else {
-        AppRouter.rootNavigatorKey.currentState?.pop();
-        final _appRouter = context.read<AppRouter>();
+        _appRouter.popScreen(AppRoute.root);
         final _route = _appRouter.currentTabRoute;
         _appRouter.pushDynamicScreen(
           _route,
@@ -165,29 +164,31 @@ class UserShopViewModel extends ViewModel {
   }
 
   void addProduct() {
-    context
-        .read<AppRouter>()
-        .navigateTo(AppRoute.profile, AddProduct.routeName);
+    _appRouter.navigateTo(
+      AppRoute.profile,
+      ProfileScreenRoutes.addProduct,
+    );
   }
 
   void goToProfile() {
     if (isCurrentUser) {
-      context.read<AppRouter>()
+      _appRouter
         ..jumpToTab(AppRoute.profile)
-        ..keyOf(AppRoute.profile).currentState?.popUntil(
-              (route) => route.isFirst,
-            );
+        ..popUntil(
+          AppRoute.profile,
+          predicate: (route) => route.isFirst,
+        );
     } else {
-      final appRoute = context.read<AppRouter>().currentTabRoute;
+      final appRoute = _appRouter.currentTabRoute;
       if (user != null) {
-        context.read<AppRouter>().pushDynamicScreen(
-              appRoute,
-              AppNavigator.appPageRoute(
-                builder: (_) => ProfileScreen(
-                  userId: user!.id,
-                ),
-              ),
-            );
+        _appRouter.pushDynamicScreen(
+          appRoute,
+          AppNavigator.appPageRoute(
+            builder: (_) => ProfileScreen(
+              userId: user!.id,
+            ),
+          ),
+        );
       }
     }
   }
@@ -202,18 +203,18 @@ class UserShopViewModel extends ViewModel {
     final product = _products.firstWhereOrNull((p) => p.id == id);
     if (product == null) throw 'Product does not exist!';
     if (isCurrentUser) {
-      context.read<AppRouter>().navigateTo(
+      _appRouter.navigateTo(
         AppRoute.profile,
-        AddProduct.routeName,
-        arguments: {'productId': product.id},
+        ProfileScreenRoutes.addProduct,
+        arguments: AddProductArguments(productId: product.id),
       );
       return;
     }
-    context.read<AppRouter>().navigateTo(
-          AppRoute.discover,
-          ProductDetail.routeName,
-          arguments: ProductDetailProps(product),
-        );
+    _appRouter.navigateTo(
+      AppRoute.discover,
+      DiscoverRoutes.productDetail,
+      arguments: ProductDetailArguments(product: product),
+    );
   }
 
   void onSearchTermChanged(String? value) {

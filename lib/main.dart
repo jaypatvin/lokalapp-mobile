@@ -7,10 +7,12 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:oktoast/oktoast.dart';
-import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
+import 'package:stacked_services/stacked_services.dart';
 
+import 'app/app.router.dart';
+import 'app/app_router.dart';
 import 'providers/activities.dart';
 import 'providers/auth.dart';
 import 'providers/bank_codes.dart';
@@ -27,7 +29,6 @@ import 'providers/shops.dart';
 import 'providers/users.dart';
 import 'providers/wishlist.dart';
 import 'root/root.dart';
-import 'routers/app_router.dart';
 import 'services/api/api.dart';
 import 'services/application_logger.dart';
 import 'services/bottom_nav_bar_hider.dart';
@@ -81,8 +82,6 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   late final UserSharedPreferences _prefs;
-  late final AppRouter _router;
-  late final PersistentTabController _tabController;
   late final API _api;
   late final Database _db;
   late final DeviceInfoProvider _infoProvider;
@@ -90,13 +89,10 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-
     _prefs = UserSharedPreferences();
     _prefs.init();
-    _tabController = PersistentTabController();
     _api = API();
     _db = Database();
-    _router = AppRouter(_tabController);
     _infoProvider = DeviceInfoProvider();
   }
 
@@ -111,11 +107,7 @@ class _MyAppState extends State<MyApp> {
       //shared preference
       Provider<UserSharedPreferences>.value(value: _prefs),
 
-      // router:
-      Provider<AppRouter>.value(value: _router),
-
       // for bottom nav bar
-      ListenableProvider.value(value: _tabController),
       ChangeNotifierProvider(create: (_) => BottomNavBarHider()),
 
       // auth:
@@ -313,10 +305,9 @@ class _MyAppState extends State<MyApp> {
                   scaffoldBackgroundColor: Colors.white,
                 ),
                 home: const Root(),
-                navigatorKey: _router.keyOf(AppRoute.root),
-                initialRoute: '/',
-                onGenerateRoute:
-                    _router.navigatorOf(AppRoute.root).onGenerateRoute,
+                navigatorKey: StackedService.navigatorKey,
+                initialRoute: Routes.root,
+                onGenerateRoute: StackedRouter().onGenerateRoute,
                 builder: (context, widget) {
                   Widget error = const Text('Error in displaying the screen');
                   if (widget is Scaffold || widget is Navigator) {

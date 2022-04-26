@@ -16,7 +16,6 @@ import '../../../widgets/overlays/constrained_scrollview.dart';
 import '../../../widgets/photo_box.dart';
 
 class AddShop extends StatelessWidget {
-  static const routeName = '/profile/addShop';
   const AddShop({Key? key}) : super(key: key);
 
   @override

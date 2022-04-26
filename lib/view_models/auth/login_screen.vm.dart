@@ -6,14 +6,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
+import '../../app/app.locator.dart';
+import '../../app/app.router.dart';
+import '../../app/app_router.dart';
 import '../../models/failure_exception.dart';
 import '../../models/post_requests/shared/application_log.dart';
 import '../../providers/auth.dart';
 import '../../providers/bank_codes.dart';
 import '../../providers/categories.dart';
-import '../../routers/app_router.dart';
-import '../../screens/auth/invite_screen.dart';
-import '../../screens/bottom_navigation.dart';
 import '../../services/application_logger.dart';
 import '../../state/view_model.dart';
 
@@ -25,18 +25,19 @@ class LoginScreenViewModel extends ViewModel {
   String? _errorMessage;
   String? get errorMessage => _errorMessage;
 
+  final _appRouter = locator<AppRouter>();
+
   Future<void> _loginHandler() async {
     if (context.read<Auth>().user != null) {
       context.read<Categories>().fetch();
       context.read<BankCodes>().fetch();
 
-      AppRouter.rootNavigatorKey.currentState?.pushNamedAndRemoveUntil(
-        BottomNavigation.routeName,
-        (route) => false,
+      _appRouter.pushNamedAndRemoveUntil(
+        AppRoute.root,
+        Routes.bottomNavigation,
       );
     } else {
-      AppRouter.rootNavigatorKey.currentState
-          ?.pushReplacementNamed(InvitePage.routeName);
+      _appRouter.navigateTo(AppRoute.root, Routes.invitePage, replace: true);
     }
   }
 

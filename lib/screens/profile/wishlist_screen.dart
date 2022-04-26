@@ -14,7 +14,6 @@ import '../../widgets/custom_app_bar.dart';
 import '../../widgets/products_list.dart';
 
 class WishlistScreen extends StatelessWidget {
-  static const routeName = '/profile/wishlist';
   const WishlistScreen({Key? key}) : super(key: key);
 
   @override

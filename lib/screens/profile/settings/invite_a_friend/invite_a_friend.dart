@@ -14,7 +14,6 @@ import '../../../../widgets/inputs/input_field.dart';
 import '../../../../widgets/overlays/screen_loader.dart';
 
 class InviteAFriend extends StatelessWidget {
-  static const routeName = '/profile/inviteAFriend';
   const InviteAFriend({Key? key}) : super(key: key);
 
   @override

@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:wechat_camera_picker/wechat_camera_picker.dart';
 
-import '../../routers/app_router.dart';
+import '../../app/app.locator.dart';
+import '../../app/app_router.dart';
 import '../../utils/constants/themes.dart';
 import 'asset_gallery_widget.dart';
 import 'custom_pick_asset_widget.dart';
@@ -47,7 +48,7 @@ class ImageGalleryPicker extends StatelessWidget {
           pickerConfig: CameraPickerConfig(
             textDelegate: const EnglishCameraPickerTextDelegate(),
             onError: (e, stack) {
-              AppRouter.rootNavigatorKey.currentState?.pop();
+              locator<AppRouter>().popScreen(AppRoute.root);
               if (e is CameraException) {
                 if (e.code == 'cameraPermission') {
                   showToast('Denied camera permissions.');

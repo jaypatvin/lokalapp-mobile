@@ -3,18 +3,17 @@ import 'package:flutter_svg/svg.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
+import '../app/app.locator.dart';
+import '../app/app.router.dart';
+import '../app/app_router.dart';
 import '../models/failure_exception.dart';
 import '../providers/auth.dart';
 import '../providers/bank_codes.dart';
 import '../providers/categories.dart';
-import '../routers/app_router.dart';
-import '../screens/bottom_navigation.dart';
-import '../screens/welcome_screen.dart';
 import '../utils/constants/assets.dart';
 import '../utils/constants/themes.dart';
 
 class Root extends StatefulWidget {
-  static const routeName = '/';
   const Root({this.account});
 
   final Map<String, String>? account;
@@ -24,6 +23,8 @@ class Root extends StatefulWidget {
 }
 
 class _RootState extends State<Root> {
+  final _appRouter = locator<AppRouter>();
+
   @override
   void initState() {
     super.initState();
@@ -42,26 +43,26 @@ class _RootState extends State<Root> {
       context.read<BankCodes>().fetch();
 
       if (!mounted) return;
-      AppRouter.rootNavigatorKey.currentState?.pushNamedAndRemoveUntil(
-        BottomNavigation.routeName,
-        (route) => false,
+      _appRouter.pushNamedAndRemoveUntil(
+        AppRoute.root,
+        Routes.bottomNavigation,
       );
     } catch (e) {
       if (e is FailureException && e.message == 'user-not-registered') {
         await auth.logOut();
         if (!mounted) return;
-        AppRouter.rootNavigatorKey.currentState?.pushNamedAndRemoveUntil(
-          WelcomeScreen.routeName,
-          (route) => false,
+        _appRouter.pushNamedAndRemoveUntil(
+          AppRoute.root,
+          Routes.welcomeScreen,
         );
         return;
       }
 
       showToast(e.toString());
       if (!mounted) return;
-      AppRouter.rootNavigatorKey.currentState?.pushNamedAndRemoveUntil(
-        BottomNavigation.routeName,
-        (route) => false,
+      _appRouter.pushNamedAndRemoveUntil(
+        AppRoute.root,
+        Routes.bottomNavigation,
       );
     }
   }

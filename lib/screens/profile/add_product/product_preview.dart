@@ -9,7 +9,9 @@ import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 import 'package:provider/provider.dart';
 
-import '../../../models/app_navigator.dart';
+import '../../../app/app.locator.dart';
+import '../../../app/app.router.dart';
+import '../../../app/app_router.dart';
 import '../../../models/failure_exception.dart';
 import '../../../models/lokal_images.dart';
 import '../../../models/post_requests/product/product_create.request.dart';
@@ -20,7 +22,6 @@ import '../../../providers/post_requests/operating_hours_body.dart';
 import '../../../providers/post_requests/product_body.dart';
 import '../../../providers/products.dart';
 import '../../../providers/shops.dart';
-import '../../../routers/app_router.dart';
 import '../../../services/local_image_service.dart';
 import '../../../utils/constants/assets.dart';
 import '../../../utils/constants/themes.dart';
@@ -30,8 +31,6 @@ import '../../../widgets/custom_app_bar.dart';
 import '../../../widgets/overlays/constrained_scrollview.dart';
 import '../../../widgets/overlays/screen_loader.dart';
 import '../../../widgets/photo_box.dart';
-import '../shop/user_shop.dart';
-import 'confirmation.dart';
 import 'product_schedule.dart';
 
 class ProductPreview extends StatefulWidget {
@@ -351,8 +350,10 @@ class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
         final success = await _updateProduct();
         if (success) {
           if (!mounted) return;
-          AppRouter.profileNavigatorKey.currentState
-              ?.popUntil(ModalRoute.withName(UserShop.routeName));
+          locator<AppRouter>().popUntil(
+            AppRoute.profile,
+            predicate: ModalRoute.withName(ProfileScreenRoutes.userShop),
+          );
         } else {
           showToast('Failed to update product');
         }
@@ -360,11 +361,10 @@ class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
         await _createProduct();
         context.read<ProductBody>().clear();
         if (!mounted) return;
-        AppRouter.profileNavigatorKey.currentState?.pushAndRemoveUntil(
-          AppNavigator.appPageRoute(
-            builder: (_) => const AddProductConfirmation(),
-          ),
-          ModalRoute.withName(UserShop.routeName),
+        locator<AppRouter>().pushNamedAndRemoveUntil(
+          AppRoute.profile,
+          ProfileScreenRoutes.addProductConfirmation,
+          predicate: ModalRoute.withName(ProfileScreenRoutes.userShop),
         );
       }
     } catch (e, stack) {

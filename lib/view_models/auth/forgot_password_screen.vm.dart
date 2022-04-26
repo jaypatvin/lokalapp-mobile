@@ -3,14 +3,16 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
-import '../../models/app_navigator.dart';
+import '../../app/app.locator.dart';
+import '../../app/app.router.dart';
+import '../../app/app_router.dart';
 import '../../providers/auth.dart';
-import '../../routers/app_router.dart';
 import '../../state/view_model.dart';
-import '../../widgets/reset_password_received.dart';
 
 class ForgotPasswordScreenViewModel extends ViewModel {
   String _emailAddress = '';
+
+  final _appRouter = locator<AppRouter>();
 
   void onEmailAddressChanged(String value) {
     _emailAddress = value;
@@ -20,10 +22,10 @@ class ForgotPasswordScreenViewModel extends ViewModel {
   Future<void> onSubmit() async {
     try {
       await context.read<Auth>().resetPassword(email: _emailAddress);
-      AppRouter.rootNavigatorKey.currentState?.pushReplacement(
-        AppNavigator.appPageRoute(
-          builder: (_) => const ResetPasswordReceived(),
-        ),
+      _appRouter.navigateTo(
+        AppRoute.root,
+        Routes.resetPasswordReceived,
+        replace: true,
       );
     } catch (e, stack) {
       if (e is FirebaseAuthException) {

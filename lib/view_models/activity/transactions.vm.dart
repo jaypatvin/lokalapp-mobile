@@ -4,19 +4,13 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
-import '../../models/app_navigator.dart';
+import '../../app/app.locator.dart';
+import '../../app/app.router.dart';
+import '../../app/app_router.dart';
 import '../../models/order.dart';
 import '../../models/shop.dart';
 import '../../providers/auth.dart';
 import '../../providers/shops.dart';
-import '../../routers/activity/subscriptions.props.dart';
-import '../../routers/app_router.dart';
-import '../../screens/activity/buyer/order_received.dart';
-import '../../screens/activity/buyer/payment_option.dart';
-import '../../screens/activity/buyer/review_order.dart';
-import '../../screens/activity/buyer/view_reviews.dart';
-import '../../screens/activity/order_details.dart';
-import '../../screens/activity/subscriptions/subscriptions.dart';
 import '../../services/api/api.dart';
 import '../../services/api/order_api_service.dart';
 import '../../services/database/collections/orders.collection.dart';
@@ -52,6 +46,8 @@ class TransactionsViewModel extends ViewModel {
   late final String noOrderMessage;
 
   late final OrdersCollection _db;
+
+  final _appRouter = locator<AppRouter>();
 
   Shop? shop;
 
@@ -148,14 +144,15 @@ class TransactionsViewModel extends ViewModel {
   }
 
   void onGoToSubscriptionHandler() {
-    AppRouter.activityNavigatorKey.currentState?.pushNamed(
-      Subscriptions.routeName,
-      arguments: SubscriptionsProps(isBuyer: isBuyer),
+    _appRouter.navigateTo(
+      AppRoute.activity,
+      ActivityRoutes.subscriptions,
+      arguments: SubscriptionsArguments(isBuyer: isBuyer),
     );
   }
 
   void createShopHandler() {
-    context.read<AppRouter>().jumpToTab(AppRoute.profile);
+    locator<AppRouter>().jumpToTab(AppRoute.profile);
   }
 
   Future<void> onSecondButtonPress(Order order) async {
@@ -163,38 +160,34 @@ class TransactionsViewModel extends ViewModel {
       if (isBuyer) {
         switch (order.statusCode) {
           case 200:
-            AppRouter.activityNavigatorKey.currentState?.push(
-              AppNavigator.appPageRoute(
-                builder: (_) => PaymentOptionScreen(order: order),
-              ),
+            _appRouter.navigateTo(
+              AppRoute.activity,
+              ActivityRoutes.paymentOptionScreen,
+              arguments: PaymentOptionScreenArguments(order: order),
             );
             break;
           case 500:
             final success = await _apiService.receive(orderId: order.id);
             if (success) {
-              AppRouter.activityNavigatorKey.currentState?.push(
-                AppNavigator.appPageRoute(
-                  builder: (_) => OrderReceived(order: order),
-                ),
+              _appRouter.navigateTo(
+                AppRoute.activity,
+                ActivityRoutes.orderReceived,
+                arguments: OrderReceivedArguments(order: order),
               );
             }
             break;
           case 600:
             if (order.products.any((product) => product.reviewId == null)) {
-              AppRouter.activityNavigatorKey.currentState?.push(
-                AppNavigator.appPageRoute(
-                  builder: (_) => ReviewOrder(
-                    order: order,
-                  ),
-                ),
+              _appRouter.navigateTo(
+                AppRoute.activity,
+                ActivityRoutes.reviewOrder,
+                arguments: ReviewOrderArguments(order: order),
               );
             } else {
-              AppRouter.activityNavigatorKey.currentState?.push(
-                AppNavigator.appPageRoute(
-                  builder: (_) => ViewReviews(
-                    order: order,
-                  ),
-                ),
+              _appRouter.navigateTo(
+                AppRoute.activity,
+                ActivityRoutes.viewReviews,
+                arguments: ViewReviewsArguments(order: order),
               );
             }
             break;
@@ -206,36 +199,19 @@ class TransactionsViewModel extends ViewModel {
           case 100:
             final success = await _apiService.confirm(orderId: order.id);
             if (success) showToast('Order Confirmed');
-            // if (success) {
-            //   AppRouter.activityNavigatorKey.currentState?.push(
-            //     AppNavigator.appPageRoute(
-            //       builder: (_) => OrderConfirmed(
-            //         order: order,
-            //         isBuyer: isBuyer,
-            //       ),
-            //     ),
-            //   );
-            // }
             break;
           case 300:
             if (order.paymentMethod == PaymentMethod.cod) {
               final success =
                   await _apiService.confirmPayment(orderId: order.id);
               if (success) showToast('Payment Confirmed');
-              // if (success) {
-              //   AppRouter.activityNavigatorKey.currentState?.push(
-              //     AppNavigator.appPageRoute(
-              //       builder: (_) => PaymentConfirmed(order: order),
-              //     ),
-              //   );
-              // }
             } else {
-              AppRouter.activityNavigatorKey.currentState?.push(
-                AppNavigator.appPageRoute(
-                  builder: (_) => OrderDetails(
-                    order: order,
-                    isBuyer: isBuyer,
-                  ),
+              _appRouter.navigateTo(
+                AppRoute.activity,
+                ActivityRoutes.orderDetails,
+                arguments: OrderDetailsArguments(
+                  order: order,
+                  isBuyer: isBuyer,
                 ),
               );
             }
@@ -243,13 +219,6 @@ class TransactionsViewModel extends ViewModel {
           case 400:
             final success = await _apiService.shipOut(orderId: order.id);
             if (success) showToast('Order has been shipped out.');
-            // if (success) {
-            //   AppRouter.activityNavigatorKey.currentState?.push(
-            //     AppNavigator.appPageRoute(
-            //       builder: (_) => ShippedOut(order: order),
-            //     ),
-            //   );
-            // }
             break;
           default:
             // do nothing

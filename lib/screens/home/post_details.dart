@@ -29,7 +29,6 @@ import 'post_details/post_details.header.dart';
 import 'post_details/post_details.images.dart';
 
 class PostDetails extends StatelessWidget {
-  static const routeName = '/home/post_details';
   const PostDetails({
     Key? key,
     required this.activityId,

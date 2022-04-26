@@ -3,19 +3,16 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 
+import '../../../app/app.locator.dart';
+import '../../../app/app.router.dart';
+import '../../../app/app_router.dart';
 import '../../../providers/auth.dart';
-import '../../../routers/app_router.dart';
-import '../../../routers/profile/props/user_shop.props.dart';
 import '../../../utils/constants/assets.dart';
 import '../../../widgets/app_button.dart';
 import '../../../widgets/custom_app_bar.dart';
 import '../../../widgets/overlays/constrained_scrollview.dart';
-import '../../profile/profile_screen.dart';
-import '../add_product/add_product.dart';
-import '../shop/user_shop.dart';
 
 class AddShopConfirmation extends StatelessWidget {
-  static const routeName = '/profile/addShop/confirmation';
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -66,13 +63,22 @@ class AddShopConfirmation extends StatelessWidget {
                   text: '+ Add a New Product',
                   onPressed: () {
                     final user = context.read<Auth>().user!;
-                    AppRouter.profileNavigatorKey.currentState
-                      ?..popUntil(ModalRoute.withName(ProfileScreen.routeName))
-                      ..pushNamed(
-                        UserShop.routeName,
-                        arguments: UserShopProps(user.id),
+                    locator<AppRouter>()
+                      ..popUntil(
+                        AppRoute.profile,
+                        predicate: ModalRoute.withName(
+                          ProfileScreenRoutes.profileScreen,
+                        ),
                       )
-                      ..pushNamed(AddProduct.routeName);
+                      ..navigateTo(
+                        AppRoute.profile,
+                        ProfileScreenRoutes.userShop,
+                        arguments: UserShopArguments(userId: user.id),
+                      )
+                      ..navigateTo(
+                        AppRoute.profile,
+                        ProfileScreenRoutes.addProduct,
+                      );
                   },
                 ),
               ),
@@ -85,11 +91,17 @@ class AddShopConfirmation extends StatelessWidget {
                   text: 'Back to My Shop',
                   onPressed: () {
                     final user = context.read<Auth>().user!;
-                    AppRouter.profileNavigatorKey.currentState
-                      ?..popUntil(ModalRoute.withName(ProfileScreen.routeName))
-                      ..pushNamed(
-                        UserShop.routeName,
-                        arguments: UserShopProps(user.id),
+                    locator<AppRouter>()
+                      ..popUntil(
+                        AppRoute.profile,
+                        predicate: ModalRoute.withName(
+                          ProfileScreenRoutes.profileScreen,
+                        ),
+                      )
+                      ..navigateTo(
+                        AppRoute.profile,
+                        ProfileScreenRoutes.userShop,
+                        arguments: UserShopArguments(userId: user.id),
                       );
                   },
                 ),

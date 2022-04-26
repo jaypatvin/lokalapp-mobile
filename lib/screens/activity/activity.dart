@@ -9,7 +9,6 @@ import '../../utils/constants/themes.dart';
 import 'transactions.dart';
 
 class Activity extends HookWidget {
-  static const routeName = '/activity';
   const Activity({Key? key}) : super(key: key);
 
   @override

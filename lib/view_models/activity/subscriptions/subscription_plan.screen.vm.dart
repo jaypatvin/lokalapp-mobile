@@ -3,18 +3,14 @@ import 'package:intl/intl.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
-import '../../../models/app_navigator.dart';
+import '../../../app/app.locator.dart';
+import '../../../app/app.router.dart';
+import '../../../app/app_router.dart';
 import '../../../models/failure_exception.dart';
 import '../../../models/operating_hours.dart';
 import '../../../models/product_subscription_plan.dart';
 import '../../../providers/products.dart';
 import '../../../providers/shops.dart';
-import '../../../routers/app_router.dart';
-import '../../../routers/chat/props/chat_details.props.dart';
-import '../../../routers/discover/product_detail.props.dart';
-import '../../../screens/activity/subscriptions/subscription_schedule.dart';
-import '../../../screens/chat/chat_details.dart';
-import '../../../screens/discover/product_detail.dart';
 import '../../../services/api/api.dart';
 import '../../../services/api/subscription_plan_api_service.dart';
 import '../../../state/view_model.dart';
@@ -29,6 +25,7 @@ class SubscriptionPlanScreenViewModel extends ViewModel {
   final ProductSubscriptionPlan subscriptionPlan;
   final bool isBuyer;
   late final SubscriptionPlanAPIService _apiService;
+  final _appRouter = locator<AppRouter>();
 
   @override
   void init() {
@@ -97,37 +94,38 @@ class SubscriptionPlanScreenViewModel extends ViewModel {
   }
 
   void onSeeSchedule() {
-    final SubscriptionSchedule _screen;
     if (isBuyer) {
-      _screen = SubscriptionSchedule.view(
-        subscriptionPlan: subscriptionPlan,
+      _appRouter.navigateTo(
+        AppRoute.activity,
+        ActivityRoutes.subscriptionScheduleBuyer,
+        arguments: SubscriptionScheduleBuyerArguments(
+          subscriptionPlan: subscriptionPlan,
+        ),
       );
     } else {
-      _screen = SubscriptionSchedule.seller(
-        subscriptionPlan: subscriptionPlan,
+      _appRouter.navigateTo(
+        AppRoute.activity,
+        ActivityRoutes.subscriptionScheduleSeller,
+        arguments: SubscriptionScheduleSellerArguments(
+          subscriptionPlan: subscriptionPlan,
+        ),
       );
     }
-
-    AppRouter.activityNavigatorKey.currentState?.push(
-      AppNavigator.appPageRoute(
-        builder: (_) => _screen,
-      ),
-    );
   }
 
   void onMessageSend() {
-    context.read<AppRouter>().navigateTo(
-          AppRoute.chat,
-          ChatDetails.routeName,
-          arguments: ChatDetailsProps(
-            members: [
-              subscriptionPlan.buyerId,
-              subscriptionPlan.shopId,
-            ],
-            shopId: subscriptionPlan.shopId,
-            productId: subscriptionPlan.productId,
-          ),
-        );
+    _appRouter.navigateTo(
+      AppRoute.chat,
+      ChatRoutes.chatDetails,
+      arguments: ChatDetailsArguments(
+        members: [
+          subscriptionPlan.buyerId,
+          subscriptionPlan.shopId,
+        ],
+        shopId: subscriptionPlan.shopId,
+        productId: subscriptionPlan.productId,
+      ),
+    );
   }
 
   void onSubscribeAgain() {
@@ -135,13 +133,13 @@ class SubscriptionPlanScreenViewModel extends ViewModel {
           subscriptionPlan.productId,
         );
     if (_product != null) {
-      context.read<AppRouter>().navigateTo(
-            AppRoute.discover,
-            ProductDetail.routeName,
-            arguments: ProductDetailProps(
-              _product,
-            ),
-          );
+      _appRouter.navigateTo(
+        AppRoute.discover,
+        DiscoverRoutes.productDetail,
+        arguments: ProductDetailArguments(
+          product: _product,
+        ),
+      );
     } else {
       showToast('Sorry, the product has been removed.');
     }
@@ -158,7 +156,7 @@ class SubscriptionPlanScreenViewModel extends ViewModel {
         throw FailureException('Failed to unsubscribe. Try again.');
       }
 
-      AppRouter.activityNavigatorKey.currentState?.pop();
+      _appRouter.popScreen(AppRoute.activity);
     } catch (e, stack) {
       FirebaseCrashlytics.instance.recordError(e, stack);
       showToast(e is FailureException ? e.message : e.toString());
@@ -174,7 +172,7 @@ class SubscriptionPlanScreenViewModel extends ViewModel {
         throw FailureException('Failed to confirm subscription. Try again.');
       }
 
-      AppRouter.activityNavigatorKey.currentState?.pop();
+      _appRouter.popScreen(AppRoute.activity);
     } catch (e, stack) {
       FirebaseCrashlytics.instance.recordError(e, stack);
       showToast(e is FailureException ? e.message : e.toString());
@@ -192,7 +190,7 @@ class SubscriptionPlanScreenViewModel extends ViewModel {
         );
       }
 
-      AppRouter.activityNavigatorKey.currentState?.pop();
+      _appRouter.popScreen(AppRoute.activity);
     } catch (e, stack) {
       FirebaseCrashlytics.instance.recordError(e, stack);
       showToast(e is FailureException ? e.message : e.toString());

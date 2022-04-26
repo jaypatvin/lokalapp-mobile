@@ -1,12 +1,11 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
+import '../../../../app/app.locator.dart';
+import '../../../../app/app.router.dart';
+import '../../../../app/app_router.dart';
 import '../../../../models/order.dart';
-import '../../../../routers/app_router.dart';
-import '../../../../routers/chat/props/chat_details.props.dart';
 import '../../../../widgets/app_button.dart';
-import '../../../chat/chat_details.dart';
 
 class MessageBuyerButton extends StatelessWidget {
   final Order order;
@@ -17,15 +16,15 @@ class MessageBuyerButton extends StatelessWidget {
     return AppButton.transparent(
       text: 'Message Buyer',
       onPressed: () {
-        context.read<AppRouter>().navigateTo(
-              AppRoute.chat,
-              ChatDetails.routeName,
-              arguments: ChatDetailsProps(
-                members: [order.buyerId, order.shopId],
-                shopId: order.shopId,
-                productId: order.productIds.firstOrNull,
-              ),
-            );
+        locator<AppRouter>().navigateTo(
+          AppRoute.chat,
+          ChatRoutes.chatDetails,
+          arguments: ChatDetailsArguments(
+            members: [order.buyerId, order.shopId],
+            shopId: order.shopId,
+            productId: order.productIds.firstOrNull,
+          ),
+        );
       },
     );
   }
@@ -40,15 +39,15 @@ class MessageSellerButton extends StatelessWidget {
     return AppButton.transparent(
       text: 'Message Seller',
       onPressed: () {
-        context.read<AppRouter>().navigateTo(
-              AppRoute.chat,
-              ChatDetails.routeName,
-              arguments: ChatDetailsProps(
-                members: [order.buyerId, order.shopId],
-                shopId: order.shopId,
-                productId: order.productIds.firstOrNull,
-              ),
-            );
+        locator<AppRouter>().navigateTo(
+          AppRoute.chat,
+          ChatRoutes.chatDetails,
+          arguments: ChatDetailsArguments(
+            members: [order.buyerId, order.shopId],
+            shopId: order.shopId,
+            productId: order.productIds.firstOrNull,
+          ),
+        );
       },
     );
   }

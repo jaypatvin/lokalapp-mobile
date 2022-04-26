@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../models/app_navigator.dart';
 import '../../../../providers/post_requests/product_body.dart';
-import '../../../../routers/app_router.dart';
 import '../../../../widgets/app_button.dart';
 import '../../../../widgets/custom_app_bar.dart';
 import '../../../../widgets/photo_box.dart';
 import '../components/product_header.dart';
-import 'new_add_on.dart';
 
 class ProductAddOn extends StatefulWidget {
   const ProductAddOn({
@@ -66,13 +63,14 @@ class _ProductAddOnState extends State<ProductAddOn> {
             AppButton.filled(
               text: 'New Add-on',
               onPressed: () {
-                AppRouter.profileNavigatorKey.currentState?.push(
-                  AppNavigator.appPageRoute(
-                    builder: (_) => NewAddOn(
-                      images: widget.images,
-                    ),
-                  ),
-                );
+                // TODO: add
+                // AppRouter.profileNavigatorKey.currentState?.push(
+                //   AppNavigator.appPageRoute(
+                //     builder: (_) => NewAddOn(
+                //       images: widget.images,
+                //     ),
+                //   ),
+                // );
               },
             ),
             SizedBox(
@@ -81,11 +79,12 @@ class _ProductAddOnState extends State<ProductAddOn> {
             AppButton.filled(
               text: 'Skip',
               onPressed: () {
-                AppRouter.profileNavigatorKey.currentState?.push(
-                  AppNavigator.appPageRoute(
-                    builder: (_) => NewAddOn(images: widget.images),
-                  ),
-                );
+                // TODO: add
+                // AppRouter.profileNavigatorKey.currentState?.push(
+                //   AppNavigator.appPageRoute(
+                //     builder: (_) => NewAddOn(images: widget.images),
+                //   ),
+                // );
               },
             ),
           ],

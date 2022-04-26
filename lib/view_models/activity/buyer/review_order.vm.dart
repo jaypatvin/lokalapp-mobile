@@ -2,14 +2,14 @@ import 'package:collection/collection.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
-import '../../../models/app_navigator.dart';
+import '../../../app/app.locator.dart';
+import '../../../app/app.router.dart';
+import '../../../app/app_router.dart';
 import '../../../models/order.dart';
 import '../../../models/post_requests/orders/order_review.request.dart';
 import '../../../models/product.dart';
 import '../../../providers/products.dart';
 import '../../../providers/shops.dart';
-import '../../../routers/app_router.dart';
-import '../../../screens/activity/buyer/review_submitted.dart';
 import '../../../services/api/api.dart';
 import '../../../services/api/order_api_service.dart';
 import '../../../state/view_model.dart';
@@ -24,11 +24,13 @@ class ReviewOrderViewModel extends ViewModel {
   final _reviews = <String, String>{};
 
   late final List<Product> _products;
+  late final AppRouter _appRouter;
   UnmodifiableListView<Product> get products => UnmodifiableListView(_products);
 
   @override
   void init() {
     _orderAPIService = OrderAPIService(context.read<API>());
+    _appRouter = locator<AppRouter>();
     _products = order.productIds
         .map<Product?>((id) => context.read<Products>().findById(id))
         .whereType<Product>()
@@ -58,10 +60,10 @@ class ReviewOrderViewModel extends ViewModel {
       );
 
       if (success) {
-        AppRouter.activityNavigatorKey.currentState?.pushReplacement(
-          AppNavigator.appPageRoute(
-            builder: (_) => const ReviewSubmitted(),
-          ),
+        _appRouter.navigateTo(
+          AppRoute.activity,
+          ActivityRoutes.reviewSubmitted,
+          replace: true,
         );
       }
     }

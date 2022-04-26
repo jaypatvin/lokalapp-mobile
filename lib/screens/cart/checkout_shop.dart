@@ -1,23 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../app/app.locator.dart';
+import '../../app/app.router.dart';
+import '../../app/app_router.dart';
 import '../../models/app_navigator.dart';
 import '../../models/shop.dart';
 import '../../providers/cart.dart';
 import '../../providers/products.dart';
-import '../../routers/app_router.dart';
-import '../../routers/discover/cart/checkout.props.dart';
-import '../../routers/discover/product_detail.props.dart';
 import '../../utils/constants/themes.dart';
 import '../../widgets/app_button.dart';
 import '../../widgets/custom_app_bar.dart';
-import '../activity/subscriptions/subscription_schedule.dart';
-import '../discover/product_detail.dart';
-import 'checkout.dart';
+import '../activity/subscriptions/subscription_schedule_create.dart';
 import 'components/order_details.dart';
 
 class ShopCheckout extends StatelessWidget {
-  static const routeName = '/cart/checkout/shop';
   final Shop shop;
   const ShopCheckout({
     Key? key,
@@ -77,11 +74,11 @@ class _OrdersCard extends StatelessWidget {
               product: product!,
               quantity: order.quantity,
               onEditTap: () {
-                context.read<AppRouter>().navigateTo(
-                      AppRoute.discover,
-                      ProductDetail.routeName,
-                      arguments: ProductDetailProps(product),
-                    );
+                locator<AppRouter>().navigateTo(
+                  AppRoute.discover,
+                  DiscoverRoutes.productDetail,
+                  arguments: ProductDetailArguments(product: product),
+                );
               },
             ),
             const Divider(),
@@ -116,7 +113,7 @@ class _OrdersCard extends StatelessWidget {
                       onPressed: () => Navigator.push(
                         context,
                         AppNavigator.appPageRoute(
-                          builder: (_) => SubscriptionSchedule.create(
+                          builder: (_) => SubscriptionScheduleCreate(
                             productId: productId,
                           ),
                         ),
@@ -129,11 +126,11 @@ class _OrdersCard extends StatelessWidget {
                   child: AppButton.filled(
                     text: 'Checkout',
                     onPressed: () {
-                      context.read<AppRouter>().navigateTo(
-                            AppRoute.discover,
-                            Checkout.routeName,
-                            arguments: CheckoutProps(productId),
-                          );
+                      locator<AppRouter>().navigateTo(
+                        AppRoute.discover,
+                        DiscoverRoutes.checkout,
+                        arguments: CheckoutArguments(productId: productId),
+                      );
                     },
                   ),
                 )
