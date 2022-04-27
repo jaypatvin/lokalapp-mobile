@@ -100,7 +100,6 @@ class _MyAppState extends State<MyApp> {
   @override
   void dispose() {
     _prefs.dispose();
-
     super.dispose();
   }
 
@@ -214,7 +213,8 @@ class _MyAppState extends State<MyApp> {
         child: MediaQuery(
           data: MediaQueryData.fromWindow(window),
           child: ScreenUtilInit(
-            builder: () {
+            builder: (context) {
+              ScreenUtil.setContext(context);
               return ConnectivityStatus(
                 child: ScreenLoaderApp(
                   globalLoadingBgBlur: 0,
