@@ -11,6 +11,7 @@ import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 import 'package:stacked_services/stacked_services.dart';
 
+import 'app/app.locator.dart';
 import 'app/app.router.dart';
 import 'app/app_router.dart';
 import 'providers/activities.dart';
@@ -46,6 +47,7 @@ import 'widgets/photo_picker_gallery/provider/custom_photo_provider.dart';
 
 Future<void> main() async {
   runZonedGuarded(() async {
+    setupLocator();
     WidgetsFlutterBinding.ensureInitialized();
     await Firebase.initializeApp();
     if (kDebugMode) {
