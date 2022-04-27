@@ -28,8 +28,6 @@ class LokalHttpClient {
       throw FailureException('Failed lookup!');
     } catch (e) {
       rethrow;
-    } finally {
-      client.close();
     }
   }
 
@@ -56,8 +54,6 @@ class LokalHttpClient {
       throw FailureException('Failed lookup!');
     } catch (e) {
       rethrow;
-    } finally {
-      client.close();
     }
   }
 
@@ -84,8 +80,6 @@ class LokalHttpClient {
       throw FailureException('Failed lookup!');
     } catch (e) {
       rethrow;
-    } finally {
-      client.close();
     }
   }
 
@@ -112,8 +106,6 @@ class LokalHttpClient {
       throw FailureException('Failed lookup!');
     } catch (e) {
       rethrow;
-    } finally {
-      client.close();
     }
   }
 }
