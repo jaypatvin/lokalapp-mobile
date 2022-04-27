@@ -52,9 +52,9 @@ class NewSubscriptionScheduleViewModel extends ViewModel {
     final orderDetails =
         context.read<ShoppingCart>().getProductOrder(productId);
 
-    if (orderDetails == null) {
-      throw 'Shopping cart does not contain the product order.';
-    }
+    // if (orderDetails == null) {
+    //   throw 'Shopping cart does not contain the product order.';
+    // }
 
     final _product = context.read<Products>().findById(productId);
     if (_product == null) {
@@ -62,7 +62,7 @@ class NewSubscriptionScheduleViewModel extends ViewModel {
     }
 
     _generator = ScheduleGenerator();
-    quantity = orderDetails.quantity;
+    quantity = orderDetails?.quantity ?? 1;
     product = _product;
     operatingHours = product.availability;
     repeatabilityChoices = _getRepeatabilityChoices();
