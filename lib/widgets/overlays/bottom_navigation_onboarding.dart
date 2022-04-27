@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 
+import '../../app/app.locator.dart';
 import '../../utils/constants/assets.dart';
 import '../../utils/constants/descriptions.dart';
 import '../../utils/constants/themes.dart';
@@ -67,7 +68,7 @@ class _BottomNavigationOnboardingState extends State<BottomNavigationOnboarding>
   @override
   void initState() {
     super.initState();
-    _tabController = context.read<PersistentTabController>();
+    _tabController = locator<PersistentTabController>();
     _setScreen();
     _tabController.addListener(_setScreen);
   }

@@ -3,6 +3,7 @@ import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:stacked_services/stacked_services.dart';
 
 import '../utils/constants/navigation_keys.dart';
+import 'app.locator.dart';
 
 enum AppRoute {
   root,
@@ -14,8 +15,7 @@ enum AppRoute {
 }
 
 class AppRouter {
-  final _tabController = PersistentTabController();
-  PersistentTabController get tabController => _tabController;
+  final tabController = locator<PersistentTabController>();
 
   static final rootNavigatorKey = StackedService.navigatorKey;
 
@@ -130,7 +130,7 @@ class AppRouter {
   /// Move the screen to the specified index using the [AppRoute]
   void jumpToTab(AppRoute appRoute) {
     if (appRoute == AppRoute.root ||
-        _tabController.index == appRoute.index - 1) {
+        tabController.index == appRoute.index - 1) {
       return;
     }
 
@@ -138,7 +138,7 @@ class AppRouter {
       keyOf(appRoute)?.currentState?.popUntil((route) => route.isFirst);
     }
 
-    _tabController.jumpToTab(appRoute.index - 1);
+    tabController.jumpToTab(appRoute.index - 1);
   }
 
   /// Pop the screen on the specified tab.
@@ -147,7 +147,7 @@ class AppRouter {
   }
 
   AppRoute get currentTabRoute {
-    switch (_tabController.index) {
+    switch (tabController.index) {
       case 0:
         return AppRoute.home;
       case 1:
