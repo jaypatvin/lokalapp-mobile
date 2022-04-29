@@ -12,7 +12,7 @@ import '../../../models/product_subscription_plan.dart';
 import '../../../providers/products.dart';
 import '../../../providers/shops.dart';
 import '../../../services/api/api.dart';
-import '../../../services/api/subscription_plan_api_service.dart';
+import '../../../services/api/subscription_plan_api.dart';
 import '../../../state/view_model.dart';
 import '../../../utils/repeated_days_generator/schedule_generator.dart';
 
@@ -24,13 +24,8 @@ class SubscriptionPlanScreenViewModel extends ViewModel {
 
   final ProductSubscriptionPlan subscriptionPlan;
   final bool isBuyer;
-  late final SubscriptionPlanAPIService _apiService;
+  final SubscriptionPlanAPI _apiService = locator<SubscriptionPlanAPI>();
   final _appRouter = locator<AppRouter>();
-
-  @override
-  void init() {
-    _apiService = SubscriptionPlanAPIService(context.read<API>());
-  }
 
   double get orderTotal =>
       subscriptionPlan.quantity * subscriptionPlan.product.price;

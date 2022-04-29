@@ -3,28 +3,18 @@ import 'dart:async';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 
+import '../app/app.locator.dart';
 import '../models/activity_feed.dart';
 import '../models/post_requests/activities/activity.request.dart';
 import '../models/post_requests/activities/comment.request.dart';
-import '../services/api/activity_api_service.dart';
 import '../services/api/api.dart';
-import '../services/api/comment_api_service.dart';
 import '../services/database/collections/activities.collection.dart';
 import '../services/database/database.dart';
 
 class Activities extends ChangeNotifier {
-  factory Activities(API api, Database database) {
-    final _activityService = ActivityAPIService(api);
-    final _commentService = CommentsAPIService(api);
-
-    return Activities._(_activityService, _commentService, database.activities);
-  }
-
-  Activities._(this._activityService, this._commentService, this._db);
-
-  final ActivityAPIService _activityService;
-  final CommentsAPIService _commentService;
-  final ActivitiesCollection _db;
+  final ActivityAPI _activityService = locator<ActivityAPI>();
+  final CommentsAPI _commentService = locator<CommentsAPI>();
+  final ActivitiesCollection _db = locator<Database>().activities;
 
   List<ActivityFeed> _feed = [];
   UnmodifiableListView<ActivityFeed> get feed =>

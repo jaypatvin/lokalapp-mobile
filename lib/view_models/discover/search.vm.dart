@@ -15,7 +15,7 @@ import '../../models/product.dart';
 import '../../providers/auth.dart';
 import '../../providers/products.dart';
 import '../../services/api/api.dart';
-import '../../services/api/search_api_service.dart';
+import '../../services/api/search_api.dart';
 import '../../state/view_model.dart';
 import '../../utils/shared_preference.dart';
 
@@ -23,8 +23,7 @@ class SearchViewModel extends ViewModel {
   SearchViewModel();
 
   final TextEditingController searchController = TextEditingController();
-
-  late final SearchAPIService _apiService;
+  final SearchAPI _apiService = locator<SearchAPI>();
 
   bool _isSearching = false;
   bool get isSearching => _isSearching;
@@ -44,7 +43,6 @@ class SearchViewModel extends ViewModel {
   @override
   void init() {
     _userId = context.read<Auth>().user!.id;
-    _apiService = SearchAPIService(context.read<API>());
     _recentSearches =
         context.read<UserSharedPreferences>().getRecentSearches(_userId);
   }

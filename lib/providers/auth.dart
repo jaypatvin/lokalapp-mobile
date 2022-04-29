@@ -11,27 +11,21 @@ import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
+import '../app/app.locator.dart';
 import '../models/failure_exception.dart';
 import '../models/lokal_user.dart';
 import '../models/notification_settings.dart';
 import '../models/post_requests/user/user_create.request.dart';
-import '../services/api/api.dart';
-import '../services/api/user_api_service.dart';
+import '../services/api/user_api.dart';
+import '../services/api_service.dart';
 import '../services/database/collections/users.collection.dart';
 import '../services/database/database.dart';
 
 class Auth extends ChangeNotifier {
-  factory Auth(API api, Database database) {
-    final apiService = UserAPIService(api);
-    return Auth._(api, apiService, database.users);
-  }
-
-  Auth._(this._api, this._apiService, this._db);
-
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final UsersCollection _db;
-  final UserAPIService _apiService;
-  final API _api;
+  final UsersCollection _db = locator<Database>().users;
+  final _apiService = locator<UserAPI>();
+  final _api = locator<APIService>();
 
   // StreamSubscription<User?>? _authChangesSubscription;
   StreamSubscription<User?>? _idTokenChangesSubscription;
@@ -72,7 +66,8 @@ class Auth extends ChangeNotifier {
         try {
           if (user != null) {
             _idToken = await user.getIdToken();
-            _api.setIdToken(_idToken!);
+            //_api.setIdToken(_idToken!);
+            _api.idToken = _idToken;
           } else {
             _idToken = null;
           }
@@ -89,7 +84,8 @@ class Auth extends ChangeNotifier {
       _firebaseUser = user;
       if (user != null) {
         _idToken = await user.getIdToken();
-        _api.setIdToken(_idToken!);
+        // _api.setIdToken(_idToken!);
+        _api.idToken = _idToken;
         _onIdTokenChanges();
 
         final id = await _db.getUserDocId(user.uid);

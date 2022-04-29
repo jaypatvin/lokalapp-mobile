@@ -2,7 +2,8 @@ import 'package:http/http.dart' as http;
 import 'package:lokalapp/models/failure_exception.dart';
 import 'package:lokalapp/services/api/api.dart';
 import 'package:lokalapp/services/api/client/lokal_http_client.dart';
-import 'package:lokalapp/services/api/search_api_service.dart';
+import 'package:lokalapp/services/api/search_api.dart';
+import 'package:lokalapp/services/api_service.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
@@ -10,11 +11,11 @@ import 'package:test/test.dart';
 import 'responses/search_api_service.responses.dart' as response;
 import 'search_api_service_test.mocks.dart';
 
-@GenerateMocks([API, LokalHttpClient])
+@GenerateMocks([APIService, LokalHttpClient])
 void main() {
-  final api = MockAPI();
+  final api = MockAPIService();
   final client = MockLokalHttpClient();
-  final service = SearchAPIService(api, client: client);
+  final service = SearchAPI();
 
   final uriWithParameters = Uri.parse('https://success.example.com');
   const headers = <String, String>{'idToken': 'valid'};

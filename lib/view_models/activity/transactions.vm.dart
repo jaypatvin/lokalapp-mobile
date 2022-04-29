@@ -12,7 +12,7 @@ import '../../models/shop.dart';
 import '../../providers/auth.dart';
 import '../../providers/shops.dart';
 import '../../services/api/api.dart';
-import '../../services/api/order_api_service.dart';
+import '../../services/api/order_api.dart';
 import '../../services/database/collections/orders.collection.dart';
 import '../../services/database/database.dart';
 import '../../state/view_model.dart';
@@ -25,7 +25,7 @@ class TransactionsViewModel extends ViewModel {
 
   final Map<int, String?> initialStatuses;
   final bool isBuyer;
-  late final OrderAPIService _apiService;
+  final OrderAPI _apiService = locator<OrderAPI>();
 
   final _statuses = <int, String?>{};
   UnmodifiableMapView<int, String?> get statuses =>
@@ -45,7 +45,7 @@ class TransactionsViewModel extends ViewModel {
   late final String subscriptionSubtitle;
   late final String noOrderMessage;
 
-  late final OrdersCollection _db;
+  final OrdersCollection _db = locator<Database>().orders;
 
   final _appRouter = locator<AppRouter>();
 
@@ -53,8 +53,6 @@ class TransactionsViewModel extends ViewModel {
 
   @override
   void init() {
-    _apiService = OrderAPIService(context.read<API>());
-    _db = context.read<Database>().orders;
     _initializeStatuses();
     _selectedIndex = _statuses.keys.first;
     _initializeStreams();

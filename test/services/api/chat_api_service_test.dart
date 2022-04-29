@@ -8,20 +8,21 @@ import 'package:lokalapp/models/failure_exception.dart';
 import 'package:lokalapp/models/post_requests/chat/chat_create.request.dart';
 import 'package:lokalapp/models/post_requests/chat/chat_invite.request.dart';
 import 'package:lokalapp/services/api/api.dart';
-import 'package:lokalapp/services/api/chat_api_service.dart';
+import 'package:lokalapp/services/api/chat_api.dart';
 import 'package:lokalapp/services/api/client/lokal_http_client.dart';
+import 'package:lokalapp/services/api_service.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 
 import 'chat_api_service_test.mocks.dart';
 import 'responses/chat_api_service.responses.dart' as response;
 
-@GenerateMocks([API, LokalHttpClient])
+@GenerateMocks([APIService, LokalHttpClient])
 void main() {
   group('[ChatAPIService]', () {
-    final api = MockAPI();
+    final api = MockAPIService();
     final client = MockLokalHttpClient();
-    final service = ChatAPIService(api, client: client);
+    final service = ChatAPI();
 
     final successUri = Uri.parse('https://success.example.com');
     final unsucessfulUri = Uri.parse('https://unsuccessful.example.com');

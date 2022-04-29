@@ -6,6 +6,7 @@ import 'package:oktoast/oktoast.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:provider/provider.dart';
 
+import '../../app/app.locator.dart';
 import '../../models/chat_model.dart';
 import '../../models/conversation.dart';
 import '../../models/failure_exception.dart';
@@ -14,8 +15,6 @@ import '../../models/post_requests/chat/chat_create.request.dart';
 import '../../models/post_requests/chat/conversation.request.dart';
 import '../../providers/auth.dart';
 import '../../services/api/api.dart';
-import '../../services/api/chat_api_service.dart';
-import '../../services/api/conversation_api_service.dart';
 import '../../services/database/collections/chats.collection.dart';
 import '../../services/database/database.dart';
 import '../../services/local_image_service.dart';
@@ -36,10 +35,11 @@ class ChatDetailsViewModel extends ViewModel {
   final String? shopId;
   final String? productId;
 
-  late final ChatAPIService _chatAPIService;
-  late final ConversationAPIService _conversationAPIService;
+  final ChatAPI _chatAPIService = locator<ChatAPI>();
+  final ConversationAPI _conversationAPIService = locator<ConversationAPI>();
+  final ChatsCollection _db = locator<Database>().chats;
+
   late final CustomPickerDataProvider imageProvider;
-  late final ChatsCollection _db;
   late final LokalUser _currentUser;
 
   Stream<List<Conversation>>? _messageStream;
@@ -95,11 +95,7 @@ class ChatDetailsViewModel extends ViewModel {
 
   @override
   void init() {
-    final _api = context.read<API>();
-    _chatAPIService = ChatAPIService(_api);
-    _conversationAPIService = ConversationAPIService(_api);
     imageProvider = context.read<CustomPickerDataProvider>();
-    _db = context.read<Database>().chats;
     _currentUser = context.read<Auth>().user!;
 
     imageProvider.onPickMax.addListener(_showMaxAssetsText);

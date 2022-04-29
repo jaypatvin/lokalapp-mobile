@@ -10,7 +10,6 @@ import '../../models/failure_exception.dart';
 import '../../models/post_requests/user/user_update.request.dart';
 import '../../providers/auth.dart';
 import '../../services/api/api.dart';
-import '../../services/api/user_api_service.dart';
 import '../../services/local_image_service.dart';
 import '../../state/view_model.dart';
 import '../../utils/constants/assets.dart';
@@ -29,13 +28,12 @@ class EditProfileViewModel extends ViewModel {
   File? _profilePhoto;
   File? get profilePhoto => _profilePhoto;
 
-  late UserAPIService _apiService;
+  final UserAPI _apiService = locator<UserAPI>();
 
   final _appRouter = locator<AppRouter>();
 
   @override
   void init() {
-    _apiService = UserAPIService(context.read<API>());
     final user = context.read<Auth>().user!;
 
     _firstName = user.firstName;

@@ -1,19 +1,19 @@
 import 'dart:convert';
 
+import '../../app/app.locator.dart';
 import '../../models/failure_exception.dart';
 import '../../models/post_requests/product_subscription_plan/override_dates.request.dart';
 import '../../models/post_requests/product_subscription_plan/product_subscription_plan.request.dart';
 import '../../models/product_subscription_plan.dart';
+import '../api_service.dart';
 import 'api.dart';
-import 'api_service.dart';
 import 'client/lokal_http_client.dart';
 
-class SubscriptionPlanAPIService extends APIService<ProductSubscriptionPlan> {
-  SubscriptionPlanAPIService(this.api, {LokalHttpClient? client})
-      : super(client: client ?? LokalHttpClient());
-
-  final API api;
+class SubscriptionPlanAPI {
   Endpoint get endpoint => Endpoint.subscriptionPlan;
+
+  final APIService api = locator<APIService>();
+  final client = locator<LokalHttpClient>();
 
   // -- GET
   Future<List<String>> getAvailableDates({

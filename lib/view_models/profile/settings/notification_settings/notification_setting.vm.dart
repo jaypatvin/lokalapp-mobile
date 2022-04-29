@@ -3,17 +3,15 @@ import 'dart:collection';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 
+import '../../../../app/app.locator.dart';
 import '../../../../models/notification_settings.dart';
 import '../../../../providers/auth.dart';
-import '../../../../services/api/user_api_service.dart';
+import '../../../../services/api/api.dart';
 
 class NotificationSettingViewModel extends ChangeNotifier {
-  NotificationSettingViewModel({
-    required this.auth,
-    required this.userAPIService,
-  });
+  NotificationSettingViewModel({required this.auth});
 
-  final UserAPIService userAPIService;
+  final UserAPI userAPIService = locator<UserAPI>();
   final Auth auth;
 
   UnmodifiableMapView<NotificationType, bool?> get notifications =>

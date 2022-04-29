@@ -6,6 +6,7 @@ import 'package:oktoast/oktoast.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:provider/provider.dart';
 
+import '../../app/app.locator.dart';
 import '../../models/activity_feed_comment.dart';
 import '../../models/failure_exception.dart';
 import '../../models/lokal_images.dart';
@@ -48,8 +49,7 @@ class PostDetailViewModel extends ViewModel {
     imageProvider = context.read<CustomPickerDataProvider>();
     imageProvider.onPickMax.addListener(_showMaxAssetsText);
     imageProvider.pickedNotifier.addListener(_onPick);
-    commentFeed =
-        context.read<Database>().activities.getCommentFeed(activityId);
+    commentFeed = locator<Database>().activities.getCommentFeed(activityId);
   }
 
   @override

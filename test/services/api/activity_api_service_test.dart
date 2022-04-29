@@ -7,9 +7,10 @@ import 'package:lokalapp/models/activity_feed.dart';
 import 'package:lokalapp/models/failure_exception.dart';
 import 'package:lokalapp/models/post_requests/activities/activity.like.request.dart';
 import 'package:lokalapp/models/post_requests/activities/activity.request.dart';
-import 'package:lokalapp/services/api/activity_api_service.dart';
+import 'package:lokalapp/services/api/activity_api.dart';
 import 'package:lokalapp/services/api/api.dart';
 import 'package:lokalapp/services/api/client/lokal_http_client.dart';
+import 'package:lokalapp/services/api_service.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
@@ -17,12 +18,13 @@ import 'package:test/test.dart';
 import 'activity_api_service_test.mocks.dart';
 import 'responses/activity_api_service.responses.dart' as activity;
 
-@GenerateMocks([API, LokalHttpClient])
+@GenerateMocks([APIService, LokalHttpClient])
 void main() {
   group('[ActivityAPIService]', () {
-    final api = MockAPI();
+    
+    final api = MockAPIService();
     final client = MockLokalHttpClient();
-    final service = ActivityAPIService(api, client: client);
+    final service = ActivityAPI();
 
     const activityId = 'activityId';
     const unusableActivityId = 'unusableActivityId';

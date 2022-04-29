@@ -1,16 +1,12 @@
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 
+import '../app/app.locator.dart';
 import '../services/api/api.dart';
-import '../services/api/product_api_service.dart';
+import '../services/api/product_api.dart';
 
 class UserWishlist extends ChangeNotifier {
-  factory UserWishlist(API api) {
-    return UserWishlist._(ProductApiService(api));
-  }
-  UserWishlist._(this._apiService);
-
-  final ProductApiService _apiService;
+  final ProductAPI _apiService = locator<ProductAPI>();
 
   List<String> _wishList = [];
   List<String> get items => _wishList;

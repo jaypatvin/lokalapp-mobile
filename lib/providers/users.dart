@@ -3,13 +3,13 @@ import 'dart:async';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 
+import '../app/app.locator.dart';
 import '../models/lokal_user.dart';
 import '../services/database/collections/users.collection.dart';
+import '../services/database/database.dart';
 
 class Users extends ChangeNotifier {
-  Users(this._db);
-
-  final UsersCollection _db;
+  final UsersCollection _db = locator<Database>().users;
 
   List<LokalUser> _users = [];
   bool _isLoading = false;

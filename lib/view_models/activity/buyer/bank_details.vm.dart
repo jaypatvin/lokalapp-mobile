@@ -14,7 +14,7 @@ import '../../../models/payment_option.dart';
 import '../../../models/post_requests/orders/order_pay.request.dart';
 import '../../../providers/shops.dart';
 import '../../../services/api/api.dart';
-import '../../../services/api/order_api_service.dart';
+import '../../../services/api/order_api.dart';
 import '../../../services/local_image_service.dart';
 import '../../../state/view_model.dart';
 import '../../../utils/constants/assets.dart';
@@ -32,7 +32,7 @@ class BankDetailsViewModel extends ViewModel {
 
   late final MediaUtility _mediaUtility;
   late final LocalImageService _imageService;
-  late final OrderAPIService _apiService;
+  late final OrderAPI _apiService = locator<OrderAPI>();
 
   late final List<PaymentOption> paymentAccounts;
 
@@ -41,7 +41,6 @@ class BankDetailsViewModel extends ViewModel {
 
   @override
   void init() {
-    _apiService = OrderAPIService(context.read<API>());
     _mediaUtility = context.read<MediaUtility>();
     _imageService = context.read<LocalImageService>();
 

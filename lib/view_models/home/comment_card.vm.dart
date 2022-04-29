@@ -24,12 +24,11 @@ class CommentCardViewModel extends ViewModel {
 
   bool isLiked = false;
 
-  late final ActivitiesCollection _db;
+  final ActivitiesCollection _db = locator<Database>().activities;
   final _appRouter = locator<AppRouter>();
 
   @override
   void init() {
-    _db = context.read<Database>().activities;
     _setup();
   }
 

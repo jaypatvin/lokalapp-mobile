@@ -1,18 +1,18 @@
 import 'dart:convert';
 
+import '../../app/app.locator.dart';
 import '../../models/activity_feed_comment.dart';
 import '../../models/post_requests/activities/comment.like.request.dart';
 import '../../models/post_requests/activities/comment.request.dart';
+import '../api_service.dart';
 import 'api.dart';
-import 'api_service.dart';
 import 'client/lokal_http_client.dart';
 
-class CommentsAPIService extends APIService<ActivityFeedComment> {
-  CommentsAPIService(this.api, {LokalHttpClient? client})
-      : super(client: client ?? LokalHttpClient());
-
-  final API api;
+class CommentsAPI {
   Endpoint get endpoint => Endpoint.activity;
+
+  final APIService api = locator<APIService>();
+  final client = locator<LokalHttpClient>();
 
   //#region -- GET
   Future<ActivityFeedComment> getById({

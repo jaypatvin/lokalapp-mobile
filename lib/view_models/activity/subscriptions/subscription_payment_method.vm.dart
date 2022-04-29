@@ -12,7 +12,7 @@ import '../../../models/post_requests/product_subscription_plan/product_subscrip
 import '../../../providers/cart.dart';
 import '../../../providers/products.dart';
 import '../../../services/api/api.dart';
-import '../../../services/api/subscription_plan_api_service.dart';
+import '../../../services/api/subscription_plan_api.dart';
 import '../../../state/view_model.dart';
 
 class SubscriptionPaymentMethodViewModel extends ViewModel {
@@ -27,12 +27,10 @@ class SubscriptionPaymentMethodViewModel extends ViewModel {
   final _appRouter = locator<AppRouter>();
 
   late final double totalPrice;
-  late final SubscriptionPlanAPIService _apiService;
+  final SubscriptionPlanAPI _apiService = locator<SubscriptionPlanAPI>();
 
   @override
   void init() {
-    _apiService = SubscriptionPlanAPIService(context.read<API>());
-
     final _productId = request.productId;
     final _quantity = request.quantity;
     final _product = context.read<Products>().findById(_productId);

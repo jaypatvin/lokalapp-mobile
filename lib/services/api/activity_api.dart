@@ -1,20 +1,19 @@
 import 'dart:convert';
 
+import '../../app/app.locator.dart';
 import '../../models/activity_feed.dart';
 import '../../models/post_requests/activities/activity.like.request.dart';
 import '../../models/post_requests/activities/activity.request.dart';
 import '../../models/post_requests/shared/report.dart';
+import '../api_service.dart';
 import 'api.dart';
-import 'api_service.dart';
 import 'client/lokal_http_client.dart';
 
-///
-class ActivityAPIService extends APIService<ActivityFeed> {
-  ActivityAPIService(this.api, {LokalHttpClient? client})
-      : super(client: client ?? LokalHttpClient());
-
-  final API api;
+class ActivityAPI {
   Endpoint get endpoint => Endpoint.activity;
+
+  final APIService api = locator<APIService>();
+  final client = locator<LokalHttpClient>();
 
   //#region -- GET
   Future<ActivityFeed> getById({required String activityId}) async {

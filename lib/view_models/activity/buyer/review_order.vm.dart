@@ -11,14 +11,13 @@ import '../../../models/product.dart';
 import '../../../providers/products.dart';
 import '../../../providers/shops.dart';
 import '../../../services/api/api.dart';
-import '../../../services/api/order_api_service.dart';
 import '../../../state/view_model.dart';
 
 class ReviewOrderViewModel extends ViewModel {
   ReviewOrderViewModel({required this.order});
 
   final Order order;
-  late final OrderAPIService _orderAPIService;
+  late final OrderAPI _orderAPIService;
 
   final _ratings = <String, int>{};
   final _reviews = <String, String>{};
@@ -29,7 +28,7 @@ class ReviewOrderViewModel extends ViewModel {
 
   @override
   void init() {
-    _orderAPIService = OrderAPIService(context.read<API>());
+    _orderAPIService = locator<OrderAPI>();
     _appRouter = locator<AppRouter>();
     _products = order.productIds
         .map<Product?>((id) => context.read<Products>().findById(id))

@@ -1,18 +1,18 @@
 import 'dart:convert';
 
+import '../../app/app.locator.dart';
 import '../../models/lokal_user.dart';
 import '../../models/post_requests/user/user_create.request.dart';
 import '../../models/post_requests/user/user_update.request.dart';
+import '../api_service.dart';
 import 'api.dart';
-import 'api_service.dart';
 import 'client/lokal_http_client.dart';
 
-class UserAPIService extends APIService<LokalUser> {
-  UserAPIService(this.api, {LokalHttpClient? client})
-      : super(client: client ?? LokalHttpClient());
-
-  final API api;
+class UserAPI {
   Endpoint get endpoint => Endpoint.user;
+
+  final APIService api = locator<APIService>();
+  final client = locator<LokalHttpClient>();
 
   // --POST
   Future<LokalUser> create({required UserCreateRequest request}) async {

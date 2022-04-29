@@ -1,22 +1,13 @@
 import '../models/post_requests/shared/application_log.dart';
-import 'api/api.dart';
 import 'api/application_log_service.dart';
 import 'device_info_provider.dart';
 
 class ApplicationLogger {
-  /// Logs [ApplicationLog] with the [ApplicationLogsService]
-  factory ApplicationLogger({
-    required API api,
-    required DeviceInfoProvider deviceInfo,
-  }) =>
-      ApplicationLogger._(ApplicationLogsService(api), deviceInfo);
+  /// Logs [ApplicationLog] with the [ApplicationLogsService
 
-  ApplicationLogger._(
-    this.service,
-    this._deviceInfo,
-  );
+  ApplicationLogger(this._deviceInfo);
 
-  final ApplicationLogsService service;
+  final ApplicationLogsService service = ApplicationLogsService();
   final DeviceInfoProvider _deviceInfo;
 
   String? communityId;

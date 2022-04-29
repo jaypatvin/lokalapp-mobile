@@ -9,12 +9,10 @@ import '../../providers/auth.dart';
 import '../../providers/community.dart';
 import '../../providers/post_requests/auth_body.dart';
 import '../../services/api/api.dart';
-import '../../services/api/invite_api_service.dart';
+import '../../services/api/invite_api.dart';
 import '../../state/view_model.dart';
 
 class InviteScreenViewModel extends ViewModel {
-  late final InviteAPIService _apiService;
-
   String _inviteCode = '';
   String get inviteCode => _inviteCode;
 
@@ -22,12 +20,7 @@ class InviteScreenViewModel extends ViewModel {
   bool get displayError => _displayError;
 
   final _appRouter = locator<AppRouter>();
-
-  @override
-  void init() {
-    super.init();
-    _apiService = InviteAPIService(context.read<API>());
-  }
+  final InviteAPI _apiService = locator<InviteAPI>();
 
   void onInviteCodeChanged(String value) {
     _inviteCode = value;

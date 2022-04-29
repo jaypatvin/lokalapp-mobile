@@ -20,7 +20,7 @@ import '../../../providers/cart.dart';
 import '../../../providers/products.dart';
 import '../../../providers/shops.dart';
 import '../../../services/api/api.dart';
-import '../../../services/api/subscription_plan_api_service.dart';
+import '../../../services/api/subscription_plan_api.dart';
 import '../../../state/view_model.dart';
 import '../../../utils/repeated_days_generator/schedule_generator.dart';
 import '../../../widgets/schedule_picker.dart';
@@ -238,7 +238,7 @@ class ViewSubscriptionScheduleViewModel extends ViewModel {
   late final List<RepeatChoices> repeatabilityChoices;
 
   late final ScheduleGenerator _generator;
-  late final SubscriptionPlanAPIService _apiService;
+  final SubscriptionPlanAPI _apiService = locator<SubscriptionPlanAPI>();
 
   // This will hold the initial dates from the product schedule: the only days
   // selectable when manual set of the schedule is chosen.
@@ -277,7 +277,6 @@ class ViewSubscriptionScheduleViewModel extends ViewModel {
   @override
   Future<void> init() async {
     _generator = ScheduleGenerator();
-    _apiService = SubscriptionPlanAPIService(context.read<API>());
 
     final shop = context.read<Shops>().findById(subscriptionPlan.shopId)!;
 

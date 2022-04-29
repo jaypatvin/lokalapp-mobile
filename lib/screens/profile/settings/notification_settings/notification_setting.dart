@@ -4,8 +4,6 @@ import 'package:provider/provider.dart';
 import 'package:recase/recase.dart';
 
 import '../../../../providers/auth.dart';
-import '../../../../services/api/api.dart';
-import '../../../../services/api/user_api_service.dart';
 import '../../../../utils/constants/themes.dart';
 import '../../../../view_models/profile/settings/notification_settings/notification_setting.vm.dart';
 import '../../../../widgets/custom_app_bar.dart';
@@ -24,10 +22,7 @@ class NotificationSettingsScreen extends StatelessWidget {
         titleStyle: TextStyle(color: Colors.white),
       ),
       body: ChangeNotifierProvider(
-        create: (_) => NotificationSettingViewModel(
-          auth: context.read<Auth>(),
-          userAPIService: UserAPIService(context.read<API>()),
-        ),
+        create: (_) => NotificationSettingViewModel(auth: context.read<Auth>()),
         builder: (ctx, _) {
           return Consumer<NotificationSettingViewModel>(
             builder: (ctx, viewModel, _) {

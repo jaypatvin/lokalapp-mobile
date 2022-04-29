@@ -1,16 +1,15 @@
 import 'dart:convert';
 
+import '../../app/app.locator.dart';
 import '../../models/failure_exception.dart';
-import 'api.dart';
-import 'api_service.dart';
+import '../api_service.dart';
 import 'client/lokal_http_client.dart';
 
-class SearchAPIService extends APIService {
-  SearchAPIService(this.api, {LokalHttpClient? client})
-      : super(client: client ?? LokalHttpClient());
-
-  final API api;
+class SearchAPI {
   Endpoint get endpoint => Endpoint.search;
+
+  final APIService api = locator<APIService>();
+  final client = locator<LokalHttpClient>();
 
   Future<Map<String, List<String>>> search({
     required String query,

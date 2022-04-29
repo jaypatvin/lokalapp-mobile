@@ -2,12 +2,13 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:oktoast/oktoast.dart';
 
+import '../app/app.locator.dart';
 import '../models/community.dart';
+import '../services/database/collections/community.collection.dart';
 import '../services/database/database.dart';
 
 class CommunityProvider extends ChangeNotifier {
-  CommunityProvider(this._db);
-  final Database _db;
+  final CommunityCollection _db = locator<Database>().community;
 
   String? _communityId;
   String? get communityId => _communityId;
@@ -20,7 +21,7 @@ class CommunityProvider extends ChangeNotifier {
     try {
       _communityId = id;
       if (id != null) {
-        _community = await _db.community.getCommunity(id);
+        _community = await _db.getCommunity(id);
       } else {
         _community = null;
       }

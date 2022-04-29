@@ -1,21 +1,20 @@
 import 'dart:convert';
 
+import '../../app/app.locator.dart';
 import '../../models/failure_exception.dart';
 import '../../models/order.dart';
 import '../../models/post_requests/orders/order_create.request.dart';
 import '../../models/post_requests/orders/order_pay.request.dart';
 import '../../models/post_requests/orders/order_review.request.dart';
+import '../api_service.dart';
 import 'api.dart';
-import 'api_service.dart';
 import 'client/lokal_http_client.dart';
 
-class OrderAPIService extends APIService<Order> {
-  OrderAPIService(this.api, {LokalHttpClient? client})
-      : super(client: client ?? LokalHttpClient());
-
-  final API api;
+class OrderAPI {
   Endpoint get endpoint => Endpoint.order;
 
+  final APIService api = locator<APIService>();
+  final client = locator<LokalHttpClient>();
   //#region --GET
   Future<List<OrderProduct>> getOrderProductsReviews({
     required String orderId,

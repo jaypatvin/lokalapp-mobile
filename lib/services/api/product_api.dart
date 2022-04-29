@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import '../../app/app.locator.dart';
 import '../../models/failure_exception.dart';
 import '../../models/operating_hours.dart';
 import '../../models/post_requests/product/product_create.request.dart';
@@ -9,16 +10,15 @@ import '../../models/post_requests/shared/report.dart';
 import '../../models/post_requests/shop/operating_hours.request.dart';
 import '../../models/product.dart';
 import '../../models/product_review.dart';
+import '../api_service.dart';
 import 'api.dart';
-import 'api_service.dart';
 import 'client/lokal_http_client.dart';
 
-class ProductApiService extends APIService<Product> {
-  ProductApiService(this.api, {LokalHttpClient? client})
-      : super(client: client ?? LokalHttpClient());
-
-  final API api;
+class ProductAPI {
   Endpoint get endpoint => Endpoint.product;
+
+  final APIService api = locator<APIService>();
+  final client = locator<LokalHttpClient>();
 
   // --POST
   Future<Product> create({

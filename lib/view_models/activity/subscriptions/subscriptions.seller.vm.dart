@@ -9,14 +9,16 @@ import '../../../models/product_subscription_plan.dart';
 import '../../../providers/auth.dart';
 import '../../../providers/shops.dart';
 import '../../../services/api/api.dart';
-import '../../../services/api/subscription_plan_api_service.dart';
+import '../../../services/api/subscription_plan_api.dart';
 import '../../../services/database/collections/product_subscription_plans.collection.dart';
 import '../../../services/database/database.dart';
 import '../../../state/view_model.dart';
 
 class SubscriptionsSellerViewModel extends ViewModel {
-  late final ProductSubscriptionPlansCollection _db;
-  late final SubscriptionPlanAPIService _subscriptionPlanApiService;
+  final ProductSubscriptionPlansCollection _db =
+      locator<Database>().productSubscriptionPlans;
+  final SubscriptionPlanAPI _subscriptionPlanApiService =
+      locator<SubscriptionPlanAPI>();
 
   Stream<List<ProductSubscriptionPlan>>? _subscriptionPlanStream;
   Stream<List<ProductSubscriptionPlan>>? get subscriptionPlanStream =>
@@ -27,9 +29,6 @@ class SubscriptionsSellerViewModel extends ViewModel {
   @override
   void init() {
     super.init();
-    final _api = context.read<API>();
-    _db = context.read<Database>().productSubscriptionPlans;
-    _subscriptionPlanApiService = SubscriptionPlanAPIService(_api);
 
     final _user = context.read<Auth>().user!;
     final _shops = context.read<Shops>().findByUser(_user.id);

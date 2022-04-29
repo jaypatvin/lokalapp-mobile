@@ -12,7 +12,8 @@ import 'package:lokalapp/models/post_requests/shop/shop_update.request.dart';
 import 'package:lokalapp/models/shop.dart';
 import 'package:lokalapp/services/api/api.dart';
 import 'package:lokalapp/services/api/client/lokal_http_client.dart';
-import 'package:lokalapp/services/api/shop_api_service.dart';
+import 'package:lokalapp/services/api/shop_api.dart';
+import 'package:lokalapp/services/api_service.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
@@ -20,11 +21,11 @@ import 'package:test/test.dart';
 import 'responses/shop_api_service.responses.dart' as response;
 import 'shop_api_service_test.mocks.dart';
 
-@GenerateMocks([API, LokalHttpClient])
+@GenerateMocks([APIService, LokalHttpClient])
 void main() {
-  final api = MockAPI();
+  final api = MockAPIService();
   final client = MockLokalHttpClient();
-  final service = ShopAPIService(api, client: client);
+  final service = ShopAPI();
 
   final uri = Uri.parse('https://success.example.com');
   const headers = <String, String>{'idToken': 'valid'};

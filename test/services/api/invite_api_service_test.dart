@@ -7,7 +7,8 @@ import 'package:lokalapp/models/lokal_invite.dart';
 import 'package:lokalapp/models/post_requests/invite.request.dart';
 import 'package:lokalapp/services/api/api.dart';
 import 'package:lokalapp/services/api/client/lokal_http_client.dart';
-import 'package:lokalapp/services/api/invite_api_service.dart';
+import 'package:lokalapp/services/api/invite_api.dart';
+import 'package:lokalapp/services/api_service.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
@@ -15,12 +16,12 @@ import 'package:test/test.dart';
 import 'invite_api_service_test.mocks.dart';
 import 'responses/invite_api_service.responses.dart' as response;
 
-@GenerateMocks([API, LokalHttpClient])
+@GenerateMocks([APIService, LokalHttpClient])
 void main() {
   group('InviteAPIService', () {
-    final api = MockAPI();
+    final api = MockAPIService();
     final client = MockLokalHttpClient();
-    final service = InviteAPIService(api, client: client);
+    final service = InviteAPI();
 
     final successUri = Uri.parse('https://success.example.com');
     final unsucessfulUri = Uri.parse('https://unsuccessful.example.com');

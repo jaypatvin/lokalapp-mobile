@@ -10,7 +10,8 @@ import 'package:lokalapp/models/post_requests/product_subscription_plan/product_
 import 'package:lokalapp/models/product_subscription_plan.dart';
 import 'package:lokalapp/services/api/api.dart';
 import 'package:lokalapp/services/api/client/lokal_http_client.dart';
-import 'package:lokalapp/services/api/subscription_plan_api_service.dart';
+import 'package:lokalapp/services/api/subscription_plan_api.dart';
+import 'package:lokalapp/services/api_service.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
@@ -18,12 +19,12 @@ import 'package:test/test.dart';
 import 'responses/subscription_plan_api_service.responses.dart' as response;
 import 'subscription_plan_api_service_test.mocks.dart';
 
-@GenerateMocks([API, LokalHttpClient])
+@GenerateMocks([APIService, LokalHttpClient])
 void main() {
   group('SubscriptionPlanAPIService', () {
-    final api = MockAPI();
+    final api = MockAPIService();
     final client = MockLokalHttpClient();
-    final service = SubscriptionPlanAPIService(api, client: client);
+    final service = SubscriptionPlanAPI();
 
     final uri = Uri.parse('https://success.example.com');
     const headers = <String, String>{'idToken': 'valid'};

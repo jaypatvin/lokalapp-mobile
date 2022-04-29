@@ -1,17 +1,17 @@
 import 'dart:convert';
 
+import '../../app/app.locator.dart';
 import '../../models/lokal_invite.dart';
 import '../../models/post_requests/invite.request.dart';
+import '../api_service.dart';
 import 'api.dart';
-import 'api_service.dart';
 import 'client/lokal_http_client.dart';
 
-class InviteAPIService extends APIService<LokalInvite> {
-  InviteAPIService(this.api, {LokalHttpClient? client})
-      : super(client: client ?? LokalHttpClient());
-
-  final API api;
+class InviteAPI {
   Endpoint get endpoint => Endpoint.invite;
+
+  final APIService api = locator<APIService>();
+  final client = locator<LokalHttpClient>();
 
   Future<LokalInvite> inviteAFriend(String email) async {
     try {

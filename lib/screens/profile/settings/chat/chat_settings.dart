@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../providers/auth.dart';
-import '../../../../services/api/api.dart';
-import '../../../../services/api/user_api_service.dart';
 import '../../../../utils/constants/themes.dart';
 import '../../../../view_models/profile/settings/chat/chat_settings.vm.dart';
 import '../../../../widgets/custom_app_bar.dart';
@@ -24,10 +22,7 @@ class ChatSettings extends StatelessWidget {
         onPressedLeading: () => Navigator.pop(context),
       ),
       body: ChangeNotifierProvider(
-        create: (_) => ChatSettingsViewModel(
-          context.read<Auth>(),
-          UserAPIService(context.read<API>()),
-        ),
+        create: (_) => ChatSettingsViewModel(context.read<Auth>()),
         builder: (ctx, _) {
           return Consumer<ChatSettingsViewModel>(
             builder: (ctx2, viewModel, _) {

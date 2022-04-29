@@ -1,14 +1,14 @@
+import '../../app/app.locator.dart';
 import '../../models/community.dart';
+import '../api_service.dart';
 import 'api.dart';
-import 'api_service.dart';
 import 'client/lokal_http_client.dart';
 
-class CommunityAPIService extends APIService<Community> {
-  CommunityAPIService(this.api, {LokalHttpClient? client})
-      : super(client: client ?? LokalHttpClient());
-
-  final API api;
+class CommunityAPI {
   Endpoint get endpoint => Endpoint.community;
+
+  final APIService api = locator<APIService>();
+  final client = locator<LokalHttpClient>();
 
   Future<Community> getById(String id) async {
     try {

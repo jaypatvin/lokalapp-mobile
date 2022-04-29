@@ -2,14 +2,14 @@ import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:oktoast/oktoast.dart';
 
+import '../app/app.locator.dart';
 import '../models/bank_code.dart';
 import '../services/database/collections/bank_codes.collection.dart';
 import '../services/database/database.dart';
 
 class BankCodes extends ChangeNotifier {
-  BankCodes(Database database) : _db = database.bankCodes;
+  final BankCodesCollection _db = locator<Database>().bankCodes;
 
-  final BankCodesCollection _db;
   List<BankCode> _codes = [];
   UnmodifiableListView<BankCode> get bankCodes =>
       UnmodifiableListView(_codes.where((bank) => bank.type == BankType.bank));

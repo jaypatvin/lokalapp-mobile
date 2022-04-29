@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 
+import '../../app/app.locator.dart';
 import '../../models/chat_model.dart';
 import '../../models/shop.dart';
 import '../../providers/auth.dart';
@@ -26,7 +27,7 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
 
   late AnimationController _animationController;
   late Animation<Color?> _colorAnimation;
-  late final ChatsCollection _db;
+  final ChatsCollection _db = locator<Database>().chats;
 
   late Stream<List<ChatModel>> _userChatStream;
   Stream<List<ChatModel>>? _shopChatStream;
@@ -34,7 +35,6 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    _db = context.read<Database>().chats;
     _tabController = TabController(length: 2, vsync: this);
     _animationController = AnimationController(
       vsync: this,

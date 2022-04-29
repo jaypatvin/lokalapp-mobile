@@ -8,7 +8,8 @@ import 'package:lokalapp/models/post_requests/orders/order_create.request.dart';
 import 'package:lokalapp/models/post_requests/orders/order_pay.request.dart';
 import 'package:lokalapp/services/api/api.dart';
 import 'package:lokalapp/services/api/client/lokal_http_client.dart';
-import 'package:lokalapp/services/api/order_api_service.dart';
+import 'package:lokalapp/services/api/order_api.dart';
+import 'package:lokalapp/services/api_service.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
@@ -16,12 +17,12 @@ import 'package:test/test.dart';
 import 'order_api_service_test.mocks.dart';
 import 'responses/order_api_service.responses.dart' as response;
 
-@GenerateMocks([API, LokalHttpClient])
+@GenerateMocks([APIService, LokalHttpClient])
 void main() {
   group('OrderAPIService', () {
-    final api = MockAPI();
+    final api = MockAPIService();
     final client = MockLokalHttpClient();
-    final service = OrderAPIService(api, client: client);
+    final service = OrderAPI();
 
     final someUri = Uri.parse('https://success.example.com');
     const headers = <String, String>{'idToken': 'valid'};

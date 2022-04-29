@@ -1,17 +1,16 @@
 import 'dart:convert';
 
-import '../../models/conversation.dart';
+import '../../app/app.locator.dart';
 import '../../models/post_requests/chat/conversation.request.dart';
+import '../api_service.dart';
 import 'api.dart';
-import 'api_service.dart';
 import 'client/lokal_http_client.dart';
 
-class ConversationAPIService extends APIService<Conversation> {
-  ConversationAPIService(this.api, {LokalHttpClient? client})
-      : super(client: client ?? LokalHttpClient());
-
-  final API api;
+class ConversationAPI {
   Endpoint get endpoint => Endpoint.chat;
+
+  final APIService api = locator<APIService>();
+  final client = locator<LokalHttpClient>();
 
   Future<bool> createConversation({
     required String chatId,

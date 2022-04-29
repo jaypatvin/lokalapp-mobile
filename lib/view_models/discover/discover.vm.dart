@@ -14,11 +14,11 @@ import '../../providers/auth.dart';
 import '../../providers/products.dart';
 import '../../providers/shops.dart';
 import '../../services/api/api.dart';
-import '../../services/api/product_api_service.dart';
+import '../../services/api/product_api.dart';
 import '../../state/view_model.dart';
 
 class DiscoverViewModel extends ViewModel {
-  late final ProductApiService _apiService;
+  final ProductAPI _apiService = locator<ProductAPI>();
   final _appRouter = locator<AppRouter>();
 
   List<Product> _recommendedProducts = [];
@@ -57,7 +57,6 @@ class DiscoverViewModel extends ViewModel {
 
   @override
   void init() {
-    _apiService = ProductApiService(context.read<API>());
     _productsProvider = context.read<Products>();
     _shopsProvider = context.read<Shops>();
     fetchRecommendedProducts();

@@ -1,12 +1,10 @@
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:oktoast/oktoast.dart';
-import 'package:provider/provider.dart';
 
 import '../../app/app.locator.dart';
 import '../../app/app_router.dart';
 import '../../models/app_navigator.dart';
 import '../../models/post_requests/shared/report.dart';
-import '../../services/api/activity_api_service.dart';
 import '../../services/api/api.dart';
 import '../../state/view_model.dart';
 import '../../widgets/report_sent.dart';
@@ -19,12 +17,7 @@ class ReportPostViewModel extends ViewModel {
   String _reportMessage = '';
   String get reportMessage => _reportMessage;
 
-  late final ActivityAPIService _apiService;
-
-  @override
-  void init() {
-    _apiService = ActivityAPIService(context.read<API>());
-  }
+  final _apiService = locator<ActivityAPI>();
 
   void onReportMessageChanged(String value) {
     _reportMessage = value;

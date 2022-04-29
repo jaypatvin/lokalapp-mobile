@@ -2,14 +2,13 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
+import '../app/app.locator.dart';
 import '../models/lokal_notification.dart';
 import '../services/database/collections/users.collection.dart';
 import '../services/database/database.dart';
 
 class NotificationsProvider extends ChangeNotifier {
-  NotificationsProvider(Database database) : _db = database.users;
-
-  final UsersCollection _db;
+  final UsersCollection _db = locator<Database>().users;
   String? _userId;
   String? get userId => _userId;
 

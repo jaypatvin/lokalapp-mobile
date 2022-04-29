@@ -1,6 +1,5 @@
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:oktoast/oktoast.dart';
-import 'package:provider/provider.dart';
 
 import '../../app/app.locator.dart';
 import '../../app/app.router.dart';
@@ -9,7 +8,7 @@ import '../../models/lokal_images.dart';
 import '../../models/order.dart';
 import '../../screens/activity/components/order_details_buttons/order_actions.dart';
 import '../../services/api/api.dart';
-import '../../services/api/order_api_service.dart';
+import '../../services/api/order_api.dart';
 import '../../state/view_model.dart';
 import '../../utils/functions.utils.dart';
 
@@ -21,13 +20,8 @@ class OrderDetailsViewModel extends ViewModel {
   final Order order;
   final bool isBuyer;
 
-  late final OrderAPIService _apiService;
+  final OrderAPI _apiService = locator<OrderAPI>();
   final _appRouter = locator<AppRouter>();
-
-  @override
-  void init() {
-    _apiService = OrderAPIService(context.read<API>());
-  }
 
   Future<void> onPress(OrderAction action) async {
     try {

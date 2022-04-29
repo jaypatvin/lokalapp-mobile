@@ -1,33 +1,24 @@
 import 'dart:convert';
 
+import '../../app/app.locator.dart';
 import '../../models/operating_hours.dart';
 import '../../models/post_requests/shared/report.dart';
 import '../../models/post_requests/shop/operating_hours.request.dart';
 import '../../models/post_requests/shop/shop_create.request.dart';
 import '../../models/post_requests/shop/shop_update.request.dart';
 import '../../models/shop.dart';
+import '../api_service.dart';
 import 'api.dart';
-import 'api_service.dart';
+
 import 'client/lokal_http_client.dart';
 
-class ShopAPIService extends APIService<Shop> {
-  factory ShopAPIService(API api, {LokalHttpClient? client}) {
-    return ShopAPIService._(
-      api,
-      _OperatingHoursAPIService(api, client: client),
-      client: client,
-    );
-  }
-
-  ShopAPIService._(
-    this.api,
-    this._operatingHoursService, {
-    LokalHttpClient? client,
-  }) : super(client: client ?? LokalHttpClient());
-
-  final API api;
+class ShopAPI {
   Endpoint get endpoint => Endpoint.shop;
-  final _OperatingHoursAPIService _operatingHoursService;
+
+  final APIService api = locator<APIService>();
+  final client = locator<LokalHttpClient>();
+  final _OperatingHoursAPIService _operatingHoursService =
+      _OperatingHoursAPIService();
 
   // --POST
   Future<Shop> create({
@@ -217,11 +208,9 @@ class ShopAPIService extends APIService<Shop> {
   }
 }
 
-class _OperatingHoursAPIService extends APIService<OperatingHours> {
-  _OperatingHoursAPIService(this.api, {LokalHttpClient? client})
-      : super(client: client ?? LokalHttpClient());
-
-  final API api;
+class _OperatingHoursAPIService {
+  final api = locator<APIService>();
+  final client = locator<LokalHttpClient>();
 
   Future<OperatingHours> getOperatingHours({
     required String shopId,

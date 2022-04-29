@@ -10,7 +10,8 @@ import '../../../services/database/database.dart';
 import '../../../state/view_model.dart';
 
 class SubscriptionsBuyerViewModel extends ViewModel {
-  late final ProductSubscriptionPlansCollection _db;
+  final ProductSubscriptionPlansCollection _db =
+      locator<Database>().productSubscriptionPlans;
 
   late Stream<List<ProductSubscriptionPlan>> _subscriptionPlanStream;
   Stream<List<ProductSubscriptionPlan>> get subscriptionPlanStream =>
@@ -21,10 +22,7 @@ class SubscriptionsBuyerViewModel extends ViewModel {
   @override
   void init() {
     super.init();
-    _db = context.read<Database>().productSubscriptionPlans;
-
     final _user = context.read<Auth>().user!;
-
     _subscriptionPlanStream = _db.getUserSubscriptionPlans(_user.id);
   }
 

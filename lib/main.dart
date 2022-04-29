@@ -13,7 +13,6 @@ import 'package:stacked_services/stacked_services.dart';
 
 import 'app/app.locator.dart';
 import 'app/app.router.dart';
-import 'app/app_router.dart';
 import 'providers/activities.dart';
 import 'providers/auth.dart';
 import 'providers/bank_codes.dart';
@@ -30,7 +29,6 @@ import 'providers/shops.dart';
 import 'providers/users.dart';
 import 'providers/wishlist.dart';
 import 'root/root.dart';
-import 'services/api/api.dart';
 import 'services/application_logger.dart';
 import 'services/bottom_nav_bar_hider.dart';
 import 'services/database/database.dart';
@@ -84,8 +82,6 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   late final UserSharedPreferences _prefs;
-  late final API _api;
-  late final Database _db;
   late final DeviceInfoProvider _infoProvider;
 
   @override
@@ -93,8 +89,6 @@ class _MyAppState extends State<MyApp> {
     super.initState();
     _prefs = UserSharedPreferences();
     _prefs.init();
-    _api = API();
-    _db = Database();
     _infoProvider = DeviceInfoProvider();
   }
 
@@ -113,14 +107,10 @@ class _MyAppState extends State<MyApp> {
       ChangeNotifierProvider(create: (_) => BottomNavBarHider()),
 
       // auth:
-      ChangeNotifierProvider<Auth>(create: (_) => Auth(_api, _db)),
-      ChangeNotifierProvider<API>.value(value: _api),
-
-      // database:
-      Provider<Database>.value(value: _db),
+      ChangeNotifierProvider<Auth>(create: (_) => Auth()),
 
       ChangeNotifierProxyProvider<Auth, CommunityProvider>(
-        create: (_) => CommunityProvider(_db),
+        create: (_) => CommunityProvider(),
         update: (_, auth, comm) => comm!
           ..setCommunityId(
             auth.user?.communityId,
@@ -128,7 +118,7 @@ class _MyAppState extends State<MyApp> {
       ),
 
       ChangeNotifierProxyProvider<Auth, Activities?>(
-        create: (_) => Activities(_api, _db),
+        create: (_) => Activities(),
         update: (_, auth, activities) => activities!
           ..setUserCredentials(
             userId: auth.user?.id,
@@ -136,36 +126,36 @@ class _MyAppState extends State<MyApp> {
           ),
       ),
       ChangeNotifierProxyProvider<Auth, Users?>(
-        create: (_) => Users(_db.users),
+        create: (_) => Users(),
         update: (_, auth, users) =>
             users!..setCommunityId(auth.user?.communityId),
       ),
 
       ChangeNotifierProxyProvider<Auth, Products?>(
-        create: (_) => Products(_api, _db),
+        create: (_) => Products(),
         update: (_, auth, products) =>
             products!..setCommunityId(auth.user?.communityId),
       ),
 
       ChangeNotifierProxyProvider<Auth, UserWishlist?>(
-        create: (_) => UserWishlist(_api),
+        create: (_) => UserWishlist(),
         update: (_, auth, wishlist) => wishlist!..onUserChanged(auth.user?.id),
       ),
 
       ChangeNotifierProxyProvider<Auth, Shops?>(
-        create: (_) => Shops(_api, _db),
+        create: (_) => Shops(),
         update: (_, auth, shops) =>
             shops!..setCommunityId(auth.user?.communityId),
       ),
 
       ChangeNotifierProxyProvider<Auth, NotificationsProvider?>(
-        create: (_) => NotificationsProvider(_db),
+        create: (_) => NotificationsProvider(),
         update: (_, auth, notifications) =>
             notifications?..setUserId(auth.user?.id),
       ),
 
-      ChangeNotifierProvider<Categories>(create: (_) => Categories(_db)),
-      ChangeNotifierProvider<BankCodes>(create: (_) => BankCodes(_db)),
+      ChangeNotifierProvider<Categories>(create: (_) => Categories()),
+      ChangeNotifierProvider<BankCodes>(create: (_) => BankCodes()),
 
       // This is used in 3 Separate Screens (Tabs) - Home, Discover, and Profile
       ChangeNotifierProvider<ShoppingCart?>(create: (_) => ShoppingCart()),
@@ -199,15 +189,14 @@ class _MyAppState extends State<MyApp> {
       // services:
       Provider<MediaUtility?>(create: (_) => MediaUtility()),
       Provider<LocalImageService?>(
-        create: (_) => LocalImageService(database: _db),
+        create: (_) => LocalImageService(database: locator<Database>()),
       ),
 
       ProxyProvider<Auth, ApplicationLogger>(
-        create: (_) => ApplicationLogger(api: _api, deviceInfo: _infoProvider),
+        create: (_) => ApplicationLogger(_infoProvider),
         update: (_, auth, logger) {
           logger?.communityId = auth.user?.communityId;
-          return logger ??
-              ApplicationLogger(api: _api, deviceInfo: _infoProvider)
+          return logger ?? ApplicationLogger(_infoProvider)
             ..communityId = auth.user?.communityId;
         },
         lazy: true,

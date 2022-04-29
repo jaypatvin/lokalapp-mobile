@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:lottie/lottie.dart';
-import 'package:provider/provider.dart';
 
+import '../../app/app.locator.dart';
 import '../../services/database/database.dart';
 import '../../utils/constants/assets.dart';
 import '../../utils/constants/themes.dart';
@@ -38,7 +38,7 @@ class Activity extends HookWidget {
     _tabController.animation?.addListener(_tabSelectionHandler);
 
     final future = useMemoized(
-      () async => context.read<Database>().orderStatus.getOrderStatuses(),
+      () async => locator<Database>().orderStatus.getOrderStatuses(),
     );
     final snapshot = useFuture(future);
 

@@ -4,19 +4,18 @@ import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 import 'package:validators/validators.dart';
 
+import '../../../app/app.locator.dart';
 import '../../../models/app_navigator.dart';
 import '../../../models/failure_exception.dart';
 import '../../../models/lokal_invite.dart';
 import '../../../models/post_requests/shared/application_log.dart';
 import '../../../screens/profile/settings/invite_a_friend/invite_sent.dart';
 import '../../../services/api/api.dart';
-import '../../../services/api/invite_api_service.dart';
+import '../../../services/api/invite_api.dart';
 import '../../../services/application_logger.dart';
 import '../../../state/view_model.dart';
 
 class InviteAFriendViewModel extends ViewModel {
-  InviteAFriendViewModel(this._api);
-
   late String _emailAddress;
   String get emailAddress => _emailAddress;
 
@@ -26,15 +25,12 @@ class InviteAFriendViewModel extends ViewModel {
   late String _phoneNumber;
   String get phoneNumber => _phoneNumber;
 
-  late final InviteAPIService _inviteApiService;
-  final API _api;
+  final InviteAPI _inviteApiService = locator<InviteAPI>();
 
   @override
   void init() {
     _emailAddress = '';
     _phoneNumber = '';
-
-    _inviteApiService = InviteAPIService(_api);
   }
 
   void onEmailChanged(String value) {

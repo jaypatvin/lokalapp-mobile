@@ -10,9 +10,7 @@ import '../services/database/collections/categories.collection.dart';
 import '../services/database/database.dart';
 
 class Categories extends ChangeNotifier {
-  Categories(Database database) : _db = database.categories;
-
-  final CategoriesCollection _db;
+  final CategoriesCollection _db = locator<Database>().categories;
 
   List<LokalCategory> _categories = [];
 

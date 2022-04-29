@@ -1,6 +1,5 @@
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:oktoast/oktoast.dart';
-import 'package:provider/provider.dart';
 
 import '../../../app/app.locator.dart';
 import '../../../app/app.router.dart';
@@ -9,21 +8,14 @@ import '../../../models/failure_exception.dart';
 import '../../../models/order.dart';
 import '../../../models/post_requests/orders/order_pay.request.dart';
 import '../../../services/api/api.dart';
-import '../../../services/api/order_api_service.dart';
+import '../../../services/api/order_api.dart';
 import '../../../state/view_model.dart';
 
 class CashOnDeliveryViewModel extends ViewModel {
   CashOnDeliveryViewModel(this.order);
   final Order order;
-
   final _appRouter = locator<AppRouter>();
-
-  late final OrderAPIService _apiService;
-
-  @override
-  void init() {
-    _apiService = OrderAPIService(context.read<API>());
-  }
+  final OrderAPI _apiService = locator<OrderAPI>();
 
   Future<void> onSubmitHandler() async {
     try {

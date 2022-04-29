@@ -2,7 +2,6 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:oktoast/oktoast.dart';
-import 'package:provider/provider.dart';
 
 import '../../app/app.locator.dart';
 import '../../app/app.router.dart';
@@ -11,7 +10,7 @@ import '../../models/failure_exception.dart';
 import '../../models/order.dart';
 import '../../models/post_requests/product/product_review.request.dart';
 import '../../services/api/api.dart';
-import '../../services/api/product_api_service.dart';
+import '../../services/api/product_api.dart';
 import '../../state/view_model.dart';
 import '../../utils/constants/assets.dart';
 
@@ -57,11 +56,8 @@ class OrderReceivedViewModel extends ViewModel {
         break;
     }
 
-    final _api = context.read<API>();
-    final _apiService = ProductApiService(_api);
-
     try {
-      ratingSubmitted = await _apiService.review(
+      ratingSubmitted = await locator<ProductAPI>().review(
         productId: order.productIds.first,
         request: ProductReviewRequest(
           orderId: order.id,

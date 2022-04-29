@@ -13,7 +13,7 @@ import '../../app/app_router.dart';
 import '../../models/failure_exception.dart';
 import '../../providers/auth.dart';
 import '../../services/api/api.dart';
-import '../../services/api/user_api_service.dart';
+import '../../services/api/user_api.dart';
 import '../../services/local_image_service.dart';
 import '../../utils/constants/assets.dart';
 import '../../utils/constants/themes.dart';
@@ -204,7 +204,7 @@ class _VerifyScreenState extends State<VerifyScreen> with ScreenLoader {
         throw FailureException('Error uploading image. Try again.');
       }
 
-      final success = await UserAPIService(context.read<API>()).registerUser(
+      final success = await locator<UserAPI>().registerUser(
         userId: user.id,
         body: {
           'id_type': _chosenIdType!,

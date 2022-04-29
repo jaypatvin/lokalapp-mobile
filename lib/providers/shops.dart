@@ -3,24 +3,19 @@ import 'dart:async';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 
+import '../app/app.locator.dart';
 import '../models/post_requests/shop/operating_hours.request.dart';
 import '../models/post_requests/shop/shop_create.request.dart';
 import '../models/post_requests/shop/shop_update.request.dart';
 import '../models/shop.dart';
 import '../services/api/api.dart';
-import '../services/api/shop_api_service.dart';
+import '../services/api/shop_api.dart';
 import '../services/database/collections/shops.collections.dart';
 import '../services/database/database.dart';
 
 class Shops extends ChangeNotifier {
-  factory Shops(API api, Database database) {
-    return Shops._(ShopAPIService(api), database.shops);
-  }
-
-  Shops._(this._apiService, this._db);
-
-  final ShopAPIService _apiService;
-  late final ShopsCollection _db;
+  final ShopAPI _apiService = locator<ShopAPI>();
+  final ShopsCollection _db = locator<Database>().shops;
 
   String? _communityId;
   List<Shop> _shops = [];

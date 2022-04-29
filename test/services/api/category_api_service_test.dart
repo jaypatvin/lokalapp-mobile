@@ -4,20 +4,21 @@ import 'package:json_annotation/json_annotation.dart';
 import 'package:lokalapp/models/failure_exception.dart';
 import 'package:lokalapp/models/lokal_category.dart';
 import 'package:lokalapp/services/api/api.dart';
-import 'package:lokalapp/services/api/category_api_service.dart';
+import 'package:lokalapp/services/api/category_api.dart';
 import 'package:lokalapp/services/api/client/lokal_http_client.dart';
+import 'package:lokalapp/services/api_service.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 
 import 'category_api_service_test.mocks.dart';
 import 'responses/category_api_service.responses.dart' as response;
 
-@GenerateMocks([API, LokalHttpClient])
+@GenerateMocks([APIService, LokalHttpClient])
 void main() {
   group('CategoryAPIService', () {
-    final api = MockAPI();
+    final api = MockAPIService();
     final client = MockLokalHttpClient();
-    final service = CategoryAPIService(api, client: client);
+    final service = CategoryAPI();
 
     final successUri = Uri.parse('https://success.example.com');
     final unsucessfulUri = Uri.parse('https://unsuccessful.example.com');

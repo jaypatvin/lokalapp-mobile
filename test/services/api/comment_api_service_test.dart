@@ -9,7 +9,8 @@ import 'package:lokalapp/models/post_requests/activities/comment.like.request.da
 import 'package:lokalapp/models/post_requests/activities/comment.request.dart';
 import 'package:lokalapp/services/api/api.dart';
 import 'package:lokalapp/services/api/client/lokal_http_client.dart';
-import 'package:lokalapp/services/api/comment_api_service.dart';
+import 'package:lokalapp/services/api/comment_api.dart';
+import 'package:lokalapp/services/api_service.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
@@ -17,12 +18,12 @@ import 'package:test/test.dart';
 import 'comment_api_service_test.mocks.dart';
 import 'responses/comment_api_service.responses.dart' as response;
 
-@GenerateMocks([API, LokalHttpClient])
+@GenerateMocks([APIService, LokalHttpClient])
 void main() {
   group('[CommentAPIService]', () {
-    final api = MockAPI();
+    final api = MockAPIService();
     final client = MockLokalHttpClient();
-    final service = CommentsAPIService(api, client: client);
+    final service = CommentsAPI();
 
     final successUri = Uri.parse('https://success.example.com');
     final unsucessfulUri = Uri.parse('https://unsuccessful.example.com');

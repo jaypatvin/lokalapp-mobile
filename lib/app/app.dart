@@ -67,7 +67,12 @@ import '../screens/profile/settings/settings.dart';
 import '../screens/profile/shop/user_shop.dart';
 import '../screens/profile/wishlist_screen.dart';
 import '../screens/welcome_screen.dart';
+import '../services/api/api.dart';
 import '../services/api/client/lokal_http_client.dart';
+import '../services/api_service.dart';
+import '../services/application_logger.dart';
+import '../services/auth_service.dart';
+import '../services/database/database.dart';
 import '../widgets/photo_view_gallery/gallery/gallery_asset_photo_view.dart';
 import '../widgets/photo_view_gallery/gallery/gallery_network_photo_view.dart';
 import '../widgets/reset_password_received.dart';
@@ -183,10 +188,26 @@ import 'app_router.dart';
     LazySingleton(classType: DialogService),
     LazySingleton(classType: PersistentTabController),
     LazySingleton(classType: AppRouter),
+    LazySingleton(classType: APIService),
     LazySingleton<LokalHttpClient>(
       classType: LokalHttpClient,
       // dispose: lokalHttpClientDispose,
     ),
+    LazySingleton(classType: AuthService),
+    LazySingleton(classType: ActivityAPI),
+    LazySingleton(classType: CategoryAPI),
+    LazySingleton(classType: ChatAPI),
+    LazySingleton(classType: CommentsAPI),
+    LazySingleton(classType: CommunityAPI),
+    LazySingleton(classType: ConversationAPI),
+    LazySingleton(classType: InviteAPI),
+    LazySingleton(classType: OrderAPI),
+    LazySingleton(classType: ProductAPI),
+    LazySingleton(classType: SearchAPI),
+    LazySingleton(classType: ShopAPI),
+    LazySingleton(classType: SubscriptionPlanAPI),
+    LazySingleton(classType: UserAPI),
+    LazySingleton(classType: Database),
   ],
 )
 class AppSetup {}

@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:keyboard_actions/keyboard_actions.dart';
-import 'package:provider/provider.dart';
 
-import '../../../../services/api/api.dart';
 import '../../../../state/mvvm_builder.widget.dart';
 import '../../../../state/views/hook.view.dart';
 import '../../../../utils/constants/themes.dart';
@@ -20,7 +18,7 @@ class InviteAFriend extends StatelessWidget {
   Widget build(BuildContext context) {
     return MVVM(
       view: (_, __) => _InviteAFriendView(),
-      viewModel: InviteAFriendViewModel(context.read<API>()),
+      viewModel: InviteAFriendViewModel(),
     );
   }
 }

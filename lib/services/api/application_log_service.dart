@@ -1,15 +1,16 @@
 import 'dart:convert';
 
+import '../../app/app.locator.dart';
 import '../../models/post_requests/shared/application_log.dart';
+import '../api_service.dart';
 import 'api.dart';
-import 'api_service.dart';
 import 'client/lokal_http_client.dart';
 
-class ApplicationLogsService extends APIService {
-  ApplicationLogsService(this.api, {LokalHttpClient? client})
-      : super(client: client ?? LokalHttpClient());
+class ApplicationLogsService {
+  ApplicationLogsService();
 
-  final API api;
+  final APIService api = locator<APIService>();
+  final client = locator<LokalHttpClient>();
   Endpoint get endpoint => Endpoint.applicationLogs;
 
   Future<bool> log({required ApplicationLog log}) async {

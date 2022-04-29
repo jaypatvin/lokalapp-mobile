@@ -13,7 +13,7 @@ import '../../providers/cart.dart';
 import '../../providers/products.dart';
 import '../../providers/shops.dart';
 import '../../services/api/api.dart';
-import '../../services/api/order_api_service.dart';
+import '../../services/api/order_api.dart';
 import '../../utils/constants/themes.dart';
 import '../../utils/functions.utils.dart';
 import '../../utils/repeated_days_generator/schedule_generator.dart';
@@ -33,13 +33,7 @@ class CheckoutSchedule extends StatefulWidget {
 }
 
 class _CheckoutScheduleState extends State<CheckoutSchedule> with ScreenLoader {
-  late final OrderAPIService _apiService;
-
-  @override
-  void initState() {
-    super.initState();
-    _apiService = OrderAPIService(context.read<API>());
-  }
+  final OrderAPI _apiService = locator<OrderAPI>();
 
   Future<void> _placeOrderHandler(String shopId) async {
     try {

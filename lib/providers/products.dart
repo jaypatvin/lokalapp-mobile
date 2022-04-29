@@ -4,25 +4,20 @@ import 'dart:developer';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 
+import '../app/app.locator.dart';
 import '../models/post_requests/product/product_create.request.dart';
 import '../models/post_requests/product/product_review.request.dart';
 import '../models/post_requests/product/product_update.request.dart';
 import '../models/post_requests/shop/operating_hours.request.dart';
 import '../models/product.dart';
 import '../services/api/api.dart';
-import '../services/api/product_api_service.dart';
+import '../services/api/product_api.dart';
 import '../services/database/collections/products.collection.dart';
 import '../services/database/database.dart';
 
 class Products extends ChangeNotifier {
-  factory Products(API api, Database database) {
-    return Products._(ProductApiService(api), database.products);
-  }
-
-  Products._(this._apiService, this._db);
-
-  final ProductsCollection _db;
-  final ProductApiService _apiService;
+  final ProductsCollection _db = locator<Database>().products;
+  final ProductAPI _apiService = locator<ProductAPI>();
 
   final _products = <Product>[];
 
@@ -41,7 +36,6 @@ class Products extends ChangeNotifier {
 
   bool get isLoading => _isLoading;
   String? get communityId => _communityId;
-  ProductApiService get api => _apiService;
 
   void setCommunityId(String? id) {
     if (id == _communityId) return;

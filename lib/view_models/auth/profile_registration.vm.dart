@@ -16,7 +16,7 @@ import '../../providers/bank_codes.dart';
 import '../../providers/categories.dart';
 import '../../providers/post_requests/auth_body.dart';
 import '../../services/api/api.dart';
-import '../../services/api/invite_api_service.dart';
+import '../../services/api/invite_api.dart';
 import '../../services/local_image_service.dart';
 import '../../state/view_model.dart';
 import '../../utils/constants/assets.dart';
@@ -70,7 +70,6 @@ class ProfileRegistrationViewModel extends ViewModel {
     final auth = context.read<Auth>();
     final AuthBody authBody = context.read<AuthBody>();
     final String inviteCode = authBody.inviteCode!;
-    final _apiService = InviteAPIService(context.read<API>());
     authBody.update(
       profilePhoto: mediaUrl,
       firstName: _firstName,
@@ -91,7 +90,7 @@ class ProfileRegistrationViewModel extends ViewModel {
     bool inviteCodeClaimed = false;
     try {
       if (auth.user != null) {
-        inviteCodeClaimed = await _apiService.claim(
+        inviteCodeClaimed = await locator<InviteAPI>().claim(
           request: InviteRequest(userId: auth.user!.id, code: inviteCode),
         );
       }

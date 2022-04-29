@@ -8,7 +8,8 @@ import 'package:lokalapp/models/post_requests/user/user_create.request.dart';
 import 'package:lokalapp/models/post_requests/user/user_update.request.dart';
 import 'package:lokalapp/services/api/api.dart';
 import 'package:lokalapp/services/api/client/lokal_http_client.dart';
-import 'package:lokalapp/services/api/user_api_service.dart';
+import 'package:lokalapp/services/api/user_api.dart';
+import 'package:lokalapp/services/api_service.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
@@ -16,12 +17,12 @@ import 'package:test/test.dart';
 import 'responses/user_api_service.responses.dart' as response;
 import 'user_api_service_test.mocks.dart';
 
-@GenerateMocks([API, LokalHttpClient])
+@GenerateMocks([APIService, LokalHttpClient])
 void main() {
   group('UserAPIService', () {
-    final api = MockAPI();
+    final api = MockAPIService();
     final client = MockLokalHttpClient();
-    final service = UserAPIService(api, client: client);
+    final service = UserAPI();
 
     final uri = Uri.parse('https://success.example.com');
     const headers = <String, String>{'idToken': 'valid'};
