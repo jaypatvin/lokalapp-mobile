@@ -54,17 +54,23 @@ class _PostCardView extends StatelessView<PostCardViewModel> {
       leading: ChatAvatar(
         displayName: user?.displayName,
         displayPhoto: user?.profilePhoto,
-        radius: 24.0.r,
+        radius: 24.0,
       ),
       title: Row(
         children: [
           Text(
             '${user?.firstName} ${user?.lastName}',
-            style: Theme.of(vm.context).textTheme.subtitle1,
+            style: Theme.of(vm.context)
+                .textTheme
+                .subtitle2
+                ?.copyWith(color: Colors.black),
           ),
           Text(
             createdSince,
-            style: Theme.of(vm.context).textTheme.subtitle2,
+            style: Theme.of(vm.context)
+                .textTheme
+                .subtitle2
+                ?.copyWith(fontWeight: FontWeight.w500, color: Colors.black),
             overflow: TextOverflow.clip,
           ),
         ],
@@ -84,19 +90,17 @@ class _PostCardView extends StatelessView<PostCardViewModel> {
 
   Widget _buildMessageBody({
     required PostCardViewModel vm,
-    double horizontalPadding = 8.0,
   }) {
     return GestureDetector(
       onTap: () => vm.goToPostDetails(activity),
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+        padding: const EdgeInsets.symmetric(horizontal: 21),
         child: Text(
           activity.message,
-          style: TextStyle(
-            fontFamily: 'Goldplay',
-            fontSize: 16.0.sp,
-            fontWeight: FontWeight.w500,
-          ),
+          style: Theme.of(vm.context)
+              .textTheme
+              .bodyText2
+              ?.copyWith(color: Colors.black),
           maxLines: 8,
           overflow: TextOverflow.ellipsis,
           softWrap: true,
@@ -109,8 +113,8 @@ class _PostCardView extends StatelessView<PostCardViewModel> {
     final images = activity.images;
     return StaggeredGrid.count(
       crossAxisCount: 2,
-      mainAxisSpacing: 4.0.w,
-      crossAxisSpacing: 4.0.h,
+      mainAxisSpacing: 7,
+      crossAxisSpacing: 8,
       children: images.map<StaggeredGridTile>((image) {
         final index = images.indexOf(image);
         final crossAxisCellCount = images.length % 2 != 0 && index == 0 ? 2 : 1;
@@ -130,75 +134,63 @@ class _PostCardView extends StatelessView<PostCardViewModel> {
 
   @override
   Widget render(BuildContext context, PostCardViewModel vm) {
-    final height = MediaQuery.of(context).size.height;
-    final width = MediaQuery.of(context).size.width;
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: width * 0.05),
-      child: GestureDetector(
-        onTap: () => vm.goToPostDetails(activity),
-        child: Card(
-          margin: EdgeInsets.only(top: height * 0.02),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16.0.r),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              SizedBox(height: 10.0.h),
-              _buildHeader(vm),
-              SizedBox(height: 5.0.h),
-              _buildMessageBody(
-                vm: vm,
-                horizontalPadding: 20.0.w,
-              ),
-              SizedBox(height: 5.0.h),
-              Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: 20.0.w,
-                ),
-                child: _buildPostImages(vm),
-              ),
-              Divider(
-                color: Colors.grey,
-                indent: 20.0.w,
-                endIndent: 20.0.w,
-              ),
-              Padding(
-                padding: EdgeInsets.only(
-                  left: 10.0.w,
-                  right: 20.0.w,
-                ),
-                child: Row(
-                  children: [
-                    IconButton(
-                      icon: Icon(
-                        activity.liked ? MdiIcons.heart : MdiIcons.heartOutline,
-                        color: activity.liked ? Colors.red : Colors.black,
+    return GestureDetector(
+      onTap: () => vm.goToPostDetails(activity),
+      child: Card(
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            SizedBox(height: 10.0.h),
+            _buildHeader(vm),
+            SizedBox(height: 5.0.h),
+            _buildMessageBody(vm: vm),
+            SizedBox(height: 5.0.h),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 21),
+              child: _buildPostImages(vm),
+            ),
+            const Divider(color: Colors.grey, indent: 21, endIndent: 21),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 21),
+              child: Row(
+                children: [
+                  InkWell(
+                    child: Icon(
+                      activity.liked ? MdiIcons.heart : MdiIcons.heartOutline,
+                      color: activity.liked ? Colors.red : Colors.black,
+                    ),
+                    onTap: () => vm.onLike(activity),
+                  ),
+                  const SizedBox(width: 10),
+                  Text(
+                    activity.likedCount.toString(),
+                    style: Theme.of(context)
+                        .textTheme
+                        .subtitle1
+                        ?.copyWith(fontSize: 15.0),
+                  ),
+                  const Spacer(),
+                  Row(
+                    children: [
+                      IconButton(
+                        icon: const Icon(MdiIcons.commentOutline),
+                        onPressed: () => vm.goToPostDetails(activity),
                       ),
-                      onPressed: () => vm.onLike(activity),
-                    ),
-                    Text(
-                      activity.likedCount.toString(),
-                      style: Theme.of(context).textTheme.subtitle1,
-                    ),
-                    const Spacer(),
-                    Row(
-                      children: [
-                        IconButton(
-                          icon: const Icon(MdiIcons.commentOutline),
-                          onPressed: () => vm.goToPostDetails(activity),
-                        ),
-                        Text(
-                          activity.commentCount.toString(),
-                          style: Theme.of(context).textTheme.subtitle1,
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
+                      Text(
+                        activity.commentCount.toString(),
+                        style: Theme.of(context)
+                            .textTheme
+                            .subtitle1
+                            ?.copyWith(fontSize: 15.0),
+                      ),
+                    ],
+                  ),
+                ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

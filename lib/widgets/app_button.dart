@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../utils/constants/themes.dart';
 
@@ -8,6 +7,8 @@ class AppButton extends StatelessWidget {
     required this.child,
     required this.isFilled,
     this.color = kTealColor,
+    this.height = 43,
+    this.width = 167,
     this.onPressed,
     this.textStyle,
   });
@@ -18,11 +19,15 @@ class AppButton extends StatelessWidget {
     bool isFilled = false,
     Color color = kTealColor,
     void Function()? onPressed,
+    double height = 43,
+    double width = 167,
   }) {
     return AppButton._(
       isFilled: isFilled,
       color: color,
       onPressed: onPressed,
+      height: height,
+      width: width,
       child: child,
     );
   }
@@ -34,13 +39,15 @@ class AppButton extends StatelessWidget {
     Color color = kTealColor,
     void Function()? onPressed,
     TextStyle? textStyle,
+    double height = 43,
+    double width = 167,
   }) {
     final _child = Text(
       text,
       textAlign: TextAlign.center,
       style: TextStyle(
         fontFamily: 'Goldplay',
-        fontSize: 16.0.sp,
+        // fontSize: 14.0,
         fontWeight: FontWeight.w600,
         color: isFilled ? Colors.white : color,
       ).merge(textStyle),
@@ -51,6 +58,8 @@ class AppButton extends StatelessWidget {
       onPressed: onPressed,
       textStyle: textStyle,
       isFilled: isFilled,
+      height: height,
+      width: width,
       child: _child,
     );
   }
@@ -61,13 +70,15 @@ class AppButton extends StatelessWidget {
     Color color = kTealColor,
     void Function()? onPressed,
     TextStyle? textStyle,
+    double height = 43,
+    double width = 167,
   }) {
     final _child = Text(
       text,
       textAlign: TextAlign.center,
-      style: TextStyle(
+      style: const TextStyle(
         fontFamily: 'Goldplay',
-        fontSize: 16.0.sp,
+        // fontSize: 14.0,
         fontWeight: FontWeight.w600,
         color: Colors.white,
       ).merge(textStyle),
@@ -78,6 +89,8 @@ class AppButton extends StatelessWidget {
       onPressed: onPressed,
       textStyle: textStyle,
       isFilled: true,
+      height: height,
+      width: width,
       child: _child,
     );
   }
@@ -88,13 +101,15 @@ class AppButton extends StatelessWidget {
     Color color = kTealColor,
     void Function()? onPressed,
     TextStyle? textStyle,
+    double height = 43,
+    double width = 167,
   }) {
     final _child = Text(
       text,
       textAlign: TextAlign.center,
       style: TextStyle(
         fontFamily: 'Goldplay',
-        fontSize: 16.0.sp,
+        // fontSize: 14.0,
         fontWeight: FontWeight.w600,
         color: color,
       ).merge(textStyle),
@@ -104,6 +119,8 @@ class AppButton extends StatelessWidget {
       color: color,
       onPressed: onPressed,
       textStyle: textStyle,
+      height: height,
+      width: width,
       child: _child,
     );
   }
@@ -122,6 +139,12 @@ class AppButton extends StatelessWidget {
   /// The function to be called when this button is pressed.
   final void Function()? onPressed;
 
+  /// The width of the button
+  final double width;
+
+  /// The height of the button
+  final double height;
+
   /// The style to be applied to the Button Label.
   ///
   /// Will be merged with:
@@ -136,14 +159,15 @@ class AppButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.all(2.5),
+      margin: const EdgeInsets.all(3),
+      width: width,
+      height: height,
       child: ElevatedButton(
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
           shape: const StadiumBorder(),
           elevation: 0.0,
           primary: isFilled ? color : Colors.transparent,
-          minimumSize: const Size(0, kMinInteractiveDimension),
           side: BorderSide(color: color),
         ),
         child: child,
