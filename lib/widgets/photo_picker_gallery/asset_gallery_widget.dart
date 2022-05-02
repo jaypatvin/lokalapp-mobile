@@ -59,8 +59,9 @@ class _AssetGalleryWidgetState extends State<AssetGalleryWidget> {
 
     return NotificationListener<ScrollNotification>(
       onNotification: _onScroll,
-      child: ListView.builder(
+      child: ListView.separated(
         key: ValueKey(widget.path),
+        separatorBuilder: (ctx, index) => const SizedBox(width: 8),
         shrinkWrap: true,
         scrollDirection: Axis.horizontal,
         itemCount: itemCount,
