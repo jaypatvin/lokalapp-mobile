@@ -55,7 +55,7 @@ class ProductsSliverGrid extends StatelessWidget {
         childAspectRatio: 2 / 3,
         crossAxisCount: 2,
         mainAxisSpacing: 24.0,
-        crossAxisSpacing: 12.0,
+        crossAxisSpacing: 8,
       ),
     );
   }

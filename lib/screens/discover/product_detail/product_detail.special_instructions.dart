@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class SpecialInstructionsTextField extends StatelessWidget {
   final int maxLines;
@@ -15,7 +14,7 @@ class SpecialInstructionsTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: maxLines * 15.0.sp,
+      height: 151,
       child: TextField(
         focusNode: focusNode,
         controller: controller,
@@ -27,29 +26,26 @@ class SpecialInstructionsTextField extends StatelessWidget {
           fillColor: Colors.white,
           filled: true,
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10.0.r),
+            borderRadius: BorderRadius.circular(10.0),
             borderSide: BorderSide(
               color: Colors.grey.shade300,
             ),
           ),
           focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10.0.r),
+            borderRadius: BorderRadius.circular(10.0),
             borderSide: BorderSide(
               color: Colors.grey.shade300,
             ),
           ),
           enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10.0.r),
+            borderRadius: BorderRadius.circular(10.0),
             borderSide: BorderSide(
               color: Colors.grey.shade300,
             ),
           ),
           // errorBorder: InputBorder.none,
           // disabledBorder: InputBorder.none,
-          contentPadding: EdgeInsets.symmetric(
-            horizontal: 24.0.w,
-            vertical: 24.0.h,
-          ),
+          contentPadding: const EdgeInsets.all(21),
           hintText: 'e.g no bell peppers, please.',
           hintStyle: Theme.of(context)
               .textTheme

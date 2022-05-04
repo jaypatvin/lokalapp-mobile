@@ -1,6 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
 
@@ -29,18 +29,18 @@ class ExploreCategories extends StatelessWidget {
             }
             final categories = provider.categories;
             return Padding(
-              padding: EdgeInsets.symmetric(horizontal: 5.0.w),
+              padding: const EdgeInsets.symmetric(horizontal: 16),
               child: CustomScrollView(
                 slivers: [
-                  SliverToBoxAdapter(
+                  const SliverToBoxAdapter(
                     child: Padding(
-                      padding: EdgeInsets.only(top: 20.0.h, bottom: 10.0.h),
+                      padding: EdgeInsets.only(top: 30, bottom: 20),
                       child: Text(
                         'Explore Categories',
                         style: TextStyle(
                           fontWeight: FontWeight.w600,
                           fontFamily: 'Goldplay',
-                          fontSize: 20.0.sp,
+                          fontSize: 20.0,
                         ),
                       ),
                     ),
@@ -52,75 +52,152 @@ class ExploreCategories extends StatelessWidget {
                       ),
                     ),
                   if (!provider.isLoading && provider.categories.isNotEmpty)
-                    SliverGrid(
-                      delegate: SliverChildBuilderDelegate(
-                        (ctx2, index) {
+                    SliverFillRemaining(
+                      child: AlignedGridView.count(
+                        crossAxisCount: 4,
+                        itemCount: categories.length,
+                        crossAxisSpacing: 30,
+                        mainAxisSpacing: 18,
+                        itemBuilder: (ctx, index) {
                           return GestureDetector(
                             onTap: () => provider.onCategoryTap(index),
-                            child: SizedBox(
-                              width: 100.0.w,
-                              child: Column(
-                                children: [
-                                  // TODO: separate widget
-                                  Container(
-                                    height: 70.0.r,
-                                    width: 70.0.r,
-                                    decoration: const BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: Color(0XFFF1FAFF),
-                                    ),
-                                    child: ClipRRect(
-                                      borderRadius:
-                                          BorderRadius.circular(30.0.r),
-                                      child: CachedNetworkImage(
-                                        imageUrl: categories[index].iconUrl,
-                                        fit: BoxFit.cover,
-                                        placeholder: (_, __) => Shimmer(
-                                          child: DecoratedBox(
-                                            decoration: BoxDecoration(
-                                              color: Colors.grey.shade300,
-                                            ),
+                            child: Column(
+                              children: [
+                                // TODO: separate widget
+                                Container(
+                                  height: 70,
+                                  width: 70,
+                                  decoration: const BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Color(0XFFF1FAFF),
+                                  ),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(30.0),
+                                    child: CachedNetworkImage(
+                                      imageUrl: categories[index].iconUrl,
+                                      fit: BoxFit.cover,
+                                      placeholder: (_, __) => Shimmer(
+                                        child: DecoratedBox(
+                                          decoration: BoxDecoration(
+                                            color: Colors.grey.shade300,
                                           ),
                                         ),
-                                        errorWidget: (ctx, url, err) {
-                                          if (categories[index]
-                                              .iconUrl
-                                              .isEmpty) {
-                                            return const Center(
-                                              child: Text('No image.'),
-                                            );
-                                          }
-                                          return const Center(
-                                            child:
-                                                Text('Error displaying image.'),
-                                          );
-                                        },
                                       ),
+                                      errorWidget: (ctx, url, err) {
+                                        if (categories[index].iconUrl.isEmpty) {
+                                          return const Center(
+                                            child: Text(
+                                              'No image.',
+                                              style: TextStyle(fontSize: 8),
+                                            ),
+                                          );
+                                        }
+                                        return const Center(
+                                          child: Text(
+                                            'Error displaying image.',
+                                            style: TextStyle(fontSize: 8),
+                                          ),
+                                        );
+                                      },
                                     ),
                                   ),
-                                  SizedBox(height: 10.0.h),
-                                  Text(
-                                    categories[index].name,
-                                    maxLines: 2,
-                                    softWrap: true,
-                                    overflow: TextOverflow.ellipsis,
-                                    textAlign: TextAlign.center,
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                ],
-                              ),
+                                ),
+                                const SizedBox(height: 10.0),
+                                Text(
+                                  categories[index].name,
+                                  maxLines: 2,
+                                  softWrap: true,
+                                  overflow: TextOverflow.ellipsis,
+                                  textAlign: TextAlign.center,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .subtitle2
+                                      ?.copyWith(
+                                        fontSize: 10,
+                                        color: Colors.black,
+                                      ),
+                                ),
+                              ],
                             ),
                           );
                         },
-                        childCount: categories.length,
-                      ),
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        childAspectRatio: 0.55.r,
-                        crossAxisCount: 4,
                       ),
                     ),
+                  // SliverGrid(
+                  //   delegate: SliverChildBuilderDelegate(
+                  //     (ctx2, index) {
+                  //       return GestureDetector(
+                  //         onTap: () => provider.onCategoryTap(index),
+                  //         child: Column(
+                  //           children: [
+                  //             // TODO: separate widget
+                  //             Container(
+                  //               height: 70,
+                  //               width: 70,
+                  //               decoration: const BoxDecoration(
+                  //                 shape: BoxShape.circle,
+                  //                 color: Color(0XFFF1FAFF),
+                  //               ),
+                  //               child: ClipRRect(
+                  //                 borderRadius: BorderRadius.circular(30.0),
+                  //                 child: CachedNetworkImage(
+                  //                   imageUrl: categories[index].iconUrl,
+                  //                   fit: BoxFit.cover,
+                  //                   placeholder: (_, __) => Shimmer(
+                  //                     child: DecoratedBox(
+                  //                       decoration: BoxDecoration(
+                  //                         color: Colors.grey.shade300,
+                  //                       ),
+                  //                     ),
+                  //                   ),
+                  //                   errorWidget: (ctx, url, err) {
+                  //                     if (categories[index].iconUrl.isEmpty) {
+                  //                       return const Center(
+                  //                         child: Text(
+                  //                           'No image.',
+                  //                           style: TextStyle(fontSize: 8),
+                  //                         ),
+                  //                       );
+                  //                     }
+                  //                     return const Center(
+                  //                       child: Text(
+                  //                         'Error displaying image.',
+                  //                         style: TextStyle(fontSize: 8),
+                  //                       ),
+                  //                     );
+                  //                   },
+                  //                 ),
+                  //               ),
+                  //             ),
+                  //             const SizedBox(height: 10.0),
+                  //             Text(
+                  //               categories[index].name,
+                  //               maxLines: 2,
+                  //               softWrap: true,
+                  //               overflow: TextOverflow.ellipsis,
+                  //               textAlign: TextAlign.center,
+                  //               style: Theme.of(context)
+                  //                   .textTheme
+                  //                   .subtitle2
+                  //                   ?.copyWith(
+                  //                     fontSize: 10,
+                  //                     color: Colors.black,
+                  //                   ),
+                  //             ),
+                  //           ],
+                  //         ),
+                  //       );
+                  //     },
+                  //     childCount: categories.length,
+                  //   ),
+                  //   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  //     crossAxisCount: 4,
+                  //     mainAxisSpacing: 18,
+                  //     crossAxisSpacing: 30,
+                  //     childAspectRatio: MediaQuery.of(context).size.width /
+                  //         (MediaQuery.of(context).size.height / 0.7),
+                  //   ),
+                  // ),
                 ],
               ),
             );

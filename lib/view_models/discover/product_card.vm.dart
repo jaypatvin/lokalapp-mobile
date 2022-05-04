@@ -27,7 +27,7 @@ class ProductCardViewModel extends ViewModel {
 
   String? get productImage => product.gallery?.firstOrNull?.url;
   String get productName => product.name;
-  String get productPrice => product.basePrice.toString();
+  String get productPrice => product.basePrice.toStringAsFixed(2);
   String get productRating => product.avgRating.toString();
 
   bool get isLiked => product.likes.contains(context.read<Auth>().user?.id);
