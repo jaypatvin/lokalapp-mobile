@@ -1,58 +1,52 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../utils/constants/assets.dart';
 
 class SocialBlock extends StatelessWidget {
-  final String? label;
-  final double? buttonWidth;
-
-  final Function? fbLogin;
-  final Function? appleLogin;
-  final Function? googleLogin;
+  final VoidCallback fbLoginCallback;
+  final VoidCallback appleLoginCallback;
+  final VoidCallback googleLoginCallback;
+  final double buttonWidth;
 
   const SocialBlock({
-    this.label,
-    this.buttonWidth,
-    this.fbLogin,
-    this.appleLogin,
-    this.googleLogin,
+    required this.fbLoginCallback,
+    required this.appleLoginCallback,
+    required this.googleLoginCallback,
+    this.buttonWidth = 50,
   });
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: buttonWidth! * 0.5),
+      padding: EdgeInsets.symmetric(horizontal: buttonWidth * 0.5),
       child: Column(
         children: [
           Text(
             'Sign in with',
-            style: TextStyle(
-              fontSize: 18.0.sp,
-              fontWeight: FontWeight.w500,
-            ),
+            style: Theme.of(context)
+                .textTheme
+                .bodyText1
+                ?.copyWith(color: Colors.black),
           ),
-          SizedBox(
-            height: 10.0.h,
-          ),
+          const SizedBox(height: 15.0),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               _SocialButton(
                 image: const AssetImage(kPngFbLogo),
-                onTap: fbLogin,
+                onTap: fbLoginCallback,
                 width: buttonWidth,
               ),
-              SizedBox(width: 10.0.w),
+              const SizedBox(width: 9),
               _SocialButton(
                 image: const AssetImage(kPngAppleLogo),
-                onTap: appleLogin,
+                onTap: appleLoginCallback,
                 width: buttonWidth,
               ),
-              SizedBox(width: 10.0.w),
+              const SizedBox(width: 9),
               _SocialButton(
                 image: const AssetImage(kPngGoogleLogo),
-                onTap: googleLogin,
+                onTap: googleLoginCallback,
                 width: buttonWidth,
               ),
             ],
@@ -64,26 +58,28 @@ class SocialBlock extends StatelessWidget {
 }
 
 class _SocialButton extends StatelessWidget {
-  final ImageProvider? image;
-  final Function? onTap;
-  final double? width;
+  final ImageProvider image;
+  final VoidCallback onTap;
+  final double width;
 
-  const _SocialButton({this.image, this.onTap, this.width});
+  const _SocialButton({
+    required this.image,
+    required this.onTap,
+    required this.width,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Material(
       type: MaterialType.circle,
       clipBehavior: Clip.hardEdge,
-      color: Colors.grey[200],
+      color: Colors.grey.shade200,
       child: Ink.image(
-        image: image!,
+        image: image,
         fit: BoxFit.fill,
         height: width,
         width: width,
-        child: InkWell(
-          onTap: onTap as void Function()?,
-        ),
+        child: InkWell(onTap: onTap),
       ),
     );
   }

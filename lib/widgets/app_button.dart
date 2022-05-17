@@ -47,7 +47,7 @@ class AppButton extends StatelessWidget {
       textAlign: TextAlign.center,
       style: TextStyle(
         fontFamily: 'Goldplay',
-        // fontSize: 14.0,
+        fontSize: 14.0,
         fontWeight: FontWeight.w600,
         color: isFilled ? Colors.white : color,
       ).merge(textStyle),
@@ -78,7 +78,7 @@ class AppButton extends StatelessWidget {
       textAlign: TextAlign.center,
       style: const TextStyle(
         fontFamily: 'Goldplay',
-        // fontSize: 14.0,
+        fontSize: 14.0,
         fontWeight: FontWeight.w600,
         color: Colors.white,
       ).merge(textStyle),
@@ -109,7 +109,7 @@ class AppButton extends StatelessWidget {
       textAlign: TextAlign.center,
       style: TextStyle(
         fontFamily: 'Goldplay',
-        // fontSize: 14.0,
+        fontSize: 14.0,
         fontWeight: FontWeight.w600,
         color: color,
       ).merge(textStyle),
