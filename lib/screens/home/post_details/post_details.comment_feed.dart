@@ -36,31 +36,26 @@ class CommentFeed extends StatelessWidget {
                 'There was an error loading the comments. Please try again.',
               );
             } else if (snapshot.data?.isEmpty ?? true) {
-              return const Text(
-                'No posts yet! Be the first one to post.',
-                style: TextStyle(
-                  fontWeight: FontWeight.w500,
+              return const Padding(
+                padding: EdgeInsets.symmetric(vertical: 10),
+                child: Text(
+                  'No posts yet! Be the first one to post.',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
               );
             } else {
-              return ListView.builder(
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: snapshot.data!.length,
+              return ListView.separated(
                 shrinkWrap: true,
-                itemBuilder: (ctx, index) {
-                  final comment = snapshot.data![index];
-                  return Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      CommentCard(
-                        key: Key(comment.id),
-                        activityId: _activityId,
-                        comment: comment,
-                      ),
-                      const Divider(),
-                    ],
-                  );
-                },
+                physics: const NeverScrollableScrollPhysics(),
+                itemBuilder: (context, index) => CommentCard(
+                  key: Key(snapshot.data![index].id),
+                  activityId: _activityId,
+                  comment: snapshot.data![index],
+                ),
+                separatorBuilder: (context, index) => const Divider(),
+                itemCount: snapshot.data!.length,
               );
             }
         }

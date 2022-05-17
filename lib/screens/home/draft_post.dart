@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:keyboard_actions/keyboard_actions.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -65,34 +64,30 @@ class _DraftPostView extends HookView<DraftPostViewModel>
       child: Scaffold(
         backgroundColor: Colors.white,
         appBar: CustomAppBar(
-          leadingWidth: 62.0.w,
+          leadingWidth: 75,
           backgroundColor: const Color(0xFFF1FAFF),
-          leading: Builder(
-            builder: (BuildContext context) {
-              return GestureDetector(
-                child: Container(
-                  padding: EdgeInsets.only(left: 15.0.w),
-                  child: Center(
-                    child: Text(
-                      'Cancel',
-                      style: Theme.of(context)
-                          .textTheme
-                          .subtitle2!
-                          .copyWith(color: kPinkColor),
-                    ),
-                  ),
+          leading: GestureDetector(
+            child: Container(
+              padding: const EdgeInsets.only(left: 16),
+              child: Center(
+                child: Text(
+                  'Cancel',
+                  style: Theme.of(context)
+                      .textTheme
+                      .subtitle1
+                      ?.copyWith(color: kPinkColor),
                 ),
-                onTap: () {
-                  Navigator.of(context).maybePop();
-                },
-              );
+              ),
+            ),
+            onTap: () {
+              Navigator.of(context).maybePop();
             },
           ),
           titleText: 'Write a Post',
-          titleStyle: Theme.of(context).textTheme.headline6!.copyWith(
-                color: Colors.black,
-                fontSize: 16.0.sp,
-              ),
+          titleStyle: Theme.of(context)
+              .textTheme
+              .headline6
+              ?.copyWith(color: Colors.black),
         ),
         body: KeyboardActions(
           config: _kbConfig,
@@ -103,8 +98,8 @@ class _DraftPostView extends HookView<DraftPostViewModel>
                 visible: vm.imageProvider.picked.isNotEmpty,
                 child: StaggeredGrid.count(
                   crossAxisCount: 2,
-                  mainAxisSpacing: 4.0.w,
-                  crossAxisSpacing: 4.0.h,
+                  mainAxisSpacing: 7,
+                  crossAxisSpacing: 8,
                   children:
                       vm.imageProvider.picked.map<StaggeredGridTile>((image) {
                     final index = vm.imageProvider.picked.indexOf(image);
@@ -128,37 +123,35 @@ class _DraftPostView extends HookView<DraftPostViewModel>
                 ),
               ),
               Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 10),
-                  child: TextField(
-                    focusNode: _nodePostText,
-                    onChanged: vm.onPostMessageChanged,
-                    cursorColor: Colors.black,
-                    keyboardType: TextInputType.multiline,
-                    maxLines: null,
-                    onTap: () => vm.showImagePicker = false,
-                    decoration: InputDecoration(
-                      border: InputBorder.none,
-                      focusedBorder: InputBorder.none,
-                      enabledBorder: InputBorder.none,
-                      errorBorder: InputBorder.none,
-                      disabledBorder: InputBorder.none,
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 15.0,
-                        vertical: 11.0,
-                      ),
-                      hintText: "What's on your mind?",
-                      hintStyle: Theme.of(context).textTheme.bodyText1,
+                child: TextField(
+                  focusNode: _nodePostText,
+                  onChanged: vm.onPostMessageChanged,
+                  cursorColor: Colors.black,
+                  keyboardType: TextInputType.multiline,
+                  maxLines: null,
+                  onTap: () => vm.showImagePicker = false,
+                  decoration: InputDecoration(
+                    border: InputBorder.none,
+                    focusedBorder: InputBorder.none,
+                    enabledBorder: InputBorder.none,
+                    errorBorder: InputBorder.none,
+                    disabledBorder: InputBorder.none,
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 32,
                     ),
-                    style: Theme.of(context).textTheme.bodyText1,
+                    hintText: "What's on your mind?",
+                    hintStyle: Theme.of(context)
+                        .textTheme
+                        .bodyText1
+                        ?.copyWith(fontSize: 18.0),
                   ),
+                  style: Theme.of(context).textTheme.bodyText1,
                 ),
               ),
               Container(
-                padding: EdgeInsets.symmetric(
-                  vertical: 10.0.h,
-                  horizontal: 15.0.w,
-                ),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                 color: kInviteScreenColor,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
@@ -168,7 +161,7 @@ class _DraftPostView extends HookView<DraftPostViewModel>
                       child: Container(
                         padding: const EdgeInsets.all(10),
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(100.r),
+                          borderRadius: BorderRadius.circular(100),
                           border: Border.all(
                             color: kTealColor,
                           ),
@@ -180,26 +173,29 @@ class _DraftPostView extends HookView<DraftPostViewModel>
                       ),
                     ),
                     const Spacer(),
-                    SizedBox(
-                      height: 40.0.h,
-                      width: 100.0.w,
-                      child: AppButton.filled(
-                        text: 'POST',
-                        onPressed: () async =>
-                            performFuture<void>(vm.postHandler),
-                      ),
+                    AppButton.filled(
+                      height: 39,
+                      width: 116,
+                      text: 'POST',
+                      onPressed: () async =>
+                          performFuture<void>(vm.postHandler),
                     ),
                   ],
                 ),
               ),
               AnimatedContainer(
+                color: kInviteScreenColor,
                 duration: const Duration(milliseconds: 100),
-                height: vm.showImagePicker ? 150.0.h : 0.0.h,
+                height: vm.showImagePicker ? 128 : 0.0,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 11,
+                ),
                 child: ImageGalleryPicker(
                   vm.imageProvider,
-                  pickerHeight: 150.h,
-                  assetHeight: 150.h,
-                  assetWidth: 150.h,
+                  pickerHeight: 107,
+                  assetHeight: 107,
+                  assetWidth: 109,
                   thumbSize: 200,
                   enableSpecialItemBuilder: true,
                 ),
@@ -223,14 +219,12 @@ class _ExitNotification extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final width = MediaQuery.of(context).size.width;
-
     return Wrap(
       children: [
         SizedBox(
-          height: 200.0.h,
-          child: Container(
-            margin: EdgeInsets.fromLTRB(20.0.w, 30.0.h, 20.0.w, 0),
+          height: 220.0,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 38),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -238,8 +232,8 @@ class _ExitNotification extends StatelessWidget {
                   'Leave post?',
                   style: Theme.of(context).textTheme.headline5,
                 ),
-                Container(
-                  margin: EdgeInsets.symmetric(horizontal: 70.0.w),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 76),
                   child: Text(
                     'Any progress you made will not be saved.',
                     style: Theme.of(context).textTheme.bodyText1,
@@ -254,7 +248,7 @@ class _ExitNotification extends StatelessWidget {
                         onPressed: () => Navigator.of(context).pop(true),
                       ),
                     ),
-                    SizedBox(width: width * 0.02),
+                    const SizedBox(width: 10),
                     Expanded(
                       child: AppButton.filled(
                         text: 'Continue Editing',
@@ -263,7 +257,6 @@ class _ExitNotification extends StatelessWidget {
                     ),
                   ],
                 ),
-                SizedBox(height: 20.0.h),
               ],
             ),
           ),

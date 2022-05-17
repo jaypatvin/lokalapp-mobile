@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+// import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart' show DateFormat;
 import 'package:keyboard_actions/keyboard_actions.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -121,10 +121,9 @@ class _PostDetailsView extends HookView<PostDetailViewModel>
               titleStyle: const TextStyle(color: Colors.white),
               actions: [
                 IconButton(
-                  icon: Icon(
+                  icon: const Icon(
                     Icons.more_horiz,
                     color: Colors.white,
-                    size: 30.sp,
                   ),
                   onPressed: context.read<Auth>().user!.id == activity.userId
                       ? () => vm.onPostOptionsPressed(
@@ -152,14 +151,13 @@ class _PostDetailsView extends HookView<PostDetailViewModel>
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 15.0.w),
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Padding(
-                                  padding: EdgeInsets.symmetric(
-                                    vertical: 20.0.h,
-                                  ),
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 20),
                                   child: user != null
                                       ? PostDetailsHeader(
                                           onTap: () =>
@@ -167,43 +165,43 @@ class _PostDetailsView extends HookView<PostDetailViewModel>
                                           firstName: user.firstName,
                                           lastName: user.lastName,
                                           photo: user.profilePhoto,
-                                          spacing: 10.0.w,
                                         )
                                       : const SizedBox(),
                                 ),
                                 Text(
                                   activity.message,
                                   softWrap: true,
-                                  style: TextStyle(
-                                    fontSize: 16.0.sp,
-                                    fontWeight: FontWeight.w500,
-                                  ),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyText1
+                                      ?.copyWith(
+                                        color: Colors.black,
+                                        fontSize: 18,
+                                      ),
                                 ),
-                                SizedBox(height: 20.0.h),
+                                if (activity.message.isNotEmpty)
+                                  const SizedBox(height: 40),
                                 PostDetailsImages(activity),
-                                SizedBox(height: 15.0.h),
+                                if (activity.images.isNotEmpty)
+                                  const SizedBox(height: 31),
                                 Text(
                                   DateFormat('hh:mm a • dd MMMM yyyy')
                                       .format(activity.createdAt),
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyText2!
-                                      .copyWith(
-                                        fontWeight: FontWeight.w500,
-                                        fontSize: 14.0.sp,
-                                      ),
+                                      .copyWith(fontWeight: FontWeight.w400),
                                 ),
                               ],
                             ),
                           ),
-                          SizedBox(height: 10.0.h),
+                          const SizedBox(height: 20),
                           CommentAndLikeRow(
                             activity: activity,
                             onLike: vm.onLike,
                           ),
-                          SizedBox(height: 10.0.h),
                           Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 15.0.w),
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
                             child: CommentFeed(
                               vm.commentFeed,
                               activity.id,
@@ -215,9 +213,9 @@ class _PostDetailsView extends HookView<PostDetailViewModel>
                   ),
                   Container(
                     color: kInviteScreenColor,
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 10.0.w,
-                      vertical: 10.0.h,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 12,
                     ),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.end,
@@ -291,12 +289,12 @@ class _PostDetailsView extends HookView<PostDetailViewModel>
                   ),
                   AnimatedContainer(
                     duration: const Duration(milliseconds: 100),
-                    height: vm.showImagePicker ? 150.0.h : 0,
+                    height: vm.showImagePicker ? 150.0 : 0,
                     child: ImageGalleryPicker(
                       vm.imageProvider,
-                      pickerHeight: 150.h,
-                      assetHeight: 150.h,
-                      assetWidth: 150.h,
+                      pickerHeight: 150,
+                      assetHeight: 150,
+                      assetWidth: 150,
                       thumbSize: 200,
                       enableSpecialItemBuilder: true,
                     ),

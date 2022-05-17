@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../chat/components/chat_avatar.dart';
 
@@ -10,7 +9,7 @@ class PostDetailsHeader extends StatelessWidget {
     required this.lastName,
     this.photo,
     this.onTap,
-    this.spacing = 10.0,
+    this.spacing = 15.0,
   }) : super(key: key);
 
   final String firstName;
@@ -28,15 +27,15 @@ class PostDetailsHeader extends StatelessWidget {
           ChatAvatar(
             displayName: firstName,
             displayPhoto: photo,
-            radius: 24.0.r,
+            radius: 30,
           ),
           SizedBox(width: spacing),
           Text(
             '$firstName $lastName',
             style: Theme.of(context)
                 .textTheme
-                .subtitle1!
-                .copyWith(fontSize: 19.0.sp),
+                .headline5
+                ?.copyWith(fontWeight: FontWeight.w600),
           ),
         ],
       ),

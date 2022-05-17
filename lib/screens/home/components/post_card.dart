@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
@@ -54,7 +53,7 @@ class _PostCardView extends StatelessView<PostCardViewModel> {
       leading: ChatAvatar(
         displayName: user?.displayName,
         displayPhoto: user?.profilePhoto,
-        radius: 24.0,
+        radius: 20.0,
       ),
       title: Row(
         children: [
@@ -91,19 +90,22 @@ class _PostCardView extends StatelessView<PostCardViewModel> {
   Widget _buildMessageBody({
     required PostCardViewModel vm,
   }) {
-    return GestureDetector(
-      onTap: () => vm.goToPostDetails(activity),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 21),
-        child: Text(
-          activity.message,
-          style: Theme.of(vm.context)
-              .textTheme
-              .bodyText2
-              ?.copyWith(color: Colors.black),
-          maxLines: 8,
-          overflow: TextOverflow.ellipsis,
-          softWrap: true,
+    return SizedBox(
+      height: activity.message.isEmpty ? 0 : null,
+      child: GestureDetector(
+        onTap: () => vm.goToPostDetails(activity),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 21),
+          child: Text(
+            activity.message,
+            style: Theme.of(vm.context)
+                .textTheme
+                .bodyText2
+                ?.copyWith(color: Colors.black),
+            maxLines: 8,
+            overflow: TextOverflow.ellipsis,
+            softWrap: true,
+          ),
         ),
       ),
     );
@@ -142,28 +144,33 @@ class _PostCardView extends StatelessView<PostCardViewModel> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            SizedBox(height: 10.0.h),
+            const SizedBox(height: 16),
             _buildHeader(vm),
-            SizedBox(height: 5.0.h),
+            const SizedBox(height: 25),
             _buildMessageBody(vm: vm),
-            SizedBox(height: 5.0.h),
+            if (activity.message.isNotEmpty) const SizedBox(height: 20),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 21),
               child: _buildPostImages(vm),
             ),
+            if (activity.images.isNotEmpty) const SizedBox(height: 20),
             const Divider(color: Colors.grey, indent: 21, endIndent: 21),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 21),
               child: Row(
                 children: [
-                  InkWell(
-                    child: Icon(
+                  IconButton(
+                    constraints: const BoxConstraints(
+                      minHeight: kMinInteractiveDimension,
+                    ),
+                    onPressed: () => vm.onLike(activity),
+                    padding: const EdgeInsets.only(right: 10),
+                    iconSize: 20,
+                    icon: Icon(
                       activity.liked ? MdiIcons.heart : MdiIcons.heartOutline,
                       color: activity.liked ? Colors.red : Colors.black,
                     ),
-                    onTap: () => vm.onLike(activity),
                   ),
-                  const SizedBox(width: 10),
                   Text(
                     activity.likedCount.toString(),
                     style: Theme.of(context)
@@ -175,8 +182,13 @@ class _PostCardView extends StatelessView<PostCardViewModel> {
                   Row(
                     children: [
                       IconButton(
-                        icon: const Icon(MdiIcons.commentOutline),
+                        constraints: const BoxConstraints(
+                          minHeight: kMinInteractiveDimension,
+                        ),
                         onPressed: () => vm.goToPostDetails(activity),
+                        padding: const EdgeInsets.only(right: 10),
+                        iconSize: 20,
+                        icon: const Icon(MdiIcons.commentOutline),
                       ),
                       Text(
                         activity.commentCount.toString(),

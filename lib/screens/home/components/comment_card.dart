@@ -1,7 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
 
@@ -57,21 +57,26 @@ class _CommentCardView extends HookView<CommentCardViewModel> {
       () {
         final images = vm.comment.images;
         return SizedBox(
-          height: images.isNotEmpty ? 95.h : 0,
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: images.length,
-            itemBuilder: (context, index) {
-              return SizedBox(
-                height: 95.h,
-                width: 95.h,
+          height: images.isNotEmpty ? 142 : 0,
+          child: StaggeredGrid.count(
+            crossAxisCount: 4,
+            mainAxisSpacing: 8,
+            crossAxisSpacing: 8,
+            children: images.map<StaggeredGridTile>((image) {
+              final index = images.indexOf(image);
+              final crossAxisCellCount =
+                  images.length % 2 != 0 && index == 0 ? 2 : 1;
+              return StaggeredGridTile.count(
+                crossAxisCellCount: crossAxisCellCount,
+                mainAxisCellCount: 1,
                 child: NetworkPhotoThumbnail(
+                  key: Key('post_details_${images[index].url}'),
+                  heroTag: 'post_details_${images[index].url}',
                   galleryItem: images[index],
                   onTap: () => openGallery(context, index, images),
                 ),
               );
-            },
+            }).toList(),
           ),
         );
       },
@@ -80,54 +85,70 @@ class _CommentCardView extends HookView<CommentCardViewModel> {
 
     return InkWell(
       onLongPress: _isCurrentUser
-          ? () => vm.onLongPress(
-                dialog: _CommentOptions(onDelete: vm.onDelete),
-              )
+          ? () => vm.onLongPress(dialog: _CommentOptions(onDelete: vm.onDelete))
           : null,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          ListTile(
-            contentPadding: EdgeInsets.zero,
-            leading: ChatAvatar(
-              displayName: user?.displayName,
-              displayPhoto: user?.profilePhoto,
-              radius: 18.0.r,
-              onTap: vm.onUserPressed,
-            ),
-            title: RichText(
-              text: TextSpan(
-                children: [
-                  TextSpan(
-                    text: '${user?.firstName} ${user?.lastName}',
-                    style: Theme.of(context)
-                        .textTheme
-                        .subtitle2!
-                        .copyWith(color: Colors.black),
-                    recognizer: TapGestureRecognizer()
-                      ..onTap = vm.onUserPressed,
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 20),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ChatAvatar(
+                  displayName: user?.displayName,
+                  displayPhoto: user?.profilePhoto,
+                  radius: 18.0,
+                  onTap: vm.onUserPressed,
+                ),
+                const SizedBox(width: 13),
+                Expanded(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      RichText(
+                        text: TextSpan(
+                          children: [
+                            TextSpan(
+                              text: '${user?.firstName} ${user?.lastName}',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .subtitle2!
+                                  .copyWith(color: Colors.black),
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = vm.onUserPressed,
+                            ),
+                            TextSpan(
+                              text: ' ${vm.comment.message}',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyText2!
+                                  .copyWith(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      _images,
+                    ],
                   ),
-                  TextSpan(
-                    text: ' ${vm.comment.message}',
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyText2!
-                        .copyWith(color: Colors.black),
+                ),
+                IconButton(
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(),
+                  icon: Icon(
+                    vm.isLiked ? MdiIcons.heart : MdiIcons.heartOutline,
+                    color: vm.isLiked ? Colors.red : Colors.black,
                   ),
-                ],
-              ),
-            ),
-            trailing: IconButton(
-              padding: EdgeInsets.zero,
-              constraints: const BoxConstraints(),
-              icon: Icon(
-                vm.isLiked ? MdiIcons.heart : MdiIcons.heartOutline,
-                color: vm.isLiked ? Colors.red : Colors.black,
-              ),
-              onPressed: vm.onLike,
+                  onPressed: vm.onLike,
+                ),
+              ],
             ),
           ),
-          _images,
         ],
       ),
     );
