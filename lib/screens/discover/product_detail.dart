@@ -123,7 +123,7 @@ class _ProductDetailView extends HookView<ProductDetailViewModel> {
                   ),
                   const SizedBox(width: 10),
                   Text(
-                    vm.product.avgRating.toString(),
+                    vm.product.avgRating.toStringAsFixed(2),
                     textAlign: TextAlign.center,
                     style: const TextStyle(color: Colors.amber),
                   )
