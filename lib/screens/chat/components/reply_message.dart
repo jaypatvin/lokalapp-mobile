@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../models/conversation.dart';
@@ -39,7 +38,7 @@ class ReplyMessageWidget extends StatelessWidget {
       children: [
         if (message.media != null && message.media!.isNotEmpty)
           SizedBox(
-            height: 90.h,
+            height: 90,
             child: ListView.builder(
               // Media only contains 5 images/media
               shrinkWrap: true,

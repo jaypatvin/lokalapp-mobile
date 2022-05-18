@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
@@ -49,7 +48,7 @@ class _ChatStreamView extends HookView<ChatStreamViewModel> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           const Text('You have not created a shop yet!'),
-          SizedBox(height: 5.0.h),
+          const SizedBox(height: 10.0),
           AppButton.transparent(
             text: 'Create Shop',
             color: kPurpleColor,
@@ -80,7 +79,7 @@ class _ChatStreamView extends HookView<ChatStreamViewModel> {
           slivers: [
             SliverToBoxAdapter(
               child: Padding(
-                padding: EdgeInsets.fromLTRB(8.0.w, 10.0.h, 8.0.w, 0.0),
+                padding: const EdgeInsets.fromLTRB(16, 24, 16, 0),
                 child: SearchTextField(
                   hintText: 'Search Chats',
                   enabled: true,
@@ -103,8 +102,8 @@ class _ChatList extends StatelessWidget {
   Container _buildCircleAvatar(List<ChatMember> members) {
     final multUsers = members.length > 1;
     return Container(
-      height: 45.0.h,
-      width: 45.0.w,
+      height: 45.0,
+      width: 45.0,
       decoration: const BoxDecoration(shape: BoxShape.circle),
       clipBehavior: Clip.hardEdge,
       child: Stack(
@@ -113,12 +112,12 @@ class _ChatList extends StatelessWidget {
           final member = members[index];
           if (multUsers) {
             return Positioned(
-              top: 13.0.h * index - 2.5 * members.length,
-              right: 13.0.w * index - 2.5 * members.length,
+              top: 13.0 * index - 2.5 * members.length,
+              right: 13.0 * index - 2.5 * members.length,
               child: ChatAvatar(
                 displayName: member.displayName,
                 displayPhoto: member.displayPhoto,
-                radius: 40.0.r / members.length,
+                radius: 40.0 / members.length,
               ),
             );
           } else {
@@ -260,7 +259,7 @@ class _ChatList extends StatelessWidget {
     }
 
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 5.0.r),
+      padding: const EdgeInsets.symmetric(vertical: 16),
       child: GestureDetector(
         onTap: () {
           context.read<AppRouter>().navigateTo(
@@ -280,21 +279,24 @@ class _ChatList extends StatelessWidget {
             title,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: TextStyle(
+            style: const TextStyle(
               fontWeight: FontWeight.w600,
-              fontSize: 13.0.sp,
+              fontSize: 14,
             ),
           ),
           subtitle: Text(
             chat.lastMessage.content,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: TextStyle(
-              fontWeight: FontWeight.w500,
-              fontSize: 12.0.sp,
+            style: const TextStyle(
+              fontWeight: FontWeight.w400,
+              fontSize: 12,
             ),
           ),
-          trailing: Text(DateFormat.jm().format(chat.lastMessage.createdAt)),
+          trailing: Text(
+            DateFormat.jm().format(chat.lastMessage.createdAt),
+            style: const TextStyle(fontWeight: FontWeight.w400, fontSize: 14),
+          ),
         ),
       ),
     );

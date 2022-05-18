@@ -1,6 +1,5 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
@@ -220,7 +219,13 @@ class _ChatProfileState extends State<ChatProfile> {
         displayName: _member.displayName,
         displayPhoto: _member.displayPhoto,
       ),
-      title: Text(displayName),
+      title: Text(
+        displayName,
+        style: Theme.of(context)
+            .textTheme
+            .subtitle2
+            ?.copyWith(color: Colors.black),
+      ),
     );
   }
 
@@ -238,7 +243,7 @@ class _ChatProfileState extends State<ChatProfile> {
           mainAxisSize: MainAxisSize.min,
           children: [
             SizedBox(
-              height: 120.0.r,
+              height: 120.0,
               child: CustomScrollView(
                 shrinkWrap: true,
                 scrollDirection: Axis.horizontal,
@@ -251,7 +256,7 @@ class _ChatProfileState extends State<ChatProfile> {
                         return ChatAvatar(
                           displayName: displayName,
                           displayPhoto: imgUrl,
-                          radius: 120.0.r / 2,
+                          radius: 120.0 / 2,
                         );
                       },
                       childCount: _members.length,
@@ -260,10 +265,8 @@ class _ChatProfileState extends State<ChatProfile> {
                 ],
               ),
             ),
-            SizedBox(height: 10.0.h),
-            Center(
-              child: _buildTitle(),
-            ),
+            const SizedBox(height: 10.0),
+            Center(child: _buildTitle()),
             ListTileTheme(
               minVerticalPadding: 0,
               textColor: Colors.black,
@@ -271,12 +274,12 @@ class _ChatProfileState extends State<ChatProfile> {
                 headerBackgroundColor: Colors.transparent,
                 backgroundColor: Colors.transparent,
                 iconColor: kTealColor,
-                title: const Text(
+                title: Text(
                   'Chat Members',
-                  style: TextStyle(
-                    fontWeight: FontWeight.w500,
-                    color: Colors.black,
-                  ),
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyText2
+                      ?.copyWith(color: Colors.black),
                 ),
                 children: [
                   ListView.builder(
@@ -293,9 +296,12 @@ class _ChatProfileState extends State<ChatProfile> {
               iconColor: kTealColor,
               minVerticalPadding: 0,
               child: ListTile(
-                title: const Text(
+                title: Text(
                   'Shared Media',
-                  style: TextStyle(fontWeight: FontWeight.w500),
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyText2
+                      ?.copyWith(color: Colors.black),
                 ),
                 onTap: () {
                   context.read<AppRouter>().navigateTo(

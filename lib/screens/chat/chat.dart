@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 
@@ -24,7 +23,7 @@ class Chat extends StatefulWidget {
 }
 
 class _ChatState extends State<Chat> with TickerProviderStateMixin {
-  TabController? _tabController;
+  late final TabController _tabController;
 
   late AnimationController _animationController;
   late Animation<Color?> _colorAnimation;
@@ -43,7 +42,7 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
       duration: const Duration(milliseconds: 250),
     );
 
-    _tabController!.addListener(_tabSelectionHandler);
+    _tabController.addListener(_tabSelectionHandler);
     _colorAnimation = ColorTween(
       begin: kTealColor,
       end: kPurpleColor,
@@ -62,7 +61,7 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
 
   void _tabSelectionHandler() {
     setState(() {
-      switch (_tabController?.index) {
+      switch (_tabController.index) {
         case 0:
           _animationController.reverse();
           break;
@@ -77,7 +76,8 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _ChatAppBar(
-        height: 120.0.h,
+        // height: 120.0.h,
+        height: 135,
         backgroundColor: _colorAnimation.value,
         bottom: _ChatAppBarBottom(
           tabController: _tabController,
@@ -129,13 +129,13 @@ class _ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      title: Text(
+      title: const Text(
         'Chats',
         style: TextStyle(
           color: Colors.white,
           fontFamily: 'Goldplay',
           fontWeight: FontWeight.w600,
-          fontSize: 22.0.sp,
+          fontSize: 20,
         ),
       ),
       centerTitle: true,
@@ -148,8 +148,8 @@ class _ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
 // This is the tab controller for the user  & shop chats
 class _ChatAppBarBottom extends StatelessWidget implements PreferredSizeWidget {
   final double height;
-  final TabController? tabController;
-  const _ChatAppBarBottom({this.height = 50.0, this.tabController});
+  final TabController tabController;
+  const _ChatAppBarBottom({this.height = 50.0, required this.tabController});
 
   @override
   Size get preferredSize => Size.fromHeight(height);
@@ -160,15 +160,15 @@ class _ChatAppBarBottom extends StatelessWidget implements PreferredSizeWidget {
     required int index,
   }) {
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 8.0.w),
+      padding: const EdgeInsets.symmetric(vertical: 8),
       child: Row(
         children: [
           ChatAvatar(
             displayName: name,
             displayPhoto: imgUrl,
-            radius: index == tabController?.index ? 22.0.r : 13.0.r,
+            radius: index == tabController.index ? 25 : 16,
           ),
-          SizedBox(width: 5.0.w),
+          SizedBox(width: tabController.index == index ? 12 : 10),
           Flexible(
             child: Text(
               name,
@@ -176,8 +176,11 @@ class _ChatAppBarBottom extends StatelessWidget implements PreferredSizeWidget {
               maxLines: 3,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 13.0.sp,
+                fontFamily: 'Goldplay',
+                fontWeight: FontWeight.w600,
+                fontSize: 14,
+                color:
+                    tabController.index == index ? Colors.black : Colors.white,
               ),
             ),
           ),
@@ -193,10 +196,10 @@ class _ChatAppBarBottom extends StatelessWidget implements PreferredSizeWidget {
     final Shop? shop = shops.isNotEmpty ? shops.first : null;
 
     return Container(
-      padding: EdgeInsets.only(bottom: 14.0.h, left: 14.0.w, right: 14.0.w),
+      padding: const EdgeInsets.only(bottom: 13, left: 16, right: 16),
       child: Container(
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(30.0.r),
+          borderRadius: BorderRadius.circular(30.0),
           color: Colors.white.withOpacity(0.5),
         ),
         child: TabBar(
@@ -204,7 +207,7 @@ class _ChatAppBarBottom extends StatelessWidget implements PreferredSizeWidget {
           labelColor: Colors.black,
           unselectedLabelColor: Colors.white,
           indicator: BoxDecoration(
-            borderRadius: BorderRadius.circular(30.0.r),
+            borderRadius: BorderRadius.circular(30.0),
             color: Colors.white,
           ),
           tabs: [
