@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:grouped_list/sliver_grouped_list.dart';
 
 import '../../../../models/product_subscription_plan.dart';
@@ -74,27 +73,25 @@ class SubscriptionPlanStream extends StatelessWidget {
 
                 return Container(
                   key: Key('header_$status'),
-                  margin: EdgeInsets.symmetric(
-                    horizontal: 16.0.w,
-                    vertical: 10.0.h,
-                  ),
+                  margin:
+                      const EdgeInsets.symmetric(horizontal: 16.0, vertical: 6),
                   child: Text(
                     _header,
-                    style: Theme.of(context)
-                        .textTheme
-                        .subtitle1
-                        ?.copyWith(fontSize: 18.0.sp),
+                    style: Theme.of(context).textTheme.subtitle2,
                   ),
                 );
               },
               itemComparator: (a, b) => b.createdAt.compareTo(a.createdAt),
               itemBuilder: (ctx, subscriptionPlan) {
-                return SubscriptionPlanCard(
-                  key: Key('card_${subscriptionPlan.id}'),
-                  isBuyer: isBuyer,
-                  subscriptionPlan: subscriptionPlan,
-                  onDetailsPressed: onDetailsPressed,
-                  onConfirmSubscription: onConfirmSubscription,
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: SubscriptionPlanCard(
+                    key: Key('card_${subscriptionPlan.id}'),
+                    isBuyer: isBuyer,
+                    subscriptionPlan: subscriptionPlan,
+                    onDetailsPressed: onDetailsPressed,
+                    onConfirmSubscription: onConfirmSubscription,
+                  ),
                 );
               },
             ),

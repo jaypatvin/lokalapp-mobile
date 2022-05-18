@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../models/product_subscription_plan.dart';
 import '../../../../utils/constants/themes.dart';
@@ -75,22 +74,22 @@ class SubscriptionPlanCard extends StatelessWidget {
     }
 
     return Card(
-      margin: EdgeInsets.only(top: 10.0.h, left: 10.w, right: 10.w),
+      margin: const EdgeInsets.only(bottom: 12),
       elevation: 0.0,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20.0.r),
+        borderRadius: BorderRadius.circular(20.0),
         side: _side,
       ),
       color: _isActive ? const Color(0xFFF1FAFF) : Colors.grey.shade200,
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 20.0.w, vertical: 10.0.h),
+        padding: const EdgeInsets.symmetric(horizontal: 21, vertical: 16),
         child: Column(
           children: [
             SubscriptionPlanDetails(
               subscriptionPlan: subscriptionPlan,
               isBuyer: isBuyer,
             ),
-            SizedBox(height: 15.0.h),
+            const SizedBox(height: 24),
             _buildButtons(),
           ],
         ),

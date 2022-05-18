@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 
 import 'default_styles.dart';
@@ -50,9 +49,9 @@ class LokalCalendarDay extends StatelessWidget {
     final EdgeInsets margin =
         isSelected ? const EdgeInsets.all(0.5) : const EdgeInsets.all(1.0);
     final EdgeInsets padding =
-        isSelected ? const EdgeInsets.all(1) : const EdgeInsets.all(2.0);
+        isSelected ? const EdgeInsets.all(2) : const EdgeInsets.all(3.0);
     final TextStyle _style = isSelected
-        ? getDefaultDayStyle().copyWith(fontSize: 14.0.sp)
+        ? getDefaultDayStyle().copyWith(fontSize: 14.0)
         : getDefaultDayStyle();
 
     return Container(
@@ -62,7 +61,7 @@ class LokalCalendarDay extends StatelessWidget {
         shape: RoundedRectangleBorder(
           side: BorderSide(color: borderColor),
           borderRadius: const BorderRadius.all(
-            Radius.circular(10.0),
+            Radius.circular(13.0),
           ),
         ),
       ),

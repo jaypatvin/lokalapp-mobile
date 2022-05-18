@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:keyboard_actions/keyboard_actions.dart';
 
 import '../../../models/app_navigator.dart';
@@ -115,7 +114,7 @@ class _NewSubscriptionScheduleView
             ],
           ),
           child: Padding(
-            padding: EdgeInsets.all(8.0.w),
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -129,7 +128,7 @@ class _NewSubscriptionScheduleView
                     ),
                   ),
                 ),
-                SizedBox(height: 10.0.h),
+                const SizedBox(height: 24),
                 SchedulePicker(
                   header: 'Schedule',
                   description: 'Which dates do you want this product '
@@ -144,7 +143,7 @@ class _NewSubscriptionScheduleView
                   limitSelectableDates: true,
                 ),
                 const Spacer(),
-                SizedBox(height: 10.0.h),
+                const SizedBox(height: 24),
                 SizedBox(
                   width: double.infinity,
                   child: AppButton.filled(
@@ -152,6 +151,7 @@ class _NewSubscriptionScheduleView
                     onPressed: vm.onSubmitHandler,
                   ),
                 ),
+                const SizedBox(height: 21),
               ],
             ),
           ),

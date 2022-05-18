@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../state/mvvm_builder.widget.dart';
 import '../../../state/views/hook.view.dart';
@@ -74,7 +73,7 @@ class _SubscriptionsSellerView extends HookView<SubscriptionsSellerViewModel> {
                     'You have not created a shop yet!',
                     style: Theme.of(context).textTheme.bodyText2,
                   ),
-                  SizedBox(height: 5.0.h),
+                  const SizedBox(height: 5),
                   AppButton.transparent(
                     text: 'Create Shop',
                     color: kPurpleColor,

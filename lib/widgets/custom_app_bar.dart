@@ -105,6 +105,7 @@ class _Title extends StatelessWidget {
     return Text(
       titleText,
       style: const TextStyle(
+        fontSize: 20,
         color: Color(0xFFFFC700),
         fontFamily: 'Goldplay',
         fontWeight: FontWeight.w600,

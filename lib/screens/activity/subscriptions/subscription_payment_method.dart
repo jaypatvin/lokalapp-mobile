@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../models/post_requests/product_subscription_plan/product_subscription_plan.request.dart';
@@ -9,6 +8,7 @@ import '../../../utils/constants/assets.dart';
 import '../../../utils/constants/themes.dart';
 import '../../../view_models/activity/subscriptions/subscription_payment_method.vm.dart';
 import '../../../widgets/custom_app_bar.dart';
+import '../../../widgets/overlays/constrained_scrollview.dart';
 import '../../../widgets/overlays/screen_loader.dart';
 import '../../../widgets/payment_options.widget.dart';
 
@@ -46,12 +46,11 @@ class _SubscriptionPaymentMethodView
         leadingColor: kTealColor,
         titleStyle: TextStyle(color: Colors.black),
       ),
-      body: SizedBox(
-        width: double.infinity,
+      body: SingleChildScrollView(
         child: Column(
           children: [
             SizedBox(
-              height: 180.0.h,
+              height: 175,
               child: Stack(
                 children: [
                   Positioned.fill(
@@ -69,11 +68,11 @@ class _SubscriptionPaymentMethodView
                           style: Theme.of(context)
                               .textTheme
                               .headline3
-                              ?.copyWith(color: kOrangeColor),
+                              ?.copyWith(fontSize: 44, color: kOrangeColor),
                         ),
                         Text(
                           'Total Payment',
-                          style: Theme.of(context).textTheme.subtitle1,
+                          style: Theme.of(context).textTheme.subtitle2,
                         ),
                       ],
                     ),
@@ -81,7 +80,7 @@ class _SubscriptionPaymentMethodView
                 ],
               ),
             ),
-            SizedBox(height: 30.0.h),
+            const SizedBox(height: 20),
             PaymentOptionsWidget(
               onPaymentPressed: (mode) async => performFuture<void>(
                 () async => vm.onSubmitHandler(mode),

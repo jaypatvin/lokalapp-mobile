@@ -22,6 +22,9 @@ class PaymentOptionViewModel extends ViewModel {
   bool get walletEnabled =>
       _paymentOptions.where((bank) => bank.type == BankType.wallet).isNotEmpty;
 
+  double get totalPayment =>
+      order.products.fold(0.0, (double prev, product) => prev + product.price);
+
   @override
   void init() {
     _paymentOptions =
