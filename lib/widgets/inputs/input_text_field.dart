@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 import '../../utils/constants/themes.dart';
@@ -36,17 +35,18 @@ class InputTextField extends StatelessWidget {
         disabledBorder: InputBorder.none,
         fillColor: Colors.white,
         filled: true,
-        contentPadding: EdgeInsets.symmetric(
-          horizontal: 15.0.w,
-        ),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 18),
         hintText: hintText,
-        hintStyle: Theme.of(context).textTheme.subtitle1!.copyWith(
-              fontWeight: FontWeight.normal,
-              color: Colors.grey[400],
-            ),
+        hintStyle: Theme.of(context)
+            .textTheme
+            .bodyText1
+            ?.copyWith(color: Colors.grey[400]),
         alignLabelWithHint: true,
         suffixIcon: IconButton(
-          icon: const Icon(MdiIcons.sendOutline),
+          icon: const Icon(MdiIcons.arrowRightCircle),
+          padding: EdgeInsets.zero,
+          constraints: const BoxConstraints(),
+          iconSize: 32,
           onPressed: onSend,
           color: kTealColor,
         ),
