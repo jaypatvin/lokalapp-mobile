@@ -210,8 +210,7 @@ class _MyAppState extends State<MyApp> {
       providers: _getProviders(),
       child: OKToast(
         child: ScreenUtilInit(
-          builder: (context) {
-            ScreenUtil.setContext(context);
+          builder: (context, widget) {
             return ConnectivityStatus(
               child: ScreenLoaderApp(
                 globalLoadingBgBlur: 0,

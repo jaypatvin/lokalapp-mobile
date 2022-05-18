@@ -29,6 +29,12 @@ class _BottomNavigationState extends State<BottomNavigation> {
         iconSize: 34,
         activeColorPrimary: const Color(0xFFCC3752),
         inactiveColorPrimary: const Color(0xFF103045),
+        textStyle: const TextStyle(
+          fontSize: 9,
+          fontFamily: 'Goldplay',
+          fontWeight: FontWeight.w400,
+          color: Colors.black,
+        ),
         routeAndNavigatorSettings: RouteAndNavigatorSettings(
           navigatorKey: AppRouter.homeNavigatorKey,
           initialRoute: Home.routeName,
@@ -44,6 +50,12 @@ class _BottomNavigationState extends State<BottomNavigation> {
         iconSize: 34,
         activeColorPrimary: const Color(0xFFCC3752),
         inactiveColorPrimary: const Color(0xFF103045),
+        textStyle: const TextStyle(
+          fontSize: 9,
+          fontFamily: 'Goldplay',
+          fontWeight: FontWeight.w400,
+          color: Colors.black,
+        ),
         routeAndNavigatorSettings: RouteAndNavigatorSettings(
           navigatorKey: AppRouter.discoverNavigatorKey,
           initialRoute: Discover.routeName,
@@ -59,6 +71,12 @@ class _BottomNavigationState extends State<BottomNavigation> {
         iconSize: 34,
         activeColorPrimary: const Color(0xFFCC3752),
         inactiveColorPrimary: const Color(0xFF103045),
+        textStyle: const TextStyle(
+          fontSize: 9,
+          fontFamily: 'Goldplay',
+          fontWeight: FontWeight.w400,
+          color: Colors.black,
+        ),
         routeAndNavigatorSettings: RouteAndNavigatorSettings(
           navigatorKey: AppRouter.chatNavigatorKey,
           initialRoute: Chat.routeName,
@@ -74,6 +92,12 @@ class _BottomNavigationState extends State<BottomNavigation> {
         iconSize: 34,
         activeColorPrimary: const Color(0xFFCC3752),
         inactiveColorPrimary: const Color(0xFF103045),
+        textStyle: const TextStyle(
+          fontSize: 9,
+          fontFamily: 'Goldplay',
+          fontWeight: FontWeight.w400,
+          color: Colors.black,
+        ),
         routeAndNavigatorSettings: RouteAndNavigatorSettings(
           navigatorKey: AppRouter.activityNavigatorKey,
           initialRoute: Activity.routeName,
@@ -89,6 +113,12 @@ class _BottomNavigationState extends State<BottomNavigation> {
         iconSize: 34,
         activeColorPrimary: const Color(0xFFCC3752),
         inactiveColorPrimary: const Color(0xFF103045),
+        textStyle: const TextStyle(
+          fontSize: 9,
+          fontFamily: 'Goldplay',
+          fontWeight: FontWeight.w400,
+          color: Colors.black,
+        ),
         routeAndNavigatorSettings: RouteAndNavigatorSettings(
           navigatorKey: AppRouter.profileNavigatorKey,
           initialRoute: ProfileScreen.routeName,
