@@ -3,6 +3,7 @@ import 'package:oktoast/oktoast.dart';
 import 'package:wechat_camera_picker/wechat_camera_picker.dart';
 
 import '../../routers/app_router.dart';
+import '../../utils/constants/themes.dart';
 import 'asset_gallery_widget.dart';
 import 'custom_pick_asset_widget.dart';
 import 'provider/custom_photo_provider.dart';
@@ -59,8 +60,27 @@ class ImageGalleryPicker extends StatelessWidget {
           provider.pickEntity(result);
         }
       },
-      child: const Center(
-        child: Icon(Icons.camera_alt_outlined, size: 42.0),
+      child: SizedBox(
+        child: DecoratedBox(
+          decoration: const BoxDecoration(color: kOrangeColor),
+          child: Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: const [
+                Icon(Icons.camera_alt_outlined, size: 24, color: Colors.white),
+                Text(
+                  'Take a photo',
+                  style: TextStyle(
+                    fontFamily: 'Goldplay',
+                    fontWeight: FontWeight.w600,
+                    fontSize: 10,
+                    color: Colors.white,
+                  ),
+                )
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }
