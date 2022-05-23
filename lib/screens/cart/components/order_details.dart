@@ -73,7 +73,7 @@ class OrderDetails extends StatelessWidget {
                       product.name,
                       overflow: TextOverflow.ellipsis,
                       maxLines: 2,
-                      style: Theme.of(context).textTheme.subtitle1,
+                      style: Theme.of(context).textTheme.subtitle2,
                     ),
                   ),
                   SizedBox(width: 16.0.w),
@@ -92,7 +92,7 @@ class OrderDetails extends StatelessWidget {
                         'x$quantity',
                         style: Theme.of(context)
                             .textTheme
-                            .bodyText1
+                            .bodyText2
                             ?.copyWith(fontWeight: FontWeight.w600),
                       ),
                     ],
@@ -104,7 +104,8 @@ class OrderDetails extends StatelessWidget {
                 child: Text(
                   'Edit',
                   style: Theme.of(context).textTheme.bodyText2?.copyWith(
-                        fontWeight: FontWeight.w300,
+                        fontWeight: FontWeight.w400,
+                        fontSize: 12,
                         decoration: TextDecoration.underline,
                         color: kTealColor,
                       ),

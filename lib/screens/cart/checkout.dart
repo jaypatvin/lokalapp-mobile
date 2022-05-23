@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/order.dart';
@@ -69,33 +68,32 @@ class Checkout extends HookWidget {
       [shop, product],
     );
     return Scaffold(
-      appBar: CustomAppBar(
+      appBar: const CustomAppBar(
         titleText: 'Checkout',
-        backgroundColor: kTealColor,
-        titleStyle: const TextStyle(color: Colors.white),
-        onPressedLeading: () => Navigator.pop(context),
+        backgroundColor: kOrangeColor,
+        titleStyle: TextStyle(color: kYellowColor),
       ),
       body: ConstrainedScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             Padding(
-              padding: EdgeInsets.only(
-                left: 16.0.w,
-                right: 16.0.w,
-                top: 16.0.h,
+              padding: const EdgeInsets.only(
+                left: 16.0,
+                right: 16.0,
+                top: 30,
               ),
               child: Text(
                 shop.name,
                 style: Theme.of(context)
                     .textTheme
-                    .headline6
-                    ?.copyWith(fontSize: 18.0.sp),
+                    .headline5
+                    ?.copyWith(fontSize: 18.0),
                 textAlign: TextAlign.center,
               ),
             ),
-            Container(
-              margin: const EdgeInsets.all(16.0),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 18, 16, 30),
               child: Consumer<ShoppingCart>(
                 builder: (_, cart, __) {
                   final order = cart.orders[shop.id]![productId]!;
@@ -124,7 +122,7 @@ class Checkout extends HookWidget {
               ),
             ),
             const Divider(),
-            const SizedBox(height: 16.0),
+            const SizedBox(height: 20),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Row(
@@ -134,12 +132,15 @@ class Checkout extends HookWidget {
                     style: Theme.of(context)
                         .textTheme
                         .headline6
-                        ?.copyWith(fontSize: 18.0.sp),
+                        ?.copyWith(color: Colors.black),
                   ),
-                  SizedBox(width: 10.0.w),
+                  const SizedBox(width: 9),
                   Text(
                     'Pick 1',
-                    style: Theme.of(context).textTheme.bodyText2,
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyText2
+                        ?.copyWith(fontWeight: FontWeight.w400),
                   ),
                 ],
               ),
@@ -157,7 +158,13 @@ class Checkout extends HookWidget {
                       groupValue: order.deliveryOption,
                       onChanged: _onCustomerPickUpToggle,
                       selected: DeliveryOption.pickup == order.deliveryOption,
-                      title: const Text('Customer Pick-up'),
+                      title: Text(
+                        'Customer Pick-up',
+                        style: Theme.of(context).textTheme.bodyText2?.copyWith(
+                              fontWeight: FontWeight.w400,
+                              color: Colors.black,
+                            ),
+                      ),
                     ),
                     RadioListTile<DeliveryOption>(
                       dense: true,
@@ -166,15 +173,23 @@ class Checkout extends HookWidget {
                       groupValue: order.deliveryOption,
                       onChanged: _onDeliveryToggle,
                       selected: DeliveryOption.delivery == order.deliveryOption,
-                      title: const Text('Delivery'),
+                      title: Text(
+                        'Delivery',
+                        style: Theme.of(context).textTheme.bodyText2?.copyWith(
+                              fontWeight: FontWeight.w400,
+                              color: Colors.black,
+                            ),
+                      ),
                     ),
                   ],
                 );
               },
             ),
             const Spacer(),
+            const Divider(),
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.0.w, vertical: 8.0),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 21),
               child: Row(
                 children: [
                   Expanded(
