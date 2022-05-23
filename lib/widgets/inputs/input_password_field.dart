@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../utils/constants/themes.dart';
 
@@ -34,14 +33,12 @@ class InputPasswordField extends StatelessWidget {
       obscureText: !isPasswordVisible,
       controller: controller,
       onChanged: onChanged,
-      style: TextStyle(
-        fontWeight: FontWeight.w500,
-        fontSize: 16.0.sp,
-      ),
+      style:
+          Theme.of(context).textTheme.subtitle2?.copyWith(color: Colors.black),
       decoration: InputDecoration(
         fillColor: fillColor,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.all(Radius.circular(30.0.r)),
+        border: const OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(30.0)),
           borderSide: BorderSide.none,
         ),
         suffixIcon: IconButton(
@@ -55,12 +52,10 @@ class InputPasswordField extends StatelessWidget {
         filled: true,
         alignLabelWithHint: true,
         hintText: hintText,
-        contentPadding: EdgeInsets.symmetric(horizontal: 16.0.w),
+        hintStyle:
+            Theme.of(context).textTheme.bodyText2?.copyWith(color: Colors.grey),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 21),
         errorText: displaySignInError ? errorMessage : null,
-        // errorBorder: OutlineInputBorder(
-        //   borderRadius: BorderRadius.all(Radius.circular(30.0.r)),
-        //   borderSide: const BorderSide(color: Colors.red),
-        // ),
       ),
     );
   }

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:keyboard_actions/keyboard_actions.dart';
 
 import '../../../../models/app_navigator.dart';
@@ -58,6 +57,39 @@ class _ChangePasswordView extends HookView<ChangePasswordViewModel>
       ),
     );
 
+    final _formField = useCallback(
+      ({
+        required FocusNode focusNode,
+        required void Function(String) onChanged,
+        String? Function(String?)? validator,
+        String? errorText,
+      }) {
+        return TextFormField(
+          focusNode: focusNode,
+          autocorrect: false,
+          obscureText: true,
+          onChanged: onChanged,
+          validator: validator,
+          style: Theme.of(context)
+              .textTheme
+              .subtitle2
+              ?.copyWith(color: Colors.black),
+          decoration: InputDecoration(
+            fillColor: Colors.white,
+            border: const OutlineInputBorder(
+              borderRadius: BorderRadius.all(Radius.circular(30.0)),
+              borderSide: BorderSide.none,
+            ),
+            filled: true,
+            contentPadding: const EdgeInsets.symmetric(horizontal: 21),
+            errorMaxLines: 3,
+            errorText: errorText,
+          ),
+        );
+      },
+      [],
+    );
+
     useEffect(() {
       void listener() {
         _addPadding.value = _oldPasswordFocusNode.hasFocus ||
@@ -89,152 +121,108 @@ class _ChangePasswordView extends HookView<ChangePasswordViewModel>
         backgroundColor: kTealColor,
         titleStyle: TextStyle(color: Colors.white),
       ),
-      body: SizedBox(
-        height: MediaQuery.of(context).size.height,
-        child: Column(
-          children: [
-            Expanded(
-              child: Padding(
-                padding: EdgeInsets.fromLTRB(20.0.w, 20.0.h, 20.0.w, 0),
-                child: KeyboardActions(
-                  config: _kbConfig,
-                  bottomAvoiderScrollPhysics: const BouncingScrollPhysics(),
-                  child: Form(
-                    key: _formKey,
-                    onChanged: vm.onFormChanged,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        Text(
+      body: Column(
+        children: [
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(16, 24, 16, 0),
+              child: KeyboardActions(
+                config: _kbConfig,
+                bottomAvoiderScrollPhysics: const BouncingScrollPhysics(),
+                child: Form(
+                  key: _formKey,
+                  onChanged: vm.onFormChanged,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(left: 21),
+                        child: Text(
                           'Old Password',
-                          style: Theme.of(context).textTheme.bodyText1,
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyText2
+                              ?.copyWith(color: Colors.black),
                         ),
-                        TextFormField(
-                          focusNode: _oldPasswordFocusNode,
-                          autocorrect: false,
-                          obscureText: true,
-                          onChanged: vm.onOldPasswordChanged,
-                          style: TextStyle(
-                            fontWeight: FontWeight.w500,
-                            fontSize: 16.0.sp,
-                          ),
-                          decoration: InputDecoration(
-                            fillColor: Colors.white,
-                            border: OutlineInputBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(30.0.r)),
-                              borderSide: BorderSide.none,
-                            ),
-                            isDense: false,
-                            filled: true,
-                            contentPadding:
-                                EdgeInsets.symmetric(horizontal: 16.0.w),
-                            errorMaxLines: 3,
-                            errorText: vm.signInError,
-                          ),
-                        ),
-                        SizedBox(
-                          height: 15.0.h,
-                        ),
-                        Text(
+                      ),
+                      const SizedBox(height: 4),
+                      _formField(
+                        focusNode: _oldPasswordFocusNode,
+                        onChanged: vm.onOldPasswordChanged,
+                        validator: vm.passwordValidator,
+                        errorText: vm.signInError,
+                      ),
+                      const SizedBox(height: 24),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 21),
+                        child: Text(
                           'New Password',
-                          style: Theme.of(context).textTheme.bodyText1,
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyText2
+                              ?.copyWith(color: Colors.black),
                         ),
-                        TextFormField(
-                          focusNode: _newPasswordFocusNode,
-                          autocorrect: false,
-                          obscureText: true,
-                          validator: vm.passwordValidator,
-                          onChanged: vm.onNewPasswordChanged,
-                          style: TextStyle(
-                            fontWeight: FontWeight.w500,
-                            fontSize: 16.0.sp,
-                          ),
-                          decoration: InputDecoration(
-                            fillColor: Colors.white,
-                            border: OutlineInputBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(30.0.r)),
-                              borderSide: BorderSide.none,
-                            ),
-                            isDense: false,
-                            filled: true,
-                            contentPadding:
-                                EdgeInsets.symmetric(horizontal: 16.0.w),
-                            errorMaxLines: 3,
-                          ),
-                        ),
-                        SizedBox(
-                          height: 15.0.h,
-                        ),
-                        Text(
+                      ),
+                      const SizedBox(height: 4),
+                      _formField(
+                        focusNode: _newPasswordFocusNode,
+                        onChanged: vm.onNewPasswordChanged,
+                        validator: vm.passwordValidator,
+                      ),
+                      const SizedBox(height: 24),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 21),
+                        child: Text(
                           'Confirm Password',
-                          style: Theme.of(context).textTheme.bodyText1,
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyText2
+                              ?.copyWith(color: Colors.black),
                         ),
-                        TextFormField(
+                      ),
+                      const SizedBox(height: 4),
+                      _formField(
                           focusNode: _confirmPasswordFocusNode,
-                          autocorrect: false,
-                          obscureText: true,
-                          // validator: vm.passwordValidator,
                           onChanged: vm.onConfirmPasswordChanged,
-                          style: TextStyle(
-                            fontWeight: FontWeight.w500,
-                            fontSize: 16.0.sp,
-                          ),
-                          decoration: InputDecoration(
-                            fillColor: Colors.white,
-                            border: OutlineInputBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(30.0.r)),
-                              borderSide: BorderSide.none,
-                            ),
-                            isDense: false,
-                            filled: true,
-                            contentPadding:
-                                EdgeInsets.symmetric(horizontal: 16.0.w),
-                            errorMaxLines: 3,
-                            errorText: vm.passwordMismatchError,
-                          ),
-                        ),
-                      ],
-                    ),
+                          errorText: vm.passwordMismatchError),
+                    ],
                   ),
                 ),
               ),
             ),
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 16.0.w),
-              width: double.maxFinite,
-              child: AppButton.filled(
-                text: 'Confirm',
-                onPressed: () async {
-                  _confirmPasswordFocusNode.unfocus();
-                  _newPasswordFocusNode.unfocus();
-                  _oldPasswordFocusNode.unfocus();
+          ),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            width: double.maxFinite,
+            child: AppButton.filled(
+              text: 'Confirm',
+              onPressed: () async {
+                _confirmPasswordFocusNode.unfocus();
+                _newPasswordFocusNode.unfocus();
+                _oldPasswordFocusNode.unfocus();
 
-                  if (!(_formKey.currentState?.validate() ?? false)) return;
+                if (!(_formKey.currentState?.validate() ?? false)) return;
 
-                  final success = await performFuture<bool>(vm.onFormSubmit);
-                  if (success!) {
-                    Navigator.push(
-                      context,
-                      AppNavigator.appPageRoute(
-                        builder: (_) => const MyAccountConfirmation(
-                          isPassword: true,
-                        ),
+                final success = await performFuture<bool>(vm.onFormSubmit);
+                if (success!) {
+                  Navigator.push(
+                    context,
+                    AppNavigator.appPageRoute(
+                      builder: (_) => const MyAccountConfirmation(
+                        isPassword: true,
                       ),
-                    );
-                  }
-                },
-              ),
+                    ),
+                  );
+                }
+              },
             ),
-            AnimatedContainer(
-              duration: const Duration(milliseconds: 200),
-              height: _addPadding.value ? kKeyboardActionHeight : 0,
-            ),
-            // const SizedBox(height: kKeyboardActionHeight),
-          ],
-        ),
+          ),
+          AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            height: _addPadding.value ? kKeyboardActionHeight : 0,
+          ),
+          // const SizedBox(height: kKeyboardActionHeight),
+        ],
       ),
     );
   }

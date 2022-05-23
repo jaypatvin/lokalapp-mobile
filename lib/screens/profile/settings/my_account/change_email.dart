@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../models/app_navigator.dart';
 import '../../../../state/mvvm_builder.widget.dart';
@@ -68,14 +67,13 @@ class _ChangeEmailView extends HookView<ChangeEmailViewModel>
     return Scaffold(
       backgroundColor: kInviteScreenColor,
       resizeToAvoidBottomInset: true,
-      appBar: CustomAppBar(
+      appBar: const CustomAppBar(
         titleText: 'Change Email Address',
         backgroundColor: kTealColor,
-        titleStyle: const TextStyle(color: Colors.white),
-        onPressedLeading: () => Navigator.pop(context),
+        titleStyle: TextStyle(color: Colors.white),
       ),
       body: Padding(
-        padding: EdgeInsets.fromLTRB(20.0.w, 20.0.h, 20.0.w, 0),
+        padding: const EdgeInsets.fromLTRB(16, 24, 16, 0),
         child: Column(
           children: [
             Expanded(
@@ -108,8 +106,8 @@ class _ChangeEmailView extends HookView<ChangeEmailViewModel>
                 'Email addresses do not match!',
                 style: Theme.of(context)
                     .textTheme
-                    .subtitle1!
-                    .copyWith(color: kPinkColor),
+                    .subtitle2
+                    ?.copyWith(color: kPinkColor),
               ),
             SizedBox(
               width: double.maxFinite,

@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
@@ -63,56 +62,68 @@ class _MyAccountState extends State<MyAccount> {
             physics: const NeverScrollableScrollPhysics(),
             children: [
               const SizedBox(height: 20),
-              ListTile(
-                tileColor: Colors.white,
-                onTap: () {
-                  final isEmailAuth = viewModel.ifEmailAuth();
-                  if (isEmailAuth) {
-                    Navigator.push(
-                      context,
-                      AppNavigator.appPageRoute(
-                        builder: (_) => const ChangeEmail(),
-                      ),
-                    );
-                  }
-                },
-                leading: Text(
-                  'Change Email Address',
-                  style: Theme.of(context).textTheme.bodyText1,
-                ),
-                trailing: const Icon(
-                  Icons.arrow_forward_ios,
-                  size: 15,
-                  color: kTealColor,
-                ),
+              ...ListTile.divideTiles(
+                color: const Color(0xFFF2F2F2),
+                tiles: [
+                  ListTile(
+                    tileColor: Colors.white,
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+                    onTap: () {
+                      final isEmailAuth = viewModel.ifEmailAuth();
+                      if (isEmailAuth) {
+                        Navigator.push(
+                          context,
+                          AppNavigator.appPageRoute(
+                            builder: (_) => const ChangeEmail(),
+                          ),
+                        );
+                      }
+                    },
+                    leading: Text(
+                      'Change Email Address',
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyText2
+                          ?.copyWith(fontWeight: FontWeight.w400),
+                    ),
+                    trailing: const Icon(
+                      Icons.arrow_forward_ios,
+                      size: 15,
+                      color: kTealColor,
+                    ),
+                  ),
+                  ListTile(
+                    tileColor: Colors.white,
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+                    onTap: () {
+                      final isEmailAuth = viewModel.ifEmailAuth();
+                      if (isEmailAuth) {
+                        Navigator.push(
+                          context,
+                          AppNavigator.appPageRoute(
+                            builder: (_) => const ChangePassword(),
+                          ),
+                        );
+                      }
+                    },
+                    leading: Text(
+                      'Change Password',
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyText2
+                          ?.copyWith(fontWeight: FontWeight.w400),
+                    ),
+                    trailing: const Icon(
+                      Icons.arrow_forward_ios,
+                      size: 15,
+                      color: kTealColor,
+                    ),
+                  ),
+                ],
               ),
-              const SizedBox(height: 5.0),
-              ListTile(
-                tileColor: Colors.white,
-                onTap: () {
-                  final isEmailAuth = viewModel.ifEmailAuth();
-                  if (isEmailAuth) {
-                    Navigator.push(
-                      context,
-                      AppNavigator.appPageRoute(
-                        builder: (_) => const ChangePassword(),
-                      ),
-                    );
-                  }
-                },
-                leading: Text(
-                  'Change Password',
-                  style: Theme.of(context).textTheme.bodyText1,
-                ),
-                trailing: const Icon(
-                  Icons.arrow_forward_ios,
-                  size: 15,
-                  color: kTealColor,
-                ),
-              ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 16),
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20.0.w),
+                padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: AppButton.transparent(
                   text: 'Delete Account',
                   color: kPinkColor,
