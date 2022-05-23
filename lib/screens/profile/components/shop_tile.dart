@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../models/shop.dart';
 import '../../../utils/constants/themes.dart';
@@ -18,7 +17,7 @@ class ShopTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      contentPadding: EdgeInsets.all(10.0.h),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       tileColor: Colors.white,
       leading: ChatAvatar(
         displayName: shop.name,
@@ -27,29 +26,31 @@ class ShopTile extends StatelessWidget {
       onTap: onGoToShop,
       title: Text(
         shop.name,
-        style: TextStyle(
+        style: const TextStyle(
           color: Colors.black,
-          fontWeight: FontWeight.bold,
-          fontSize: 14.0.sp,
+          fontWeight: FontWeight.w600,
+          fontSize: 12,
         ),
       ),
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: const [
-          Icon(Icons.star, color: Colors.amber, size: 20),
-          SizedBox(
-            width: 3,
-          ),
+        children: [
+          const Icon(Icons.star, color: Colors.amber, size: 20),
+          const SizedBox(width: 3),
           // TODO: ask for shop rating ????
           Text(
-            '0',
-            style: TextStyle(color: Colors.amber, fontSize: 14),
+            0.0.toStringAsFixed(2),
+            style: const TextStyle(
+              color: Colors.amber,
+              fontSize: 14,
+              fontWeight: FontWeight.w400,
+            ),
           ),
-          SizedBox(
+          const SizedBox(
             width: 15,
           ),
-          Icon(
+          const Icon(
             Icons.arrow_forward_ios,
             color: kTealColor,
             size: 16,

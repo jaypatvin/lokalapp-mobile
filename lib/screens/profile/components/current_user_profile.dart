@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../state/mvvm_builder.widget.dart';
 import '../../../state/views/stateless.view.dart';
@@ -24,19 +23,14 @@ class _CurrentUserProfileView
   @override
   Widget render(BuildContext context, CurrentUserProfileViewModel vm) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Container(
-          color: kInviteScreenColor,
-          padding: EdgeInsets.fromLTRB(
-            10.0.w,
-            20.0.w,
-            10.0.w,
-            10.0.w,
-          ),
-          width: double.infinity,
-          child: const Text(
+        const Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+          child: Text(
             'My Profile',
             style: TextStyle(
+              fontSize: 14,
               color: kTealColor,
               fontWeight: FontWeight.w600,
             ),

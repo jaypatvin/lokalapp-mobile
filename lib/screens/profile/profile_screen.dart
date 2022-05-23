@@ -1,7 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
 
@@ -51,6 +50,7 @@ class ProfileScreen extends StatelessWidget {
               ShopBanner(
                 userId: userId ?? context.read<Auth>().user!.id,
               ),
+              const SizedBox(height: 30),
               Expanded(
                 child: !isCurrentUser
                     ? Container(
@@ -132,41 +132,45 @@ class _ProfileHeaderView extends StatelessView<ProfileHeaderViewModel> {
               ),
             ),
             Positioned(
-              left: 10.0.w,
+              left: 0,
               child: Visibility(
                 visible: vm.isCurrentUser,
-                child: IconButton(
-                  padding: EdgeInsets.zero,
-                  icon: Icon(
-                    Icons.settings,
-                    size: 30.0.r,
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: IconButton(
+                    constraints: const BoxConstraints(),
+                    padding: EdgeInsets.zero,
+                    icon: const Icon(
+                      Icons.settings,
+                      size: 25,
+                    ),
+                    color: Colors.white,
+                    onPressed: vm.onSettingsPressed,
                   ),
-                  color: Colors.white,
-                  onPressed: vm.onSettingsPressed,
                 ),
               ),
             ),
             Center(
               child: Padding(
-                padding: EdgeInsets.only(top: 10.0.h, bottom: 10.0.h),
+                padding: const EdgeInsets.only(top: 25.0, bottom: 10.0),
                 child: Column(
                   children: [
-                    SizedBox(height: 10.0.h),
+                    const SizedBox(height: 10.0),
                     ChatAvatar(
                       displayName: user.displayName,
                       displayPhoto: user.profilePhoto,
-                      radius: 40.0.r,
+                      radius: 45,
                       onTap: vm.onPhotoTap,
                     ),
-                    SizedBox(height: 10.0.h),
+                    const SizedBox(height: 10.0),
                     Text(
                       user.displayName,
-                      style: Theme.of(context).textTheme.headline5?.copyWith(
-                            fontWeight: FontWeight.w700,
+                      style: Theme.of(context).textTheme.headline6?.copyWith(
+                            fontWeight: FontWeight.w600,
                             color: Colors.white,
                           ),
                     ),
-                    SizedBox(height: 10.0.h),
+                    if (!vm.isCurrentUser) const SizedBox(height: 10.0),
                     if (!vm.isCurrentUser)
                       AppButton.transparent(
                         text: 'Send a Message',
@@ -176,6 +180,7 @@ class _ProfileHeaderView extends StatelessView<ProfileHeaderViewModel> {
                           color: Colors.white,
                         ),
                       ),
+                    const SizedBox(height: 32),
                   ],
                 ),
               ),
@@ -183,15 +188,19 @@ class _ProfileHeaderView extends StatelessView<ProfileHeaderViewModel> {
             Visibility(
               visible: vm.isCurrentUser,
               child: Positioned(
-                right: 10.0.w,
-                child: IconButton(
-                  padding: EdgeInsets.zero,
-                  icon: Icon(
-                    Icons.more_horiz,
-                    size: 30.0.r,
+                right: 0,
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: IconButton(
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(),
+                    icon: const Icon(
+                      Icons.more_horiz,
+                      size: 25,
+                    ),
+                    color: Colors.white,
+                    onPressed: vm.onTripleDotsPressed,
                   ),
-                  color: Colors.white,
-                  onPressed: vm.onTripleDotsPressed,
                 ),
               ),
             ),
