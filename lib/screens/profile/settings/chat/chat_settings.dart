@@ -31,23 +31,28 @@ class ChatSettings extends StatelessWidget {
         builder: (ctx, _) {
           return Consumer<ChatSettingsViewModel>(
             builder: (ctx2, viewModel, _) {
-              return ListView(
-                children: [
-                  ListTile(
-                    tileColor: Colors.white,
-                    leading: Text(
-                      'Show Read Receipts',
-                      style: Theme.of(context).textTheme.bodyText1,
-                    ),
-                    trailing: CupertinoSwitch(
-                      value: viewModel.showReadReceipts,
-                      onChanged: (value) => viewModel.toggleReadReceipt(
-                        value: value,
+              return Padding(
+                padding: const EdgeInsets.only(top: 15),
+                child: ListView(
+                  children: [
+                    ListTile(
+                      tileColor: Colors.white,
+                      contentPadding:
+                          const EdgeInsets.symmetric(horizontal: 16),
+                      leading: Text(
+                        'Show Read Receipts',
+                        style: Theme.of(context).textTheme.bodyText2,
                       ),
-                      activeColor: kTealColor,
+                      trailing: CupertinoSwitch(
+                        value: viewModel.showReadReceipts,
+                        onChanged: (value) => viewModel.toggleReadReceipt(
+                          value: value,
+                        ),
+                        activeColor: kTealColor,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               );
             },
           );

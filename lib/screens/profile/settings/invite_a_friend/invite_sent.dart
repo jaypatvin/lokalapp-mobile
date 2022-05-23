@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lottie/lottie.dart';
 
 import '../../../../models/lokal_invite.dart';
@@ -10,6 +9,7 @@ import '../../../../utils/constants/themes.dart';
 import '../../../../view_models/profile/settings/invite_sent.vm.dart';
 import '../../../../widgets/app_button.dart';
 import '../../../../widgets/custom_app_bar.dart';
+import '../../../../widgets/overlays/constrained_scrollview.dart';
 
 class InviteSent extends StatelessWidget {
   const InviteSent(this.invite);
@@ -43,51 +43,64 @@ class _InviteSentView extends StatelessView<InviteSentViewModel> {
                   'Done',
                   style: Theme.of(context)
                       .textTheme
-                      .headline6!
-                      .copyWith(color: kTealColor),
+                      .headline6
+                      ?.copyWith(color: kTealColor),
                 ),
               ),
             ),
           )
         ],
       ),
-      body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 48.0.w),
+      body: ConstrainedScrollView(
         child: Column(
           children: [
-            Lottie.asset(kAnimationOk, fit: BoxFit.cover),
-            SizedBox(height: 15.h),
+            const Spacer(),
+            SizedBox(
+              height: 100,
+              width: 100,
+              child: Lottie.asset(
+                kAnimationOk,
+                fit: BoxFit.cover,
+              ),
+            ),
+            const SizedBox(height: 30),
             Text(
               'Invite Sent!',
               style: Theme.of(context)
                   .textTheme
-                  .headline4!
-                  .copyWith(color: kTealColor),
+                  .headline5
+                  ?.copyWith(color: kTealColor, fontWeight: FontWeight.w600),
             ),
-            SizedBox(height: 15.h),
-            const Text(
-              'Your friend should receive this invite code within a '
-              'few minutes.',
-              textAlign: TextAlign.center,
-            ),
-            SizedBox(height: 30.h),
-            const Text('The invite code is:'),
-            Text(
-              vm.inviteCode,
-              style: Theme.of(context).textTheme.headline3,
-            ),
-            const Spacer(),
+            const SizedBox(height: 5),
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 40.0.w),
-              child: SizedBox(
-                width: double.infinity,
-                child: AppButton.filled(
-                  text: 'COPY INVITE CODE',
-                  onPressed: vm.copyToClipboard,
-                ),
+              padding: const EdgeInsets.symmetric(horizontal: 61),
+              child: Text(
+                'Your friend should receive this invite code within a '
+                'few minutes.',
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.bodyText2?.copyWith(
+                    color: Colors.black, fontWeight: FontWeight.w400),
               ),
             ),
-            SizedBox(height: 20.0.h),
+            const SizedBox(height: 52),
+            Text(
+              'The invite code is:',
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyText2
+                  ?.copyWith(color: Colors.black, fontWeight: FontWeight.w400),
+            ),
+            Text(
+              vm.inviteCode,
+              style:
+                  Theme.of(context).textTheme.headline6?.copyWith(fontSize: 54),
+            ),
+            const SizedBox(height: 16),
+            AppButton.filled(
+              text: 'COPY INVITE CODE',
+              onPressed: vm.copyToClipboard,
+            ),
+            const Spacer(),
           ],
         ),
       ),
