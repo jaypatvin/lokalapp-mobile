@@ -11,51 +11,62 @@ class ProductsSliverGrid extends StatelessWidget {
     required this.onProductTap,
     this.crossAxisCount = 2,
     this.valueKeyPrefix,
+    this.displayError = true,
+    this.padding = EdgeInsets.zero,
   });
   final int crossAxisCount;
   final List<Product> items;
   final void Function(String) onProductTap;
   final String? valueKeyPrefix;
+  final bool displayError;
+  final EdgeInsets padding;
 
   @override
   Widget build(BuildContext context) {
     if (items.isEmpty) {
-      return const SliverToBoxAdapter(
-        child: SizedBox(
-          height: 120,
-          child: Center(
-            child: Text(
-              'There are no products yet.',
+      if (displayError) {
+        return const SliverToBoxAdapter(
+          child: SizedBox(
+            height: 120,
+            child: Center(
+              child: Text(
+                'There are no products yet.',
+              ),
             ),
           ),
-        ),
-      );
+        );
+      } else {
+        return const SliverToBoxAdapter(child: SizedBox());
+      }
     }
 
-    return SliverGrid(
-      delegate: SliverChildBuilderDelegate(
-        (_, index) {
-          try {
-            final _prefix = valueKeyPrefix ?? const Uuid();
-            return SizedBox(
-              key: ValueKey('${_prefix}_${items[index].id}'),
-              child: GestureDetector(
-                onTap: () => onProductTap(items[index].id),
-                child: ProductCard(items[index].id),
-              ),
-            );
-          } catch (e, stack) {
-            FirebaseCrashlytics.instance.recordError(e, stack);
-            return const SizedBox();
-          }
-        },
-        childCount: items.length,
-      ),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        childAspectRatio: 2 / 3,
-        crossAxisCount: 2,
-        mainAxisSpacing: 24.0,
-        crossAxisSpacing: 8,
+    return SliverPadding(
+      padding: padding,
+      sliver: SliverGrid(
+        delegate: SliverChildBuilderDelegate(
+          (_, index) {
+            try {
+              final _prefix = valueKeyPrefix ?? const Uuid();
+              return SizedBox(
+                key: ValueKey('${_prefix}_${items[index].id}'),
+                child: GestureDetector(
+                  onTap: () => onProductTap(items[index].id),
+                  child: ProductCard(items[index].id),
+                ),
+              );
+            } catch (e, stack) {
+              FirebaseCrashlytics.instance.recordError(e, stack);
+              return const SizedBox();
+            }
+          },
+          childCount: items.length,
+        ),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          childAspectRatio: 2 / 3,
+          crossAxisCount: 2,
+          mainAxisSpacing: 24.0,
+          crossAxisSpacing: 8,
+        ),
       ),
     );
   }

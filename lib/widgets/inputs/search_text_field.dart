@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class SearchTextField extends StatelessWidget {
   final TextEditingController? controller;
@@ -26,28 +25,26 @@ class SearchTextField extends StatelessWidget {
       controller: controller,
       onChanged: onChanged,
       onTap: onTap,
-      style: TextStyle(fontSize: 16.0.sp),
+      style: Theme.of(context).textTheme.bodyText1,
       onSubmitted: onSubmitted,
       decoration: InputDecoration(
         isDense: true, // Added this
         filled: true,
-        border: OutlineInputBorder(
+        border: const OutlineInputBorder(
           borderSide: BorderSide.none,
-          borderRadius: BorderRadius.all(Radius.circular(25.0.r)),
+          borderRadius: BorderRadius.all(Radius.circular(30)),
         ),
         fillColor: const Color(0xffF2F2F2),
-        prefixIcon: Icon(
+        prefixIcon: const Icon(
           Icons.search,
-          color: const Color(0xffBDBDBD),
-          size: 24.0.sp,
+          color: Color(0xffBDBDBD),
         ),
         hintText: hintText,
-        labelStyle: TextStyle(fontSize: 20.0.sp),
         contentPadding: const EdgeInsets.symmetric(vertical: 1),
-        hintStyle: const TextStyle(
-          color: Color(0xffBDBDBD),
-          fontWeight: FontWeight.w500,
-        ),
+        hintStyle: Theme.of(context)
+            .textTheme
+            .bodyText1
+            ?.copyWith(color: const Color(0xFFBDBDBD)),
       ),
     );
   }
