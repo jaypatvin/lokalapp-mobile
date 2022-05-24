@@ -2,14 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../models/app_navigator.dart';
 import '../../../../routers/app_router.dart';
 import '../../../../utils/constants/themes.dart';
 import '../../../../widgets/app_button.dart';
 import '../../../../widgets/custom_app_bar.dart';
 import '../../../../widgets/overlays/constrained_scrollview.dart';
 import '../settings.dart';
-import 'account_deleted.dart';
 
 class DeleteAccount extends StatefulWidget {
   const DeleteAccount({Key? key}) : super(key: key);

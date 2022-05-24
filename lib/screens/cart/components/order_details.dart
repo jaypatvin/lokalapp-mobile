@@ -1,6 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
 
 import '../../../models/product.dart';
@@ -25,8 +24,8 @@ class OrderDetails extends StatelessWidget {
       children: [
         if (product.gallery?.isNotEmpty ?? false)
           SizedBox(
-            width: 60.0.h,
-            height: 60.0.h,
+            width: 67,
+            height: 67,
             child: CachedNetworkImage(
               imageUrl: product.gallery!.first.url,
               fit: BoxFit.cover,
@@ -43,8 +42,8 @@ class OrderDetails extends StatelessWidget {
           )
         else
           SizedBox(
-            width: 60.0.h,
-            height: 60.0.h,
+            width: 67,
+            height: 67,
             child: DecoratedBox(
               decoration: BoxDecoration(
                 border: Border.all(
@@ -59,7 +58,7 @@ class OrderDetails extends StatelessWidget {
               ),
             ),
           ),
-        SizedBox(width: 16.0.w),
+        const SizedBox(width: 15),
         Expanded(
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -76,7 +75,7 @@ class OrderDetails extends StatelessWidget {
                       style: Theme.of(context).textTheme.subtitle2,
                     ),
                   ),
-                  SizedBox(width: 16.0.w),
+                  const SizedBox(width: 16.0),
                   Column(
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.end,
@@ -85,14 +84,14 @@ class OrderDetails extends StatelessWidget {
                         product.basePrice.toString(),
                         style: Theme.of(context)
                             .textTheme
-                            .bodyText1
+                            .bodyText2
                             ?.copyWith(fontWeight: FontWeight.w400),
                       ),
                       Text(
                         'x$quantity',
                         style: Theme.of(context)
                             .textTheme
-                            .bodyText2
+                            .subtitle2
                             ?.copyWith(fontWeight: FontWeight.w600),
                       ),
                     ],

@@ -170,9 +170,9 @@ class _ProductScheduleState extends State<ProductSchedule> {
                 );
               },
             ),
-            SizedBox(height: 24),
+            const SizedBox(height: 24),
             _buildRadioTile(),
-            SizedBox(height: 23),
+            const SizedBox(height: 23),
             Visibility(
               visible: _productSchedule == ProductScheduleState.custom,
               child: Text(

@@ -130,7 +130,6 @@ class _TransactionsView extends HookView<TransactionsViewModel>
                             const Icon(
                               Icons.arrow_forward_ios,
                               color: kTealColor,
-                              size: 14.0,
                             ),
                           ],
                         ),

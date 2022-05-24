@@ -84,7 +84,10 @@ class _VerifyScreenState extends State<VerifyScreen> with ScreenLoader {
           child: Text(
             'Select type of ID',
             style: TextStyle(
-                color: Colors.grey, fontSize: 14, fontWeight: FontWeight.w500),
+              color: Colors.grey,
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+            ),
           ),
         ),
         value: _chosenIdType,

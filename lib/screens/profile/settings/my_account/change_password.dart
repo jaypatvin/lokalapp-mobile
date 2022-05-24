@@ -182,9 +182,10 @@ class _ChangePasswordView extends HookView<ChangePasswordViewModel>
                       ),
                       const SizedBox(height: 4),
                       _formField(
-                          focusNode: _confirmPasswordFocusNode,
-                          onChanged: vm.onConfirmPasswordChanged,
-                          errorText: vm.passwordMismatchError),
+                        focusNode: _confirmPasswordFocusNode,
+                        onChanged: vm.onConfirmPasswordChanged,
+                        errorText: vm.passwordMismatchError,
+                      ),
                     ],
                   ),
                 ),

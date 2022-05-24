@@ -34,7 +34,6 @@ class _AddShopView extends HookView<AddShopViewModel> {
   @override
   Widget render(BuildContext context, AddShopViewModel viewModel) {
     final themeData = Theme.of(context);
-    final width = MediaQuery.of(context).size.width;
     final height = MediaQuery.of(context).size.height;
     final padding = height * 0.05;
 

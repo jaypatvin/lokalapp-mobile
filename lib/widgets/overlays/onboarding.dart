@@ -1,6 +1,5 @@
 import 'package:after_layout/after_layout.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
@@ -70,10 +69,10 @@ class _OnboardingState extends State<Onboarding> with AfterLayoutMixin {
 
   Widget _buildOnboardingCard() {
     return Container(
-      padding: EdgeInsets.fromLTRB(20.0.w, 30.0.h, 20.0.w, 20.0.h),
-      decoration: BoxDecoration(
+      padding: const EdgeInsets.fromLTRB(30, 24, 30, 16),
+      decoration: const BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.all(Radius.circular(20.0.r)),
+        borderRadius: BorderRadius.all(Radius.circular(16)),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -87,7 +86,7 @@ class _OnboardingState extends State<Onboarding> with AfterLayoutMixin {
                   SvgPicture.asset(
                     _onboardDetails[widget.screen]!['icon']!,
                     color: kPinkColor,
-                    height: 75.0.h,
+                    height: 60,
                   ),
                   Text(
                     _onboardDetails[widget.screen]!['title']!,
@@ -97,7 +96,7 @@ class _OnboardingState extends State<Onboarding> with AfterLayoutMixin {
                   )
                 ],
               ),
-              SizedBox(width: 20.0.w),
+              const SizedBox(width: 20.0),
               Expanded(
                 child: Text(
                   _onboardDetails[widget.screen]!['description']!,
@@ -106,23 +105,20 @@ class _OnboardingState extends State<Onboarding> with AfterLayoutMixin {
               )
             ],
           ),
-          const SizedBox(height: 15),
-          SizedBox(
-            width: MediaQuery.of(context).size.width * 0.5,
-            child: AppButton.filled(
-              text: _onboardDetails[widget.screen]!['label'] ?? '',
-              onPressed: () async {
-                setState(() {
-                  _displayOnboarding = false;
-                });
-                await context
-                    .read<UserSharedPreferences>()
-                    .updateOnboardingStatus(widget.screen);
-                final _tabController = context.read<PersistentTabController>();
-                if (_tabController.index == 4) return;
-                _tabController.index++;
-              },
-            ),
+          const SizedBox(height: 16),
+          AppButton.filled(
+            text: _onboardDetails[widget.screen]!['label'] ?? '',
+            onPressed: () async {
+              setState(() {
+                _displayOnboarding = false;
+              });
+              await context
+                  .read<UserSharedPreferences>()
+                  .updateOnboardingStatus(widget.screen);
+              final _tabController = context.read<PersistentTabController>();
+              if (_tabController.index == 4) return;
+              _tabController.index++;
+            },
           ),
         ],
       ),

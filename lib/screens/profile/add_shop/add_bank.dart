@@ -56,7 +56,7 @@ class _AddBankView extends StatelessView<AddBankViewModel> {
               vm.header,
               style: Theme.of(context).textTheme.headline6,
             ),
-            SizedBox(height: 15),
+            const SizedBox(height: 15),
             Expanded(
               child: Consumer<ShopBody>(
                 builder: (ctx, shopBody, _) {
@@ -204,7 +204,7 @@ class _AddBankView extends StatelessView<AddBankViewModel> {
                 },
               ),
             ),
-              const SizedBox(height: 24),
+            const SizedBox(height: 24),
           ],
         ),
       ),

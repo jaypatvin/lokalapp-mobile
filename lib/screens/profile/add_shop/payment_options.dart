@@ -61,7 +61,7 @@ class _SetupPaymentOptionsView extends HookView<SetupPaymentOptionsViewModel>
         titleText: vm.edit ? 'Edit Shop' : 'Add Shop',
       ),
       body: Container(
-        padding: EdgeInsets.symmetric(horizontal: 16.0),
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -162,7 +162,7 @@ class _SetupPaymentOptionsView extends HookView<SetupPaymentOptionsViewModel>
                 );
               },
             ),
-              const SizedBox(height: 24),
+            const SizedBox(height: 24),
           ],
         ),
       ),

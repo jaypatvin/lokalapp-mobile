@@ -383,7 +383,7 @@ class _AddProductState extends State<AddProduct> with ScreenLoader {
                     onSelectImage: _onSelectImage,
                   ),
                 ),
-                SizedBox(height: 24),
+                const SizedBox(height: 24),
                 Text(
                   'Product Name',
                   style: Theme.of(context)
@@ -391,7 +391,7 @@ class _AddProductState extends State<AddProduct> with ScreenLoader {
                       .subtitle2
                       ?.copyWith(color: Colors.black),
                 ),
-                SizedBox(height: 12),
+                const SizedBox(height: 12),
                 InputNameField(
                   controller: _nameController,
                   focusNode: _nameFocusNode,
@@ -405,7 +405,7 @@ class _AddProductState extends State<AddProduct> with ScreenLoader {
                     }
                   },
                 ),
-                SizedBox(height: 24),
+                const SizedBox(height: 24),
                 Text(
                   'Description',
                   style: Theme.of(context)
@@ -413,7 +413,7 @@ class _AddProductState extends State<AddProduct> with ScreenLoader {
                       .subtitle2
                       ?.copyWith(color: Colors.black),
                 ),
-                SizedBox(height: 12),
+                const SizedBox(height: 12),
                 InputDescriptionField(
                   controller: _descriptionController,
                   focusNode: _descriptionFocusNode,

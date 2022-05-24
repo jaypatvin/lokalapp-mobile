@@ -18,8 +18,6 @@ class AddShopConfirmation extends StatelessWidget {
   static const routeName = '/profile/addShop/confirmation';
   @override
   Widget build(BuildContext context) {
-    final double height = MediaQuery.of(context).size.height;
-    final double width = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: const CustomAppBar(
         titleText: 'Shop Added!',

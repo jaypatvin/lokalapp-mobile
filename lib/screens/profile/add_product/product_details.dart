@@ -288,7 +288,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                 ),
                 const SizedBox(height: 32),
                 _buildTable(),
-                SizedBox(height: 32),
+                const SizedBox(height: 32),
                 _buildSubscriptionSection(),
                 const Spacer(),
                 SizedBox(

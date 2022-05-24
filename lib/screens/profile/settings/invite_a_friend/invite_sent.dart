@@ -79,7 +79,9 @@ class _InviteSentView extends StatelessView<InviteSentViewModel> {
                 'few minutes.',
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.bodyText2?.copyWith(
-                    color: Colors.black, fontWeight: FontWeight.w400),
+                      color: Colors.black,
+                      fontWeight: FontWeight.w400,
+                    ),
               ),
             ),
             const SizedBox(height: 52),

@@ -102,35 +102,42 @@ class _SearchView extends HookView<SearchViewModel> {
             slivers: [
               SliverToBoxAdapter(
                 child: Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.fromLTRB(16, 32, 16, 11),
                   child: Text(
                     '${vm.searchResults.length} results for '
                     "'${vm.searchController.text}'",
-                    style: Theme.of(context).textTheme.headline6,
+                    style: Theme.of(context).textTheme.subtitle2?.copyWith(
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                        ),
                   ),
                 ),
               ),
               if (vm.searchResults.isNotEmpty)
-                SliverGrid(
-                  delegate: SliverChildBuilderDelegate(
-                    (_, index) {
-                      try {
-                        return GestureDetector(
-                          onTap: () => vm.onProductTap(index),
-                          child: ProductCard(vm.searchResults[index].id),
-                        );
-                      } catch (e, stack) {
-                        FirebaseCrashlytics.instance.recordError(e, stack);
-                        return const SizedBox();
-                      }
-                    },
-                    childCount: vm.searchResults.length,
-                  ),
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    childAspectRatio: 2 / 3,
-                    crossAxisCount: 2,
-                    mainAxisSpacing: 7,
-                    crossAxisSpacing: 8,
+                SliverPadding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  sliver: SliverGrid(
+                    delegate: SliverChildBuilderDelegate(
+                      (_, index) {
+                        try {
+                          return GestureDetector(
+                            onTap: () => vm.onProductTap(index),
+                            child: ProductCard(vm.searchResults[index].id),
+                          );
+                        } catch (e, stack) {
+                          FirebaseCrashlytics.instance.recordError(e, stack);
+                          return const SizedBox();
+                        }
+                      },
+                      childCount: vm.searchResults.length,
+                    ),
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                      childAspectRatio: 2 / 3,
+                      crossAxisCount: 2,
+                      mainAxisSpacing: 7,
+                      crossAxisSpacing: 8,
+                    ),
                   ),
                 ),
               if (vm.searchResults.isEmpty) _recentSearchesLabel,

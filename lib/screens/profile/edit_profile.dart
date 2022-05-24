@@ -11,7 +11,6 @@ import '../../view_models/profile/edit_profile.vm.dart';
 import '../../widgets/app_button.dart';
 import '../../widgets/custom_app_bar.dart';
 import '../../widgets/inputs/input_name_field.dart';
-import '../../widgets/overlays/constrained_scrollview.dart';
 import '../../widgets/overlays/screen_loader.dart';
 import '../../widgets/photo_box.dart';
 
