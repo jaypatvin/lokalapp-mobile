@@ -162,14 +162,31 @@ class _CurrentUserShopBanner extends StatelessWidget {
 
             final _shops = shops.findByUser(auth.user!.id);
             if (_shops.isEmpty) {
-              return Container(
-                color: Colors.white,
-                width: double.infinity,
-                padding: const EdgeInsets.symmetric(vertical: 19),
-                child: AppButton.transparent(
-                  text: '+ ADD SHOP',
-                  onPressed: onAddShop,
-                ),
+              return Column(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.fromLTRB(16, 20, 16, 10),
+                    width: double.infinity,
+                    child: Text(
+                      'My Shop',
+                      style: Theme.of(context)
+                          .textTheme
+                          .subtitle2
+                          ?.copyWith(color: kTealColor),
+                    ),
+                  ),
+                  Container(
+                    color: Colors.white,
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(vertical: 19),
+                    child: Center(
+                      child: AppButton.transparent(
+                        text: '+ ADD SHOP',
+                        onPressed: onAddShop,
+                      ),
+                    ),
+                  ),
+                ],
               );
             }
             return ShopTile(

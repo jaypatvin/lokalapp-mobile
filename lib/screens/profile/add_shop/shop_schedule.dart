@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:keyboard_actions/keyboard_actions.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
@@ -122,7 +121,10 @@ class _ShopScheduleView extends HookView<ShopScheduleViewModel> {
                 const SizedBox(height: 15),
                 Text(
                   'Hours',
-                  style: Theme.of(context).textTheme.headline5,
+                  style: Theme.of(context)
+                      .textTheme
+                      .headline6
+                      ?.copyWith(color: Colors.black),
                 ),
                 const SizedBox(height: 10),
                 _HoursPicker(
@@ -139,7 +141,9 @@ class _ShopScheduleView extends HookView<ShopScheduleViewModel> {
                     text: 'Confirm',
                     onPressed: vm.onConfirm,
                   ),
-                )
+                ),
+                       const SizedBox(height: 24),
+
               ],
             ),
           ),
@@ -165,20 +169,18 @@ class _HoursPicker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final SizedBox spacerBox = SizedBox(
-      width: MediaQuery.of(context).size.width * 0.03,
-    );
     return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(
-          'Every',
-          style: Theme.of(context)
-              .textTheme
-              .headline6!
-              .copyWith(fontWeight: FontWeight.normal),
+        Flexible(
+          flex: 2,
+          child: Text(
+            'From',
+            style: Theme.of(context).textTheme.bodyText2,
+          ),
         ),
-        spacerBox,
-        Expanded(
+        Flexible(
+          flex: 4,
           child: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(30.0),
@@ -197,29 +199,24 @@ class _HoursPicker extends StatelessWidget {
                   Expanded(
                     child: Text(
                       getTimeOfDayString(opening),
-                      style: Theme.of(context).textTheme.bodyText1,
+                      style: Theme.of(context).textTheme.bodyText2,
                     ),
                   ),
-                  Icon(
-                    MdiIcons.chevronDown,
-                    color: kTealColor,
-                    size: 16.0.sp,
-                  ),
+                  const Icon(MdiIcons.chevronDown, color: kTealColor),
                 ],
               ),
             ),
           ),
         ),
-        spacerBox,
-        Text(
-          'To',
-          style: Theme.of(context)
-              .textTheme
-              .headline6!
-              .copyWith(fontWeight: FontWeight.normal),
+        Flexible(
+          flex: 2,
+          child: Text(
+            'To',
+            style: Theme.of(context).textTheme.bodyText2,
+          ),
         ),
-        spacerBox,
-        Expanded(
+        Flexible(
+          flex: 4,
           child: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(30.0),
@@ -238,14 +235,10 @@ class _HoursPicker extends StatelessWidget {
                   Expanded(
                     child: Text(
                       getTimeOfDayString(closing),
-                      style: Theme.of(context).textTheme.bodyText1,
+                      style: Theme.of(context).textTheme.bodyText2,
                     ),
                   ),
-                  Icon(
-                    MdiIcons.chevronDown,
-                    color: kTealColor,
-                    size: 16.0.sp,
-                  ),
+                  const Icon(MdiIcons.chevronDown, color: kTealColor),
                 ],
               ),
             ),

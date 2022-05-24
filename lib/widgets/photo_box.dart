@@ -39,11 +39,7 @@ class PhotoBox extends StatelessWidget {
 
     if (imageSource.isEmpty) {
       _child = displayIcon
-          ? const Icon(
-              Icons.add,
-              color: kTealColor,
-              size: 15,
-            )
+          ? const Icon(Icons.add, color: kTealColor)
           : const SizedBox();
     } else {
       _child = Image(

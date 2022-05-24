@@ -20,8 +20,8 @@ class AppCheckBox extends StatelessWidget {
       child: Row(
         children: [
           SizedBox(
-            height: 24,
-            width: 24,
+            height: 18,
+            width: 18,
             child: DecoratedBox(
               decoration: BoxDecoration(
                 shape: shape,

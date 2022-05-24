@@ -9,6 +9,7 @@ import '../../../routers/profile/props/user_shop.props.dart';
 import '../../../utils/constants/assets.dart';
 import '../../../widgets/app_button.dart';
 import '../../../widgets/custom_app_bar.dart';
+import '../../../widgets/overlays/constrained_scrollview.dart';
 import '../../profile/profile_screen.dart';
 import '../add_product/add_product.dart';
 import '../shop/user_shop.dart';
@@ -26,16 +27,12 @@ class AddShopConfirmation extends StatelessWidget {
         titleStyle: TextStyle(color: Colors.black),
         buildLeading: false,
       ),
-      body: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 5.0),
-        width: width,
-        height: height * 0.8,
+      body: ConstrainedScrollView(
         child: Column(
           children: [
             const Spacer(),
-            Container(
-              height: height * 0.3,
-              constraints: const BoxConstraints(),
+            SizedBox(
+              height: 180,
               child: Stack(
                 alignment: Alignment.center,
                 children: [
@@ -50,43 +47,54 @@ class AddShopConfirmation extends StatelessWidget {
                 ],
               ),
             ),
-            Text(
-              'Your Shop is now open for business!\n'
-              'Get ready to add products to your shop.',
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.bodyText1,
-            ),
-            const Spacer(),
-            SizedBox(
-              width: double.infinity,
-              child: AppButton.transparent(
-                text: '+ Add a New Product',
-                onPressed: () {
-                  final user = context.read<Auth>().user!;
-                  AppRouter.profileNavigatorKey.currentState
-                    ?..popUntil(ModalRoute.withName(ProfileScreen.routeName))
-                    ..pushNamed(
-                      UserShop.routeName,
-                      arguments: UserShopProps(user.id),
-                    )
-                    ..pushNamed(AddProduct.routeName);
-                },
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Text(
+                'Your Shop is now open for business!\n'
+                'Get ready to add products to your shop.',
+                textAlign: TextAlign.center,
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyText2
+                    ?.copyWith(color: Colors.black),
               ),
             ),
-            const SizedBox(height: 10),
-            SizedBox(
-              width: double.infinity,
-              child: AppButton.filled(
-                text: 'Back to My Shop',
-                onPressed: () {
-                  final user = context.read<Auth>().user!;
-                  AppRouter.profileNavigatorKey.currentState
-                    ?..popUntil(ModalRoute.withName(ProfileScreen.routeName))
-                    ..pushNamed(
-                      UserShop.routeName,
-                      arguments: UserShopProps(user.id),
-                    );
-                },
+            const Spacer(),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: SizedBox(
+                width: double.infinity,
+                child: AppButton.transparent(
+                  text: '+ Add a New Product',
+                  onPressed: () {
+                    final user = context.read<Auth>().user!;
+                    AppRouter.profileNavigatorKey.currentState
+                      ?..popUntil(ModalRoute.withName(ProfileScreen.routeName))
+                      ..pushNamed(
+                        UserShop.routeName,
+                        arguments: UserShopProps(user.id),
+                      )
+                      ..pushNamed(AddProduct.routeName);
+                  },
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: SizedBox(
+                width: double.infinity,
+                child: AppButton.filled(
+                  text: 'Back to My Shop',
+                  onPressed: () {
+                    final user = context.read<Auth>().user!;
+                    AppRouter.profileNavigatorKey.currentState
+                      ?..popUntil(ModalRoute.withName(ProfileScreen.routeName))
+                      ..pushNamed(
+                        UserShop.routeName,
+                        arguments: UserShopProps(user.id),
+                      );
+                  },
+                ),
               ),
             ),
           ],

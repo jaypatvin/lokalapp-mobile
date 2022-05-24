@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:keyboard_actions/keyboard_actions.dart';
 import 'package:provider/provider.dart';
 
@@ -95,26 +94,22 @@ class _AddShopView extends HookView<AddShopViewModel> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const SizedBox(height: 10),
+              const SizedBox(height: 40),
               Text(
                 'Basic Information',
-                style: Theme.of(context).textTheme.headline5,
+                style: Theme.of(context).textTheme.headline6,
               ),
-              SizedBox(
-                height: height * 0.02,
-              ),
+              const SizedBox(height: 33),
               GestureDetector(
                 onTap: viewModel.onAddPhoto,
                 child: PhotoBox(
                   imageSource: PhotoBoxImageSource(file: viewModel.shopPhoto),
                   shape: BoxShape.circle,
-                  width: 140.w,
-                  height: 140.w,
+                  width: 130,
+                  height: 130,
                 ),
               ),
-              SizedBox(
-                height: height * 0.02,
-              ),
+              const SizedBox(height: 30),
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: padding),
                 child: InputNameField(
@@ -122,11 +117,13 @@ class _AddShopView extends HookView<AddShopViewModel> {
                   focusNode: _nameFocusNode,
                   onChanged: viewModel.onNameChanged,
                   errorText: viewModel.nameErrorText,
+                  style: Theme.of(context)
+                      .textTheme
+                      .headline6
+                      ?.copyWith(fontWeight: FontWeight.w500),
                 ),
               ),
-              SizedBox(
-                height: height * 0.02,
-              ),
+              const SizedBox(height: 32),
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: padding),
                 child: InputDescriptionField(
@@ -136,32 +133,49 @@ class _AddShopView extends HookView<AddShopViewModel> {
                   errorText: viewModel.descriptionErrorText,
                 ),
               ),
-              SizedBox(height: 5.0.h),
+              const SizedBox(height: 32),
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: padding + 5.0.w),
+                padding: EdgeInsets.symmetric(horizontal: padding),
                 child: Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
                     'Delivery Options',
-                    style: Theme.of(context).textTheme.subtitle1,
+                    style: Theme.of(context).textTheme.subtitle2,
                   ),
                 ),
               ),
-              SizedBox(height: 5.0.h),
+              const SizedBox(height: 12),
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: padding),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    AppCheckBox(
-                      value: viewModel.forPickup,
-                      onTap: viewModel.onPickupTap,
-                      title: const Text('Customer Pick-up'),
+                    Flexible(
+                      flex: 3,
+                      child: AppCheckBox(
+                        value: viewModel.forPickup,
+                        onTap: viewModel.onPickupTap,
+                        title: const Text(
+                          'Customer Pick-up',
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      ),
                     ),
-                    AppCheckBox(
-                      value: viewModel.forDelivery,
-                      onTap: viewModel.onDeliveryTap,
-                      title: const Text('Delivery'),
+                    Flexible(
+                      flex: 2,
+                      child: AppCheckBox(
+                        value: viewModel.forDelivery,
+                        onTap: viewModel.onDeliveryTap,
+                        title: const Text(
+                          'Delivery',
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      ),
                     ),
                   ],
                 ),
@@ -173,14 +187,12 @@ class _AddShopView extends HookView<AddShopViewModel> {
                       .copyWith(color: themeData.errorColor),
                 ),
               const Spacer(),
-              SizedBox(height: 10.0.h),
-              SizedBox(
-                width: width * 0.8,
-                child: AppButton.filled(
-                  text: 'Set Shop Schedule',
-                  onPressed: viewModel.onSubmit,
-                ),
+              const SizedBox(height: 20),
+              AppButton.filled(
+                text: 'Set Shop Schedule',
+                onPressed: viewModel.onSubmit,
               ),
+              const SizedBox(height: 24),
             ],
           ),
         ),

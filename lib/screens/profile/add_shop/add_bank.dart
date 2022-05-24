@@ -1,6 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
@@ -52,11 +51,12 @@ class _AddBankView extends StatelessView<AddBankViewModel> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            const SizedBox(height: 40),
             Text(
               vm.header,
               style: Theme.of(context).textTheme.headline6,
             ),
-            SizedBox(height: 10.h),
+            SizedBox(height: 15),
             Expanded(
               child: Consumer<ShopBody>(
                 builder: (ctx, shopBody, _) {
@@ -67,11 +67,32 @@ class _AddBankView extends StatelessView<AddBankViewModel> {
                       if (items.length == index) {
                         return Container(
                           margin: const EdgeInsets.only(top: 8.0),
-                          width: double.infinity,
-                          height: 100.h,
-                          child: AppButton.transparent(
-                            text: vm.addButtonLabel,
+                          height: 86,
+                          child: ElevatedButton(
                             onPressed: vm.onAddBankDetails,
+                            style: ButtonStyle(
+                              backgroundColor: MaterialStateProperty.all<Color>(
+                                Colors.transparent,
+                              ),
+                              elevation: MaterialStateProperty.all<double>(0),
+                              shape: MaterialStateProperty.all<
+                                  RoundedRectangleBorder>(
+                                RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(30),
+                                  side: const BorderSide(color: kTealColor),
+                                ),
+                              ),
+                            ),
+                            child: Text(
+                              vm.addButtonLabel,
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                fontFamily: 'Goldplay',
+                                fontSize: 14.0,
+                                fontWeight: FontWeight.w600,
+                                color: kTealColor,
+                              ),
+                            ),
                           ),
                         );
                       }
@@ -90,8 +111,8 @@ class _AddBankView extends StatelessView<AddBankViewModel> {
                                 margin: const EdgeInsets.symmetric(
                                   horizontal: 16.0,
                                 ),
-                                width: MediaQuery.of(context).size.width / 6,
-                                height: 100.h,
+                                width: 60,
+                                height: 86,
                                 child: ClipRRect(
                                   borderRadius: BorderRadius.circular(8.0),
                                   child: CachedNetworkImage(
@@ -183,6 +204,7 @@ class _AddBankView extends StatelessView<AddBankViewModel> {
                 },
               ),
             ),
+              const SizedBox(height: 24),
           ],
         ),
       ),

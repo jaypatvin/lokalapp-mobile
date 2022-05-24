@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:keyboard_actions/keyboard_actions.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
@@ -76,10 +75,14 @@ class _AddBankDetailsView extends HookView<AddBankDetailsViewModel> {
             DropdownMenuItem(
               value: code,
               child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16.0.w),
+                padding: const EdgeInsets.symmetric(horizontal: 21),
                 child: Text(
                   code.name,
                   overflow: TextOverflow.ellipsis,
+                  style: Theme.of(context)
+                      .textTheme
+                      .subtitle2
+                      ?.copyWith(color: Colors.black),
                 ),
               ),
             ),
@@ -89,10 +92,13 @@ class _AddBankDetailsView extends HookView<AddBankDetailsViewModel> {
         return DropdownButtonHideUnderline(
           child: DropdownButton<BankCode>(
             hint: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.0.w),
-              child: const Text(
+              padding: const EdgeInsets.symmetric(horizontal: 21),
+              child: Text(
                 'Select a Bank',
-                style: TextStyle(color: Colors.grey),
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyText2
+                    ?.copyWith(color: Colors.grey, fontWeight: FontWeight.w400),
               ),
             ),
             value: _chosenCode.value,
@@ -100,13 +106,12 @@ class _AddBankDetailsView extends HookView<AddBankDetailsViewModel> {
             items: dropDownItems,
             focusColor: Colors.white,
             icon: const Padding(
-              padding: EdgeInsets.only(right: 2.0),
+              padding: EdgeInsets.only(right: 21),
               child: Icon(
                 MdiIcons.chevronDown,
                 color: kTealColor,
               ),
             ),
-            iconSize: 24.0.sp,
             onChanged: (value) => _chosenCode.value = value,
           ),
         );
@@ -145,7 +150,10 @@ class _AddBankDetailsView extends HookView<AddBankDetailsViewModel> {
                 Expanded(
                   child: Text(
                     _chosenCode.value!.name,
-                    style: Theme.of(context).textTheme.bodyText2,
+                    style: Theme.of(context)
+                        .textTheme
+                        .subtitle2
+                        ?.copyWith(color: Colors.black),
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
@@ -160,7 +168,7 @@ class _AddBankDetailsView extends HookView<AddBankDetailsViewModel> {
               context: context,
               builder: (ctx) {
                 return SizedBox(
-                  height: 200.h,
+                  height: 200,
                   child: CupertinoTheme(
                     data: CupertinoThemeData(
                       textTheme: CupertinoTextThemeData(
@@ -168,12 +176,12 @@ class _AddBankDetailsView extends HookView<AddBankDetailsViewModel> {
                         actionTextStyle: Theme.of(context).textTheme.bodyText2,
                         pickerTextStyle: Theme.of(context)
                             .textTheme
-                            .bodyText1!
-                            .copyWith(color: Colors.black, fontSize: 18.0.sp),
+                            .bodyText2
+                            ?.copyWith(color: Colors.black),
                       ),
                     ),
                     child: CupertinoPicker(
-                      itemExtent: 32.0.h,
+                      itemExtent: 32.0,
                       onSelectedItemChanged: (index) =>
                           _chosenCode.value = vm.codes[index],
                       children: pickerItems,
@@ -249,22 +257,26 @@ class _AddBankDetailsView extends HookView<AddBankDetailsViewModel> {
             child: KeyboardActions(
               config: _kbActionsConfig,
               child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 8.0, vertical: 16.0),
+                padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Form(
                   key: vm.formKey,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      const SizedBox(height: 40),
                       Text(
                         'Bank Transfer/Deposit Options',
                         style: Theme.of(context).textTheme.headline6,
                       ),
-                      SizedBox(height: 10.0.h),
+                      const SizedBox(height: 20),
                       Text(
                         'Bank',
-                        style: Theme.of(context).textTheme.bodyText1,
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodyText2
+                            ?.copyWith(fontWeight: FontWeight.w400),
                       ),
+                      const SizedBox(height: 4),
                       Container(
                         width: double.infinity,
                         decoration: const ShapeDecoration(
@@ -285,30 +297,44 @@ class _AddBankDetailsView extends HookView<AddBankDetailsViewModel> {
                               .caption
                               ?.copyWith(color: Colors.red),
                         ),
-                      SizedBox(height: 5.0.h),
+                      const SizedBox(height: 12),
                       Text(
                         'Account Name',
-                        style: Theme.of(context).textTheme.bodyText1,
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodyText2
+                            ?.copyWith(fontWeight: FontWeight.w400),
                       ),
+                      const SizedBox(height: 4),
                       InputField(
                         initialValue: vm.accountName,
                         focusNode: _nameFocusNode,
-                        style: const TextStyle(fontWeight: FontWeight.bold),
                         onChanged: vm.onAccountNameChanged,
                         validator: vm.accountNameValidator,
+                        style: Theme.of(context)
+                            .textTheme
+                            .subtitle2
+                            ?.copyWith(color: Colors.black),
                       ),
-                      SizedBox(height: 5.0.h),
+                      const SizedBox(height: 12),
                       Text(
                         'Account Number',
-                        style: Theme.of(context).textTheme.bodyText1,
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodyText2
+                            ?.copyWith(fontWeight: FontWeight.w400),
                       ),
+                      const SizedBox(height: 4),
                       InputField(
                         initialValue: vm.accountNumber,
                         focusNode: _numberFocusNode,
                         keyboardType: TextInputType.number,
-                        style: const TextStyle(fontWeight: FontWeight.bold),
                         onChanged: vm.onAccountNumberChanged,
                         validator: vm.accountNumberValidator,
+                        style: Theme.of(context)
+                            .textTheme
+                            .subtitle2
+                            ?.copyWith(color: Colors.black),
                       ),
                     ],
                   ),
@@ -318,11 +344,17 @@ class _AddBankDetailsView extends HookView<AddBankDetailsViewModel> {
           ),
           Align(
             alignment: Alignment.bottomCenter,
-            child: AppButton.filled(
-              text: vm.initialAccount == null
-                  ? 'Add Bank Account'
-                  : 'Edit Bank Account',
-              onPressed: vm.onAddPaymentAccount,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+              child: SizedBox(
+                width: double.infinity,
+                child: AppButton.filled(
+                  text: vm.initialAccount == null
+                      ? 'Add Bank Account'
+                      : 'Edit Bank Account',
+                  onPressed: vm.onAddPaymentAccount,
+                ),
+              ),
             ),
           ),
         ],
