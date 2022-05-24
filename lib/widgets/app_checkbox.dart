@@ -4,10 +4,12 @@ class AppCheckBox extends StatelessWidget {
   final bool value;
   final void Function() onTap;
   final Widget? title;
+  final BoxShape shape;
   const AppCheckBox({
     Key? key,
     required this.value,
     required this.onTap,
+    this.shape = BoxShape.rectangle,
     this.title,
   }) : super(key: key);
 
@@ -22,6 +24,7 @@ class AppCheckBox extends StatelessWidget {
             width: 24,
             child: DecoratedBox(
               decoration: BoxDecoration(
+                shape: shape,
                 border: Border.all(
                   width: 2,
                 ),
