@@ -64,6 +64,8 @@ class _DraftPostView extends HookView<DraftPostViewModel>
       child: Scaffold(
         backgroundColor: Colors.white,
         appBar: CustomAppBar(
+          titleText: 'Write a Post',
+          titleStyle: const TextStyle(color: Colors.black),
           leadingWidth: 75,
           backgroundColor: const Color(0xFFF1FAFF),
           leading: GestureDetector(
@@ -83,11 +85,6 @@ class _DraftPostView extends HookView<DraftPostViewModel>
               Navigator.of(context).maybePop();
             },
           ),
-          titleText: 'Write a Post',
-          titleStyle: Theme.of(context)
-              .textTheme
-              .headline6
-              ?.copyWith(color: Colors.black),
         ),
         body: KeyboardActions(
           config: _kbConfig,

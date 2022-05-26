@@ -45,7 +45,7 @@ class TransactionCard extends StatelessWidget {
         break;
       case 600:
         enableSecondButton = true;
-        secondButtonText = isBuyer ? 'Order Again' : 'Delivered';
+        secondButtonText = isBuyer ? 'Add Review' : 'Delivered';
         break;
       default:
         break;
@@ -93,8 +93,6 @@ class TransactionCard extends StatelessWidget {
     var secondButtonColor = kOrangeColor;
     if (order.statusCode == 10 || order.statusCode == 20) {
       secondButtonColor = kTealColor;
-    } else if (order.statusCode == 600) {
-      secondButtonColor = Colors.grey;
     }
 
     final disabled = order.statusCode == 600 && !isBuyer;

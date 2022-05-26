@@ -25,19 +25,27 @@ class Status600Buttons extends StatelessWidget {
         children: [
           if (order.paymentMethod != PaymentMethod.cod)
             ViewPaymentButton(onPress: onPress),
+          const SizedBox(height: 12),
+          Expanded(
+            child: AppButton.transparent(
+              text: 'Order Again',
+              onPressed: () => onPress(OrderAction.orderAgain),
+            ),
+          ),
+          const SizedBox(height: 12),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Expanded(
                 child: MessageSellerButton(order: order),
               ),
-              SizedBox(width: MediaQuery.of(context).size.width * 0.01),
+              const SizedBox(width: 8),
               Expanded(
                 child: AppButton.filled(
-                  text: 'Order Again',
-                  onPressed: () => onPress(OrderAction.orderAgain),
+                  text: 'Add Review',
+                  onPressed: () => onPress(OrderAction.addReview),
                 ),
-              )
+              ),
             ],
           ),
         ],

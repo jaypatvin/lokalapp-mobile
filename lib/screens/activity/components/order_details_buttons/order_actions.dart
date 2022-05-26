@@ -8,4 +8,5 @@ enum OrderAction {
   shipOut,
   received,
   orderAgain,
+  addReview,
 }
