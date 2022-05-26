@@ -4,6 +4,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 
 import '../models/post_requests/product/product_create.request.dart';
+import '../models/post_requests/product/product_review.request.dart';
 import '../models/post_requests/product/product_update.request.dart';
 import '../models/post_requests/shop/operating_hours.request.dart';
 import '../models/product.dart';
@@ -172,6 +173,26 @@ class Products extends ChangeNotifier {
     } catch (e) {
       product.likes.add(userId);
       notifyListeners();
+      rethrow;
+    }
+  }
+
+  Future<bool> addReview({
+    required String productId,
+    required String orderId,
+    required int rating,
+    String? message,
+  }) async {
+    try {
+      return await _apiService.review(
+        productId: productId,
+        request: ProductReviewRequest(
+          orderId: orderId,
+          rating: rating,
+          message: message,
+        ),
+      );
+    } catch (e) {
       rethrow;
     }
   }
