@@ -229,7 +229,7 @@ class _DiscoverView extends StatelessView<DiscoverViewModel> {
                   const SliverToBoxAdapter(child: SizedBox(height: 20)),
                   SliverToBoxAdapter(
                     child: SizedBox(
-                      height: 106,
+                      height: 110,
                       child: _buildCategories(),
                     ),
                   ),

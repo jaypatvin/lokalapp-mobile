@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:keyboard_actions/keyboard_actions.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 import '../../../models/app_navigator.dart';
 import '../../../models/product_subscription_plan.dart';
@@ -53,26 +54,11 @@ class SubscriptionSchedule extends StatelessWidget {
   factory SubscriptionSchedule.create({
     required String productId,
   }) {
-    // The notification to display when there are conflicts.
-    Future<bool?> _displayNotification(BuildContext context) async {
-      return showDialog<bool>(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext ctx) {
-          return ScheduleConflictsNotification(
-            onAutomatic: () => Navigator.pop(ctx, true),
-            onManual: () => Navigator.pop(ctx, false),
-          );
-        },
-      );
-    }
-
     return SubscriptionSchedule._(
       child: MVVM(
         view: (_, __) => _NewSubscriptionScheduleView(),
         viewModel: NewSubscriptionScheduleViewModel(
           productId: productId,
-          displayNotification: _displayNotification,
         ),
       ),
     );
@@ -141,6 +127,34 @@ class _NewSubscriptionScheduleView
                   // repeatabilityChoices: vm.repeatabilityChoices,
                   operatingHours: vm.operatingHours,
                   limitSelectableDates: true,
+                ),
+                const SizedBox(height: 24),
+                Visibility(
+                  visible: vm.displayWarning,
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Icon(
+                        MdiIcons.alertCircle,
+                        color: Colors.red,
+                        size: 30,
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Text(
+                          'There will be days on the schedule that you set that '
+                          "this shop won't be able to deliver. You will be "
+                          'notified when you receive the order prior those orders '
+                          "and you'll be able to re-schedule it or else it won't "
+                          'be placed.',
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyText2
+                              ?.copyWith(color: Colors.black),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
                 const Spacer(),
                 const SizedBox(height: 24),

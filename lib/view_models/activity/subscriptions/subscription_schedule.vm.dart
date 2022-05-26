@@ -29,10 +29,8 @@ import '../../../widgets/schedule_picker.dart';
 class NewSubscriptionScheduleViewModel extends ViewModel {
   NewSubscriptionScheduleViewModel({
     required this.productId,
-    this.displayNotification,
   }) : assert(productId.isNotEmpty, 'productId should not be empty');
   final String productId;
-  final Future<bool?> Function(BuildContext)? displayNotification;
 
   late final int quantity;
   late final Product product;
@@ -40,6 +38,9 @@ class NewSubscriptionScheduleViewModel extends ViewModel {
   late final List<RepeatChoices> repeatabilityChoices;
 
   late final ScheduleGenerator _generator;
+
+  bool _displayWarning = false;
+  bool get displayWarning => _displayWarning;
 
   String _repeatType = RepeatChoices.day.value;
   int _repeatUnit = 1;
@@ -70,16 +71,22 @@ class NewSubscriptionScheduleViewModel extends ViewModel {
 
   void onRepeatTypeChanged(String? choice) {
     _repeatType = choice ?? _repeatType;
+
+    _checkForConflicts();
     notifyListeners();
   }
 
   void onRepeatUnitChanged(int? repeatUnit) {
     _repeatUnit = repeatUnit ?? _repeatUnit;
+
+    _checkForConflicts();
     notifyListeners();
   }
 
   void onSelectableDaysChanged(List<int> selectableDays) {
     _selectableDays = selectableDays;
+
+    _checkForConflicts();
     notifyListeners();
   }
 
@@ -93,6 +100,7 @@ class NewSubscriptionScheduleViewModel extends ViewModel {
     _repeatType = repeatType ?? _repeatType;
     _startDates = startDates;
 
+    _checkForConflicts();
     notifyListeners();
   }
 
@@ -121,7 +129,7 @@ class NewSubscriptionScheduleViewModel extends ViewModel {
       return;
     }
 
-    final reschedule = await _onCreateSubscriptionPlan();
+    // final reschedule = await _onCreateSubscriptionPlan();
 
     final request = ProductSubscriptionPlanRequest(
       productId: product.id,
@@ -138,19 +146,22 @@ class NewSubscriptionScheduleViewModel extends ViewModel {
       ),
     );
 
-    if (reschedule != null) {
-      AppRouter.discoverNavigatorKey.currentState?.push(
-        AppNavigator.appPageRoute(
-          builder: (_) => SubscriptionPaymentMethod(
-            request: request,
-            reschedule: reschedule,
-          ),
+    // if (reschedule != null) {
+
+    // }
+    AppRouter.discoverNavigatorKey.currentState?.push(
+      AppNavigator.appPageRoute(
+        builder: (_) => SubscriptionPaymentMethod(
+          request: request,
+          reschedule: false,
         ),
-      );
-    }
+      ),
+    );
   }
 
-  Future<bool?> _onCreateSubscriptionPlan() async {
+  void _checkForConflicts() {
+    if (_startDate == null || _repeatUnit <= 0) return;
+
     final repeatChoice = _generator.getRepeatChoicesFromString(_repeatType);
     final dates = _generator
         .generateInitialDates(
@@ -176,14 +187,44 @@ class NewSubscriptionScheduleViewModel extends ViewModel {
     // the conflict warning to the user.
     final difference =
         dates.toSet().difference(productSchedule.toSet()).toList();
-    if (difference.isNotEmpty) {
-      // We then return what the user chose, to set manually or automatically.
-      return await displayNotification?.call(context);
-    }
 
-    // If there are no conflicts, no need to setAutomatically.
-    return false;
+    _displayWarning = difference.isNotEmpty;
   }
+
+  // Future<bool?> _onCreateSubscriptionPlan() async {
+  //   final repeatChoice = _generator.getRepeatChoicesFromString(_repeatType);
+  //   final dates = _generator
+  //       .generateInitialDates(
+  //         repeatChoice: repeatChoice,
+  //         repeatEveryNUnit: _repeatUnit,
+  //         startDate: _startDate,
+  //         selectableDays: _selectableDays,
+  //         repeatType: _repeatType,
+  //       )
+  //       .toSet()
+  //       .where((date) => date.difference(_startDate!).inDays <= 45)
+  //       .toList()
+  //     ..sort();
+
+  //   final productSchedule = _generator
+  //       .getSelectableDates(operatingHours)
+  //       .toSet()
+  //       .where((date) => date.difference(_startDate!).inDays <= 45)
+  //       .toList()
+  //     ..sort();
+
+  //   // We need to check if there are conflicts to determine if we will display
+  //   // the conflict warning to the user.
+  //   final difference =
+  //       dates.toSet().difference(productSchedule.toSet()).toList();
+  //   if (difference.isNotEmpty) {
+  //     // We then return what the user chose, to set manually or automatically.
+  //     return await displayNotification?.call(context);
+  //   }
+
+  //   // If there are no conflicts, no need to setAutomatically.
+  //   return false;
+  // }
 }
 
 class ViewSubscriptionScheduleViewModel extends ViewModel {
