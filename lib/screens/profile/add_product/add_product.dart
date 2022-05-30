@@ -269,13 +269,12 @@ class _AddProductState extends State<AddProduct> with ScreenLoader {
                 const Padding(
                   padding: EdgeInsets.symmetric(horizontal: 48),
                   child: Text(
-                    'All active orders of this product will still push '
-                    'through but they will not be able to order again. '
-                    'We will notify subscribers that their next order will '
-                    'be their last.',
+                    'Please note that all active orders of this product will '
+                    'still push through, unless cancelled.',
                     textAlign: TextAlign.center,
                   ),
                 ),
+                const SizedBox(height: 62),
                 Flexible(
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 26),
