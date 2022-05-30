@@ -12,9 +12,11 @@ import '../../providers/cart.dart';
 import '../../providers/wishlist.dart';
 import '../../routers/app_router.dart';
 import '../../routers/profile/props/user_shop.props.dart';
+import '../../screens/activity/subscriptions/subscription_schedule.dart';
 import '../../screens/profile/shop/user_shop.dart';
 import '../../services/bottom_nav_bar_hider.dart';
 import '../../state/view_model.dart';
+import '../../utils/constants/themes.dart';
 
 class ProductDetailViewModel extends ViewModel {
   ProductDetailViewModel({
@@ -28,13 +30,17 @@ class ProductDetailViewModel extends ViewModel {
   final Shop shop;
 
   late final String appBarTitle;
-  late final String buttonLabel;
+  late String _buttonLabel;
+  late Color _buttonColor;
 
   String _instructions = '';
   String get instructions => _instructions;
 
   int _quantity = 1;
   int get quantity => _quantity;
+
+  String get buttonLabel => _buttonLabel;
+  Color get buttonColor => _buttonColor;
 
   bool get available => product.quantity > 0;
 
@@ -46,11 +52,12 @@ class ProductDetailViewModel extends ViewModel {
       _instructions = order.notes ?? '';
       _quantity = order.quantity;
       appBarTitle = 'Edit Order';
-      buttonLabel = 'UPDATE CART';
+      _buttonLabel = 'UPDATE CART';
     } else {
       appBarTitle = shop.name;
-      buttonLabel = 'ADD TO CART';
+      _buttonLabel = 'ADD TO CART';
     }
+    _buttonColor = kTealColor;
   }
 
   void onInstructionsChanged(String value) {
@@ -63,6 +70,7 @@ class ProductDetailViewModel extends ViewModel {
       showToast("You've reached the maximum number of possible orders.");
       return;
     }
+    _updateButton();
 
     _quantity++;
     notifyListeners();
@@ -70,8 +78,24 @@ class ProductDetailViewModel extends ViewModel {
 
   void decrease() {
     if (quantity <= 0) return;
+
     _quantity--;
+    if (_quantity == 0) {
+      if (cart.contains(product.id)) {
+        _buttonLabel = 'REMOVE FROM CART';
+        _buttonColor = kPinkColor;
+      }
+    } else {
+      _updateButton();
+    }
     notifyListeners();
+  }
+
+  void _updateButton() {
+    if (_buttonLabel != 'UPDATE CART' && cart.contains(product.id)) {
+      _buttonLabel = 'UPDATE CART';
+      _buttonColor = kTealColor;
+    }
   }
 
   void onSubmit() {
@@ -82,6 +106,17 @@ class ProductDetailViewModel extends ViewModel {
       notes: _instructions,
     );
     Navigator.pop(context);
+  }
+
+  void onSubscribe() {
+    context.read<AppRouter>().pushDynamicScreen(
+          AppRoute.discover,
+          AppNavigator.appPageRoute(
+            builder: (_) => SubscriptionSchedule.create(
+              productId: product.id,
+            ),
+          ),
+        );
   }
 
   Future<void> onWishlistPressed() async {

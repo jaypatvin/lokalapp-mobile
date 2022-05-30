@@ -18,9 +18,11 @@ class ShopAPIService extends APIService<Shop> {
     );
   }
 
-  ShopAPIService._(this.api, this._operatingHoursService,
-      {LokalHttpClient? client})
-      : super(client: client ?? LokalHttpClient());
+  ShopAPIService._(
+    this.api,
+    this._operatingHoursService, {
+    LokalHttpClient? client,
+  }) : super(client: client ?? LokalHttpClient());
 
   final API api;
   Endpoint get endpoint => Endpoint.shop;

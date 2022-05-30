@@ -1,6 +1,5 @@
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:uuid/uuid.dart';
 
 import '../models/product.dart';
@@ -38,12 +37,8 @@ class ProductsSliverGrid extends StatelessWidget {
         (_, index) {
           try {
             final _prefix = valueKeyPrefix ?? const Uuid();
-            return Container(
+            return SizedBox(
               key: ValueKey('${_prefix}_${items[index].id}'),
-              margin: EdgeInsets.symmetric(
-                vertical: 5.0.h,
-                horizontal: 2.5.w,
-              ),
               child: GestureDetector(
                 onTap: () => onProductTap(items[index].id),
                 child: ProductCard(items[index].id),
@@ -59,6 +54,8 @@ class ProductsSliverGrid extends StatelessWidget {
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         childAspectRatio: 2 / 3,
         crossAxisCount: 2,
+        mainAxisSpacing: 24.0,
+        crossAxisSpacing: 12.0,
       ),
     );
   }

@@ -221,9 +221,16 @@ class _ProductDetailView extends HookView<ProductDetailViewModel> {
             child: Row(
               children: [
                 Expanded(
+                  child: AppButton.transparent(
+                    text: 'SUBSCRIBE',
+                    onPressed: vm.onSubscribe,
+                  ),
+                ),
+                Expanded(
                   child: AppButton.filled(
                     text: vm.buttonLabel,
                     onPressed: vm.onSubmit,
+                    color: vm.buttonColor,
                   ),
                 ),
               ],

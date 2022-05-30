@@ -159,7 +159,10 @@ class _DiscoverView extends StatelessView<DiscoverViewModel> {
                       padding: EdgeInsets.symmetric(horizontal: 16.0.w),
                       child: Text(
                         'Recommended',
-                        style: Theme.of(context).textTheme.headline6,
+                        style: Theme.of(context)
+                            .textTheme
+                            .headline5
+                            ?.copyWith(fontWeight: FontWeight.w600),
                       ),
                     ),
                   ),
@@ -167,7 +170,7 @@ class _DiscoverView extends StatelessView<DiscoverViewModel> {
                   if (vm.isLoading)
                     SliverToBoxAdapter(
                       child: SizedBox(
-                        height: 250.0.h,
+                        height: 200.0.h,
                         child: Shimmer(
                           child: DecoratedBox(
                             decoration: BoxDecoration(
@@ -185,7 +188,7 @@ class _DiscoverView extends StatelessView<DiscoverViewModel> {
                   else
                     SliverToBoxAdapter(
                       child: SizedBox(
-                        height: 250.0.h,
+                        height: 200.0.h,
                         width: MediaQuery.of(context).size.width,
                         child: _RecommendedProducts(
                           key: const Key('recommended_products'),
@@ -196,13 +199,6 @@ class _DiscoverView extends StatelessView<DiscoverViewModel> {
                     ),
                   SliverToBoxAdapter(child: SizedBox(height: 15.0.h)),
                   SliverToBoxAdapter(
-                    child: Divider(
-                      color: Colors.grey.shade300,
-                      indent: 16.0.w,
-                      endIndent: 16.0.w,
-                    ),
-                  ),
-                  SliverToBoxAdapter(
                     child: Padding(
                       padding: EdgeInsets.symmetric(
                         horizontal: 16.0.w,
@@ -212,7 +208,10 @@ class _DiscoverView extends StatelessView<DiscoverViewModel> {
                         children: [
                           Text(
                             'Explore Categories',
-                            style: Theme.of(context).textTheme.headline6,
+                            style: Theme.of(context)
+                                .textTheme
+                                .headline5
+                                ?.copyWith(fontWeight: FontWeight.w600),
                           ),
                           const Spacer(),
                           GestureDetector(
@@ -245,21 +244,22 @@ class _DiscoverView extends StatelessView<DiscoverViewModel> {
                       child: _buildCategories(),
                     ),
                   ),
-                  SliverToBoxAdapter(
-                    child: Divider(
-                      color: Colors.grey.shade300,
-                      indent: 16.0.w,
-                      endIndent: 16.0.w,
-                    ),
-                  ),
                   SliverToBoxAdapter(child: SizedBox(height: 10.0.h)),
                   SliverToBoxAdapter(
                     child: Padding(
                       padding: EdgeInsets.symmetric(horizontal: 16.0.w),
                       child: Text(
                         'Recent',
-                        style: Theme.of(context).textTheme.headline6,
+                        style: Theme.of(context)
+                            .textTheme
+                            .headline5
+                            ?.copyWith(fontWeight: FontWeight.w600),
                       ),
+                    ),
+                  ),
+                  SliverToBoxAdapter(
+                    child: SizedBox(
+                      height: 8.0.h,
                     ),
                   ),
                   if (vm.isProductsLoading)
@@ -311,18 +311,15 @@ class _RecommendedProducts extends StatelessWidget {
       key: const Key('recommended_gridview_builder'),
       scrollDirection: Axis.horizontal,
       itemCount: products.length,
+      padding: EdgeInsets.symmetric(horizontal: 16.0.w),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        childAspectRatio: 5 / 3.5,
+        childAspectRatio: 5 / 3,
         crossAxisCount: 1,
+        mainAxisSpacing: 12.0,
       ),
       itemBuilder: (ctx, index) {
-        return Container(
+        return SizedBox(
           key: Key(products[index].id),
-          padding: index == 0
-              ? EdgeInsets.only(left: 16.0.w, right: 2.5.w)
-              : index == products.length - 1
-                  ? EdgeInsets.only(left: 2.5.w, right: 16.0.w)
-                  : EdgeInsets.symmetric(horizontal: 2.5.w),
           child: GestureDetector(
             key: Key(products[index].id),
             onTap: () => onProductTap(products[index].id),

@@ -83,7 +83,6 @@ class _MyAppState extends State<MyApp> {
   late final AppRouter _router;
   late final PersistentTabController _tabController;
   late final API _api;
-  late final PageController _profilePageController;
   late final Database _db;
 
   @override
@@ -95,15 +94,12 @@ class _MyAppState extends State<MyApp> {
     _tabController = PersistentTabController();
     _api = API();
     _db = Database();
-    _profilePageController = PageController();
     _router = AppRouter(_tabController);
   }
 
   @override
   void dispose() {
     _prefs.dispose();
-    _profilePageController.dispose();
-
     super.dispose();
   }
 
@@ -202,7 +198,6 @@ class _MyAppState extends State<MyApp> {
       ),
 
       // services:
-      ListenableProvider<PageController>.value(value: _profilePageController),
       Provider<MediaUtility?>(create: (_) => MediaUtility()),
       Provider<LocalImageService?>(
         create: (_) => LocalImageService(database: _db),
@@ -218,7 +213,8 @@ class _MyAppState extends State<MyApp> {
         child: MediaQuery(
           data: MediaQueryData.fromWindow(window),
           child: ScreenUtilInit(
-            builder: () {
+            builder: (context) {
+              ScreenUtil.setContext(context);
               return ConnectivityStatus(
                 child: ScreenLoaderApp(
                   globalLoadingBgBlur: 0,
