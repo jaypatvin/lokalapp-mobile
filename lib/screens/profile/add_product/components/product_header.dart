@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -24,19 +23,19 @@ class ProductHeader extends StatelessWidget {
           PhotoBox(
             imageSource: productHeaderImageSource,
             shape: BoxShape.rectangle,
-            height: 75,
-            width: 75,
+            height: 80,
+            width: 80,
           )
         else
           Container(
-            height: 75.0,
-            width: 75.0,
+            height: 80.0,
+            width: 80.0,
             color: Colors.grey,
             child: const Center(
               child: Text('No Image'),
             ),
           ),
-        const SizedBox(width: 10.0),
+        const SizedBox(width: 28.0),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -44,7 +43,10 @@ class ProductHeader extends StatelessWidget {
               Text(
                 productName,
                 overflow: TextOverflow.ellipsis,
-                style: Theme.of(context).textTheme.headline6,
+                style: Theme.of(context)
+                    .textTheme
+                    .headline6
+                    ?.copyWith(color: Colors.black),
                 maxLines: 2,
               ),
               Row(
@@ -52,14 +54,11 @@ class ProductHeader extends StatelessWidget {
                 children: [
                   Text(
                     "PHP ${NumberFormat("#,##0.00").format(productPrice)}",
-                    style: Theme.of(context).textTheme.bodyText1,
+                    style: Theme.of(context).textTheme.bodyText2,
                   ),
                   Text(
                     'In Stock: $productStock',
-                    style: Theme.of(context).textTheme.bodyText1!.copyWith(
-                          fontSize: MediaQuery.of(context).size.width * 0.04,
-                          fontWeight: FontWeight.w400,
-                        ),
+                    style: Theme.of(context).textTheme.bodyText2,
                   ),
                 ],
               ),

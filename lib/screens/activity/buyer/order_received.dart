@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:lottie/lottie.dart';
 
@@ -34,18 +33,18 @@ class _OrderReceivedView extends StatelessView<OrderReceivedViewModel> {
         child: ConstrainedScrollView(
           child: Column(
             children: [
-              SizedBox(height: 20.0.h),
+              const SizedBox(height: 16),
               Text(
                 'Order Received!',
                 textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.headline5?.copyWith(
-                      color: Colors.black,
-                      fontWeight: FontWeight.w600,
-                    ),
+                style: Theme.of(context)
+                    .textTheme
+                    .headline6
+                    ?.copyWith(color: Colors.black),
               ),
-              SizedBox(height: 20.0.h),
+              const SizedBox(height: 16),
               SizedBox(
-                height: 100.0.h,
+                height: 175,
                 width: double.infinity,
                 child: Stack(
                   children: [
@@ -55,37 +54,35 @@ class _OrderReceivedView extends StatelessView<OrderReceivedViewModel> {
                         fit: BoxFit.cover,
                       ),
                     ),
-                    Positioned.fill(
-                      child: Lottie.asset(
-                        kAnimationOk,
-                        fit: BoxFit.contain,
+                    Center(
+                      child: SizedBox(
+                        width: MediaQuery.of(context).size.width / 3,
+                        child: Lottie.asset(
+                          kAnimationOk,
+                          fit: BoxFit.contain,
+                        ),
                       ),
                     ),
                   ],
                 ),
               ),
-              SizedBox(height: 16.0.h),
+              const SizedBox(height: 20),
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 36.0.w),
+                padding: const EdgeInsets.symmetric(horizontal: 37),
                 child: TransactionDetails(
                   transaction: vm.order,
                   isBuyer: true,
                 ),
               ),
-              SizedBox(height: 16.0.h),
+              const SizedBox(height: 24),
               if (!vm.ratingSubmitted)
                 Column(
                   children: [
-                    Text(
-                      'Rate your experience',
-                      style: Theme.of(context)
-                          .textTheme
-                          .headline6!
-                          .copyWith(fontWeight: FontWeight.bold),
-                    ),
+                    Text('Rate your experience',
+                        style: Theme.of(context).textTheme.subtitle2,),
                     RatingBar.builder(
                       minRating: 1,
-                      itemPadding: const EdgeInsets.symmetric(horizontal: 4.0),
+                      itemPadding: const EdgeInsets.symmetric(horizontal: 6),
                       itemBuilder: (context, _) => const Icon(
                         Icons.star,
                         color: Colors.amber,
@@ -97,7 +94,7 @@ class _OrderReceivedView extends StatelessView<OrderReceivedViewModel> {
               if (vm.ratingSubmitted)
                 Padding(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: 36.0,
+                    horizontal: 37.0,
                   ),
                   child: _RatingMessage(
                     assetName: vm.assetName,
@@ -105,9 +102,10 @@ class _OrderReceivedView extends StatelessView<OrderReceivedViewModel> {
                     ratingMessage: vm.ratingMessage,
                   ),
                 ),
+              const SizedBox(height: 32),
               const Spacer(),
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16.0.w),
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -150,13 +148,25 @@ class _RatingMessage extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         SvgPicture.asset(assetName),
-        const SizedBox(width: 8.0),
+        const SizedBox(width: 16.0),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(ratingTitle, style: Theme.of(context).textTheme.headline6),
-              Text(ratingMessage, style: Theme.of(context).textTheme.bodyText1),
+              Text(
+                ratingTitle,
+                style: Theme.of(context)
+                    .textTheme
+                    .subtitle2
+                    ?.copyWith(color: Colors.black),
+              ),
+              Text(
+                ratingMessage,
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyText2
+                    ?.copyWith(fontWeight: FontWeight.w400),
+              ),
             ],
           ),
         ),

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/app_navigator.dart';
@@ -29,26 +28,22 @@ class ShopCheckout extends StatelessWidget {
     return Scaffold(
       appBar: CustomAppBar(
         titleText: shop.name,
-        titleStyle: const TextStyle(color: Colors.white),
-        backgroundColor: kTealColor,
+        titleStyle: const TextStyle(color: kYellowColor),
+        backgroundColor: kOrangeColor,
       ),
       body: Consumer<ShoppingCart>(
         builder: (_, cart, __) {
           if (cart.orders[shop.id] == null) return const SizedBox();
 
           final orders = cart.orders[shop.id]!;
-          return ListView.builder(
+          return ListView.separated(
+            padding: const EdgeInsets.fromLTRB(16, 32, 16, 16),
             itemCount: orders.length,
+            separatorBuilder: (ctx, index) => const SizedBox(height: 20),
             itemBuilder: (ctx, index) {
               final key = orders.keys.elementAt(index);
               if (key == null) return const SizedBox();
-              return Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: 16.0.w,
-                  vertical: 8.0.h,
-                ),
-                child: _OrdersCard(productId: key),
-              );
+              return _OrdersCard(productId: key);
             },
           );
         },
@@ -72,10 +67,10 @@ class _OrdersCard extends StatelessWidget {
       elevation: 0.0,
       shape: RoundedRectangleBorder(
         side: BorderSide(color: Colors.grey.shade300),
-        borderRadius: BorderRadius.circular(16.0.r),
+        borderRadius: BorderRadius.circular(30),
       ),
       child: Padding(
-        padding: EdgeInsets.fromLTRB(16.0.w, 16.0.h, 16.0.w, 8.0.h),
+        padding: const EdgeInsets.all(21),
         child: Column(
           children: [
             OrderDetails(
@@ -90,21 +85,19 @@ class _OrdersCard extends StatelessWidget {
               },
             ),
             const Divider(),
-            SizedBox(height: 8.0.h),
+            const SizedBox(height: 20),
             Align(
               alignment: Alignment.centerRight,
               child: RichText(
                 text: TextSpan(
                   text: 'Order Total\t',
-                  style: Theme.of(context).textTheme.bodyText1?.copyWith(
-                        // fontSize: 12.0.sp,
-                        fontWeight: FontWeight.w500,
+                  style: Theme.of(context).textTheme.bodyText2?.copyWith(
+                        fontWeight: FontWeight.w400,
                       ),
                   children: [
                     TextSpan(
                       text: (product.basePrice * order.quantity).toString(),
-                      style: Theme.of(context).textTheme.bodyText1?.copyWith(
-                            // fontSize: 12.0.sp,
+                      style: Theme.of(context).textTheme.bodyText2?.copyWith(
                             color: kOrangeColor,
                             fontWeight: FontWeight.w600,
                           ),
@@ -113,46 +106,38 @@ class _OrdersCard extends StatelessWidget {
                 ),
               ),
             ),
-            Padding(
-              padding: EdgeInsets.symmetric(vertical: 8.0.h),
-              child: Row(
-                children: [
-                  if (context
-                      .read<Products>()
-                      .findById(productId)!
-                      .canSubscribe)
-                    Expanded(
-                      child: AppButton.transparent(
-                        text: 'Subscribe',
-                        onPressed: () => Navigator.push(
-                          context,
-                          AppNavigator.appPageRoute(
-                            builder: (_) => SubscriptionSchedule.create(
-                              productId: productId,
-                            ),
+            const SizedBox(height: 12),
+            Row(
+              children: [
+                if (context.read<Products>().findById(productId)!.canSubscribe)
+                  Expanded(
+                    child: AppButton.transparent(
+                      text: 'Subscribe',
+                      onPressed: () => Navigator.push(
+                        context,
+                        AppNavigator.appPageRoute(
+                          builder: (_) => SubscriptionSchedule.create(
+                            productId: productId,
                           ),
                         ),
                       ),
                     ),
-                  if (context
-                      .read<Products>()
-                      .findById(productId)!
-                      .canSubscribe)
-                    const SizedBox(width: 8.0),
-                  Expanded(
-                    child: AppButton.filled(
-                      text: 'Checkout',
-                      onPressed: () {
-                        context.read<AppRouter>().navigateTo(
-                              AppRoute.discover,
-                              Checkout.routeName,
-                              arguments: CheckoutProps(productId),
-                            );
-                      },
-                    ),
-                  )
-                ],
-              ),
+                  ),
+                if (context.read<Products>().findById(productId)!.canSubscribe)
+                  const SizedBox(width: 8.0),
+                Expanded(
+                  child: AppButton.filled(
+                    text: 'Checkout',
+                    onPressed: () {
+                      context.read<AppRouter>().navigateTo(
+                            AppRoute.discover,
+                            Checkout.routeName,
+                            arguments: CheckoutProps(productId),
+                          );
+                    },
+                  ),
+                )
+              ],
             ),
           ],
         ),

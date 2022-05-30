@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart' show DateFormat;
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
@@ -220,8 +219,6 @@ class _CustomizeAvailabilityState extends State<CustomizeAvailability>
 
   @override
   Widget screen(BuildContext context) {
-    final double height = MediaQuery.of(context).size.height;
-    final double width = MediaQuery.of(context).size.width;
     return Scaffold(
       backgroundColor: Colors.white,
       resizeToAvoidBottomInset: false,
@@ -237,25 +234,22 @@ class _CustomizeAvailabilityState extends State<CustomizeAvailability>
         },
       ),
       body: Container(
-        padding: EdgeInsets.symmetric(
-          horizontal: width * 0.05,
-          vertical: height * 0.02,
-        ),
+        padding: const EdgeInsets.symmetric(horizontal: 16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
+            const SizedBox(height: 50),
             Text(
               'Customize Availability',
-              style: Theme.of(context).textTheme.headline5,
+              style: Theme.of(context).textTheme.headline6,
             ),
+            const SizedBox(height: 8),
             Text(
               'Customize which days your shop will be available',
-              style: Theme.of(context).textTheme.bodyText1,
+              style: Theme.of(context).textTheme.bodyText2,
             ),
-            SizedBox(
-              height: height * 0.05,
-            ),
+            const SizedBox(height: 24),
             SizedBox(
               width: double.infinity,
               child: AppButton.transparent(
@@ -270,7 +264,8 @@ class _CustomizeAvailabilityState extends State<CustomizeAvailability>
                 text: _customized ? 'Confirm' : 'Next',
                 onPressed: _onConfirm,
               ),
-            )
+            ),
+            const SizedBox(height: 24),
           ],
         ),
       ),
@@ -299,52 +294,54 @@ class _CalendarPicker extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Dialog(
-        insetPadding: EdgeInsets.zero,
+        insetPadding: const EdgeInsets.symmetric(horizontal: 16),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(30.0),
         ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 0.02,
-            ),
-            Text(
-              'Set Availability Exceptions',
-              style: Theme.of(context).textTheme.headline5,
-            ),
-            StatefulBuilder(
-              builder: (BuildContext context, StateSetter setState) {
-                return CalendarPicker(
-                  startDate: startDate,
-                  onDayPressed: (day) => setState(() => onDayPressed(day)),
-                  markedDates: markedDates.whereType<DateTime>().toList(),
-                  selectableDays: selectableDays,
-                );
-              },
-            ),
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 10.0.w),
-              margin: EdgeInsets.symmetric(vertical: 5.0.h),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Expanded(
-                    child: AppButton.transparent(
-                      text: 'Cancel',
-                      onPressed: onCancel,
-                    ),
-                  ),
-                  Expanded(
-                    child: AppButton.filled(
-                      text: 'Confirm',
-                      onPressed: onConfirm,
-                    ),
-                  ),
-                ],
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const SizedBox(height: 23),
+              Text(
+                'Set Availability Exceptions',
+                style: Theme.of(context).textTheme.headline6,
               ),
-            ),
-          ],
+              StatefulBuilder(
+                builder: (BuildContext context, StateSetter setState) {
+                  return CalendarPicker(
+                    startDate: startDate,
+                    onDayPressed: (day) => setState(() => onDayPressed(day)),
+                    markedDates: markedDates.whereType<DateTime>().toList(),
+                    selectableDays: selectableDays,
+                  );
+                },
+              ),
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 13, vertical: 20),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Expanded(
+                      child: AppButton.transparent(
+                        text: 'Cancel',
+                        onPressed: onCancel,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: AppButton.filled(
+                        text: 'Confirm',
+                        onPressed: onConfirm,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

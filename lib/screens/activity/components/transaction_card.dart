@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../models/app_navigator.dart';
 import '../../../models/order.dart';
@@ -138,14 +137,14 @@ class TransactionCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20.0.r),
+        borderRadius: BorderRadius.circular(20.0),
         side: (order.statusCode == 10 || order.statusCode == 20)
             ? const BorderSide(color: Colors.red)
             : BorderSide.none,
       ),
       color: const Color(0xFFF1FAFF),
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 20.0.w, vertical: 15.0.h),
+        padding: const EdgeInsets.symmetric(horizontal: 21, vertical: 16),
         child: Column(
           children: [
             TransactionDetails(
@@ -153,7 +152,7 @@ class TransactionCard extends StatelessWidget {
               transaction: order,
               isBuyer: isBuyer,
             ),
-            SizedBox(height: 15.0.h),
+            const SizedBox(height: 24),
             buildActionButtons(context),
           ],
         ),

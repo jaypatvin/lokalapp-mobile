@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:keyboard_actions/keyboard_actions.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:provider/provider.dart';
@@ -87,47 +86,49 @@ class _ProductDetailView extends HookView<ProductDetailViewModel> {
 
     _children.addAll(
       [
-        SizedBox(height: 10.0.h),
+        const SizedBox(height: 10.0),
         ProductDetailGallery(
           product: vm.product,
           currentIndex: _galleryIndex.value,
           controller: _photoView,
           onPageChanged: (index) => _galleryIndex.value = index,
         ),
-        SizedBox(height: 10.h),
+        const SizedBox(height: 10),
         ProductItemAndPrice(
           productName: vm.product.name,
           productPrice: vm.product.basePrice,
         ),
-        SizedBox(height: 10.0.h),
+        const SizedBox(height: 20),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Row(
-              children: [
-                RatingBar.builder(
-                  initialRating: vm.product.avgRating,
-                  minRating: 1,
-                  maxRating: 5,
-                  allowHalfRating: true,
-                  unratedColor: Colors.grey.shade300,
-                  itemBuilder: (ctx, _) {
-                    return const Icon(
-                      Icons.star,
-                      color: Colors.amber,
-                    );
-                  },
-                  onRatingUpdate: (rating) {},
-                  ignoreGestures: true,
-                  itemSize: 18.0.h,
-                ),
-                SizedBox(width: 5.0.w),
-                Text(
-                  vm.product.avgRating.toString(),
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(color: Colors.amber),
-                )
-              ],
+            Expanded(
+              child: Row(
+                children: [
+                  RatingBar.builder(
+                    initialRating: vm.product.avgRating,
+                    minRating: 1,
+                    maxRating: 5,
+                    allowHalfRating: true,
+                    unratedColor: Colors.grey.shade300,
+                    itemBuilder: (ctx, _) {
+                      return const Icon(
+                        Icons.star,
+                        color: Colors.amber,
+                      );
+                    },
+                    onRatingUpdate: (rating) {},
+                    ignoreGestures: true,
+                    itemSize: 20,
+                  ),
+                  const SizedBox(width: 10),
+                  Text(
+                    vm.product.avgRating.toStringAsFixed(2),
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(color: Colors.amber),
+                  )
+                ],
+              ),
             ),
             TextButton(
               onPressed: () {},
@@ -135,27 +136,28 @@ class _ProductDetailView extends HookView<ProductDetailViewModel> {
                 padding: EdgeInsets.zero,
                 minimumSize: Size.zero,
                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                textStyle: Theme.of(context).textTheme.subtitle2?.copyWith(
+                textStyle: Theme.of(context).textTheme.bodyText2?.copyWith(
                       fontWeight: FontWeight.w500,
                       decoration: TextDecoration.underline,
+                      color: kTealColor,
                     ),
               ),
               child: const Text('Read Reviews'),
             ),
           ],
         ),
-        SizedBox(height: 10.0.h),
-        Align(
-          alignment: Alignment.centerLeft,
-          child: Text(
-            vm.product.description,
-            style: Theme.of(context).textTheme.bodyText1,
-            textAlign: TextAlign.left,
-          ),
+        const SizedBox(height: 10),
+        Text(
+          vm.product.description,
+          style: Theme.of(context)
+              .textTheme
+              .bodyText2
+              ?.copyWith(color: Colors.black),
+          textAlign: TextAlign.left,
         ),
-        SizedBox(height: 10.0.h),
+        const SizedBox(height: 20),
         Divider(thickness: 1, height: 2, color: Colors.grey.shade300),
-        SizedBox(height: 20.0.h),
+        const SizedBox(height: 20.0),
       ],
     );
 
@@ -169,55 +171,53 @@ class _ProductDetailView extends HookView<ProductDetailViewModel> {
                 style: Theme.of(context)
                     .textTheme
                     .headline6
-                    ?.copyWith(fontWeight: FontWeight.w600),
+                    ?.copyWith(color: Colors.black),
               ),
-              SizedBox(width: 5.0.w),
+              const SizedBox(width: 10),
               Text(
                 'Optional',
-                style: Theme.of(context).textTheme.bodyText2,
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyText2
+                    ?.copyWith(color: Colors.black),
               ),
             ],
           ),
           Padding(
-            padding: EdgeInsets.only(top: 10.0.h, bottom: 20.0.h),
+            padding: const EdgeInsets.only(top: 10.0, bottom: 30.0),
             child: SpecialInstructionsTextField(
               controller: _instructionsController,
               focusNode: _nodeInstructions,
             ),
           ),
-          Divider(thickness: 1, height: 2, color: Colors.grey.shade300),
-          SizedBox(height: 10.0.h),
-          Padding(
-            padding: EdgeInsets.symmetric(vertical: 20.0.h),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  'Quantity',
-                  style: Theme.of(context)
-                      .textTheme
-                      .headline6
-                      ?.copyWith(fontWeight: FontWeight.w600),
-                ),
-                SizedBox(width: 20.0.w),
-                Text(
-                  vm.quantity.toString(),
-                  style: Theme.of(context).textTheme.headline6?.copyWith(
-                        color: kTealColor,
-                        fontWeight: FontWeight.w600,
-                      ),
-                ),
-              ],
-            ),
+          Divider(thickness: 1, height: 1, color: Colors.grey.shade300),
+          const SizedBox(height: 32),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                'Quantity',
+                style: Theme.of(context)
+                    .textTheme
+                    .headline6
+                    ?.copyWith(color: Colors.black),
+              ),
+              const SizedBox(width: 37),
+              Text(
+                vm.quantity.toString(),
+                style: Theme.of(context)
+                    .textTheme
+                    .headline6
+                    ?.copyWith(color: kTealColor),
+              ),
+            ],
           ),
-          QuantityController(
-            onAdd: vm.increase,
-            onSubtract: vm.decrease,
-          ),
-          SizedBox(height: 30.0.h),
+          const SizedBox(height: 12),
+          QuantityController(onAdd: vm.increase, onSubtract: vm.decrease),
+          const SizedBox(height: 30.0),
           Divider(thickness: 1, height: 2, color: Colors.grey.shade300),
           Padding(
-            padding: EdgeInsets.symmetric(vertical: 20.0.h),
+            padding: const EdgeInsets.symmetric(vertical: 20.0),
             child: Row(
               children: [
                 Expanded(
@@ -241,7 +241,7 @@ class _ProductDetailView extends HookView<ProductDetailViewModel> {
     } else {
       _children.add(
         Padding(
-          padding: EdgeInsets.symmetric(vertical: 20.0.h),
+          padding: const EdgeInsets.symmetric(vertical: 20.0),
           child: SizedBox(
             width: double.infinity,
             child: Consumer<UserWishlist>(
@@ -279,7 +279,7 @@ class _ProductDetailView extends HookView<ProductDetailViewModel> {
                 child: ChatAvatar(
                   displayName: vm.shop.name,
                   displayPhoto: vm.shop.profilePhoto,
-                  radius: 15.0.r,
+                  radius: 15.0,
                 ),
               ),
               const SizedBox(width: 8.0),
@@ -292,9 +292,9 @@ class _ProductDetailView extends HookView<ProductDetailViewModel> {
                 ),
               ),
               // Added to center the Title
-              SizedBox(
-                width: 15.0.r + 24.0, // 24 is the icon size for the leading
-              ),
+              const SizedBox(
+                width: 15.0 + 24.0,
+              ), // 24 is the icon size for the leading
             ],
           ),
         ),
@@ -321,7 +321,7 @@ class _ProductDetailView extends HookView<ProductDetailViewModel> {
         ),
         tapOutsideBehavior: TapOutsideBehavior.translucentDismiss,
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16.0.w),
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: Column(
             children: _children,
           ),

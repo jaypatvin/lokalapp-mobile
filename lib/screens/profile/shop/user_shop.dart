@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 import '../../../providers/products.dart';
@@ -80,7 +79,7 @@ class _UserShopView extends HookView<UserShopViewModel> {
           if (vm.products.isEmpty)
             SliverToBoxAdapter(
               child: Padding(
-                padding: EdgeInsets.only(bottom: 10.0.h),
+                padding: const EdgeInsets.only(top: 40, bottom: 12),
                 child: Consumer<Products>(
                   builder: (ctx, products, _) {
                     if (products.isLoading) {
@@ -90,13 +89,13 @@ class _UserShopView extends HookView<UserShopViewModel> {
                         ),
                       );
                     }
-                    return Text(
+                    return const Text(
                       'No products added',
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         color: Colors.grey,
                         fontWeight: FontWeight.w500,
-                        fontSize: 14.0.sp,
+                        fontSize: 14.0,
                       ),
                     );
                   },
@@ -106,11 +105,7 @@ class _UserShopView extends HookView<UserShopViewModel> {
           if (vm.isCurrentUser)
             SliverToBoxAdapter(
               child: Padding(
-                padding: EdgeInsets.only(
-                  bottom: 10.0.h,
-                  left: 8.0.w,
-                  right: 8.0.w,
-                ),
+                padding: const EdgeInsets.only(top: 12, left: 16, right: 16),
                 child: AppButton.transparent(
                   text: '+ Add a new Product',
                   onPressed: vm.addProduct,
@@ -118,9 +113,11 @@ class _UserShopView extends HookView<UserShopViewModel> {
               ),
             ),
           ProductsSliverGrid(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             items: vm.products,
             onProductTap: vm.onProductTap,
             valueKeyPrefix: 'user_shop',
+            displayError: false,
           ),
         ];
       },
@@ -133,7 +130,7 @@ class _UserShopView extends HookView<UserShopViewModel> {
           SliverAppBar(
             automaticallyImplyLeading: false,
             backgroundColor: Colors.white,
-            expandedHeight: 180.0.h,
+            expandedHeight: 176,
             pinned: true,
             floating: true,
             flexibleSpace: LayoutBuilder(
@@ -166,6 +163,7 @@ class _UserShopView extends HookView<UserShopViewModel> {
               },
             ),
           ),
+          const SliverToBoxAdapter(child: SizedBox(height: 24)),
           SliverToBoxAdapter(
             child: vm.user != null
                 ? UserBanner(
@@ -181,12 +179,10 @@ class _UserShopView extends HookView<UserShopViewModel> {
               child: ShopHours(shopOperatingHours: vm.shop.operatingHours),
             ),
           ),
+          const SliverToBoxAdapter(child: SizedBox(height: 12)),
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.symmetric(
-                vertical: 10.0,
-                horizontal: 16.0,
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: SizedBox(
                 width: double.infinity,
                 child: Text(
@@ -196,14 +192,15 @@ class _UserShopView extends HookView<UserShopViewModel> {
               ),
             ),
           ),
+          const SliverToBoxAdapter(child: SizedBox(height: 23)),
           SliverPersistentHeader(
             pinned: true,
             delegate: PersistentHeaderDelegateBuilder(
-              maxHeight: 65.0.h,
-              minHeight: 65.0.h,
+              maxHeight: kMinInteractiveDimension,
+              minHeight: kMinInteractiveDimension,
               child: Container(
-                height: 65.0.h,
-                padding: EdgeInsets.fromLTRB(8.0.w, 10.0.h, 8.0.w, 5.0.h),
+                height: kMinInteractiveDimension,
+                padding: const EdgeInsets.symmetric(horizontal: 16),
                 color: Colors.white,
                 child: SearchTextField(
                   enabled: true,
@@ -212,11 +209,7 @@ class _UserShopView extends HookView<UserShopViewModel> {
               ),
             ),
           ),
-          const SliverToBoxAdapter(
-            child: SizedBox(
-              height: 10,
-            ),
-          ),
+          // const SliverToBoxAdapter(child: SizedBox(height: 12)),
           ..._slivers,
         ],
       ),

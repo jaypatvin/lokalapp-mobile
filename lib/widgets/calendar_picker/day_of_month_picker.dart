@@ -149,16 +149,11 @@ class _DayOfMonthPickerState extends State<DayOfMonthPicker> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: widget.height,
-      width: widget.width,
-      padding: widget.padding,
-      child: GridView.count(
-        physics: const NeverScrollableScrollPhysics(),
-        crossAxisCount: 7,
-        shrinkWrap: true,
-        children: _renderDays(),
-      ),
+    return GridView.count(
+      physics: const NeverScrollableScrollPhysics(),
+      crossAxisCount: 7,
+      shrinkWrap: true,
+      children: _renderDays(),
     );
   }
 }

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
@@ -62,19 +61,19 @@ class _SetupPaymentOptionsView extends HookView<SetupPaymentOptionsViewModel>
         titleText: vm.edit ? 'Edit Shop' : 'Add Shop',
       ),
       body: Container(
-        padding: EdgeInsets.symmetric(horizontal: 16.0.w),
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(height: 15.0),
+            const SizedBox(height: 40),
             Text(
               'Set-up payment options',
               style: Theme.of(context)
                   .textTheme
-                  .headline5!
-                  .copyWith(color: Colors.black, fontWeight: FontWeight.w600),
+                  .headline6
+                  ?.copyWith(color: Colors.black),
             ),
-            const SizedBox(height: 10.0),
+            const SizedBox(height: 12.0),
             Consumer<ShopBody>(
               builder: (ctx, shopBody, _) {
                 final _isBankAccountsEmpty = shopBody.paymentOptions
@@ -99,19 +98,18 @@ class _SetupPaymentOptionsView extends HookView<SetupPaymentOptionsViewModel>
                     'Bank Transfer/Deposit',
                     style: Theme.of(context)
                         .textTheme
-                        .headline6!
-                        .copyWith(fontWeight: FontWeight.w600),
+                        .subtitle2
+                        ?.copyWith(color: Colors.black),
                   ),
                   trailing: Icon(
                     _isBankAccountsEmpty ? Icons.add : Icons.arrow_forward_ios,
                     color: kTealColor,
-                    size: 18.0.r,
                   ),
                   onTap: vm.onAddBank,
                 );
               },
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 12),
             Consumer<ShopBody>(
               builder: (_, shopBody, __) {
                 final _isWalletAccountsEmpty = shopBody.paymentOptions
@@ -137,15 +135,14 @@ class _SetupPaymentOptionsView extends HookView<SetupPaymentOptionsViewModel>
                     'Wallet',
                     style: Theme.of(context)
                         .textTheme
-                        .headline6!
-                        .copyWith(fontWeight: FontWeight.w600),
+                        .subtitle2
+                        ?.copyWith(color: Colors.black),
                   ),
                   trailing: Icon(
                     _isWalletAccountsEmpty
                         ? Icons.add
                         : Icons.arrow_forward_ios,
                     color: kTealColor,
-                    size: 18.0.r,
                   ),
                   onTap: vm.onAddWallet,
                 );
@@ -165,6 +162,7 @@ class _SetupPaymentOptionsView extends HookView<SetupPaymentOptionsViewModel>
                 );
               },
             ),
+            const SizedBox(height: 24),
           ],
         ),
       ),

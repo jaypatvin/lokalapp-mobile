@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:grouped_list/sliver_grouped_list.dart';
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
@@ -65,18 +64,18 @@ class GroupedOrders extends StatelessWidget {
                 },
                 groupSeparatorBuilder: (DateTime value) {
                   return Container(
-                    margin: EdgeInsets.only(
-                      top: 10.0.h,
-                      bottom: 15.0.h,
-                      left: 16.0.w,
-                      right: 16.0.w,
+                    margin: const EdgeInsets.only(
+                      top: 14,
+                      bottom: 12,
+                      left: 16.0,
+                      right: 16.0,
                     ),
                     child: Text(
                       DateFormat.MMMMd().format(value),
                       style: Theme.of(context)
                           .textTheme
-                          .subtitle1
-                          ?.copyWith(fontSize: 18.0.sp),
+                          .headline6
+                          ?.copyWith(color: Colors.black),
                     ),
                   );
                 },
@@ -87,7 +86,7 @@ class GroupedOrders extends StatelessWidget {
                   final data = {...snapshotData, 'id': snapshot.id};
                   final order = Order.fromJson(data);
                   return Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16.0.w),
+                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
                     child: TransactionCard(
                       order: order,
                       isBuyer: isBuyer,

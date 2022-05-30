@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 import '../../../../utils/constants/themes.dart';
@@ -23,9 +22,9 @@ class ScheduleConflictsNotification extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(30.0),
         ),
-        insetPadding: EdgeInsets.symmetric(horizontal: 10.0.w),
+        insetPadding: const EdgeInsets.symmetric(horizontal: 16),
         child: Padding(
-          padding: EdgeInsets.all(20.0.w),
+          padding: const EdgeInsets.all(21),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -33,13 +32,13 @@ class ScheduleConflictsNotification extends StatelessWidget {
                 MdiIcons.alertCircle,
                 color: Colors.red,
               ),
-              SizedBox(height: 10.0.h),
+              const SizedBox(height: 12),
               const Text(
                 'There will be days on the schedule that you set that this '
                 "shop won't be able to deliver.",
                 textAlign: TextAlign.center,
               ),
-              SizedBox(height: 10.0.h),
+              const SizedBox(height: 12),
               RichText(
                 textAlign: TextAlign.center,
                 text: TextSpan(
@@ -47,7 +46,7 @@ class ScheduleConflictsNotification extends StatelessWidget {
                     TextSpan(
                       text: 'You can either let us automatically re-schedule '
                           'your order to the next available date',
-                      style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                      style: Theme.of(context).textTheme.subtitle2?.copyWith(
                             color: kTealColor,
                           ),
                     ),
@@ -55,17 +54,17 @@ class ScheduleConflictsNotification extends StatelessWidget {
                     TextSpan(
                       text: 'you can manually re-schedule the unavailable '
                           'dates in the Activities screen.',
-                      style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                      style: Theme.of(context).textTheme.subtitle2?.copyWith(
                             color: kOrangeColor,
                           ),
                     ),
                   ],
-                  style: Theme.of(context).textTheme.bodyText1!.copyWith(
+                  style: Theme.of(context).textTheme.bodyText2?.copyWith(
                         color: Colors.black,
                       ),
                 ),
               ),
-              SizedBox(height: 10.0.h),
+              const SizedBox(height: 12),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[

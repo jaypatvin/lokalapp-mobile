@@ -1,7 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
@@ -62,13 +61,13 @@ class TransactionDetails extends HookWidget {
           ChatAvatar(
             displayName: _name,
             displayPhoto: _displayPhoto,
-            radius: 15.0.r,
+            radius: 15,
           ),
-          SizedBox(width: 5.0.w),
+          const SizedBox(width: 8),
           Expanded(
             child: Text(
               _name ?? '',
-              style: Theme.of(context).textTheme.bodyText1,
+              style: Theme.of(context).textTheme.bodyText2,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
@@ -86,25 +85,34 @@ class TransactionDetails extends HookWidget {
               child: status?.isNotEmpty ?? false
                   ? Text(
                       _displayStatus!,
-                      style: Theme.of(context).textTheme.subtitle1,
+                      style: Theme.of(context)
+                          .textTheme
+                          .subtitle2
+                          ?.copyWith(color: Colors.black),
                     )
                   : _avatar,
             ),
             Text(
               'For ',
-              style: Theme.of(context).textTheme.bodyText1,
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyText2
+                  ?.copyWith(color: Colors.black),
             ),
             Text(
               DateFormat.MMMd().format(transaction.deliveryDate),
-              style: Theme.of(context).textTheme.subtitle1,
+              style: Theme.of(context)
+                  .textTheme
+                  .subtitle2
+                  ?.copyWith(color: Colors.black),
             ),
           ],
         ),
-        SizedBox(height: 10.0.h),
+        const SizedBox(height: 10.0),
         if (status?.isNotEmpty ?? false) _avatar,
-        if (status?.isNotEmpty ?? false) SizedBox(height: 10.0.h),
+        if (status?.isNotEmpty ?? false) const SizedBox(height: 12.0),
         SizedBox(
-          height: 53.0.h * transaction.products.length,
+          height: 47.0 * transaction.products.length,
           child: ListView.builder(
             // this shrinkWrap is okay since there is only 1 (or a few) product
             // per transaction
@@ -118,15 +126,15 @@ class TransactionDetails extends HookWidget {
                   .findById(item.id);
 
               return Padding(
-                padding: const EdgeInsets.symmetric(vertical: 5.0),
+                padding: const EdgeInsets.symmetric(vertical: 9.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     if (product?.gallery?.isNotEmpty ?? false)
                       CachedNetworkImage(
                         imageUrl: product!.gallery!.first.url,
-                        width: 40.0.h,
-                        height: 40.0.h,
+                        width: 38,
+                        height: 38,
                         fit: BoxFit.cover,
                         placeholder: (_, __) => Shimmer(
                           child: DecoratedBox(
@@ -142,27 +150,33 @@ class TransactionDetails extends HookWidget {
                         ),
                       )
                     else
-                      SizedBox(
-                        height: 40.0.h,
-                        width: 40.0.h,
-                        child: const Center(
+                      const SizedBox(
+                        height: 38,
+                        width: 38,
+                        child: Center(
                           child: Text('No image'),
                         ),
                       ),
                     Text(
                       item.name,
-                      style: Theme.of(context).textTheme.subtitle1,
+                      style: Theme.of(context)
+                          .textTheme
+                          .subtitle2
+                          ?.copyWith(color: Colors.black),
                     ),
                     Text(
                       'x${item.quantity}',
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyText1
-                          ?.copyWith(fontWeight: FontWeight.w400),
+                      style: Theme.of(context).textTheme.bodyText2?.copyWith(
+                            fontWeight: FontWeight.w300,
+                            color: Colors.black,
+                          ),
                     ),
                     Text(
                       'P ${item.quantity * item.price}',
-                      style: Theme.of(context).textTheme.bodyText1,
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyText2
+                          ?.copyWith(color: Colors.black),
                     ),
                   ],
                 ),
@@ -170,25 +184,28 @@ class TransactionDetails extends HookWidget {
             },
           ),
         ),
-        SizedBox(height: 10.0.h),
+        const SizedBox(height: 18),
         const Divider(
           color: Colors.grey,
           indent: 0,
         ),
-        SizedBox(height: 10.0.h),
+        const SizedBox(height: 12),
         Row(
           mainAxisAlignment: MainAxisAlignment.end,
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             Text(
               'Order Total ',
-              style: Theme.of(context).textTheme.bodyText1,
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyText2
+                  ?.copyWith(color: Colors.black),
             ),
             Text(
               'P $_price',
-              style: Theme.of(context).textTheme.subtitle1?.copyWith(
+              style: Theme.of(context).textTheme.subtitle2?.copyWith(
                     color: kOrangeColor,
-                    fontWeight: FontWeight.bold,
+                    fontWeight: FontWeight.w700,
                   ),
             ),
           ],

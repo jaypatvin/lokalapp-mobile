@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class QuantityController extends StatelessWidget {
   final void Function()? onAdd;
@@ -12,39 +11,51 @@ class QuantityController extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double dimension = 50.0.w;
+    const double dimension = 50.0;
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         ElevatedButton(
           onPressed: onSubtract,
           style: ElevatedButton.styleFrom(
-            minimumSize: Size(dimension, dimension),
+            minimumSize: const Size(dimension, dimension),
             shape: const CircleBorder(),
             primary: Colors.white,
             elevation: 0.0,
             side: const BorderSide(),
           ),
-          child: Icon(
-            Icons.remove,
-            size: 35.0.r,
-            color: Colors.black,
+          child: const Center(
+            child: Text(
+              '-',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 25,
+                fontWeight: FontWeight.w600,
+                color: Colors.black,
+              ),
+            ),
           ),
         ),
-        SizedBox(width: 15.0.w),
+        const SizedBox(width: 9),
         ElevatedButton(
           onPressed: onAdd,
           style: ElevatedButton.styleFrom(
-            minimumSize: Size(dimension, dimension),
+            minimumSize: const Size(dimension, dimension),
             shape: const CircleBorder(),
             primary: Colors.white,
             elevation: 0.0,
             side: const BorderSide(),
           ),
-          child: Icon(
-            Icons.add,
-            size: 35.0.r,
-            color: Colors.black,
+          child: const Center(
+            child: Text(
+              '+',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 25,
+                fontWeight: FontWeight.w600,
+                color: Colors.black,
+              ),
+            ),
           ),
         ),
       ],

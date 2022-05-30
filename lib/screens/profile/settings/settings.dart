@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 import '../../../models/app_navigator.dart';
@@ -27,227 +26,259 @@ class Settings extends StatelessWidget {
     return Scaffold(
       backgroundColor: const Color(0xffF1FAFF),
       resizeToAvoidBottomInset: true,
-      appBar: CustomAppBar(
+      appBar: const CustomAppBar(
         backgroundColor: kTealColor,
         titleText: 'Settings',
-        titleStyle: const TextStyle(color: Colors.white),
-        onPressedLeading: () => Navigator.pop(context),
       ),
       body: SafeArea(
         child: ListView(
+          padding: const EdgeInsets.only(top: 20),
           children: [
             Padding(
-              padding: EdgeInsets.symmetric(
-                vertical: 10.0.h,
-                horizontal: 10.0.w,
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Text(
                 'Account Settings',
-                style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                      color: kTealColor,
+                style: Theme.of(context)
+                    .textTheme
+                    .subtitle2
+                    ?.copyWith(color: kTealColor),
+              ),
+            ),
+            const SizedBox(height: 10),
+            ...ListTile.divideTiles(
+              color: const Color(0xFFF2F2F2),
+              tiles: [
+                ListTile(
+                  onTap: () => Navigator.push(
+                    context,
+                    AppNavigator.appPageRoute(
+                      builder: (_) => const MyAccount(),
                     ),
-              ),
-            ),
-            ListTile(
-              onTap: () => Navigator.push(
-                context,
-                AppNavigator.appPageRoute(
-                  builder: (_) => const MyAccount(),
+                  ),
+                  tileColor: Colors.white,
+                  leading: Text(
+                    'My Account',
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyText2
+                        ?.copyWith(fontWeight: FontWeight.w400),
+                  ),
+                  trailing: const Icon(
+                    Icons.arrow_forward_ios,
+                    size: 14,
+                    color: kTealColor,
+                  ),
                 ),
-              ),
-              tileColor: Colors.white,
-              leading: Text(
-                'My Account',
-                style: Theme.of(context).textTheme.bodyText1,
-              ),
-              trailing: const Icon(
-                Icons.arrow_forward_ios,
-                size: 14,
-                color: kTealColor,
-              ),
-            ),
-            ListTile(
-              onTap: () => Navigator.push(
-                context,
-                AppNavigator.appPageRoute(
-                  builder: (_) => const ChatSettings(),
+                ListTile(
+                  onTap: () => Navigator.push(
+                    context,
+                    AppNavigator.appPageRoute(
+                      builder: (_) => const ChatSettings(),
+                    ),
+                  ),
+                  tileColor: Colors.white,
+                  leading: Text(
+                    'Chat Settings',
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyText2
+                        ?.copyWith(fontWeight: FontWeight.w400),
+                  ),
+                  trailing: const Icon(
+                    Icons.arrow_forward_ios,
+                    size: 14,
+                    color: kTealColor,
+                  ),
                 ),
-              ),
-              tileColor: Colors.white,
-              leading: Text(
-                'Chat Settings',
-                style: Theme.of(context).textTheme.bodyText1,
-              ),
-              trailing: const Icon(
-                Icons.arrow_forward_ios,
-                size: 14,
-                color: kTealColor,
-              ),
-            ),
-            ListTile(
-              onTap: () => Navigator.push(
-                context,
-                AppNavigator.appPageRoute(
-                  builder: (_) => const NotificationSettingsScreen(),
+                ListTile(
+                  onTap: () => Navigator.push(
+                    context,
+                    AppNavigator.appPageRoute(
+                      builder: (_) => const NotificationSettingsScreen(),
+                    ),
+                  ),
+                  tileColor: Colors.white,
+                  leading: Text(
+                    'Notification Settings',
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyText2
+                        ?.copyWith(fontWeight: FontWeight.w400),
+                  ),
+                  trailing: const Icon(
+                    Icons.arrow_forward_ios,
+                    size: 14,
+                    color: kTealColor,
+                  ),
                 ),
-              ),
-              tileColor: Colors.white,
-              leading: Text(
-                'Notification Settings',
-                style: Theme.of(context).textTheme.bodyText1,
-              ),
-              trailing: const Icon(
-                Icons.arrow_forward_ios,
-                size: 14,
-                color: kTealColor,
-              ),
-            ),
-            ListTile(
-              onTap: () => Navigator.push(
-                context,
-                AppNavigator.appPageRoute(
-                  builder: (_) => const PrivacySettings(),
+                ListTile(
+                  onTap: () => Navigator.push(
+                    context,
+                    AppNavigator.appPageRoute(
+                      builder: (_) => const PrivacySettings(),
+                    ),
+                  ),
+                  tileColor: Colors.white,
+                  leading: Text(
+                    'Privacy Settings',
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyText2
+                        ?.copyWith(fontWeight: FontWeight.w400),
+                  ),
+                  trailing: const Icon(
+                    Icons.arrow_forward_ios,
+                    size: 14,
+                    color: kTealColor,
+                  ),
                 ),
-              ),
-              tileColor: Colors.white,
-              leading: Text(
-                'Privacy Settings',
-                style: Theme.of(context).textTheme.bodyText1,
-              ),
-              trailing: const Icon(
-                Icons.arrow_forward_ios,
-                size: 14,
-                color: kTealColor,
-              ),
-            ),
-            ListTile(
-              onTap: () => Navigator.push(
-                context,
-                AppNavigator.appPageRoute(
-                  builder: (_) => const InviteAFriend(),
+                ListTile(
+                  onTap: () => Navigator.push(
+                    context,
+                    AppNavigator.appPageRoute(
+                      builder: (_) => const InviteAFriend(),
+                    ),
+                  ),
+                  tileColor: Colors.white,
+                  leading: Text(
+                    'Invite a friend',
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyText2
+                        ?.copyWith(fontWeight: FontWeight.w400),
+                  ),
+                  trailing: const Icon(
+                    Icons.arrow_forward_ios,
+                    size: 14,
+                    color: kTealColor,
+                  ),
                 ),
-              ),
-              tileColor: Colors.white,
-              leading: Text(
-                'Invite a friend',
-                style: Theme.of(context).textTheme.bodyText1,
-              ),
-              trailing: const Icon(
-                Icons.arrow_forward_ios,
-                size: 14,
-                color: kTealColor,
-              ),
+              ],
             ),
+            const SizedBox(height: 39),
             Padding(
-              padding: EdgeInsets.symmetric(
-                vertical: 10.0.h,
-                horizontal: 10.0.w,
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Text(
                 'Support',
-                style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                      color: kTealColor,
+                style: Theme.of(context)
+                    .textTheme
+                    .subtitle2
+                    ?.copyWith(color: kTealColor),
+              ),
+            ),
+            const SizedBox(height: 10),
+            ...ListTile.divideTiles(
+              color: const Color(0xFFF2F2F2),
+              tiles: [
+                ListTile(
+                  onTap: () => Navigator.push(
+                    context,
+                    AppNavigator.appPageRoute(
+                      builder: (_) => const HelpCenter(),
                     ),
-              ),
-            ),
-            ListTile(
-              onTap: () => Navigator.push(
-                context,
-                AppNavigator.appPageRoute(
-                  builder: (_) => const HelpCenter(),
+                  ),
+                  tileColor: Colors.white,
+                  leading: Text(
+                    'Help Center',
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyText2
+                        ?.copyWith(fontWeight: FontWeight.w400),
+                  ),
+                  trailing: const Icon(
+                    Icons.arrow_forward_ios,
+                    size: 14,
+                    color: kTealColor,
+                  ),
                 ),
-              ),
-              tileColor: Colors.white,
-              leading: Text(
-                'Help Center',
-                style: Theme.of(context).textTheme.bodyText1,
-              ),
-              trailing: const Icon(
-                Icons.arrow_forward_ios,
-                size: 14,
-                color: kTealColor,
-              ),
-            ),
-            ListTile(
-              onTap: () => Navigator.push(
-                context,
-                AppNavigator.appPageRoute(
-                  builder: (_) => const TermsOfService(),
+                ListTile(
+                  onTap: () => Navigator.push(
+                    context,
+                    AppNavigator.appPageRoute(
+                      builder: (_) => const TermsOfService(),
+                    ),
+                  ),
+                  tileColor: Colors.white,
+                  leading: Text(
+                    'Terms of Service',
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyText2
+                        ?.copyWith(fontWeight: FontWeight.w400),
+                  ),
+                  trailing: const Icon(
+                    Icons.arrow_forward_ios,
+                    size: 14,
+                    color: kTealColor,
+                  ),
                 ),
-              ),
-              tileColor: Colors.white,
-              leading: Text(
-                'Terms of Service',
-                style: Theme.of(context).textTheme.bodyText1,
-              ),
-              trailing: const Icon(
-                Icons.arrow_forward_ios,
-                size: 14,
-                color: kTealColor,
-              ),
-            ),
-            ListTile(
-              onTap: () => Navigator.push(
-                context,
-                AppNavigator.appPageRoute(
-                  builder: (_) => const PrivacyPolicy(),
+                ListTile(
+                  onTap: () => Navigator.push(
+                    context,
+                    AppNavigator.appPageRoute(
+                      builder: (_) => const PrivacyPolicy(),
+                    ),
+                  ),
+                  tileColor: Colors.white,
+                  leading: Text(
+                    'Privacy Policy',
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyText2
+                        ?.copyWith(fontWeight: FontWeight.w400),
+                  ),
+                  trailing: const Icon(
+                    Icons.arrow_forward_ios,
+                    size: 14,
+                    color: kTealColor,
+                  ),
                 ),
-              ),
-              tileColor: Colors.white,
-              leading: Text(
-                'Privacy Policy',
-                style: Theme.of(context).textTheme.bodyText1,
-              ),
-              trailing: const Icon(
-                Icons.arrow_forward_ios,
-                size: 14,
-                color: kTealColor,
-              ),
-            ),
-            ListTile(
-              onTap: () => Navigator.push(
-                context,
-                AppNavigator.appPageRoute(
-                  builder: (_) => const About(),
+                ListTile(
+                  onTap: () => Navigator.push(
+                    context,
+                    AppNavigator.appPageRoute(
+                      builder: (_) => const About(),
+                    ),
+                  ),
+                  tileColor: Colors.white,
+                  leading: Text(
+                    'About',
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyText2
+                        ?.copyWith(fontWeight: FontWeight.w400),
+                  ),
+                  trailing: const Icon(
+                    Icons.arrow_forward_ios,
+                    size: 14,
+                    color: kTealColor,
+                  ),
                 ),
-              ),
-              tileColor: Colors.white,
-              leading: Text(
-                'About',
-                style: Theme.of(context).textTheme.bodyText1,
-              ),
-              trailing: const Icon(
-                Icons.arrow_forward_ios,
-                size: 14,
-                color: kTealColor,
-              ),
+              ],
             ),
             const SizedBox(height: 30),
             Center(
               child: Wrap(
                 children: [
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.3,
-                    child: AppButton.filled(
-                      text: 'Log Out',
-                      color: kPinkColor,
-                      onPressed: () async {
-                        final _auth = context.read<Auth>();
-                        context.read<ShoppingCart>().clear();
-                        context.read<AppRouter>()
-                          ..jumpToTab(AppRoute.home)
-                          ..keyOf(AppRoute.root)
-                              .currentState!
-                              .pushNamedAndRemoveUntil(
-                                WelcomeScreen.routeName,
-                                (route) => false,
-                              );
+                  AppButton.filled(
+                    text: 'Log Out',
+                    color: kPinkColor,
+                    onPressed: () async {
+                      final _auth = context.read<Auth>();
+                      context.read<ShoppingCart>().clear();
+                      context.read<AppRouter>()
+                        ..jumpToTab(AppRoute.home)
+                        ..keyOf(AppRoute.root)
+                            .currentState!
+                            .pushNamedAndRemoveUntil(
+                              WelcomeScreen.routeName,
+                              (route) => false,
+                            );
 
-                        Future.delayed(const Duration(milliseconds: 500), () {
-                          _auth.logOut();
-                        });
-                      },
-                    ),
+                      Future.delayed(const Duration(milliseconds: 500), () {
+                        _auth.logOut();
+                      });
+                    },
                   ),
                 ],
               ),

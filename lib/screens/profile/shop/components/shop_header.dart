@@ -1,6 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
 
@@ -69,29 +68,29 @@ class ShopHeader extends StatelessWidget {
         ),
         if (displaySettingsButton)
           Positioned(
-            left: 10.0.w,
-            child: IconButton(
-              padding: EdgeInsets.zero,
-              icon: Icon(
-                Icons.settings,
-                size: 30.0.r,
+            left: 0,
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: IconButton(
+                padding: EdgeInsets.zero,
+                icon: const Icon(
+                  Icons.settings,
+                  size: 25,
+                ),
+                color: Colors.white,
+                onPressed: onSettingsTap,
               ),
-              color: Colors.white,
-              onPressed: onSettingsTap,
             ),
           ),
         Transform.translate(
           offset: const Offset(0, -10.0),
           child: Center(
             child: Padding(
-              padding: EdgeInsets.only(
-                top: 10.0.h,
-                bottom: 10.0.h,
-              ),
+              padding: const EdgeInsets.only(top: 25.0, bottom: 10.0),
               child: ChatAvatar(
                 displayName: shopName,
                 displayPhoto: shopProfilePhoto,
-                radius: 40.0.r,
+                radius: 45,
                 onTap: onShopPhotoTap,
               ),
             ),
@@ -99,15 +98,18 @@ class ShopHeader extends StatelessWidget {
         ),
         if (displayEditButton)
           Positioned(
-            right: 10.0.w,
-            child: IconButton(
-              padding: EdgeInsets.zero,
-              icon: Icon(
-                MdiIcons.squareEditOutline,
-                size: 30.0.r,
+            right: 0,
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: IconButton(
+                padding: EdgeInsets.zero,
+                icon: const Icon(
+                  MdiIcons.squareEditOutline,
+                  size: 25,
+                ),
+                color: Colors.white,
+                onPressed: onEditTap,
               ),
-              color: Colors.white,
-              onPressed: onEditTap,
             ),
           ),
       ],

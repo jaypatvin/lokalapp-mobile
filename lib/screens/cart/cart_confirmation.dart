@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 
@@ -38,83 +37,90 @@ class CartConfirmation extends StatelessWidget {
             },
             child: Text(
               'Done',
-              style: Theme.of(context).textTheme.subtitle1,
+              style: Theme.of(context)
+                  .textTheme
+                  .headline6
+                  ?.copyWith(color: kTealColor),
             ),
           ),
         ],
       ),
       body: ConstrainedScrollView(
-        child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 10.0.w),
-          child: Column(
-            //mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SizedBox(
-                height: 140.0.h,
-                width: double.infinity,
-                child: Lottie.asset(kAnimationOk, fit: BoxFit.contain),
-              ),
-              SizedBox(height: 32.h),
-              Text(
-                isSubscription ? 'Subscription for Review!' : 'Order Placed!',
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SizedBox(
+              height: 100,
+              width: double.infinity,
+              child: Lottie.asset(kAnimationOk, fit: BoxFit.contain),
+            ),
+            const SizedBox(height: 30),
+            Text(
+              isSubscription ? 'Subscription for Review!' : 'Order Placed!',
+              textAlign: TextAlign.center,
+              style: Theme.of(context)
+                  .textTheme
+                  .headline5
+                  ?.copyWith(color: kTealColor, fontWeight: FontWeight.w600),
+            ),
+            const SizedBox(height: 5),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 48.0),
+              child: RichText(
+                text: TextSpan(
+                  children: [
+                    TextSpan(
+                      text: isSubscription
+                          ? 'You can check the status of '
+                              'your subscription using the '
+                          : 'You can track your order using the ',
+                    ),
+                    TextSpan(
+                      text: 'My Activity',
+                      style: Theme.of(context)
+                          .textTheme
+                          .subtitle1
+                          ?.copyWith(fontWeight: FontWeight.w700),
+                    ),
+                    const TextSpan(text: ' page.'),
+                  ],
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyText2
+                      ?.copyWith(fontWeight: FontWeight.w400),
+                ),
                 textAlign: TextAlign.center,
-                style: Theme.of(context)
-                    .textTheme
-                    .headline4!
-                    .copyWith(color: kTealColor),
               ),
-              const SizedBox(height: 16),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 48.0),
-                child: RichText(
-                  text: TextSpan(
-                    children: [
-                      TextSpan(
-                        text: isSubscription
-                            ? 'You can check the status of '
-                                'your subscription using the '
-                            : 'You can track your order using the ',
-                      ),
-                      TextSpan(
-                        text: 'My Activity',
-                        style: Theme.of(context).textTheme.subtitle1,
-                      ),
-                      const TextSpan(text: ' page.'),
-                    ],
-                    style: Theme.of(context).textTheme.bodyText1,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
+            ),
+            const SizedBox(height: 40),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 48.0),
+              child: AppButton.transparent(
+                text: 'BACK TO MY CART',
+                width: double.infinity,
+                onPressed: () {
+                  context
+                      .read<AppRouter>()
+                      .keyOf(AppRoute.discover)
+                      .currentState!
+                    ..popUntil(ModalRoute.withName(Discover.routeName))
+                    ..pushNamed(CheckoutCart.routeName);
+                },
               ),
-              const Spacer(),
-              SizedBox(
-                width: MediaQuery.of(context).size.width * 0.75,
-                child: AppButton.transparent(
-                  text: 'BACK TO MY CART',
-                  onPressed: () {
-                    context
-                        .read<AppRouter>()
-                        .keyOf(AppRoute.discover)
-                        .currentState!
-                      ..popUntil(ModalRoute.withName(Discover.routeName))
-                      ..pushNamed(CheckoutCart.routeName);
-                  },
-                ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 48.0),
+              child: AppButton.filled(
+                text: 'GO TO MY ACTIVITY',
+                width: double.infinity,
+                onPressed: () async {
+                  AppRouter.discoverNavigatorKey.currentState
+                      ?.popUntil(ModalRoute.withName(Discover.routeName));
+                  context.read<AppRouter>().jumpToTab(AppRoute.activity);
+                },
               ),
-              SizedBox(
-                width: MediaQuery.of(context).size.width * 0.75,
-                child: AppButton.filled(
-                  text: 'GO TO MY ACTIVITY',
-                  onPressed: () async {
-                    AppRouter.discoverNavigatorKey.currentState
-                        ?.popUntil(ModalRoute.withName(Discover.routeName));
-                    context.read<AppRouter>().jumpToTab(AppRoute.activity);
-                  },
-                ),
-              ),
-              SizedBox(height: 10.0.h),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

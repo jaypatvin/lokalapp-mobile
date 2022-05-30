@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:lottie/lottie.dart';
 
@@ -42,17 +41,17 @@ class ProcessingPayment extends StatelessWidget {
         child: ConstrainedScrollView(
           child: Column(
             children: [
-              SizedBox(height: 20.0.h),
+              const SizedBox(height: 16),
               Text(
                 _getTitleText(),
-                style: Theme.of(context).textTheme.headline5?.copyWith(
-                      color: Colors.black,
-                      fontWeight: FontWeight.w600,
-                    ),
+                style: Theme.of(context)
+                    .textTheme
+                    .headline6
+                    ?.copyWith(color: Colors.black),
               ),
-              SizedBox(height: 20.0.h),
+              const SizedBox(height: 16),
               SizedBox(
-                height: 100.0.h,
+                height: 175,
                 width: double.infinity,
                 child: Stack(
                   children: [
@@ -64,7 +63,7 @@ class ProcessingPayment extends StatelessWidget {
                     ),
                     Center(
                       child: SizedBox(
-                        width: 250.w,
+                        width: 250,
                         child: Lottie.asset(
                           kAnimationPaymentReceived,
                           fit: BoxFit.scaleDown,
@@ -75,33 +74,33 @@ class ProcessingPayment extends StatelessWidget {
                   ],
                 ),
               ),
-              SizedBox(height: 16.0.h),
+              const SizedBox(height: 20),
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 36.0.w),
+                padding: const EdgeInsets.symmetric(horizontal: 37),
                 child: Text(
                   'Please wait for the Shop to confirm your payment. '
                   'We will notify you once the payment has been confirmed.',
                   textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.bodyText1,
+                  style: Theme.of(context).textTheme.bodyText2,
                 ),
               ),
-              SizedBox(height: 16.0.h),
+              const SizedBox(height: 24),
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 24.0.w),
+                padding: const EdgeInsets.symmetric(horizontal: 37),
                 child: TransactionDetails(
                   transaction: order,
                   isBuyer: true,
                 ),
               ),
+              const SizedBox(height: 24),
               const Spacer(),
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16.0.w),
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Container(
+                    SizedBox(
                       width: double.infinity,
-                      margin: EdgeInsets.only(bottom: 5.0.h),
                       child: MessageSellerButton(order: order),
                     ),
                     SizedBox(

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class InputDescriptionField extends StatelessWidget {
   final int maxLines;
@@ -21,8 +20,8 @@ class InputDescriptionField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.all(12.w),
-      height: maxLines * 12.0.sp,
+      // margin: EdgeInsets.all(12.w),
+      height: maxLines * 12.0,
       color: Colors.transparent,
       child: TextField(
         focusNode: focusNode,
@@ -50,17 +49,15 @@ class InputDescriptionField extends StatelessWidget {
             borderRadius: BorderRadius.circular(10),
             borderSide: BorderSide(color: Colors.grey.shade400),
           ),
-          contentPadding: EdgeInsets.symmetric(
-            horizontal: 20.0.w,
-            vertical: 20.0.h,
-          ),
+          contentPadding:
+              const EdgeInsets.symmetric(horizontal: 20, vertical: 21),
           hintText: hintText,
           hintStyle: Theme.of(context)
               .textTheme
               .bodyText2
               ?.copyWith(color: Colors.grey),
         ),
-        style: Theme.of(context).textTheme.bodyText1,
+        style: Theme.of(context).textTheme.bodyText2,
       ),
     );
   }

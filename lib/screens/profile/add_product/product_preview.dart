@@ -4,7 +4,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
@@ -82,7 +81,7 @@ class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
           margin: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 5.0),
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            border: Border.all(width: 1.sp, color: kOrangeColor),
+            border: Border.all(color: kOrangeColor),
             color: _current == index ? kOrangeColor : Colors.transparent,
           ),
         );
@@ -150,27 +149,24 @@ class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
   }
 
   Widget _buildImage(ProductBody product) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Row(
-        children: [
-          Expanded(
-            child: SizedBox(
-              height: MediaQuery.of(context).size.height / 2,
-              child: Stack(
-                children: [
-                  _buildGallery(),
-                  Align(
-                    alignment: Alignment.bottomCenter,
-                    child: _buildDots(),
-                  )
-                ],
-              ),
+    return Row(
+      children: [
+        Expanded(
+          child: SizedBox(
+            height: MediaQuery.of(context).size.height / 2,
+            child: Stack(
+              children: [
+                _buildGallery(),
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: _buildDots(),
+                )
+              ],
             ),
           ),
-          //  SizedBox(height: 10,),
-        ],
-      ),
+        ),
+        //  SizedBox(height: 10,),
+      ],
     );
   }
 
@@ -383,7 +379,6 @@ class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
 
   @override
   Widget screen(BuildContext context) {
-    final height = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: CustomAppBar(
         titleText: 'Product Preview',
@@ -392,29 +387,26 @@ class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
         },
       ),
       body: ConstrainedScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Consumer<ProductBody>(
-            builder: (context, product, child) {
-              return Column(
+        child: Consumer<ProductBody>(
+          builder: (context, product, child) {
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SizedBox(
-                    height: height * 0.45,
-                    child: _buildImage(product),
-                  ),
+                  _buildImage(product),
                   Text(
                     product.name!,
-                    style: Theme.of(context)
-                        .textTheme
-                        .headline6
-                        ?.copyWith(fontWeight: FontWeight.bold),
+                    style: Theme.of(context).textTheme.headline6,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 15),
                   Text(
                     product.description!,
-                    style: Theme.of(context).textTheme.bodyText1,
+                    style: Theme.of(context).textTheme.bodyText2?.copyWith(
+                          color: Colors.black,
+                          fontWeight: FontWeight.w400,
+                        ),
                   ),
                   const Spacer(),
                   SizedBox(
@@ -427,9 +419,9 @@ class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
                     ),
                   ),
                 ],
-              );
-            },
-          ),
+              ),
+            );
+          },
         ),
       ),
     );

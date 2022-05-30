@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 
 import '../../models/app_navigator.dart';
@@ -49,48 +48,33 @@ class VerifyConfirmationScreen extends StatelessWidget {
               },
               child: Text(
                 'Done',
-                style: TextStyle(
-                  color: kTealColor,
-                  fontSize: 18.0.sp,
-                  fontWeight: FontWeight.w600,
-                ),
+                style: Theme.of(context)
+                    .textTheme
+                    .headline6
+                    ?.copyWith(color: kTealColor),
               ),
             ),
           ],
         ),
         body: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 24.0.w),
+          padding: const EdgeInsets.symmetric(horizontal: 37),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(
+              const Icon(
                 Icons.check_circle_outline_rounded,
-                size: 120.0.h,
-                color: const Color(0xFFFFC700),
+                size: 100,
+                color: Color(0xFFFFC700),
               ),
-              SizedBox(
-                height: 20.0.h,
-              ),
+              const SizedBox(height: 30),
               Text(
                 'Thank you!',
-                style: TextStyle(
-                  fontSize: 35.0.sp,
-                  color: kNavyColor,
-                  fontWeight: FontWeight.bold,
-                  fontFamily: 'Goldplay',
-                ),
+                style: Theme.of(context).textTheme.headline4,
               ),
-              SizedBox(
-                height: 15.0.h,
-              ),
+              const SizedBox(height: 10),
               Text(
                 'We will notify you when your account has been verified.',
-                style: TextStyle(
-                  fontSize: 18.0.sp,
-                  color: kNavyColor,
-                  fontFamily: 'Goldplay',
-                  fontWeight: FontWeight.normal,
-                ),
+                style: Theme.of(context).textTheme.bodyText1,
                 textAlign: TextAlign.center,
               ),
             ],

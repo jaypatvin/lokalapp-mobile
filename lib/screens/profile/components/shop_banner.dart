@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 import '../../../models/shop.dart';
@@ -69,128 +68,134 @@ class _CurrentUserShopBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Container(
-          padding: EdgeInsets.fromLTRB(10.0.w, 20.0.w, 10.0.w, 10.0.w),
-          width: double.infinity,
-          child: const Text(
-            'My Shop',
-            style: TextStyle(
-              color: kTealColor,
-              fontWeight: FontWeight.w600,
+    return Consumer<Auth>(
+      builder: (context, auth, child) {
+        final _isUserRegistered = auth.user?.registration.verified ?? false;
+        if (!_isUserRegistered &&
+            (auth.user?.registration.idPhoto.isNotEmpty ?? false)) {
+          return GestureDetector(
+            onTap: onVerifyPressed,
+            child: Container(
+              color: Colors.white,
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(vertical: 33),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    'Verification Pending',
+                    style: Theme.of(context)
+                        .textTheme
+                        .headline6
+                        ?.copyWith(color: Colors.black),
+                  ),
+                  Text(
+                    'We are currently verifying your account.',
+                    style: Theme.of(context).textTheme.bodyText2?.copyWith(
+                          color: Colors.grey,
+                          fontWeight: FontWeight.w400,
+                        ),
+                  ),
+                ],
+              ),
             ),
-          ),
-        ),
-        Consumer<Auth>(
-          builder: (context, auth, child) {
-            final _isUserRegistered = auth.user?.registration.verified ?? false;
-            if (!_isUserRegistered &&
-                (auth.user?.registration.idPhoto.isNotEmpty ?? false)) {
-              return GestureDetector(
-                onTap: onVerifyPressed,
-                child: Container(
+          );
+        } else if (!_isUserRegistered) {
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                padding: const EdgeInsets.fromLTRB(16, 20, 16, 10),
+                width: double.infinity,
+                child: Text(
+                  'My Shop',
+                  style: Theme.of(context)
+                      .textTheme
+                      .subtitle2
+                      ?.copyWith(color: kTealColor),
+                ),
+              ),
+              ListTile(
+                tileColor: kPinkColor,
+                title: Text(
+                  'Verify Account',
+                  style: Theme.of(context)
+                      .textTheme
+                      .subtitle2
+                      ?.copyWith(color: Colors.white),
+                ),
+                trailing: const Icon(
+                  Icons.arrow_forward_ios,
                   color: Colors.white,
-                  width: double.infinity,
-                  padding: EdgeInsets.symmetric(vertical: 16.0.h),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        'Verification Pending',
-                        style: Theme.of(context)
-                            .textTheme
-                            .headline6
-                            ?.copyWith(color: Colors.black),
-                      ),
-                      Text(
-                        'We are currently verifying your account.',
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodyText2
-                            ?.copyWith(color: Colors.grey),
-                      ),
-                    ],
+                  size: 14.0,
+                ),
+                onTap: onVerifyPressed,
+              ),
+              const SizedBox(height: 21),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 95),
+                color: Colors.transparent,
+                child: const Text(
+                  'You must verify your account to add a shop',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: kPinkColor,
+                    fontWeight: FontWeight.w400,
+                    fontSize: 14,
                   ),
                 ),
-              );
-            } else if (!_isUserRegistered) {
-              return ListView(
-                shrinkWrap: true,
-                children: [
-                  ListTile(
-                    tileColor: kPinkColor,
-                    title: const Text(
-                      'Verify Account',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    trailing: Icon(
-                      Icons.arrow_forward_ios,
-                      color: Colors.white,
-                      size: 14.0.r,
-                    ),
-                    onTap: onVerifyPressed,
-                  ),
-                  SizedBox(height: 10.h),
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: 75.0.w),
-                    color: Colors.transparent,
-                    child: const Text(
-                      'You must verify your account to add a shop',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: kPinkColor,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 5.0.h),
-                ],
+              ),
+            ],
+          );
+        }
+
+        return Consumer<Shops>(
+          builder: (_, shops, __) {
+            if (shops.isLoading) {
+              return const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 8.0),
+                child: Center(
+                  child: LinearProgressIndicator(),
+                ),
               );
             }
 
-            return Consumer<Shops>(
-              builder: (_, shops, __) {
-                if (shops.isLoading) {
-                  return const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 8.0),
-                    child: Center(
-                      child: LinearProgressIndicator(),
+            final _shops = shops.findByUser(auth.user!.id);
+            if (_shops.isEmpty) {
+              return Column(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.fromLTRB(16, 20, 16, 10),
+                    width: double.infinity,
+                    child: Text(
+                      'My Shop',
+                      style: Theme.of(context)
+                          .textTheme
+                          .subtitle2
+                          ?.copyWith(color: kTealColor),
                     ),
-                  );
-                }
-
-                final _shops = shops.findByUser(auth.user!.id);
-                if (_shops.isEmpty) {
-                  return Container(
+                  ),
+                  Container(
                     color: Colors.white,
                     width: double.infinity,
-                    padding: EdgeInsets.symmetric(
-                      vertical: 10.0.h,
-                      horizontal: 5.0.w,
-                    ),
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 100.0.w),
+                    padding: const EdgeInsets.symmetric(vertical: 19),
+                    child: Center(
                       child: AppButton.transparent(
                         text: '+ ADD SHOP',
                         onPressed: onAddShop,
                       ),
                     ),
-                  );
-                }
-                return ShopTile(
-                  shop: _shops.first,
-                  onGoToShop: () => onGoToShop(_shops.first),
-                );
-              },
+                  ),
+                ],
+              );
+            }
+            return ShopTile(
+              shop: _shops.first,
+              onGoToShop: () => onGoToShop(_shops.first),
             );
           },
-        ),
-      ],
+        );
+      },
     );
   }
 }

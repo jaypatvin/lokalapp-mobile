@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:keyboard_actions/keyboard_actions.dart';
 import 'package:lottie/lottie.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
@@ -66,11 +65,11 @@ class ChatDetailsView extends HookView<ChatDetailsViewModel> {
       );
     }
     if (viewModel.messageStream == null) {
-      return Center(
+      return const Center(
         child: Text(
           'No messages here yet...',
           style: TextStyle(
-            fontSize: 24.0.sp,
+            fontSize: 24.0,
             color: Colors.black,
           ),
         ),
@@ -97,7 +96,7 @@ class ChatDetailsView extends HookView<ChatDetailsViewModel> {
         width: double.infinity,
         child: Padding(
           padding: EdgeInsets.only(
-            right: 10,
+            right: 16,
             bottom: 5,
           ),
           child: Text(
@@ -142,14 +141,16 @@ class ChatDetailsView extends HookView<ChatDetailsViewModel> {
         appBar: CustomAppBar(
           backgroundColor: _indicatorColor,
           titleText: viewModel.chat?.title ?? '',
-          titleStyle: const TextStyle(color: Colors.white, fontSize: 16.0),
+          titleStyle: Theme.of(context)
+              .textTheme
+              .headline6
+              ?.copyWith(color: Colors.white),
           onPressedLeading: () => Navigator.pop(context),
           actions: [
             IconButton(
-              icon: Icon(
+              icon: const Icon(
                 Icons.more_horiz,
                 color: Colors.white,
-                size: 30.r,
               ),
               onPressed: () {
                 if (viewModel.chat != null) {
@@ -212,9 +213,9 @@ class ChatDetailsView extends HookView<ChatDetailsViewModel> {
                   ),
                   Container(
                     color: kInviteScreenColor,
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 10.0.w,
-                      vertical: 10.0.h,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 8,
                     ),
                     child: ChatInput(
                       onMessageSend: () {
@@ -231,17 +232,40 @@ class ChatDetailsView extends HookView<ChatDetailsViewModel> {
                       chatFocusNode: _chatInputNode,
                     ),
                   ),
+                  // AnimatedContainer(
+                  //   duration: const Duration(milliseconds: 100),
+                  //   height: viewModel.showImagePicker ? 150.0.h : 0.0.h,
+                  //   child: ImageGalleryPicker(
+                  //     viewModel.imageProvider,
+                  //     pickerHeight: 150.h,
+                  //     assetHeight: 150.h,
+                  //     assetWidth: 150.h,
+                  //     thumbSize: 200,
+                  //     enableSpecialItemBuilder: true,
+                  //   ),
+                  // ),
                   AnimatedContainer(
+                    color: kInviteScreenColor,
                     duration: const Duration(milliseconds: 100),
-                    height: viewModel.showImagePicker ? 150.0.h : 0.0.h,
+                    height: viewModel.showImagePicker ? 128 : 0.0,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 11,
+                    ),
                     child: ImageGalleryPicker(
                       viewModel.imageProvider,
-                      pickerHeight: 150.h,
-                      assetHeight: 150.h,
-                      assetWidth: 150.h,
+                      pickerHeight: 107,
+                      assetHeight: 107,
+                      assetWidth: 109,
                       thumbSize: 200,
                       enableSpecialItemBuilder: true,
                     ),
+                  ),
+                  AnimatedContainer(
+                    duration: const Duration(milliseconds: 200),
+                    height: MediaQuery.of(context).viewInsets.bottom > 0
+                        ? kKeyboardActionHeight
+                        : 0,
                   ),
                 ],
               );

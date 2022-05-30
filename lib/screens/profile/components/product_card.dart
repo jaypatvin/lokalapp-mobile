@@ -1,7 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
@@ -99,12 +98,9 @@ class _ProductCardView extends HookView<ProductCardViewModel> {
                     softWrap: true,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: Theme.of(context)
-                        .textTheme
-                        .subtitle1
-                        ?.copyWith(fontSize: 18.0.sp),
+                    style: Theme.of(context).textTheme.subtitle2,
                   ),
-                  SizedBox(height: 2.5.h),
+                  const SizedBox(height: 8),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -113,60 +109,60 @@ class _ProductCardView extends HookView<ProductCardViewModel> {
                         textAlign: TextAlign.start,
                         style: Theme.of(context)
                             .textTheme
-                            .subtitle1
-                            ?.copyWith(color: kOrangeColor),
+                            .subtitle2
+                            ?.copyWith(color: kOrangeColor, fontSize: 12),
                       ),
                       GestureDetector(
                         onTap: vm.onLike,
                         child: !vm.isLiked
-                            ? Icon(
+                            ? const Icon(
                                 MdiIcons.heartOutline,
-                                size: 16.0.r,
+                                size: 16.0,
                                 color: Colors.black,
                               )
-                            : Icon(
+                            : const Icon(
                                 MdiIcons.heart,
-                                size: 16.0.r,
+                                size: 16.0,
                                 color: kPinkColor,
                               ),
                       ),
                     ],
                   ),
-                  SizedBox(height: 2.0.h),
+                  const SizedBox(height: 8),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       ChatAvatar(
                         displayName: vm.shop.name,
                         displayPhoto: vm.shop.profilePhoto,
-                        radius: 9.0.r,
+                        radius: 7,
                         onTap: vm.onShopTap,
                       ),
-                      SizedBox(width: 5.0.w),
+                      const SizedBox(width: 5),
                       Expanded(
                         child: Text(
                           vm.shop.name,
                           overflow: TextOverflow.ellipsis,
                           textAlign: TextAlign.start,
-                          style: TextStyle(
+                          style: const TextStyle(
                             color: Colors.black,
-                            fontSize: 12.0.sp,
+                            fontSize: 8,
                           ),
                         ),
                       ),
-                      SizedBox(width: 5.0.w),
+                      const SizedBox(width: 2),
                       Row(
                         children: [
-                          Icon(
+                          const Icon(
                             Icons.star,
                             color: Colors.amber,
-                            size: 9.0.r,
+                            size: 9.0,
                           ),
                           Text(
                             vm.productRating,
-                            style: TextStyle(
+                            style: const TextStyle(
                               color: Colors.amber,
-                              fontSize: 12.0.sp,
+                              fontSize: 8,
                             ),
                           ),
                         ],

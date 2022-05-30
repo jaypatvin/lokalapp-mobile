@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:keyboard_actions/keyboard_actions.dart';
 
 import '../../../../../utils/constants/themes.dart';
@@ -87,45 +86,57 @@ class _EmailInputFormState extends State<EmailInputForm> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'New Email Address',
-              style: Theme.of(context).textTheme.bodyText1,
+            Padding(
+              padding: const EdgeInsets.only(left: 21),
+              child: Text(
+                'New Email Address',
+                style: Theme.of(context).textTheme.bodyText2,
+              ),
             ),
+            const SizedBox(height: 4),
             InputEmailField(
               focusNode: _nodeNewEmail,
               controller: widget.newEmailController,
               onChanged: widget.onNewEmailChanged,
               validate: true,
             ),
-            SizedBox(height: 15.0.h),
-            Text(
-              'Confirm Email Address',
-              style: widget.displayEmailMatchError
-                  ? Theme.of(context)
-                      .textTheme
-                      .bodyText1!
-                      .copyWith(color: kPinkColor)
-                  : Theme.of(context).textTheme.bodyText1,
+            const SizedBox(height: 24),
+            Padding(
+              padding: const EdgeInsets.only(left: 21),
+              child: Text(
+                'Confirm Email Address',
+                style: widget.displayEmailMatchError
+                    ? Theme.of(context)
+                        .textTheme
+                        .bodyText1
+                        ?.copyWith(color: kPinkColor)
+                    : Theme.of(context).textTheme.bodyText2,
+              ),
             ),
+            const SizedBox(height: 4),
             InputEmailField(
               focusNode: _nodeConfirmEmail,
               controller: widget.confirmEmailController,
               onChanged: widget.onConfirmEmailChanged,
               displayErrorBorder: widget.displayEmailMatchError,
+              hintText: 'Confirm Email Address',
               validate: true,
             ),
-            SizedBox(height: 15.0.h),
-            Text(
-              'Password',
-              style: Theme.of(context).textTheme.bodyText1,
+            const SizedBox(height: 28),
+            Padding(
+              padding: const EdgeInsets.only(left: 21),
+              child: Text(
+                'Password',
+                style: Theme.of(context).textTheme.bodyText2,
+              ),
             ),
+            const SizedBox(height: 4),
             InputPasswordField(
               focusNode: _nodePassword,
               controller: widget.passwordController,
               onChanged: widget.onPasswordChanged,
               isPasswordVisible: _passwordVisible,
               displaySignInError: widget.displaySignInError,
-              
               onPasswordVisibilityChanged: () =>
                   setState(() => _passwordVisible = !_passwordVisible),
             ),

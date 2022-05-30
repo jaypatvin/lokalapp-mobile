@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+// import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
@@ -36,42 +36,14 @@ class _RegisterScreenView extends HookView<RegisterScreenViewModel>
 
     final _emailFocusNode = useFocusNode();
     final _passwordFocusNode = useFocusNode();
-    final _scrollController = useScrollController();
-
-    final _prevBottom = useRef(0.0);
-
-    useValueChanged(MediaQuery.of(context).viewInsets.bottom, (_, __) async {
-      if (MediaQuery.of(context).viewInsets.bottom != 0) {
-        if (_prevBottom.value >= MediaQuery.of(context).viewInsets.bottom) {
-          _prevBottom.value = MediaQuery.of(context).viewInsets.bottom;
-          return;
-        }
-
-        Future.delayed(const Duration(milliseconds: 100), () {
-          _scrollController.animateTo(
-            280.0.h - kToolbarHeight,
-            duration: const Duration(milliseconds: 50),
-            curve: Curves.linear,
-          );
-        });
-      } else {
-        Future.delayed(const Duration(milliseconds: 100), () {
-          _scrollController.animateTo(
-            _scrollController.position.minScrollExtent,
-            duration: const Duration(milliseconds: 50),
-            curve: Curves.linear,
-          );
-        });
-      }
-    });
 
     return Scaffold(
       body: CustomScrollView(
-        controller: _scrollController,
         physics: const ClampingScrollPhysics(),
         slivers: [
           SliverAppBar(
-            expandedHeight: 280.0.h,
+            // expandedHeight: 280.0.h,
+            expandedHeight: 325,
             automaticallyImplyLeading: false,
             backgroundColor: kYellowColor,
             pinned: true,
@@ -85,26 +57,21 @@ class _RegisterScreenView extends HookView<RegisterScreenViewModel>
                 children: [
                   Text(
                     'Welcome to',
-                    style: TextStyle(
-                      fontSize: 24.0.sp,
-                      fontWeight: FontWeight.w500,
-                      color: kNavyColor,
-                    ),
+                    style: Theme.of(context)
+                        .textTheme
+                        .headline5
+                        ?.copyWith(fontWeight: FontWeight.w500),
                   ),
                   Text(
                     context.watch<CommunityProvider>().community?.name ??
                         'the Community',
-                    style: TextStyle(
-                      fontSize: 24.0.sp,
-                      fontWeight: FontWeight.bold,
-                      color: kNavyColor,
-                    ),
+                    style: Theme.of(context)
+                        .textTheme
+                        .headline5
+                        ?.copyWith(fontWeight: FontWeight.w700),
                   ),
                 ],
               ),
-              // background: const DecoratedBox(
-              //   decoration: BoxDecoration(color: kYellowColor),
-              // ),
               background: SvgPicture.asset(
                 kSvgBackgroundHouses,
                 fit: BoxFit.cover,
@@ -114,21 +81,18 @@ class _RegisterScreenView extends HookView<RegisterScreenViewModel>
           ),
           SliverToBoxAdapter(
             child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 30.0.w),
+              padding: const EdgeInsets.symmetric(horizontal: 45),
               child: Column(
                 children: [
-                  SizedBox(height: 30.0.h),
+                  const SizedBox(height: 40),
                   Center(
                     child: Text(
                       'Create an account below',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w500,
-                        fontSize: 17.0.sp,
-                      ),
+                      style: Theme.of(context).textTheme.bodyText1,
                     ),
                   ),
                   Padding(
-                    padding: EdgeInsets.symmetric(vertical: 20.0.w),
+                    padding: const EdgeInsets.symmetric(vertical: 20.0),
                     child: AuthInputForm(
                       formKey: vm.formKey,
                       emailController: _emailController,
@@ -148,12 +112,14 @@ class _RegisterScreenView extends HookView<RegisterScreenViewModel>
                     ),
                   ),
                   SocialBlock(
-                    appleLogin: () async => performFuture(vm.appleSignUp),
-                    fbLogin: () async => performFuture(vm.facebookSignUp),
-                    googleLogin: () async => performFuture(vm.googleSignUp),
-                    buttonWidth: 50.0.w,
+                    appleLoginCallback: () async =>
+                        performFuture(vm.appleSignUp),
+                    fbLoginCallback: () async =>
+                        performFuture(vm.facebookSignUp),
+                    googleLoginCallback: () async =>
+                        performFuture(vm.googleSignUp),
                   ),
-                  SizedBox(height: 10.0.h),
+                  const SizedBox(height: 5),
                   if (MediaQuery.of(context).viewInsets.bottom > 0)
                     const SizedBox(height: kKeyboardActionHeight)
                 ],

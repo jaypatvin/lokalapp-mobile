@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../state/mvvm_builder.widget.dart';
 import '../../state/views/hook.view.dart';
@@ -88,15 +87,15 @@ class _TransactionsView extends HookView<TransactionsViewModel>
         ),
         SliverToBoxAdapter(
           child: Container(
-            padding: EdgeInsets.all(20.0.h),
+            padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 37),
             width: MediaQuery.of(context).size.width,
             color: _backgroundColor,
             child: Text(
               vm.subHeader,
-              style: Theme.of(context)
-                  .textTheme
-                  .bodyText2
-                  ?.copyWith(color: Colors.white),
+              style: Theme.of(context).textTheme.bodyText2?.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w400,
+                  ),
             ),
           ),
         ),
@@ -104,17 +103,17 @@ class _TransactionsView extends HookView<TransactionsViewModel>
           floating: true,
           delegate: PersistentHeaderDelegateBuilder(
             // Sizes + padding of the children
-            maxHeight: 31.0.h + 20 + kMinInteractiveDimension,
-            minHeight: 31.0.h + 20 + kMinInteractiveDimension,
+            maxHeight: 29 + 20 + 60,
+            minHeight: 29 + 20 + 60,
             child: SizedBox(
               child: DecoratedBox(
                 decoration: const BoxDecoration(color: Colors.white),
                 child: Column(
                   children: [
                     Container(
-                      height: kMinInteractiveDimension,
+                      height: 60,
                       color: const Color(0xFFEFEFEF),
-                      padding: EdgeInsets.symmetric(horizontal: 10.0.w),
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
                       child: GestureDetector(
                         behavior: HitTestBehavior.opaque,
                         onTap: vm.onGoToSubscriptionHandler,
@@ -125,25 +124,25 @@ class _TransactionsView extends HookView<TransactionsViewModel>
                               vm.subscriptionSubtitle,
                               style: Theme.of(context)
                                   .textTheme
-                                  .subtitle1
-                                  ?.copyWith(fontSize: 18.0.sp),
+                                  .headline6
+                                  ?.copyWith(color: Colors.black),
                             ),
-                            Icon(
+                            const Icon(
                               Icons.arrow_forward_ios,
                               color: kTealColor,
-                              size: 14.0.r,
                             ),
                           ],
                         ),
                       ),
                     ),
                     Container(
-                      height: 31.0.h + 20,
+                      height: 29 + 20,
                       color: Colors.white,
-                      padding: const EdgeInsets.symmetric(vertical: 10.0),
+                      padding: const EdgeInsets.only(top: 20),
                       child: ListView.builder(
                         scrollDirection: Axis.horizontal,
                         itemCount: vm.statuses.length,
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
                         itemBuilder: (context, index) {
                           final key = vm.statuses.keys.elementAt(index);
                           final _keyString =
@@ -153,13 +152,13 @@ class _TransactionsView extends HookView<TransactionsViewModel>
                             key: Key(_keyString),
                             child: Container(
                               key: Key(_keyString),
-                              margin: EdgeInsets.symmetric(horizontal: 3.0.w),
-                              padding: EdgeInsets.symmetric(
-                                horizontal: 8.0.w,
-                                vertical: 3.0.h,
+                              margin: const EdgeInsets.symmetric(horizontal: 4),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 6,
                               ),
                               decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10.0.r),
+                                borderRadius: BorderRadius.circular(14),
                                 color: vm.selectedIndex == key
                                     ? const Color(0xFFFFC700)
                                     : const Color(0xFFEFEFEF),
@@ -168,7 +167,7 @@ class _TransactionsView extends HookView<TransactionsViewModel>
                                 child: Text(
                                   vm.statuses[key]!,
                                   key: Key(_keyString),
-                                  style: Theme.of(context).textTheme.bodyText2,
+                                  style: Theme.of(context).textTheme.subtitle2,
                                 ),
                               ),
                             ),
@@ -198,7 +197,7 @@ class _TransactionsView extends HookView<TransactionsViewModel>
                   vm.noOrderMessage,
                   style: Theme.of(context).textTheme.bodyText2,
                 ),
-                SizedBox(height: 5.0.h),
+                const SizedBox(height: 10),
                 if (vm.shop == null && !vm.isBuyer)
                   AppButton.transparent(
                     text: 'Create Shop',

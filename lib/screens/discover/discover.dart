@@ -1,6 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
@@ -52,26 +51,28 @@ class _DiscoverView extends StatelessView<DiscoverViewModel> {
           );
         }
         final categories = provider.categories;
-        return ListView.builder(
+        return ListView.separated(
           scrollDirection: Axis.horizontal,
           itemCount: categories.length,
+          separatorBuilder: (ctx, index) => const SizedBox(width: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 16),
           itemBuilder: (ctx, index) {
             return SizedBox(
-              width: 100.0.w,
+              width: 70,
               child: GestureDetector(
                 onTap: () => provider.onCategoryTap(index),
                 child: Column(
                   children: [
                     // TODO: separate widget
                     Container(
-                      height: 70.0.r,
-                      width: 70.0.r,
+                      height: 70.0,
+                      width: 70.0,
                       decoration: const BoxDecoration(
                         shape: BoxShape.circle,
                         color: Color(0XFFF1FAFF),
                       ),
                       child: ClipRRect(
-                        borderRadius: BorderRadius.circular(30.0.r),
+                        borderRadius: BorderRadius.circular(30.0),
                         child: CachedNetworkImage(
                           imageUrl: categories[index].iconUrl,
                           fit: BoxFit.cover,
@@ -93,17 +94,17 @@ class _DiscoverView extends StatelessView<DiscoverViewModel> {
                         ),
                       ),
                     ),
-                    SizedBox(height: 10.0.h),
+                    const SizedBox(height: 10.0),
                     Text(
                       categories[index].name,
                       maxLines: 2,
                       softWrap: true,
                       overflow: TextOverflow.ellipsis,
                       textAlign: TextAlign.center,
-                      style: Theme.of(ctx)
-                          .textTheme
-                          .subtitle2
-                          ?.copyWith(fontWeight: FontWeight.w600),
+                      style: Theme.of(ctx).textTheme.subtitle2?.copyWith(
+                            fontSize: 10,
+                            color: Colors.black,
+                          ),
                     ),
                   ],
                 ),
@@ -137,11 +138,11 @@ class _DiscoverView extends StatelessView<DiscoverViewModel> {
               return CustomScrollView(
                 slivers: [
                   SliverToBoxAdapter(
-                    child: SizedBox(height: 10.0.h),
-                  ),
-                  SliverToBoxAdapter(
                     child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 16.0.w),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 30,
+                      ),
                       child: GestureDetector(
                         onTap: vm.onSearch,
                         child: const Hero(
@@ -152,25 +153,19 @@ class _DiscoverView extends StatelessView<DiscoverViewModel> {
                     ),
                   ),
                   SliverToBoxAdapter(
-                    child: SizedBox(height: 10.0.h),
-                  ),
-                  SliverToBoxAdapter(
                     child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 16.0.w),
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
                       child: Text(
                         'Recommended',
-                        style: Theme.of(context)
-                            .textTheme
-                            .headline5
-                            ?.copyWith(fontWeight: FontWeight.w600),
+                        style: Theme.of(context).textTheme.headline6,
                       ),
                     ),
                   ),
-                  SliverToBoxAdapter(child: SizedBox(height: 5.0.h)),
+                  const SliverToBoxAdapter(child: SizedBox(height: 12)),
                   if (vm.isLoading)
                     SliverToBoxAdapter(
                       child: SizedBox(
-                        height: 200.0.h,
+                        height: 223,
                         child: Shimmer(
                           child: DecoratedBox(
                             decoration: BoxDecoration(
@@ -188,7 +183,7 @@ class _DiscoverView extends StatelessView<DiscoverViewModel> {
                   else
                     SliverToBoxAdapter(
                       child: SizedBox(
-                        height: 200.0.h,
+                        height: 223,
                         width: MediaQuery.of(context).size.width,
                         child: _RecommendedProducts(
                           key: const Key('recommended_products'),
@@ -197,21 +192,15 @@ class _DiscoverView extends StatelessView<DiscoverViewModel> {
                         ),
                       ),
                     ),
-                  SliverToBoxAdapter(child: SizedBox(height: 15.0.h)),
+                  const SliverToBoxAdapter(child: SizedBox(height: 24)),
                   SliverToBoxAdapter(
                     child: Padding(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 16.0.w,
-                        vertical: 10.0.h,
-                      ),
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
                       child: Row(
                         children: [
                           Text(
                             'Explore Categories',
-                            style: Theme.of(context)
-                                .textTheme
-                                .headline5
-                                ?.copyWith(fontWeight: FontWeight.w600),
+                            style: Theme.of(context).textTheme.headline6,
                           ),
                           const Spacer(),
                           GestureDetector(
@@ -222,14 +211,13 @@ class _DiscoverView extends StatelessView<DiscoverViewModel> {
                                   'View All',
                                   style: Theme.of(context)
                                       .textTheme
-                                      .subtitle1
+                                      .subtitle2
                                       ?.copyWith(color: kTealColor),
                                 ),
-                                Icon(
-                                  // Icons.arrow_forward_ios,
+                                const Icon(
                                   Icons.arrow_forward,
                                   color: kTealColor,
-                                  size: 16.0.sp,
+                                  size: 16.0,
                                 ),
                               ],
                             ),
@@ -238,30 +226,24 @@ class _DiscoverView extends StatelessView<DiscoverViewModel> {
                       ),
                     ),
                   ),
+                  const SliverToBoxAdapter(child: SizedBox(height: 20)),
                   SliverToBoxAdapter(
                     child: SizedBox(
-                      height: 130.0.h,
+                      height: 106,
                       child: _buildCategories(),
                     ),
                   ),
-                  SliverToBoxAdapter(child: SizedBox(height: 10.0.h)),
+                  const SliverToBoxAdapter(child: SizedBox(height: 30)),
                   SliverToBoxAdapter(
                     child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 16.0.w),
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
                       child: Text(
                         'Recent',
-                        style: Theme.of(context)
-                            .textTheme
-                            .headline5
-                            ?.copyWith(fontWeight: FontWeight.w600),
+                        style: Theme.of(context).textTheme.headline6,
                       ),
                     ),
                   ),
-                  SliverToBoxAdapter(
-                    child: SizedBox(
-                      height: 8.0.h,
-                    ),
-                  ),
+                  const SliverToBoxAdapter(child: SizedBox(height: 12)),
                   if (vm.isProductsLoading)
                     SliverFillRemaining(
                       child: Center(
@@ -273,7 +255,7 @@ class _DiscoverView extends StatelessView<DiscoverViewModel> {
                     )
                   else
                     SliverPadding(
-                      padding: EdgeInsets.symmetric(horizontal: 16.0.w),
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
                       sliver: ProductsSliverGrid(
                         items: vm.otherUserProducts,
                         onProductTap: vm.onProductTap,
@@ -311,11 +293,11 @@ class _RecommendedProducts extends StatelessWidget {
       key: const Key('recommended_gridview_builder'),
       scrollDirection: Axis.horizontal,
       itemCount: products.length,
-      padding: EdgeInsets.symmetric(horizontal: 16.0.w),
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         childAspectRatio: 5 / 3,
         crossAxisCount: 1,
-        mainAxisSpacing: 12.0,
+        mainAxisSpacing: 8,
       ),
       itemBuilder: (ctx, index) {
         return SizedBox(

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart' show DateFormat;
 import 'package:provider/provider.dart';
 
@@ -83,8 +82,8 @@ class _ProductScheduleState extends State<ProductSchedule> {
           decoration: BoxDecoration(
             border: Border.all(color: kTealColor),
             borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(20.0),
-              topRight: Radius.circular(20.0),
+              topLeft: Radius.circular(15),
+              topRight: Radius.circular(15),
             ),
             color: _productSchedule == ProductScheduleState.shop
                 ? kTealColor
@@ -94,7 +93,7 @@ class _ProductScheduleState extends State<ProductSchedule> {
             dense: true,
             title: Text(
               'Follow Shop Schedule',
-              style: Theme.of(context).textTheme.headline6!.copyWith(
+              style: Theme.of(context).textTheme.subtitle2?.copyWith(
                     color: _productSchedule == ProductScheduleState.shop
                         ? Colors.white
                         : kTealColor,
@@ -112,9 +111,9 @@ class _ProductScheduleState extends State<ProductSchedule> {
         Container(
           decoration: BoxDecoration(
             border: Border.all(color: kTealColor),
-            borderRadius: BorderRadius.only(
-              bottomLeft: Radius.circular(30.0.r),
-              bottomRight: Radius.circular(30.0.r),
+            borderRadius: const BorderRadius.only(
+              bottomLeft: Radius.circular(15),
+              bottomRight: Radius.circular(15),
             ),
             color: _productSchedule == ProductScheduleState.custom
                 ? kTealColor
@@ -124,7 +123,7 @@ class _ProductScheduleState extends State<ProductSchedule> {
             dense: true,
             title: Text(
               'Set Custom Schedule',
-              style: Theme.of(context).textTheme.headline6!.copyWith(
+              style: Theme.of(context).textTheme.subtitle2?.copyWith(
                     color: _productSchedule == ProductScheduleState.custom
                         ? Colors.white
                         : kTealColor,
@@ -171,24 +170,18 @@ class _ProductScheduleState extends State<ProductSchedule> {
                 );
               },
             ),
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 0.02,
-            ),
+            const SizedBox(height: 24),
             _buildRadioTile(),
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 0.02,
-            ),
+            const SizedBox(height: 23),
             Visibility(
               visible: _productSchedule == ProductScheduleState.custom,
               child: Text(
                 'You can only select the dates that your shop is open.',
-                style: Theme.of(context).textTheme.bodyText1,
+                style: Theme.of(context).textTheme.bodyText2,
               ),
             ),
             SizedBox(
-              height: _productSchedule == ProductScheduleState.custom
-                  ? MediaQuery.of(context).size.height * 0.02
-                  : 0,
+              height: _productSchedule == ProductScheduleState.custom ? 23 : 0,
             ),
             AnimatedContainer(
               duration: const Duration(milliseconds: 200),

@@ -69,10 +69,10 @@ class Activity extends HookWidget {
         bottom: TabBar(
           controller: _tabController,
           unselectedLabelColor: Colors.black,
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          padding: const EdgeInsets.symmetric(horizontal: 12.0),
           indicator: BoxDecoration(
             borderRadius: const BorderRadius.vertical(
-              top: Radius.circular(30.0),
+              top: Radius.circular(20.0),
             ),
             color: _tabColor.value,
           ),
@@ -85,7 +85,10 @@ class Activity extends HookWidget {
         title: Center(
           child: Text(
             'Activity',
-            style: Theme.of(context).textTheme.headline5,
+            style: Theme.of(context)
+                .textTheme
+                .headline6
+                ?.copyWith(color: Colors.black),
           ),
         ),
       ),

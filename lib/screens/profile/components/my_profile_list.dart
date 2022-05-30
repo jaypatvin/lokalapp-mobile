@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../utils/constants/themes.dart';
 
@@ -22,33 +21,54 @@ class MyProfileList extends StatelessWidget {
         tiles: [
           ListTile(
             tileColor: Colors.white,
-            title: const Text('My Posts'),
-            trailing: Icon(
+            title: const Text(
+              'My Posts',
+              style: TextStyle(
+                fontWeight: FontWeight.w400,
+                fontSize: 14,
+              ),
+            ),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+            trailing: const Icon(
               Icons.arrow_forward_ios,
               color: kTealColor,
-              size: 14.0.r,
+              size: 14,
             ),
             onTap: onMyPostsTap,
             enableFeedback: true,
           ),
           ListTile(
             tileColor: Colors.white,
-            title: const Text('Wishlist'),
-            trailing: Icon(
+            title: const Text(
+              'Wishlist',
+              style: TextStyle(
+                fontWeight: FontWeight.w400,
+                fontSize: 14,
+              ),
+            ),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+            trailing: const Icon(
               Icons.arrow_forward_ios,
               color: kTealColor,
-              size: 14.0.r,
+              size: 14,
             ),
             onTap: onWishlistTap,
             enabled: onWishlistTap != null,
           ),
           ListTile(
             tileColor: Colors.white,
-            title: const Text('Invite a Friend'),
-            trailing: Icon(
+            title: const Text(
+              'Invite a Friend',
+              style: TextStyle(
+                fontWeight: FontWeight.w400,
+                fontSize: 14,
+              ),
+            ),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+            trailing: const Icon(
               Icons.arrow_forward_ios,
               color: kTealColor,
-              size: 14.0.r,
+              size: 14,
             ),
             onTap: onInviteFriend,
             enabled: onInviteFriend != null,

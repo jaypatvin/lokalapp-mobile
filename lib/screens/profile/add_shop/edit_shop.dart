@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:keyboard_actions/keyboard_actions.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
@@ -47,12 +46,7 @@ class _EditShopView extends HookView<EditShopViewModel>
   @override
   Widget screen(BuildContext context, EditShopViewModel vm) {
     final themeData = Theme.of(context);
-    final width = MediaQuery.of(context).size.width;
-    final height = MediaQuery.of(context).size.height;
-    final padding = height * 0.05;
-
-    const buttonWidth = kMinInteractiveDimension * 2;
-    const buttonHeight = kMinInteractiveDimension;
+    const padding = 45.0;
 
     final _isAnimating = useState<bool>(false);
 
@@ -126,27 +120,20 @@ class _EditShopView extends HookView<EditShopViewModel>
     );
 
     return Scaffold(
-      appBar: CustomAppBar(
-        titleText: 'Edit Shop',
-        onPressedLeading: () {
-          Navigator.pop(context);
-        },
-      ),
+      appBar: const CustomAppBar(titleText: 'Edit Shop'),
       resizeToAvoidBottomInset: false,
       body: Column(
         children: [
           Container(
-            padding: EdgeInsets.symmetric(
-              horizontal: 20.0.w,
-              vertical: 10.0.h,
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             color: const Color(0XFFF1FAFF),
+            height: 54,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
                   'Shop Status',
-                  style: Theme.of(context).textTheme.subtitle1,
+                  style: Theme.of(context).textTheme.bodyText2,
                 ),
                 InkWell(
                   onTap: () {
@@ -154,49 +141,45 @@ class _EditShopView extends HookView<EditShopViewModel>
                     vm.toggleButton();
                   },
                   child: AnimatedContainer(
+                    width: 88,
                     duration: const Duration(milliseconds: 1),
-                    height: buttonHeight,
-                    width: buttonWidth,
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(30.0.r),
+                      borderRadius: BorderRadius.circular(36.5),
                       color: vm.isShopOpen ? kTealColor : kPinkColor,
                     ),
                     child: Stack(
                       children: [
-                        Visibility(
-                          visible: !_isAnimating.value,
-                          child: Padding(
-                            padding: vm.isShopOpen
-                                ? const EdgeInsets.only(
-                                    left: buttonWidth * 0.10,
-                                  )
-                                : const EdgeInsets.only(
-                                    right: buttonWidth * 0.10,
-                                  ),
-                            child: Align(
-                              alignment: vm.isShopOpen
-                                  ? Alignment.centerLeft
-                                  : Alignment.centerRight,
-                              child: Text(
-                                vm.isShopOpen ? 'Open' : 'Closed',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .subtitle1
-                                    ?.copyWith(color: Colors.white),
-                              ),
+                        Padding(
+                          padding: vm.isShopOpen
+                              ? const EdgeInsets.only(
+                                  left: 88 * 0.10,
+                                )
+                              : const EdgeInsets.only(
+                                  right: 88 * 0.10,
+                                ),
+                          child: Align(
+                            alignment: vm.isShopOpen
+                                ? Alignment.centerLeft
+                                : Alignment.centerRight,
+                            child: Text(
+                              vm.isShopOpen ? 'Open' : 'Closed',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .subtitle2
+                                  ?.copyWith(color: Colors.white),
                             ),
                           ),
                         ),
                         AnimatedPositioned(
                           onEnd: () => _isAnimating.value = false,
                           duration: const Duration(milliseconds: 300),
-                          height: buttonHeight,
-                          left: vm.isShopOpen ? buttonWidth * 0.6 : 0.0,
-                          right: vm.isShopOpen ? 0.0 : buttonWidth * 0.6,
+                          height: 30,
+                          left: vm.isShopOpen ? 88 * 0.6 : 0.0,
+                          right: vm.isShopOpen ? 0.0 : 88 * 0.6,
                           child: Icon(
                             Icons.circle,
                             color: Colors.white,
-                            size: buttonHeight * 0.8,
+                            size: 30 * 0.8,
                             key: UniqueKey(),
                           ),
                         ),
@@ -214,12 +197,12 @@ class _EditShopView extends HookView<EditShopViewModel>
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 32),
                   Text(
                     'Basic Information',
-                    style: Theme.of(context).textTheme.headline5,
+                    style: Theme.of(context).textTheme.headline6,
                   ),
-                  SizedBox(height: 5.0.h),
+                  const SizedBox(height: 33),
                   _ShopPhotoSection(
                     shopPhoto: vm.shopPhoto,
                     shopCoverPhoto: vm.shopCoverPhoto,
@@ -227,31 +210,41 @@ class _EditShopView extends HookView<EditShopViewModel>
                     shopPhotoUrl: vm.shop.profilePhoto,
                     shopCoverPhotoUrl: vm.shop.coverPhoto,
                   ),
-                  SizedBox(height: 5.0.h),
+                  const SizedBox(height: 24),
                   InkWell(
                     onTap: vm.onCoverPhotoPick,
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(
-                          MdiIcons.squareEditOutline,
-                          size: 18.0.sp,
-                          color: kTealColor,
-                        ),
-                        Text(
-                          'Edit Cover Photo',
-                          style:
-                              Theme.of(context).textTheme.subtitle1!.copyWith(
-                                    decoration: TextDecoration.underline,
-                                    color: kTealColor,
-                                  ),
-                        ),
+                        if (vm.shopCoverPhoto != null ||
+                            (vm.shop.coverPhoto?.isNotEmpty ?? false)) ...[
+                          const Icon(
+                            MdiIcons.squareEditOutline,
+                            color: kTealColor,
+                          ),
+                          Text(
+                            'Edit Cover Photo',
+                            style:
+                                Theme.of(context).textTheme.subtitle2?.copyWith(
+                                      decoration: TextDecoration.underline,
+                                      color: kTealColor,
+                                    ),
+                          ),
+                        ] else
+                          Text(
+                            '+ Add a Cover Photo',
+                            style:
+                                Theme.of(context).textTheme.subtitle2?.copyWith(
+                                      decoration: TextDecoration.underline,
+                                      color: kTealColor,
+                                    ),
+                          ),
                       ],
                     ),
                   ),
-                  SizedBox(height: 10.0.h),
+                  const SizedBox(height: 30),
                   Padding(
-                    padding: EdgeInsets.symmetric(horizontal: padding),
+                    padding: const EdgeInsets.symmetric(horizontal: padding),
                     child: InputNameField(
                       controller: _shopNameController,
                       hintText: 'Shop Name',
@@ -259,8 +252,9 @@ class _EditShopView extends HookView<EditShopViewModel>
                       focusNode: _nameNode,
                     ),
                   ),
+                  const SizedBox(height: 22),
                   Padding(
-                    padding: EdgeInsets.symmetric(horizontal: padding),
+                    padding: const EdgeInsets.symmetric(horizontal: padding),
                     child: InputDescriptionField(
                       controller: _shopDescController,
                       hintText: 'Shop Description',
@@ -268,29 +262,49 @@ class _EditShopView extends HookView<EditShopViewModel>
                       focusNode: _descriptionNode,
                     ),
                   ),
-                  SizedBox(height: 5.0.h),
-                  SizedBox(
-                    width: width * 0.8,
-                    child: Text(
-                      'Delivery Options',
-                      style: Theme.of(context).textTheme.subtitle1,
+                  const SizedBox(height: 32),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: padding),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        'Delivery Options',
+                        style: Theme.of(context).textTheme.subtitle2,
+                      ),
                     ),
                   ),
-                  SizedBox(height: 5.0.h),
-                  SizedBox(
-                    width: width * 0.8,
+                  const SizedBox(height: 12),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: padding),
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        AppCheckBox(
-                          value: vm.forPickup,
-                          onTap: vm.onPickupTap,
-                          title: const Text('Customer Pick-up'),
+                        Flexible(
+                          flex: 3,
+                          child: AppCheckBox(
+                            value: vm.forPickup,
+                            onTap: vm.onPickupTap,
+                            title: const Text(
+                              'Customer Pick-up',
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                          ),
                         ),
-                        AppCheckBox(
-                          value: vm.forDelivery,
-                          onTap: vm.onDeliveryTap,
-                          title: const Text('Delivery'),
+                        Flexible(
+                          flex: 2,
+                          child: AppCheckBox(
+                            value: vm.forDelivery,
+                            onTap: vm.onDeliveryTap,
+                            title: const Text(
+                              'Delivery',
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                          ),
                         ),
                       ],
                     ),
@@ -301,30 +315,35 @@ class _EditShopView extends HookView<EditShopViewModel>
                       style: themeData.textTheme.caption!
                           .copyWith(color: themeData.errorColor),
                     ),
-                  SizedBox(
-                    height: height * 0.02,
-                  ),
-                  SizedBox(
-                    width: width * 0.8,
-                    child: AppButton.transparent(
-                      text: 'Change Shop Schedule',
-                      onPressed: vm.onChangeShopSchedule,
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: padding,
+                      vertical: 24,
                     ),
-                  ),
-                  SizedBox(
-                    width: width * 0.8,
-                    child: AppButton.transparent(
-                      text: 'Edit Payment Options',
-                      onPressed: vm.onEditPaymentOptions,
-                    ),
-                  ),
-                  SizedBox(height: height * 0.01),
-                  SizedBox(
-                    width: width * 0.6,
-                    child: AppButton.filled(
-                      text: 'Apply Changes',
-                      onPressed: () async =>
-                          performFuture<void>(vm.onApplyChanges),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        SizedBox(
+                          width: double.infinity,
+                          child: AppButton.transparent(
+                            text: 'Change Shop Schedule',
+                            onPressed: vm.onChangeShopSchedule,
+                          ),
+                        ),
+                        SizedBox(
+                          width: double.infinity,
+                          child: AppButton.transparent(
+                            text: 'Edit Payment Options',
+                            onPressed: vm.onEditPaymentOptions,
+                          ),
+                        ),
+                        const SizedBox(height: 24),
+                        AppButton.filled(
+                          text: 'Apply Changes',
+                          onPressed: () async =>
+                              performFuture<void>(vm.onApplyChanges),
+                        ),
+                      ],
                     ),
                   ),
                 ],
@@ -354,9 +373,8 @@ class _ShopPhotoSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final height = MediaQuery.of(context).size.height;
     return SizedBox(
-      height: height * 0.25,
+      height: 130,
       child: Stack(
         children: [
           Center(
@@ -367,7 +385,7 @@ class _ShopPhotoSection extends StatelessWidget {
               ),
               shape: BoxShape.rectangle,
               width: double.infinity,
-              height: height * 0.25,
+              height: 130,
               displayBorder: false,
             ),
           ),
@@ -381,39 +399,40 @@ class _ShopPhotoSection extends StatelessWidget {
                       file: shopPhoto,
                       url: shopPhotoUrl,
                     ),
-                    height: 140.0,
-                    width: 140.0,
+                    height: 130.0,
+                    width: 130.0,
                     shape: BoxShape.circle,
-                    displayBorder: false,
                   ),
-                  Container(
-                    width: 140.0,
-                    height: 140.0,
-                    decoration: BoxDecoration(
-                      color: Colors.black.withOpacity(0.30),
-                      shape: BoxShape.circle,
-                    ),
-                    child: Center(
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(
-                            MdiIcons.squareEditOutline,
-                            size: 18.0.sp,
-                            color: Colors.white,
-                          ),
-                          Text(
-                            'Edit Photo',
-                            style:
-                                Theme.of(context).textTheme.subtitle1!.copyWith(
-                                      decoration: TextDecoration.underline,
-                                      color: Colors.white,
-                                    ),
-                          ),
-                        ],
+                  if (shopPhoto != null || (shopPhotoUrl?.isNotEmpty ?? false))
+                    Container(
+                      width: 130.0,
+                      height: 130.0,
+                      decoration: BoxDecoration(
+                        color: Colors.black.withOpacity(0.30),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Center(
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Icon(
+                              MdiIcons.squareEditOutline,
+                              color: Colors.white,
+                            ),
+                            Text(
+                              'Edit Photo',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .subtitle1!
+                                  .copyWith(
+                                    decoration: TextDecoration.underline,
+                                    color: Colors.white,
+                                  ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
                 ],
               ),
             ),

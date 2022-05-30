@@ -60,14 +60,17 @@ class _WeekdayPickerState extends State<WeekdayPicker> {
 
   Widget _weekdayContainer(bool isMarked, int? weekday, String weekDayName) {
     return Container(
-      margin: const EdgeInsets.all(2.0),
+      width: 40,
+      height: 40,
+      margin: const EdgeInsets.symmetric(horizontal: 2),
       child: GestureDetector(
         onLongPress: () => debugPrint(weekDayName),
         child: Container(
-          padding: const EdgeInsets.all(2.0),
+          padding: const EdgeInsets.all(3.0),
           decoration: BoxDecoration(
-            border:
-                Border.all(color: isMarked ? Colors.orange : Colors.grey[300]!),
+            border: Border.all(
+              color: isMarked ? Colors.orange : Colors.grey.shade300,
+            ),
             shape: widget.daysHaveCircularBorder
                 ? BoxShape.circle
                 : BoxShape.rectangle,
@@ -161,11 +164,25 @@ class _WeekdayPickerState extends State<WeekdayPicker> {
 
   @override
   Widget build(BuildContext context) {
-    return GridView.count(
-      physics: const NeverScrollableScrollPhysics(),
-      crossAxisCount: 7,
-      shrinkWrap: true,
-      children: _renderWeekDays(),
+    // return GridView.count(
+    //   physics: const NeverScrollableScrollPhysics(),
+    //   crossAxisCount: 7,
+    //   shrinkWrap: true,
+    //   padding: EdgeInsets.zero,
+    //   children: _renderWeekDays(),
+    // );
+    // return ListView(
+    //   scrollDirection: Axis.horizontal,
+    //   shrinkWrap: true,
+    //   physics: const NeverScrollableScrollPhysics(),
+    //   children: _renderWeekDays(),
+    // );
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: _renderWeekDays(),
+      ),
     );
   }
 }

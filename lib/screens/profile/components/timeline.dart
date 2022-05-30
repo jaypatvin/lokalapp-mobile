@@ -9,12 +9,10 @@ import '../../home/components/post_card.dart';
 class Timeline extends StatelessWidget {
   final ScrollController? scrollController;
   final String? userId;
-  final double firstIndexPadding;
 
   const Timeline({
     this.scrollController,
     this.userId,
-    this.firstIndexPadding = 0,
   });
 
   @override
@@ -47,14 +45,13 @@ class Timeline extends StatelessWidget {
           physics: const ScrollPhysics(),
           controller: scrollController,
           itemCount: activityFeed.length, //snapshot.data!.length,
-          padding: const EdgeInsets.only(bottom: 6.0),
+          padding: const EdgeInsets.fromLTRB(16, 20, 16, 6),
           itemBuilder: (context, index) {
             final activity = activityFeed[index];
             return Container(
               key: ValueKey(activity.id),
-              margin: index == 0
-                  ? EdgeInsets.only(top: firstIndexPadding)
-                  : EdgeInsets.zero,
+              margin:
+                  index != 0 ? const EdgeInsets.only(top: 20) : EdgeInsets.zero,
               child: PostCard(
                 key: ValueKey(activity.id),
                 activity: activity,

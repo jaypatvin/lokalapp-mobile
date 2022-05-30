@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../chat/components/chat_avatar.dart';
 
@@ -17,27 +16,27 @@ class UserBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: 10.0.h),
-      child: ListTile(
-        onTap: onTap,
-        leading: ChatAvatar(
-          displayName: displayName,
-          displayPhoto: profilePhoto,
+    return ListTile(
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+      onTap: onTap,
+      leading: ChatAvatar(
+        displayName: displayName,
+        displayPhoto: profilePhoto,
+      ),
+      title: Text(
+        displayName,
+        style: const TextStyle(
+          color: Colors.black,
+          fontWeight: FontWeight.w600,
+          fontSize: 12,
         ),
-        title: Text(
-          displayName,
-          style: TextStyle(
-            color: Colors.black,
-            fontWeight: FontWeight.bold,
-            fontSize: 14.0.sp,
-          ),
-        ),
-        trailing: const Text(
-          'No reviews yet',
-          style: TextStyle(
-            color: Colors.grey,
-          ),
+      ),
+      trailing: const Text(
+        'No reviews yet',
+        style: TextStyle(
+          color: Colors.grey,
+          fontSize: 14,
+          fontWeight: FontWeight.w500,
         ),
       ),
     );

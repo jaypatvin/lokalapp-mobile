@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:keyboard_actions/keyboard_actions.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
@@ -62,110 +61,115 @@ class _ProductDetailsState extends State<ProductDetails> {
     }
   }
 
-  Widget _buildCategories() {
+  Widget _buildTable() {
     final productBody = context.read<ProductBody>();
-    return Row(
+    return Table(
+      columnWidths: const {0: FlexColumnWidth(2), 1: FlexColumnWidth(3)},
+      defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+      // border: const TableBorder(
+      //   horizontalInside: BorderSide(
+      //     color: Colors.white,
+      //     width: 5,
+      //   ),
+      // ),
       children: [
-        SizedBox(
-          width: MediaQuery.of(context).size.width * 0.45,
-          child: Text(
-            'Product Category',
-            style: Theme.of(context).textTheme.headline6,
-          ),
-        ),
-        const SizedBox(width: 15.0),
-        Expanded(
-          child: Container(
-            margin: EdgeInsets.all(5.0.w),
-            decoration: BoxDecoration(
-              color: const Color(0xFFF2F2F2),
-              borderRadius: BorderRadius.circular(30.0.r),
+        TableRow(
+          children: [
+            Text(
+              'Product Category',
+              style: Theme.of(context)
+                  .textTheme
+                  .subtitle2
+                  ?.copyWith(color: Colors.black),
             ),
-            child: ButtonTheme(
-              alignedDropdown: true,
-              padding: EdgeInsets.symmetric(
-                horizontal: 20.w,
-                vertical: 13.h,
+            Container(
+              decoration: BoxDecoration(
+                color: const Color(0xFFF2F2F2),
+                borderRadius: BorderRadius.circular(30.0),
               ),
-              child: Consumer<Categories>(
-                builder: (ctx, provider, _) {
-                  if (provider.isLoading || provider.categories.isEmpty) {
-                    return const SizedBox();
-                  }
+              child: ButtonTheme(
+                alignedDropdown: true,
+                padding: const EdgeInsets.symmetric(horizontal: 22),
+                child: Consumer<Categories>(
+                  builder: (ctx, provider, _) {
+                    if (provider.isLoading || provider.categories.isEmpty) {
+                      return const SizedBox();
+                    }
 
-                  if (productBody.productCategory != null &&
-                          productBody.productCategory!.isEmpty ||
-                      !provider.categories
-                          .any((c) => c.id == productBody.productCategory!)) {
-                    productBody.update(
-                      productCategory: provider.categories.first.id,
-                    );
-                  }
-
-                  return DropdownButton<String>(
-                    isExpanded: true,
-                    iconEnabledColor: kTealColor,
-                    iconDisabledColor: kTealColor,
-                    iconSize: 24.0.sp,
-                    icon: const Icon(MdiIcons.chevronDown),
-                    underline: const SizedBox(),
-                    value: productBody.productCategory,
-                    hint: Text(
-                      'Select',
-                      style: Theme.of(context).textTheme.bodyText1,
-                    ),
-                    items: provider.categories.map((LokalCategory category) {
-                      return DropdownMenuItem<String>(
-                        value: category.id,
-                        child: Text(category.name),
+                    if (productBody.productCategory != null &&
+                            productBody.productCategory!.isEmpty ||
+                        !provider.categories
+                            .any((c) => c.id == productBody.productCategory!)) {
+                      productBody.update(
+                        productCategory: provider.categories.first.id,
                       );
-                    }).toList(),
-                    onChanged: (value) {
-                      productBody.update(productCategory: value);
-                      setState(() {});
-                    },
-                    style: Theme.of(context).textTheme.bodyText1,
-                  );
-                },
+                    }
+
+                    return DropdownButton<String>(
+                      isExpanded: true,
+                      iconEnabledColor: kTealColor,
+                      iconDisabledColor: kTealColor,
+                      icon: const Icon(MdiIcons.chevronDown),
+                      underline: const SizedBox(),
+                      value: productBody.productCategory,
+                      hint: Text(
+                        'Select',
+                        style: Theme.of(context).textTheme.bodyText2,
+                      ),
+                      items: provider.categories.map((LokalCategory category) {
+                        return DropdownMenuItem<String>(
+                          value: category.id,
+                          child: Text(category.name),
+                        );
+                      }).toList(),
+                      onChanged: (value) {
+                        productBody.update(productCategory: value);
+                        setState(() {});
+                      },
+                      style: Theme.of(context).textTheme.bodyText2,
+                    );
+                  },
+                ),
               ),
             ),
-          ),
+          ],
         ),
-      ],
-    );
-  }
-
-  Widget _buildCurrentStock() {
-    return Row(
-      children: [
-        SizedBox(
-          width: MediaQuery.of(context).size.width * 0.45,
-          child: Text(
-            'Current Stock',
-            style: Theme.of(context).textTheme.headline6,
-          ),
+        const TableRow(
+          children: [
+            SizedBox(height: 22),
+            SizedBox(height: 22),
+          ],
         ),
-        const SizedBox(width: 15.0),
-        Expanded(
-          child: Consumer<ProductBody>(
-            builder: (context, productBody, child) {
-              return InputNameField(
-                keyboardType: TextInputType.number,
-                focusNode: _stockFocusNode,
-                controller: _stockController,
-                hintText: 'Quantity',
-                style: Theme.of(context).textTheme.bodyText1,
-                onChanged: (value) {
-                  context
-                      .read<ProductBody>()
-                      .update(quantity: int.tryParse(value) ?? 0);
-                },
-                errorText:
-                    productBody.quantity! < 0 ? 'Enter a valid number.' : null,
-              );
-            },
-          ),
-        )
+        TableRow(
+          children: [
+            Text(
+              'Current Stock',
+              style: Theme.of(context)
+                  .textTheme
+                  .subtitle2
+                  ?.copyWith(color: Colors.black),
+            ),
+            Consumer<ProductBody>(
+              builder: (context, productBody, child) {
+                return InputNameField(
+                  keyboardType: TextInputType.number,
+                  focusNode: _stockFocusNode,
+                  controller: _stockController,
+                  hintText: 'Quantity',
+                  style: Theme.of(context).textTheme.bodyText2,
+                  onChanged: (value) {
+                    context
+                        .read<ProductBody>()
+                        .update(quantity: int.tryParse(value) ?? 0);
+                  },
+                  errorText: productBody.quantity! < 0
+                      ? 'Enter a valid number.'
+                      : null,
+                );
+              },
+            )
+          ],
+        ),
       ],
     );
   }
@@ -177,30 +181,35 @@ class _ProductDetailsState extends State<ProductDetails> {
       children: [
         Text(
           'Subscription',
-          style: Theme.of(context).textTheme.headline6,
+          style: Theme.of(context).textTheme.subtitle2,
         ),
         const SizedBox(height: 10),
         Consumer<ProductBody>(
           builder: (ctx, productBody, child) {
             return AppCheckBox(
+              shape: BoxShape.circle,
               value: productBody.canSubscribe,
               onTap: () => productBody.update(
                 canSubscribe: !productBody.canSubscribe,
               ),
               title: Text(
                 'Available for Subscription',
-                style: Theme.of(context).textTheme.headline6,
+                style: Theme.of(context).textTheme.subtitle2,
               ),
             );
           },
         ),
-        const SizedBox(height: 10),
+        const SizedBox(height: 4),
         Row(
-          children: const [
-            SizedBox(width: 34),
+          children: [
+            const SizedBox(width: 34),
             Expanded(
               child: Text(
                 'Lets your customers create an auto-order on specific dates.',
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyText2
+                    ?.copyWith(fontWeight: FontWeight.w400),
                 maxLines: 2,
               ),
             ),
@@ -277,17 +286,9 @@ class _ProductDetailsState extends State<ProductDetails> {
                     );
                   },
                 ),
-                SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.05,
-                ),
-                _buildCategories(),
-                SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.025,
-                ),
-                _buildCurrentStock(),
-                SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.05,
-                ),
+                const SizedBox(height: 32),
+                _buildTable(),
+                const SizedBox(height: 32),
                 _buildSubscriptionSection(),
                 const Spacer(),
                 SizedBox(

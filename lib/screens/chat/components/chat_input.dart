@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:photo_manager/photo_manager.dart';
 
@@ -115,14 +114,11 @@ class _ReplyToWidget extends StatelessWidget {
     return IntrinsicHeight(
       child: Row(
         children: [
-          Container(
-            color: kTealColor,
-            width: 2.0.w,
-          ),
-          SizedBox(width: 6.0.w),
+          Container(color: kTealColor, width: 2.0),
+          const SizedBox(width: 8),
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              padding: const EdgeInsets.fromLTRB(0, 10, 13, 8),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -132,7 +128,9 @@ class _ReplyToWidget extends StatelessWidget {
                         child: Text(
                           'Replying to',
                           style: TextStyle(
-                            fontWeight: FontWeight.bold,
+                            fontFamily: 'Goldplay',
+                            fontSize: 12,
+                            fontWeight: FontWeight.w400,
                             fontStyle: FontStyle.italic,
                             color: kTealColor,
                           ),
@@ -141,14 +139,13 @@ class _ReplyToWidget extends StatelessWidget {
                       if (onCancelReply != null)
                         GestureDetector(
                           onTap: onCancelReply,
-                          child: Icon(Icons.close, size: 16.0.r),
+                          child: const Icon(Icons.close, size: 9),
                         )
                     ],
                   ),
-                  SizedBox(height: 5.0.h),
                   if (message.media != null && message.media!.isNotEmpty)
                     SizedBox(
-                      height: 90.h,
+                      height: 90,
                       child: ListView.builder(
                         // this shrinkWrap is okay since there are only 5 media
                         shrinkWrap: true,
@@ -166,10 +163,10 @@ class _ReplyToWidget extends StatelessWidget {
                   if (message.message != null)
                     Text(
                       message.message!,
-                      style: Theme.of(context).textTheme.bodyText2!.copyWith(
-                            color: Colors.black,
-                            fontStyle: FontStyle.italic,
-                          ),
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyText1
+                          ?.copyWith(color: Colors.black),
                     ),
                 ],
               ),

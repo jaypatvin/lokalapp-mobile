@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:keyboard_actions/keyboard_actions.dart';
 import 'package:validators/validators.dart';
 
@@ -106,27 +105,27 @@ class _AuthInputFormState extends State<AuthInputForm> {
                 autocorrect: false,
                 keyboardType: TextInputType.emailAddress,
                 controller: widget.emailController,
-                style: TextStyle(
-                  fontWeight: FontWeight.w500,
-                  fontSize: 16.0.sp,
-                ),
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyText2
+                    ?.copyWith(color: Colors.black),
                 decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(30.0.r)),
+                  border: const OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(30.0)),
                     borderSide: BorderSide.none,
                   ),
                   isDense: false,
                   filled: true,
                   alignLabelWithHint: true,
                   hintText: 'Email',
-                  contentPadding: EdgeInsets.symmetric(horizontal: 16.0.w),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 25),
                   errorText: widget.emailInputError,
                 ),
                 validator: (email) =>
                     isEmail(email!) ? null : 'Enter a valid email',
               ),
             ),
-            SizedBox(height: 15.0.h),
+            const SizedBox(height: 20),
             SizedBox(
               child: TextFormField(
                 focusNode: _nodeTextPassword,
@@ -134,13 +133,13 @@ class _AuthInputFormState extends State<AuthInputForm> {
                 obscureText: !_passwordVisible,
                 controller: widget.passwordController,
                 validator: widget.passwordValidator,
-                style: TextStyle(
-                  fontWeight: FontWeight.w500,
-                  fontSize: 16.0.sp,
-                ),
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyText2
+                    ?.copyWith(color: Colors.black),
                 decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(30.0.r)),
+                  border: const OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(30.0)),
                     borderSide: BorderSide.none,
                   ),
                   suffixIcon: IconButton(
@@ -158,28 +157,26 @@ class _AuthInputFormState extends State<AuthInputForm> {
                   filled: true,
                   alignLabelWithHint: true,
                   hintText: 'Password',
-                  contentPadding: EdgeInsets.symmetric(horizontal: 16.0.w),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 25),
                   errorMaxLines: 3,
                   errorText: widget.passwordInputError,
                 ),
               ),
             ),
-            SizedBox(height: 15.0.h),
-            SizedBox(
-              width: 130.0.w,
-              child: AppButton.filled(
-                text: widget.submitButtonLabel ?? '',
-                color: widget.emailController.text.isEmpty ||
-                        widget.passwordController.text.isEmpty
-                    ? kTealColor
-                    : kOrangeColor,
-                onPressed: () {
-                  _nodeTextEmail.unfocus();
-                  _nodeTextPassword.unfocus();
-                  widget.onFormSubmit?.call();
-                },
-                textStyle: const TextStyle(color: kNavyColor),
-              ),
+            const SizedBox(height: 30),
+            AppButton.filled(
+              text: widget.submitButtonLabel ?? '',
+              textStyle: const TextStyle(color: kNavyColor),
+              width: 168,
+              color: widget.emailController.text.isEmpty ||
+                      widget.passwordController.text.isEmpty
+                  ? kTealColor
+                  : kOrangeColor,
+              onPressed: () {
+                _nodeTextEmail.unfocus();
+                _nodeTextPassword.unfocus();
+                widget.onFormSubmit?.call();
+              },
             )
           ],
         ),

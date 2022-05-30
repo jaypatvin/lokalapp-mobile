@@ -1,6 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
 
 import '../../../../models/product.dart';
@@ -28,11 +27,11 @@ class SubscriptionScheduleProductCard extends StatelessWidget {
         side: const BorderSide(
           color: Color(0xFFE0E0E0),
         ),
-        borderRadius: BorderRadius.circular(20.0.r),
+        borderRadius: BorderRadius.circular(20.0),
       ),
       elevation: 0.0,
       child: Padding(
-        padding: EdgeInsets.all(8.0.w),
+        padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 23),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -41,8 +40,8 @@ class SubscriptionScheduleProductCard extends StatelessWidget {
                 children: [
                   if (product.gallery?.isNotEmpty ?? false)
                     SizedBox(
-                      width: 80.0.h,
-                      height: 80.0.h,
+                      width: 70,
+                      height: 70,
                       child: CachedNetworkImage(
                         imageUrl: product.gallery!.first.url,
                         fit: BoxFit.cover,
@@ -59,14 +58,14 @@ class SubscriptionScheduleProductCard extends StatelessWidget {
                       ),
                     )
                   else
-                    SizedBox(
-                      height: 80.0.h,
-                      width: 80.0.h,
-                      child: const Center(
+                    const SizedBox(
+                      height: 70,
+                      width: 70,
+                      child: Center(
                         child: Text('No Image'),
                       ),
                     ),
-                  SizedBox(width: 8.0.w),
+                  const SizedBox(width: 8.0),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -81,35 +80,40 @@ class SubscriptionScheduleProductCard extends StatelessWidget {
                                 overflow: TextOverflow.ellipsis,
                                 maxLines: 2,
                                 softWrap: false,
-                                style: Theme.of(context).textTheme.subtitle1,
+                                style: Theme.of(context).textTheme.subtitle2,
                               ),
                             ),
-                            SizedBox(width: 8.0.w),
                             Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
                                 Text(
                                   product.basePrice.toString(),
-                                  style: Theme.of(context).textTheme.bodyText1,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyText2
+                                      ?.copyWith(
+                                        color: const Color(0xFF828282),
+                                      ),
                                 ),
                                 Text(
                                   'x$quantity',
                                   // textAlign: TextAlign.end,
-                                  style: Theme.of(context).textTheme.subtitle1,
+                                  style: Theme.of(context).textTheme.subtitle2,
                                 ),
                               ],
                             ),
                           ],
                         ),
-                        SizedBox(height: 5.0.h),
+                        const SizedBox(height: 13),
                         if (onEditTap != null)
                           InkWell(
                             onTap: onEditTap,
-                            child: Text(
+                            child: const Text(
                               'Edit',
                               style: TextStyle(
-                                fontSize: 16.0.sp,
+                                fontSize: 12,
                                 fontFamily: 'Goldplay',
-                                fontWeight: FontWeight.w300,
+                                fontWeight: FontWeight.w400,
                                 decoration: TextDecoration.underline,
                                 color: kTealColor,
                               ),

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:keyboard_actions/keyboard_actions.dart';
 import 'package:provider/provider.dart';
 
@@ -36,8 +35,6 @@ class _EditProfileView extends HookView<EditProfileViewModel>
   @override
   Widget screen(BuildContext context, EditProfileViewModel vm) {
     final _auth = context.watch<Auth>();
-    final double width = MediaQuery.of(context).size.width;
-    final double height = MediaQuery.of(context).size.height;
 
     final _fNameController = useTextEditingController(text: vm.firstName);
     final _lNameController = useTextEditingController(text: vm.lastName);
@@ -109,122 +106,108 @@ class _EditProfileView extends HookView<EditProfileViewModel>
     return Scaffold(
       backgroundColor: const Color(0xffF1FAFF),
       resizeToAvoidBottomInset: true,
-      appBar: CustomAppBar(
+      appBar: const CustomAppBar(
         titleText: 'Edit My Profile',
         backgroundColor: kTealColor,
-        onPressedLeading: () => Navigator.pop(context),
       ),
-      body: Container(
-        padding: EdgeInsets.symmetric(horizontal: 20.0.w, vertical: 20.0.h),
-        child: Stack(
-          children: [
-            KeyboardActions(
-              config: _kbConfig,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  GestureDetector(
-                    onTap: vm.onPhotoPick,
-                    child: SizedBox(
-                      height: height * 0.2,
-                      child: Stack(
-                        children: [
-                          Center(
-                            child: ColorFiltered(
-                              colorFilter: const ColorFilter.mode(
-                                Colors.grey,
-                                BlendMode.modulate,
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 45, vertical: 40.0),
+        child: KeyboardActions(
+          config: _kbConfig,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              GestureDetector(
+                onTap: vm.onPhotoPick,
+                child: SizedBox(
+                  height: 130,
+                  width: 130,
+                  child: Stack(
+                    children: [
+                      Center(
+                        child: ColorFiltered(
+                          colorFilter: const ColorFilter.mode(
+                            Colors.grey,
+                            BlendMode.modulate,
+                          ),
+                          child: PhotoBox(
+                            imageSource: PhotoBoxImageSource(
+                              file: vm.profilePhoto,
+                              url: _auth.user?.profilePhoto,
+                            ),
+                            shape: BoxShape.circle,
+                            displayBorder: false,
+                            displayIcon: false,
+                          ),
+                        ),
+                      ),
+                      Builder(
+                        builder: (ctx) {
+                          if (vm.profilePhoto != null ||
+                              (_auth.user?.profilePhoto?.isNotEmpty ?? false)) {
+                            return Center(
+                              child: Text(
+                                'Edit Photo',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .subtitle1!
+                                    .copyWith(color: Colors.white),
                               ),
-                              child: PhotoBox(
-                                imageSource: PhotoBoxImageSource(
-                                  file: vm.profilePhoto,
-                                  url: _auth.user?.profilePhoto,
-                                ),
+                            );
+                          }
+                          return Center(
+                            child: Container(
+                              decoration: BoxDecoration(
                                 shape: BoxShape.circle,
-                                displayBorder: false,
-                                displayIcon: false,
+                                color: Colors.black.withOpacity(0.3),
+                              ),
+                              height: 130,
+                              width: 130,
+                              child: Center(
+                                child: Text(
+                                  'Add Photo',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .subtitle1!
+                                      .copyWith(color: Colors.white),
+                                ),
                               ),
                             ),
-                          ),
-                          Builder(
-                            builder: (ctx) {
-                              if (vm.profilePhoto != null ||
-                                  (_auth.user?.profilePhoto?.isNotEmpty ??
-                                      false)) {
-                                return Center(
-                                  child: Text(
-                                    'Edit Photo',
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .subtitle1!
-                                        .copyWith(color: Colors.white),
-                                  ),
-                                );
-                              }
-                              return Center(
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: Colors.black.withOpacity(0.3),
-                                  ),
-                                  height: 140.0.h,
-                                  width: 140.0.h,
-                                  child: Center(
-                                    child: Text(
-                                      'Add Photo',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .subtitle1!
-                                          .copyWith(color: Colors.white),
-                                    ),
-                                  ),
-                                ),
-                              );
-                            },
-                          ),
-                        ],
+                          );
+                        },
                       ),
-                    ),
+                    ],
                   ),
-                  SizedBox(
-                    height: height * 0.02,
-                  ),
-                  InputNameField(
-                    onChanged: vm.onFirstNameChanged,
-                    controller: _fNameController,
-                    hintText: 'First Name',
-                    fillColor: Colors.white,
-                  ),
-                  SizedBox(
-                    height: height * 0.02,
-                  ),
-                  InputNameField(
-                    onChanged: vm.onLastNameChanged,
-                    controller: _lNameController,
-                    hintText: 'Last Name',
-                    fillColor: Colors.white,
-                  ),
-                  SizedBox(
-                    height: height * 0.04,
-                  ),
-                  InputNameField(
-                    onChanged: vm.onStreetChanged,
-                    controller: _streetController,
-                    hintText: 'Street',
-                    fillColor: Colors.white,
-                  ),
-                  SizedBox(height: height * 0.15),
-                  SizedBox(
-                    width: width * 0.6,
-                    child: AppButton.filled(
-                      text: 'Apply Changes',
-                      onPressed: () async => performFuture<void>(vm.updateUser),
-                    ),
-                  ),
-                ],
+                ),
               ),
-            ),
-          ],
+              const SizedBox(height: 47),
+              InputNameField(
+                onChanged: vm.onFirstNameChanged,
+                controller: _fNameController,
+                hintText: 'First Name',
+                fillColor: Colors.white,
+              ),
+              const SizedBox(height: 20),
+              InputNameField(
+                onChanged: vm.onLastNameChanged,
+                controller: _lNameController,
+                hintText: 'Last Name',
+                fillColor: Colors.white,
+              ),
+              const SizedBox(height: 40),
+              InputNameField(
+                onChanged: vm.onStreetChanged,
+                controller: _streetController,
+                hintText: 'Street',
+                fillColor: Colors.white,
+              ),
+              const SizedBox(height: 47),
+              AppButton.filled(
+                text: 'Apply Changes',
+                onPressed: () async => performFuture<void>(vm.updateUser),
+              ),
+            ],
+          ),
         ),
       ),
     );

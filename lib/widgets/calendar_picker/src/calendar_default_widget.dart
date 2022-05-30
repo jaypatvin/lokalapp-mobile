@@ -93,7 +93,7 @@ class CalendarDefaultHeader extends StatelessWidget {
           Expanded(
             child: Text(
               dateFormat.format(dateTime),
-              style: const TextStyle(fontSize: 20),
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
               textAlign: TextAlign.center,
             ),
           ),

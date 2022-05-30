@@ -3,7 +3,6 @@ import 'dart:io' show File, Platform;
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
@@ -68,7 +67,7 @@ class _VerifyScreenState extends State<VerifyScreen> with ScreenLoader {
         DropdownMenuItem(
           value: id,
           child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16.0.w),
+            padding: const EdgeInsets.symmetric(horizontal: 25),
             child: Text(
               id,
               overflow: TextOverflow.ellipsis,
@@ -80,11 +79,15 @@ class _VerifyScreenState extends State<VerifyScreen> with ScreenLoader {
 
     return DropdownButtonHideUnderline(
       child: DropdownButton<String>(
-        hint: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16.0.w),
-          child: const Text(
+        hint: const Padding(
+          padding: EdgeInsets.symmetric(horizontal: 45),
+          child: Text(
             'Select type of ID',
-            style: TextStyle(color: Colors.grey),
+            style: TextStyle(
+              color: Colors.grey,
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+            ),
           ),
         ),
         value: _chosenIdType,
@@ -95,7 +98,6 @@ class _VerifyScreenState extends State<VerifyScreen> with ScreenLoader {
           Icons.arrow_drop_down,
           color: kTealColor,
         ),
-        iconSize: 24.0.sp,
         onChanged: (value) {
           setState(() => _chosenIdType = value);
         },
@@ -147,21 +149,20 @@ class _VerifyScreenState extends State<VerifyScreen> with ScreenLoader {
           context: context,
           builder: (ctx) {
             return SizedBox(
-              height: 200.h,
+              height: 200,
               child: CupertinoTheme(
                 data: CupertinoThemeData(
                   textTheme: CupertinoTextThemeData(
                     textStyle: Theme.of(context).textTheme.bodyText2,
                     actionTextStyle: Theme.of(context).textTheme.bodyText2,
                     pickerTextStyle:
-                        Theme.of(context).textTheme.bodyText1!.copyWith(
+                        Theme.of(context).textTheme.bodyText1?.copyWith(
                               color: Colors.black,
-                              fontSize: 18.0.sp,
                             ),
                   ),
                 ),
                 child: CupertinoPicker(
-                  itemExtent: 32.0.h,
+                  itemExtent: 32.0,
                   onSelectedItemChanged: (selectedIndex) {
                     setState(() => _chosenIdType = _ids[selectedIndex]);
                   },
@@ -251,11 +252,15 @@ class _VerifyScreenState extends State<VerifyScreen> with ScreenLoader {
           },
           child: Text(
             'Skip',
-            style: TextStyle(
-              color: kTealColor,
-              fontSize: 18.0.sp,
-              fontWeight: FontWeight.w600,
-            ),
+            // style: TextStyle(
+            //   color: kTealColor,
+            //   fontSize: 18.0.sp,
+            //   fontWeight: FontWeight.w600,
+            // ),
+            style: Theme.of(context)
+                .textTheme
+                .headline6
+                ?.copyWith(color: kTealColor),
           ),
         ),
       ];
@@ -289,19 +294,20 @@ class _VerifyScreenState extends State<VerifyScreen> with ScreenLoader {
         ),
         body: ConstrainedScrollView(
           child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 24.0.w),
+            padding: const EdgeInsets.symmetric(horizontal: 45),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(
+                const Spacer(),
+                const Text(
                   'Verify Your Account',
                   style: TextStyle(
-                    fontSize: 30.0.sp,
+                    fontSize: 30.0,
                     color: kNavyColor,
-                    fontWeight: FontWeight.bold,
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
-                SizedBox(height: 10.0.h),
+                const SizedBox(height: 10.0),
                 const Text(
                   "In order to access all of Lokal's features, "
                   'we need to verify your identity',
@@ -312,7 +318,7 @@ class _VerifyScreenState extends State<VerifyScreen> with ScreenLoader {
                   ),
                   textAlign: TextAlign.center,
                 ),
-                SizedBox(height: 25.0.h),
+                const SizedBox(height: 70),
                 Container(
                   width: double.infinity,
                   decoration: const ShapeDecoration(
@@ -323,19 +329,23 @@ class _VerifyScreenState extends State<VerifyScreen> with ScreenLoader {
                   ),
                   child: Platform.isIOS ? _iOSPicker() : _androidDropDown(),
                 ),
-                SizedBox(height: 20.0.h),
-                PhotoBox(
-                  shape: BoxShape.rectangle,
-                  width: 200.w,
-                  height: 150.h,
-                  displayBorder: false,
-                  displayIcon: false,
-                  imageSource: PhotoBoxImageSource(
-                    file: _file,
-                    url: _uploadedImage,
+                const SizedBox(height: 30.0),
+                if (_file != null || (_uploadedImage?.isNotEmpty ?? false))
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 45),
+                    child: PhotoBox(
+                      shape: BoxShape.rectangle,
+                      width: double.infinity,
+                      displayBorder: false,
+                      displayIcon: false,
+                      imageSource: PhotoBoxImageSource(
+                        file: _file,
+                        url: _uploadedImage,
+                      ),
+                    ),
                   ),
-                ),
-                SizedBox(height: 10.0.h),
+                if (_file != null || (_uploadedImage?.isNotEmpty ?? false))
+                  const SizedBox(height: 12.0),
                 SizedBox(
                   width: double.infinity,
                   child: AppButton.transparent(
@@ -352,21 +362,18 @@ class _VerifyScreenState extends State<VerifyScreen> with ScreenLoader {
                   ),
                 ),
                 const Spacer(),
-                SizedBox(
-                  width: 160.0.w,
-                  child: AppButton.filled(
-                    text: 'SUBMIT',
-                    onPressed: _file != null
-                        ? () async {
-                            await performFuture<void>(_onSubmitHandler);
-                          }
-                        : null,
-                    textStyle: _file != null
-                        ? const TextStyle(
-                            color: kNavyColor,
-                          )
-                        : null,
-                  ),
+                AppButton.filled(
+                  text: 'SUBMIT',
+                  onPressed: _file != null
+                      ? () async {
+                          await performFuture<void>(_onSubmitHandler);
+                        }
+                      : null,
+                  textStyle: _file != null
+                      ? const TextStyle(
+                          color: kNavyColor,
+                        )
+                      : null,
                 ),
                 const SizedBox(height: 20),
               ],

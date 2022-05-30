@@ -4,7 +4,6 @@ import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/date_symbols.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -439,33 +438,6 @@ class _SchedulePickerState extends State<SchedulePicker> {
     );
   }
 
-  Widget _weekdayPicker() {
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 100),
-      height: _selectableDays.isNotEmpty ? 70.0.h : 100.0.h,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          WeekdayPicker(
-            onDayPressed:
-                widget.editable ? _onWeekDayPickerDayPressedHandler : null,
-            markedDaysMap: _selectableDays,
-          ),
-          SizedBox(height: 10.0.h),
-          if (_selectableDays.isEmpty)
-            Text(
-              'Select a day or days to repeat every week',
-              style: Theme.of(context).textTheme.bodyText1!.copyWith(
-                    color: Colors.red,
-                    fontWeight: FontWeight.normal,
-                    fontSize: 16.0.sp,
-                  ),
-            ),
-        ],
-      ),
-    );
-  }
-
   String _getRepeatType() {
     if (!_usedDatePicker) {
       final weekdayIndex = en_USSymbols.WEEKDAYS.indexOf(_monthDayChoice!);
@@ -578,14 +550,15 @@ class _SchedulePickerState extends State<SchedulePicker> {
           widget.header,
           style: Theme.of(context).textTheme.headline6,
         ),
-        SizedBox(height: 10.0.h),
+        const SizedBox(height: 8),
         Text(
           widget.description,
-          style: Theme.of(context).textTheme.bodyText1!.copyWith(
-                color: Colors.black,
-              ),
+          style: Theme.of(context)
+              .textTheme
+              .bodyText2
+              ?.copyWith(color: Colors.black),
         ),
-        SizedBox(height: 15.0.h),
+        const SizedBox(height: 20),
         _RepeatabilityPicker(
           onRepeatUnitChanged: _onRepeatUnitChanged,
           onRepeatChoiceChanged: _onRepeatChoiceChanged,
@@ -596,8 +569,15 @@ class _SchedulePickerState extends State<SchedulePicker> {
           repeatUnitFocusNode: widget.repeatUnitFocusNode,
           editable: widget.editable,
         ),
-        const SizedBox(height: 10),
-        if (_repeatChoice == RepeatChoices.week) _weekdayPicker(),
+        const SizedBox(height: 30),
+        if (_repeatChoice == RepeatChoices.week) ...[
+          WeekdayPicker(
+            onDayPressed:
+                widget.editable ? _onWeekDayPickerDayPressedHandler : null,
+            markedDaysMap: _selectableDays,
+          ),
+          const SizedBox(height: 30)
+        ],
         if (_repeatChoice != RepeatChoices.month)
           _StartDatePicker(
             startDate: _startDate,
@@ -643,32 +623,32 @@ class _DayOfMonthPickerBody extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Dialog(
-        insetPadding: EdgeInsets.zero,
+        insetPadding: const EdgeInsets.symmetric(horizontal: 16),
         shape:
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0)),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 0.02,
-            ),
+            const SizedBox(height: 23),
             Text(
               'Start Date',
-              style: Theme.of(context).textTheme.headline5,
-            ),
-            DayOfMonthPicker(
-              width: MediaQuery.of(context).size.width * 0.95,
-              padding: const EdgeInsets.all(5.0),
-              onDayPressed: onDayPressed,
-              markedDay: markedStartDayOfMonth,
-              monthChoice: monthChoice,
-              selectableMonthDays: selectableMonthDays,
+              style: Theme.of(context)
+                  .textTheme
+                  .headline6
+                  ?.copyWith(color: Colors.black),
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 8.0,
-                vertical: 5.0,
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: DayOfMonthPicker(
+                onDayPressed: onDayPressed,
+                markedDay: markedStartDayOfMonth,
+                monthChoice: monthChoice,
+                selectableMonthDays: selectableMonthDays,
               ),
+            ),
+            const SizedBox(height: 24),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 29),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -678,7 +658,7 @@ class _DayOfMonthPickerBody extends StatelessWidget {
                       onPressed: onCancel,
                     ),
                   ),
-                  SizedBox(width: 5.0.w),
+                  const SizedBox(width: 8),
                   Expanded(
                     child: AppButton.filled(
                       text: 'Confirm',
@@ -688,6 +668,7 @@ class _DayOfMonthPickerBody extends StatelessWidget {
                 ],
               ),
             ),
+            const SizedBox(height: 32)
           ],
         ),
       ),
@@ -722,19 +703,17 @@ class _CalendarPickerBody extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Dialog(
-        insetPadding: EdgeInsets.symmetric(horizontal: 10.0.w),
+        insetPadding: const EdgeInsets.symmetric(horizontal: 16.0),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(30.0),
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 0.02,
-            ),
+            const SizedBox(height: 23),
             Text(
               'Start Date',
-              style: Theme.of(context).textTheme.headline5,
+              style: Theme.of(context).textTheme.headline6,
             ),
             StatefulBuilder(
               builder: (BuildContext context, StateSetter setState) {
@@ -752,28 +731,29 @@ class _CalendarPickerBody extends StatelessWidget {
                 );
               },
             ),
-            SizedBox(height: 10.0.h),
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.3,
-                  child: AppButton.transparent(
-                    text: 'Cancel',
-                    onPressed: onCancel,
+            const SizedBox(height: 24.0),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 29),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: AppButton.transparent(
+                      text: 'Cancel',
+                      onPressed: onCancel,
+                    ),
                   ),
-                ),
-                SizedBox(width: 5.0.h),
-                SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.3,
-                  child: AppButton.filled(
-                    text: 'Confirm',
-                    onPressed: onConfirm,
+                  Expanded(
+                    child: AppButton.filled(
+                      text: 'Confirm',
+                      onPressed: onConfirm,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-            SizedBox(height: 5.0.h),
+            const SizedBox(height: 32.0),
           ],
         ),
       ),
@@ -840,9 +820,9 @@ class _DayOfMonth extends StatelessWidget {
                 ? 'Select Start Day'
                 : '${getOrdinal(startDayOfMonth)} of the month',
             onPressed: editable ? onShowDayOfMonthPicker : null,
-            textStyle: TextStyle(
-              fontSize: 18.0.sp,
-              fontWeight: FontWeight.w600,
+            textStyle: const TextStyle(
+              fontSize: 18.0,
+              fontWeight: FontWeight.w500,
             ),
           ),
         ),
@@ -851,10 +831,10 @@ class _DayOfMonth extends StatelessWidget {
             padding: EdgeInsets.symmetric(vertical: height * 0.01),
             child: Text(
               'or',
-              style: Theme.of(context).textTheme.bodyText2?.copyWith(
-                    fontWeight: FontWeight.normal,
-                    color: Colors.black,
-                  ),
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyText2
+                  ?.copyWith(color: Colors.black),
             ),
           ),
         ),
@@ -862,9 +842,9 @@ class _DayOfMonth extends StatelessWidget {
           children: [
             Expanded(
               child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 15.0.w),
+                padding: const EdgeInsets.symmetric(horizontal: 20),
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(30.0.r),
+                  borderRadius: BorderRadius.circular(30.0),
                   border: Border.all(
                     color: Colors.transparent,
                   ),
@@ -878,12 +858,12 @@ class _DayOfMonth extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(width: 5.0.w),
+            const SizedBox(width: 9),
             Expanded(
               child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 15.0.w),
+                padding: const EdgeInsets.symmetric(horizontal: 15.0),
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(30.0.r),
+                  borderRadius: BorderRadius.circular(20),
                   border: Border.all(
                     color: Colors.transparent,
                   ),
@@ -898,22 +878,22 @@ class _DayOfMonth extends StatelessWidget {
             ),
           ],
         ),
-        SizedBox(height: 30.0.h),
+        const SizedBox(height: 30.0),
         Row(
           children: [
             Text(
               'Start Month',
-              style: Theme.of(context).textTheme.subtitle2?.copyWith(
-                    fontWeight: FontWeight.normal,
-                    color: Colors.black,
-                  ),
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyText2
+                  ?.copyWith(color: Colors.black),
             ),
-            SizedBox(width: 10.0.w),
+            const SizedBox(width: 12.0),
             Expanded(
               child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 20.0.w),
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(30.0.r),
+                  borderRadius: BorderRadius.circular(30.0),
                   border: Border.all(
                     color: Colors.transparent,
                   ),
@@ -952,10 +932,10 @@ class _StartDatePicker extends StatelessWidget {
           'Start date',
           style: Theme.of(context)
               .textTheme
-              .bodyText1!
-              .copyWith(fontWeight: FontWeight.normal, fontSize: 18.0.sp),
+              .bodyText2
+              ?.copyWith(color: Colors.black),
         ),
-        SizedBox(width: 15.0.w),
+        const SizedBox(width: 23),
         Expanded(
           child: AppButton.filled(
             text: startDate != null
@@ -998,20 +978,28 @@ class _RepeatabilityPicker extends StatelessWidget {
           context: context,
           builder: (ctx) {
             return SizedBox(
-              height: 200.h,
+              height: 200,
               child: CupertinoTheme(
                 data: CupertinoThemeData(
                   textTheme: CupertinoTextThemeData(
-                    textStyle: Theme.of(context).textTheme.bodyText2,
-                    actionTextStyle: Theme.of(context).textTheme.bodyText2,
-                    pickerTextStyle: Theme.of(context)
-                        .textTheme
-                        .bodyText1!
-                        .copyWith(color: Colors.black, fontSize: 18.0.sp),
+                    textStyle: Theme.of(context).textTheme.bodyText2?.copyWith(
+                          color: Colors.black,
+                          fontWeight: FontWeight.w400,
+                        ),
+                    actionTextStyle:
+                        Theme.of(context).textTheme.bodyText2?.copyWith(
+                              color: Colors.black,
+                              fontWeight: FontWeight.w400,
+                            ),
+                    pickerTextStyle:
+                        Theme.of(context).textTheme.bodyText2?.copyWith(
+                              color: Colors.black,
+                              fontWeight: FontWeight.w400,
+                            ),
                   ),
                 ),
                 child: CupertinoPicker(
-                  itemExtent: 32.0.h,
+                  itemExtent: 32.0,
                   onSelectedItemChanged: (index) {
                     if (editable) {
                       onRepeatChoiceChanged.call(
@@ -1039,10 +1027,9 @@ class _RepeatabilityPicker extends StatelessWidget {
             int.tryParse(repeatUnit) == 1
                 ? repeatChoice.value
                 : '${repeatChoice.value}s',
-            style: Theme.of(context).textTheme.bodyText1?.copyWith(
+            style: Theme.of(context).textTheme.bodyText2?.copyWith(
                   color: Colors.black,
-                  fontWeight: FontWeight.w500,
-                  fontSize: 18.0.sp,
+                  fontWeight: FontWeight.w400,
                 ),
             overflow: TextOverflow.ellipsis,
           ),
@@ -1062,11 +1049,9 @@ class _RepeatabilityPicker extends StatelessWidget {
         value: repeatChoice,
         onChanged: editable ? onRepeatChoiceChanged : null,
         elevation: 0,
-        iconSize: 24.0.sp,
-        style: Theme.of(context).textTheme.bodyText1?.copyWith(
+        style: Theme.of(context).textTheme.bodyText2?.copyWith(
               color: Colors.black,
-              fontWeight: FontWeight.w500,
-              fontSize: 18.0.sp,
+              fontWeight: FontWeight.w400,
             ),
         icon: const Icon(
           MdiIcons.chevronDown,
@@ -1092,14 +1077,13 @@ class _RepeatabilityPicker extends StatelessWidget {
           children: [
             Text(
               'Every',
-              style: Theme.of(context).textTheme.subtitle2?.copyWith(
-                    fontWeight: FontWeight.normal,
+              style: Theme.of(context).textTheme.bodyText2?.copyWith(
                     color: Colors.black,
                   ),
             ),
-            SizedBox(width: 30.0.w),
+            const SizedBox(width: 23.0),
             SizedBox(
-              width: 60.0.w,
+              width: 60.0,
               child: TextField(
                 enabled: editable,
                 onChanged: onRepeatUnitChanged,
@@ -1113,17 +1097,18 @@ class _RepeatabilityPicker extends StatelessWidget {
                   border: UnderlineInputBorder(),
                 ),
                 textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.headline5!.copyWith(
-                      color: kTealColor,
-                    ),
+                style: Theme.of(context)
+                    .textTheme
+                    .headline5
+                    ?.copyWith(color: kTealColor, fontWeight: FontWeight.w600),
               ),
             ),
-            SizedBox(width: 30.0.w),
+            const SizedBox(width: 30.0),
             Expanded(
               child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 20.w),
+                padding: const EdgeInsets.symmetric(horizontal: 20),
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(30.0.r),
+                  borderRadius: BorderRadius.circular(30.0),
                   border: Border.all(
                     color: Colors.transparent,
                   ),
@@ -1136,12 +1121,13 @@ class _RepeatabilityPicker extends StatelessWidget {
             ),
           ],
         ),
-        SizedBox(height: 5.0.h),
+        const SizedBox(height: 5.0),
         if ((int.tryParse(repeatUnit) ?? 0) <= 0)
           const Text(
             'Please enter a valid repeat value.',
             style: TextStyle(
               color: Colors.red,
+              fontSize: 12,
             ),
           ),
       ],
@@ -1169,11 +1155,10 @@ class _StartMonthPicker extends StatelessWidget {
           children: [
             Text(
               monthChoice,
-              style: Theme.of(context).textTheme.bodyText1?.copyWith(
-                    color: Colors.black,
-                    fontWeight: FontWeight.w600,
-                    fontSize: 18.0.sp,
-                  ),
+              style: Theme.of(context)
+                  .textTheme
+                  .subtitle1
+                  ?.copyWith(fontSize: 18.0),
               overflow: TextOverflow.ellipsis,
             ),
             const Spacer(),
@@ -1188,7 +1173,7 @@ class _StartMonthPicker extends StatelessWidget {
             context: context,
             builder: (ctx) {
               return SizedBox(
-                height: 200.h,
+                height: 200,
                 child: CupertinoTheme(
                   data: CupertinoThemeData(
                     textTheme: CupertinoTextThemeData(
@@ -1197,11 +1182,11 @@ class _StartMonthPicker extends StatelessWidget {
                       pickerTextStyle: Theme.of(context)
                           .textTheme
                           .bodyText1!
-                          .copyWith(color: Colors.black, fontSize: 18.0.sp),
+                          .copyWith(color: Colors.black, fontSize: 18.0),
                     ),
                   ),
                   child: CupertinoPicker(
-                    itemExtent: 32.0.h,
+                    itemExtent: 32.0,
                     onSelectedItemChanged: (index) {
                       if (editable) {
                         onMonthChoiceChanged.call(en_USSymbols.MONTHS[index]);
@@ -1229,12 +1214,7 @@ class _StartMonthPicker extends StatelessWidget {
         value: monthChoice,
         onChanged: editable ? onMonthChoiceChanged : null,
         elevation: 0,
-        iconSize: 24.0.sp,
-        style: Theme.of(context).textTheme.bodyText1?.copyWith(
-              color: Colors.black,
-              fontWeight: FontWeight.w600,
-              fontSize: 18.0.sp,
-            ),
+        style: Theme.of(context).textTheme.subtitle1?.copyWith(fontSize: 18.0),
         icon: const Icon(
           MdiIcons.chevronDown,
           color: kTealColor,
@@ -1274,8 +1254,7 @@ class _MonthWeekDayPicker extends StatelessWidget {
               monthDayChoice ?? '',
               style: Theme.of(context).textTheme.bodyText1?.copyWith(
                     color: Colors.black,
-                    fontWeight: FontWeight.normal,
-                    fontSize: 18.0.sp,
+                    fontSize: 18.0,
                   ),
               overflow: TextOverflow.ellipsis,
             ),
@@ -1291,7 +1270,7 @@ class _MonthWeekDayPicker extends StatelessWidget {
             context: context,
             builder: (ctx) {
               return SizedBox(
-                height: 200.h,
+                height: 200,
                 child: CupertinoTheme(
                   data: CupertinoThemeData(
                     textTheme: CupertinoTextThemeData(
@@ -1300,11 +1279,11 @@ class _MonthWeekDayPicker extends StatelessWidget {
                       pickerTextStyle: Theme.of(context)
                           .textTheme
                           .bodyText1!
-                          .copyWith(color: Colors.black, fontSize: 18.0.sp),
+                          .copyWith(color: Colors.black, fontSize: 18.0),
                     ),
                   ),
                   child: CupertinoPicker(
-                    itemExtent: 32.0.h,
+                    itemExtent: 32.0,
                     onSelectedItemChanged: (index) {
                       if (editable) {
                         onMonthDayChoiceChanged
@@ -1333,11 +1312,9 @@ class _MonthWeekDayPicker extends StatelessWidget {
         value: monthDayChoice,
         onChanged: editable ? onMonthDayChoiceChanged : null,
         elevation: 0,
-        iconSize: 24.0.sp,
         style: Theme.of(context).textTheme.bodyText1?.copyWith(
               color: Colors.black,
-              fontWeight: FontWeight.normal,
-              fontSize: 18.0.sp,
+              fontSize: 18.0,
             ),
         icon: const Icon(
           MdiIcons.chevronDown,
@@ -1375,11 +1352,10 @@ class _MonthOrdinalPicker extends StatelessWidget {
           children: [
             Text(
               ordinalChoice ?? '',
-              style: Theme.of(context).textTheme.bodyText1?.copyWith(
-                    color: Colors.black,
-                    fontWeight: FontWeight.normal,
-                    fontSize: 18.0.sp,
-                  ),
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyText1
+                  ?.copyWith(color: Colors.black, fontSize: 18.0),
               overflow: TextOverflow.ellipsis,
             ),
             const Spacer(),
@@ -1394,7 +1370,7 @@ class _MonthOrdinalPicker extends StatelessWidget {
             context: context,
             builder: (ctx) {
               return SizedBox(
-                height: 200.h,
+                height: 200,
                 child: CupertinoTheme(
                   data: CupertinoThemeData(
                     textTheme: CupertinoTextThemeData(
@@ -1402,12 +1378,12 @@ class _MonthOrdinalPicker extends StatelessWidget {
                       actionTextStyle: Theme.of(context).textTheme.bodyText2,
                       pickerTextStyle: Theme.of(context)
                           .textTheme
-                          .bodyText1!
-                          .copyWith(color: Colors.black, fontSize: 18.0.sp),
+                          .bodyText1
+                          ?.copyWith(color: Colors.black, fontSize: 18.0),
                     ),
                   ),
                   child: CupertinoPicker(
-                    itemExtent: 32.0.h,
+                    itemExtent: 32.0,
                     onSelectedItemChanged: (index) {
                       if (editable) {
                         onOrdinalChoiceChanged.call(ordinalNumbers[index]);
@@ -1435,11 +1411,9 @@ class _MonthOrdinalPicker extends StatelessWidget {
         value: ordinalChoice,
         onChanged: editable ? onOrdinalChoiceChanged : null,
         elevation: 0,
-        iconSize: 24.0.sp,
         style: Theme.of(context).textTheme.bodyText1?.copyWith(
               color: Colors.black,
-              fontWeight: FontWeight.normal,
-              fontSize: 18.0.sp,
+              fontSize: 18.0,
             ),
         icon: const Icon(
           MdiIcons.chevronDown,

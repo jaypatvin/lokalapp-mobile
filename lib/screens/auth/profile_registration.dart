@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+// import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:keyboard_actions/keyboard_actions.dart';
 
 import '../../state/mvvm_builder.widget.dart';
@@ -99,37 +99,35 @@ class _ProfileRegistrationView extends HookView<ProfileRegistrationViewModel>
               children: [
                 Text(
                   "Let's set up your profile",
-                  style: TextStyle(
-                    fontWeight: FontWeight.w500,
-                    fontSize: 18.0.sp,
-                  ),
+                  style: Theme.of(context).textTheme.bodyText1,
                   textAlign: TextAlign.center,
                 ),
-                SizedBox(height: 25.0.h),
+                const SizedBox(height: 40),
                 GestureDetector(
                   onTap: vm.picturePickerHandler,
                   child: PhotoBox(
                     imageSource: PhotoBoxImageSource(file: vm.profilePhoto),
                     shape: BoxShape.circle,
-                    width: 120.0.w,
-                    height: 120.0.h,
+                    width: 130.0,
+                    height: 130.0,
                   ),
-                ),
-                SizedBox(
-                  height: 20.0.h,
                 ),
                 if (vm.hasEmptyField)
-                  Text(
-                    'You must fill out all field to proceed.',
-                    style: TextStyle(
-                      color: kPinkColor,
-                      fontWeight: FontWeight.w500,
-                      fontSize: 12.0.sp,
+                  const Padding(
+                    padding: EdgeInsets.only(top: 24, bottom: 10),
+                    child: Text(
+                      'You must fill out all field to proceed.',
+                      style: TextStyle(
+                        color: kPinkColor,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 12.0,
+                      ),
                     ),
-                  ),
-                SizedBox(height: 10.0.h),
+                  )
+                else
+                  const SizedBox(height: 50),
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 30.0.w),
+                  padding: const EdgeInsets.symmetric(horizontal: 45),
                   child: _RegistrationForm(
                     formKey: vm.formKey,
                     firstNameController: _firstNameController,
@@ -145,15 +143,18 @@ class _ProfileRegistrationView extends HookView<ProfileRegistrationViewModel>
                       filled: true,
                       fillColor: Colors.white,
                       alignLabelWithHint: true,
-                      contentPadding: EdgeInsets.symmetric(horizontal: 16.0.w),
+                      contentPadding:
+                          const EdgeInsets.symmetric(horizontal: 25),
                       border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(30.0.r)),
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(30.0)),
                         borderSide: vm.hasEmptyField
                             ? const BorderSide(color: kPinkColor)
                             : BorderSide.none,
                       ),
                       enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(30.0.r)),
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(30.0)),
                         borderSide: vm.hasEmptyField
                             ? const BorderSide(color: kPinkColor)
                             : BorderSide.none,
@@ -162,9 +163,9 @@ class _ProfileRegistrationView extends HookView<ProfileRegistrationViewModel>
                   ),
                 ),
                 const Spacer(),
-                SizedBox(height: 10.0.h),
+                const SizedBox(height: 10.0),
                 SizedBox(
-                  width: 200.0.w,
+                  width: 190,
                   child: AppButton.filled(
                     text: 'CREATE PROFILE',
                     onPressed: () async {
@@ -176,7 +177,7 @@ class _ProfileRegistrationView extends HookView<ProfileRegistrationViewModel>
                         () async => vm.registerHandler(),
                       );
                     },
-                    textStyle: const TextStyle(color: kNavyColor),
+                    textStyle: Theme.of(context).textTheme.subtitle2,
                   ),
                 ),
                 const SizedBox(height: kKeyboardActionHeight),
@@ -190,37 +191,37 @@ class _ProfileRegistrationView extends HookView<ProfileRegistrationViewModel>
 }
 
 class _RegistrationForm extends StatelessWidget {
-  final Key? formKey;
-  final TextEditingController? firstNameController;
-  final TextEditingController? lastNameController;
-  final TextEditingController? streetAddressController;
-  final FocusNode? firstNameNode;
-  final FocusNode? lastNameNode;
-  final FocusNode? streetAdddressNode;
-  final InputDecoration? formFieldDecoration;
-  final void Function()? onChanged;
-  final void Function()? onFormSubmit;
+  final Key formKey;
+  final TextEditingController firstNameController;
+  final TextEditingController lastNameController;
+  final TextEditingController streetAddressController;
+  final FocusNode firstNameNode;
+  final FocusNode lastNameNode;
+  final FocusNode streetAdddressNode;
+  final InputDecoration formFieldDecoration;
+  final VoidCallback? onChanged;
+  final VoidCallback onFormSubmit;
+  final TextStyle? termsAndPolicyTextStyle;
 
-  _RegistrationForm({
+  const _RegistrationForm({
     Key? key,
-    this.formKey,
-    this.firstNameController,
-    this.lastNameController,
-    this.streetAddressController,
-    this.formFieldDecoration,
+    required this.formKey,
+    required this.firstNameController,
+    required this.lastNameController,
+    required this.streetAddressController,
+    required this.formFieldDecoration,
+    required this.onFormSubmit,
+    required this.firstNameNode,
+    required this.lastNameNode,
+    required this.streetAdddressNode,
     this.onChanged,
-    this.onFormSubmit,
-    this.firstNameNode,
-    this.lastNameNode,
-    this.streetAdddressNode,
+    this.termsAndPolicyTextStyle = const TextStyle(
+      color: Colors.black,
+      fontFamily: 'Goldplay',
+      fontWeight: FontWeight.w400,
+      fontSize: 12,
+    ),
   }) : super(key: key);
-
-  final _checkBoxTextStyle = TextStyle(
-    color: Colors.black,
-    fontFamily: 'Goldplay',
-    fontWeight: FontWeight.w600,
-    fontSize: 13.0.sp,
-  );
 
   @override
   Widget build(BuildContext context) {
@@ -232,26 +233,27 @@ class _RegistrationForm extends StatelessWidget {
           TextFormField(
             focusNode: firstNameNode,
             autocorrect: false,
-            keyboardType: TextInputType.emailAddress,
+            keyboardType: TextInputType.name,
             controller: firstNameController,
-            style: TextStyle(
-              fontWeight: FontWeight.w500,
-              fontSize: 16.0.sp,
-            ),
-            decoration: formFieldDecoration!.copyWith(hintText: 'First Name'),
+            style: Theme.of(context)
+                .textTheme
+                .bodyText2
+                ?.copyWith(color: Colors.black),
+            decoration: formFieldDecoration.copyWith(hintText: 'First Name'),
           ),
-          SizedBox(height: 15.0.h),
+          const SizedBox(height: 20),
           TextFormField(
             focusNode: lastNameNode,
             autocorrect: false,
+            keyboardType: TextInputType.name,
             controller: lastNameController,
-            style: TextStyle(
-              fontWeight: FontWeight.w500,
-              fontSize: 16.0.sp,
-            ),
-            decoration: formFieldDecoration!.copyWith(hintText: 'Last Name'),
+            style: Theme.of(context)
+                .textTheme
+                .bodyText2
+                ?.copyWith(color: Colors.black),
+            decoration: formFieldDecoration.copyWith(hintText: 'Last Name'),
           ),
-          SizedBox(height: 15.0.h),
+          const SizedBox(height: 30),
           CheckboxFormField(
             validator: (checked) => checked!
                 ? null
@@ -262,40 +264,38 @@ class _RegistrationForm extends StatelessWidget {
                   const TextSpan(text: 'I have read the '),
                   TextSpan(
                     text: 'Terms & Conditions',
-                    style: _checkBoxTextStyle.copyWith(
+                    style: termsAndPolicyTextStyle?.copyWith(
                       color: kTealColor,
                       decoration: TextDecoration.underline,
-                      fontWeight: FontWeight.bold,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                   const TextSpan(text: ' and '),
                   TextSpan(
                     text: 'Privacy Policy',
-                    style: _checkBoxTextStyle.copyWith(
+                    style: termsAndPolicyTextStyle?.copyWith(
                       color: kTealColor,
                       decoration: TextDecoration.underline,
-                      fontWeight: FontWeight.bold,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                 ],
-                style: _checkBoxTextStyle,
+                style: termsAndPolicyTextStyle,
               ),
             ),
           ),
-          // SizedBox(
-          //   height: 30.0.h,
-          // ),
+          const SizedBox(height: 30),
           TextFormField(
             focusNode: streetAdddressNode,
             autocorrect: false,
-            keyboardType: TextInputType.emailAddress,
+            keyboardType: TextInputType.streetAddress,
             controller: streetAddressController,
-            style: TextStyle(
-              fontWeight: FontWeight.w500,
-              fontSize: 16.0.sp,
-            ),
+            style: Theme.of(context)
+                .textTheme
+                .bodyText2
+                ?.copyWith(color: Colors.black),
             decoration:
-                formFieldDecoration!.copyWith(hintText: 'Street Address'),
+                formFieldDecoration.copyWith(hintText: 'Street Address'),
           ),
         ],
       ),

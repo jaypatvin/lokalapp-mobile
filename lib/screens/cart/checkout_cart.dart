@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/cart.dart';
@@ -26,6 +25,7 @@ class CheckoutCart extends StatelessWidget {
         builder: (_, cart, __) {
           return ListView.builder(
             itemCount: cart.orders.length,
+            padding: const EdgeInsets.only(top: 30),
             itemBuilder: (ctx, index) {
               // get shopId from Map
               final key = cart.orders.keys.elementAt(index);
@@ -34,36 +34,32 @@ class CheckoutCart extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Padding(
-                    padding: EdgeInsets.only(
-                      left: 16.0.w,
-                      right: 16.0.w,
-                      top: 16.0.h,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 3,
                     ),
                     child: Text(
                       shop.name,
                       style: Theme.of(context)
                           .textTheme
-                          .headline6
-                          ?.copyWith(fontSize: 18.0.sp),
+                          .headline5
+                          ?.copyWith(fontSize: 18.0),
                       textAlign: TextAlign.center,
                     ),
                   ),
                   Container(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 18.0.w,
-                      vertical: 8.0.h,
-                    ),
+                    padding: const EdgeInsets.all(16),
                     child: Card(
                       elevation: 0.0,
                       shape: RoundedRectangleBorder(
                         side: BorderSide(color: Colors.grey.shade300),
-                        borderRadius: BorderRadius.circular(16.0.r),
+                        borderRadius: BorderRadius.circular(20),
                       ),
                       child: Padding(
-                        padding: EdgeInsets.fromLTRB(16.0.w, 16.0.h, 16.0.w, 0),
+                        padding: const EdgeInsets.all(16),
                         child: Column(
                           children: [
-                            ListView.builder(
+                            ListView.separated(
                               // this shrinkWrap is okay since this widget
                               // lives inside a Card which will be handled
                               // by another listView above this (which will
@@ -71,6 +67,8 @@ class CheckoutCart extends StatelessWidget {
                               shrinkWrap: true,
                               itemCount: cart.orders[key]!.length,
                               physics: const NeverScrollableScrollPhysics(),
+                              separatorBuilder: (_, __) =>
+                                  const SizedBox(height: 12),
                               itemBuilder: (_, orderIndex) {
                                 // get the shopOrders
                                 final orders = cart.orders[key]!;
@@ -78,42 +76,32 @@ class CheckoutCart extends StatelessWidget {
                                 final _key = orders.keys.elementAt(orderIndex);
                                 final product =
                                     context.read<Products>().findById(_key);
-                                return Padding(
-                                  padding: orderIndex != 0
-                                      ? EdgeInsets.only(top: 8.0.h)
-                                      : EdgeInsets.zero,
-                                  child: OrderDetails(
-                                    product: product!,
-                                    quantity: orders[_key]!.quantity,
-                                    onEditTap: () {
-                                      context.read<AppRouter>().navigateTo(
-                                            AppRoute.discover,
-                                            ProductDetail.routeName,
-                                            arguments: ProductDetailProps(
-                                              product,
-                                            ),
-                                          );
-                                    },
-                                  ),
+                                return OrderDetails(
+                                  product: product!,
+                                  quantity: orders[_key]!.quantity,
+                                  onEditTap: () {
+                                    context.read<AppRouter>().navigateTo(
+                                          AppRoute.discover,
+                                          ProductDetail.routeName,
+                                          arguments: ProductDetailProps(
+                                            product,
+                                          ),
+                                        );
+                                  },
                                 );
                               },
                             ),
-                            // const SizedBox(height: 12.0),
-                            Padding(
-                              padding: EdgeInsets.symmetric(vertical: 8.0.h),
-                              child: SizedBox(
-                                width: double.infinity,
-                                child: AppButton.transparent(
-                                  text: 'Checkout',
-                                  onPressed: () {
-                                    context.read<AppRouter>().navigateTo(
-                                          AppRoute.discover,
-                                          ShopCheckout.routeName,
-                                          arguments: ShopCheckoutProps(shop),
-                                        );
-                                  },
-                                ),
-                              ),
+                            const SizedBox(height: 12.0),
+                            AppButton.transparent(
+                              text: 'Checkout',
+                              width: double.infinity,
+                              onPressed: () {
+                                context.read<AppRouter>().navigateTo(
+                                      AppRoute.discover,
+                                      ShopCheckout.routeName,
+                                      arguments: ShopCheckoutProps(shop),
+                                    );
+                              },
                             ),
                           ],
                         ),
@@ -142,7 +130,7 @@ class _CheckOutCartAppBar extends StatelessWidget
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      backgroundColor: kTealColor,
+      backgroundColor: kOrangeColor,
       elevation: 0,
       leading: IconButton(
         icon: const Icon(
@@ -156,18 +144,24 @@ class _CheckOutCartAppBar extends StatelessWidget
         mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
         children: [
-          SizedBox(width: 25.0.r + 8.0.w), // this is needed to center the text
-          const Text('Shopping Cart'),
-          SizedBox(width: 8.0.w),
+          const SizedBox(width: 18 + 8.0), // this is needed to center the text
+          Text(
+            'Shopping Cart',
+            style: Theme.of(context)
+                .textTheme
+                .headline6
+                ?.copyWith(color: kYellowColor),
+          ),
+          const SizedBox(width: 8.0),
           Container(
             padding: const EdgeInsets.all(1.0),
             decoration: const BoxDecoration(
-              color: kOrangeColor,
+              color: kYellowColor,
               shape: BoxShape.circle,
             ),
-            constraints: BoxConstraints(
-              minWidth: 25.0.r,
-              minHeight: 25.0.r,
+            constraints: const BoxConstraints(
+              minWidth: 18,
+              minHeight: 18,
             ),
             child: Consumer<ShoppingCart>(
               builder: (_, cart, __) {
@@ -180,7 +174,7 @@ class _CheckOutCartAppBar extends StatelessWidget
                     style: Theme.of(context)
                         .textTheme
                         .subtitle2
-                        ?.copyWith(color: Colors.white),
+                        ?.copyWith(color: Colors.white, fontSize: 12),
                   ),
                 );
               },

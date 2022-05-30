@@ -114,13 +114,12 @@ class ShopHours extends HookWidget {
             'CLOSED',
             style: Theme.of(context)
                 .textTheme
-                .subtitle1
+                .subtitle2
                 ?.copyWith(color: kPinkColor),
           ),
           Text(
-            'Opens $_openingAt at ${shopOperatingHours.startTime} '
-            '- ${shopOperatingHours.endTime}',
-            style: Theme.of(context).textTheme.subtitle1,
+            'Opens $_openingAt at ${shopOperatingHours.startTime} ',
+            style: Theme.of(context).textTheme.subtitle2,
             softWrap: true,
           ),
         ],

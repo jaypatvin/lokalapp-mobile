@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:validators/validators.dart';
 
 import '../../utils/constants/themes.dart';
@@ -12,6 +11,7 @@ class InputEmailField extends StatelessWidget {
   final bool displayErrorBorder;
   final bool validate;
   final Color fillColor;
+  final String hintText;
   const InputEmailField({
     Key? key,
     this.focusNode,
@@ -21,6 +21,7 @@ class InputEmailField extends StatelessWidget {
     this.displayErrorBorder = false,
     this.validate = false,
     this.fillColor = Colors.white,
+    this.hintText = 'Email Address',
   }) : super(key: key);
 
   @override
@@ -31,14 +32,12 @@ class InputEmailField extends StatelessWidget {
       keyboardType: TextInputType.emailAddress,
       controller: controller,
       onChanged: onChanged,
-      style: TextStyle(
-        fontWeight: FontWeight.w500,
-        fontSize: 16.0.sp,
-      ),
+      style:
+          Theme.of(context).textTheme.subtitle2?.copyWith(color: Colors.black),
       decoration: InputDecoration(
         fillColor: fillColor,
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.all(Radius.circular(30.0.r)),
+          borderRadius: const BorderRadius.all(Radius.circular(30.0)),
           borderSide: displayErrorBorder
               ? const BorderSide(color: kPinkColor)
               : BorderSide.none,
@@ -46,8 +45,10 @@ class InputEmailField extends StatelessWidget {
         isDense: false,
         filled: true,
         alignLabelWithHint: true,
-        hintText: 'Email',
-        contentPadding: EdgeInsets.symmetric(horizontal: 16.0.w),
+        hintText: hintText,
+        contentPadding: const EdgeInsets.symmetric(horizontal: 21),
+        hintStyle:
+            Theme.of(context).textTheme.bodyText2?.copyWith(color: Colors.grey),
       ),
       validator: (email) => validate && isEmail(email!)
           ? null

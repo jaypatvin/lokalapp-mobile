@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:keyboard_actions/keyboard_actions.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
@@ -98,7 +97,7 @@ class BuyerSubscriptionScheduleView
             ],
           ),
           child: Padding(
-            padding: EdgeInsets.all(8.0.w),
+            padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -106,7 +105,7 @@ class BuyerSubscriptionScheduleView
                   product: vm.product,
                   quantity: vm.quantity,
                 ),
-                SizedBox(height: 10.0.h),
+                const SizedBox(height: 24),
                 SchedulePicker(
                   header: 'Schedule',
                   description: 'Which dates do you want this product '
@@ -121,7 +120,7 @@ class BuyerSubscriptionScheduleView
                   editable: false,
                 ),
                 const Spacer(),
-                SizedBox(height: 10.0.h),
+                const SizedBox(height: 24),
                 if (vm.displayWarning)
                   Row(
                     children: [
@@ -129,52 +128,54 @@ class BuyerSubscriptionScheduleView
                         MdiIcons.alertCircle,
                         color: kPinkColor,
                       ),
-                      SizedBox(width: 10.0.w),
+                      const SizedBox(width: 10.0),
                       Expanded(
                         child: Text(
                           "This shop won't be able to deliver on the date/s "
                           'you set. Please manually re-schedule these orders '
                           "or else they won't be placed.",
-                          style: Theme.of(context).textTheme.bodyText1,
+                          style: Theme.of(context).textTheme.bodyText2,
                         ),
                       )
                     ],
                   ),
-                if (vm.displayWarning) SizedBox(height: 20.0.h),
-                TextButton(
-                  onPressed: () => _displayCalendar(),
-                  style: TextButton.styleFrom(
-                    minimumSize: const Size(
-                      double.infinity,
-                      kMinInteractiveDimension,
-                    ),
-                    backgroundColor: Colors.transparent,
-                    primary: kTealColor,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30.0.r),
-                      side: const BorderSide(color: kTealColor),
-                    ),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        'See Calendar',
-                        style: Theme.of(context).textTheme.headline6!.copyWith(
-                              color: kTealColor,
-                              fontWeight: FontWeight.w600,
-                            ),
+                if (vm.displayWarning) const SizedBox(height: 20.0),
+                Container(
+                  margin: const EdgeInsets.all(3),
+                  child: TextButton(
+                    onPressed: () => _displayCalendar(),
+                    style: TextButton.styleFrom(
+                      minimumSize: const Size(
+                        double.infinity,
+                        43,
                       ),
-                      if (vm.displayWarning)
-                        Icon(
-                          MdiIcons.alertCircle,
-                          color: kPinkColor,
-                          size: 20.0.r,
-                        )
-                    ],
+                      backgroundColor: Colors.transparent,
+                      primary: kTealColor,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30.0),
+                        side: const BorderSide(color: kTealColor),
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'See Calendar',
+                          style: Theme.of(context)
+                              .textTheme
+                              .subtitle2
+                              ?.copyWith(color: kTealColor),
+                        ),
+                        if (vm.displayWarning)
+                          const Icon(
+                            MdiIcons.alertCircle,
+                            color: kPinkColor,
+                            size: 20.0,
+                          )
+                      ],
+                    ),
                   ),
                 ),
-                SizedBox(height: 10.0.h),
                 SizedBox(
                   width: double.infinity,
                   child: AppButton.filled(
@@ -182,7 +183,6 @@ class BuyerSubscriptionScheduleView
                     onPressed: () async => performFuture<void>(
                       () async => vm.onSubmitHandler(),
                     ),
-                    textStyle: TextStyle(fontSize: 20.0.sp),
                   ),
                 ),
               ],

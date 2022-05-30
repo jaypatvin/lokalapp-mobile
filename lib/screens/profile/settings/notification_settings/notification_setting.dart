@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:recase/recase.dart';
 
@@ -19,11 +18,10 @@ class NotificationSettingsScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: const Color(0xffF1FAFF),
       resizeToAvoidBottomInset: true,
-      appBar: CustomAppBar(
+      appBar: const CustomAppBar(
         titleText: 'Notification Settings',
         backgroundColor: kTealColor,
-        titleStyle: const TextStyle(color: Colors.white),
-        onPressedLeading: () => Navigator.pop(context),
+        titleStyle: TextStyle(color: Colors.white),
       ),
       body: ChangeNotifierProvider(
         create: (_) => NotificationSettingViewModel(
@@ -37,15 +35,15 @@ class NotificationSettingsScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Padding(
-                    padding: EdgeInsets.symmetric(
-                      vertical: 10.0.h,
-                      horizontal: 10.0.w,
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 20,
+                      horizontal: 16,
                     ),
                     child: Text(
                       'Receive notifications for',
                       style: Theme.of(context)
                           .textTheme
-                          .subtitle1
+                          .subtitle2
                           ?.copyWith(color: kTealColor),
                     ),
                   ),
@@ -58,9 +56,11 @@ class NotificationSettingsScreen extends StatelessWidget {
                             viewModel.notifications.keys.elementAt(index);
                         return ListTile(
                           tileColor: Colors.white,
+                          contentPadding:
+                              const EdgeInsets.symmetric(horizontal: 16),
                           title: Text(
                             key.name.titleCase,
-                            style: Theme.of(context).textTheme.bodyText1,
+                            style: Theme.of(context).textTheme.bodyText2,
                           ),
                           trailing: CupertinoSwitch(
                             value: viewModel.notifications[key]!,

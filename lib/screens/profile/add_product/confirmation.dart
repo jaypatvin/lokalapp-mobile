@@ -40,10 +40,16 @@ class AddProductConfirmation extends StatelessWidget {
                   Positioned.fill(
                     child: Align(
                       alignment: Alignment.bottomCenter,
-                      child: Text(
-                        'Your new product has now been added to your store!',
-                        textAlign: TextAlign.center,
-                        style: Theme.of(context).textTheme.bodyText1,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 45),
+                        child: Text(
+                          'Your new product has now been added to your store!',
+                          textAlign: TextAlign.center,
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyText2
+                              ?.copyWith(color: Colors.black),
+                        ),
                       ),
                     ),
                   ),
@@ -61,6 +67,7 @@ class AddProductConfirmation extends StatelessWidget {
                 },
               ),
             ),
+            const SizedBox(height: 12),
           ],
         ),
       ),

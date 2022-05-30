@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:keyboard_actions/keyboard_actions.dart';
 import 'package:provider/provider.dart';
 
@@ -105,76 +104,74 @@ class _InviteAFriendView extends HookView<InviteAFriendViewModel>
     return Scaffold(
       backgroundColor: const Color(0xffF1FAFF),
       resizeToAvoidBottomInset: false,
-      appBar: CustomAppBar(
+      appBar: const CustomAppBar(
         titleText: 'Invite a Friend',
         backgroundColor: kTealColor,
-        titleStyle: const TextStyle(
-          color: Colors.white,
-        ),
-        onPressedLeading: () => Navigator.pop(context),
+        titleStyle: TextStyle(color: Colors.white),
       ),
-      body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 24.0.w),
-        child: Center(
-          child: KeyboardActions(
-            config: _kbActionsRef.value,
-            tapOutsideBehavior: TapOutsideBehavior.translucentDismiss,
-            child: Column(
+      body: KeyboardActions(
+        config: _kbActionsRef.value,
+        tapOutsideBehavior: TapOutsideBehavior.translucentDismiss,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Expand your Community!',
-                      style: Theme.of(context)
-                          .textTheme
-                          .headline5!
-                          .copyWith(color: kTealColor),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 10.h),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 36.0.w),
-                  child: const Text(
-                    "Share an invite code by entering the recipient's email "
-                    'address below.',
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-                SizedBox(height: 20.0.h),
-                InputField(
-                  fillColor: Colors.white,
-                  controller: _emailController,
-                  focusNode: _emailNode,
-                  errorText: vm.emailErrorText,
-                  hintText: 'Email Address',
-                ),
-                // Padding(
-                //   padding: EdgeInsets.symmetric(vertical: 20.0.h),
-                //   child: Text('or'),
-                // ),
-                // InputField(
-                //   controller: _phoneController,
-                //   focusNode: _phoneNode,
-                //   fillColor: Colors.white,
-                //   hintText: 'Phone Number',
-                //   keyboardType: TextInputType.number,
-                //   enabled: false,
-                // ),
-                SizedBox(height: 20.0.h),
-                SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.7,
-                  child: AppButton.filled(
-                    text: 'SEND INVITE CODE',
-                    onPressed: () async =>
-                        performFuture<void>(vm.sendInviteCode),
-                  ),
+                Text(
+                  'Expand your Community!',
+                  style: Theme.of(context)
+                      .textTheme
+                      .headline5
+                      ?.copyWith(color: kTealColor),
                 ),
               ],
             ),
-          ),
+            const SizedBox(height: 10),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 51),
+              child: Text(
+                "Share an invite code by entering the recipient's email "
+                'address below.',
+                textAlign: TextAlign.center,
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyText2
+                    ?.copyWith(fontWeight: FontWeight.w400),
+              ),
+            ),
+            const SizedBox(height: 36),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 45),
+              child: InputField(
+                fillColor: Colors.white,
+                controller: _emailController,
+                focusNode: _emailNode,
+                errorText: vm.emailErrorText,
+                hintText: 'Email Address',
+              ),
+            ),
+            // Padding(
+            //   padding: EdgeInsets.symmetric(vertical: 8),
+            //   child: Text('or'),
+            // ),
+            // Padding(
+            //   padding: const EdgeInsets.symmetric(horizontal: 45),
+            //   child: InputField(
+            //     controller: _phoneController,
+            //     focusNode: _phoneNode,
+            //     fillColor: Colors.white,
+            //     hintText: 'Phone Number',
+            //     keyboardType: TextInputType.number,
+            //     enabled: false,
+            //   ),
+            // ),
+            const SizedBox(height: 27),
+            AppButton.filled(
+              text: 'SEND INVITE CODE',
+              onPressed: () async => performFuture<void>(vm.sendInviteCode),
+            ),
+          ],
         ),
       ),
     );

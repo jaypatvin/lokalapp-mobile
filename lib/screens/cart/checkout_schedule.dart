@@ -1,7 +1,6 @@
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
@@ -89,30 +88,30 @@ class _CheckoutScheduleState extends State<CheckoutSchedule> with ScreenLoader {
     return Scaffold(
       appBar: const CustomAppBar(
         titleText: 'Checkout',
-        backgroundColor: kTealColor,
-        titleStyle: TextStyle(color: Colors.white),
+        backgroundColor: kYellowColor,
+        titleStyle: TextStyle(color: kOrangeColor),
       ),
       body: ConstrainedScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             Padding(
-              padding: EdgeInsets.only(
-                left: 16.0.w,
-                right: 16.0.w,
-                top: 16.0.h,
+              padding: const EdgeInsets.only(
+                left: 16.0,
+                right: 16.0,
+                top: 30,
               ),
               child: Text(
                 shop.name,
                 style: Theme.of(context)
                     .textTheme
-                    .headline6
-                    ?.copyWith(fontSize: 18.0.sp),
+                    .headline5
+                    ?.copyWith(fontSize: 18.0),
                 textAlign: TextAlign.center,
               ),
             ),
-            Container(
-              margin: const EdgeInsets.all(16.0),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 18, 16, 30),
               child: Consumer<ShoppingCart>(
                 builder: (_, cart, __) {
                   final order = cart.orders[shop.id]![widget.productId]!;
@@ -141,9 +140,9 @@ class _CheckoutScheduleState extends State<CheckoutSchedule> with ScreenLoader {
               ),
             ),
             const Divider(),
-            const SizedBox(height: 8.0),
+            const SizedBox(height: 20),
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.0.w),
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
@@ -151,7 +150,7 @@ class _CheckoutScheduleState extends State<CheckoutSchedule> with ScreenLoader {
                   style: Theme.of(context)
                       .textTheme
                       .headline6
-                      ?.copyWith(fontSize: 18.0.sp),
+                      ?.copyWith(color: Colors.black),
                 ),
               ),
             ),
@@ -159,10 +158,14 @@ class _CheckoutScheduleState extends State<CheckoutSchedule> with ScreenLoader {
               shopId: shop.id,
               productId: widget.productId,
             ),
-            SizedBox(height: 10.0.h),
+            const SizedBox(height: 20.0),
             const Spacer(),
+            const Divider(),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 16.0,
+                vertical: 21,
+              ),
               child: Row(
                 children: [
                   Expanded(

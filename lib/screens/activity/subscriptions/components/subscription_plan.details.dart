@@ -1,6 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
 
@@ -43,32 +42,32 @@ class SubscriptionPlanDetails extends StatelessWidget {
               Expanded(
                 child: Text(
                   _subHeader,
-                  style: Theme.of(context).textTheme.subtitle1,
+                  style: Theme.of(context).textTheme.subtitle2,
                 ),
               ),
             ],
           ),
-        SizedBox(height: 10.0.h),
+        const SizedBox(height: 14),
         Row(
           children: [
             ChatAvatar(
               displayName: name,
               displayPhoto: displayPhoto ?? '',
-              radius: 20.0.r,
+              radius: 20.0,
             ),
-            SizedBox(width: 10.0.w),
+            const SizedBox(width: 8),
             Text(
               name ?? 'Error displaying name',
               style: Theme.of(context).textTheme.bodyText2,
             ),
           ],
         ),
-        SizedBox(height: 10.0.h),
+        const SizedBox(height: 12),
         Row(
           children: [
             SizedBox(
-              width: 40.0.w,
-              height: 40.0.w,
+              width: 38,
+              height: 38,
               child: CachedNetworkImage(
                 imageUrl: item.image,
                 fit: BoxFit.cover,
@@ -92,25 +91,28 @@ class SubscriptionPlanDetails extends StatelessWidget {
                 },
               ),
             ),
-            SizedBox(width: 10.0.w),
+            const SizedBox(width: 29),
             Expanded(
               child: Text(
                 item.name,
-                style: Theme.of(context).textTheme.subtitle1,
+                style: Theme.of(context).textTheme.subtitle2,
                 overflow: TextOverflow.ellipsis,
               ),
             ),
-            SizedBox(width: 10.0.w),
+            const SizedBox(width: 10.0),
             SizedBox(
-              width: 50.0.w,
+              width: 50.0,
               child: Text(
                 'x${subscriptionPlan.quantity}',
-                style: Theme.of(context).textTheme.bodyText1,
+                style: Theme.of(context).textTheme.bodyText2?.copyWith(
+                      fontWeight: FontWeight.w300,
+                      color: Colors.black,
+                    ),
               ),
             ),
             Text(
               'P ${item.price}',
-              style: Theme.of(context).textTheme.bodyText1,
+              style: Theme.of(context).textTheme.bodyText2,
             ),
           ],
         ),

@@ -1,7 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 
 import '../../../models/order.dart';
@@ -11,6 +10,7 @@ import '../../../utils/constants/themes.dart';
 import '../../../view_models/activity/buyer/cash_on_delivery.vm.dart';
 import '../../../widgets/app_button.dart';
 import '../../../widgets/custom_app_bar.dart';
+import '../../../widgets/overlays/constrained_scrollview.dart';
 import '../../../widgets/overlays/screen_loader.dart';
 
 class CashOnDelivery extends StatelessWidget {
@@ -57,69 +57,57 @@ class _CashOnDeliveryView extends HookView<CashOnDeliveryViewModel>
         backgroundColor: kTealColor,
         onPressedLeading: () => Navigator.pop(context),
       ),
-      body: Column(
-        children: [
-          SizedBox(height: 24.0.h),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 36.0.w),
-            child: RichText(
-              text: TextSpan(
-                children: [
-                  const TextSpan(text: 'Please prepare '),
-                  TextSpan(
-                    text: 'P $_price',
-                    style: Theme.of(context).textTheme.bodyText2?.copyWith(
-                          color: kOrangeColor,
-                          fontWeight: FontWeight.bold,
-                        ),
-                  ),
-                  const TextSpan(text: ' for when the courier arrives.')
-                ],
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyText2
-                    ?.copyWith(color: Colors.black),
+      body: ConstrainedScrollView(
+        child: Column(
+          children: [
+            const SizedBox(height: 42),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 46),
+              child: RichText(
+                text: TextSpan(
+                  children: [
+                    const TextSpan(text: 'Please prepare '),
+                    TextSpan(
+                      text: 'P $_price',
+                      style: Theme.of(context).textTheme.subtitle2?.copyWith(
+                            color: kOrangeColor,
+                            fontWeight: FontWeight.bold,
+                          ),
+                    ),
+                    const TextSpan(
+                      text: ' for when the courier arrives.\n\n'
+                          'By completing this order, you agree to all ',
+                    ),
+                    TextSpan(
+                      text: 'Terms & Conditions',
+                      recognizer: _termsConditionHandler,
+                      style: Theme.of(context)
+                          .textTheme
+                          .subtitle2
+                          ?.copyWith(color: kTealColor),
+                    ),
+                  ],
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyText2
+                      ?.copyWith(color: Colors.black),
+                ),
               ),
             ),
-          ),
-          const SizedBox(height: 16.0),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 36.0.w),
-            child: RichText(
-              text: TextSpan(
-                children: [
-                  const TextSpan(
-                    text: 'By completing this order, you agree to all ',
-                  ),
-                  TextSpan(
-                    text: 'Terms & Conditions',
-                    recognizer: _termsConditionHandler,
-                    style: Theme.of(context).textTheme.bodyText2?.copyWith(
-                          color: kTealColor,
-                          fontWeight: FontWeight.bold,
-                        ),
-                  ),
-                ],
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyText2
-                    ?.copyWith(color: Colors.black),
+            const Spacer(),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: SizedBox(
+                width: double.infinity,
+                child: AppButton.filled(
+                  text: 'Continue with Cash on Delivery',
+                  onPressed: () => performFuture<void>(vm.onSubmitHandler),
+                ),
               ),
             ),
-          ),
-          const Spacer(),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 12.0.w),
-            child: SizedBox(
-              width: double.infinity,
-              child: AppButton.filled(
-                text: 'Continue with Cash on Delivery',
-                onPressed: () => performFuture<void>(vm.onSubmitHandler),
-              ),
-            ),
-          ),
-          SizedBox(height: 24.0.h)
-        ],
+            const SizedBox(height: 24.0)
+          ],
+        ),
       ),
     );
   }

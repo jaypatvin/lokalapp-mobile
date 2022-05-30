@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 import '../../../models/activity_feed.dart';
@@ -19,8 +18,8 @@ class PostDetailsImages extends StatelessWidget {
     final images = activity.images;
     return StaggeredGrid.count(
       crossAxisCount: 2,
-      mainAxisSpacing: 4.0.w,
-      crossAxisSpacing: 4.0.h,
+      mainAxisSpacing: 8,
+      crossAxisSpacing: 8,
       children: images.map<StaggeredGridTile>((image) {
         final index = images.indexOf(image);
         final crossAxisCellCount = images.length % 2 != 0 && index == 0 ? 2 : 1;

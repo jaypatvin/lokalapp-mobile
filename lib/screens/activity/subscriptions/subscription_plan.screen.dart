@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
 
@@ -88,23 +87,25 @@ class _SubscriptionDetailsView extends HookView<SubscriptionPlanScreenViewModel>
           children: [
             Text(
               'Order Details',
-              style: Theme.of(context).textTheme.headline6!.copyWith(
-                    color: Colors.white,
-                  ),
+              style: Theme.of(context)
+                  .textTheme
+                  .headline6
+                  ?.copyWith(color: Colors.white),
             ),
             Text(
               _subHeader,
-              style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                    color: Colors.white,
-                  ),
+              style: Theme.of(context)
+                  .textTheme
+                  .subtitle2
+                  ?.copyWith(color: Colors.white),
             ),
           ],
         ),
       ),
       body: ConstrainedScrollView(
         child: Container(
-          padding: EdgeInsets.symmetric(
-            horizontal: 36.0.w,
+          padding: const EdgeInsets.symmetric(
+            horizontal: 37,
           ),
           child: Column(
             children: [
@@ -120,18 +121,21 @@ class _SubscriptionDetailsView extends HookView<SubscriptionPlanScreenViewModel>
                   const Spacer(),
                   Text(
                     'Order Total\t',
-                    style: Theme.of(context).textTheme.bodyText2,
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyText2
+                        ?.copyWith(color: Colors.black),
                   ),
                   Text(
                     'P ${vm.orderTotal}',
-                    style: Theme.of(context)
-                        .textTheme
-                        .subtitle1!
-                        .copyWith(color: Colors.orange),
+                    style: Theme.of(context).textTheme.subtitle2!.copyWith(
+                          color: Colors.orange,
+                          fontWeight: FontWeight.w700,
+                        ),
                   ),
                 ],
               ),
-              SizedBox(height: 16.0.h),
+              const SizedBox(height: 24),
               SizedBox(
                 width: double.infinity,
                 child: Column(
@@ -139,26 +143,37 @@ class _SubscriptionDetailsView extends HookView<SubscriptionPlanScreenViewModel>
                   children: [
                     Text(
                       'Notes:',
-                      style: Theme.of(context).textTheme.subtitle1,
+                      style: Theme.of(context)
+                          .textTheme
+                          .subtitle2
+                          ?.copyWith(color: Colors.black),
                     ),
                     Text(
                       vm.subscriptionPlan.instruction,
-                      style: Theme.of(context).textTheme.bodyText1,
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyText2
+                          ?.copyWith(color: Colors.black),
                     ),
-                    SizedBox(height: 16.0.h),
+                    const SizedBox(height: 12),
                     Text(
                       'Delivery Address:',
-                      style: Theme.of(context).textTheme.subtitle1,
+                      style: Theme.of(context)
+                          .textTheme
+                          .subtitle2
+                          ?.copyWith(color: Colors.black),
                     ),
                     Text(
                       _address,
-                      style: Theme.of(context).textTheme.bodyText1,
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyText2
+                          ?.copyWith(color: Colors.black),
                     ),
-                    SizedBox(height: 16.0.h),
                   ],
                 ),
               ),
-              //SizedBox(height: 16.0.h),
+              const SizedBox(height: 24),
               const Spacer(),
               _SubscriptionDetailsButtons(
                 isBuyer: vm.isBuyer,
@@ -225,7 +240,7 @@ class _SubscriptionDetailsButtons extends StatelessWidget {
                 shape: const StadiumBorder(),
                 elevation: 0.0,
                 primary: Colors.transparent,
-                minimumSize: const Size(0, kMinInteractiveDimension),
+                minimumSize: const Size(0, 43),
                 side: const BorderSide(color: kTealColor),
               ),
               child: Row(
@@ -235,20 +250,19 @@ class _SubscriptionDetailsButtons extends StatelessWidget {
                     'See Schedule',
                     style: Theme.of(context)
                         .textTheme
-                        .subtitle1!
-                        .copyWith(color: kTealColor),
+                        .subtitle2
+                        ?.copyWith(color: kTealColor),
                   ),
                   if (displayWarning)
-                    Icon(
+                    const Icon(
                       MdiIcons.alertCircle,
                       color: kPinkColor,
-                      size: 20.0.r,
+                      size: 20.0,
                     )
                 ],
               ),
             ),
           ),
-        // SizedBox(height: 5.0.h),
         Row(
           children: [
             if (isBuyer && status == SubscriptionStatus.enabled)

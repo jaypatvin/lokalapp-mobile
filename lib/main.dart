@@ -1,12 +1,10 @@
 import 'dart:async';
 import 'dart:io';
-import 'dart:ui';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lottie/lottie.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
@@ -210,115 +208,112 @@ class _MyAppState extends State<MyApp> {
     return MultiProvider(
       providers: _getProviders(),
       child: OKToast(
-        child: MediaQuery(
-          data: MediaQueryData.fromWindow(window),
-          child: ScreenUtilInit(
-            builder: (context) {
-              ScreenUtil.setContext(context);
-              return ConnectivityStatus(
-                child: ScreenLoaderApp(
-                  globalLoadingBgBlur: 0,
-                  globalLoader: SizedBox(
-                    width: double.infinity,
-                    height: double.infinity,
-                    child: DecoratedBox(
-                      decoration: const BoxDecoration(
-                        color: Colors.white,
-                      ),
-                      child: Lottie.asset(kAnimationLoading),
-                    ),
-                  ),
-                  app: MaterialApp(
-                    debugShowCheckedModeBanner: false,
-                    title: 'Lokal',
-                    theme: ThemeData(
-                      primarySwatch: Colors.teal,
-                      primaryColor: const Color(0xFF09A49A),
-                      colorScheme: ColorScheme.fromSwatch(
-                        primarySwatch: Colors.teal,
-                        accentColor: const Color(0xFFFF7A00),
-                      ),
-                      fontFamily: 'Goldplay',
-                      appBarTheme: AppBarTheme(
-                        titleTextStyle: TextStyle(
-                          fontFamily: 'Goldplay',
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20.0.sp,
-                        ),
-                      ),
-                      textTheme: TextTheme(
-                        headline1: TextStyle(
-                          fontSize: 96.sp,
-                          color: kNavyColor,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        headline2: TextStyle(
-                          fontSize: 60.0.sp,
-                          color: kNavyColor,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        headline3: TextStyle(
-                          fontSize: 48.0.sp,
-                          color: kNavyColor,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        headline4: TextStyle(
-                          fontSize: 34.0.sp,
-                          color: kNavyColor,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        headline5: TextStyle(
-                          fontSize: 24.0.sp,
-                          color: kNavyColor,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        headline6: TextStyle(
-                          fontSize: 20.0.sp,
-                          color: kNavyColor,
-                          fontWeight: FontWeight.w600,
-                        ),
-                        subtitle1: TextStyle(
-                          fontSize: 16.0.sp,
-                          fontWeight: FontWeight.w600,
-                          color: kNavyColor,
-                        ),
-                        subtitle2: TextStyle(
-                          fontSize: 14.0.sp,
-                          fontWeight: FontWeight.w600,
-                          color: kNavyColor,
-                        ),
-                        bodyText1: TextStyle(
-                          fontSize: 16.0.sp,
-                          color: kNavyColor,
-                          fontWeight: FontWeight.w500,
-                        ),
-                        bodyText2: TextStyle(
-                          fontSize: 14.0.sp,
-                          color: kNavyColor,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      scaffoldBackgroundColor: Colors.white,
-                    ),
-                    home: const Root(),
-                    navigatorKey: _router.keyOf(AppRoute.root),
-                    initialRoute: '/',
-                    onGenerateRoute:
-                        _router.navigatorOf(AppRoute.root).onGenerateRoute,
-                    builder: (context, widget) {
-                      Widget error =
-                          const Text('Error in displaying the screen');
-                      if (widget is Scaffold || widget is Navigator) {
-                        error = Scaffold(body: Center(child: error));
-                      }
-                      ErrorWidget.builder = (errorDetails) => error;
-
-                      return widget!;
-                    },
+        child: ConnectivityStatus(
+          child: ScreenLoaderApp(
+            globalLoadingBgBlur: 0,
+            globalLoader: SizedBox(
+              width: double.infinity,
+              height: double.infinity,
+              child: DecoratedBox(
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                ),
+                child: Lottie.asset(kAnimationLoading),
+              ),
+            ),
+            app: MaterialApp(
+              debugShowCheckedModeBanner: false,
+              title: 'Lokal',
+              theme: ThemeData(
+                primarySwatch: Colors.teal,
+                primaryColor: const Color(0xFF09A49A),
+                colorScheme: ColorScheme.fromSwatch(
+                  primarySwatch: Colors.teal,
+                  accentColor: const Color(0xFFFF7A00),
+                ),
+                fontFamily: 'Goldplay',
+                appBarTheme: const AppBarTheme(
+                  titleTextStyle: TextStyle(
+                    fontFamily: 'Goldplay',
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20.0,
                   ),
                 ),
-              );
-            },
+                textTheme: const TextTheme(
+                  headline1: TextStyle(
+                    fontSize: 96,
+                    fontWeight: FontWeight.bold,
+                    color: kNavyColor,
+                  ),
+                  headline2: TextStyle(
+                    fontSize: 60.0,
+                    fontWeight: FontWeight.bold,
+                    color: kNavyColor,
+                  ),
+                  headline3: TextStyle(
+                    fontSize: 48.0,
+                    fontWeight: FontWeight.bold,
+                    color: kNavyColor,
+                  ),
+                  headline4: TextStyle(
+                    fontSize: 30.0,
+                    fontWeight: FontWeight.bold,
+                    color: kNavyColor,
+                  ),
+                  headline5: TextStyle(
+                    fontSize: 24.0,
+                    fontWeight: FontWeight.bold,
+                    color: kNavyColor,
+                  ),
+                  headline6: TextStyle(
+                    fontSize: 20.0,
+                    fontWeight: FontWeight.w600,
+                    color: kNavyColor,
+                  ),
+                  subtitle1: TextStyle(
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.w600,
+                    color: kNavyColor,
+                  ),
+                  subtitle2: TextStyle(
+                    fontSize: 14.0,
+                    fontWeight: FontWeight.w600,
+                    color: kNavyColor,
+                  ),
+                  bodyText1: TextStyle(
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.w500,
+                    color: kNavyColor,
+                  ),
+                  bodyText2: TextStyle(
+                    fontSize: 14.0,
+                    fontWeight: FontWeight.w500,
+                    color: kNavyColor,
+                  ),
+                ),
+                scaffoldBackgroundColor: Colors.white,
+              ),
+              home: const Root(),
+              navigatorKey: _router.keyOf(AppRoute.root),
+              initialRoute: '/',
+              onGenerateRoute:
+                  _router.navigatorOf(AppRoute.root).onGenerateRoute,
+              builder: (context, widget) {
+                Widget error = const Text('Error in displaying the screen');
+                if (widget is Scaffold || widget is Navigator) {
+                  error = Scaffold(body: Center(child: error));
+                }
+                ErrorWidget.builder = (errorDetails) => error;
+
+                return widget!;
+
+                // The following removes the font scaling with device font size
+                // return MediaQuery(
+                //   data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+                //   child: widget!,
+                // );
+              },
+            ),
           ),
         ),
       ),

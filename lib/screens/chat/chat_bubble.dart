@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:photo_manager/photo_manager.dart';
@@ -31,16 +30,16 @@ class ChatBubble extends HookWidget {
   final bool forFocus;
   final List<AssetEntity> images;
 
-  Widget _buildChatBubble({
+  Container _buildChatBubble({
     required BuildContext context,
     required bool isUser,
     Conversation? replyMessage,
   }) {
-    final radius = Radius.circular(12.0.r);
-    final borderRadius = BorderRadius.all(radius);
+    const radius = Radius.circular(8);
+    const borderRadius = BorderRadius.all(radius);
 
     final messageWidgets = <Widget>[];
-    final space = SizedBox(height: 6.0.h);
+    const space = SizedBox(height: 12);
     final bool isUserReplyMessage = replyMessage != null &&
         replyMessage.senderId == context.read<Auth>().user!.id;
 
@@ -51,7 +50,6 @@ class ChatBubble extends HookWidget {
           forFocus: forFocus,
         ),
       );
-      messageWidgets.add(space);
     }
 
     if (images.isNotEmpty) {
@@ -61,7 +59,6 @@ class ChatBubble extends HookWidget {
           forFocus: forFocus,
         ),
       );
-      messageWidgets.add(space);
     }
 
     if (conversation!.message != null && conversation!.message!.isNotEmpty) {
@@ -79,17 +76,18 @@ class ChatBubble extends HookWidget {
         ),
       );
     }
+
     return Container(
-      margin: EdgeInsets.only(left: 10.0, bottom: 10.0.r, right: 10.0.r),
+      margin: const EdgeInsets.only(bottom: 10.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (replyMessage != null)
             Transform.translate(
-              offset: Offset(0, 8.0.h),
+              offset: const Offset(0, 8.0),
               child: Container(
-                margin: EdgeInsets.only(left: 5.0.w),
-                padding: EdgeInsets.all(10.0.r),
+                margin: const EdgeInsets.only(left: 5.0),
+                padding: const EdgeInsets.all(10.0),
                 decoration: BoxDecoration(
                   color: isUserReplyMessage
                       ? const Color(0xFFF1FAFF).withOpacity(0.7)
@@ -103,14 +101,19 @@ class ChatBubble extends HookWidget {
               ),
             ),
           Container(
-            padding: EdgeInsets.all(10.0.r),
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             decoration: BoxDecoration(
               color: isUser ? const Color(0xFFF1FAFF) : kTealColor,
               borderRadius: borderRadius,
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: messageWidgets,
+              children: utils
+                  .intersperse<Widget>(
+                    space,
+                    messageWidgets,
+                  )
+                  .toList(), //messageWidgets,
             ),
           ),
         ],
@@ -157,8 +160,8 @@ class _MessageImages extends StatelessWidget {
   Widget build(BuildContext context) {
     return StaggeredGrid.count(
       crossAxisCount: 2,
-      mainAxisSpacing: 4.0.w,
-      crossAxisSpacing: 4.0.h,
+      mainAxisSpacing: 4,
+      crossAxisSpacing: 4,
       children: images.map<StaggeredGridTile>((image) {
         final index = images.indexOf(image);
         final crossAxisCellCount = images.length % 2 != 0 && index == 0 ? 2 : 1;
@@ -193,8 +196,8 @@ class _FileImages extends StatelessWidget {
   Widget build(BuildContext context) {
     return StaggeredGrid.count(
       crossAxisCount: 2,
-      mainAxisSpacing: 4.0.w,
-      crossAxisSpacing: 4.0.h,
+      mainAxisSpacing: 4.0,
+      crossAxisSpacing: 4.0,
       children: images.map<StaggeredGridTile>((image) {
         final index = images.indexOf(image);
         final crossAxisCellCount = images.length % 2 != 0 && index == 0 ? 2 : 1;

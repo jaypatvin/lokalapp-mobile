@@ -1,6 +1,5 @@
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:keyboard_actions/keyboard_actions.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:oktoast/oktoast.dart';
@@ -173,9 +172,12 @@ class _AddProductState extends State<AddProduct> with ScreenLoader {
       children: [
         Text(
           'Product Price',
-          style: Theme.of(context).textTheme.headline6,
+          style: Theme.of(context)
+              .textTheme
+              .subtitle2
+              ?.copyWith(color: Colors.black),
         ),
-        const SizedBox(width: 10),
+        const SizedBox(width: 27),
         Expanded(
           child: InputNameField(
             controller: _priceController,
@@ -183,6 +185,7 @@ class _AddProductState extends State<AddProduct> with ScreenLoader {
             errorText: _errorTextPrice,
             keyboardType: TextInputType.number,
             hintText: 'PHP',
+            style: const TextStyle(fontSize: 18),
             onChanged: (value) {
               if (_errorTextPrice != null) {
                 setState(() {
@@ -246,26 +249,26 @@ class _AddProductState extends State<AddProduct> with ScreenLoader {
       builder: (ctx) {
         return Center(
           child: Dialog(
-            insetPadding: EdgeInsets.symmetric(horizontal: 20.0.w),
+            insetPadding: const EdgeInsets.symmetric(horizontal: 16),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(30.0),
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                SizedBox(height: 20.0.h),
+                const SizedBox(height: 28),
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 40.0.w),
+                  padding: const EdgeInsets.symmetric(horizontal: 58),
                   child: Text(
                     'Are you sure you want to delete this product?',
                     style: Theme.of(context).textTheme.headline6,
                     textAlign: TextAlign.center,
                   ),
                 ),
-                SizedBox(height: 15.0.h),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 40.0.w),
-                  child: const Text(
+                const SizedBox(height: 23),
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 48),
+                  child: Text(
                     'All active orders of this product will still push '
                     'through but they will not be able to order again. '
                     'We will notify subscribers that their next order will '
@@ -273,10 +276,9 @@ class _AddProductState extends State<AddProduct> with ScreenLoader {
                     textAlign: TextAlign.center,
                   ),
                 ),
-                SizedBox(height: 10.0.h),
                 Flexible(
                   child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 30.0.w),
+                    padding: const EdgeInsets.symmetric(horizontal: 26),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -286,7 +288,7 @@ class _AddProductState extends State<AddProduct> with ScreenLoader {
                             onPressed: () => Navigator.pop(ctx, false),
                           ),
                         ),
-                        SizedBox(width: 5.0.w),
+                        const SizedBox(width: 8),
                         Expanded(
                           child: AppButton.filled(
                             text: 'Confirm',
@@ -298,7 +300,7 @@ class _AddProductState extends State<AddProduct> with ScreenLoader {
                     ),
                   ),
                 ),
-                SizedBox(height: 10.0.h),
+                const SizedBox(height: 24),
               ],
             ),
           ),
@@ -368,29 +370,28 @@ class _AddProductState extends State<AddProduct> with ScreenLoader {
               children: [
                 Text(
                   'Product Photos',
-                  style: Theme.of(context).textTheme.headline6,
+                  style: Theme.of(context)
+                      .textTheme
+                      .subtitle2
+                      ?.copyWith(color: Colors.black),
                 ),
+                const SizedBox(height: 12),
                 SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.02,
-                ),
-                // _gallery!,
-                SizedBox(
-                  height: ((_images.length + 1) / 4).ceil() * 85.0.h,
+                  height: 85,
                   child: AddProductGallery(
                     images: _images,
                     onSelectImage: _onSelectImage,
                   ),
                 ),
-                SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.02,
-                ),
+                const SizedBox(height: 24),
                 Text(
                   'Product Name',
-                  style: Theme.of(context).textTheme.headline6,
+                  style: Theme.of(context)
+                      .textTheme
+                      .subtitle2
+                      ?.copyWith(color: Colors.black),
                 ),
-                SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.005,
-                ),
+                const SizedBox(height: 12),
                 InputNameField(
                   controller: _nameController,
                   focusNode: _nameFocusNode,
@@ -404,13 +405,15 @@ class _AddProductState extends State<AddProduct> with ScreenLoader {
                     }
                   },
                 ),
-                SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.02,
-                ),
+                const SizedBox(height: 24),
                 Text(
                   'Description',
-                  style: Theme.of(context).textTheme.headline6,
+                  style: Theme.of(context)
+                      .textTheme
+                      .subtitle2
+                      ?.copyWith(color: Colors.black),
                 ),
+                const SizedBox(height: 12),
                 InputDescriptionField(
                   controller: _descriptionController,
                   focusNode: _descriptionFocusNode,
@@ -424,7 +427,7 @@ class _AddProductState extends State<AddProduct> with ScreenLoader {
                     }
                   },
                 ),
-                const SizedBox(height: 10),
+                const SizedBox(height: 24),
                 _buildProductPrice(),
                 const Spacer(),
                 const SizedBox(height: 5),

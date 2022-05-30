@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lottie/lottie.dart';
 
 import '../../../../routers/app_router.dart';
@@ -17,17 +18,26 @@ class MyAccountConfirmation extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 16.0),
-              child: Text(
-                isPassword ? 'Password Changed!' : 'Email Address Changed!',
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.headline5,
-              ),
+            const Spacer(),
+            Text(
+              isPassword ? 'Password Changed!' : 'Email Address Changed!',
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.headline6?.copyWith(
+                    color: Colors.black,
+                  ),
             ),
-            Lottie.asset(
-              kAnimationConfirmation,
-              fit: BoxFit.contain,
+            Stack(
+              children: [
+                Positioned.fill(
+                  child: SvgPicture.asset(kSvgBackgroundHouses),
+                ),
+                Center(
+                  child: Lottie.asset(
+                    kAnimationConfirmation,
+                    fit: BoxFit.contain,
+                  ),
+                ),
+              ],
             ),
             const Spacer(),
             Container(

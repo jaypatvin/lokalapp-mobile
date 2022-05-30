@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../utils/constants/themes.dart';
 
@@ -21,19 +20,15 @@ class ProductItemAndPrice extends StatelessWidget {
         Expanded(
           child: Text(
             productName!,
-            style: Theme.of(context)
-                .textTheme
-                .headline6
-                ?.copyWith(fontWeight: FontWeight.w600),
+            style: Theme.of(context).textTheme.headline6,
           ),
         ),
         Text(
-          productPrice.toString(),
-          style: Theme.of(context).textTheme.headline5?.copyWith(
-                color: kOrangeColor,
-                fontSize: 26.0.sp,
-                fontWeight: FontWeight.w600,
-              ),
+          productPrice?.toStringAsFixed(2) ?? 'Error fetching price',
+          style: Theme.of(context)
+              .textTheme
+              .headline5
+              ?.copyWith(color: kOrangeColor, fontWeight: FontWeight.w600),
         )
       ],
     );

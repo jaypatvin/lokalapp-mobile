@@ -2,7 +2,6 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:focused_menu/focused_menu.dart';
 import 'package:focused_menu/modals.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -87,7 +86,7 @@ class MessageStream extends HookWidget {
     return Center(
       child: Text(
         text,
-        style: TextStyle(fontSize: 24.0.sp, color: Colors.black),
+        style: const TextStyle(fontSize: 24.0, color: Colors.black),
       ),
     );
   }
@@ -142,6 +141,7 @@ class MessageStream extends HookWidget {
             physics: const BouncingScrollPhysics(),
             reverse: true,
             itemCount: messages.length,
+            padding: const EdgeInsets.fromLTRB(16, 15, 16, 0),
             itemBuilder: (ctx2, index) {
               final messageId = messages[index].id;
               final message = messages[index];

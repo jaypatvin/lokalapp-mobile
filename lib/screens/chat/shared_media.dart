@@ -46,28 +46,24 @@ class _SharedMediaState extends State<SharedMedia> {
         backgroundColor: Colors.white,
         onPressedLeading: () => Navigator.pop(context),
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Container(
-              height: MediaQuery.of(context).size.height,
-              width: MediaQuery.of(context).size.width,
-              color: Colors.white30,
-              child: GridView.builder(
-                itemCount: _sharedMedia!.length,
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 3,
-                ),
-                itemBuilder: (ctx, index) {
-                  return NetworkPhotoThumbnail(
-                    galleryItem: _sharedMedia![index],
-                    onTap: () =>
-                        utils.openGallery(context, index, _sharedMedia),
-                  );
-                },
-              ),
-            ),
-          ],
+      body: Container(
+        height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.width,
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        color: Colors.white30,
+        child: GridView.builder(
+          itemCount: _sharedMedia!.length,
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 3,
+            mainAxisSpacing: 8,
+            crossAxisSpacing: 8,
+          ),
+          itemBuilder: (ctx, index) {
+            return NetworkPhotoThumbnail(
+              galleryItem: _sharedMedia![index],
+              onTap: () => utils.openGallery(context, index, _sharedMedia),
+            );
+          },
         ),
       ),
     );

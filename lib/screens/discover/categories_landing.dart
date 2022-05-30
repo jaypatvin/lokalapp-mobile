@@ -24,8 +24,8 @@ class CategoriesLanding extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(
-        titleText: category.name,
+      appBar: const CustomAppBar(
+        titleText: 'Explore Categories',
         backgroundColor: kOrangeColor,
       ),
       body: CartContainer(
@@ -58,15 +58,34 @@ class CategoriesLanding extends StatelessWidget {
               );
             }
 
-            return ProductsList(
-              items: _items,
-              onProductTap: (String id) {
-                final _product = products.items.firstWhere((p) => p.id == id);
-                AppRouter.discoverNavigatorKey.currentState?.pushNamed(
-                  ProductDetail.routeName,
-                  arguments: ProductDetailProps(_product),
-                );
-              },
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Column(
+                children: [
+                  const SizedBox(height: 30),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      category.name,
+                      style: Theme.of(context).textTheme.headline6,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  Expanded(
+                    child: ProductsList(
+                      items: _items,
+                      onProductTap: (String id) {
+                        final _product =
+                            products.items.firstWhere((p) => p.id == id);
+                        AppRouter.discoverNavigatorKey.currentState?.pushNamed(
+                          ProductDetail.routeName,
+                          arguments: ProductDetailProps(_product),
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
             );
           },
         ),

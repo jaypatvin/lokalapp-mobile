@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../state/mvvm_builder.widget.dart';
@@ -33,43 +32,14 @@ class _LoginScreenView extends HookView<LoginScreenViewModel>
     final _passwordController = useTextEditingController();
     final _emailFocusNode = useFocusNode();
     final _passwordFocusNode = useFocusNode();
-    final _scrollController = useScrollController();
-
-    final _prevBottom = useRef(0.0);
-
-    useValueChanged(MediaQuery.of(context).viewInsets.bottom, (_, __) async {
-      if (MediaQuery.of(context).viewInsets.bottom != 0) {
-        if (_prevBottom.value >= MediaQuery.of(context).viewInsets.bottom) {
-          _prevBottom.value = MediaQuery.of(context).viewInsets.bottom;
-          return;
-        }
-
-        Future.delayed(const Duration(milliseconds: 100), () {
-          _scrollController.animateTo(
-            280.0.h - kToolbarHeight,
-            duration: const Duration(milliseconds: 50),
-            curve: Curves.linear,
-          );
-        });
-      } else {
-        Future.delayed(const Duration(milliseconds: 100), () {
-          _scrollController.animateTo(
-            _scrollController.position.minScrollExtent,
-            duration: const Duration(milliseconds: 50),
-            curve: Curves.linear,
-          );
-        });
-      }
-    });
 
     return Scaffold(
       resizeToAvoidBottomInset: true,
       body: CustomScrollView(
-        controller: _scrollController,
         physics: const ClampingScrollPhysics(),
         slivers: [
           SliverAppBar(
-            expandedHeight: 280.0.h,
+            expandedHeight: 325,
             automaticallyImplyLeading: false,
             backgroundColor: kYellowColor,
             pinned: true,
@@ -83,20 +53,20 @@ class _LoginScreenView extends HookView<LoginScreenViewModel>
               title: Column(
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: [
+                children: const [
                   Text(
                     'LOKAL',
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: kOrangeColor,
-                      fontSize: 24.0.sp,
+                      fontSize: 24.0,
                       fontWeight: FontWeight.w900,
                     ),
                   ),
                   Text(
                     'Your neighborhood plaza',
                     style: TextStyle(
-                      fontSize: 14.0.sp,
+                      fontSize: 16,
                       color: kTealColor,
                       fontFamily: 'Goldplay',
                       fontWeight: FontWeight.w600,
@@ -117,7 +87,7 @@ class _LoginScreenView extends HookView<LoginScreenViewModel>
                     ),
                     Center(
                       child: Transform.translate(
-                        offset: Offset(0, -30.0.h),
+                        offset: const Offset(0, -30.0),
                         child: Hero(
                           tag: kSvgLokalLogoV2,
                           child: SvgPicture.asset(
@@ -135,11 +105,11 @@ class _LoginScreenView extends HookView<LoginScreenViewModel>
           ),
           SliverToBoxAdapter(
             child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 30.0.w),
+              padding: const EdgeInsets.symmetric(horizontal: 45),
               child: Column(
                 children: [
                   Padding(
-                    padding: EdgeInsets.only(top: 30.0.h, bottom: 10.0.h),
+                    padding: const EdgeInsets.only(top: 25, bottom: 30),
                     child: AuthInputForm(
                       formKey: vm.formKey,
                       emailController: _emailController,
@@ -165,15 +135,14 @@ class _LoginScreenView extends HookView<LoginScreenViewModel>
                     onTap: () {},
                   ),
                   Padding(
-                    padding: EdgeInsets.only(
-                      top: 20.0.h,
-                      bottom: 10.0.h,
-                    ),
+                    padding: const EdgeInsets.symmetric(vertical: 20),
                     child: SocialBlock(
-                      fbLogin: () async => performFuture(vm.facebookLogin),
-                      googleLogin: () async => performFuture(vm.googleLogin),
-                      appleLogin: () async => performFuture(vm.appleLogin),
-                      buttonWidth: 50.0.w,
+                      fbLoginCallback: () async =>
+                          performFuture(vm.facebookLogin),
+                      googleLoginCallback: () async =>
+                          performFuture(vm.googleLogin),
+                      appleLoginCallback: () async =>
+                          performFuture(vm.appleLogin),
                     ),
                   ),
                   if (MediaQuery.of(context).viewInsets.bottom != 0)

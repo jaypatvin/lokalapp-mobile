@@ -57,7 +57,7 @@ class CalendarPicker extends HookWidget {
               weekday: weekday,
               dateFormat: DateFormat.yMMM(Intl.defaultLocale),
               textStyle: const TextStyle(
-                fontSize: 16,
+                fontSize: 14,
                 color: Colors.black,
               ),
             );

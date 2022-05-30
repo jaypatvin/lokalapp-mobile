@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../utils/constants/themes.dart';
 
@@ -46,14 +45,15 @@ class InputField extends StatelessWidget {
       initialValue: initialValue,
       controller: controller,
       onChanged: onChanged,
-      style: TextStyle(
+      style: const TextStyle(
         fontWeight: FontWeight.w500,
-        fontSize: 16.0.sp,
+        fontSize: 14,
+        color: Colors.black,
       ).merge(style),
       decoration: InputDecoration(
         fillColor: fillColor,
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.all(Radius.circular(30.0.r)),
+          borderRadius: const BorderRadius.all(Radius.circular(30.0)),
           borderSide: displayErrorBorder
               ? const BorderSide(color: kPinkColor)
               : BorderSide.none,
@@ -63,8 +63,12 @@ class InputField extends StatelessWidget {
         alignLabelWithHint: true,
         hintText: hintText,
         errorText: errorText,
-        contentPadding: EdgeInsets.symmetric(horizontal: 16.0.w),
-        hintStyle: hintStyle,
+        contentPadding: const EdgeInsets.symmetric(horizontal: 25.0),
+        hintStyle: const TextStyle(
+          fontWeight: FontWeight.w500,
+          fontSize: 14,
+          color: Colors.grey,
+        ).merge(hintStyle),
       ),
       validator: validator,
     );

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:keyboard_actions/keyboard_actions.dart';
 
 import '../../state/mvvm_builder.widget.dart';
@@ -55,26 +54,22 @@ class _InvitePageView extends HookView<InviteScreenViewModel>
       ),
       body: ConstrainedScrollView(
         child: Padding(
-          padding: EdgeInsets.symmetric(
-            horizontal: 38.0.w,
-          ),
+          padding: const EdgeInsets.symmetric(horizontal: 45),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
                 'Enter invite code',
+                textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.headline4,
               ),
-              SizedBox(height: 10.0.h),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 40.0.w),
-                child: Text(
-                  'An invite code is required to create an account',
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.bodyText1,
-                ),
+              const SizedBox(height: 12),
+              Text(
+                'An invite code is required to create an account',
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.bodyText1,
               ),
-              SizedBox(height: 45.0.h),
+              const SizedBox(height: 28),
               KeyboardActions(
                 disableScroll: true,
                 config: _keyboardConfig,
@@ -89,25 +84,25 @@ class _InvitePageView extends HookView<InviteScreenViewModel>
                   ),
                 ),
               ),
-              SizedBox(height: 24.0.h),
-              SizedBox(
-                width: 100.0.w,
-                child: AppButton.filled(
-                  text: 'JOIN',
-                  onPressed: () async => performFuture<void>(
-                    () async {
-                      _inviteFocusNode.unfocus();
-                      await vm.validateInviteCode();
-                    },
-                  ),
-                  textStyle: const TextStyle(color: kNavyColor),
+              const SizedBox(height: 24),
+              AppButton.filled(
+                text: 'JOIN',
+                onPressed: () async => performFuture<void>(
+                  () async {
+                    _inviteFocusNode.unfocus();
+                    await vm.validateInviteCode();
+                  },
                 ),
+                textStyle: const TextStyle(color: kNavyColor),
               ),
-              SizedBox(height: 18.0.h),
+              const SizedBox(height: 51),
               InkWell(
                 child: Text(
                   "WHAT'S AN INVITE CODE?",
-                  style: Theme.of(context).textTheme.subtitle2,
+                  style: Theme.of(context)
+                      .textTheme
+                      .subtitle2
+                      ?.copyWith(color: kTealColor),
                 ),
                 onTap: () => vm.showInviteCodeDescription(
                   const _InviteCodeDescription(),
@@ -128,37 +123,34 @@ class _InviteCodeDescription extends StatelessWidget {
   Widget build(BuildContext context) {
     return Dialog(
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(25.0.r),
+        borderRadius: BorderRadius.circular(25.0),
       ),
-      insetPadding: const EdgeInsets.all(20.0),
+      insetPadding: const EdgeInsets.all(16),
       child: Container(
-        padding: EdgeInsets.all(25.0.w),
-        height: 230.0.h,
+        padding: const EdgeInsets.all(25.0),
+        height: 235,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
               'What is an Invite Code?',
-              style: TextStyle(
-                fontWeight: FontWeight.w700,
-                fontSize: 20.0.sp,
-              ),
+              style: Theme.of(context)
+                  .textTheme
+                  .headline6
+                  ?.copyWith(color: Colors.black),
             ),
             Text(
               kDescriptionInviteCode,
               style: Theme.of(context)
                   .textTheme
-                  .bodyText1!
-                  .copyWith(fontSize: 14.0.sp),
+                  .bodyText2
+                  ?.copyWith(color: Colors.black),
               textAlign: TextAlign.center,
             ),
-            SizedBox(
-              width: 120.w,
-              child: AppButton.transparent(
-                text: 'Okay',
-                onPressed: () => Navigator.pop(context),
-              ),
+            AppButton.transparent(
+              text: 'Okay',
+              onPressed: () => Navigator.pop(context),
             ),
           ],
         ),
