@@ -177,11 +177,13 @@ class _WeekdayPickerState extends State<WeekdayPicker> {
     //   physics: const NeverScrollableScrollPhysics(),
     //   children: _renderWeekDays(),
     // );
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: _renderWeekDays(),
+    return Center(
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: _renderWeekDays(),
+        ),
       ),
     );
   }

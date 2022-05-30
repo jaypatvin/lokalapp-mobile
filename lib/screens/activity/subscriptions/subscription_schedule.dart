@@ -16,7 +16,6 @@ import '../../../widgets/schedule_picker.dart';
 import '../../discover/product_detail.dart';
 import 'components/buyer_subscription_schedule.view.dart';
 import 'components/seller_subscription_schedule.view.dart';
-import 'subscription_schedule/subscription_schedule.conflict.dart';
 import 'subscription_schedule/subscription_schedule.product_card.dart';
 
 class SubscriptionSchedule extends StatelessWidget {
