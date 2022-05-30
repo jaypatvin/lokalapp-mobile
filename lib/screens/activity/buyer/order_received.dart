@@ -78,8 +78,10 @@ class _OrderReceivedView extends StatelessView<OrderReceivedViewModel> {
               if (!vm.ratingSubmitted)
                 Column(
                   children: [
-                    Text('Rate your experience',
-                        style: Theme.of(context).textTheme.subtitle2,),
+                    Text(
+                      'Rate your experience',
+                      style: Theme.of(context).textTheme.subtitle2,
+                    ),
                     RatingBar.builder(
                       minRating: 1,
                       itemPadding: const EdgeInsets.symmetric(horizontal: 6),
