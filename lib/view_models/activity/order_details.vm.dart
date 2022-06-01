@@ -117,6 +117,7 @@ class OrderDetailsViewModel extends ViewModel {
               ),
             ),
           );
+
           break;
       }
     } catch (e, stack) {

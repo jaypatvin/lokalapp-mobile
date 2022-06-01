@@ -1,6 +1,7 @@
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 
 import '../../../models/product.dart';
+import '../../../models/product_review.dart';
 import '../collection_impl.dart';
 import '../database.dart';
 
@@ -51,5 +52,13 @@ class ProductsCollection extends CollectionImpl {
               .whereType<Product>()
               .toList(),
         );
+  }
+
+  Future<List<ProductReview>> getProductReviews(String productId) async {
+    final snapshot = await reference.doc(productId).collection('reviews').get();
+
+    return snapshot.docs
+        .map<ProductReview>((doc) => ProductReview.fromJson(doc.data()))
+        .toList();
   }
 }

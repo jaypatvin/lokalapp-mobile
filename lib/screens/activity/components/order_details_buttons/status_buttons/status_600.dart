@@ -26,7 +26,8 @@ class Status600Buttons extends StatelessWidget {
           if (order.paymentMethod != PaymentMethod.cod)
             ViewPaymentButton(onPress: onPress),
           const SizedBox(height: 12),
-          Expanded(
+          SizedBox(
+            width: double.infinity,
             child: AppButton.transparent(
               text: 'Order Again',
               onPressed: () => onPress(OrderAction.orderAgain),
