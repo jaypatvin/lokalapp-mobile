@@ -7,7 +7,9 @@ import '../../../models/activity_feed.dart';
 import '../../../providers/users.dart';
 import '../../../state/mvvm_builder.widget.dart';
 import '../../../state/views/stateless.view.dart';
+import '../../../utils/constants/themes.dart';
 import '../../../view_models/home/post_card.vm.dart';
+import '../../../widgets/app_button.dart';
 import '../../../widgets/photo_view_gallery/thumbnails/network_photo_thumbnail.dart';
 import '../../chat/components/chat_avatar.dart';
 import 'post_options.dart';
@@ -20,7 +22,9 @@ class PostCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return MVVM(
       view: (_, __) => _PostCardView(activity),
-      viewModel: PostCardViewModel(),
+      viewModel: PostCardViewModel(
+        reportPostModalSheet: const _ReportPostModalSheet(),
+      ),
     );
   }
 }
@@ -74,16 +78,18 @@ class _PostCardView extends StatelessView<PostCardViewModel> {
           ),
         ],
       ),
-      trailing: vm.isCurrentUser(activity)
-          ? IconButton(
-              icon: const Icon(Icons.more_horiz, color: Colors.black),
-              onPressed: () => vm.onPostOptionsPressed(
-                PostOptions(
+      trailing: IconButton(
+        icon: const Icon(Icons.more_horiz, color: Colors.black),
+        onPressed: () => vm.onPostOptionsPressed(
+          vm.isCurrentUser(activity)
+              ? PostOptions(
                   onDeletePost: () => vm.onDeletePost(activity),
+                )
+              : PostOptions(
+                  onReportPost: vm.onReportPost,
                 ),
-              ),
-            )
-          : null,
+        ),
+      ),
     );
   }
 
@@ -205,6 +211,57 @@ class _PostCardView extends StatelessView<PostCardViewModel> {
           ],
         ),
       ),
+    );
+  }
+}
+
+class _ReportPostModalSheet extends StatelessWidget {
+  const _ReportPostModalSheet({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Wrap(
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 38),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Report post?',
+                style: Theme.of(context).textTheme.headline5,
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 76),
+                child: Text(
+                  'Our team will review this post.',
+                  style: Theme.of(context).textTheme.bodyText1,
+                  textAlign: TextAlign.center,
+                ),
+              ),
+              const SizedBox(height: 47),
+              Row(
+                children: [
+                  Expanded(
+                    child: AppButton.transparent(
+                      text: 'Cancel',
+                      onPressed: () => Navigator.of(context).pop(false),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: AppButton.filled(
+                      text: 'Report',
+                      onPressed: () => Navigator.of(context).pop(true),
+                      color: kPinkColor,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

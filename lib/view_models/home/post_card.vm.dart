@@ -10,11 +10,15 @@ import '../../providers/activities.dart';
 import '../../providers/auth.dart';
 import '../../routers/app_router.dart';
 import '../../screens/home/post_details.dart';
+import '../../screens/home/report_post.dart';
 import '../../screens/profile/profile_screen.dart';
 import '../../state/view_model.dart';
 import '../../utils/functions.utils.dart' as utils;
 
 class PostCardViewModel extends ViewModel {
+  PostCardViewModel({required this.reportPostModalSheet});
+
+  final Widget reportPostModalSheet;
   final bool _isUserLoading = false;
   bool get isUserLoading => _isUserLoading;
 
@@ -123,7 +127,24 @@ class PostCardViewModel extends ViewModel {
     showToast('Hide post not implemented!');
   }
 
-  void onReportPost() {
-    showToast('Report post not implemented!');
+  Future<void> onReportPost() async {
+    final response = await showModalBottomSheet<bool>(
+      context: context,
+      useRootNavigator: true,
+      isDismissible: true,
+      builder: (_) => reportPostModalSheet,
+    );
+
+    if (response == null || !response) {
+      AppRouter.rootNavigatorKey.currentState?.pop();
+      return;
+    } else {
+      AppRouter.rootNavigatorKey.currentState?.pop();
+      AppRouter.homeNavigatorKey.currentState?.push(
+        AppNavigator.appPageRoute(
+          builder: (_) => const ReportPost(),
+        ),
+      );
+    }
   }
 }
