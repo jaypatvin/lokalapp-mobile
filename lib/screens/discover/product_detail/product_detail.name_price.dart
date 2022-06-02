@@ -14,8 +14,7 @@ class ProductItemAndPrice extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      crossAxisAlignment: CrossAxisAlignment.end,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Expanded(
           child: Text(
@@ -23,6 +22,7 @@ class ProductItemAndPrice extends StatelessWidget {
             style: Theme.of(context).textTheme.headline6,
           ),
         ),
+        const SizedBox(width: 8),
         Text(
           productPrice?.toStringAsFixed(2) ?? 'Error fetching price',
           style: Theme.of(context)

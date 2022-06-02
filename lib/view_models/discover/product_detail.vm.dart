@@ -1,5 +1,6 @@
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:intl/intl.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
@@ -9,6 +10,7 @@ import '../../models/product.dart';
 import '../../models/shop.dart';
 import '../../providers/auth.dart';
 import '../../providers/cart.dart';
+import '../../providers/products.dart';
 import '../../providers/wishlist.dart';
 import '../../routers/app_router.dart';
 import '../../routers/profile/props/user_shop.props.dart';
@@ -17,6 +19,7 @@ import '../../screens/profile/shop/user_shop.dart';
 import '../../services/bottom_nav_bar_hider.dart';
 import '../../state/view_model.dart';
 import '../../utils/constants/themes.dart';
+import '../../utils/repeated_days_generator/schedule_generator.dart';
 
 class ProductDetailViewModel extends ViewModel {
   ProductDetailViewModel({
@@ -44,9 +47,15 @@ class ProductDetailViewModel extends ViewModel {
 
   bool get available => product.quantity > 0;
 
+  late final bool open;
+  late final String? nearestDate;
+
+  bool get isLiked => product.likes.contains(context.read<Auth>().user?.id);
+
   @override
   void init() {
     super.init();
+    _checkDateAvailability();
     if (cart.contains(product.id)) {
       final order = cart.getProductOrder(product.id)!;
       _instructions = order.notes ?? '';
@@ -58,6 +67,31 @@ class ProductDetailViewModel extends ViewModel {
       _buttonLabel = 'ADD TO CART';
     }
     _buttonColor = kTealColor;
+  }
+
+  void _checkDateAvailability() {
+    final _selectableDates = ScheduleGenerator()
+        .generateSchedule(product.availability)
+        .selectableDates;
+
+    final _now = DateTime.now();
+
+    open = _selectableDates.any((date) =>
+        date.year == _now.year &&
+        date.month == _now.month &&
+        // ignore: require_trailing_commas
+        _now.day == date.day);
+
+    if (open) return;
+
+    final _nearestAvailableDate = _selectableDates.reduce((a, b) {
+      if (a.difference(_now).isNegative) {
+        return b;
+      }
+      return a;
+    });
+    nearestDate = 'Nearest date: '
+        '${DateFormat('MMMM dd').format(_nearestAvailableDate)}';
   }
 
   void onInstructionsChanged(String value) {
@@ -180,5 +214,29 @@ class ProductDetailViewModel extends ViewModel {
             ),
           ),
         );
+  }
+
+  void onLike() {
+    try {
+      if (isLiked) {
+        context.read<Products>().unlikeProduct(
+              productId: product.id,
+              userId: context.read<Auth>().user!.id,
+            );
+        product.likes.remove(context.read<Auth>().user!.id);
+        showToast('Unliked!');
+      } else {
+        context.read<Products>().likeProduct(
+              productId: product.id,
+              userId: context.read<Auth>().user!.id,
+            );
+        product.likes.add(context.read<Auth>().user!.id);
+        showToast('Liked!');
+      }
+      notifyListeners();
+    } catch (e, stack) {
+      FirebaseCrashlytics.instance.recordError(e, stack);
+      showToast(e is FailureException ? e.message : e.toString());
+    }
   }
 }
