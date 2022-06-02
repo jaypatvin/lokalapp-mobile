@@ -66,19 +66,23 @@ class _DraftPostView extends HookView<DraftPostViewModel>
         appBar: CustomAppBar(
           titleText: 'Write a Post',
           titleStyle: const TextStyle(color: Colors.black),
-          leadingWidth: 75,
+          leadingWidth: 100,
           backgroundColor: const Color(0xFFF1FAFF),
           leading: GestureDetector(
-            child: Container(
+            child: Padding(
               padding: const EdgeInsets.only(left: 16),
-              child: Center(
-                child: Text(
-                  'Cancel',
-                  style: Theme.of(context)
-                      .textTheme
-                      .subtitle1
-                      ?.copyWith(color: kPinkColor),
-                ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Cancel',
+                    style: Theme.of(context)
+                        .textTheme
+                        .subtitle1
+                        ?.copyWith(color: kPinkColor),
+                  ),
+                ],
               ),
             ),
             onTap: () {
@@ -218,44 +222,42 @@ class _ExitNotification extends StatelessWidget {
   Widget build(BuildContext context) {
     return Wrap(
       children: [
-        SizedBox(
-          height: 220.0,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 38),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Leave post?',
-                  style: Theme.of(context).textTheme.headline5,
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 38),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Leave post?',
+                style: Theme.of(context).textTheme.headline5,
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 76),
+                child: Text(
+                  'Any progress you made will not be saved.',
+                  style: Theme.of(context).textTheme.bodyText1,
+                  textAlign: TextAlign.center,
                 ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 76),
-                  child: Text(
-                    'Any progress you made will not be saved.',
-                    style: Theme.of(context).textTheme.bodyText1,
-                    textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 26),
+              Row(
+                children: [
+                  Expanded(
+                    child: AppButton.transparent(
+                      text: 'Exit',
+                      onPressed: () => Navigator.of(context).pop(true),
+                    ),
                   ),
-                ),
-                Row(
-                  children: [
-                    Expanded(
-                      child: AppButton.transparent(
-                        text: 'Exit',
-                        onPressed: () => Navigator.of(context).pop(true),
-                      ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: AppButton.filled(
+                      text: 'Continue Editing',
+                      onPressed: () => Navigator.of(context).pop(false),
                     ),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: AppButton.filled(
-                        text: 'Continue Editing',
-                        onPressed: () => Navigator.of(context).pop(false),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
+                  ),
+                ],
+              ),
+            ],
           ),
         ),
       ],
