@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../routers/app_router.dart';
 import '../../utils/constants/themes.dart';
 import '../../widgets/app_button.dart';
+import '../../widgets/overlays/constrained_scrollview.dart';
 import 'home.dart';
 
 class ReportSent extends StatelessWidget {
@@ -40,48 +41,53 @@ class ReportSent extends StatelessWidget {
         ],
         automaticallyImplyLeading: false,
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Icon(
-            Icons.check_circle_outline_rounded,
-            size: 150,
-            color: Color(0xFFFFC700),
-          ),
-          const SizedBox(height: 30),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 45),
-            child: Text(
-              'Report Sent!',
-              textAlign: TextAlign.center,
-              style: Theme.of(context)
-                  .textTheme
-                  .headline5
-                  ?.copyWith(color: kTealColor),
+      body: ConstrainedScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(
+              Icons.check_circle_outline_rounded,
+              size: 150,
+              color: Color(0xFFFFC700),
             ),
-          ),
-          const SizedBox(height: 5),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 75),
-            child: Text(
-              'We appreciate your effort in making our community better. '
-              "We'll notify you of the progress of your report!",
-              style: Theme.of(context).textTheme.bodyText2,
-              textAlign: TextAlign.center,
-            ),
-          ),
-          const SizedBox(height: 91),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 75),
-            child: SizedBox(
-              width: double.infinity,
-              child: AppButton.filled(
-                text: 'BACK TO MY FEED',
-                onPressed: _onBackToFeed,
+            const SizedBox(height: 30),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 45),
+              child: Text(
+                'Report Sent!',
+                textAlign: TextAlign.center,
+                style: Theme.of(context)
+                    .textTheme
+                    .headline5
+                    ?.copyWith(color: kTealColor),
               ),
             ),
-          ),
-        ],
+            const SizedBox(height: 5),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 75),
+              child: Text(
+                'We appreciate your effort in making our community better. '
+                "We'll notify you of the progress of your report!",
+                style: Theme.of(context).textTheme.bodyText2,
+                textAlign: TextAlign.center,
+              ),
+            ),
+            // const SizedBox(height: 91),
+            const SizedBox(height: 24),
+            const Spacer(),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 75),
+              child: SizedBox(
+                width: double.infinity,
+                child: AppButton.filled(
+                  text: 'BACK TO MY FEED',
+                  onPressed: _onBackToFeed,
+                ),
+              ),
+            ),
+            const SizedBox(height: 24),
+          ],
+        ),
       ),
     );
   }
