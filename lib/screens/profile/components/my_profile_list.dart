@@ -16,6 +16,8 @@ class MyProfileList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView(
+      physics: const NeverScrollableScrollPhysics(),
+      shrinkWrap: true,
       children: ListTile.divideTiles(
         context: context,
         tiles: [
