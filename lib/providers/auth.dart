@@ -305,9 +305,8 @@ class Auth extends ChangeNotifier {
     return result;
   }
 
-  Future<void> forgotPassword({required String email}) async {
+  Future<void> resetPassword({required String email}) async {
     try {
-      // await _auth.
       await _auth.sendPasswordResetEmail(email: email);
     } catch (e) {
       rethrow;
