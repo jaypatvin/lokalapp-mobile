@@ -4,18 +4,21 @@ import 'package:provider/provider.dart';
 
 import '../../../models/app_navigator.dart';
 import '../../../models/order.dart';
+import '../../../models/post_requests/orders/order_review.request.dart';
 import '../../../models/product.dart';
 import '../../../providers/products.dart';
 import '../../../providers/shops.dart';
 import '../../../routers/app_router.dart';
 import '../../../screens/activity/buyer/review_submitted.dart';
+import '../../../services/api/api.dart';
+import '../../../services/api/order_api_service.dart';
 import '../../../state/view_model.dart';
 
 class ReviewOrderViewModel extends ViewModel {
   ReviewOrderViewModel({required this.order});
 
   final Order order;
-  late final Products _productsService;
+  late final OrderAPIService _orderAPIService;
 
   final _ratings = <String, int>{};
   final _reviews = <String, String>{};
@@ -25,7 +28,7 @@ class ReviewOrderViewModel extends ViewModel {
 
   @override
   void init() {
-    _productsService = context.read<Products>();
+    _orderAPIService = OrderAPIService(context.read<API>());
     _products = order.productIds
         .map<Product?>((id) => context.read<Products>().findById(id))
         .whereType<Product>()
@@ -36,18 +39,22 @@ class ReviewOrderViewModel extends ViewModel {
     for (final product in order.products) {
       if (_ratings[product.id] == null) {
         showToast('Please add a rating for ${product.name}.');
-        continue;
+        return;
       }
+    }
+    for (final product in order.products) {
       if (_products.where((item) => product.id == item.id).isEmpty) {
         showToast('Cannot find product: ${product.name}');
         continue;
       }
 
-      final success = await _productsService.addReview(
+      final success = await _orderAPIService.addReview(
         productId: product.id,
         orderId: order.id,
-        rating: _ratings[product.id]!,
-        message: _reviews[product.id],
+        request: OrderReviewRequest(
+          rating: _ratings[product.id]!,
+          message: _reviews[product.id],
+        ),
       );
 
       if (success) {

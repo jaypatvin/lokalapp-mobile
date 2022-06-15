@@ -45,7 +45,16 @@ class TransactionCard extends StatelessWidget {
         break;
       case 600:
         enableSecondButton = true;
-        secondButtonText = isBuyer ? 'Add Review' : 'Delivered';
+        if (!isBuyer) {
+          secondButtonText = 'Delivered';
+          break;
+        } else {
+          if (order.products.any((product) => product.reviewId == null)) {
+            secondButtonText = 'Add Review';
+          } else {
+            secondButtonText = 'View Review';
+          }
+        }
         break;
       default:
         break;

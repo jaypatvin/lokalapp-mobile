@@ -3,24 +3,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
 
-import '../models/product.dart';
-import '../models/product_review.dart';
+import '../models/order.dart';
 import '../models/shop.dart';
 
 class ProductReviewCard extends StatelessWidget {
   const ProductReviewCard({
     Key? key,
-    required this.review,
-    this.product,
+    required this.orderProduct,
     this.shop,
   }) : super(key: key);
 
-  final ProductReview review;
-  final Product? product;
+  final OrderProduct orderProduct;
   final Shop? shop;
 
   @override
   Widget build(BuildContext context) {
+    final review = orderProduct.review!;
     return Card(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20.0),
@@ -32,12 +30,12 @@ class ProductReviewCard extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (product?.gallery?.isNotEmpty ?? false)
+            if (orderProduct.image.isNotEmpty)
               SizedBox(
                 width: 50,
                 height: 50,
                 child: CachedNetworkImage(
-                  imageUrl: product!.gallery!.first.url,
+                  imageUrl: orderProduct.image,
                   fit: BoxFit.cover,
                   placeholder: (_, __) => Shimmer(
                     child: DecoratedBox(
@@ -81,7 +79,7 @@ class ProductReviewCard extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              product?.name ?? 'Cannot get name',
+                              orderProduct.name,
                               style: Theme.of(context)
                                   .textTheme
                                   .subtitle2

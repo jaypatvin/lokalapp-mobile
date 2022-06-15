@@ -3,7 +3,6 @@ import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 
 import '../../../models/order.dart';
-import '../../../models/product_review.dart';
 import '../../../models/shop.dart';
 import '../../../providers/products.dart';
 import '../../../providers/shops.dart';
@@ -36,13 +35,14 @@ class _ViewReviewsView extends StatelessView<ViewReviewsViewModel> {
       backgroundColor: kInviteScreenColor,
       appBar: const CustomAppBar(
         titleText: 'View Reviews',
+        titleStyle: TextStyle(color: Colors.white),
         backgroundColor: kTealColor,
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
         // child: ListView.builder(itemBuilder: (ctx, index) {}),
-        child: FutureBuilder<Map<String, ProductReview>>(
-          initialData: const {},
+        child: FutureBuilder<List<OrderProduct>>(
+          initialData: const [],
           future: viewModel.fetchOrderReviews(),
           builder: (ctx, snapshot) {
             if (snapshot.connectionState != ConnectionState.done) {
@@ -61,9 +61,10 @@ class _ViewReviewsView extends StatelessView<ViewReviewsViewModel> {
               return ListView.builder(
                 itemCount: reviews.length,
                 itemBuilder: (ctx, index) {
-                  final _key = snapshot.data!.keys.elementAt(index);
-                  final _review = snapshot.data![_key]!;
-                  final _product = context.read<Products>().findById(_key);
+                  final _orderProduct = snapshot.data![index];
+                  final _product = context.read<Products>().findById(
+                        _orderProduct.id,
+                      );
                   final Shop? _shop;
                   if (_product != null) {
                     _shop = context.read<Shops>().findById(_product.shopId);
@@ -72,8 +73,7 @@ class _ViewReviewsView extends StatelessView<ViewReviewsViewModel> {
                   }
 
                   return ProductReviewCard(
-                    review: _review,
-                    product: _product,
+                    orderProduct: _orderProduct,
                     shop: _shop,
                   );
                 },
