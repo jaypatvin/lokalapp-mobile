@@ -28,7 +28,7 @@ void main() {
 
     group('create', () {
       final request = OrderCreateRequest(
-        products: [const OrderProduct(id: 'id', quantity: 1)],
+        products: [const OrderCreateProduct(id: 'id', quantity: 1)],
         shopId: 'shopId',
         deliveryOption: order.DeliveryOption.pickup,
         deliveryDate: DateTime.now(),
