@@ -127,7 +127,7 @@ class PostCardViewModel extends ViewModel {
     showToast('Hide post not implemented!');
   }
 
-  Future<void> onReportPost() async {
+  Future<void> onReportPost({required String activityId}) async {
     final response = await showModalBottomSheet<bool>(
       context: context,
       useRootNavigator: true,
@@ -142,7 +142,9 @@ class PostCardViewModel extends ViewModel {
       AppRouter.rootNavigatorKey.currentState?.pop();
       AppRouter.homeNavigatorKey.currentState?.push(
         AppNavigator.appPageRoute(
-          builder: (_) => const ReportPost(),
+          builder: (_) => ReportPost(
+            activityId: activityId,
+          ),
         ),
       );
     }

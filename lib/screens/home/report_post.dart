@@ -13,13 +13,14 @@ import '../../widgets/overlays/constrained_scrollview.dart';
 import '../../widgets/overlays/screen_loader.dart';
 
 class ReportPost extends StatelessWidget {
-  const ReportPost({Key? key}) : super(key: key);
+  const ReportPost({Key? key, required this.activityId}) : super(key: key);
+  final String activityId;
 
   @override
   Widget build(BuildContext context) {
     return MVVM(
       view: (_, __) => _ReportPostView(),
-      viewModel: ReportPostViewModel(),
+      viewModel: ReportPostViewModel(activityId: activityId),
     );
   }
 }
@@ -123,7 +124,10 @@ class _ReportPostView extends HookView<ReportPostViewModel>
                   width: double.infinity,
                   text: 'Report',
                   color: kPinkColor,
-                  onPressed: () async => performFuture(viewModel.onSubmit),
+                  onPressed: () async {
+                    _reportFocusNode.unfocus();
+                    return performFuture(viewModel.onSubmit);
+                  },
                 ),
               ],
             ),

@@ -86,7 +86,7 @@ class _PostCardView extends StatelessView<PostCardViewModel> {
                   onDeletePost: () => vm.onDeletePost(activity),
                 )
               : PostOptions(
-                  onReportPost: vm.onReportPost,
+                  onReportPost: () => vm.onReportPost(activityId: activity.id),
                 ),
         ),
       ),
