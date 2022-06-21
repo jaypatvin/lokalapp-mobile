@@ -1,12 +1,10 @@
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
-import 'package:flutter/widgets.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/app_navigator.dart';
 import '../../models/post_requests/shared/report.dart';
 import '../../routers/app_router.dart';
-import '../../screens/home/home.dart';
 import '../../services/api/activity_api_service.dart';
 import '../../services/api/api.dart';
 import '../../state/view_model.dart';
@@ -40,15 +38,14 @@ class ReportPostViewModel extends ViewModel {
       );
 
       if (success) {
-        AppRouter.homeNavigatorKey.currentState?.pushReplacement(
+        final _appRouter = context.read<AppRouter>();
+        final _route = _appRouter.currentTabRoute;
+        _appRouter.pushDynamicScreen(
+          _route,
           AppNavigator.appPageRoute(
-            builder: (_) => ReportSent(
-              onConfirm: () =>
-                  AppRouter.homeNavigatorKey.currentState?.popUntil(
-                ModalRoute.withName(Home.routeName),
-              ),
-            ),
+            builder: (_) => const ReportSent(),
           ),
+          replace: true,
         );
       }
     } catch (e, stack) {

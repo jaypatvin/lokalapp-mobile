@@ -400,8 +400,14 @@ class _ProductDetailView extends HookView<ProductDetailViewModel> {
               isScrollControlled: true,
               isDismissible: true,
               builder: (_) => ProductDetailOptions(
-                onVisitShop: vm.goToShop,
-                onReportProduct: vm.onReport,
+                onVisitShop: () async {
+                  Navigator.of(context, rootNavigator: true).pop();
+                  await vm.goToShop();
+                },
+                onReportProduct: () {
+                  Navigator.of(context, rootNavigator: true).pop();
+                  vm.onReport();
+                },
               ),
             ),
           ),

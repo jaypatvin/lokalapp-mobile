@@ -242,7 +242,10 @@ class ProductDetailViewModel extends ViewModel {
   }
 
   void onReport() {
-    AppRouter.discoverNavigatorKey.currentState?.push(
+    final _appRouter = context.read<AppRouter>();
+    final _route = _appRouter.currentTabRoute;
+    _appRouter.pushDynamicScreen(
+      _route,
       AppNavigator.appPageRoute(
         builder: (_) => ReportProduct(productId: product.id),
       ),

@@ -43,9 +43,7 @@ class ReportShopViewModel extends ViewModel {
         _appRouter.pushDynamicScreen(
           _route,
           AppNavigator.appPageRoute(
-            builder: (_) => ReportSent(
-              onConfirm: () => _appRouter.popScreen(_route),
-            ),
+            builder: (_) => const ReportSent(),
           ),
           replace: true,
         );

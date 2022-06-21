@@ -5,9 +5,7 @@ import 'app_button.dart';
 import 'overlays/constrained_scrollview.dart';
 
 class ReportSent extends StatelessWidget {
-  const ReportSent({Key? key, required this.onConfirm}) : super(key: key);
-
-  final VoidCallback onConfirm;
+  const ReportSent({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +16,7 @@ class ReportSent extends StatelessWidget {
         elevation: 0,
         actions: [
           InkWell(
-            onTap: onConfirm,
+            onTap: Navigator.of(context).pop,
             child: Padding(
               padding: const EdgeInsets.only(right: 16),
               child: Center(
@@ -75,7 +73,7 @@ class ReportSent extends StatelessWidget {
                 width: double.infinity,
                 child: AppButton.filled(
                   text: 'GO BACK',
-                  onPressed: onConfirm,
+                  onPressed: Navigator.of(context).pop,
                 ),
               ),
             ),

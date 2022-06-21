@@ -1,12 +1,10 @@
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
-import 'package:flutter/widgets.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/app_navigator.dart';
 import '../../models/post_requests/shared/report.dart';
 import '../../routers/app_router.dart';
-import '../../screens/discover/discover.dart';
 import '../../services/api/api.dart';
 import '../../services/api/product_api_service.dart';
 import '../../state/view_model.dart';
@@ -33,7 +31,6 @@ class ReportProductViewModel extends ViewModel {
   }
 
   Future<void> onSubmit() async {
-    await Future.delayed(const Duration(seconds: 2));
     try {
       final success = await _apiService.report(
         productId: productId,
@@ -41,15 +38,14 @@ class ReportProductViewModel extends ViewModel {
       );
 
       if (success) {
-        AppRouter.discoverNavigatorKey.currentState?.pushReplacement(
+        final _appRouter = context.read<AppRouter>();
+        final _route = _appRouter.currentTabRoute;
+        _appRouter.pushDynamicScreen(
+          _route,
           AppNavigator.appPageRoute(
-            builder: (_) => ReportSent(
-              onConfirm: () =>
-                  AppRouter.discoverNavigatorKey.currentState?.popUntil(
-                ModalRoute.withName(Discover.routeName),
-              ),
-            ),
+            builder: (_) => const ReportSent(),
           ),
+          replace: true,
         );
       }
     } catch (e, stack) {
