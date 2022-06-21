@@ -14,6 +14,7 @@ import '../../../widgets/persistent_header_delegate_builder.dart';
 import '../../../widgets/products_sliver_grid.dart';
 import 'components/shop_header.dart';
 import 'components/shop_hours.dart';
+import 'components/shop_options.dart';
 import 'components/user_banner.dart';
 
 class UserShop extends StatelessWidget {
@@ -152,10 +153,15 @@ class _UserShopView extends HookView<UserShopViewModel> {
                       shopProfilePhoto: vm.shop.profilePhoto,
                       shopCoverPhoto: vm.shop.coverPhoto,
                       linearGradientColors: vm.shopHeaderColors,
-                      onSettingsTap: vm.onSettingsTap,
-                      onEditTap: vm.onEditTap,
-                      displayEditButton: vm.displayEditButton,
-                      displaySettingsButton: vm.displaySettingsButton,
+                      onSettingsTap: vm.isCurrentUser ? vm.onSettingsTap : null,
+                      onEditTap: vm.isCurrentUser ? vm.onEditTap : null,
+                      onOptionsTap: () => vm.onOptionsTap(
+                        options: ShopOptions(
+                          onReportShop: () => vm.onReportShop(
+                            message: const _ReportShopModalSheet(),
+                          ),
+                        ),
+                      ),
                       onShopPhotoTap: vm.onShopPhotoTap,
                     ),
                   ),
@@ -213,6 +219,57 @@ class _UserShopView extends HookView<UserShopViewModel> {
           ..._slivers,
         ],
       ),
+    );
+  }
+}
+
+class _ReportShopModalSheet extends StatelessWidget {
+  const _ReportShopModalSheet({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Wrap(
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 38),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Report shop?',
+                style: Theme.of(context).textTheme.headline5,
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 76),
+                child: Text(
+                  'Our team will review this shop.',
+                  style: Theme.of(context).textTheme.bodyText1,
+                  textAlign: TextAlign.center,
+                ),
+              ),
+              const SizedBox(height: 47),
+              Row(
+                children: [
+                  Expanded(
+                    child: AppButton.transparent(
+                      text: 'Cancel',
+                      onPressed: () => Navigator.of(context).pop(false),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: AppButton.filled(
+                      text: 'Report',
+                      onPressed: () => Navigator.of(context).pop(true),
+                      color: kPinkColor,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

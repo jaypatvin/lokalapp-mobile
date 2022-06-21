@@ -74,7 +74,7 @@ class ReportSent extends StatelessWidget {
               child: SizedBox(
                 width: double.infinity,
                 child: AppButton.filled(
-                  text: 'BACK TO MY FEED',
+                  text: 'GO BACK',
                   onPressed: onConfirm,
                 ),
               ),
