@@ -15,6 +15,7 @@ import '../../providers/wishlist.dart';
 import '../../routers/app_router.dart';
 import '../../routers/profile/props/user_shop.props.dart';
 import '../../screens/activity/subscriptions/subscription_schedule.dart';
+import '../../screens/discover/report_product.dart';
 import '../../screens/profile/shop/user_shop.dart';
 import '../../services/bottom_nav_bar_hider.dart';
 import '../../state/view_model.dart';
@@ -238,5 +239,13 @@ class ProductDetailViewModel extends ViewModel {
       FirebaseCrashlytics.instance.recordError(e, stack);
       showToast(e is FailureException ? e.message : e.toString());
     }
+  }
+
+  void onReport() {
+    AppRouter.discoverNavigatorKey.currentState?.push(
+      AppNavigator.appPageRoute(
+        builder: (_) => ReportProduct(productId: product.id),
+      ),
+    );
   }
 }

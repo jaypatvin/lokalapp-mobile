@@ -95,6 +95,7 @@ class PostCardViewModel extends ViewModel {
       context: context,
       useRootNavigator: true,
       isScrollControlled: true,
+      isDismissible: true,
       builder: (_) => child,
     );
   }

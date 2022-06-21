@@ -18,6 +18,7 @@ import '../../widgets/app_button.dart';
 import '../../widgets/custom_app_bar.dart';
 import '../chat/components/chat_avatar.dart';
 import 'product_detail/product_detail.gallery.dart';
+import 'product_detail/product_detail.modal.dart';
 import 'product_detail/product_detail.name_price.dart';
 import 'product_detail/product_detail.quantity_controller.dart';
 import 'product_detail/product_detail.special_instructions.dart';
@@ -387,16 +388,24 @@ class _ProductDetailView extends HookView<ProductDetailViewModel> {
             ],
           ),
         ),
-        // actions: [
-        //   IconButton(
-        //     icon: Icon(
-        //       Icons.more_horiz,
-        //       color: kTealColor,
-        //       size: 28.0.r,
-        //     ),
-        //     onPressed: null,
-        //   ),
-        // ],
+        actions: [
+          IconButton(
+            icon: const Icon(
+              Icons.more_horiz,
+              color: kTealColor,
+            ),
+            onPressed: () => showModalBottomSheet(
+              context: context,
+              useRootNavigator: true,
+              isScrollControlled: true,
+              isDismissible: true,
+              builder: (_) => ProductDetailOptions(
+                onVisitShop: vm.goToShop,
+                onReportProduct: vm.onReport,
+              ),
+            ),
+          ),
+        ],
       ),
       body: KeyboardActions(
         config: KeyboardActionsConfig(
