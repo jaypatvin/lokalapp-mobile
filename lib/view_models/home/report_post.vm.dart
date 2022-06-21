@@ -1,14 +1,16 @@
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:flutter/widgets.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/app_navigator.dart';
 import '../../models/post_requests/shared/report.dart';
 import '../../routers/app_router.dart';
-import '../../screens/home/report_sent.dart';
+import '../../screens/home/home.dart';
 import '../../services/api/activity_api_service.dart';
 import '../../services/api/api.dart';
 import '../../state/view_model.dart';
+import '../../widgets/report_sent.dart';
 
 class ReportPostViewModel extends ViewModel {
   ReportPostViewModel({required this.activityId});
@@ -31,7 +33,6 @@ class ReportPostViewModel extends ViewModel {
   }
 
   Future<void> onSubmit() async {
-    await Future.delayed(const Duration(seconds: 2));
     try {
       final success = await _apiService.report(
         activityId: activityId,
@@ -40,7 +41,14 @@ class ReportPostViewModel extends ViewModel {
 
       if (success) {
         AppRouter.homeNavigatorKey.currentState?.pushReplacement(
-          AppNavigator.appPageRoute(builder: (_) => const ReportSent()),
+          AppNavigator.appPageRoute(
+            builder: (_) => ReportSent(
+              onConfirm: () =>
+                  AppRouter.homeNavigatorKey.currentState?.popUntil(
+                ModalRoute.withName(Home.routeName),
+              ),
+            ),
+          ),
         );
       }
     } catch (e, stack) {

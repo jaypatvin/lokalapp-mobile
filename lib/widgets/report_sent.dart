@@ -1,19 +1,13 @@
 import 'package:flutter/material.dart';
 
-import '../../routers/app_router.dart';
-import '../../utils/constants/themes.dart';
-import '../../widgets/app_button.dart';
-import '../../widgets/overlays/constrained_scrollview.dart';
-import 'home.dart';
+import '../utils/constants/themes.dart';
+import 'app_button.dart';
+import 'overlays/constrained_scrollview.dart';
 
 class ReportSent extends StatelessWidget {
-  const ReportSent({Key? key}) : super(key: key);
+  const ReportSent({Key? key, required this.onConfirm}) : super(key: key);
 
-  void _onBackToFeed() {
-    AppRouter.homeNavigatorKey.currentState?.popUntil(
-      ModalRoute.withName(Home.routeName),
-    );
-  }
+  final VoidCallback onConfirm;
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +18,7 @@ class ReportSent extends StatelessWidget {
         elevation: 0,
         actions: [
           InkWell(
-            onTap: _onBackToFeed,
+            onTap: onConfirm,
             child: Padding(
               padding: const EdgeInsets.only(right: 16),
               child: Center(
@@ -81,7 +75,7 @@ class ReportSent extends StatelessWidget {
                 width: double.infinity,
                 child: AppButton.filled(
                   text: 'BACK TO MY FEED',
-                  onPressed: _onBackToFeed,
+                  onPressed: onConfirm,
                 ),
               ),
             ),
