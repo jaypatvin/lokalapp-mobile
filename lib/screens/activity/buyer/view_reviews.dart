@@ -6,11 +6,12 @@ import '../../../models/order.dart';
 import '../../../models/shop.dart';
 import '../../../providers/products.dart';
 import '../../../providers/shops.dart';
+import '../../../providers/users.dart';
 import '../../../state/mvvm_builder.widget.dart';
 import '../../../state/views/stateless.view.dart';
 import '../../../utils/constants/assets.dart';
 import '../../../utils/constants/themes.dart';
-import '../../../view_models/discover/view_reviews.vm.dart';
+import '../../../view_models/activity/buyer/view_reviews.vm.dart';
 import '../../../widgets/custom_app_bar.dart';
 import '../../../widgets/product_review_card.dart';
 
@@ -65,16 +66,24 @@ class _ViewReviewsView extends StatelessView<ViewReviewsViewModel> {
                   final _product = context.read<Products>().findById(
                         _orderProduct.id,
                       );
+
                   final Shop? _shop;
                   if (_product != null) {
                     _shop = context.read<Shops>().findById(_product.shopId);
                   } else {
                     _shop = null;
                   }
+                  final _user = context
+                      .read<Users>()
+                      .findById(_orderProduct.review?.userId);
+                  final _name = _user != null
+                      ? '${_user.firstName} ${_user.lastName.substring(0, 1)}'
+                      : null;
 
-                  return ProductReviewCard(
-                    orderProduct: _orderProduct,
-                    shop: _shop,
+                  return ProductReviewCard.fromOrderReview(
+                    _orderProduct,
+                    shopName: _shop?.name,
+                    userName: _name,
                   );
                 },
               );

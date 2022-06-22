@@ -169,35 +169,38 @@ class _ProductDetailView extends HookView<ProductDetailViewModel> {
           children: [
             Expanded(
               child: vm.product.avgRating > 0
-                  ? Row(
-                      children: [
-                        RatingBar.builder(
-                          initialRating: vm.product.avgRating,
-                          minRating: 1,
-                          maxRating: 5,
-                          allowHalfRating: true,
-                          unratedColor: Colors.grey.shade300,
-                          itemBuilder: (ctx, _) {
-                            return const Icon(
-                              Icons.star,
-                              color: Colors.amber,
-                            );
-                          },
-                          onRatingUpdate: (rating) {},
-                          ignoreGestures: true,
-                          itemSize: 20,
-                        ),
-                        const SizedBox(width: 10),
-                        Text(
-                          vm.product.avgRating.toStringAsFixed(2),
-                          textAlign: TextAlign.center,
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyText2
-                              ?.copyWith(color: const Color(0XFF828282)),
-                        )
-                      ],
-                    )
+                  ? GestureDetector(
+                    onTap: vm.viewReviews,
+                    child: Row(
+                        children: [
+                          RatingBar.builder(
+                            initialRating: vm.product.avgRating,
+                            minRating: 1,
+                            maxRating: 5,
+                            allowHalfRating: true,
+                            unratedColor: Colors.grey.shade300,
+                            itemBuilder: (ctx, _) {
+                              return const Icon(
+                                Icons.star,
+                                color: Colors.amber,
+                              );
+                            },
+                            onRatingUpdate: (rating) {},
+                            ignoreGestures: true,
+                            itemSize: 20,
+                          ),
+                          const SizedBox(width: 10),
+                          Text(
+                            vm.product.avgRating.toStringAsFixed(2),
+                            textAlign: TextAlign.center,
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyText2
+                                ?.copyWith(color: const Color(0XFF828282)),
+                          )
+                        ],
+                      ),
+                  )
                   : Text(
                       'No reviews yet',
                       style: Theme.of(context)

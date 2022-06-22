@@ -1,13 +1,13 @@
 import 'package:provider/provider.dart';
 
-import '../../models/order.dart';
-import '../../models/product.dart';
-import '../../models/shop.dart';
-import '../../providers/products.dart';
-import '../../providers/shops.dart';
-import '../../services/api/api.dart';
-import '../../services/api/order_api_service.dart';
-import '../../state/view_model.dart';
+import '../../../models/order.dart';
+import '../../../models/product.dart';
+import '../../../models/shop.dart';
+import '../../../providers/products.dart';
+import '../../../providers/shops.dart';
+import '../../../services/api/api.dart';
+import '../../../services/api/order_api_service.dart';
+import '../../../state/view_model.dart';
 
 class ViewReviewsViewModel extends ViewModel {
   ViewReviewsViewModel({required this.order});

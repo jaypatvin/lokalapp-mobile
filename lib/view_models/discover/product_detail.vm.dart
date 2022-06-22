@@ -15,6 +15,7 @@ import '../../providers/wishlist.dart';
 import '../../routers/app_router.dart';
 import '../../routers/profile/props/user_shop.props.dart';
 import '../../screens/activity/subscriptions/subscription_schedule.dart';
+import '../../screens/discover/product_reviews.dart';
 import '../../screens/discover/report_product.dart';
 import '../../screens/profile/shop/user_shop.dart';
 import '../../services/bottom_nav_bar_hider.dart';
@@ -248,6 +249,17 @@ class ProductDetailViewModel extends ViewModel {
       _route,
       AppNavigator.appPageRoute(
         builder: (_) => ReportProduct(productId: product.id),
+      ),
+    );
+  }
+
+  void viewReviews() {
+    final _appRouter = context.read<AppRouter>();
+    final _route = _appRouter.currentTabRoute;
+    _appRouter.pushDynamicScreen(
+      _route,
+      AppNavigator.appPageRoute(
+        builder: (_) => ProductReviews(productId: product.id),
       ),
     );
   }

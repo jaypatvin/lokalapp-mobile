@@ -40,6 +40,7 @@ class Products extends ChangeNotifier {
 
   bool get isLoading => _isLoading;
   String? get communityId => _communityId;
+  ProductApiService get api => _apiService;
 
   void setCommunityId(String? id) {
     if (id == _communityId) return;
