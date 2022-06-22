@@ -9,4 +9,5 @@ enum OrderAction {
   received,
   orderAgain,
   addReview,
+  viewReview,
 }

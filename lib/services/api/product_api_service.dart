@@ -5,8 +5,10 @@ import '../../models/operating_hours.dart';
 import '../../models/post_requests/product/product_create.request.dart';
 import '../../models/post_requests/product/product_review.request.dart';
 import '../../models/post_requests/product/product_update.request.dart';
+import '../../models/post_requests/shared/report.dart';
 import '../../models/post_requests/shop/operating_hours.request.dart';
 import '../../models/product.dart';
+import '../../models/product_review.dart';
 import 'api.dart';
 import 'api_service.dart';
 import 'client/lokal_http_client.dart';
@@ -78,6 +80,26 @@ class ProductApiService extends APIService<Product> {
           pathSegments: [productId, 'wishlist'],
         ),
         headers: api.authHeader(),
+      );
+
+      return handleGenericResponse(response);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<bool> report({
+    required String productId,
+    required Report report,
+  }) async {
+    try {
+      final response = await client.post(
+        api.endpointUri(
+          endpoint,
+          pathSegments: [productId, 'report'],
+        ),
+        headers: api.withBodyHeader(),
+        body: json.encode(report),
       );
 
       return handleGenericResponse(response);
@@ -265,6 +287,41 @@ class ProductApiService extends APIService<Product> {
         throw FailureException(
           response.reasonPhrase ?? 'Error parsing data.',
           response,
+        );
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<List<ProductReview>> getReviews({required String productId}) async {
+    try {
+      final response = await client.get(
+        api.endpointUri(endpoint, pathSegments: [productId, 'reviews']),
+        headers: api.authHeader(),
+      );
+      if (response.statusCode == 200) {
+        final map = json.decode(response.body);
+        final List<ProductReview> _reviews = [];
+
+        for (final data in map['data']) {
+          final _review = ProductReview.fromJson(data);
+          _reviews.add(_review);
+        }
+        return _reviews;
+      } else {
+        final map = json.decode(response.body);
+        if (map['data'] != null) {
+          throw throw FailureException(map['data']);
+        }
+
+        if (map['message'] != null) {
+          throw FailureException(map['message']);
+        }
+
+        throw FailureException(
+          response.reasonPhrase ?? 'Error parsing data.',
+          response.body,
         );
       }
     } catch (e) {

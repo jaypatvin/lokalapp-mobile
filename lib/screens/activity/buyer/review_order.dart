@@ -44,19 +44,23 @@ class _ReviewOrderView extends HookView<ReviewOrderViewModel>
         backgroundColor: kTealColor,
         titleText: 'Review Order',
         titleStyle: const TextStyle(color: Colors.white),
-        leadingWidth: 75,
+        leadingWidth: 100,
         leading: InkWell(
           onTap: () => Navigator.of(context).pop(),
           child: Padding(
             padding: const EdgeInsets.only(left: 16),
-            child: Center(
-              child: Text(
-                'Cancel',
-                style: Theme.of(context)
-                    .textTheme
-                    .subtitle1
-                    ?.copyWith(color: Colors.white),
-              ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  'Cancel',
+                  style: Theme.of(context)
+                      .textTheme
+                      .subtitle1
+                      ?.copyWith(color: Colors.white),
+                ),
+              ],
             ),
           ),
         ),

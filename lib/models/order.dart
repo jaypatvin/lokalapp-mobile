@@ -2,10 +2,12 @@ import 'package:flutter/foundation.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 import '../utils/functions.utils.dart';
+import 'product_review.dart';
 
 part 'order.g.dart';
 
 enum DeliveryOption { delivery, pickup }
+
 enum PaymentMethod { bank, cod, eWallet }
 
 extension DeliveryOptionExtension on DeliveryOption {
@@ -128,6 +130,8 @@ class OrderProduct {
     required this.price,
     required this.quantity,
     this.category,
+    this.review,
+    this.reviewId,
   });
 
   @JsonKey(required: true)
@@ -145,6 +149,8 @@ class OrderProduct {
   @JsonKey(required: true)
   final int quantity;
   final String? category;
+  final ProductReview? review;
+  final String? reviewId;
 
   OrderProduct copyWith({
     String? instruction,
@@ -155,6 +161,8 @@ class OrderProduct {
     double? price,
     int? quantity,
     String? category,
+    ProductReview? review,
+    String? reviewId,
   }) {
     return OrderProduct(
       instruction: instruction ?? this.instruction,
@@ -165,6 +173,8 @@ class OrderProduct {
       price: price ?? this.price,
       quantity: quantity ?? this.quantity,
       category: category ?? this.category,
+      review: review ?? this.review,
+      reviewId: reviewId ?? this.reviewId,
     );
   }
 
@@ -178,7 +188,7 @@ class OrderProduct {
     return 'ProductOrder(instruction: $instruction, '
         'productDescription: $description, productId: $id, productName: $name, '
         'image: $image, productPrice: $price, quantity: $quantity, '
-        'category?: $category)';
+        'category?: $category, reviewId?: $reviewId, review?: $review)';
   }
 
   @override
@@ -193,7 +203,9 @@ class OrderProduct {
         other.image == image &&
         other.price == price &&
         other.quantity == quantity &&
-        other.category == category;
+        other.category == category &&
+        other.reviewId == reviewId &&
+        other.review == review;
   }
 
   @override
@@ -205,7 +217,9 @@ class OrderProduct {
         image.hashCode ^
         price.hashCode ^
         quantity.hashCode ^
-        category.hashCode;
+        category.hashCode ^
+        reviewId.hashCode ^
+        review.hashCode;
   }
 }
 

@@ -14,6 +14,7 @@ import '../../routers/app_router.dart';
 import '../../screens/activity/buyer/order_received.dart';
 import '../../screens/activity/buyer/payment_option.dart';
 import '../../screens/activity/buyer/review_order.dart';
+import '../../screens/activity/buyer/view_reviews.dart';
 import '../../screens/activity/order_details.dart';
 import '../../screens/activity/subscriptions/subscriptions.dart';
 import '../../services/api/api.dart';
@@ -179,13 +180,23 @@ class TransactionsViewModel extends ViewModel {
             }
             break;
           case 600:
-            AppRouter.activityNavigatorKey.currentState?.push(
-              AppNavigator.appPageRoute(
-                builder: (_) => ReviewOrder(
-                  order: order,
+            if (order.products.any((product) => product.reviewId == null)) {
+              AppRouter.activityNavigatorKey.currentState?.push(
+                AppNavigator.appPageRoute(
+                  builder: (_) => ReviewOrder(
+                    order: order,
+                  ),
                 ),
-              ),
-            );
+              );
+            } else {
+              AppRouter.activityNavigatorKey.currentState?.push(
+                AppNavigator.appPageRoute(
+                  builder: (_) => ViewReviews(
+                    order: order,
+                  ),
+                ),
+              );
+            }
             break;
           default:
             break;

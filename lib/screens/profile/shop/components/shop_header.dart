@@ -13,21 +13,23 @@ class ShopHeader extends StatelessWidget {
     this.shopProfilePhoto,
     this.shopCoverPhoto,
     this.onSettingsTap,
-    this.onEditTap,
+    this.onOptionsTap,
     this.onShopPhotoTap,
-    this.displaySettingsButton = true,
-    this.displayEditButton = true,
+    this.onEditTap,
+    // this.displaySettingsButton = true,
+    // this.displayEditButton = true,
   }) : super(key: key);
 
   final String shopName;
   final List<Color> linearGradientColors;
   final String? shopProfilePhoto;
   final String? shopCoverPhoto;
-  final void Function()? onSettingsTap;
-  final void Function()? onEditTap;
-  final void Function()? onShopPhotoTap;
-  final bool displaySettingsButton;
-  final bool displayEditButton;
+  final VoidCallback? onSettingsTap;
+  final VoidCallback? onEditTap;
+  final VoidCallback? onOptionsTap;
+  final VoidCallback? onShopPhotoTap;
+  // final bool displaySettingsButton;
+  // final bool displayEditButton;
 
   @override
   Widget build(BuildContext context) {
@@ -66,7 +68,7 @@ class ShopHeader extends StatelessWidget {
             ),
           ),
         ),
-        if (displaySettingsButton)
+        if (onSettingsTap != null)
           Positioned(
             left: 0,
             child: Padding(
@@ -96,7 +98,7 @@ class ShopHeader extends StatelessWidget {
             ),
           ),
         ),
-        if (displayEditButton)
+        if (onEditTap != null)
           Positioned(
             right: 0,
             child: Padding(
@@ -109,6 +111,22 @@ class ShopHeader extends StatelessWidget {
                 ),
                 color: Colors.white,
                 onPressed: onEditTap,
+              ),
+            ),
+          )
+        else if (onOptionsTap != null)
+          Positioned(
+            right: 0,
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: IconButton(
+                padding: EdgeInsets.zero,
+                icon: const Icon(
+                  Icons.more_horiz,
+                  size: 25,
+                ),
+                color: Colors.white,
+                onPressed: onOptionsTap,
               ),
             ),
           ),

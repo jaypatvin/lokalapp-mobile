@@ -9,6 +9,7 @@ import '../../routers/app_router.dart';
 import '../../screens/activity/buyer/order_received.dart';
 import '../../screens/activity/buyer/payment_option.dart';
 import '../../screens/activity/buyer/review_order.dart';
+import '../../screens/activity/buyer/view_reviews.dart';
 import '../../screens/activity/components/order_details_buttons/order_actions.dart';
 import '../../screens/activity/seller/order_confirmed.dart';
 import '../../screens/activity/seller/payment_confirmed.dart';
@@ -115,6 +116,13 @@ class OrderDetailsViewModel extends ViewModel {
               builder: (_) => ReviewOrder(
                 order: order,
               ),
+            ),
+          );
+          break;
+        case OrderAction.viewReview:
+          AppRouter.activityNavigatorKey.currentState?.push(
+            AppNavigator.appPageRoute(
+              builder: (_) => ViewReviews(order: order),
             ),
           );
           break;

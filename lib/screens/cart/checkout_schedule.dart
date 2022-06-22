@@ -54,7 +54,7 @@ class _CheckoutScheduleState extends State<CheckoutSchedule> with ScreenLoader {
       await _apiService.create(
         request: OrderCreateRequest(
           products: [
-            OrderProduct(
+            OrderCreateProduct(
               id: widget.productId,
               quantity: order.quantity,
             ),

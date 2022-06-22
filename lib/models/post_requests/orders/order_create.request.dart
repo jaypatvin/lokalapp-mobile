@@ -7,8 +7,8 @@ import '../../order.dart';
 part 'order_create.request.g.dart';
 
 @JsonSerializable()
-class OrderProduct {
-  const OrderProduct({
+class OrderCreateProduct {
+  const OrderCreateProduct({
     required this.id,
     required this.quantity,
     this.instruction,
@@ -17,9 +17,9 @@ class OrderProduct {
   final int quantity;
   final String? instruction;
 
-  Map<String, dynamic> toJson() => _$OrderProductToJson(this);
-  factory OrderProduct.fromJson(Map<String, dynamic> json) =>
-      _$OrderProductFromJson(json);
+  Map<String, dynamic> toJson() => _$OrderCreateProductToJson(this);
+  factory OrderCreateProduct.fromJson(Map<String, dynamic> json) =>
+      _$OrderCreateProductFromJson(json);
 }
 
 @JsonSerializable()
@@ -33,7 +33,7 @@ class OrderCreateRequest {
     this.instruction,
   });
 
-  final List<OrderProduct> products;
+  final List<OrderCreateProduct> products;
   final String? buyerId;
   final String shopId;
   @JsonKey(toJson: _deliveryOptionToJson, fromJson: _deliveryOptionFromJson)
@@ -47,7 +47,7 @@ class OrderCreateRequest {
       _$OrderCreateRequestFromJson(json);
 
   OrderCreateRequest copyWith({
-    List<OrderProduct>? products,
+    List<OrderCreateProduct>? products,
     String? buyerId,
     String? shopId,
     DeliveryOption? deliveryOption,

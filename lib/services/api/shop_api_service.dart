@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import '../../models/operating_hours.dart';
+import '../../models/post_requests/shared/report.dart';
 import '../../models/post_requests/shop/operating_hours.request.dart';
 import '../../models/post_requests/shop/shop_create.request.dart';
 import '../../models/post_requests/shop/shop_update.request.dart';
@@ -40,6 +41,26 @@ class ShopAPIService extends APIService<Shop> {
       );
 
       return handleResponse((map) => Shop.fromJson(map), response);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<bool> report({
+    required String shopId,
+    required Report report,
+  }) async {
+    try {
+      final response = await client.post(
+        api.endpointUri(
+          endpoint,
+          pathSegments: [shopId, 'report'],
+        ),
+        headers: api.withBodyHeader(),
+        body: json.encode(report),
+      );
+
+      return handleGenericResponse(response);
     } catch (e) {
       rethrow;
     }

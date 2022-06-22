@@ -1,8 +1,10 @@
 import 'dart:convert';
 
+import '../../models/failure_exception.dart';
 import '../../models/order.dart';
 import '../../models/post_requests/orders/order_create.request.dart';
 import '../../models/post_requests/orders/order_pay.request.dart';
+import '../../models/post_requests/orders/order_review.request.dart';
 import 'api.dart';
 import 'api_service.dart';
 import 'client/lokal_http_client.dart';
@@ -13,6 +15,45 @@ class OrderAPIService extends APIService<Order> {
 
   final API api;
   Endpoint get endpoint => Endpoint.order;
+
+  //#region --GET
+  Future<List<OrderProduct>> getOrderProductsReviews({
+    required String orderId,
+  }) async {
+    try {
+      final response = await client.get(
+        api.endpointUri(endpoint, pathSegments: [orderId, 'reviews']),
+        headers: api.authHeader(),
+      );
+      if (response.statusCode == 200) {
+        final map = json.decode(response.body);
+        final List<OrderProduct> _reviews = [];
+
+        for (final data in map['data']) {
+          final _review = OrderProduct.fromJson(data);
+          _reviews.add(_review);
+        }
+        return _reviews;
+      } else {
+        final map = json.decode(response.body);
+        if (map['data'] != null) {
+          throw throw FailureException(map['data']);
+        }
+
+        if (map['message'] != null) {
+          throw FailureException(map['message']);
+        }
+
+        throw FailureException(
+          response.reasonPhrase ?? 'Error parsing data.',
+          response.body,
+        );
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+  //#endregion
 
   //#region --POST
   Future<Order> create({
@@ -26,6 +67,28 @@ class OrderAPIService extends APIService<Order> {
       );
 
       return handleResponse((map) => Order.fromJson(map), response);
+    } on FormatException catch (_) {
+      throw FailureException('Bad response format');
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<bool> addReview({
+    required String orderId,
+    required String productId,
+    required OrderReviewRequest request,
+  }) async {
+    try {
+      final response = await client.post(
+        api.endpointUri(
+          endpoint,
+          pathSegments: [orderId, 'products', productId, 'review'],
+        ),
+        headers: api.withBodyHeader(),
+        body: json.encode(request.toJson()),
+      );
+      return handleGenericResponse(response);
     } catch (e) {
       rethrow;
     }

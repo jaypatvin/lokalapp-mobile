@@ -26,7 +26,8 @@ class Status600Buttons extends StatelessWidget {
           if (order.paymentMethod != PaymentMethod.cod)
             ViewPaymentButton(onPress: onPress),
           const SizedBox(height: 12),
-          Expanded(
+          SizedBox(
+            width: double.infinity,
             child: AppButton.transparent(
               text: 'Order Again',
               onPressed: () => onPress(OrderAction.orderAgain),
@@ -40,12 +41,20 @@ class Status600Buttons extends StatelessWidget {
                 child: MessageSellerButton(order: order),
               ),
               const SizedBox(width: 8),
-              Expanded(
-                child: AppButton.filled(
-                  text: 'Add Review',
-                  onPressed: () => onPress(OrderAction.addReview),
+              if (order.products.any((product) => product.reviewId == null))
+                Expanded(
+                  child: AppButton.filled(
+                    text: 'Add Review',
+                    onPressed: () => onPress(OrderAction.addReview),
+                  ),
+                )
+              else
+                Expanded(
+                  child: AppButton.filled(
+                    text: 'View Review',
+                    onPressed: () => onPress(OrderAction.viewReview),
+                  ),
                 ),
-              ),
             ],
           ),
         ],

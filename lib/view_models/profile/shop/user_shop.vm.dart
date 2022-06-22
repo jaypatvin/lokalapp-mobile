@@ -19,6 +19,7 @@ import '../../../screens/profile/add_product/add_product.dart';
 import '../../../screens/profile/add_shop/edit_shop.dart';
 import '../../../screens/profile/profile_screen.dart';
 import '../../../screens/profile/settings/settings.dart';
+import '../../../screens/profile/shop/report_shop.dart';
 import '../../../state/view_model.dart';
 import '../../../utils/constants/themes.dart';
 import '../../../utils/functions.utils.dart';
@@ -98,6 +99,45 @@ class UserShopViewModel extends ViewModel {
 
   void onEditTap() {
     AppRouter.profileNavigatorKey.currentState?.pushNamed(EditShop.routeName);
+  }
+
+  void onOptionsTap({Widget? options}) {
+    if (options != null) {
+      showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        isDismissible: true,
+        useRootNavigator: true,
+        builder: (_) => options,
+      );
+    }
+  }
+
+  Future<void> onReportShop({Widget? message}) async {
+    if (message != null) {
+      final response = await showModalBottomSheet<bool>(
+        context: context,
+        useRootNavigator: true,
+        isDismissible: true,
+        builder: (_) => message,
+      );
+      if (response == null || !response) {
+        AppRouter.rootNavigatorKey.currentState?.pop();
+        return;
+      } else {
+        AppRouter.rootNavigatorKey.currentState?.pop();
+        final _appRouter = context.read<AppRouter>();
+        final _route = _appRouter.currentTabRoute;
+        _appRouter.pushDynamicScreen(
+          _route,
+          AppNavigator.appPageRoute(
+            builder: (_) => ReportShop(
+              shopId: shop.id,
+            ),
+          ),
+        );
+      }
+    }
   }
 
   void onShopPhotoTap() {

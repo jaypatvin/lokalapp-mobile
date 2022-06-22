@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:keyboard_actions/keyboard_actions.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:provider/provider.dart';
 
@@ -17,6 +18,7 @@ import '../../widgets/app_button.dart';
 import '../../widgets/custom_app_bar.dart';
 import '../chat/components/chat_avatar.dart';
 import 'product_detail/product_detail.gallery.dart';
+import 'product_detail/product_detail.modal.dart';
 import 'product_detail/product_detail.name_price.dart';
 import 'product_detail/product_detail.quantity_controller.dart';
 import 'product_detail/product_detail.special_instructions.dart';
@@ -93,7 +95,70 @@ class _ProductDetailView extends HookView<ProductDetailViewModel> {
           controller: _photoView,
           onPageChanged: (index) => _galleryIndex.value = index,
         ),
-        const SizedBox(height: 10),
+        const SizedBox(height: 16),
+        Row(
+          children: [
+            if (vm.open)
+              const SizedBox(
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: kTealColor,
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(30),
+                    ),
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 2),
+                    child: Text(
+                      'Available now',
+                      style: TextStyle(
+                        fontFamily: 'Goldplay',
+                        fontWeight: FontWeight.w500,
+                        fontSize: 14,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
+              )
+            else
+              const SizedBox(
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: Color(0xFFBDBDBD),
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(30),
+                    ),
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 2),
+                    child: Text(
+                      'Unavailable',
+                      style: TextStyle(
+                        fontFamily: 'Goldplay',
+                        fontWeight: FontWeight.w500,
+                        fontSize: 14,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            if (!vm.open) ...[
+              const SizedBox(width: 8),
+              Text(
+                vm.nearestDate ?? '',
+                style: const TextStyle(
+                  fontFamily: 'Goldplay',
+                  fontWeight: FontWeight.w500,
+                  fontSize: 14,
+                  color: Colors.black,
+                ),
+              ),
+            ],
+          ],
+        ),
+        const SizedBox(height: 12),
         ProductItemAndPrice(
           productName: vm.product.name,
           productPrice: vm.product.basePrice,
@@ -103,46 +168,74 @@ class _ProductDetailView extends HookView<ProductDetailViewModel> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Expanded(
-              child: Row(
-                children: [
-                  RatingBar.builder(
-                    initialRating: vm.product.avgRating,
-                    minRating: 1,
-                    maxRating: 5,
-                    allowHalfRating: true,
-                    unratedColor: Colors.grey.shade300,
-                    itemBuilder: (ctx, _) {
-                      return const Icon(
-                        Icons.star,
-                        color: Colors.amber,
-                      );
-                    },
-                    onRatingUpdate: (rating) {},
-                    ignoreGestures: true,
-                    itemSize: 20,
-                  ),
-                  const SizedBox(width: 10),
-                  Text(
-                    vm.product.avgRating.toStringAsFixed(2),
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(color: Colors.amber),
+              child: vm.product.avgRating > 0
+                  ? GestureDetector(
+                    onTap: vm.viewReviews,
+                    child: Row(
+                        children: [
+                          RatingBar.builder(
+                            initialRating: vm.product.avgRating,
+                            minRating: 1,
+                            maxRating: 5,
+                            allowHalfRating: true,
+                            unratedColor: Colors.grey.shade300,
+                            itemBuilder: (ctx, _) {
+                              return const Icon(
+                                Icons.star,
+                                color: Colors.amber,
+                              );
+                            },
+                            onRatingUpdate: (rating) {},
+                            ignoreGestures: true,
+                            itemSize: 20,
+                          ),
+                          const SizedBox(width: 10),
+                          Text(
+                            vm.product.avgRating.toStringAsFixed(2),
+                            textAlign: TextAlign.center,
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyText2
+                                ?.copyWith(color: const Color(0XFF828282)),
+                          )
+                        ],
+                      ),
                   )
-                ],
-              ),
-            ),
-            TextButton(
-              onPressed: () {},
-              style: TextButton.styleFrom(
-                padding: EdgeInsets.zero,
-                minimumSize: Size.zero,
-                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                textStyle: Theme.of(context).textTheme.bodyText2?.copyWith(
-                      fontWeight: FontWeight.w500,
-                      decoration: TextDecoration.underline,
-                      color: kTealColor,
+                  : Text(
+                      'No reviews yet',
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyText2
+                          ?.copyWith(color: const Color(0XFF828282)),
                     ),
-              ),
-              child: const Text('Read Reviews'),
+            ),
+            // TextButton(
+            //   onPressed: () {},
+            //   style: TextButton.styleFrom(
+            //     padding: EdgeInsets.zero,
+            //     minimumSize: Size.zero,
+            //     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            //     textStyle: Theme.of(context).textTheme.bodyText2?.copyWith(
+            //           fontWeight: FontWeight.w500,
+            //           decoration: TextDecoration.underline,
+            //           color: kTealColor,
+            //         ),
+            //   ),
+            //   child: const Text('Read Reviews'),
+            // ),
+            GestureDetector(
+              onTap: vm.onLike,
+              child: !vm.isLiked
+                  ? const Icon(
+                      MdiIcons.heartOutline,
+                      size: 16.0,
+                      color: Colors.black,
+                    )
+                  : const Icon(
+                      MdiIcons.heart,
+                      size: 16.0,
+                      color: kPinkColor,
+                    ),
             ),
           ],
         ),
@@ -298,16 +391,30 @@ class _ProductDetailView extends HookView<ProductDetailViewModel> {
             ],
           ),
         ),
-        // actions: [
-        //   IconButton(
-        //     icon: Icon(
-        //       Icons.more_horiz,
-        //       color: kTealColor,
-        //       size: 28.0.r,
-        //     ),
-        //     onPressed: null,
-        //   ),
-        // ],
+        actions: [
+          IconButton(
+            icon: const Icon(
+              Icons.more_horiz,
+              color: kTealColor,
+            ),
+            onPressed: () => showModalBottomSheet(
+              context: context,
+              useRootNavigator: true,
+              isScrollControlled: true,
+              isDismissible: true,
+              builder: (_) => ProductDetailOptions(
+                onVisitShop: () async {
+                  Navigator.of(context, rootNavigator: true).pop();
+                  await vm.goToShop();
+                },
+                onReportProduct: () {
+                  Navigator.of(context, rootNavigator: true).pop();
+                  vm.onReport();
+                },
+              ),
+            ),
+          ),
+        ],
       ),
       body: KeyboardActions(
         config: KeyboardActionsConfig(
@@ -323,6 +430,7 @@ class _ProductDetailView extends HookView<ProductDetailViewModel> {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: _children,
           ),
         ),

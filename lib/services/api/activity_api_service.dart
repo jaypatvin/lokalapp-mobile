@@ -3,6 +3,7 @@ import 'dart:convert';
 import '../../models/activity_feed.dart';
 import '../../models/post_requests/activities/activity.like.request.dart';
 import '../../models/post_requests/activities/activity.request.dart';
+import '../../models/post_requests/shared/report.dart';
 import 'api.dart';
 import 'api_service.dart';
 import 'client/lokal_http_client.dart';
@@ -124,6 +125,26 @@ class ActivityAPIService extends APIService<ActivityFeed> {
         uri,
         headers: api.withBodyHeader(),
         body: json.encode(ActivityLikeRequest(userId: userId).toJson()),
+      );
+
+      return handleGenericResponse(response);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<bool> report({
+    required String activityId,
+    required Report report,
+  }) async {
+    try {
+      final response = await client.post(
+        api.endpointUri(
+          endpoint,
+          pathSegments: [activityId, 'report'],
+        ),
+        headers: api.withBodyHeader(),
+        body: json.encode(report),
       );
 
       return handleGenericResponse(response);
