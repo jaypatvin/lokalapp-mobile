@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart' show DateFormat;
+import 'package:intl/intl.dart' show DateFormat, Intl;
 import 'package:provider/provider.dart';
 
 import '../../../models/app_navigator.dart';
@@ -13,9 +13,11 @@ import '../../../utils/constants/themes.dart';
 import '../../../utils/repeated_days_generator/schedule_generator.dart';
 import '../../../widgets/app_button.dart';
 import '../../../widgets/calendar_picker/calendar_picker.dart';
+import '../../../widgets/calendar_picker/src/default_styles.dart';
 import '../../../widgets/custom_app_bar.dart';
 import '../../../widgets/overlays/constrained_scrollview.dart';
 import '../../../widgets/photo_box.dart';
+import '../../../widgets/schedule_picker.dart';
 import 'components/product_header.dart';
 import 'product_preview.dart';
 
@@ -38,9 +40,10 @@ class ProductSchedule extends StatefulWidget {
 
 class _ProductScheduleState extends State<ProductSchedule> {
   ProductScheduleState _productSchedule = ProductScheduleState.shop;
-  List<DateTime?> _markedDatesMap = [];
-  List<DateTime?> _selectableDates = [];
-  // List<int> _selectableDays = [1, 2, 3, 4, 5, 6, 7];
+  Set<DateTime> _markedDatesMap = {};
+  Set<DateTime> _selectableDates = {};
+  Set<int> _markedWeekdays = {};
+  Set<int> _selectableWeekdays = {1, 2, 3, 4, 5, 6, 7};
 
   @override
   void initState() {
@@ -52,9 +55,15 @@ class _ProductScheduleState extends State<ProductSchedule> {
     _operatingHours = shops.first.operatingHours;
 
     final _schedule = _generator.generateSchedule(_operatingHours);
-    _selectableDates = _schedule.selectableDates;
-    _markedDatesMap = [..._selectableDates];
-    // _selectableDays = _schedule.selectableDays;
+    _selectableDates = _schedule.selectableDates.toSet();
+    _markedDatesMap = {..._selectableDates};
+
+    // _selectableWeekdays = _schedule.selectableDays.toSet();
+    if (_schedule.repeatType == RepeatChoices.week) {
+      _selectableWeekdays = _schedule.selectableDays.toSet();
+    }
+    _markedWeekdays = {..._selectableWeekdays};
+
     if (widget.productId != null && widget.productId!.isNotEmpty) {
       final product = context.read<Products>().findById(widget.productId);
       if (product != null) {
@@ -62,13 +71,19 @@ class _ProductScheduleState extends State<ProductSchedule> {
         final _productSelectableDates =
             _generator.getSelectableDates(_productSched);
 
-        _markedDatesMap = [..._productSelectableDates];
+        _markedDatesMap = {..._productSelectableDates};
         if (_selectableDates
             .toSet()
             .difference(_productSelectableDates.toSet())
             .isEmpty) {
           _productSchedule = ProductScheduleState.shop;
         } else {
+          _markedWeekdays.clear();
+          for (int i = 1; i <= 7; i++) {
+            if (_productSelectableDates.any((date) => date.weekday == i)) {
+              _markedWeekdays.add(i);
+            }
+          }
           _productSchedule = ProductScheduleState.custom;
         }
       }
@@ -203,27 +218,45 @@ class _ProductScheduleState extends State<ProductSchedule> {
                           _markedDatesMap.whereType<DateTime>().toList(),
                       selectableDates:
                           _selectableDates.whereType<DateTime>().toList(),
-                      // TODO: tappable weekday header
-                      // weekdayWidgetBuilder: (weekday) =>
-                      //     TappableCalendarWeekday(
-                      //   weekday: weekday,
-                      //   dateFormat: DateFormat.yMMM(Intl.defaultLocale),
-                      //   isMarked: _selectableDays.contains(weekday),
-                      //   textStyle: const TextStyle(
-                      //     fontSize: 16,
-                      //     color: Colors.black,
-                      //   ),
-                      //   onPressed: () {
-                      //     setState(() {
-                      //       if (_selectableDays.contains(weekday)) {
-                      //         _selectableDays.remove(weekday);
+                      weekdayWidgetBuilder: (weekday) => _WeekdayWidgetBuilder(
+                        weekday: weekday,
+                        dateFormat: DateFormat.yMMM(Intl.defaultLocale),
+                        isSelectable: _selectableWeekdays.contains(weekday),
+                        isMarked: _markedWeekdays.contains(weekday),
+                        onPressed: () {
+                          if (!_selectableWeekdays.contains(weekday)) {
+                            return;
+                          }
 
-                      //       } else {
-                      //         _selectableDays.add(weekday);
-                      //       }
-                      //     });
-                      //   },
-                      // ),
+                          setState(() {
+                            if (_markedWeekdays.contains(weekday)) {
+                              _markedWeekdays.remove(weekday);
+                              _markedDatesMap.removeWhere(
+                                (date) => date.weekday == weekday,
+                              );
+                            } else {
+                              _markedWeekdays.add(weekday);
+
+                              _markedDatesMap.addAll(
+                                _selectableDates.where((date) {
+                                  final now = DateTime.now();
+                                  return date.weekday == weekday &&
+                                      DateTime(date.year, date.month, date.day)
+                                              .difference(
+                                                DateTime(
+                                                  now.year,
+                                                  now.month,
+                                                  now.day,
+                                                ),
+                                              )
+                                              .inDays >
+                                          0;
+                                }),
+                              );
+                            }
+                          });
+                        },
+                      ),
                     )
                   : null,
             ),
@@ -273,7 +306,7 @@ class _ProductScheduleState extends State<ProductSchedule> {
         ...{
           ...shopSchedule.unavailableDates,
           ...unavailableDates
-              .map((date) => DateFormat('yyyy-MM-dd').format(date!))
+              .map((date) => DateFormat('yyyy-MM-dd').format(date))
               .toList(),
         }
       ],
@@ -288,6 +321,89 @@ class _ProductScheduleState extends State<ProductSchedule> {
         titleText: 'Product Schedule',
       ),
       body: buildBody(),
+    );
+  }
+}
+
+class _WeekdayWidgetBuilder extends StatelessWidget {
+  const _WeekdayWidgetBuilder({
+    Key? key,
+    required this.weekday,
+    required this.dateFormat,
+    this.isMarked = false,
+    this.isSelectable = true,
+    this.isSelected = false,
+    this.onPressed,
+  }) : super(key: key);
+
+  final int weekday;
+  final DateFormat dateFormat;
+
+  final bool isMarked;
+  final bool isSelectable;
+  final bool isSelected;
+
+  final VoidCallback? onPressed;
+
+  TextStyle getDefaultDayStyle() {
+    if (!isSelectable) return defaultInactiveDaysTextStyle;
+    return defaultDaysTextStyle;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    Color borderColor = Colors.transparent;
+    Color buttonColor = Colors.transparent;
+
+    if (isMarked) {
+      if (!isSelectable) {
+        borderColor = buttonColor = Colors.pink;
+      } else {
+        borderColor = buttonColor = Colors.orange;
+      }
+    } else if (isSelectable) {
+      borderColor = Colors.grey.shade300;
+    }
+
+    final EdgeInsets margin =
+        isSelected ? const EdgeInsets.all(0.5) : const EdgeInsets.all(1.0);
+    final EdgeInsets padding =
+        isSelected ? const EdgeInsets.all(2) : const EdgeInsets.all(3.0);
+    final TextStyle _style = isSelected
+        ? getDefaultDayStyle().copyWith(fontSize: 14.0)
+        : getDefaultDayStyle();
+
+    final werapWeekday = weekday % 7;
+    final msg = dateFormat.dateSymbols.STANDALONENARROWWEEKDAYS[werapWeekday];
+
+    return Expanded(
+      child: Container(
+        margin: margin,
+        padding: padding,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          border: Border.all(color: borderColor),
+        ),
+        child: TextButton(
+          onPressed: onPressed,
+          style: TextButton.styleFrom(
+            padding: EdgeInsets.zero,
+            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            backgroundColor: buttonColor,
+            shape: const CircleBorder(
+              side: BorderSide(color: Colors.transparent),
+            ),
+          ),
+          child: Center(
+            child: Text(
+              msg,
+              semanticsLabel: msg,
+              style: _style,
+              maxLines: 1,
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

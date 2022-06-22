@@ -14,6 +14,7 @@ class RepeatedDaysGenerator {
     return diff >= 0;
   }
 
+  /// Generates a List of [DateTime] exactly 1 year from now.
   List<DateTime> getRepeatedDays({
     required DateTime? startDate,
     int everyNDays = 1,
@@ -35,9 +36,9 @@ class RepeatedDaysGenerator {
       if (!_isValidDate(indexDay) && validate) continue;
       repeatedDays.add(indexDay);
 
-      // for exactly 1 year from startDate
-      if (startDate.month == indexDay.month &&
-          startDate.year + 1 == indexDay.year) break;
+      // for exactly 1 year from today
+      final _now = DateTime.now();
+      if (_now.month == indexDay.month && _now.year + 1 == indexDay.year) break;
     }
 
     return [
@@ -45,6 +46,7 @@ class RepeatedDaysGenerator {
     ];
   }
 
+  /// Generates a List of [DateTime] exactly 1 year from now.
   List<DateTime> getRepeatedWeekDays({
     required DateTime? startDate,
     int everyNWeeks = 1,
@@ -102,9 +104,10 @@ class RepeatedDaysGenerator {
         }
       }
 
-      // for exactly 1 year from startDate
-      if ((_startDate.month == indexWeekDay.month &&
-              _startDate.year + 1 == indexWeekDay.year) ||
+      final _now = DateTime.now();
+      // for exactly 1 year from today
+      if ((_now.month == indexWeekDay.month &&
+              _now.year + 1 == indexWeekDay.year) ||
           (maxLength != null && repeatedDays.length == maxLength)) break;
     }
 
@@ -113,6 +116,7 @@ class RepeatedDaysGenerator {
     ];
   }
 
+  /// Generates a List of [DateTime] exactly 1 year from now.
   List<DateTime> getRepeatedMonthDaysByStartDate({
     required DateTime? startDate,
     int everyNMonths = 1,
@@ -144,9 +148,9 @@ class RepeatedDaysGenerator {
       }
       repeatedDays.add(indexDay);
 
-      // for exactly 1 year from startDate
-      if (startDate.month == indexDay.month &&
-          startDate.year + 1 == indexDay.year) {
+      // for exactly 1 year from today
+      final _now = DateTime.now();
+      if (_now.month == indexDay.month && _now.year + 1 == indexDay.year) {
         break;
       }
     }
@@ -156,6 +160,7 @@ class RepeatedDaysGenerator {
     ];
   }
 
+  /// Generates a List of [DateTime] exactly 1 year from now.
   List<DateTime> getRepeatedMonthDaysByNthDay({
     int everyNMonths = 1,
     int? ordinal = 1, // first
@@ -204,9 +209,9 @@ class RepeatedDaysGenerator {
         repeatedDays.add(now);
       }
 
-      // for exactly 1 year from startDate
-      if (startDate.month == indexDay.month &&
-          startDate.year + 1 == indexDay.year) {
+      // for exactly 1 year from today
+      final _now = DateTime.now();
+      if (_now.month == indexDay.month && _now.year + 1 == indexDay.year) {
         break;
       }
     }

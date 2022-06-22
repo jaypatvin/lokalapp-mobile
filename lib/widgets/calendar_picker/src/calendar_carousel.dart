@@ -126,7 +126,9 @@ class _CalendarCarouselState extends State<CalendarCarousel>
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
         _createHeaderView(),
+        const SizedBox(height: 12),
         _createWeekView(),
+        const SizedBox(height: 12),
         _createPageView()
       ],
     );

@@ -250,7 +250,7 @@ class ScheduleGenerator {
   Schedule generateSchedule(OperatingHours operatingHours) {
     final _repeatUnit = operatingHours.repeatUnit;
 
-    final _selectableDays = <int>[];
+    final _selectableDays = <int>{};
     final _startDates = <DateTime>[];
     // Day and week:
     for (final element in operatingHours.startDates) {
@@ -283,7 +283,7 @@ class ScheduleGenerator {
     return Schedule(
       repeatType: _repeatChoice,
       repeatUnit: _repeatUnit,
-      selectableDays: _selectableDays,
+      selectableDays: _selectableDays.toList(),
       startDate: _startDate,
       startDates: _startDates,
       startDayOfMonth: _startDayOfMonth,
