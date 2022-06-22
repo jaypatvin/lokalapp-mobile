@@ -1,9 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
 
+import '../../providers/activities.dart';
 import '../../providers/auth.dart';
 import '../../providers/users.dart';
 import '../../state/mvvm_builder.widget.dart';
@@ -12,18 +14,36 @@ import '../../utils/constants/themes.dart';
 import '../../view_models/profile/profile_screen.vm.dart';
 import '../../widgets/app_button.dart';
 import '../chat/components/chat_avatar.dart';
+import '../home/components/post_card.dart';
 import 'components/current_user_profile.dart';
 import 'components/shop_banner.dart';
-import 'components/timeline.dart';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends HookWidget {
   static const routeName = '/profile';
-
   const ProfileScreen({Key? key, this.userId}) : super(key: key);
   final String? userId;
 
   @override
   Widget build(BuildContext context) {
+    final _slivers = useRef<List<Widget>>(
+      [
+        SliverToBoxAdapter(
+          child: _ProfileHeader(
+            userId: userId ?? context.read<Auth>().user!.id,
+          ),
+        ),
+        SliverToBoxAdapter(
+          child: ShopBanner(
+            userId: userId ?? context.read<Auth>().user!.id,
+          ),
+        ),
+        const SliverToBoxAdapter(child: SizedBox(height: 30)),
+      ],
+    );
+
+    final _isCurrentUser =
+        useRef<bool>(context.read<Auth>().user?.id == userId || userId == null);
+
     if (userId != null) {
       final user = context.watch<Users>().findById(userId);
 
@@ -34,32 +54,70 @@ class ProfileScreen extends StatelessWidget {
       }
     }
 
-    final isCurrentUser =
-        context.read<Auth>().user?.id == userId || userId == null;
     return Scaffold(
       backgroundColor: kInviteScreenColor,
       body: AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle.light,
         child: SafeArea(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _ProfileHeader(
-                userId: userId ?? context.read<Auth>().user!.id,
-              ),
-              ShopBanner(
-                userId: userId ?? context.read<Auth>().user!.id,
-              ),
-              const SizedBox(height: 30),
-              Expanded(
-                child: !isCurrentUser
-                    ? Container(
-                        color: kInviteScreenColor,
-                        child: Timeline(userId: userId),
-                      )
-                    : const CurrentUserProfile(),
-              ),
-            ],
+          child: Builder(
+            builder: (context) {
+              if (_isCurrentUser.value) {
+                return CustomScrollView(
+                  slivers: [
+                    ..._slivers.value,
+                    const SliverFillRemaining(
+                      child: CurrentUserProfile(),
+                    )
+                  ],
+                );
+              } else {
+                return Consumer<Activities>(
+                  builder: (ctx, activities, _) {
+                    final feed = activities.findByUser(userId);
+                    return CustomScrollView(
+                      slivers: [
+                        ..._slivers.value,
+                        if (feed.isEmpty)
+                          const SliverToBoxAdapter(
+                            child: Center(
+                              child: SizedBox(
+                                height: 50,
+                                child: Text(
+                                  'No posts yet!',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          )
+                        else
+                          SliverPadding(
+                            padding: const EdgeInsets.fromLTRB(16, 0, 16, 6),
+                            sliver: SliverList(
+                              delegate: SliverChildBuilderDelegate(
+                                (ctx2, index) {
+                                  final activity = feed[index];
+                                  return Padding(
+                                    padding: index == 0
+                                        ? EdgeInsets.zero
+                                        : const EdgeInsets.only(top: 20),
+                                    child: PostCard(
+                                      key: Key(activity.id),
+                                      activity: activity,
+                                    ),
+                                  );
+                                },
+                                childCount: feed.length,
+                              ),
+                            ),
+                          ),
+                      ],
+                    );
+                  },
+                );
+              }
+            },
           ),
         ),
       ),
