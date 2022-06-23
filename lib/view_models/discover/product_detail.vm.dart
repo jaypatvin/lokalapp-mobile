@@ -1,11 +1,12 @@
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/app_navigator.dart';
 import '../../models/failure_exception.dart';
+import '../../models/post_requests/shared/application_log.dart';
 import '../../models/product.dart';
 import '../../models/shop.dart';
 import '../../providers/auth.dart';
@@ -18,9 +19,11 @@ import '../../screens/activity/subscriptions/subscription_schedule.dart';
 import '../../screens/discover/product_reviews.dart';
 import '../../screens/discover/report_product.dart';
 import '../../screens/profile/shop/user_shop.dart';
+import '../../services/application_logger.dart';
 import '../../services/bottom_nav_bar_hider.dart';
 import '../../state/view_model.dart';
 import '../../utils/constants/themes.dart';
+import '../../utils/functions.utils.dart';
 import '../../utils/repeated_days_generator/schedule_generator.dart';
 
 class ProductDetailViewModel extends ViewModel {
@@ -69,6 +72,13 @@ class ProductDetailViewModel extends ViewModel {
       _buttonLabel = 'ADD TO CART';
     }
     _buttonColor = kTealColor;
+    context.read<ApplicationLogger>().log(
+      actionType: ActionTypes.productView,
+      metaData: {
+        'product_id': product.id,
+        'shop_id': shop.id,
+      },
+    );
   }
 
   void _checkDateAvailability() {
@@ -79,10 +89,11 @@ class ProductDetailViewModel extends ViewModel {
     final _now = DateTime.now();
 
     open = _selectableDates.any((date) =>
-        date.year == _now.year &&
-        date.month == _now.month &&
-        // ignore: require_trailing_commas
-        _now.day == date.day);
+            date.year == _now.year &&
+            date.month == _now.month &&
+            // ignore: require_trailing_commas
+            _now.day == date.day) &&
+        _isInOperatingHours();
 
     if (open) return;
 
@@ -94,6 +105,20 @@ class ProductDetailViewModel extends ViewModel {
     });
     nearestDate = 'Nearest date: '
         '${DateFormat('MMMM dd').format(_nearestAvailableDate)}';
+  }
+
+  bool _isInOperatingHours() {
+    final _now = DateTime.now();
+    final _opening = stringToTimeOfDay(shop.operatingHours.startTime);
+    final _closing = stringToTimeOfDay(shop.operatingHours.endTime);
+    final _timeNow = TimeOfDay.fromDateTime(_now);
+
+    final _openingInMinutes = (_opening.hour * 60) + _opening.minute;
+    final _closingInMinutes = (_closing.hour * 60) + _closing.minute;
+    final _nowInMinutes = (_timeNow.hour * 60) + _timeNow.minute;
+
+    return _openingInMinutes <= _nowInMinutes &&
+        _nowInMinutes <= _closingInMinutes;
   }
 
   void onInstructionsChanged(String value) {
@@ -228,10 +253,19 @@ class ProductDetailViewModel extends ViewModel {
         product.likes.remove(context.read<Auth>().user!.id);
         showToast('Unliked!');
       } else {
-        context.read<Products>().likeProduct(
-              productId: product.id,
-              userId: context.read<Auth>().user!.id,
-            );
+        context
+          ..read<Products>().likeProduct(
+            productId: product.id,
+            userId: context.read<Auth>().user!.id,
+          )
+          ..read<ApplicationLogger>().log(
+            actionType: ActionTypes.productLike,
+            metaData: {
+              'product_id': product.id,
+              'shop_id': shop.id,
+            },
+          );
+
         product.likes.add(context.read<Auth>().user!.id);
         showToast('Liked!');
       }

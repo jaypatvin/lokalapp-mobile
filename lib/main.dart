@@ -29,12 +29,15 @@ import 'providers/wishlist.dart';
 import 'root/root.dart';
 import 'routers/app_router.dart';
 import 'services/api/api.dart';
+import 'services/application_logger.dart';
 import 'services/bottom_nav_bar_hider.dart';
 import 'services/database/database.dart';
+import 'services/device_info_provider.dart';
 import 'services/local_image_service.dart';
 import 'utils/connectivity_status.dart';
 import 'utils/constants/assets.dart';
 import 'utils/constants/themes.dart';
+import 'utils/device_info.dart';
 import 'utils/media_utility.dart';
 import 'utils/shared_preference.dart';
 import 'widgets/overlays/screen_loader.dart';
@@ -82,6 +85,7 @@ class _MyAppState extends State<MyApp> {
   late final PersistentTabController _tabController;
   late final API _api;
   late final Database _db;
+  late final DeviceInfoProvider _infoProvider;
 
   @override
   void initState() {
@@ -93,6 +97,7 @@ class _MyAppState extends State<MyApp> {
     _api = API();
     _db = Database();
     _router = AppRouter(_tabController);
+    _infoProvider = DeviceInfoProvider();
   }
 
   @override
@@ -195,10 +200,23 @@ class _MyAppState extends State<MyApp> {
         lazy: true,
       ),
 
+      ChangeNotifierProvider<DeviceInfoProvider>.value(value: _infoProvider),
+
       // services:
       Provider<MediaUtility?>(create: (_) => MediaUtility()),
       Provider<LocalImageService?>(
         create: (_) => LocalImageService(database: _db),
+      ),
+
+      ProxyProvider<Auth, ApplicationLogger>(
+        create: (_) => ApplicationLogger(api: _api, deviceInfo: _infoProvider),
+        update: (_, auth, logger) {
+          logger?.communityId = auth.user?.communityId;
+          return logger ??
+              ApplicationLogger(api: _api, deviceInfo: _infoProvider)
+            ..communityId = auth.user?.communityId;
+        },
+        lazy: true,
       ),
     ];
   }
@@ -208,111 +226,113 @@ class _MyAppState extends State<MyApp> {
     return MultiProvider(
       providers: _getProviders(),
       child: OKToast(
-        child: ConnectivityStatus(
-          child: ScreenLoaderApp(
-            globalLoadingBgBlur: 0,
-            globalLoader: SizedBox(
-              width: double.infinity,
-              height: double.infinity,
-              child: DecoratedBox(
-                decoration: const BoxDecoration(
-                  color: Colors.white,
+        child: DeviceInfo(
+          child: ConnectivityStatus(
+            child: ScreenLoaderApp(
+              globalLoadingBgBlur: 0,
+              globalLoader: SizedBox(
+                width: double.infinity,
+                height: double.infinity,
+                child: DecoratedBox(
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                  ),
+                  child: Lottie.asset(kAnimationLoading),
                 ),
-                child: Lottie.asset(kAnimationLoading),
               ),
-            ),
-            app: MaterialApp(
-              debugShowCheckedModeBanner: false,
-              title: 'Lokal',
-              theme: ThemeData(
-                primarySwatch: Colors.teal,
-                primaryColor: const Color(0xFF09A49A),
-                colorScheme: ColorScheme.fromSwatch(
+              app: MaterialApp(
+                debugShowCheckedModeBanner: false,
+                title: 'Lokal',
+                theme: ThemeData(
                   primarySwatch: Colors.teal,
-                  accentColor: const Color(0xFFFF7A00),
+                  primaryColor: const Color(0xFF09A49A),
+                  colorScheme: ColorScheme.fromSwatch(
+                    primarySwatch: Colors.teal,
+                    accentColor: const Color(0xFFFF7A00),
+                  ),
+                  fontFamily: 'Goldplay',
+                  appBarTheme: const AppBarTheme(
+                    titleTextStyle: TextStyle(
+                      fontFamily: 'Goldplay',
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20.0,
+                    ),
+                  ),
+                  textTheme: const TextTheme(
+                    headline1: TextStyle(
+                      fontSize: 96,
+                      fontWeight: FontWeight.bold,
+                      color: kNavyColor,
+                    ),
+                    headline2: TextStyle(
+                      fontSize: 60.0,
+                      fontWeight: FontWeight.bold,
+                      color: kNavyColor,
+                    ),
+                    headline3: TextStyle(
+                      fontSize: 48.0,
+                      fontWeight: FontWeight.bold,
+                      color: kNavyColor,
+                    ),
+                    headline4: TextStyle(
+                      fontSize: 30.0,
+                      fontWeight: FontWeight.bold,
+                      color: kNavyColor,
+                    ),
+                    headline5: TextStyle(
+                      fontSize: 24.0,
+                      fontWeight: FontWeight.bold,
+                      color: kNavyColor,
+                    ),
+                    headline6: TextStyle(
+                      fontSize: 20.0,
+                      fontWeight: FontWeight.w600,
+                      color: kNavyColor,
+                    ),
+                    subtitle1: TextStyle(
+                      fontSize: 16.0,
+                      fontWeight: FontWeight.w600,
+                      color: kNavyColor,
+                    ),
+                    subtitle2: TextStyle(
+                      fontSize: 14.0,
+                      fontWeight: FontWeight.w600,
+                      color: kNavyColor,
+                    ),
+                    bodyText1: TextStyle(
+                      fontSize: 16.0,
+                      fontWeight: FontWeight.w500,
+                      color: kNavyColor,
+                    ),
+                    bodyText2: TextStyle(
+                      fontSize: 14.0,
+                      fontWeight: FontWeight.w500,
+                      color: kNavyColor,
+                    ),
+                  ),
+                  scaffoldBackgroundColor: Colors.white,
                 ),
-                fontFamily: 'Goldplay',
-                appBarTheme: const AppBarTheme(
-                  titleTextStyle: TextStyle(
-                    fontFamily: 'Goldplay',
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20.0,
-                  ),
-                ),
-                textTheme: const TextTheme(
-                  headline1: TextStyle(
-                    fontSize: 96,
-                    fontWeight: FontWeight.bold,
-                    color: kNavyColor,
-                  ),
-                  headline2: TextStyle(
-                    fontSize: 60.0,
-                    fontWeight: FontWeight.bold,
-                    color: kNavyColor,
-                  ),
-                  headline3: TextStyle(
-                    fontSize: 48.0,
-                    fontWeight: FontWeight.bold,
-                    color: kNavyColor,
-                  ),
-                  headline4: TextStyle(
-                    fontSize: 30.0,
-                    fontWeight: FontWeight.bold,
-                    color: kNavyColor,
-                  ),
-                  headline5: TextStyle(
-                    fontSize: 24.0,
-                    fontWeight: FontWeight.bold,
-                    color: kNavyColor,
-                  ),
-                  headline6: TextStyle(
-                    fontSize: 20.0,
-                    fontWeight: FontWeight.w600,
-                    color: kNavyColor,
-                  ),
-                  subtitle1: TextStyle(
-                    fontSize: 16.0,
-                    fontWeight: FontWeight.w600,
-                    color: kNavyColor,
-                  ),
-                  subtitle2: TextStyle(
-                    fontSize: 14.0,
-                    fontWeight: FontWeight.w600,
-                    color: kNavyColor,
-                  ),
-                  bodyText1: TextStyle(
-                    fontSize: 16.0,
-                    fontWeight: FontWeight.w500,
-                    color: kNavyColor,
-                  ),
-                  bodyText2: TextStyle(
-                    fontSize: 14.0,
-                    fontWeight: FontWeight.w500,
-                    color: kNavyColor,
-                  ),
-                ),
-                scaffoldBackgroundColor: Colors.white,
+                home: const Root(),
+                navigatorKey: _router.keyOf(AppRoute.root),
+                initialRoute: '/',
+                onGenerateRoute:
+                    _router.navigatorOf(AppRoute.root).onGenerateRoute,
+                builder: (context, widget) {
+                  Widget error = const Text('Error in displaying the screen');
+                  if (widget is Scaffold || widget is Navigator) {
+                    error = Scaffold(body: Center(child: error));
+                  }
+                  ErrorWidget.builder = (errorDetails) => error;
+
+                  return widget!;
+
+                  // The following removes the font scaling with device font size
+                  // return MediaQuery(
+                  //   data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+                  //   child: widget!,
+                  // );
+                },
               ),
-              home: const Root(),
-              navigatorKey: _router.keyOf(AppRoute.root),
-              initialRoute: '/',
-              onGenerateRoute:
-                  _router.navigatorOf(AppRoute.root).onGenerateRoute,
-              builder: (context, widget) {
-                Widget error = const Text('Error in displaying the screen');
-                if (widget is Scaffold || widget is Navigator) {
-                  error = Scaffold(body: Center(child: error));
-                }
-                ErrorWidget.builder = (errorDetails) => error;
-
-                return widget!;
-
-                // The following removes the font scaling with device font size
-                // return MediaQuery(
-                //   data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
-                //   child: widget!,
-                // );
-              },
             ),
           ),
         ),

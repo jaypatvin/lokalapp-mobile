@@ -1,14 +1,17 @@
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:oktoast/oktoast.dart';
+import 'package:provider/provider.dart';
 import 'package:validators/validators.dart';
 
 import '../../../models/app_navigator.dart';
 import '../../../models/failure_exception.dart';
 import '../../../models/lokal_invite.dart';
+import '../../../models/post_requests/shared/application_log.dart';
 import '../../../screens/profile/settings/invite_a_friend/invite_sent.dart';
 import '../../../services/api/api.dart';
 import '../../../services/api/invite_api_service.dart';
+import '../../../services/application_logger.dart';
 import '../../../state/view_model.dart';
 
 class InviteAFriendViewModel extends ViewModel {
@@ -66,6 +69,10 @@ class InviteAFriendViewModel extends ViewModel {
         throw UnimplementedError('Phone number is not yet supported');
       }
       if (invite.code == null) throw 'No Invite code Provided';
+
+      await context
+          .read<ApplicationLogger>()
+          .log(actionType: ActionTypes.userInvite);
 
       Navigator.of(context).pushReplacement(
         AppNavigator.appPageRoute(builder: (_) => InviteSent(invite)),

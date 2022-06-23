@@ -4,6 +4,7 @@ import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/failure_exception.dart';
+import '../../models/post_requests/shared/application_log.dart';
 import '../../models/product.dart';
 import '../../models/shop.dart';
 import '../../providers/auth.dart';
@@ -13,6 +14,7 @@ import '../../providers/shops.dart';
 import '../../routers/app_router.dart';
 import '../../routers/profile/props/user_shop.props.dart';
 import '../../screens/profile/shop/user_shop.dart';
+import '../../services/application_logger.dart';
 import '../../state/view_model.dart';
 
 class ProductCardViewModel extends ViewModel {
@@ -59,10 +61,19 @@ class ProductCardViewModel extends ViewModel {
             );
         showToast('Unliked!');
       } else {
-        context.read<Products>().likeProduct(
-              productId: productId,
-              userId: context.read<Auth>().user!.id,
-            );
+        context
+          ..read<Products>().likeProduct(
+            productId: productId,
+            userId: context.read<Auth>().user!.id,
+          )
+          ..read<ApplicationLogger>().log(
+            actionType: ActionTypes.productLike,
+            metaData: {
+              'product_id': product.id,
+              'shop_id': shop.id,
+            },
+          );
+
         showToast('Liked!');
       }
     } catch (e, stack) {

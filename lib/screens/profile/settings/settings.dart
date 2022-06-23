@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../models/app_navigator.dart';
+import '../../../models/post_requests/shared/application_log.dart';
 import '../../../providers/auth.dart';
 import '../../../providers/cart.dart';
 import '../../../routers/app_router.dart';
+import '../../../services/application_logger.dart';
 import '../../../utils/constants/themes.dart';
 import '../../../widgets/app_button.dart';
 import '../../../widgets/custom_app_bar.dart';
@@ -265,6 +267,9 @@ class Settings extends StatelessWidget {
                     color: kPinkColor,
                     onPressed: () async {
                       final _auth = context.read<Auth>();
+                      context
+                          .read<ApplicationLogger>()
+                          .log(actionType: ActionTypes.userLogout);
                       context.read<ShoppingCart>().clear();
                       context.read<AppRouter>()
                         ..jumpToTab(AppRoute.home)

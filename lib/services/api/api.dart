@@ -34,6 +34,9 @@ enum Endpoint {
 
   /// API endpoint for different user operations
   user,
+
+  /// API endpoint for application logs
+  applicationLogs,
 }
 
 /// Extension class that gives the path for the given Endpoint
@@ -63,6 +66,8 @@ extension EndpointPath on Endpoint {
         return 'productSubscriptionPlans';
       case Endpoint.user:
         return 'users';
+      case Endpoint.applicationLogs:
+        return 'applicationLogs';
     }
   }
 }
