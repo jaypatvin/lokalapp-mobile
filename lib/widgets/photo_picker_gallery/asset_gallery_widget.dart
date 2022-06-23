@@ -62,7 +62,6 @@ class _AssetGalleryWidgetState extends State<AssetGalleryWidget> {
       child: ListView.separated(
         key: ValueKey(widget.path),
         separatorBuilder: (ctx, index) => const SizedBox(width: 8),
-        shrinkWrap: true,
         scrollDirection: Axis.horizontal,
         itemCount: itemCount,
         itemBuilder: (context, index) => SizedBox(
@@ -80,7 +79,8 @@ class _AssetGalleryWidgetState extends State<AssetGalleryWidget> {
       return widget.buildItem(context, asset, widget.thumbSize);
     } else {
       return FutureBuilder<List<AssetEntity>>(
-        future: widget.path!.getAssetListRange(start: index, end: index + 1),
+        initialData: const [],
+        future: widget.path?.getAssetListRange(start: index, end: index + 1),
         builder: (ctx, snapshot) {
           if (!snapshot.hasData || snapshot.data!.isEmpty) {
             return widget.scrollingWidget;
