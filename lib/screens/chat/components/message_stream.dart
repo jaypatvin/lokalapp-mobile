@@ -12,7 +12,6 @@ import 'package:swipe_to/swipe_to.dart';
 import '../../../models/conversation.dart';
 import '../../../providers/auth.dart';
 import '../../../utils/constants/themes.dart';
-import '../../../utils/hooks/automatic_keep_alive.dart';
 import '../chat_bubble.dart';
 
 class MessageStream extends HookWidget {

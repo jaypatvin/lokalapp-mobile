@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
@@ -14,7 +15,6 @@ import '../../../state/mvvm_builder.widget.dart';
 import '../../../state/views/hook.view.dart';
 import '../../../utils/constants/assets.dart';
 import '../../../utils/constants/themes.dart';
-import '../../../utils/hooks/automatic_keep_alive.dart';
 import '../../../view_models/chat/chat_stream.vm.dart';
 import '../../../widgets/app_button.dart';
 import '../../../widgets/inputs/search_text_field.dart';
