@@ -199,9 +199,7 @@ class _RegistrationForm extends StatelessWidget {
   final FocusNode lastNameNode;
   final FocusNode streetAdddressNode;
   final InputDecoration formFieldDecoration;
-  final VoidCallback? onChanged;
   final VoidCallback onFormSubmit;
-  final TextStyle? termsAndPolicyTextStyle;
 
   const _RegistrationForm({
     Key? key,
@@ -214,19 +212,11 @@ class _RegistrationForm extends StatelessWidget {
     required this.firstNameNode,
     required this.lastNameNode,
     required this.streetAdddressNode,
-    this.onChanged,
-    this.termsAndPolicyTextStyle = const TextStyle(
-      color: Colors.black,
-      fontFamily: 'Goldplay',
-      fontWeight: FontWeight.w400,
-      fontSize: 12,
-    ),
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Form(
-      onChanged: onChanged,
       key: formKey,
       child: Column(
         children: [
@@ -259,28 +249,37 @@ class _RegistrationForm extends StatelessWidget {
                 ? null
                 : 'You must accept the Terms & Conditions and Privacy Policy',
             title: RichText(
-              text: TextSpan(
+              text: const TextSpan(
                 children: [
-                  const TextSpan(text: 'I have read the '),
+                  TextSpan(text: 'I have read the '),
                   TextSpan(
                     text: 'Terms & Conditions',
-                    style: termsAndPolicyTextStyle?.copyWith(
+                    style: TextStyle(
                       color: kTealColor,
-                      decoration: TextDecoration.underline,
+                      fontFamily: 'Goldplay',
                       fontWeight: FontWeight.w600,
+                      fontSize: 12,
+                      decoration: TextDecoration.underline,
                     ),
                   ),
-                  const TextSpan(text: ' and '),
+                  TextSpan(text: ' and '),
                   TextSpan(
                     text: 'Privacy Policy',
-                    style: termsAndPolicyTextStyle?.copyWith(
+                    style: TextStyle(
                       color: kTealColor,
-                      decoration: TextDecoration.underline,
+                      fontFamily: 'Goldplay',
                       fontWeight: FontWeight.w600,
+                      fontSize: 12,
+                      decoration: TextDecoration.underline,
                     ),
                   ),
                 ],
-                style: termsAndPolicyTextStyle,
+                style: TextStyle(
+                  color: Colors.black,
+                  fontFamily: 'Goldplay',
+                  fontWeight: FontWeight.w400,
+                  fontSize: 12,
+                ),
               ),
             ),
           ),

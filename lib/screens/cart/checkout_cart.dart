@@ -120,12 +120,10 @@ class CheckoutCart extends StatelessWidget {
 
 class _CheckOutCartAppBar extends StatelessWidget
     implements PreferredSizeWidget {
-  final double height;
-
-  const _CheckOutCartAppBar({this.height = kToolbarHeight});
+  const _CheckOutCartAppBar({Key? key}) : super(key: key);
 
   @override
-  Size get preferredSize => Size.fromHeight(height);
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 
   @override
   Widget build(BuildContext context) {

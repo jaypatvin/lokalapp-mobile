@@ -148,12 +148,10 @@ class _MessageImages extends StatelessWidget {
   const _MessageImages({
     Key? key,
     required this.images,
-    this.fit = BoxFit.cover,
     this.forFocus = false,
   }) : super(key: key);
 
   final List<LokalImages> images;
-  final BoxFit fit;
   final bool forFocus;
 
   @override
@@ -184,12 +182,10 @@ class _FileImages extends StatelessWidget {
   const _FileImages({
     Key? key,
     required this.images,
-    this.fit = BoxFit.cover,
     this.forFocus = false,
   }) : super(key: key);
 
   final List<AssetEntity> images;
-  final BoxFit fit;
   final bool forFocus;
 
   @override

@@ -156,10 +156,14 @@ class _CommentCardView extends HookView<CommentCardViewModel> {
 }
 
 class _CommentOptions extends StatelessWidget {
+  // TODO: add comment options
   const _CommentOptions({
     Key? key,
+    // ignore: unused_element
     this.onReply,
+    // ignore: unused_element
     this.onHide,
+    // ignore: unused_element
     this.onReport,
     this.onDelete,
   }) : super(key: key);

@@ -75,7 +75,7 @@ class _ConnectivityStatusState extends State<ConnectivityStatus>
     }
 
     if (!mounted) {
-      return Future.value(null);
+      return Future.value();
     }
 
     return _updateConnectionStatus(result);

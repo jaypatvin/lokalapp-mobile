@@ -53,7 +53,7 @@ class _MVVMState<T extends ViewModel> extends State<MVVM<T>>
     super.initState();
     _vm = widget.viewModel;
 
-    WidgetsBinding.instance?.addObserver(this);
+    WidgetsBinding.instance.addObserver(this);
   }
 
   @override
@@ -93,7 +93,7 @@ class _MVVMState<T extends ViewModel> extends State<MVVM<T>>
 
   @override
   void dispose() {
-    WidgetsBinding.instance?.removeObserver(this);
+    WidgetsBinding.instance.removeObserver(this);
     _vm.onDispose();
     super.dispose();
   }
