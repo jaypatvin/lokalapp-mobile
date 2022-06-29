@@ -31,14 +31,14 @@ class _SearchView extends HookView<SearchViewModel> {
     final _recentSearchesLabel = useMemoized(() {
       return const SliverToBoxAdapter(
         child: Padding(
-          padding: EdgeInsets.all(12),
+          padding: EdgeInsets.symmetric(horizontal: 16),
           child: Text(
             'Recent Searches',
             style: TextStyle(
               fontSize: 20.0,
               fontFamily: 'Goldplay',
-              fontWeight: FontWeight.bold,
-              color: Colors.black,
+              fontWeight: FontWeight.w600,
+              color: kNavyColor,
             ),
           ),
         ),
@@ -49,12 +49,45 @@ class _SearchView extends HookView<SearchViewModel> {
       return SliverList(
         delegate: SliverChildBuilderDelegate(
           (ctx2, index) {
-            return ListTile(
-              onTap: () => vm.onRecentTap(index),
-              title: Text(vm.recentSearches[index]),
-              trailing: IconButton(
-                onPressed: () => vm.onSearchDelete(index),
-                icon: const Icon(Icons.close),
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: SizedBox(
+                child: DecoratedBox(
+                  decoration: const BoxDecoration(
+                    border: Border(
+                      bottom: BorderSide(
+                        color: Color(0xFFF2F2F2),
+                      ),
+                    ),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 20),
+                    child: GestureDetector(
+                      onTap: () => vm.onRecentTap(index),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            vm.recentSearches[index],
+                            style:
+                                Theme.of(context).textTheme.bodyText2?.copyWith(
+                                      color: const Color(0xFF828282),
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                          ),
+                          GestureDetector(
+                            child: const Icon(
+                              Icons.close,
+                              size: 16,
+                              color: kTealColor,
+                            ),
+                            onTap: () => vm.onSearchDelete(index),
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
               ),
             );
           },
@@ -94,7 +127,13 @@ class _SearchView extends HookView<SearchViewModel> {
 
           if (vm.searchController.text.isEmpty) {
             return CustomScrollView(
-              slivers: [_recentSearchesLabel, _recentSearchesList],
+              slivers: [
+                const SliverToBoxAdapter(
+                  child: SizedBox(height: 32),
+                ),
+                _recentSearchesLabel,
+                _recentSearchesList
+              ],
             );
           }
 
@@ -102,14 +141,15 @@ class _SearchView extends HookView<SearchViewModel> {
             slivers: [
               SliverToBoxAdapter(
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 32, 16, 11),
+                  padding: const EdgeInsets.fromLTRB(16, 32, 16, 0),
                   child: Text(
-                    '${vm.searchResults.length} results for '
+                    '${vm.searchResults.length} '
+                    'result${vm.searchResults.length == 1 ? '' : 's'} for '
                     "'${vm.searchController.text}'",
-                    style: Theme.of(context).textTheme.subtitle2?.copyWith(
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold,
-                        ),
+                    style: Theme.of(context)
+                        .textTheme
+                        .subtitle1
+                        ?.copyWith(color: Colors.black),
                   ),
                 ),
               ),
@@ -139,9 +179,16 @@ class _SearchView extends HookView<SearchViewModel> {
                       crossAxisSpacing: 8,
                     ),
                   ),
+                )
+              else ...[
+                const SliverToBoxAdapter(
+                  child: SizedBox(height: 32),
                 ),
-              if (vm.searchResults.isEmpty) _recentSearchesLabel,
-              if (vm.searchResults.isEmpty) _recentSearchesList,
+                _recentSearchesLabel,
+                _recentSearchesList,
+              ],
+              // if (vm.searchResults.isEmpty) _recentSearchesLabel,
+              // if (vm.searchResults.isEmpty) _recentSearchesList,
             ],
           );
         },
