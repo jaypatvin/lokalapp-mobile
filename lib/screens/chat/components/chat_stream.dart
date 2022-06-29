@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
@@ -64,16 +65,32 @@ class _ChatStreamView extends HookView<ChatStreamViewModel> {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(child: Lottie.asset(kAnimationLoading));
         }
-        if (snapshot.data?.isEmpty ?? true) {
-          return const Center(
-            child: Text(
-              "It's lonely here. No Chats yet!",
-              style: TextStyle(
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          );
-        }
+        // if (snapshot.data?.isEmpty ?? true) {
+        // return Stack(
+        //   children: [
+        //     Positioned.fill(
+        //       top: 10,
+        //       child: SvgPicture.asset(
+        //         kSvgBackgroundHouses,
+        //         color: kTealColor,
+        //         fit: BoxFit.cover,
+        //       ),
+        //     ),
+        //     const Center(
+        //       child: Text(
+        //         'No messages yet!',
+        //         textAlign: TextAlign.center,
+        //         style: TextStyle(
+        //           fontFamily: 'Goldplay',
+        //           fontWeight: FontWeight.w600,
+        //           fontSize: 16,
+        //           color: Color(0xFF4F4F4F),
+        //         ),
+        //       ),
+        //     ),
+        //   ],
+        // );
+        // }
 
         return CustomScrollView(
           slivers: [
@@ -87,7 +104,36 @@ class _ChatStreamView extends HookView<ChatStreamViewModel> {
                 ),
               ),
             ),
-            _ChatList(chats: vm.getChats(snapshot)),
+            if (snapshot.data?.isEmpty ?? true)
+              SliverFillRemaining(
+                hasScrollBody: false,
+                child: Stack(
+                  children: [
+                    Positioned.fill(
+                      top: 10,
+                      child: SvgPicture.asset(
+                        kSvgBackgroundHouses,
+                        color: kTealColor,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    const Center(
+                      child: Text(
+                        'No messages yet!',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontFamily: 'Goldplay',
+                          fontWeight: FontWeight.w600,
+                          fontSize: 16,
+                          color: Color(0xFF4F4F4F),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              )
+            else
+              _ChatList(chats: vm.getChats(snapshot)),
           ],
         );
       },
