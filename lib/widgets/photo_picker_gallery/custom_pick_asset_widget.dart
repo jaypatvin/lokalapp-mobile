@@ -10,7 +10,7 @@ class CustomPickAssetWidget extends StatelessWidget {
   final AssetEntity asset;
   final int thumbSize;
   final CustomPickerDataProvider? provider;
-  final Function? onTap;
+  final VoidCallback? onTap;
   final PickColorMaskBuilder? pickColorMaskBuilder;
   final PickedCheckboxBuilder? pickedCheckboxBuilder;
 
@@ -57,7 +57,10 @@ class CustomPickAssetWidget extends StatelessWidget {
     }
 
     return GestureDetector(
-      onTap: onTap as void Function()?,
+      onTap: () {
+        onTap?.call();
+        provider?.pickEntity(asset);
+      },
       child: Stack(
         children: <Widget>[
           Positioned.fill(

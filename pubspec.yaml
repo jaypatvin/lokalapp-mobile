@@ -1,7 +1,7 @@
 name: lokalapp
 description: A new Flutter project.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
-version: 1.0.0+1
+version: 1.0.58+10058
 
 environment:
   sdk: '>=2.12.0 <3.0.0'
@@ -14,6 +14,7 @@ dependencies:
   connectivity_plus: ^2.1.0
   crypto: ^3.0.1
   cupertino_icons: ^1.0.3
+  device_info_plus: ^4.0.0
   firebase_auth: ^3.1.3
   firebase_core: ^1.7.0
   firebase_crashlytics: ^2.5.0
@@ -47,7 +48,7 @@ dependencies:
       url: https://github.com/jaypatvin/PersistentBottomNavBar
       ref: master
   photo_manager: ^2.0.1
-  photo_view: ^0.13.0
+  photo_view: ^0.14.0
   provider: ^6.0.1
   recase: ^4.0.0
   rflutter_alert: ^2.0.4

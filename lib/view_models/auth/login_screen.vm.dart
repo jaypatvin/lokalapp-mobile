@@ -7,12 +7,14 @@ import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/failure_exception.dart';
+import '../../models/post_requests/shared/application_log.dart';
 import '../../providers/auth.dart';
 import '../../providers/bank_codes.dart';
 import '../../providers/categories.dart';
 import '../../routers/app_router.dart';
 import '../../screens/auth/invite_screen.dart';
 import '../../screens/bottom_navigation.dart';
+import '../../services/application_logger.dart';
 import '../../state/view_model.dart';
 
 class LoginScreenViewModel extends ViewModel {
@@ -54,12 +56,22 @@ class LoginScreenViewModel extends ViewModel {
       if (!(formKey.currentState?.validate() ?? false)) return;
 
       await context.read<Auth>().loginWithEmail(email, password);
+      context.read<ApplicationLogger>().log(
+        actionType: ActionTypes.userLogin,
+        communityId: context.read<Auth>().user?.communityId,
+        metaData: {'email': email},
+      );
+
       await _loginHandler();
     } on FirebaseAuthException catch (e, stack) {
       switch (e.code) {
         case 'invalid-email':
         case 'wrong-password':
           _errorMessage = 'The email and password combination is incorrect.';
+          context.read<ApplicationLogger>().log(
+            actionType: ActionTypes.userLoginFailed,
+            metaData: {'email': email},
+          );
           notifyListeners();
           break;
         case 'user-not-found':

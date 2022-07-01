@@ -6,6 +6,7 @@ import '../../../models/app_navigator.dart';
 import '../../../models/failure_exception.dart';
 import '../../../models/lokal_images.dart';
 import '../../../models/lokal_user.dart';
+import '../../../models/post_requests/shared/application_log.dart';
 import '../../../models/product.dart';
 import '../../../models/shop.dart';
 import '../../../providers/auth.dart';
@@ -20,6 +21,7 @@ import '../../../screens/profile/add_shop/edit_shop.dart';
 import '../../../screens/profile/profile_screen.dart';
 import '../../../screens/profile/settings/settings.dart';
 import '../../../screens/profile/shop/report_shop.dart';
+import '../../../services/application_logger.dart';
 import '../../../state/view_model.dart';
 import '../../../utils/constants/themes.dart';
 import '../../../utils/functions.utils.dart';
@@ -68,6 +70,13 @@ class UserShopViewModel extends ViewModel {
         : context.read<Users>().findById(userId);
 
     _products = context.read<Products>().findByShop(shop.id);
+
+    if (!isCurrentUser) {
+      context.read<ApplicationLogger>().log(
+        actionType: ActionTypes.shopView,
+        metaData: {'shop_id': shop.id},
+      );
+    }
   }
 
   void _shopSetup() {
