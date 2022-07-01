@@ -147,12 +147,11 @@ class _ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
 
 // This is the tab controller for the user  & shop chats
 class _ChatAppBarBottom extends StatelessWidget implements PreferredSizeWidget {
-  final double height;
   final TabController tabController;
-  const _ChatAppBarBottom({this.height = 50.0, required this.tabController});
+  const _ChatAppBarBottom({required this.tabController});
 
   @override
-  Size get preferredSize => Size.fromHeight(height);
+  Size get preferredSize => const Size.fromHeight(60.0);
 
   Widget _tabChild({
     String? imgUrl,

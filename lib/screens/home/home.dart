@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lottie/lottie.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
@@ -109,14 +110,34 @@ class Home extends HookWidget {
                     ),
                   )
                 else if (activities.feed.isEmpty)
-                  const SliverFillRemaining(
-                    child: Center(
-                      child: Text(
-                        'No posts yet! Be the first one to post.',
-                        style: TextStyle(
-                          fontWeight: FontWeight.w500,
+                  SliverFillRemaining(
+                    hasScrollBody: false,
+                    child: Stack(
+                      children: [
+                        Positioned.fill(
+                          top: 10,
+                          child: SvgPicture.asset(
+                            kSvgBackgroundHouses,
+                            color: kTealColor,
+                            fit: BoxFit.cover,
+                          ),
                         ),
-                      ),
+                        const Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 62),
+                          child: Center(
+                            child: Text(
+                              'No posts yet! Be the first from your community.',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontFamily: 'Goldplay',
+                                fontWeight: FontWeight.w600,
+                                fontSize: 16,
+                                color: Color(0xFF4F4F4F),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   )
                 else

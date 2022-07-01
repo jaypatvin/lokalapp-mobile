@@ -69,7 +69,10 @@ class SearchViewModel extends ViewModel {
       );
 
       if (response['products']!.isEmpty) {
-        throw 'No search results. Refine or search for another.';
+        throw FailureException(
+          'no-results',
+          'No search results. Refine or search for another.',
+        );
       }
 
       for (final id in response['products']!) {
@@ -79,6 +82,13 @@ class SearchViewModel extends ViewModel {
         _searchResults.add(product);
       }
 
+      _isSearching = false;
+      notifyListeners();
+    } on FailureException catch (e, stack) {
+      if (e.message != 'no-results') {
+        FirebaseCrashlytics.instance.recordError(e, stack);
+        showToast(e.message);
+      }
       _isSearching = false;
       notifyListeners();
     } catch (e, stack) {

@@ -332,7 +332,6 @@ class _WeekdayWidgetBuilder extends StatelessWidget {
     required this.dateFormat,
     this.isMarked = false,
     this.isSelectable = true,
-    this.isSelected = false,
     this.onPressed,
   }) : super(key: key);
 
@@ -341,7 +340,7 @@ class _WeekdayWidgetBuilder extends StatelessWidget {
 
   final bool isMarked;
   final bool isSelectable;
-  final bool isSelected;
+  // final bool isSelected = false;
 
   final VoidCallback? onPressed;
 
@@ -365,13 +364,9 @@ class _WeekdayWidgetBuilder extends StatelessWidget {
       borderColor = Colors.grey.shade300;
     }
 
-    final EdgeInsets margin =
-        isSelected ? const EdgeInsets.all(0.5) : const EdgeInsets.all(1.0);
-    final EdgeInsets padding =
-        isSelected ? const EdgeInsets.all(2) : const EdgeInsets.all(3.0);
-    final TextStyle _style = isSelected
-        ? getDefaultDayStyle().copyWith(fontSize: 14.0)
-        : getDefaultDayStyle();
+    const EdgeInsets margin = EdgeInsets.all(1.0);
+    const EdgeInsets padding = EdgeInsets.all(3.0);
+    final TextStyle _style = getDefaultDayStyle();
 
     final werapWeekday = weekday % 7;
     final msg = dateFormat.dateSymbols.STANDALONENARROWWEEKDAYS[werapWeekday];

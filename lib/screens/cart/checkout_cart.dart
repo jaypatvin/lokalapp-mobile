@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/cart.dart';
@@ -7,6 +8,7 @@ import '../../providers/shops.dart';
 import '../../routers/app_router.dart';
 import '../../routers/discover/cart/checkout_shop.props.dart';
 import '../../routers/discover/product_detail.props.dart';
+import '../../utils/constants/assets.dart';
 import '../../utils/constants/themes.dart';
 import '../../widgets/app_button.dart';
 import '../discover/product_detail.dart';
@@ -23,6 +25,50 @@ class CheckoutCart extends StatelessWidget {
       appBar: const _CheckOutCartAppBar(),
       body: Consumer<ShoppingCart>(
         builder: (_, cart, __) {
+          if (cart.orders.isEmpty) {
+            return Stack(
+              children: [
+                Positioned.fill(
+                  top: 10,
+                  child: SvgPicture.asset(
+                    kSvgBackgroundHouses,
+                    color: kTealColor,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 62),
+                  child: Center(
+                    child: RichText(
+                      textAlign: TextAlign.center,
+                      text: const TextSpan(
+                        children: [
+                          TextSpan(
+                            text: 'Your shopping cart is empty. '
+                                'Start looking for products in our',
+                          ),
+                          TextSpan(
+                            text: '\nDiscover Page',
+                            style: TextStyle(
+                              color: kTealColor,
+                            ),
+                          ),
+                          TextSpan(text: '!'),
+                        ],
+                        style: TextStyle(
+                          fontFamily: 'Goldplay',
+                          fontWeight: FontWeight.w600,
+                          fontSize: 16,
+                          color: Color(0xFF4F4F4F),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            );
+          }
+
           return ListView.builder(
             itemCount: cart.orders.length,
             padding: const EdgeInsets.only(top: 30),
@@ -120,12 +166,10 @@ class CheckoutCart extends StatelessWidget {
 
 class _CheckOutCartAppBar extends StatelessWidget
     implements PreferredSizeWidget {
-  final double height;
-
-  const _CheckOutCartAppBar({this.height = kToolbarHeight});
+  const _CheckOutCartAppBar({Key? key}) : super(key: key);
 
   @override
-  Size get preferredSize => Size.fromHeight(height);
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 
   @override
   Widget build(BuildContext context) {
@@ -153,22 +197,27 @@ class _CheckOutCartAppBar extends StatelessWidget
                 ?.copyWith(color: kYellowColor),
           ),
           const SizedBox(width: 8.0),
-          Container(
-            padding: const EdgeInsets.all(1.0),
-            decoration: const BoxDecoration(
-              color: kYellowColor,
-              shape: BoxShape.circle,
-            ),
-            constraints: const BoxConstraints(
-              minWidth: 18,
-              minHeight: 18,
-            ),
-            child: Consumer<ShoppingCart>(
-              builder: (_, cart, __) {
-                final quantity = cart.orders.values
-                    .map<int>((orders) => orders.length)
-                    .fold<int>(0, (a, b) => a + b);
-                return Center(
+          Consumer<ShoppingCart>(
+            builder: (_, cart, __) {
+              final quantity = cart.orders.values
+                  .map<int>((orders) => orders.length)
+                  .fold<int>(0, (a, b) => a + b);
+
+              if (quantity <= 0) {
+                return const SizedBox();
+              }
+
+              return Container(
+                padding: const EdgeInsets.all(1.0),
+                decoration: const BoxDecoration(
+                  color: kYellowColor,
+                  shape: BoxShape.circle,
+                ),
+                constraints: const BoxConstraints(
+                  minWidth: 18,
+                  minHeight: 18,
+                ),
+                child: Center(
                   child: Text(
                     quantity.toString(), //cart.orders.length.toString(),
                     style: Theme.of(context)
@@ -176,9 +225,9 @@ class _CheckOutCartAppBar extends StatelessWidget
                         .subtitle2
                         ?.copyWith(color: Colors.white, fontSize: 12),
                   ),
-                );
-              },
-            ),
+                ),
+              );
+            },
           ),
         ],
       ),
