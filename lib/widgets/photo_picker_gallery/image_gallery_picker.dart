@@ -45,7 +45,7 @@ class ImageGalleryPicker extends StatelessWidget {
         final AssetEntity? result = await CameraPicker.pickFromCamera(
           context,
           pickerConfig: CameraPickerConfig(
-            textDelegate: EnglishCameraPickerTextDelegate(),
+            textDelegate: const EnglishCameraPickerTextDelegate(),
             onError: (e, stack) {
               AppRouter.rootNavigatorKey.currentState?.pop();
               if (e is CameraException) {
