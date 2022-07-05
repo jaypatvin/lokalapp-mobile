@@ -166,14 +166,17 @@ class _DiscoverView extends StatelessView<DiscoverViewModel> {
                     SliverToBoxAdapter(
                       child: SizedBox(
                         height: 223,
-                        child: Shimmer(
-                          child: DecoratedBox(
-                            decoration: BoxDecoration(
-                              color: Colors.grey.shade100,
-                            ),
-                            child: const Center(
-                              child: CircularProgressIndicator(
-                                color: kOrangeColor,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          child: Shimmer(
+                            child: DecoratedBox(
+                              decoration: BoxDecoration(
+                                color: Colors.grey.shade100,
+                              ),
+                              child: const Center(
+                                child: CircularProgressIndicator(
+                                  color: kOrangeColor,
+                                ),
                               ),
                             ),
                           ),
