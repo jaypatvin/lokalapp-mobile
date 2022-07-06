@@ -15,7 +15,7 @@ import '../../view_models/profile/profile_screen.vm.dart';
 import '../../widgets/app_button.dart';
 import '../chat/components/chat_avatar.dart';
 import '../home/components/post_card.dart';
-import 'components/current_user_profile.dart';
+import 'components/my_profile_list.dart';
 import 'components/shop_banner.dart';
 
 class ProfileScreen extends HookWidget {
@@ -65,9 +65,26 @@ class ProfileScreen extends HookWidget {
                 return CustomScrollView(
                   slivers: [
                     ..._slivers.value,
-                    const SliverFillRemaining(
-                      child: CurrentUserProfile(),
-                    )
+                    // const SliverFillRemaining(
+                    //   child: CurrentUserProfile(),
+                    // ),
+                    const SliverPadding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 10,
+                      ),
+                      sliver: SliverToBoxAdapter(
+                        child: Text(
+                          'My Profile',
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: kTealColor,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const MyProfileList(),
                   ],
                 );
               } else {

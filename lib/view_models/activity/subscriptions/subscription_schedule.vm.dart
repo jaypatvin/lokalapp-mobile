@@ -160,7 +160,9 @@ class NewSubscriptionScheduleViewModel extends ViewModel {
   }
 
   void _checkForConflicts() {
-    if (_startDate == null || _repeatUnit <= 0) return;
+    if (_startDate == null || _repeatUnit <= 0 || _selectableDays.isEmpty) {
+      return;
+    }
 
     final repeatChoice = _generator.getRepeatChoicesFromString(_repeatType);
     final dates = _generator

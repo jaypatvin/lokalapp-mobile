@@ -222,7 +222,10 @@ class _CommentOptions extends StatelessWidget {
           ),
         if (onDelete != null)
           ListTile(
-            onTap: onDelete,
+            onTap: () {
+              onDelete?.call();
+              Navigator.pop(context);
+            },
             leading: const Icon(
               MdiIcons.trashCanOutline,
               color: kPinkColor,

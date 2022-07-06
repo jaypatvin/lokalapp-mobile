@@ -39,7 +39,7 @@ class CommentFeed extends StatelessWidget {
               return const Padding(
                 padding: EdgeInsets.symmetric(vertical: 10),
                 child: Text(
-                  'No posts yet! Be the first one to post.',
+                  'Be the first one to comment!',
                   style: TextStyle(
                     fontWeight: FontWeight.w500,
                   ),
