@@ -117,7 +117,7 @@ class ScheduleGenerator {
     required RepeatChoices repeatChoice,
     required DateTime? startDate,
     required int? repeatEveryNUnit,
-    List<int>? selectableDays,
+    required List<int> selectableDays,
     String? repeatType,
   }) {
     switch (repeatChoice) {
@@ -131,7 +131,7 @@ class ScheduleGenerator {
             .getRepeatedWeekDays(
               startDate: startDate,
               everyNWeeks: repeatEveryNUnit!,
-              selectedDays: selectableDays!,
+              selectedDays: selectableDays,
             )
             .toSet()
             .toList()
