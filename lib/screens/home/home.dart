@@ -5,17 +5,19 @@ import 'package:lottie/lottie.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
 
+import '../../models/app_navigator.dart';
 import '../../providers/activities.dart';
 import '../../providers/community.dart';
-import '../../providers/notifications.dart';
 import '../../routers/app_router.dart';
 import '../../utils/constants/assets.dart';
 import '../../utils/constants/themes.dart';
+import '../../widgets/app_button.dart';
 import '../../widgets/custom_app_bar.dart';
 import '../cart/cart_container.dart';
+import 'community_members.dart';
 import 'components/post_card.dart';
 import 'draft_post.dart';
-import 'notifications.dart';
+import 'report_community.dart';
 
 class Home extends HookWidget {
   static const routeName = '/home';
@@ -28,12 +30,50 @@ class Home extends HookWidget {
           ?.pushNamed(DraftPost.routeName),
       [],
     );
-    final _onNotificationsTap = useCallback(
-      () => AppRouter.homeNavigatorKey.currentState
-          ?.pushNamed(Notifications.routeName),
+    // final _onNotificationsTap = useCallback(
+    //   () => AppRouter.homeNavigatorKey.currentState
+    //       ?.pushNamed(Notifications.routeName),
+    //   [],
+    // );
+
+    final _onReportCommunity = useCallback<VoidCallback>(
+      () async {
+        final _response = await showModalBottomSheet<bool>(
+          context: context,
+          useRootNavigator: true,
+          builder: (ctx) => const _ReportCommunityModalSheet(),
+        );
+
+        if (_response == null || !_response) {
+          AppRouter.rootNavigatorKey.currentState?.pop();
+          return;
+        } else {
+          AppRouter.rootNavigatorKey.currentState?.pop();
+          AppRouter.homeNavigatorKey.currentState?.push(
+            AppNavigator.appPageRoute(
+              builder: (_) => const ReportCommunity(),
+            ),
+          );
+        }
+      },
       [],
     );
 
+    final _onViewMembers = useCallback<VoidCallback>(
+      () {
+        // this pops the previous modal bottom sheet
+        AppRouter.rootNavigatorKey.currentState
+          ?..pop()
+          ..push(
+            AppNavigator.appPageRoute(
+              builder: (ctx) => const CommunityMembers(),
+            ),
+          );
+      },
+      [],
+    );
+
+    // TODO: move to MVVM
     return Scaffold(
       backgroundColor: const Color(0xffF1FAFF),
       resizeToAvoidBottomInset: true,
@@ -44,42 +84,61 @@ class Home extends HookWidget {
         backgroundColor: kTealColor,
         buildLeading: false,
         actions: [
-          Consumer<NotificationsProvider>(
-            builder: (ctx, notifications, child) {
-              if (notifications.displayAlert) {
-                return Stack(
-                  alignment: AlignmentDirectional.center,
-                  children: [
-                    IconButton(
-                      onPressed: _onNotificationsTap,
-                      icon: const Icon(Icons.notifications_rounded),
-                    ),
-                    const Positioned(
-                      right: 8,
-                      top: 15,
-                      child: Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: DecoratedBox(
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: kPinkColor,
-                          ),
-                          child: SizedBox(
-                            height: 5,
-                            width: 5,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
+          IconButton(
+            padding: const EdgeInsets.only(right: 16),
+            constraints: const BoxConstraints(),
+            icon: const Icon(
+              Icons.more_horiz,
+              size: 25,
+            ),
+            color: Colors.white,
+            onPressed: () => showModalBottomSheet(
+              context: context,
+              useRootNavigator: true,
+              builder: (ctx) {
+                return _HomeModalSheet(
+                  onReportCommunity: _onReportCommunity,
+                  onViewMembers: _onViewMembers,
                 );
-              }
-              return IconButton(
-                onPressed: _onNotificationsTap,
-                icon: const Icon(Icons.notifications_outlined),
-              );
-            },
+              },
+            ),
           ),
+          // Consumer<NotificationsProvider>(
+          //   builder: (ctx, notifications, child) {
+          //     if (notifications.displayAlert) {
+          //       return Stack(
+          //         alignment: AlignmentDirectional.center,
+          //         children: [
+          //           IconButton(
+          //             onPressed: _onNotificationsTap,
+          //             icon: const Icon(Icons.notifications_rounded),
+          //           ),
+          //           const Positioned(
+          //             right: 8,
+          //             top: 15,
+          //             child: Padding(
+          //               padding: EdgeInsets.all(8.0),
+          //               child: DecoratedBox(
+          //                 decoration: BoxDecoration(
+          //                   shape: BoxShape.circle,
+          //                   color: kPinkColor,
+          //                 ),
+          //                 child: SizedBox(
+          //                   height: 5,
+          //                   width: 5,
+          //                 ),
+          //               ),
+          //             ),
+          //           ),
+          //         ],
+          //       );
+          //     }
+          //     return IconButton(
+          //       onPressed: _onNotificationsTap,
+          //       icon: const Icon(Icons.notifications_outlined),
+          //     );
+          //   },
+          // ),
         ],
       ),
       body: CartContainer(
@@ -212,6 +271,103 @@ class _PostField extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+class _HomeModalSheet extends StatelessWidget {
+  const _HomeModalSheet({
+    Key? key,
+    required this.onReportCommunity,
+    required this.onViewMembers,
+  }) : super(key: key);
+
+  final VoidCallback onViewMembers;
+  final VoidCallback onReportCommunity;
+
+  @override
+  Widget build(BuildContext context) {
+    return Wrap(
+      children: [
+        ListTile(
+          onTap: onViewMembers,
+          leading: const Icon(
+            MdiIcons.alertCircleOutline,
+            color: kNavyColor,
+          ),
+          title: Text(
+            'View members',
+            softWrap: true,
+            style: Theme.of(context).textTheme.subtitle1,
+          ),
+        ),
+        ListTile(
+          onTap: onReportCommunity,
+          leading: const Icon(
+            MdiIcons.alertCircleOutline,
+            color: kPinkColor,
+          ),
+          title: Text(
+            'Report Community',
+            softWrap: true,
+            style: Theme.of(context)
+                .textTheme
+                .subtitle1
+                ?.copyWith(color: kPinkColor),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _ReportCommunityModalSheet extends StatelessWidget {
+  const _ReportCommunityModalSheet({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Wrap(
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 38),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Report community?',
+                style: Theme.of(context).textTheme.headline5,
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 76),
+                child: Text(
+                  'Our team will review this community.',
+                  style: Theme.of(context).textTheme.bodyText1,
+                  textAlign: TextAlign.center,
+                ),
+              ),
+              const SizedBox(height: 47),
+              Row(
+                children: [
+                  Expanded(
+                    child: AppButton.transparent(
+                      text: 'Cancel',
+                      onPressed: () => Navigator.of(context).pop(false),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: AppButton.filled(
+                      text: 'Report',
+                      onPressed: () => Navigator.of(context).pop(true),
+                      color: kPinkColor,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }
