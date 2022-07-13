@@ -1,4 +1,5 @@
 import '../../models/community.dart';
+import '../../models/post_requests/shared/report.dart';
 import 'api.dart';
 import 'api_service.dart';
 import 'client/lokal_http_client.dart';
@@ -21,5 +22,12 @@ class CommunityAPIService extends APIService<Community> {
     } catch (e) {
       rethrow;
     }
+  }
+
+  Future<bool> report({
+    required String communityid,
+    required Report report,
+  }) async {
+    throw UnimplementedError('Not yet implemented!');
   }
 }
