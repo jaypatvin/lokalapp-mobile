@@ -31,9 +31,6 @@ class PostCardViewModel extends ViewModel {
 
   final _appRouter = locator<AppRouter>();
 
-  @override
-  void init() {}
-
   void goToPostDetails(ActivityFeed activity) {
     _appRouter.navigateTo(
       AppRoute.home,

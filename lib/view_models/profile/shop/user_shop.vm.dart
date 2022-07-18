@@ -17,7 +17,6 @@ import '../../../providers/products.dart';
 import '../../../providers/shops.dart';
 import '../../../providers/users.dart';
 import '../../../screens/profile/profile_screen.dart';
-import '../../../screens/profile/settings/settings.dart';
 import '../../../screens/profile/shop/report_shop.dart';
 import '../../../services/application_logger.dart';
 import '../../../state/view_model.dart';

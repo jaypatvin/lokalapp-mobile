@@ -70,7 +70,6 @@ import '../screens/welcome_screen.dart';
 import '../services/api/api.dart';
 import '../services/api/client/lokal_http_client.dart';
 import '../services/api_service.dart';
-import '../services/application_logger.dart';
 import '../services/auth_service.dart';
 import '../services/database/database.dart';
 import '../widgets/photo_view_gallery/gallery/gallery_asset_photo_view.dart';
