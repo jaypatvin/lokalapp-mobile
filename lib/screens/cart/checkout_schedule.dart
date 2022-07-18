@@ -63,7 +63,7 @@ class _CheckoutScheduleState extends State<CheckoutSchedule> with ScreenLoader {
             AppRoute.discover,
             DiscoverRoutes.cartConfirmation,
             arguments: CartConfirmationArguments(),
-            predicate: ModalRoute.withName(DiscoverRoutes.discover),
+            predicate: ModalRoute.withName(DashboardRoutes.discover),
           )
           .then((value) => _cart.remove(widget.productId));
     } catch (e, stack) {

@@ -67,7 +67,7 @@ class AddShopConfirmation extends StatelessWidget {
                       ..popUntil(
                         AppRoute.profile,
                         predicate: ModalRoute.withName(
-                          ProfileScreenRoutes.profileScreen,
+                          DashboardRoutes.profileScreen,
                         ),
                       )
                       ..navigateTo(
@@ -95,7 +95,7 @@ class AddShopConfirmation extends StatelessWidget {
                       ..popUntil(
                         AppRoute.profile,
                         predicate: ModalRoute.withName(
-                          ProfileScreenRoutes.profileScreen,
+                          DashboardRoutes.profileScreen,
                         ),
                       )
                       ..navigateTo(

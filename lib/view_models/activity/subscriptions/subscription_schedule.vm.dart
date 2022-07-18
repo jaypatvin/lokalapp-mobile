@@ -366,7 +366,7 @@ class ViewSubscriptionScheduleViewModel extends ViewModel {
 
     _appRouter.popUntil(
       AppRoute.activity,
-      predicate: ModalRoute.withName(ActivityRoutes.activity),
+      predicate: ModalRoute.withName(DashboardRoutes.activity),
     );
   }
 

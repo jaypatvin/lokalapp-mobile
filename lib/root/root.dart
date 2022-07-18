@@ -45,7 +45,7 @@ class _RootState extends State<Root> {
       if (!mounted) return;
       _appRouter.pushNamedAndRemoveUntil(
         AppRoute.root,
-        Routes.bottomNavigation,
+        Routes.dashboard,
       );
     } catch (e) {
       if (e is FailureException && e.message == 'user-not-registered') {
@@ -62,7 +62,7 @@ class _RootState extends State<Root> {
       if (!mounted) return;
       _appRouter.pushNamedAndRemoveUntil(
         AppRoute.root,
-        Routes.bottomNavigation,
+        Routes.dashboard,
       );
     }
   }

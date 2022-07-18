@@ -32,7 +32,7 @@ class RegisterScreenViewModel extends ViewModel {
     } else {
       _appRouter.pushNamedAndRemoveUntil(
         AppRoute.root,
-        Routes.bottomNavigation,
+        Routes.dashboard,
       );
     }
   }
@@ -56,7 +56,7 @@ class RegisterScreenViewModel extends ViewModel {
         if (context.read<Auth>().user != null) {
           _appRouter.pushNamedAndRemoveUntil(
             AppRoute.root,
-            Routes.bottomNavigation,
+            Routes.dashboard,
           );
           return;
         }

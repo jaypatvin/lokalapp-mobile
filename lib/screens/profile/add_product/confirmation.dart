@@ -66,7 +66,7 @@ class AddProductConfirmation extends StatelessWidget {
                   locator<AppRouter>().popUntil(
                     AppRoute.profile,
                     predicate:
-                        ModalRoute.withName(ProfileScreenRoutes.profileScreen),
+                        ModalRoute.withName(DashboardRoutes.profileScreen),
                   );
                 },
               ),

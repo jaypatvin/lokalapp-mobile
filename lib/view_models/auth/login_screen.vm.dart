@@ -34,7 +34,7 @@ class LoginScreenViewModel extends ViewModel {
 
       _appRouter.pushNamedAndRemoveUntil(
         AppRoute.root,
-        Routes.bottomNavigation,
+        Routes.dashboard,
       );
     } else {
       _appRouter.navigateTo(AppRoute.root, Routes.invitePage, replace: true);

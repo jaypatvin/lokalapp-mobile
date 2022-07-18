@@ -243,7 +243,7 @@ class _VerifyScreenState extends State<VerifyScreen> with ScreenLoader {
           onPressed: () {
             locator<AppRouter>().navigateTo(
               AppRoute.root,
-              Routes.bottomNavigation,
+              Routes.dashboard,
             );
           },
           child: Text(
@@ -269,7 +269,7 @@ class _VerifyScreenState extends State<VerifyScreen> with ScreenLoader {
     if (widget.skippable) {
       locator<AppRouter>().navigateTo(
         AppRoute.root,
-        Routes.bottomNavigation,
+        Routes.dashboard,
       );
     }
     return true;

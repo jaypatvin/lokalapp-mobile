@@ -13,7 +13,7 @@ class ReviewSubmitted extends StatelessWidget {
   void _onBackToActivity() {
     locator<AppRouter>().popUntil(
       AppRoute.activity,
-      predicate: ModalRoute.withName(ActivityRoutes.activity),
+      predicate: ModalRoute.withName(DashboardRoutes.activity),
     );
   }
 

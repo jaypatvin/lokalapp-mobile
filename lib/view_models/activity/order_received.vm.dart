@@ -28,7 +28,7 @@ class OrderReceivedViewModel extends ViewModel {
   void onBackToActivity() {
     locator<AppRouter>().popUntil(
       AppRoute.activity,
-      predicate: ModalRoute.withName(ActivityRoutes.activity),
+      predicate: ModalRoute.withName(DashboardRoutes.activity),
     );
   }
 

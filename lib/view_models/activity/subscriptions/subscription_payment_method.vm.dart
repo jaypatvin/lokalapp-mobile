@@ -59,7 +59,7 @@ class SubscriptionPaymentMethodViewModel extends ViewModel {
           arguments: CartConfirmationArguments(
             isSubscription: true,
           ),
-          predicate: ModalRoute.withName(DiscoverRoutes.discover),
+          predicate: ModalRoute.withName(DashboardRoutes.discover),
         );
       }
     } catch (e, stack) {

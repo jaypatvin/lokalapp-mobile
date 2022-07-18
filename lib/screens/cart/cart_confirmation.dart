@@ -29,7 +29,7 @@ class CartConfirmation extends StatelessWidget {
             onPressed: () {
               locator<AppRouter>().popUntil(
                 AppRoute.discover,
-                predicate: ModalRoute.withName(DiscoverRoutes.discover),
+                predicate: ModalRoute.withName(DashboardRoutes.discover),
               );
             },
             child: Text(
@@ -99,7 +99,7 @@ class CartConfirmation extends StatelessWidget {
                   locator<AppRouter>()
                     ..popUntil(
                       AppRoute.discover,
-                      predicate: ModalRoute.withName(DiscoverRoutes.discover),
+                      predicate: ModalRoute.withName(DashboardRoutes.discover),
                     )
                     ..navigateTo(
                       AppRoute.discover,
@@ -117,7 +117,7 @@ class CartConfirmation extends StatelessWidget {
                   locator<AppRouter>()
                     ..popUntil(
                       AppRoute.discover,
-                      predicate: ModalRoute.withName(DiscoverRoutes.discover),
+                      predicate: ModalRoute.withName(DashboardRoutes.discover),
                     )
                     ..jumpToTab(AppRoute.activity);
                 },

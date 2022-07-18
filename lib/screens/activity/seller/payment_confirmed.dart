@@ -87,7 +87,7 @@ class PaymentConfirmed extends StatelessWidget {
                           locator<AppRouter>().popUntil(
                             AppRoute.activity,
                             predicate:
-                                ModalRoute.withName(ActivityRoutes.activity),
+                                ModalRoute.withName(DashboardRoutes.activity),
                           );
                         },
                       ),

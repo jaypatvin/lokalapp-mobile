@@ -14,7 +14,7 @@ class VerifyConfirmationScreen extends StatelessWidget {
 
   Future<bool> _onWillPop() async {
     if (skippable) {
-      locator<AppRouter>().navigateTo(AppRoute.root, Routes.bottomNavigation);
+      locator<AppRouter>().navigateTo(AppRoute.root, Routes.dashboard);
     }
     return true;
   }
@@ -36,8 +36,9 @@ class VerifyConfirmationScreen extends StatelessWidget {
                 } else {
                   locator<AppRouter>().popUntil(
                     AppRoute.profile,
-                    predicate:
-                        ModalRoute.withName(ProfileScreenRoutes.profileScreen),
+                    predicate: ModalRoute.withName(
+                      DashboardRoutes.profileScreen,
+                    ),
                   );
                 }
               },
