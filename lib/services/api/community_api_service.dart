@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import '../../models/community.dart';
 import '../../models/post_requests/shared/report.dart';
 import 'api.dart';
@@ -28,6 +30,19 @@ class CommunityAPIService extends APIService<Community> {
     required String communityid,
     required Report report,
   }) async {
-    throw UnimplementedError('Not yet implemented!');
+    try {
+      final response = await client.post(
+        api.endpointUri(
+          endpoint,
+          pathSegments: [communityid, 'report'],
+        ),
+        headers: api.withBodyHeader(),
+        body: json.encode(report),
+      );
+
+      return handleGenericResponse(response);
+    } catch (e) {
+      rethrow;
+    }
   }
 }
