@@ -178,7 +178,7 @@ class LokalUser {
   final String communityId;
   @JsonKey(
     required: true,
-    fromJson: createdAtFromJson,
+    fromJson: dateTimeFromJson,
     toJson: nullableDateTimeToString,
   )
   final DateTime createdAt;

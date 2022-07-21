@@ -40,13 +40,13 @@ class OverrideDate {
   });
   @JsonKey(
     required: true,
-    fromJson: createdAtFromJson,
+    fromJson: dateTimeFromJson,
     toJson: nullableDateTimeToString,
   )
   final DateTime originalDate;
   @JsonKey(
     required: true,
-    fromJson: createdAtFromJson,
+    fromJson: dateTimeFromJson,
     toJson: nullableDateTimeToString,
   )
   final DateTime newDate;
@@ -308,7 +308,7 @@ class ProductSubscriptionPlan {
   final String communityId;
   @JsonKey(
     required: true,
-    fromJson: createdAtFromJson,
+    fromJson: dateTimeFromJson,
     toJson: nullableDateTimeToString,
   )
   final DateTime createdAt;

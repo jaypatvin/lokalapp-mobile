@@ -307,7 +307,7 @@ class Order {
   final String communityId;
   @JsonKey(
     required: true,
-    fromJson: createdAtFromJson,
+    fromJson: dateTimeFromJson,
     toJson: nullableDateTimeToString,
   )
   final DateTime createdAt;
@@ -315,7 +315,7 @@ class Order {
   final DeliveryAddress deliveryAddress;
   @JsonKey(
     required: true,
-    fromJson: createdAtFromJson,
+    fromJson: dateTimeFromJson,
     toJson: nullableDateTimeToString,
   )
   final DateTime deliveryDate;

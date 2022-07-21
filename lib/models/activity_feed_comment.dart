@@ -27,7 +27,7 @@ class ActivityFeedComment {
   String message;
   @JsonKey(defaultValue: <LokalImages>[])
   List<LokalImages> images;
-  @JsonKey(fromJson: createdAtFromJson, toJson: nullableDateTimeToString)
+  @JsonKey(fromJson: dateTimeFromJson, toJson: nullableDateTimeToString)
   DateTime createdAt;
   @JsonKey(defaultValue: false)
   bool archived;

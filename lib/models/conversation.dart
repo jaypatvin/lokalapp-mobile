@@ -79,7 +79,7 @@ class Conversation {
   final bool archived;
   @JsonKey(
     required: true,
-    fromJson: createdAtFromJson,
+    fromJson: dateTimeFromJson,
     toJson: nullableDateTimeToString,
   )
   final DateTime createdAt;
@@ -87,7 +87,7 @@ class Conversation {
   final String senderId;
   @JsonKey(
     required: true,
-    fromJson: createdAtFromJson,
+    fromJson: dateTimeFromJson,
     toJson: nullableDateTimeToString,
   )
   final DateTime sentAt;

@@ -26,7 +26,7 @@ class ProductReview {
   final int rating;
   @JsonKey(
     required: true,
-    fromJson: createdAtFromJson,
+    fromJson: dateTimeFromJson,
     toJson: nullableDateTimeToString,
   )
   final DateTime createdAt;

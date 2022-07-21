@@ -27,7 +27,7 @@ class Message {
   String content;
   @JsonKey(
     required: true,
-    fromJson: createdAtFromJson,
+    fromJson: dateTimeFromJson,
     toJson: nullableDateTimeToString,
   )
   DateTime createdAt;
@@ -84,7 +84,7 @@ class ChatModel {
   String communityId;
   @JsonKey(
     required: true,
-    fromJson: createdAtFromJson,
+    fromJson: dateTimeFromJson,
     toJson: nullableDateTimeToString,
   )
   DateTime createdAt;

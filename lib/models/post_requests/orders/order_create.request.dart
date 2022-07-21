@@ -38,7 +38,7 @@ class OrderCreateRequest {
   final String shopId;
   @JsonKey(toJson: _deliveryOptionToJson, fromJson: _deliveryOptionFromJson)
   final DeliveryOption deliveryOption;
-  @JsonKey(toJson: dateTimeToString, fromJson: createdAtFromJson)
+  @JsonKey(toJson: dateTimeToString, fromJson: dateTimeFromJson)
   final DateTime deliveryDate;
   final String? instruction;
 

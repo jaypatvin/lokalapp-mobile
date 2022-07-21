@@ -86,7 +86,7 @@ extension StringExtension on String {
   }
 }
 
-DateTime createdAtFromJson(dynamic map) {
+DateTime dateTimeFromJson(dynamic map) {
   if (map is Timestamp) {
     return map.toDate();
   } else if (map is String) {

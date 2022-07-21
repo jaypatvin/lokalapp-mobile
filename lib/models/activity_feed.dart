@@ -39,7 +39,7 @@ class ActivityFeed {
   List<ActivityFeedComment> comments;
   @JsonKey(defaultValue: false)
   bool liked;
-  @JsonKey(fromJson: createdAtFromJson, toJson: nullableDateTimeToString)
+  @JsonKey(fromJson: dateTimeFromJson, toJson: nullableDateTimeToString)
   DateTime createdAt;
   @JsonKey(defaultValue: false)
   bool archived;
