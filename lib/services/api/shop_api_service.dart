@@ -1,11 +1,14 @@
 import 'dart:convert';
+import 'dart:developer' as dev;
 
 import '../../models/operating_hours.dart';
 import '../../models/post_requests/shared/report.dart';
 import '../../models/post_requests/shop/operating_hours.request.dart';
 import '../../models/post_requests/shop/shop_create.request.dart';
+import '../../models/post_requests/shop/shop_summary.request.dart';
 import '../../models/post_requests/shop/shop_update.request.dart';
 import '../../models/shop.dart';
+import '../../models/shop_summary.dart';
 import 'api.dart';
 import 'api_service.dart';
 import 'client/lokal_http_client.dart';
@@ -15,19 +18,22 @@ class ShopAPIService extends APIService<Shop> {
     return ShopAPIService._(
       api,
       _OperatingHoursAPIService(api, client: client),
+      _ShopSummaryAPIService(api, client: client),
       client: client,
     );
   }
 
   ShopAPIService._(
     this.api,
-    this._operatingHoursService, {
+    this._operatingHoursService,
+    this._shopSummaryAPIService, {
     LokalHttpClient? client,
   }) : super(client: client ?? LokalHttpClient());
 
   final API api;
   Endpoint get endpoint => Endpoint.shop;
   final _OperatingHoursAPIService _operatingHoursService;
+  final _ShopSummaryAPIService _shopSummaryAPIService;
 
   // --POST
   Future<Shop> create({
@@ -65,6 +71,12 @@ class ShopAPIService extends APIService<Shop> {
       rethrow;
     }
   }
+
+  Future<ShopSummary> shopSummary(
+    String shopId, {
+    required ShopSummaryRequest request,
+  }) async =>
+      _shopSummaryAPIService.shopSummary(shopId, request: request);
 
   // --PUT
   Future<bool> update({
@@ -239,6 +251,37 @@ class _OperatingHoursAPIService extends APIService<OperatingHours> {
       );
 
       return handleResponse((map) => OperatingHours.fromJson(map), response);
+    } catch (e) {
+      rethrow;
+    }
+  }
+}
+
+class _ShopSummaryAPIService extends APIService<ShopSummary> {
+  _ShopSummaryAPIService(this.api, {LokalHttpClient? client})
+      : super(client: client ?? LokalHttpClient());
+
+  final API api;
+
+  Future<ShopSummary> shopSummary(
+    String shopId, {
+    required ShopSummaryRequest request,
+  }) async {
+    try {
+      final response = await client.post(
+        api.endpointUri(
+          Endpoint.shop,
+          pathSegments: [shopId, 'summary'],
+        ),
+        headers: api.withBodyHeader(),
+        body: json.encode(request),
+      );
+
+      dev.log(shopId);
+      dev.log(request.toJson().toString());
+      dev.log(response.body);
+
+      return handleResponse((map) => ShopSummary.fromJson(map), response);
     } catch (e) {
       rethrow;
     }

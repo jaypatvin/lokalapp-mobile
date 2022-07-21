@@ -5,8 +5,10 @@ import 'package:flutter/foundation.dart';
 
 import '../models/post_requests/shop/operating_hours.request.dart';
 import '../models/post_requests/shop/shop_create.request.dart';
+import '../models/post_requests/shop/shop_summary.request.dart';
 import '../models/post_requests/shop/shop_update.request.dart';
 import '../models/shop.dart';
+import '../models/shop_summary.dart';
 import '../services/api/api.dart';
 import '../services/api/shop_api_service.dart';
 import '../services/database/collections/shops.collections.dart';
@@ -106,4 +108,17 @@ class Shops extends ChangeNotifier {
       rethrow;
     }
   }
+
+  Future<ShopSummary> shopSummary(
+    String shopId, {
+    ShopSummaryRequest? request,
+  }) =>
+      _apiService.shopSummary(
+        shopId,
+        request: request ??
+            ShopSummaryRequest(
+              minDate: DateTime(2000),
+              maxDate: DateTime.now(),
+            ),
+      );
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
+import '../../models/shop_summary.dart';
 import '../../state/mvvm_builder.widget.dart';
 import '../../state/views/hook.view.dart';
 import '../../utils/constants/themes.dart';
@@ -65,6 +66,7 @@ class _TransactionsView extends HookView<TransactionsViewModel>
   }) : super(key: key);
 
   final Color _backgroundColor;
+
   @override
   Widget screen(BuildContext context, TransactionsViewModel vm) {
     useAutomaticKeepAlive();
@@ -90,12 +92,22 @@ class _TransactionsView extends HookView<TransactionsViewModel>
             padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 37),
             width: MediaQuery.of(context).size.width,
             color: _backgroundColor,
-            child: Text(
-              vm.subHeader,
-              style: Theme.of(context).textTheme.bodyText2?.copyWith(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w400,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  vm.subHeader,
+                  style: Theme.of(context).textTheme.bodyText2?.copyWith(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w400,
+                      ),
+                ),
+                if (vm.shopSummary != null)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 24),
+                    child: _ShopSummary(shopSummary: vm.shopSummary!),
                   ),
+              ],
             ),
           ),
         ),
@@ -207,6 +219,100 @@ class _TransactionsView extends HookView<TransactionsViewModel>
               ],
             ),
           ),
+      ],
+    );
+  }
+}
+
+class _ShopSummary extends StatelessWidget {
+  const _ShopSummary({
+    Key? key,
+    required this.shopSummary,
+  }) : super(key: key);
+  final ShopSummary shopSummary;
+
+  @override
+  Widget build(BuildContext context) {
+    return Table(
+      columnWidths: const {
+        0: FlexColumnWidth(3),
+        1: FlexColumnWidth(2),
+      },
+      children: [
+        TableRow(
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(bottom: 12),
+              child: Text(
+                'Total Earnings',
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyText2
+                    ?.copyWith(color: Colors.white),
+              ),
+            ),
+            Text(
+              shopSummary.totalEarnings.toStringAsFixed(2),
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyText2
+                  ?.copyWith(color: Colors.orange, fontWeight: FontWeight.w700),
+            ),
+          ],
+        ),
+        TableRow(
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(bottom: 12),
+              child: Text(
+                'Items Sold',
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyText2
+                    ?.copyWith(color: Colors.white),
+              ),
+            ),
+            Text(
+              shopSummary.productsSold
+                  .fold<int>(0, (prev, product) => prev + product.soldCount)
+                  .toString(),
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyText2
+                  ?.copyWith(color: Colors.orange, fontWeight: FontWeight.w700),
+            ),
+          ],
+        ),
+        TableRow(
+          children: [
+            Text(
+              'Most Popular',
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyText2
+                  ?.copyWith(color: Colors.white),
+            ),
+            Text(
+              shopSummary.productsSold.isEmpty
+                  ? '-'
+                  : shopSummary.productsSold
+                      .reduce(
+                        (mostSold, element) =>
+                            mostSold.soldCount >= element.soldCount
+                                ? mostSold
+                                : element,
+                      )
+                      .name,
+              softWrap: true,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyText2
+                  ?.copyWith(color: Colors.orange, fontWeight: FontWeight.w700),
+            ),
+          ],
+        ),
       ],
     );
   }

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:collection/collection.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
@@ -7,6 +9,7 @@ import 'package:provider/provider.dart';
 import '../../models/app_navigator.dart';
 import '../../models/order.dart';
 import '../../models/shop.dart';
+import '../../models/shop_summary.dart';
 import '../../providers/auth.dart';
 import '../../providers/shops.dart';
 import '../../routers/activity/subscriptions.props.dart';
@@ -51,6 +54,10 @@ class TransactionsViewModel extends ViewModel {
   late final String subscriptionSubtitle;
   late final String noOrderMessage;
 
+  StreamSubscription<QuerySnapshot<Map<String, dynamic>>>? _ordersSubscription;
+  ShopSummary? _shopSummary;
+  ShopSummary? get shopSummary => _shopSummary;
+
   late final OrdersCollection _db;
 
   Shop? shop;
@@ -72,6 +79,13 @@ class TransactionsViewModel extends ViewModel {
     noOrderMessage = shop != null || isBuyer
         ? 'You have no orders yet!'
         : 'You have not created a shop yet!';
+  }
+
+  @override
+  void dispose() {
+    // don't forget to cancel all stream subscribers
+    _ordersSubscription?.cancel();
+    super.dispose();
   }
 
   void _initializeStatuses() {
@@ -101,6 +115,8 @@ class TransactionsViewModel extends ViewModel {
     if (!isBuyer) {
       final shops = context.read<Shops>().findByUser(userId);
       if (shops.isEmpty) {
+        // here, we know that the user has no shop, therefore we add a listener
+        // to the shops provider that checks fi the user already created a shop
         context.read<Shops>().addListener(shopChangeListener);
         return;
       }
@@ -121,21 +137,36 @@ class TransactionsViewModel extends ViewModel {
   void shopChangeListener({bool notify = true}) {
     final userId = context.read<Auth>().user!.id;
     final shops = context.read<Shops>().findByUser(userId);
+
+    // check if the shops list contains the user's shop
+    // if not do nothing
     if (shops.isEmpty) return;
 
     final shopId = shops.first.id;
-
+    _getShopSummary(shopId);
     for (final key in _statuses.keys) {
       final statusCode = (key == 1000 || key == 2000) ? key ~/ 100 : key;
 
+      // we get all order streams of different status codes of the shop
       _streams[key] = _db.getShopOrders(
         shopId,
         statusCode: statusCode == 0 ? null : statusCode,
       );
     }
 
+    _ordersSubscription?.cancel();
+    // we want to update the shop summary everytime an order is completed
+    _ordersSubscription = _streams[600]?.listen(
+      (event) => _getShopSummary(shopId),
+    );
+
     context.read<Shops>().removeListener(shopChangeListener);
     if (notify) notifyListeners();
+  }
+
+  Future<void> _getShopSummary(String shopId) async {
+    _shopSummary = await context.read<Shops>().shopSummary(shopId);
+    notifyListeners();
   }
 
   void changeIndex(int key) {
