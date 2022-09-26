@@ -119,3 +119,4 @@ app.*.symbols
 !/dev/ci/**/Gemfile.lock
 /ios/fastlane/credentials/Certificates.p12
 /ios/fastlane/credentials/lokalapp-firebase-private-key.json
+!**pubspec.lock
