@@ -27,7 +27,9 @@ class DeviceInfo extends HookWidget {
         try {
           if (Platform.isAndroid) {
             final _info = await _deviceInfoPlugin.androidInfo;
-            deviceId = _info.androidId;
+            // TODO: update this for application logs
+            // No androidId for newest Android versions
+            // deviceId = _info.androidId;
             deviceModel = _info.device;
           } else if (Platform.isIOS) {
             final _info = await _deviceInfoPlugin.iosInfo;
