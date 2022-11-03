@@ -29,15 +29,15 @@ class _ReportPostView extends HookView<ReportPostViewModel>
     with HookScreenLoader {
   @override
   Widget screen(BuildContext context, ReportPostViewModel viewModel) {
-    final _reportFocusNode = useFocusNode();
+    final reportFocusNode = useFocusNode();
 
-    final _kbConfig = useMemoized<KeyboardActionsConfig>(() {
+    final kbConfig = useMemoized<KeyboardActionsConfig>(() {
       return KeyboardActionsConfig(
         keyboardBarColor: Colors.grey.shade200,
         nextFocus: false,
         actions: [
           KeyboardActionsItem(
-            focusNode: _reportFocusNode,
+            focusNode: reportFocusNode,
             toolbarButtons: [
               (node) {
                 return TextButton(
@@ -89,7 +89,7 @@ class _ReportPostView extends HookView<ReportPostViewModel>
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
           child: KeyboardActions(
             disableScroll: true,
-            config: _kbConfig,
+            config: kbConfig,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -113,7 +113,7 @@ class _ReportPostView extends HookView<ReportPostViewModel>
                 const SizedBox(height: 20),
                 InputDescriptionField(
                   maxLines: 11,
-                  focusNode: _reportFocusNode,
+                  focusNode: reportFocusNode,
                   hintText: 'Enter report here',
                   contentPadding: const EdgeInsets.all(20),
                   onChanged: viewModel.onReportMessageChanged,
@@ -125,7 +125,7 @@ class _ReportPostView extends HookView<ReportPostViewModel>
                   text: 'Report',
                   color: kPinkColor,
                   onPressed: () async {
-                    _reportFocusNode.unfocus();
+                    reportFocusNode.unfocus();
                     return performFuture(viewModel.onSubmit);
                   },
                 ),

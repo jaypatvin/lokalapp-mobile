@@ -48,39 +48,39 @@ class _ProductScheduleState extends State<ProductSchedule> {
   @override
   void initState() {
     super.initState();
-    final _generator = ScheduleGenerator();
-    OperatingHours? _operatingHours;
+    final generator = ScheduleGenerator();
+    OperatingHours? operatingHours;
     final user = context.read<Auth>().user!;
     final shops = context.read<Shops>().findByUser(user.id);
-    _operatingHours = shops.first.operatingHours;
+    operatingHours = shops.first.operatingHours;
 
-    final _schedule = _generator.generateSchedule(_operatingHours);
-    _selectableDates = _schedule.selectableDates.toSet();
+    final schedule = generator.generateSchedule(operatingHours);
+    _selectableDates = schedule.selectableDates.toSet();
     _markedDatesMap = {..._selectableDates};
 
     // _selectableWeekdays = _schedule.selectableDays.toSet();
-    if (_schedule.repeatType == RepeatChoices.week) {
-      _selectableWeekdays = _schedule.selectableDays.toSet();
+    if (schedule.repeatType == RepeatChoices.week) {
+      _selectableWeekdays = schedule.selectableDays.toSet();
     }
     _markedWeekdays = {..._selectableWeekdays};
 
     if (widget.productId != null && widget.productId!.isNotEmpty) {
       final product = context.read<Products>().findById(widget.productId);
       if (product != null) {
-        final _productSched = product.availability;
-        final _productSelectableDates =
-            _generator.getSelectableDates(_productSched);
+        final productSched = product.availability;
+        final productSelectableDates =
+            generator.getSelectableDates(productSched);
 
-        _markedDatesMap = {..._productSelectableDates};
+        _markedDatesMap = {...productSelectableDates};
         if (_selectableDates
             .toSet()
-            .difference(_productSelectableDates.toSet())
+            .difference(productSelectableDates.toSet())
             .isEmpty) {
           _productSchedule = ProductScheduleState.shop;
         } else {
           _markedWeekdays.clear();
           for (int i = 1; i <= 7; i++) {
-            if (_productSelectableDates.any((date) => date.weekday == i)) {
+            if (productSelectableDates.any((date) => date.weekday == i)) {
               _markedWeekdays.add(i);
             }
           }
@@ -93,7 +93,7 @@ class _ProductScheduleState extends State<ProductSchedule> {
   Widget _buildRadioTile() {
     return Column(
       children: [
-        Container(
+        DecoratedBox(
           decoration: BoxDecoration(
             border: Border.all(color: kTealColor),
             borderRadius: const BorderRadius.only(
@@ -123,7 +123,7 @@ class _ProductScheduleState extends State<ProductSchedule> {
             },
           ),
         ),
-        Container(
+        DecoratedBox(
           decoration: BoxDecoration(
             border: Border.all(color: kTealColor),
             borderRadius: const BorderRadius.only(
@@ -366,7 +366,7 @@ class _WeekdayWidgetBuilder extends StatelessWidget {
 
     const EdgeInsets margin = EdgeInsets.all(1.0);
     const EdgeInsets padding = EdgeInsets.all(3.0);
-    final TextStyle _style = getDefaultDayStyle();
+    final TextStyle style = getDefaultDayStyle();
 
     final werapWeekday = weekday % 7;
     final msg = dateFormat.dateSymbols.STANDALONENARROWWEEKDAYS[werapWeekday];
@@ -393,7 +393,7 @@ class _WeekdayWidgetBuilder extends StatelessWidget {
             child: Text(
               msg,
               semanticsLabel: msg,
-              style: _style,
+              style: style,
               maxLines: 1,
             ),
           ),

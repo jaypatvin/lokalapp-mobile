@@ -44,10 +44,10 @@ class Categories extends ChangeNotifier {
   }
 
   void onCategoryTap(int index) {
-    final _category = _categories[index];
+    final category = _categories[index];
     AppRouter.discoverNavigatorKey.currentState?.push(
       AppNavigator.appPageRoute(
-        builder: (_) => CategoriesLanding(category: _category),
+        builder: (_) => CategoriesLanding(category: category),
       ),
     );
   }

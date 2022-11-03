@@ -23,12 +23,12 @@ class Home extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final _onDraftPostTap = useCallback(
+    final onDraftPostTap = useCallback(
       () => AppRouter.rootNavigatorKey.currentState
           ?.pushNamed(DraftPost.routeName),
       [],
     );
-    final _onNotificationsTap = useCallback(
+    final onNotificationsTap = useCallback(
       () => AppRouter.homeNavigatorKey.currentState
           ?.pushNamed(Notifications.routeName),
       [],
@@ -51,7 +51,7 @@ class Home extends HookWidget {
                   alignment: AlignmentDirectional.center,
                   children: [
                     IconButton(
-                      onPressed: _onNotificationsTap,
+                      onPressed: onNotificationsTap,
                       icon: const Icon(Icons.notifications_rounded),
                     ),
                     const Positioned(
@@ -75,7 +75,7 @@ class Home extends HookWidget {
                 );
               }
               return IconButton(
-                onPressed: _onNotificationsTap,
+                onPressed: onNotificationsTap,
                 icon: const Icon(Icons.notifications_outlined),
               );
             },
@@ -89,7 +89,7 @@ class Home extends HookWidget {
               slivers: [
                 SliverToBoxAdapter(
                   child: _PostField(
-                    onDraftPostTap: _onDraftPostTap,
+                    onDraftPostTap: onDraftPostTap,
                   ),
                 ),
                 if (activities.isLoading)

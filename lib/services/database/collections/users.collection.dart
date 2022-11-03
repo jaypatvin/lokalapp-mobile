@@ -36,8 +36,8 @@ class UsersCollection extends CollectionImpl {
 
   Future<LokalUser?> getUserById(String id) async {
     try {
-      final _data = await reference.doc(id).get();
-      return LokalUser.fromDocument(_data);
+      final data = await reference.doc(id).get();
+      return LokalUser.fromDocument(data);
     } catch (e, stack) {
       FirebaseCrashlytics.instance.recordError(e, stack);
       return null;

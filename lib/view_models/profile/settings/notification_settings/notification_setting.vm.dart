@@ -44,47 +44,47 @@ class NotificationSettingViewModel extends ChangeNotifier {
   }
 
   void _updateLocally(NotificationType key, bool value) {
-    final _notificationSettings = auth.user!.notificationSettings;
+    final notificationSettings = auth.user!.notificationSettings;
     switch (key) {
       case NotificationType.comments:
         auth.updateNotificationSettings(
-          notificationSettings: _notificationSettings.copyWith(comments: value),
+          notificationSettings: notificationSettings.copyWith(comments: value),
         );
         break;
       case NotificationType.communityAlerts:
         auth.updateNotificationSettings(
-          notificationSettings: _notificationSettings.copyWith(
+          notificationSettings: notificationSettings.copyWith(
             communityAlerts: value,
           ),
         );
         break;
       case NotificationType.likes:
         auth.updateNotificationSettings(
-          notificationSettings: _notificationSettings.copyWith(likes: value),
+          notificationSettings: notificationSettings.copyWith(likes: value),
         );
         break;
       case NotificationType.messages:
         auth.updateNotificationSettings(
-          notificationSettings: _notificationSettings.copyWith(messages: value),
+          notificationSettings: notificationSettings.copyWith(messages: value),
         );
         break;
       case NotificationType.orderStatus:
         auth.updateNotificationSettings(
-          notificationSettings: _notificationSettings.copyWith(
+          notificationSettings: notificationSettings.copyWith(
             orderStatus: value,
           ),
         );
         break;
       case NotificationType.subscriptions:
         auth.updateNotificationSettings(
-          notificationSettings: _notificationSettings.copyWith(
+          notificationSettings: notificationSettings.copyWith(
             subscriptions: value,
           ),
         );
         break;
       case NotificationType.tags:
         auth.updateNotificationSettings(
-          notificationSettings: _notificationSettings.copyWith(tags: value),
+          notificationSettings: notificationSettings.copyWith(tags: value),
         );
         break;
     }

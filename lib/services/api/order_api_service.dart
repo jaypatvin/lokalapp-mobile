@@ -27,13 +27,13 @@ class OrderAPIService extends APIService<Order> {
       );
       if (response.statusCode == 200) {
         final map = json.decode(response.body);
-        final List<OrderProduct> _reviews = [];
+        final List<OrderProduct> reviews = [];
 
         for (final data in map['data']) {
-          final _review = OrderProduct.fromJson(data);
-          _reviews.add(_review);
+          final review = OrderProduct.fromJson(data);
+          reviews.add(review);
         }
-        return _reviews;
+        return reviews;
       } else {
         final map = json.decode(response.body);
         if (map['data'] != null) {

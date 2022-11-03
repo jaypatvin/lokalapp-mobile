@@ -30,8 +30,7 @@ class Checkout extends HookWidget {
     final product = context.watch<Products>().findById(productId);
     final shop = context.watch<Shops>().findById(product!.shopId)!;
 
-    final _onCustomerPickUpToggle =
-        useMemoized<void Function(DeliveryOption?)?>(
+    final onCustomerPickUpToggle = useMemoized<void Function(DeliveryOption?)?>(
       () {
         if (shop.deliveryOptions.pickup) {
           return (value) => context.read<ShoppingCart>().updateOrder(
@@ -44,7 +43,7 @@ class Checkout extends HookWidget {
       [shop, productId],
     );
 
-    final _onDeliveryToggle = useMemoized<void Function(DeliveryOption?)?>(() {
+    final onDeliveryToggle = useMemoized<void Function(DeliveryOption?)?>(() {
       if (shop.deliveryOptions.delivery) {
         return (value) => context.read<ShoppingCart>().updateOrder(
               productId: productId,
@@ -156,7 +155,7 @@ class Checkout extends HookWidget {
                       visualDensity: VisualDensity.compact,
                       value: DeliveryOption.pickup,
                       groupValue: order.deliveryOption,
-                      onChanged: _onCustomerPickUpToggle,
+                      onChanged: onCustomerPickUpToggle,
                       selected: DeliveryOption.pickup == order.deliveryOption,
                       title: Text(
                         'Customer Pick-up',
@@ -171,7 +170,7 @@ class Checkout extends HookWidget {
                       visualDensity: VisualDensity.compact,
                       value: DeliveryOption.delivery,
                       groupValue: order.deliveryOption,
-                      onChanged: _onDeliveryToggle,
+                      onChanged: onDeliveryToggle,
                       selected: DeliveryOption.delivery == order.deliveryOption,
                       title: Text(
                         'Delivery',

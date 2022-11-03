@@ -43,41 +43,41 @@ class _ChatProfileState extends State<ChatProfile> {
     super.initState();
 
     for (final chatMember in widget.chat.members) {
-      final _user = context.read<Users>().findById(chatMember);
-      if (_user != null) {
+      final user = context.read<Users>().findById(chatMember);
+      if (user != null) {
         _members.add(
           ChatMember(
-            displayName: _user.displayName.isNotEmpty
-                ? _user.displayName
-                : '${_user.firstName} ${_user.lastName}',
-            id: _user.id,
-            displayPhoto: _user.profilePhoto,
+            displayName: user.displayName.isNotEmpty
+                ? user.displayName
+                : '${user.firstName} ${user.lastName}',
+            id: user.id,
+            displayPhoto: user.profilePhoto,
             type: MemberType.user,
           ),
         );
         continue;
       }
 
-      final _shop = context.read<Shops>().findById(chatMember);
-      if (_shop != null) {
+      final shop = context.read<Shops>().findById(chatMember);
+      if (shop != null) {
         _members.add(
           ChatMember(
-            displayName: _shop.name,
-            id: _shop.id,
-            displayPhoto: _shop.profilePhoto,
+            displayName: shop.name,
+            id: shop.id,
+            displayPhoto: shop.profilePhoto,
             type: MemberType.shop,
           ),
         );
         continue;
       }
 
-      final _product = context.read<Products>().findById(chatMember);
-      if (_product != null) {
+      final product = context.read<Products>().findById(chatMember);
+      if (product != null) {
         _members.add(
           ChatMember(
-            displayName: _product.name,
-            id: _product.id,
-            displayPhoto: _product.gallery?.firstOrNull?.url,
+            displayName: product.name,
+            id: product.id,
+            displayPhoto: product.gallery?.firstOrNull?.url,
             type: MemberType.product,
           ),
         );
@@ -117,60 +117,60 @@ class _ChatProfileState extends State<ChatProfile> {
   }
 
   Widget _memberBuilder(BuildContext ctx, int index) {
-    final bool _isCurrentUser;
-    final _member = _members[index];
+    final bool isCurrentUser;
+    final member = _members[index];
 
-    switch (_member.type) {
+    switch (member.type) {
       case MemberType.user:
-        _isCurrentUser = _member.id == ctx.read<Auth>().user?.id;
+        isCurrentUser = member.id == ctx.read<Auth>().user?.id;
         break;
       case MemberType.shop:
-        final _shop = context.read<Shops>().findById(_member.id);
-        _isCurrentUser = _shop?.userId == ctx.read<Auth>().user?.id;
+        final shop = context.read<Shops>().findById(member.id);
+        isCurrentUser = shop?.userId == ctx.read<Auth>().user?.id;
         break;
       case MemberType.product:
-        final _product = context.read<Products>().findById(_member.id);
-        _isCurrentUser = _product?.userId == ctx.read<Auth>().user?.id;
+        final product = context.read<Products>().findById(member.id);
+        isCurrentUser = product?.userId == ctx.read<Auth>().user?.id;
         break;
     }
 
     // final displayName = _member.displayName! + (_isCurrentUser ? ' (You)' : '');
     final String displayName;
-    if (_isCurrentUser) {
-      displayName = '${_member.displayName} (You)';
-    } else if (_member.type == MemberType.shop) {
-      displayName = '${_member.displayName} (Shop)';
-    } else if (_member.type == MemberType.product) {
-      displayName = '${_member.displayName} (Product)';
+    if (isCurrentUser) {
+      displayName = '${member.displayName} (You)';
+    } else if (member.type == MemberType.shop) {
+      displayName = '${member.displayName} (Shop)';
+    } else if (member.type == MemberType.product) {
+      displayName = '${member.displayName} (Product)';
     } else {
-      displayName = _member.displayName;
+      displayName = member.displayName;
     }
 
     return ListTile(
       onTap: () {
-        if (_isCurrentUser) {
-          switch (_member.type) {
+        if (isCurrentUser) {
+          switch (member.type) {
             case MemberType.user:
               ctx.read<AppRouter>().jumpToTab(AppRoute.profile);
               break;
             case MemberType.shop:
-              final _shop = ctx.read<Shops>().findById(_member.id);
+              final shop = ctx.read<Shops>().findById(member.id);
               ctx.read<AppRouter>().navigateTo(
                     AppRoute.profile,
                     UserShop.routeName,
-                    arguments: UserShopProps(_shop!.userId, _member.id),
+                    arguments: UserShopProps(shop!.userId, member.id),
                   );
               break;
             case MemberType.product:
-              final _product = ctx.read<Products>().findById(_member.id);
-              if (_product == null) {
+              final product = ctx.read<Products>().findById(member.id);
+              if (product == null) {
                 showToast('Sorry, product has been deleted');
                 break;
               }
               ctx.read<AppRouter>().navigateTo(
                 AppRoute.profile,
                 AddProduct.routeName,
-                arguments: {'productId': _member.id},
+                arguments: {'productId': member.id},
               );
               break;
           }
@@ -178,36 +178,36 @@ class _ChatProfileState extends State<ChatProfile> {
           return;
         }
         final appRoute = ctx.read<AppRouter>().currentTabRoute;
-        switch (_member.type) {
+        switch (member.type) {
           case MemberType.user:
             ctx.read<AppRouter>().pushDynamicScreen(
                   appRoute,
                   AppNavigator.appPageRoute(
                     builder: (_) => ProfileScreen(
-                      userId: _member.id,
+                      userId: member.id,
                     ),
                   ),
                 );
             break;
           case MemberType.shop:
-            final _shop = context.read<Shops>().findById(_member.id);
+            final shop = context.read<Shops>().findById(member.id);
             ctx.read<AppRouter>().pushDynamicScreen(
                   appRoute,
                   AppNavigator.appPageRoute(
                     builder: (_) => UserShop(
-                      userId: _shop!.userId,
-                      shopId: _shop.id,
+                      userId: shop!.userId,
+                      shopId: shop.id,
                     ),
                   ),
                 );
             break;
           case MemberType.product:
-            final _product = context.read<Products>().findById(_member.id);
-            if (_product != null) {
+            final product = context.read<Products>().findById(member.id);
+            if (product != null) {
               ctx.read<AppRouter>().navigateTo(
                     AppRoute.discover,
                     ProductDetail.routeName,
-                    arguments: ProductDetailProps(_product),
+                    arguments: ProductDetailProps(product),
                   );
             } else {
               showToast('Sorry, product has been deleted');
@@ -216,8 +216,8 @@ class _ChatProfileState extends State<ChatProfile> {
         }
       },
       leading: ChatAvatar(
-        displayName: _member.displayName,
-        displayPhoto: _member.displayPhoto,
+        displayName: member.displayName,
+        displayPhoto: member.displayPhoto,
       ),
       title: Text(
         displayName,

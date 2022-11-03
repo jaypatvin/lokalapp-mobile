@@ -81,14 +81,14 @@ class UserSharedPreferences {
   Future<void> addRecentSearches(String userId, String query) async {
     if (!isReady) await init();
 
-    final _recentSearches = getRecentSearches(userId);
-    if (_recentSearches.contains(query)) {
-      _recentSearches.remove(query);
+    final recentSearches = getRecentSearches(userId);
+    if (recentSearches.contains(query)) {
+      recentSearches.remove(query);
     }
 
     _preference!.setStringList(
       '$userId/discover/search/recent',
-      [query, ..._recentSearches],
+      [query, ...recentSearches],
     );
     _streamController.add(this);
   }

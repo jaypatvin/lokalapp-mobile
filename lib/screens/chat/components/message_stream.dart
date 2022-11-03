@@ -151,7 +151,7 @@ class MessageStream extends HookWidget {
                 (e) => e.id == message.replyTo?.id,
               );
 
-              final _message = message.archived
+              final displayMessage = message.archived
                   ? Conversation(
                       id: message.id,
                       archived: true,
@@ -162,11 +162,11 @@ class MessageStream extends HookWidget {
                     )
                   : message;
 
-              final Conversation? _replyMessage;
-              if (_message.archived) {
-                _replyMessage = null;
+              final Conversation? displayReplyMessage;
+              if (displayMessage.archived) {
+                displayReplyMessage = null;
               } else if (replyMessage != null && replyMessage.archived) {
-                _replyMessage = Conversation(
+                displayReplyMessage = Conversation(
                   id: replyMessage.id,
                   archived: replyMessage.archived,
                   createdAt: replyMessage.createdAt,
@@ -175,7 +175,7 @@ class MessageStream extends HookWidget {
                   sentAt: replyMessage.sentAt,
                 );
               } else {
-                _replyMessage = replyMessage;
+                displayReplyMessage = replyMessage;
               }
 
               return Column(
@@ -183,9 +183,9 @@ class MessageStream extends HookWidget {
                   _buildItem(
                     context: context,
                     messageId: messageId,
-                    message: _message,
+                    message: displayMessage,
                     userMessage: userMessage,
-                    replyMessage: _replyMessage,
+                    replyMessage: displayReplyMessage,
                   ),
                   if (index == 0 && trailing != null) trailing!,
                 ],

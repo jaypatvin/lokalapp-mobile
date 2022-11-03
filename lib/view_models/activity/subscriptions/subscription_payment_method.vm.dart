@@ -32,19 +32,19 @@ class SubscriptionPaymentMethodViewModel extends ViewModel {
   void init() {
     _apiService = SubscriptionPlanAPIService(context.read<API>());
 
-    final _productId = request.productId;
-    final _quantity = request.quantity;
-    final _product = context.read<Products>().findById(_productId);
-    totalPrice = _quantity * _product!.basePrice;
+    final productId = request.productId;
+    final quantity = request.quantity;
+    final product = context.read<Products>().findById(productId);
+    totalPrice = quantity * product!.basePrice;
   }
 
   Future<void> onSubmitHandler(PaymentMethod paymentMode) async {
     try {
-      final _request = request.copyWith(paymentMethod: paymentMode);
+      final requestCopy = request.copyWith(paymentMethod: paymentMode);
 
       // this will throw if there are any errors
       final subscriptionPlan = await _apiService.createSubscriptionPlan(
-        request: _request,
+        request: requestCopy,
       );
 
       final success = !reschedule ||

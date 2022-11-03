@@ -42,18 +42,18 @@ class CommentCard extends StatelessWidget {
 class _CommentCardView extends HookView<CommentCardViewModel> {
   @override
   Widget render(BuildContext context, CommentCardViewModel vm) {
-    final _currentUser = context.watch<Auth>().user!;
+    final currentUser = context.watch<Auth>().user!;
     final user = useMemoized<LokalUser?>(
       () => context.read<Users>().findById(vm.comment.userId),
       [vm.comment],
     );
 
-    final _isCurrentUser = useMemoized<bool>(
-      () => user?.id == _currentUser.id,
-      [user, _currentUser],
+    final isCurrentUser = useMemoized<bool>(
+      () => user?.id == currentUser.id,
+      [user, currentUser],
     );
 
-    final _images = useMemoized<SizedBox>(
+    final images = useMemoized<SizedBox>(
       () {
         final images = vm.comment.images;
         return SizedBox(
@@ -84,7 +84,7 @@ class _CommentCardView extends HookView<CommentCardViewModel> {
     );
 
     return InkWell(
-      onLongPress: _isCurrentUser
+      onLongPress: isCurrentUser
           ? () => vm.onLongPress(dialog: _CommentOptions(onDelete: vm.onDelete))
           : null,
       child: Column(
@@ -133,7 +133,7 @@ class _CommentCardView extends HookView<CommentCardViewModel> {
                         ),
                       ),
                       const SizedBox(height: 12),
-                      _images,
+                      images,
                     ],
                   ),
                 ),

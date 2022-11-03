@@ -44,9 +44,9 @@ class _ProductReviewsView extends StatelessView<ProductReviewsViewModel> {
           initialData: const [],
           future: viewModel.fetchReviews(),
           builder: (ctx, snapshot) {
-            final _product =
+            final product =
                 context.read<Products>().findById(viewModel.productId);
-            if (_product == null) {
+            if (product == null) {
               return const Center(
                 child: Text('Error fetching product reviews.'),
               );
@@ -65,22 +65,22 @@ class _ProductReviewsView extends StatelessView<ProductReviewsViewModel> {
               return const Text('Error fetching reviews');
             } else {
               final reviews = snapshot.data!;
-              final _shop = context.read<Shops>().findById(_product.shopId);
+              final shop = context.read<Shops>().findById(product.shopId);
 
               return ListView.builder(
                 itemCount: reviews.length,
                 itemBuilder: (ctx, index) {
-                  final _review = snapshot.data![index];
-                  final _user = context.read<Users>().findById(_review.userId);
-                  final _name = _user != null
-                      ? '${_user.firstName} ${_user.lastName.substring(0, 1)}'
+                  final review = snapshot.data![index];
+                  final user = context.read<Users>().findById(review.userId);
+                  final name = user != null
+                      ? '${user.firstName} ${user.lastName.substring(0, 1)}'
                       : null;
 
                   return ProductReviewCard.fromProductReview(
-                    review: _review,
-                    product: _product,
-                    shopName: _shop?.name,
-                    userName: _name,
+                    review: review,
+                    product: product,
+                    shopName: shop?.name,
+                    userName: name,
                   );
                 },
               );

@@ -142,8 +142,7 @@ class _ShopScheduleView extends HookView<ShopScheduleViewModel> {
                     onPressed: vm.onConfirm,
                   ),
                 ),
-                       const SizedBox(height: 24),
-
+                const SizedBox(height: 24),
               ],
             ),
           ),
@@ -181,7 +180,7 @@ class _HoursPicker extends StatelessWidget {
         ),
         Flexible(
           flex: 4,
-          child: Container(
+          child: DecoratedBox(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(30.0),
               border: Border.all(
@@ -192,7 +191,7 @@ class _HoursPicker extends StatelessWidget {
             child: TextButton(
               onPressed: onSelectOpening,
               style: TextButton.styleFrom(
-                primary: Colors.black,
+                foregroundColor: Colors.black,
               ),
               child: Row(
                 children: [
@@ -217,7 +216,7 @@ class _HoursPicker extends StatelessWidget {
         ),
         Flexible(
           flex: 4,
-          child: Container(
+          child: DecoratedBox(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(30.0),
               border: Border.all(
@@ -228,7 +227,7 @@ class _HoursPicker extends StatelessWidget {
             child: TextButton(
               onPressed: onSelectClosing,
               style: TextButton.styleFrom(
-                primary: Colors.black,
+                foregroundColor: Colors.black,
               ),
               child: Row(
                 children: [

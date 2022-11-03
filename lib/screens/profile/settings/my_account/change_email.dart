@@ -28,40 +28,40 @@ class _ChangeEmailView extends HookView<ChangeEmailViewModel>
     with HookScreenLoader {
   @override
   Widget screen(BuildContext context, ChangeEmailViewModel viewModel) {
-    final _formKey = useMemoized<GlobalKey<FormState>>(
+    final formKey = useMemoized<GlobalKey<FormState>>(
       () => GlobalKey<FormState>(),
     );
 
-    final _newEmailFocusNode = useFocusNode();
-    final _confirmEmailFocusNode = useFocusNode();
-    final _passwordFocusNode = useFocusNode();
+    final newEmailFocusNode = useFocusNode();
+    final confirmEmailFocusNode = useFocusNode();
+    final passwordFocusNode = useFocusNode();
 
-    final _isMounted = useIsMounted();
+    final isMounted = useIsMounted();
 
-    final _addPadding = useState(false);
+    final addPadding = useState(false);
 
     useEffect(() {
       void listener() {
-        _addPadding.value = _newEmailFocusNode.hasFocus ||
-            _confirmEmailFocusNode.hasFocus ||
-            _passwordFocusNode.hasFocus;
+        addPadding.value = newEmailFocusNode.hasFocus ||
+            confirmEmailFocusNode.hasFocus ||
+            passwordFocusNode.hasFocus;
       }
 
-      _newEmailFocusNode.addListener(listener);
-      _confirmEmailFocusNode.addListener(listener);
-      _passwordFocusNode.addListener(listener);
+      newEmailFocusNode.addListener(listener);
+      confirmEmailFocusNode.addListener(listener);
+      passwordFocusNode.addListener(listener);
 
       return () {
-        if (_isMounted()) {
-          _newEmailFocusNode.removeListener(listener);
-          _confirmEmailFocusNode.removeListener(listener);
-          _passwordFocusNode.removeListener(listener);
+        if (isMounted()) {
+          newEmailFocusNode.removeListener(listener);
+          confirmEmailFocusNode.removeListener(listener);
+          passwordFocusNode.removeListener(listener);
         }
       };
     }, [
-      _newEmailFocusNode,
-      _confirmEmailFocusNode,
-      _passwordFocusNode,
+      newEmailFocusNode,
+      confirmEmailFocusNode,
+      passwordFocusNode,
     ]);
 
     return Scaffold(
@@ -78,12 +78,12 @@ class _ChangeEmailView extends HookView<ChangeEmailViewModel>
           children: [
             Expanded(
               child: EmailInputForm(
-                formKey: _formKey,
+                formKey: formKey,
                 displayEmailMatchError: viewModel.displayEmailError,
                 displaySignInError: viewModel.displaySignInError,
-                newEmailFocusNode: _newEmailFocusNode,
-                confirmEmailFocusNode: _confirmEmailFocusNode,
-                passwordFocusNode: _passwordFocusNode,
+                newEmailFocusNode: newEmailFocusNode,
+                confirmEmailFocusNode: confirmEmailFocusNode,
+                passwordFocusNode: passwordFocusNode,
                 onNewEmailChanged: viewModel.onEmailChanged,
                 onConfirmEmailChanged: viewModel.onNewEmailChanged,
                 onPasswordChanged: viewModel.onPasswordChanged,
@@ -114,16 +114,16 @@ class _ChangeEmailView extends HookView<ChangeEmailViewModel>
               child: AppButton.filled(
                 text: 'Confirm',
                 onPressed: () async {
-                  _newEmailFocusNode.unfocus();
-                  _confirmEmailFocusNode.unfocus();
-                  _passwordFocusNode.unfocus();
+                  newEmailFocusNode.unfocus();
+                  confirmEmailFocusNode.unfocus();
+                  passwordFocusNode.unfocus();
 
-                  if (!(_formKey.currentState?.validate() ?? false)) return;
+                  if (!(formKey.currentState?.validate() ?? false)) return;
 
-                  final _success =
+                  final success =
                       await performFuture<bool>(viewModel.onFormSubmit);
 
-                  if (_success!) {
+                  if (success!) {
                     Navigator.push(
                       context,
                       AppNavigator.appPageRoute(
@@ -137,7 +137,7 @@ class _ChangeEmailView extends HookView<ChangeEmailViewModel>
             ),
             AnimatedContainer(
               duration: const Duration(milliseconds: 200),
-              height: _addPadding.value ? kKeyboardActionHeight : 0,
+              height: addPadding.value ? kKeyboardActionHeight : 0,
             ),
           ],
         ),

@@ -49,24 +49,24 @@ class AddBankDetails extends StatelessWidget {
 class _AddBankDetailsView extends HookView<AddBankDetailsViewModel> {
   @override
   Widget render(BuildContext context, AddBankDetailsViewModel vm) {
-    final _chosenCode = useState<BankCode?>(vm.bank);
+    final chosenCode = useState<BankCode?>(vm.bank);
 
-    final _nameFocusNode = useFocusNode();
-    final _numberFocusNode = useFocusNode();
+    final nameFocusNode = useFocusNode();
+    final numberFocusNode = useFocusNode();
 
     useEffect(
       () {
-        void _bankListener() => vm.onBankChanged(_chosenCode.value);
-        _chosenCode.addListener(_bankListener);
+        void bankListener() => vm.onBankChanged(chosenCode.value);
+        chosenCode.addListener(bankListener);
 
         return () {
-          _chosenCode.removeListener(_bankListener);
+          chosenCode.removeListener(bankListener);
         };
       },
-      [_chosenCode],
+      [chosenCode],
     );
 
-    final _androidDropDown = useMemoized<Widget>(
+    final androidDropDown = useMemoized<Widget>(
       () {
         final List<DropdownMenuItem<BankCode>> dropDownItems = [];
 
@@ -101,7 +101,7 @@ class _AddBankDetailsView extends HookView<AddBankDetailsViewModel> {
                     ?.copyWith(color: Colors.grey, fontWeight: FontWeight.w400),
               ),
             ),
-            value: _chosenCode.value,
+            value: chosenCode.value,
             isExpanded: true,
             items: dropDownItems,
             focusColor: Colors.white,
@@ -112,14 +112,14 @@ class _AddBankDetailsView extends HookView<AddBankDetailsViewModel> {
                 color: kTealColor,
               ),
             ),
-            onChanged: (value) => _chosenCode.value = value,
+            onChanged: (value) => chosenCode.value = value,
           ),
         );
       },
-      [_chosenCode.value],
+      [chosenCode.value],
     );
 
-    final _iOSPicker = useMemoized<Widget>(
+    final iOSPicker = useMemoized<Widget>(
       () {
         final pickerItems = vm.codes
             .map<Widget>(
@@ -135,7 +135,7 @@ class _AddBankDetailsView extends HookView<AddBankDetailsViewModel> {
         return CupertinoButton(
           child: Row(
             children: [
-              if (_chosenCode.value == null)
+              if (chosenCode.value == null)
                 Expanded(
                   child: Text(
                     'Select a Bank',
@@ -146,10 +146,10 @@ class _AddBankDetailsView extends HookView<AddBankDetailsViewModel> {
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
-              if (_chosenCode.value != null)
+              if (chosenCode.value != null)
                 Expanded(
                   child: Text(
-                    _chosenCode.value!.name,
+                    chosenCode.value!.name,
                     style: Theme.of(context)
                         .textTheme
                         .subtitle2
@@ -183,7 +183,7 @@ class _AddBankDetailsView extends HookView<AddBankDetailsViewModel> {
                     child: CupertinoPicker(
                       itemExtent: 32.0,
                       onSelectedItemChanged: (index) =>
-                          _chosenCode.value = vm.codes[index],
+                          chosenCode.value = vm.codes[index],
                       children: pickerItems,
                     ),
                   ),
@@ -193,15 +193,15 @@ class _AddBankDetailsView extends HookView<AddBankDetailsViewModel> {
           },
         );
       },
-      [_chosenCode.value],
+      [chosenCode.value],
     );
 
-    final _kbActionsConfig = useMemoized<KeyboardActionsConfig>(
+    final kbActionsConfig = useMemoized<KeyboardActionsConfig>(
       () => KeyboardActionsConfig(
         keyboardBarColor: Colors.grey.shade200,
         actions: [
           KeyboardActionsItem(
-            focusNode: _nameFocusNode,
+            focusNode: nameFocusNode,
             toolbarButtons: [
               (node) {
                 return TextButton(
@@ -218,7 +218,7 @@ class _AddBankDetailsView extends HookView<AddBankDetailsViewModel> {
             ],
           ),
           KeyboardActionsItem(
-            focusNode: _numberFocusNode,
+            focusNode: numberFocusNode,
             toolbarButtons: [
               (node) {
                 return TextButton(
@@ -255,7 +255,7 @@ class _AddBankDetailsView extends HookView<AddBankDetailsViewModel> {
         children: [
           Positioned.fill(
             child: KeyboardActions(
-              config: _kbActionsConfig,
+              config: kbActionsConfig,
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Form(
@@ -287,7 +287,7 @@ class _AddBankDetailsView extends HookView<AddBankDetailsViewModel> {
                             ),
                           ),
                         ),
-                        child: Platform.isIOS ? _iOSPicker : _androidDropDown,
+                        child: Platform.isIOS ? iOSPicker : androidDropDown,
                       ),
                       if (vm.bankError != null)
                         Text(
@@ -308,7 +308,7 @@ class _AddBankDetailsView extends HookView<AddBankDetailsViewModel> {
                       const SizedBox(height: 4),
                       InputField(
                         initialValue: vm.accountName,
-                        focusNode: _nameFocusNode,
+                        focusNode: nameFocusNode,
                         onChanged: vm.onAccountNameChanged,
                         validator: vm.accountNameValidator,
                         style: Theme.of(context)
@@ -327,7 +327,7 @@ class _AddBankDetailsView extends HookView<AddBankDetailsViewModel> {
                       const SizedBox(height: 4),
                       InputField(
                         initialValue: vm.accountNumber,
-                        focusNode: _numberFocusNode,
+                        focusNode: numberFocusNode,
                         keyboardType: TextInputType.number,
                         onChanged: vm.onAccountNumberChanged,
                         validator: vm.accountNumberValidator,

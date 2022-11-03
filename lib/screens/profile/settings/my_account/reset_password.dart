@@ -27,7 +27,7 @@ class _ResetPasswordView extends HookView<ResetPasswordViewModel>
     with HookScreenLoader {
   @override
   Widget screen(BuildContext context, ResetPasswordViewModel viewModel) {
-    final _emailFocusNode = useFocusNode();
+    final emailFocusNode = useFocusNode();
 
     return Scaffold(
       backgroundColor: kInviteScreenColor,
@@ -40,7 +40,7 @@ class _ResetPasswordView extends HookView<ResetPasswordViewModel>
           nextFocus: false,
           actions: [
             KeyboardActionsItem(
-              focusNode: _emailFocusNode,
+              focusNode: emailFocusNode,
             ),
           ],
         ),
@@ -68,7 +68,7 @@ class _ResetPasswordView extends HookView<ResetPasswordViewModel>
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 45),
               child: InputEmailField(
-                focusNode: _emailFocusNode,
+                focusNode: emailFocusNode,
                 onChanged: viewModel.onEmailAddressChanged,
               ),
             ),

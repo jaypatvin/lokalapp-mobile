@@ -21,48 +21,48 @@ class BuyerSubscriptionScheduleView
     BuildContext context,
     ViewSubscriptionScheduleViewModel vm,
   ) {
-    final _repeatUnitFocusNode = useFocusNode();
-    final _selectedDate = useState<DateTime?>(null);
+    final repeatUnitFocusNode = useFocusNode();
+    final selectedDate = useState<DateTime?>(null);
 
-    final _onDayPressed = useCallback<void Function(DateTime date)>(
+    final onDayPressed = useCallback<void Function(DateTime date)>(
       (date) {
-        final _date = _selectedDate.value;
-        if (_date?.year == date.year &&
-            _date?.month == date.month &&
-            _date?.day == date.day) {
-          _selectedDate.value = null;
+        final selectedDateValue = selectedDate.value;
+        if (selectedDateValue?.year == date.year &&
+            selectedDateValue?.month == date.month &&
+            selectedDateValue?.day == date.day) {
+          selectedDate.value = null;
         } else {
-          _selectedDate.value = date;
+          selectedDate.value = date;
         }
       },
-      [_selectedDate],
+      [selectedDate],
     );
 
-    final _displayCalendar = useCallback(
+    final displayCalendar = useCallback(
       () async {
         return showDialog<void>(
           context: context,
           barrierDismissible: false,
           builder: (BuildContext ctx) {
             return StatefulBuilder(
-              builder: (_ctx, setState) {
-                bool _displayWarning = vm.displayWarning;
+              builder: (ctx, setState) {
+                bool displayWarning = vm.displayWarning;
                 return SubscriptionScheduleCalendar(
-                  selectedDate: _selectedDate.value,
+                  selectedDate: selectedDate.value,
                   selectableDates: vm.productSelectableDates,
                   onDayPressed: (date) {
                     setState(() => vm.onDayPressedHandler(date));
-                    if (_displayWarning != vm.displayWarning) {
-                      setState(() => _displayWarning = vm.displayWarning);
+                    if (displayWarning != vm.displayWarning) {
+                      setState(() => displayWarning = vm.displayWarning);
                     }
-                    _onDayPressed(date);
+                    onDayPressed(date);
                   },
                   onNonSelectableDayPressed: (date) {
                     setState(() => vm.onNonSelectableDayPressedHandler(date));
-                    _onDayPressed(date);
+                    onDayPressed(date);
                   },
                   markedDates: vm.markedDates,
-                  displayWarning: _displayWarning,
+                  displayWarning: displayWarning,
                   onCancel: () => vm.onConflictCancel(ctx),
                   onConfirm: () {
                     // The user chose to accept their changes.
@@ -75,7 +75,7 @@ class BuyerSubscriptionScheduleView
           },
         );
       },
-      [vm, _onDayPressed],
+      [vm, onDayPressed],
     );
 
     return Scaffold(
@@ -92,7 +92,7 @@ class BuyerSubscriptionScheduleView
             nextFocus: false,
             actions: [
               KeyboardActionsItem(
-                focusNode: _repeatUnitFocusNode,
+                focusNode: repeatUnitFocusNode,
               ),
             ],
           ),
@@ -110,7 +110,7 @@ class BuyerSubscriptionScheduleView
                   header: 'Schedule',
                   description: 'Which dates do you want this product '
                       'to be delivered?',
-                  repeatUnitFocusNode: _repeatUnitFocusNode,
+                  repeatUnitFocusNode: repeatUnitFocusNode,
                   onRepeatTypeChanged: (_) {},
                   onStartDatesChanged: (_, __) {},
                   onRepeatUnitChanged: (_) {},
@@ -143,14 +143,14 @@ class BuyerSubscriptionScheduleView
                 Container(
                   margin: const EdgeInsets.all(3),
                   child: TextButton(
-                    onPressed: () => _displayCalendar(),
+                    onPressed: () => displayCalendar(),
                     style: TextButton.styleFrom(
                       minimumSize: const Size(
                         double.infinity,
                         43,
                       ),
                       backgroundColor: Colors.transparent,
-                      primary: kTealColor,
+                      foregroundColor: kTealColor,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30.0),
                         side: const BorderSide(color: kTealColor),

@@ -99,14 +99,14 @@ class GroupedOrders extends StatelessWidget {
                   QueryDocumentSnapshot a,
                   QueryDocumentSnapshot b,
                 ) {
-                  final _statusCodeA = a.get('status_code');
-                  final _statusCodeB = b.get('status_code');
-                  final statusCodeA = (_statusCodeA == 10 || _statusCodeA == 20)
-                      ? _statusCodeA * 100
-                      : _statusCodeA;
-                  final statusCodeB = (_statusCodeB == 10 || _statusCodeB == 20)
-                      ? _statusCodeB * 100
-                      : _statusCodeB;
+                  final statusA = a.get('status_code');
+                  final statusB = b.get('status_code');
+                  final statusCodeA = (statusA == 10 || statusA == 20)
+                      ? statusA * 100
+                      : statusA;
+                  final statusCodeB = (statusB == 10 || statusB == 20)
+                      ? statusB * 100
+                      : statusB;
 
                   return statusCodeA.compareTo(statusCodeB);
                 },

@@ -78,11 +78,11 @@ class AddBankDetailsViewModel extends ViewModel {
       return;
     }
 
-    final _paymentOptions = _shopBody.paymentOptions;
-    final _initialAccounts = [
-      ..._paymentOptions,
+    final paymentOptions = _shopBody.paymentOptions;
+    final initialAccounts = [
+      ...paymentOptions,
     ];
-    final _newAccount = PaymentOption(
+    final newAccount = PaymentOption(
       bankCode: _bank!.id,
       accountName: accountName,
       accountNumber: accountNumber.trim(),
@@ -90,21 +90,21 @@ class AddBankDetailsViewModel extends ViewModel {
     );
 
     if (initialAccount != null) {
-      _initialAccounts.removeWhere((account) => account == initialAccount);
+      initialAccounts.removeWhere((account) => account == initialAccount);
     }
 
-    if (_initialAccounts.contains(_newAccount)) {
+    if (initialAccounts.contains(newAccount)) {
       showToast(
         '${type == BankType.bank ? "Bank" : "Wallet"} has already been added!',
       );
       return;
     }
 
-    final _newPaymentOptions = [
-      ..._initialAccounts,
-      _newAccount,
+    final newPaymentOptions = [
+      ...initialAccounts,
+      newAccount,
     ];
-    _shopBody.update(paymentOptions: _newPaymentOptions);
+    _shopBody.update(paymentOptions: newPaymentOptions);
 
     AppRouter.profileNavigatorKey.currentState?.pop();
   }
@@ -115,13 +115,13 @@ class AddBankDetailsViewModel extends ViewModel {
       return;
     }
 
-    final _paymentOptions = _shopBody.paymentOptions;
-    final _initialAccounts = [
-      ..._paymentOptions,
+    final paymentOptions = _shopBody.paymentOptions;
+    final initialAccounts = [
+      ...paymentOptions,
     ];
-    _initialAccounts.removeWhere((account) => account == initialAccount);
-    final _newPaymentOptions = [..._initialAccounts];
-    _shopBody.update(paymentOptions: _newPaymentOptions);
+    initialAccounts.removeWhere((account) => account == initialAccount);
+    final newPaymentOptions = [...initialAccounts];
+    _shopBody.update(paymentOptions: newPaymentOptions);
 
     AppRouter.profileNavigatorKey.currentState?.pop();
   }

@@ -9,9 +9,9 @@ class BankCodesCollection extends CollectionImpl {
   BankCodesCollection(Collection collection) : super(collection);
 
   Future<List<BankCode>> getBankCodes() async {
-    final _snapshot = await reference.get();
+    final snapshot = await reference.get();
 
-    return _snapshot.docs
+    return snapshot.docs
         .map<BankCode?>(_toElement)
         .whereType<BankCode>()
         .toList();

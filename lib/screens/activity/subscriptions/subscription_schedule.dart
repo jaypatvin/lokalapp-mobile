@@ -78,7 +78,7 @@ class _NewSubscriptionScheduleView
     BuildContext context,
     NewSubscriptionScheduleViewModel vm,
   ) {
-    final _repeatUnitFocusNode = useFocusNode();
+    final repeatUnitFocusNode = useFocusNode();
 
     return Scaffold(
       appBar: const CustomAppBar(
@@ -94,7 +94,7 @@ class _NewSubscriptionScheduleView
             nextFocus: false,
             actions: [
               KeyboardActionsItem(
-                focusNode: _repeatUnitFocusNode,
+                focusNode: repeatUnitFocusNode,
               ),
             ],
           ),
@@ -118,7 +118,7 @@ class _NewSubscriptionScheduleView
                   header: 'Schedule',
                   description: 'Which dates do you want this product '
                       'to be delivered?',
-                  repeatUnitFocusNode: _repeatUnitFocusNode,
+                  repeatUnitFocusNode: repeatUnitFocusNode,
                   onRepeatTypeChanged: vm.onRepeatTypeChanged,
                   onStartDatesChanged: vm.onStartDatesChanged,
                   onRepeatUnitChanged: vm.onRepeatUnitChanged,

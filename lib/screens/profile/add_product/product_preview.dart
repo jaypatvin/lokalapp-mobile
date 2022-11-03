@@ -113,8 +113,7 @@ class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
             errorBuilder: (ctx, _, __) => const SizedBox.shrink(),
           );
         } else {
-          final _index = index - _urlImages.length;
-          final image = _fileImages[_index];
+          final image = _fileImages[index - _urlImages.length];
 
           return PhotoViewGalleryPageOptions(
             basePosition: Alignment.center,
@@ -211,32 +210,32 @@ class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
   }
 
   Future<bool> _updateProduct() async {
-    final _productBody = context.read<ProductBody>();
-    final _product = context.read<Products>().findById(widget.productId)!;
+    final productBody = context.read<ProductBody>();
+    final product = context.read<Products>().findById(widget.productId)!;
     final updateBody = ProductBody();
-    updateBody.update(shopId: _product.shopId);
+    updateBody.update(shopId: product.shopId);
     updateBody.data.remove('gallery');
 
-    if (_productBody.name != _product.name) {
-      updateBody.update(name: _productBody.name);
+    if (productBody.name != product.name) {
+      updateBody.update(name: productBody.name);
     }
-    if (_productBody.description != _product.description) {
-      updateBody.update(description: _productBody.description);
+    if (productBody.description != product.description) {
+      updateBody.update(description: productBody.description);
     }
-    if (_productBody.productCategory != _product.productCategory) {
-      updateBody.update(productCategory: _productBody.productCategory);
+    if (productBody.productCategory != product.productCategory) {
+      updateBody.update(productCategory: productBody.productCategory);
     }
-    if (_productBody.basePrice != _product.basePrice) {
-      updateBody.update(basePrice: _productBody.basePrice);
+    if (productBody.basePrice != product.basePrice) {
+      updateBody.update(basePrice: productBody.basePrice);
     }
-    if (_productBody.quantity != _product.quantity) {
-      updateBody.update(quantity: _productBody.quantity);
+    if (productBody.quantity != product.quantity) {
+      updateBody.update(quantity: productBody.quantity);
     }
 
-    updateBody.update(canSubscribe: _productBody.canSubscribe);
+    updateBody.update(canSubscribe: productBody.canSubscribe);
 
     if (_fileImages.isNotEmpty) {
-      final gallery = <LokalImages>[..._product.gallery!];
+      final gallery = <LokalImages>[...product.gallery!];
 
       for (final image in _fileImages) {
         final mediaUrl = await context
@@ -244,7 +243,7 @@ class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
             .uploadImage(file: image, src: kProductImagesSrc);
         gallery.add(LokalImages(url: mediaUrl, order: gallery.length));
       }
-      if (!listEquals(gallery, _product.gallery)) {
+      if (!listEquals(gallery, product.gallery)) {
         updateBody.update(
           gallery: gallery.map((image) => image.toJson()).toList(),
         );
@@ -259,7 +258,7 @@ class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
       final value = entry.value;
 
       if (key == 'can_subscribe') {
-        if (_product.canSubscribe == updateData[key]) updateData.remove(key);
+        if (product.canSubscribe == updateData[key]) updateData.remove(key);
 
         continue;
       }
@@ -270,7 +269,7 @@ class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
     }
 
     if (updateData.length <= 1) {
-      if (updateData['shop_id'] == _product.shopId) {
+      if (updateData['shop_id'] == product.shopId) {
         updateData.remove('shop_id');
       }
     }
@@ -279,17 +278,17 @@ class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
     if (!mounted) return false;
 
     if (widget.scheduleState == ProductScheduleState.shop) {
-      final shop = context.read<Shops>().findById(_product.shopId)!;
-      if (shop.operatingHours != _product.availability) {
+      final shop = context.read<Shops>().findById(product.shopId)!;
+      if (shop.operatingHours != product.availability) {
         // we update the availability of the product
         // we already set this up at the product_schedule screen.
         updateSchedule = true;
       }
     } else {
-      final _operatingHoursRequest = context.read<OperatingHoursBody>();
-      final availability = _product.availability;
+      final operatingHoursRequest = context.read<OperatingHoursBody>();
+      final availability = product.availability;
       if (!listEquals(
-        _operatingHoursRequest.request.unavailableDates..sort(),
+        operatingHoursRequest.request.unavailableDates..sort(),
         availability.unavailableDates..sort(),
       )) {
         // We update the availability of the product.
@@ -308,27 +307,27 @@ class _ProductPreviewState extends State<ProductPreview> with ScreenLoader {
     try {
       if (updateData.isNotEmpty) {
         updatedProductDetails = await context.read<Products>().update(
-              id: _product.id,
+              id: product.id,
               request: ProductUpdateRequest.fromJson(updateData),
             );
       }
 
       if (updateSchedule) {
         if (!mounted) return false;
-        final _operatingHours =
-            context.read<Shops>().findById(_product.shopId)!.operatingHours;
+        final operatingHours =
+            context.read<Shops>().findById(product.shopId)!.operatingHours;
         updatedProductSchedule = await context.read<Products>().setAvailability(
-              id: _product.id,
+              id: product.id,
               request: widget.scheduleState == ProductScheduleState.custom
                   ? context.read<OperatingHoursBody>().request
                   : OperatingHoursRequest(
-                      startTime: _operatingHours.startTime,
-                      endTime: _operatingHours.endTime,
-                      repeatType: _operatingHours.repeatType,
-                      repeatUnit: _operatingHours.repeatUnit,
-                      startDates: _operatingHours.startDates,
-                      unavailableDates: _operatingHours.unavailableDates,
-                      customDates: _operatingHours.customDates,
+                      startTime: operatingHours.startTime,
+                      endTime: operatingHours.endTime,
+                      repeatType: operatingHours.repeatType,
+                      repeatUnit: operatingHours.repeatUnit,
+                      startDates: operatingHours.startDates,
+                      unavailableDates: operatingHours.unavailableDates,
+                      customDates: operatingHours.customDates,
                     ),
             );
       }

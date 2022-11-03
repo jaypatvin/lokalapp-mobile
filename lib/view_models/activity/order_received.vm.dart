@@ -55,11 +55,11 @@ class OrderReceivedViewModel extends ViewModel {
         break;
     }
 
-    final _api = context.read<API>();
-    final _apiService = ProductApiService(_api);
+    final api = context.read<API>();
+    final apiService = ProductApiService(api);
 
     try {
-      ratingSubmitted = await _apiService.review(
+      ratingSubmitted = await apiService.review(
         productId: order.productIds.first,
         request: ProductReviewRequest(
           orderId: order.id,

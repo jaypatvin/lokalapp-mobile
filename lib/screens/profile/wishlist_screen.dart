@@ -63,15 +63,15 @@ class _WishListScreenView extends StatelessView<WishlistScreenViewModel> {
             );
           }
 
-          final _products = <Product>[];
+          final productsWishlist = <Product>[];
 
           for (final id in wishlist.items) {
-            _products.add(products.findById(id)!);
+            productsWishlist.add(products.findById(id)!);
           }
           return RefreshIndicator(
             onRefresh: wishlist.fetchWishlist,
             child: ProductsList(
-              items: _products,
+              items: productsWishlist,
               onProductTap: vm.onProductTap,
             ),
           );

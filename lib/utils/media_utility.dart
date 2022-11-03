@@ -10,28 +10,28 @@ class MediaUtility {
   final ImagePicker imagePicker = ImagePicker();
 
   Future<File?> _pickFile(ImageSource source) async {
-    final bool _isGranted;
+    final bool isGranted;
 
     // we need to ask for permission (especially on iOS since accessing the
     // camera and photos without permissions crashes the app)
     switch (source) {
       case ImageSource.camera:
-        final _status = await Permission.camera.request();
-        _isGranted = _status.isGranted;
+        final status = await Permission.camera.request();
+        isGranted = status.isGranted;
 
         // TODO: do something when denied, especially for iOS
-        if (!_isGranted) showToast('Please allow Lokal access to the camera');
+        if (!isGranted) showToast('Please allow Lokal access to the camera');
         break;
       case ImageSource.gallery:
-        final _status = await Permission.photos.request();
-        _isGranted = _status.isGranted || _status.isLimited;
+        final status = await Permission.photos.request();
+        isGranted = status.isGranted || status.isLimited;
 
         // TODO: do something when denied, especially for iOS
-        if (!_isGranted) showToast('Please allow Lokal access to the gallery');
+        if (!isGranted) showToast('Please allow Lokal access to the gallery');
         break;
     }
 
-    if (_isGranted) {
+    if (isGranted) {
       final pickedImage = await imagePicker.pickImage(source: source);
       if (pickedImage != null) {
         return File(pickedImage.path);

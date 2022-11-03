@@ -55,19 +55,19 @@ class SubscriptionPlanStream extends StatelessWidget {
                 return status1.compareTo(status2);
               },
               groupSeparatorBuilder: (SubscriptionStatus status) {
-                final String _header;
+                final String header;
                 switch (status) {
                   case SubscriptionStatus.enabled:
-                    _header = 'Active Subscriptions';
+                    header = 'Active Subscriptions';
                     break;
                   case SubscriptionStatus.cancelled:
-                    _header = 'Declined Subscriptions';
+                    header = 'Declined Subscriptions';
                     break;
                   case SubscriptionStatus.unsubscribed:
-                    _header = 'Past Subscriptions';
+                    header = 'Past Subscriptions';
                     break;
                   case SubscriptionStatus.disabled:
-                    _header = isBuyer ? 'For Confirmation' : 'To Confirm';
+                    header = isBuyer ? 'For Confirmation' : 'To Confirm';
                     break;
                 }
 
@@ -76,7 +76,7 @@ class SubscriptionPlanStream extends StatelessWidget {
                   margin:
                       const EdgeInsets.symmetric(horizontal: 16.0, vertical: 6),
                   child: Text(
-                    _header,
+                    header,
                     style: Theme.of(context).textTheme.subtitle2,
                   ),
                 );

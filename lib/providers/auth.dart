@@ -137,10 +137,10 @@ class Auth extends ChangeNotifier {
 
   Future<void> onStartUp() async {
     try {
-      final User? _firebaseUser = _auth.currentUser;
-      if (_firebaseUser != null) {
-        await _firebaseUser.reload();
-        await _userChangeListener(_firebaseUser);
+      final User? firebaseUser = _auth.currentUser;
+      if (firebaseUser != null) {
+        await firebaseUser.reload();
+        await _userChangeListener(firebaseUser);
       }
     } on FirebaseAuthException catch (e) {
       if (e.code != 'network-request-failed') {
@@ -180,22 +180,22 @@ class Auth extends ChangeNotifier {
 
   Future<void> loginWithGoogle() async {
     try {
-      final _googleSignIn = GoogleSignIn(
+      final googleSignIn = GoogleSignIn(
         scopes: const [
           'email',
           'https://www.googleapis.com/auth/contacts.readonly',
         ],
       );
 
-      final _googleUser = await _googleSignIn.signIn();
-      if (_googleUser == null) throw 'Failed to Sign In';
-      final _googleAuth = await _googleUser.authentication;
-      final _credential = GoogleAuthProvider.credential(
-        idToken: _googleAuth.idToken,
-        accessToken: _googleAuth.accessToken,
+      final googleUser = await googleSignIn.signIn();
+      if (googleUser == null) throw 'Failed to Sign In';
+      final googleAuth = await googleUser.authentication;
+      final credential = GoogleAuthProvider.credential(
+        idToken: googleAuth.idToken,
+        accessToken: googleAuth.accessToken,
       );
-      final credential = await _auth.signInWithCredential(_credential);
-      await _userChangeListener(credential.user);
+      final userCredential = await _auth.signInWithCredential(credential);
+      await _userChangeListener(userCredential.user);
     } catch (e) {
       rethrow;
     }
@@ -203,13 +203,13 @@ class Auth extends ChangeNotifier {
 
   Future<void> loginWithFacebook() async {
     try {
-      final _loginResult = await FacebookAuth.i.login();
-      final _accessToken = _loginResult.accessToken;
-      if (_accessToken == null) throw 'Failed to Sign In';
+      final loginResult = await FacebookAuth.i.login();
+      final accessToken = loginResult.accessToken;
+      if (accessToken == null) throw 'Failed to Sign In';
 
-      final _credential = FacebookAuthProvider.credential(_accessToken.token);
-      final credential = await _auth.signInWithCredential(_credential);
-      await _userChangeListener(credential.user);
+      final credential = FacebookAuthProvider.credential(accessToken.token);
+      final userCredential = await _auth.signInWithCredential(credential);
+      await _userChangeListener(userCredential.user);
     } catch (e) {
       rethrow;
     }
@@ -224,7 +224,7 @@ class Auth extends ChangeNotifier {
     final nonce = _sha256ofString(rawNonce);
 
     try {
-      final _appleCredential = await SignInWithApple.getAppleIDCredential(
+      final appleCredential = await SignInWithApple.getAppleIDCredential(
         scopes: [
           AppleIDAuthorizationScopes.email,
           AppleIDAuthorizationScopes.fullName,
@@ -238,7 +238,7 @@ class Auth extends ChangeNotifier {
       );
 
       final oAuthCredential = OAuthProvider('apple.com').credential(
-        idToken: _appleCredential.identityToken,
+        idToken: appleCredential.identityToken,
         rawNonce: rawNonce,
       );
 
@@ -247,8 +247,8 @@ class Auth extends ChangeNotifier {
 
       final credential = await _auth.signInWithCredential(oAuthCredential);
       final displayName =
-          '${_appleCredential.givenName} ${_appleCredential.familyName}';
-      final userEmail = '${_appleCredential.email}';
+          '${appleCredential.givenName} ${appleCredential.familyName}';
+      final userEmail = '${appleCredential.email}';
 
       final firebaseUser = credential.user;
       await firebaseUser?.updateDisplayName(displayName);

@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-// import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart' show DateFormat;
 import 'package:keyboard_actions/keyboard_actions.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -58,16 +57,16 @@ class _PostDetailsView extends HookView<PostDetailViewModel>
     with HookScreenLoader {
   @override
   Widget screen(BuildContext context, PostDetailViewModel vm) {
-    final _scrollController = useScrollController();
-    final _commentInputFocusNode = useFocusNode();
+    final scrollController = useScrollController();
+    final commentInputFocusNode = useFocusNode();
     // final _showImagePicker = useState<bool>(false);
 
     useEffect(
       () {
         void listener() {
           Timer(const Duration(milliseconds: 300), () {
-            _scrollController.animateTo(
-              _scrollController.position.maxScrollExtent,
+            scrollController.animateTo(
+              scrollController.position.maxScrollExtent,
               duration: const Duration(milliseconds: 200),
               curve: Curves.ease,
             );
@@ -80,13 +79,13 @@ class _PostDetailsView extends HookView<PostDetailViewModel>
       [vm.imageProvider],
     );
 
-    final _kbConfig = useMemoized<KeyboardActionsConfig>(() {
+    final kbConfig = useMemoized<KeyboardActionsConfig>(() {
       return KeyboardActionsConfig(
         keyboardBarColor: Colors.grey.shade200,
         nextFocus: false,
         actions: [
           KeyboardActionsItem(
-            focusNode: _commentInputFocusNode,
+            focusNode: commentInputFocusNode,
             toolbarButtons: [
               (node) {
                 return TextButton(
@@ -139,12 +138,12 @@ class _PostDetailsView extends HookView<PostDetailViewModel>
             body: KeyboardActions(
               disableScroll: true,
               tapOutsideBehavior: TapOutsideBehavior.translucentDismiss,
-              config: _kbConfig,
+              config: kbConfig,
               child: Column(
                 children: [
                   Expanded(
                     child: SingleChildScrollView(
-                      controller: _scrollController,
+                      controller: scrollController,
                       physics: const AlwaysScrollableScrollPhysics(),
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
@@ -236,8 +235,8 @@ class _PostDetailsView extends HookView<PostDetailViewModel>
                             await vm.onShowImagePicker();
                             Future.delayed(const Duration(milliseconds: 300),
                                 () {
-                              _scrollController.animateTo(
-                                _scrollController.position.maxScrollExtent,
+                              scrollController.animateTo(
+                                scrollController.position.maxScrollExtent,
                                 duration: const Duration(milliseconds: 200),
                                 curve: Curves.ease,
                               );
@@ -274,7 +273,7 @@ class _PostDetailsView extends HookView<PostDetailViewModel>
                                   ),
                                   InputTextField(
                                     inputController: vm.inputController,
-                                    inputFocusNode: _commentInputFocusNode,
+                                    inputFocusNode: commentInputFocusNode,
                                     onSend: vm.createComment,
                                     onTap: () => vm.showImagePicker = false,
                                     hintText: 'Add a comment...',
@@ -303,8 +302,8 @@ class _PostDetailsView extends HookView<PostDetailViewModel>
                     builder: (_, __, isVisible) {
                       if (isVisible) {
                         Future.delayed(const Duration(milliseconds: 300), () {
-                          _scrollController.animateTo(
-                            _scrollController.position.maxScrollExtent,
+                          scrollController.animateTo(
+                            scrollController.position.maxScrollExtent,
                             duration: const Duration(milliseconds: 200),
                             curve: Curves.ease,
                           );

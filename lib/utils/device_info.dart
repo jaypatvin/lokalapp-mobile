@@ -17,24 +17,24 @@ class DeviceInfo extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final _deviceInfoPlugin =
+    final deviceInfoPlugin =
         useMemoized<DeviceInfoPlugin>(() => DeviceInfoPlugin());
 
-    final _initPlatformState = useCallback(
+    final initPlatformState = useCallback(
       () async {
         String? deviceId;
         String? deviceModel;
         try {
           if (Platform.isAndroid) {
-            final _info = await _deviceInfoPlugin.androidInfo;
+            final info = await deviceInfoPlugin.androidInfo;
             // TODO: update this for application logs
             // No androidId for newest Android versions
             // deviceId = _info.androidId;
-            deviceModel = _info.device;
+            deviceModel = info.device;
           } else if (Platform.isIOS) {
-            final _info = await _deviceInfoPlugin.iosInfo;
-            deviceId = _info.identifierForVendor;
-            deviceModel = _info.model;
+            final info = await deviceInfoPlugin.iosInfo;
+            deviceId = info.identifierForVendor;
+            deviceModel = info.model;
           } else {
             deviceId = 'Using a device outside of supported devices';
           }
@@ -52,7 +52,7 @@ class DeviceInfo extends HookWidget {
 
     useEffect(
       () {
-        _initPlatformState();
+        initPlatformState();
         return () {};
       },
       [],

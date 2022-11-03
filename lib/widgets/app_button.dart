@@ -42,7 +42,7 @@ class AppButton extends StatelessWidget {
     double height = 43,
     double width = 167,
   }) {
-    final _child = Text(
+    final child = Text(
       text,
       textAlign: TextAlign.center,
       style: TextStyle(
@@ -60,7 +60,7 @@ class AppButton extends StatelessWidget {
       isFilled: isFilled,
       height: height,
       width: width,
-      child: _child,
+      child: child,
     );
   }
 
@@ -73,7 +73,7 @@ class AppButton extends StatelessWidget {
     double height = 43,
     double width = 167,
   }) {
-    final _child = Text(
+    final child = Text(
       text,
       textAlign: TextAlign.center,
       style: const TextStyle(
@@ -91,7 +91,7 @@ class AppButton extends StatelessWidget {
       isFilled: true,
       height: height,
       width: width,
-      child: _child,
+      child: child,
     );
   }
 
@@ -104,7 +104,7 @@ class AppButton extends StatelessWidget {
     double height = 43,
     double width = 167,
   }) {
-    final _child = Text(
+    final child = Text(
       text,
       textAlign: TextAlign.center,
       style: TextStyle(
@@ -121,7 +121,7 @@ class AppButton extends StatelessWidget {
       textStyle: textStyle,
       height: height,
       width: width,
-      child: _child,
+      child: child,
     );
   }
 
@@ -167,7 +167,7 @@ class AppButton extends StatelessWidget {
         style: ElevatedButton.styleFrom(
           shape: const StadiumBorder(),
           elevation: 0.0,
-          primary: isFilled ? color : Colors.transparent,
+          backgroundColor: isFilled ? color : Colors.transparent,
           side: BorderSide(color: color),
         ),
         child: child,

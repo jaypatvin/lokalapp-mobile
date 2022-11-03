@@ -119,12 +119,12 @@ class CheckoutCart extends StatelessWidget {
                                 // get the shopOrders
                                 final orders = cart.orders[key]!;
                                 // get productId from Map using orderIndex
-                                final _key = orders.keys.elementAt(orderIndex);
+                                final productId = orders.keys.elementAt(orderIndex);
                                 final product =
-                                    context.read<Products>().findById(_key);
+                                    context.read<Products>().findById(productId);
                                 return OrderDetails(
                                   product: product!,
-                                  quantity: orders[_key]!.quantity,
+                                  quantity: orders[productId]!.quantity,
                                   onEditTap: () {
                                     context.read<AppRouter>().navigateTo(
                                           AppRoute.discover,

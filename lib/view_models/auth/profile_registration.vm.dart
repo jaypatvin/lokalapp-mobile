@@ -56,10 +56,10 @@ class ProfileRegistrationViewModel extends ViewModel {
   }
 
   Future<bool> _registerUser() async {
-    final _imageService = context.read<LocalImageService>();
+    final imageService = context.read<LocalImageService>();
     String mediaUrl = '';
     if (profilePhoto != null) {
-      mediaUrl = await _imageService.uploadImage(
+      mediaUrl = await imageService.uploadImage(
         file: profilePhoto!,
         src: kUserImagesSrc,
       );
@@ -68,7 +68,7 @@ class ProfileRegistrationViewModel extends ViewModel {
     final auth = context.read<Auth>();
     final AuthBody authBody = context.read<AuthBody>();
     final String inviteCode = authBody.inviteCode!;
-    final _apiService = InviteAPIService(context.read<API>());
+    final apiService = InviteAPIService(context.read<API>());
     authBody.update(
       profilePhoto: mediaUrl,
       firstName: _firstName,
@@ -89,7 +89,7 @@ class ProfileRegistrationViewModel extends ViewModel {
     bool inviteCodeClaimed = false;
     try {
       if (auth.user != null) {
-        inviteCodeClaimed = await _apiService.claim(
+        inviteCodeClaimed = await apiService.claim(
           request: InviteRequest(userId: auth.user!.id, code: inviteCode),
         );
       }

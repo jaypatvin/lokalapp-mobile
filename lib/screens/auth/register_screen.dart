@@ -31,11 +31,11 @@ class _RegisterScreenView extends HookView<RegisterScreenViewModel>
     with HookScreenLoader<RegisterScreenViewModel> {
   @override
   Widget screen(BuildContext context, RegisterScreenViewModel vm) {
-    final _emailController = useTextEditingController();
-    final _passwordController = useTextEditingController();
+    final emailController = useTextEditingController();
+    final passwordController = useTextEditingController();
 
-    final _emailFocusNode = useFocusNode();
-    final _passwordFocusNode = useFocusNode();
+    final emailFocusNode = useFocusNode();
+    final passwordFocusNode = useFocusNode();
 
     return Scaffold(
       body: CustomScrollView(
@@ -95,18 +95,18 @@ class _RegisterScreenView extends HookView<RegisterScreenViewModel>
                     padding: const EdgeInsets.symmetric(vertical: 20.0),
                     child: AuthInputForm(
                       formKey: vm.formKey,
-                      emailController: _emailController,
-                      emailFocusNode: _emailFocusNode,
-                      passwordController: _passwordController,
-                      passwordFocusNode: _passwordFocusNode,
+                      emailController: emailController,
+                      emailFocusNode: emailFocusNode,
+                      passwordController: passwordController,
+                      passwordFocusNode: passwordFocusNode,
                       passwordValidator: vm.passwordValidator,
                       submitButtonLabel: 'REGISTER',
                       onFormChanged: vm.onFormChanged,
                       emailInputError: vm.errorMessage,
                       onFormSubmit: () async => performFuture(
                         () async => vm.emailSignUp(
-                          email: _emailController.text.trim(),
-                          password: _passwordController.text.trim(),
+                          email: emailController.text.trim(),
+                          password: passwordController.text.trim(),
                         ),
                       ),
                     ),

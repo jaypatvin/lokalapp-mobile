@@ -95,9 +95,9 @@ class ChatDetailsViewModel extends ViewModel {
 
   @override
   void init() {
-    final _api = context.read<API>();
-    _chatAPIService = ChatAPIService(_api);
-    _conversationAPIService = ConversationAPIService(_api);
+    final api = context.read<API>();
+    _chatAPIService = ChatAPIService(api);
+    _conversationAPIService = ConversationAPIService(api);
     imageProvider = context.read<CustomPickerDataProvider>();
     _db = context.read<Database>().chats;
     _currentUser = context.read<Auth>().user!;
@@ -136,13 +136,13 @@ class ChatDetailsViewModel extends ViewModel {
   Future<List<ConversationMedia>> _getMedia(
     List<AssetEntity> assets,
   ) async {
-    final _imageService = context.read<LocalImageService>();
+    final imageService = context.read<LocalImageService>();
     final media = <ConversationMedia>[];
 
     for (int index = 0; index < assets.length; index++) {
       final asset = assets[index];
       final file = await asset.file;
-      final url = await _imageService.uploadImage(
+      final url = await imageService.uploadImage(
         file: file!,
         src: kChatImagesSrc,
       );
@@ -193,18 +193,18 @@ class ChatDetailsViewModel extends ViewModel {
 
   Future<void> onSendMessage() async {
     showImagePicker = false;
-    final _replyId = this._replyId;
-    final _message = this._message;
-    final _replyTo = this._replyTo;
+    final replyId = _replyId;
+    final message = _message;
+    final replyTo = _replyTo;
     _sendingImages = [...imageProvider.picked];
-    _sendingReplyTo = this._replyTo;
+    _sendingReplyTo = _replyTo;
 
-    void _onError(Object e, [StackTrace? stack]) {
+    void onError(Object e, [StackTrace? stack]) {
       FirebaseCrashlytics.instance.recordError(e, stack);
       showToast('Error sending message, try again.');
-      this._message = _message;
-      this._replyId = _replyId;
-      this._replyTo = _replyTo;
+      _message = message;
+      _replyId = replyId;
+      _replyTo = replyTo;
       imageProvider.picked.addAll(_sendingImages);
       _currentSendingMessage = null;
       _isSendingMessage = false;
@@ -213,32 +213,32 @@ class ChatDetailsViewModel extends ViewModel {
 
     try {
       imageProvider.picked.clear();
-      this._message = '';
-      this._replyId = '';
-      this._replyTo = null;
+      _message = '';
+      _replyId = '';
+      _replyTo = null;
 
       _isSendingMessage = true;
       _currentSendingMessage = Conversation(
         id: '_sending_mesage',
         archived: false,
         createdAt: DateTime.now(),
-        message: _message,
+        message: message,
         senderId: _currentUser.id,
         sentAt: DateTime.now(),
         media: [],
       );
       notifyListeners();
 
-      final _media = await _getMedia(_sendingImages);
+      final media = await _getMedia(_sendingImages);
       if (_chat != null) {
         _createConversation(
           ConversationRequest(
             userId: _currentUser.id,
-            replyTo: _replyId,
-            media: _media,
-            message: _message,
+            replyTo: replyId,
+            media: media,
+            message: message,
           ),
-          _onError,
+          onError,
         );
       } else {
         _chat = await _chatAPIService.createChat(
@@ -247,8 +247,8 @@ class ChatDetailsViewModel extends ViewModel {
             members: members,
             shopId: shopId,
             productId: productId,
-            message: _message,
-            media: _media,
+            message: message,
+            media: media,
           ),
         );
         _messageStream = _db.getConversations(_chat!.id);
@@ -256,7 +256,7 @@ class ChatDetailsViewModel extends ViewModel {
       }
       notifyListeners();
     } catch (e, stack) {
-      _onError(e, stack);
+      onError(e, stack);
     }
   }
 

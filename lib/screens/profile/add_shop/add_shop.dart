@@ -37,15 +37,15 @@ class _AddShopView extends HookView<AddShopViewModel> {
     final height = MediaQuery.of(context).size.height;
     final padding = height * 0.05;
 
-    final _nameFocusNode = useFocusNode();
-    final _descriptionFocusNode = useFocusNode();
+    final nameFocusNode = useFocusNode();
+    final descriptionFocusNode = useFocusNode();
 
-    final _kbConfig = useMemoized(() {
+    final kbConfig = useMemoized(() {
       return KeyboardActionsConfig(
         keyboardBarColor: Colors.grey.shade200,
         actions: [
           KeyboardActionsItem(
-            focusNode: _nameFocusNode,
+            focusNode: nameFocusNode,
             toolbarButtons: [
               (node) {
                 return TextButton(
@@ -61,7 +61,7 @@ class _AddShopView extends HookView<AddShopViewModel> {
             ],
           ),
           KeyboardActionsItem(
-            focusNode: _descriptionFocusNode,
+            focusNode: descriptionFocusNode,
             toolbarButtons: [
               (node) {
                 return TextButton(
@@ -88,7 +88,7 @@ class _AddShopView extends HookView<AddShopViewModel> {
       ),
       body: ConstrainedScrollView(
         child: KeyboardActions(
-          config: _kbConfig,
+          config: kbConfig,
           disableScroll: true,
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -113,7 +113,7 @@ class _AddShopView extends HookView<AddShopViewModel> {
                 padding: EdgeInsets.symmetric(horizontal: padding),
                 child: InputNameField(
                   hintText: 'Shop Name',
-                  focusNode: _nameFocusNode,
+                  focusNode: nameFocusNode,
                   onChanged: viewModel.onNameChanged,
                   errorText: viewModel.nameErrorText,
                   style: Theme.of(context)
@@ -127,7 +127,7 @@ class _AddShopView extends HookView<AddShopViewModel> {
                 padding: EdgeInsets.symmetric(horizontal: padding),
                 child: InputDescriptionField(
                   hintText: 'Shop Description',
-                  focusNode: _descriptionFocusNode,
+                  focusNode: descriptionFocusNode,
                   onChanged: viewModel.onDescriptionChanged,
                   errorText: viewModel.descriptionErrorText,
                 ),

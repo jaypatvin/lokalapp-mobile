@@ -51,17 +51,17 @@ class ProductDetail extends StatelessWidget {
 class _ProductDetailView extends HookView<ProductDetailViewModel> {
   @override
   Widget render(BuildContext context, ProductDetailViewModel vm) {
-    final _instructionsController = useTextEditingController();
-    final _nodeInstructions = useFocusNode();
-    final _photoView = useMemoized(() => PhotoViewController());
-    final _galleryIndex = useState<int>(0);
+    final instructionsController = useTextEditingController();
+    final nodeInstructions = useFocusNode();
+    final photoView = useMemoized(() => PhotoViewController());
+    final galleryIndex = useState<int>(0);
 
     useEffect(
       () {
         final cart = context.read<ShoppingCart>();
         if (cart.contains(vm.product.id)) {
           final order = cart.getProductOrder(vm.product.id)!;
-          _instructionsController.value = TextEditingValue(
+          instructionsController.value = TextEditingValue(
             text: order.notes!,
             selection: TextSelection.fromPosition(
               TextPosition(offset: order.notes!.length),
@@ -70,13 +70,13 @@ class _ProductDetailView extends HookView<ProductDetailViewModel> {
         }
 
         void listener() {
-          vm.onInstructionsChanged(_instructionsController.text);
+          vm.onInstructionsChanged(instructionsController.text);
         }
 
-        _instructionsController.addListener(listener);
+        instructionsController.addListener(listener);
 
         return () {
-          _instructionsController.removeListener(listener);
+          instructionsController.removeListener(listener);
         };
       },
       [],
@@ -84,16 +84,16 @@ class _ProductDetailView extends HookView<ProductDetailViewModel> {
 
     // This is not used with hooks since we want to rebuild these widgets
     // everytime the screen is rebuilt.
-    final _children = <Widget>[];
+    final children = <Widget>[];
 
-    _children.addAll(
+    children.addAll(
       [
         const SizedBox(height: 10.0),
         ProductDetailGallery(
           product: vm.product,
-          currentIndex: _galleryIndex.value,
-          controller: _photoView,
-          onPageChanged: (index) => _galleryIndex.value = index,
+          currentIndex: galleryIndex.value,
+          controller: photoView,
+          onPageChanged: (index) => galleryIndex.value = index,
         ),
         const SizedBox(height: 16),
         Row(
@@ -170,8 +170,8 @@ class _ProductDetailView extends HookView<ProductDetailViewModel> {
             Expanded(
               child: vm.product.avgRating > 0
                   ? GestureDetector(
-                    onTap: vm.viewReviews,
-                    child: Row(
+                      onTap: vm.viewReviews,
+                      child: Row(
                         children: [
                           RatingBar.builder(
                             initialRating: vm.product.avgRating,
@@ -200,7 +200,7 @@ class _ProductDetailView extends HookView<ProductDetailViewModel> {
                           )
                         ],
                       ),
-                  )
+                    )
                   : Text(
                       'No reviews yet',
                       style: Theme.of(context)
@@ -255,7 +255,7 @@ class _ProductDetailView extends HookView<ProductDetailViewModel> {
     );
 
     if (vm.available) {
-      _children.addAll(
+      children.addAll(
         [
           Row(
             children: [
@@ -279,8 +279,8 @@ class _ProductDetailView extends HookView<ProductDetailViewModel> {
           Padding(
             padding: const EdgeInsets.only(top: 10.0, bottom: 30.0),
             child: SpecialInstructionsTextField(
-              controller: _instructionsController,
-              focusNode: _nodeInstructions,
+              controller: instructionsController,
+              focusNode: nodeInstructions,
             ),
           ),
           Divider(thickness: 1, height: 1, color: Colors.grey.shade300),
@@ -332,7 +332,7 @@ class _ProductDetailView extends HookView<ProductDetailViewModel> {
         ],
       );
     } else {
-      _children.add(
+      children.add(
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 20.0),
           child: SizedBox(
@@ -345,10 +345,9 @@ class _ProductDetailView extends HookView<ProductDetailViewModel> {
                   );
                 }
 
-                final _inWishlist = wishlist.items.contains(vm.product.id);
+                final inWishlist = wishlist.items.contains(vm.product.id);
                 return AppButton.transparent(
-                  text:
-                      _inWishlist ? 'Remove from Wishlist' : 'Add to Wishlist',
+                  text: inWishlist ? 'Remove from Wishlist' : 'Add to Wishlist',
                   onPressed: vm.onWishlistPressed,
                 );
               },
@@ -421,7 +420,7 @@ class _ProductDetailView extends HookView<ProductDetailViewModel> {
           keyboardBarColor: Colors.transparent,
           actions: [
             KeyboardActionsItem(
-              focusNode: _nodeInstructions,
+              focusNode: nodeInstructions,
               displayActionBar: false,
             ),
           ],
@@ -431,7 +430,7 @@ class _ProductDetailView extends HookView<ProductDetailViewModel> {
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: _children,
+            children: children,
           ),
         ),
       ),

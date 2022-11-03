@@ -50,7 +50,7 @@ class _CheckoutScheduleState extends State<CheckoutSchedule> with ScreenLoader {
       final user = auth.user!;
       final order =
           context.read<ShoppingCart>().orders[shopId]![widget.productId]!;
-      final _cart = context.read<ShoppingCart>();
+      final cart = context.read<ShoppingCart>();
       await _apiService.create(
         request: OrderCreateRequest(
           products: [
@@ -74,7 +74,7 @@ class _CheckoutScheduleState extends State<CheckoutSchedule> with ScreenLoader {
               Discover.routeName,
             ),
           )
-          .then((_) => _cart.remove(widget.productId));
+          .then((_) => cart.remove(widget.productId));
     } catch (e, stack) {
       FirebaseCrashlytics.instance.recordError(e, stack);
       showToast('Failed to place order!');
@@ -226,26 +226,26 @@ class _DeliverySchedule extends HookWidget {
 
     useEffect(
       () {
-        final _now = DateTime.now();
+        final now = DateTime.now();
 
-        final _order = context.read<ShoppingCart>().getProductOrder(productId);
+        final order = context.read<ShoppingCart>().getProductOrder(productId);
 
-        if (_order?.schedule?.year == _now.year &&
-            _order?.schedule?.month == _now.month &&
-            _order?.schedule?.day == _now.day) {
-          final _timeOfDayNow = TimeOfDay.fromDateTime(_now);
-          final _closing = stringToTimeOfDay(operatingHours.endTime);
-          if ((_timeOfDayNow.hour * 60 + _timeOfDayNow.minute) >
-              (_closing.hour * 60 + _closing.minute)) {
-            final _nearestAvailableDate = selectableDates.reduce((a, b) {
-              if (a.difference(_now).isNegative) {
+        if (order?.schedule?.year == now.year &&
+            order?.schedule?.month == now.month &&
+            order?.schedule?.day == now.day) {
+          final timeOfDayNow = TimeOfDay.fromDateTime(now);
+          final closing = stringToTimeOfDay(operatingHours.endTime);
+          if ((timeOfDayNow.hour * 60 + timeOfDayNow.minute) >
+              (closing.hour * 60 + closing.minute)) {
+            final nearestAvailableDate = selectableDates.reduce((a, b) {
+              if (a.difference(now).isNegative) {
                 return b;
               }
               return a;
             });
             context.read<ShoppingCart>().updateOrder(
                   productId: productId,
-                  schedule: _nearestAvailableDate,
+                  schedule: nearestAvailableDate,
                   notify: false,
                 );
           }

@@ -28,23 +28,23 @@ class MyAccountViewModel extends ViewModel {
       FirebaseCrashlytics.instance.recordError(e, stack);
 
       if (e is FailureException) {
-        final String _operation;
+        final String operation;
         if (action != null) {
           switch (action) {
             case AccountActions.changeEmail:
-              _operation = 'change email';
+              operation = 'change email';
               break;
             case AccountActions.changePassword:
-              _operation = 'change password';
+              operation = 'change password';
               break;
             case AccountActions.resetPassword:
-              _operation = 'reset password';
+              operation = 'reset password';
               break;
           }
         } else {
-          _operation = 'perform operation';
+          operation = 'perform operation';
         }
-        showToast('Cannot $_operation: ${e.details}');
+        showToast('Cannot $operation: ${e.details}');
       }
 
       return false;

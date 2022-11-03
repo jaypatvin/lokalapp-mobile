@@ -46,9 +46,9 @@ class ProductsSliverGrid extends StatelessWidget {
         delegate: SliverChildBuilderDelegate(
           (_, index) {
             try {
-              final _prefix = valueKeyPrefix ?? const Uuid();
+              final prefix = valueKeyPrefix ?? const Uuid();
               return SizedBox(
-                key: ValueKey('${_prefix}_${items[index].id}'),
+                key: ValueKey('${prefix}_${items[index].id}'),
                 child: GestureDetector(
                   onTap: () => onProductTap(items[index].id),
                   child: ProductCard(items[index].id),

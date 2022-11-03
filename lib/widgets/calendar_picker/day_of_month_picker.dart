@@ -39,10 +39,10 @@ class _DayOfMonthPickerState extends State<DayOfMonthPicker> {
   }
 
   Widget _dayContainer(int day) {
-    final bool _isMarked = day == _markedDay;
+    final bool isMarked = day == _markedDay;
     // TODO: do we limit this?
     // final bool _isEnabled = widget.selectableMonthDays?.contains(day) ?? true;
-    const bool _isEnabled = true;
+    const bool isEnabled = true;
 
     return Container(
       margin: const EdgeInsets.all(1.0),
@@ -50,7 +50,7 @@ class _DayOfMonthPickerState extends State<DayOfMonthPicker> {
       decoration: ShapeDecoration(
         shape: RoundedRectangleBorder(
           side: BorderSide(
-            color: _isMarked ? kOrangeColor : Colors.grey.shade300,
+            color: isMarked ? kOrangeColor : Colors.grey.shade300,
           ),
           borderRadius: const BorderRadius.all(
             Radius.circular(10.0),
@@ -58,7 +58,7 @@ class _DayOfMonthPickerState extends State<DayOfMonthPicker> {
         ),
       ),
       child: TextButton(
-        onPressed: _isEnabled
+        onPressed: isEnabled
             ? () {
                 // the calling method should handle the logic of the day press
                 setState(() {
@@ -75,7 +75,7 @@ class _DayOfMonthPickerState extends State<DayOfMonthPicker> {
         style: TextButton.styleFrom(
           padding: EdgeInsets.zero,
           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-          backgroundColor: _isMarked ? kOrangeColor : Colors.transparent,
+          backgroundColor: isMarked ? kOrangeColor : Colors.transparent,
           shape: const RoundedRectangleBorder(
             side: BorderSide(color: Colors.transparent),
             borderRadius: BorderRadius.all(
@@ -83,14 +83,12 @@ class _DayOfMonthPickerState extends State<DayOfMonthPicker> {
             ),
           ),
         ),
-        child: SizedBox(
-          width: double.infinity,
-          height: double.infinity,
+        child: SizedBox.expand(
           child: Center(
             child: Text(
               '$day',
               semanticsLabel: day.toString(),
-              style: _isEnabled
+              style: isEnabled
                   ? defaultDaysTextStyle
                   // ignore: dead_code
                   : defaultInactiveDaysTextStyle,
@@ -107,12 +105,12 @@ class _DayOfMonthPickerState extends State<DayOfMonthPicker> {
       ...List.generate(7, (_) => const SizedBox(height: 5.0))
     ];
 
-    final _index = en_USSymbols.MONTHS.indexOf(widget.monthChoice) + 1;
+    final index = en_USSymbols.MONTHS.indexOf(widget.monthChoice) + 1;
 
-    final _now = DateTime.now();
-    final _lastDayOfMonth = DateTime(_now.year, _index + 1, 0).day;
+    final now = DateTime.now();
+    final lastDayOfMonth = DateTime(now.year, index + 1, 0).day;
 
-    for (var index = 1; index <= _lastDayOfMonth; index++) {
+    for (var index = 1; index <= lastDayOfMonth; index++) {
       list.add(_dayContainer(index));
     }
 

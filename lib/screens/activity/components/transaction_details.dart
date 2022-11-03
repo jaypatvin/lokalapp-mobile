@@ -25,7 +25,7 @@ class TransactionDetails extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final _name = useMemoized<String?>(
+    final name = useMemoized<String?>(
       () => isBuyer
           ? transaction.shop.name
           : Provider.of<Users>(context, listen: false)
@@ -33,7 +33,7 @@ class TransactionDetails extends HookWidget {
               ?.displayName,
     );
 
-    final _displayPhoto = useMemoized<String?>(
+    final displayPhoto = useMemoized<String?>(
       () => isBuyer
           ? Provider.of<Shops>(context, listen: false)
               .findById(transaction.shopId)
@@ -43,30 +43,30 @@ class TransactionDetails extends HookWidget {
               ?.profilePhoto,
     );
 
-    final _price = useMemoized<double>(
+    final price = useMemoized<double>(
       () => transaction.products
           .fold(0.0, (double prev, product) => prev + product.price),
     );
 
-    final _displayStatus = useMemoized<String?>(
+    final displayStatus = useMemoized<String?>(
       () => (transaction.statusCode == 300 &&
               transaction.paymentMethod == PaymentMethod.cod)
           ? 'Cash on Delivery'
           : status,
     );
 
-    final _avatar = useMemoized<Row>(() {
+    final avatar = useMemoized<Row>(() {
       return Row(
         children: [
           ChatAvatar(
-            displayName: _name,
-            displayPhoto: _displayPhoto,
+            displayName: name,
+            displayPhoto: displayPhoto,
             radius: 15,
           ),
           const SizedBox(width: 8),
           Expanded(
             child: Text(
-              _name ?? '',
+              name ?? '',
               style: Theme.of(context).textTheme.bodyText2,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
@@ -84,13 +84,13 @@ class TransactionDetails extends HookWidget {
             Expanded(
               child: status?.isNotEmpty ?? false
                   ? Text(
-                      _displayStatus!,
+                      displayStatus!,
                       style: Theme.of(context)
                           .textTheme
                           .subtitle2
                           ?.copyWith(color: Colors.black),
                     )
-                  : _avatar,
+                  : avatar,
             ),
             Text(
               'For ',
@@ -109,7 +109,7 @@ class TransactionDetails extends HookWidget {
           ],
         ),
         const SizedBox(height: 10.0),
-        if (status?.isNotEmpty ?? false) _avatar,
+        if (status?.isNotEmpty ?? false) avatar,
         if (status?.isNotEmpty ?? false) const SizedBox(height: 12.0),
         SizedBox(
           height: 47.0 * transaction.products.length,
@@ -202,7 +202,7 @@ class TransactionDetails extends HookWidget {
                   ?.copyWith(color: Colors.black),
             ),
             Text(
-              'P $_price',
+              'P $price',
               style: Theme.of(context).textTheme.subtitle2?.copyWith(
                     color: kOrangeColor,
                     fontWeight: FontWeight.w700,

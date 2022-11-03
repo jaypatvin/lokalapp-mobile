@@ -210,11 +210,11 @@ class _FileImages extends StatelessWidget {
                         !snapshot.hasData) {
                       return const SizedBox.expand();
                     }
-                    final _file = snapshot.data!;
+                    final file = snapshot.data!;
                     return FilePhotoThumbnail(
-                      key: Key('chat_message_${_file.absolute}'),
-                      heroTag: forFocus ? '_focused_${_file.absolute}' : null,
-                      galleryItem: _file,
+                      key: Key('chat_message_${file.absolute}'),
+                      heroTag: forFocus ? '_focused_${file.absolute}' : null,
+                      galleryItem: file,
                       onTap: () => showToast('Image is sending'),
                     );
                   },

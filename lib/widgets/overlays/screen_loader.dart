@@ -58,7 +58,7 @@ mixin ScreenLoader<T extends StatefulWidget> on State<T> {
 
   Widget _buildLoader() {
     if (isLoading) {
-      return Container(
+      return ColoredBox(
         color: Colors.transparent,
         child: Center(
           child: _loader(),
@@ -135,7 +135,7 @@ mixin HookScreenLoader<T extends ViewModel> on HookView<T> {
 
   Widget _buildLoader(bool isLoading) {
     if (isLoading) {
-      return Container(
+      return ColoredBox(
         color: Colors.transparent,
         child: Center(
           child: _loader(),

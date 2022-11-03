@@ -41,19 +41,19 @@ class _SubscriptionDetailsView extends HookView<SubscriptionPlanScreenViewModel>
     with HookScreenLoader {
   @override
   Widget screen(BuildContext context, SubscriptionPlanScreenViewModel vm) {
-    final _address = useMemoized<String>(() {
-      final _address = context.read<Auth>().user!.address;
-      final _addressList = [
-        _address.street,
-        _address.barangay,
-        _address.subdivision,
-        _address.city,
+    final address = useMemoized<String>(() {
+      final address = context.read<Auth>().user!.address;
+      final addressList = [
+        address.street,
+        address.barangay,
+        address.subdivision,
+        address.city,
       ];
 
-      return _addressList.where((text) => text.isNotEmpty).join(', ');
+      return addressList.where((text) => text.isNotEmpty).join(', ');
     });
 
-    final _subHeader = useMemoized<String>(
+    final subHeader = useMemoized<String>(
       () {
         switch (vm.subscriptionPlan.status) {
           case SubscriptionStatus.enabled:
@@ -69,7 +69,7 @@ class _SubscriptionDetailsView extends HookView<SubscriptionPlanScreenViewModel>
       [vm, vm.isBuyer, vm.subscriptionPlan],
     );
 
-    final _displayWarning = useMemoized<bool>(
+    final displayWarning = useMemoized<bool>(
       () {
         final status = vm.subscriptionPlan.status;
         return (status == SubscriptionStatus.enabled ||
@@ -93,7 +93,7 @@ class _SubscriptionDetailsView extends HookView<SubscriptionPlanScreenViewModel>
                   ?.copyWith(color: Colors.white),
             ),
             Text(
-              _subHeader,
+              subHeader,
               style: Theme.of(context)
                   .textTheme
                   .subtitle2
@@ -164,7 +164,7 @@ class _SubscriptionDetailsView extends HookView<SubscriptionPlanScreenViewModel>
                           ?.copyWith(color: Colors.black),
                     ),
                     Text(
-                      _address,
+                      address,
                       style: Theme.of(context)
                           .textTheme
                           .bodyText2
@@ -179,7 +179,7 @@ class _SubscriptionDetailsView extends HookView<SubscriptionPlanScreenViewModel>
                 isBuyer: vm.isBuyer,
                 // let's check first if we're displaying the buyer screen
                 // to avoid calling [vm.checkForConflicts] every rebuild.
-                displayWarning: _displayWarning && vm.checkForConflicts(),
+                displayWarning: displayWarning && vm.checkForConflicts(),
                 status: vm.subscriptionPlan.status,
                 onSeeSchedule: vm.onSeeSchedule,
                 onMessageHandler: vm.onMessageSend,
@@ -224,7 +224,7 @@ class _SubscriptionDetailsButtons extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool _displaySellerButton = !isBuyer &&
+    final bool displaySellerButton = !isBuyer &&
         (status == SubscriptionStatus.disabled ||
             status == SubscriptionStatus.enabled);
     return Column(
@@ -239,7 +239,7 @@ class _SubscriptionDetailsButtons extends StatelessWidget {
               style: ElevatedButton.styleFrom(
                 shape: const StadiumBorder(),
                 elevation: 0.0,
-                primary: Colors.transparent,
+                foregroundColor: Colors.transparent,
                 minimumSize: const Size(0, 43),
                 side: const BorderSide(color: kTealColor),
               ),
@@ -288,7 +288,7 @@ class _SubscriptionDetailsButtons extends StatelessWidget {
             )
           ],
         ),
-        if (_displaySellerButton)
+        if (displaySellerButton)
           Row(
             children: [
               if (status == SubscriptionStatus.disabled)

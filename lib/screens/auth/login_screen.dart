@@ -31,10 +31,10 @@ class _LoginScreenView extends HookView<LoginScreenViewModel>
     with HookScreenLoader<LoginScreenViewModel> {
   @override
   Widget screen(BuildContext context, LoginScreenViewModel vm) {
-    final _emailController = useTextEditingController();
-    final _passwordController = useTextEditingController();
-    final _emailFocusNode = useFocusNode();
-    final _passwordFocusNode = useFocusNode();
+    final emailController = useTextEditingController();
+    final passwordController = useTextEditingController();
+    final emailFocusNode = useFocusNode();
+    final passwordFocusNode = useFocusNode();
 
     return Scaffold(
       resizeToAvoidBottomInset: true,
@@ -77,7 +77,7 @@ class _LoginScreenView extends HookView<LoginScreenViewModel>
                   ),
                 ],
               ),
-              background: Container(
+              background: ColoredBox(
                 color: kYellowColor,
                 child: Stack(
                   children: [
@@ -115,17 +115,17 @@ class _LoginScreenView extends HookView<LoginScreenViewModel>
                     padding: const EdgeInsets.only(top: 25, bottom: 30),
                     child: AuthInputForm(
                       formKey: vm.formKey,
-                      emailController: _emailController,
-                      emailFocusNode: _emailFocusNode,
-                      passwordController: _passwordController,
-                      passwordFocusNode: _passwordFocusNode,
+                      emailController: emailController,
+                      emailFocusNode: emailFocusNode,
+                      passwordController: passwordController,
+                      passwordFocusNode: passwordFocusNode,
                       submitButtonLabel: 'SIGN IN',
                       passwordInputError: vm.errorMessage,
                       onFormChanged: vm.onFormChanged,
                       onFormSubmit: () async => performFuture(
                         () async => vm.emailLogin(
-                          email: _emailController.text.trim(),
-                          password: _passwordController.text.trim(),
+                          email: emailController.text.trim(),
+                          password: passwordController.text.trim(),
                         ),
                       ),
                     ),

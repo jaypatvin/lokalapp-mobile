@@ -70,7 +70,7 @@ class BankDetailsViewModel extends ViewModel {
     try {
       if (proofOfPayment == null) throw 'No image selected!';
 
-      final _url = await _imageService.uploadImage(
+      final url = await _imageService.uploadImage(
         file: proofOfPayment!,
         src: kOrderImagesSrc,
       );
@@ -79,7 +79,7 @@ class BankDetailsViewModel extends ViewModel {
         orderId: order.id,
         request: OrderPayRequest(
           paymentMethod: paymentMode,
-          proofOfPayment: _url,
+          proofOfPayment: url,
         ),
       );
 

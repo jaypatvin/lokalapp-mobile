@@ -45,7 +45,7 @@ class AssetPhotoThumbnail extends StatelessWidget {
             right: 6.0,
             child: GestureDetector(
               onTap: onRemove,
-              child: Container(
+              child: DecoratedBox(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10.0),
                   color: Colors.black.withOpacity(0.3),

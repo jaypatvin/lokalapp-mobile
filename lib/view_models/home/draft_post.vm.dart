@@ -86,7 +86,7 @@ class DraftPostViewModel extends ViewModel {
     notifyListeners();
   }
 
-  void openGallery(final int index) {
+  void openGallery(int index) {
     AppRouter.rootNavigatorKey.currentState?.push(
       AppNavigator.appPageRoute(
         builder: (_) => GalleryAssetPhotoView(
@@ -123,14 +123,14 @@ class DraftPostViewModel extends ViewModel {
     }
 
     try {
-      final _body = <String, dynamic>{
+      final body = <String, dynamic>{
         'user_id': user.id,
       };
       if (_postMessage?.isNotEmpty ?? false) {
-        _body['message'] = _postMessage;
+        body['message'] = _postMessage;
       }
       if (gallery.isNotEmpty) {
-        _body['images'] = gallery.map((x) => x.toJson()).toList();
+        body['images'] = gallery.map((x) => x.toJson()).toList();
       }
 
       await activities.post(

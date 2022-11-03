@@ -39,14 +39,14 @@ class _ShopBannerView extends HookView<ShopBannerViewModel> {
     } else {
       return Consumer<Shops>(
         builder: (context, shops, _) {
-          final _shops = shops.findByUser(vm.userId);
-          if (_shops.isEmpty) {
+          final userShops = shops.findByUser(vm.userId);
+          if (userShops.isEmpty) {
             return const SizedBox.shrink();
           } else {
-            final _shop = _shops.first;
+            final userShop = userShops.first;
             return ShopTile(
-              shop: _shop,
-              onGoToShop: () => vm.goToShop(_shop),
+              shop: userShop,
+              onGoToShop: () => vm.goToShop(userShop),
             );
           }
         },
@@ -70,8 +70,8 @@ class _CurrentUserShopBanner extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<Auth>(
       builder: (context, auth, child) {
-        final _isUserRegistered = auth.user?.registration.verified ?? false;
-        if (!_isUserRegistered &&
+        final isUserRegistered = auth.user?.registration.verified ?? false;
+        if (!isUserRegistered &&
             (auth.user?.registration.idPhoto.isNotEmpty ?? false)) {
           return GestureDetector(
             onTap: onVerifyPressed,
@@ -100,7 +100,7 @@ class _CurrentUserShopBanner extends StatelessWidget {
               ),
             ),
           );
-        } else if (!_isUserRegistered) {
+        } else if (!isUserRegistered) {
           return Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -160,8 +160,8 @@ class _CurrentUserShopBanner extends StatelessWidget {
               );
             }
 
-            final _shops = shops.findByUser(auth.user!.id);
-            if (_shops.isEmpty) {
+            final userShops = shops.findByUser(auth.user!.id);
+            if (userShops.isEmpty) {
               return Column(
                 children: [
                   Container(
@@ -190,8 +190,8 @@ class _CurrentUserShopBanner extends StatelessWidget {
               );
             }
             return ShopTile(
-              shop: _shops.first,
-              onGoToShop: () => onGoToShop(_shops.first),
+              shop: userShops.first,
+              onGoToShop: () => onGoToShop(userShops.first),
             );
           },
         );

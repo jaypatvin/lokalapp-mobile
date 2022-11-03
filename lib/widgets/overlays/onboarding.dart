@@ -61,8 +61,8 @@ class _OnboardingState extends State<Onboarding> with AfterLayoutMixin {
 
   @override
   Future<void> afterFirstLayout(BuildContext context) async {
-    final _prefs = context.read<UserSharedPreferences>();
-    if (!_prefs.getOnboardingStatus(widget.screen)) {
+    final prefs = context.read<UserSharedPreferences>();
+    if (!prefs.getOnboardingStatus(widget.screen)) {
       if (mounted) setState(() => _displayOnboarding = true);
     }
   }
@@ -115,9 +115,9 @@ class _OnboardingState extends State<Onboarding> with AfterLayoutMixin {
               await context
                   .read<UserSharedPreferences>()
                   .updateOnboardingStatus(widget.screen);
-              final _tabController = context.read<PersistentTabController>();
-              if (_tabController.index == 4) return;
-              _tabController.index++;
+              final tabController = context.read<PersistentTabController>();
+              if (tabController.index == 4) return;
+              tabController.index++;
             },
           ),
         ],
@@ -131,9 +131,7 @@ class _OnboardingState extends State<Onboarding> with AfterLayoutMixin {
       children: [
         widget.child,
         if (_displayOnboarding)
-          SizedBox(
-            width: double.infinity,
-            height: double.infinity,
+          SizedBox.expand(
             child: DecoratedBox(
               decoration: BoxDecoration(
                 color: Colors.black.withOpacity(0.5),

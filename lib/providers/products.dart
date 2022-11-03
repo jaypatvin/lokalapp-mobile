@@ -67,17 +67,17 @@ class Products extends ChangeNotifier {
     log('updated');
     // _products.clear();
     for (final product in products) {
-      final _product = product.copyWith(
+      final productCopy = product.copyWith(
         likes: await _db.getProductLikes(product.id),
       );
       // _products.add(_product);
       final index =
-          _products.indexWhere((element) => element.id == _product.id);
+          _products.indexWhere((element) => element.id == productCopy.id);
 
       if (index == -1) {
-        _products.add(_product);
+        _products.add(productCopy);
       } else {
-        _products[index] = _product;
+        _products[index] = productCopy;
       }
     }
     _isLoading = false;

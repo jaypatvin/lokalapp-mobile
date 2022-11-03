@@ -8,11 +8,11 @@ class CommunityCollection extends CollectionImpl {
   CommunityCollection(Collection collection) : super(collection);
 
   Future<Community?> getCommunity(String id) async {
-    final _doc = await reference.doc(id).get();
-    if (!_doc.exists) return null;
+    final doc = await reference.doc(id).get();
+    if (!doc.exists) return null;
 
     try {
-      return Community.fromDocument(_doc);
+      return Community.fromDocument(doc);
     } catch (e, stack) {
       FirebaseCrashlytics.instance.recordError(e, stack);
       return null;

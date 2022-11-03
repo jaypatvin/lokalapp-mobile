@@ -39,8 +39,8 @@ class UserWishlist extends ChangeNotifier {
       _errorMessage = null;
       notifyListeners();
 
-      final _products = await _apiService.getUserWishlist(userId: _userId!);
-      _wishList = _products.map<String>((product) => product.id).toList();
+      final products = await _apiService.getUserWishlist(userId: _userId!);
+      _wishList = products.map<String>((product) => product.id).toList();
     } catch (e, stack) {
       _errorMessage = 'Error fetching wishlist, try again.';
 

@@ -27,11 +27,11 @@ class SubscriptionPlanDetails extends StatelessWidget {
         isBuyer ? subscriptionPlan.shop.image : user?.profilePhoto;
     final item = subscriptionPlan.product;
     final disabled = subscriptionPlan.status == SubscriptionStatus.disabled;
-    final String _subHeader;
+    final String subHeader;
     if (disabled) {
-      _subHeader = isBuyer ? 'For Confirmation' : 'To Confirm';
+      subHeader = isBuyer ? 'For Confirmation' : 'To Confirm';
     } else {
-      _subHeader = 'Subscription';
+      subHeader = 'Subscription';
     }
 
     return Column(
@@ -41,7 +41,7 @@ class SubscriptionPlanDetails extends StatelessWidget {
             children: [
               Expanded(
                 child: Text(
-                  _subHeader,
+                  subHeader,
                   style: Theme.of(context).textTheme.subtitle2,
                 ),
               ),

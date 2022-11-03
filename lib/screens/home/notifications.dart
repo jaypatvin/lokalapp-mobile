@@ -27,29 +27,29 @@ class Notifications extends HookWidget {
               child: Text('Yay! No notifications!'),
             );
           }
-          final _keys = notifications.items.keys.toList();
+          final keys = notifications.items.keys.toList();
           return ListView.separated(
-            itemCount: _keys.length,
+            itemCount: keys.length,
             separatorBuilder: (ctx3, index) {
               return const Divider();
             },
             itemBuilder: (ctx3, index) {
-              final _key = _keys[index];
-              final notification = notifications.items[_key]!;
+              final key = keys[index];
+              final notification = notifications.items[key]!;
               final difference =
                   DateTime.now().difference(notification.createdAt);
-              String _createdSince = '';
+              String createdSince = '';
               if (difference.inDays >= 1) {
-                _createdSince += '${difference.inDays}'
+                createdSince += '${difference.inDays}'
                     ' day${difference.inDays == 1 ? "" : "s"} ago';
               } else if (difference.inHours >= 1) {
-                _createdSince += '${difference.inHours}'
+                createdSince += '${difference.inHours}'
                     ' hour${difference.inHours == 1 ? "" : "s"} ago';
               } else if (difference.inMinutes >= 1) {
-                _createdSince += '${difference.inMinutes}'
+                createdSince += '${difference.inMinutes}'
                     ' minute${difference.inMinutes == 1 ? "" : "s"} ago';
               } else {
-                _createdSince += '${difference.inSeconds}'
+                createdSince += '${difference.inSeconds}'
                     ' second${difference.inSeconds == 1 ? "" : "s"} ago';
               }
               return VisibilityDetector(
@@ -59,7 +59,7 @@ class Notifications extends HookWidget {
                 child: ListTile(
                   title: Text(notification.title),
                   subtitle: Text(
-                    '${notification.message}\n $_createdSince',
+                    '${notification.message}\n $createdSince',
                   ),
                 ),
               );

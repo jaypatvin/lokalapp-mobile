@@ -92,10 +92,10 @@ class _ChatState extends State<Chat> with TickerProviderStateMixin {
           }
 
           final user = context.read<Auth>().user!;
-          final _shops = shops.findByUser(user.id);
+          final userShops = shops.findByUser(user.id);
 
-          if (_shopChatStream == null && _shops.isNotEmpty) {
-            _shopChatStream = _db.getUserChats(_shops.first.id);
+          if (_shopChatStream == null && userShops.isNotEmpty) {
+            _shopChatStream = _db.getUserChats(userShops.first.id);
           }
 
           return TabBarView(
@@ -196,7 +196,7 @@ class _ChatAppBarBottom extends StatelessWidget implements PreferredSizeWidget {
 
     return Container(
       padding: const EdgeInsets.only(bottom: 13, left: 16, right: 16),
-      child: Container(
+      child: DecoratedBox(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(30.0),
           color: Colors.white.withOpacity(0.5),

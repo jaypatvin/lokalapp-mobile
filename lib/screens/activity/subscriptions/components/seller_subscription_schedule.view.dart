@@ -20,31 +20,31 @@ class SellerSubscriptionScheduleView
     BuildContext context,
     SellerSubscriptionScheduleViewModel vm,
   ) {
-    final _repeatUnitFocusNode = useFocusNode();
-    final _selectedDate = useState<DateTime?>(null);
+    final repeatUnitFocusNode = useFocusNode();
+    final selectedDate = useState<DateTime?>(null);
 
-    final _onDayPressed = useCallback<void Function(DateTime date)>(
+    final onDayPressed = useCallback<void Function(DateTime date)>(
       (date) {
-        final _date = _selectedDate.value;
-        if (_date?.year == date.year &&
-            _date?.month == date.month &&
-            _date?.day == date.day) {
-          _selectedDate.value = null;
+        final selectedDateValue = selectedDate.value;
+        if (selectedDateValue?.year == date.year &&
+            selectedDateValue?.month == date.month &&
+            selectedDateValue?.day == date.day) {
+          selectedDate.value = null;
         } else {
-          _selectedDate.value = date;
+          selectedDate.value = date;
         }
       },
-      [_selectedDate],
+      [selectedDate],
     );
 
-    final _displayCalendar = useCallback(
+    final displayCalendar = useCallback(
       () async {
         return showDialog<void>(
           context: context,
           barrierDismissible: false,
           builder: (BuildContext ctx) {
             return StatefulBuilder(
-              builder: (_ctx, setState) {
+              builder: (ctx, setState) {
                 return _SubscriptionScheduleCalendar(
                   selectableDates: vm.productSelectableDates,
                   markedDates: vm.markedDates,
@@ -58,7 +58,7 @@ class SellerSubscriptionScheduleView
           },
         );
       },
-      [vm, _onDayPressed],
+      [vm, onDayPressed],
     );
 
     return Scaffold(
@@ -75,7 +75,7 @@ class SellerSubscriptionScheduleView
             nextFocus: false,
             actions: [
               KeyboardActionsItem(
-                focusNode: _repeatUnitFocusNode,
+                focusNode: repeatUnitFocusNode,
               ),
             ],
           ),
@@ -93,7 +93,7 @@ class SellerSubscriptionScheduleView
                   header: 'Schedule',
                   description: 'These are the dates the products are set to be '
                       'picked-up or delivered.',
-                  repeatUnitFocusNode: _repeatUnitFocusNode,
+                  repeatUnitFocusNode: repeatUnitFocusNode,
                   onRepeatTypeChanged: (_) => {},
                   onStartDatesChanged: (_, __) {},
                   onRepeatUnitChanged: (_) {},
@@ -126,14 +126,14 @@ class SellerSubscriptionScheduleView
                 Container(
                   margin: const EdgeInsets.all(3),
                   child: TextButton(
-                    onPressed: () => _displayCalendar(),
+                    onPressed: () => displayCalendar(),
                     style: TextButton.styleFrom(
                       minimumSize: const Size(
                         double.infinity,
                         43,
                       ),
                       backgroundColor: Colors.transparent,
-                      primary: kTealColor,
+                      foregroundColor: kTealColor,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30.0),
                         side: const BorderSide(color: kTealColor),

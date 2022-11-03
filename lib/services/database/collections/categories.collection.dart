@@ -9,9 +9,9 @@ class CategoriesCollection extends CollectionImpl {
   CategoriesCollection(Collection collection) : super(collection);
 
   Future<List<LokalCategory>> getCategories() async {
-    final _snapshot = await reference.get();
+    final snapshot = await reference.get();
 
-    return _snapshot.docs
+    return snapshot.docs
         .map<LokalCategory?>(_toElement)
         .whereType<LokalCategory>()
         .toList();

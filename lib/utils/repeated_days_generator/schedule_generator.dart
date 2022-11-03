@@ -140,10 +140,10 @@ class ScheduleGenerator {
         final type = repeatType!.split('-');
         // The user used the ordinal picker
         if (type.length > 1) {
-          final _ordinal = int.tryParse(type[0]);
+          final ordinal = int.tryParse(type[0]);
           return _generator.getRepeatedMonthDaysByNthDay(
             everyNMonths: repeatEveryNUnit!,
-            ordinal: _ordinal,
+            ordinal: ordinal,
             weekday: en_USSymbols.SHORTWEEKDAYS.indexOf(type[1].capitalize()),
             month: startDate!.month,
           );
@@ -248,45 +248,45 @@ class ScheduleGenerator {
   }
 
   Schedule generateSchedule(OperatingHours operatingHours) {
-    final _repeatUnit = operatingHours.repeatUnit;
+    final repeatUnit = operatingHours.repeatUnit;
 
-    final _selectableDays = <int>{};
-    final _startDates = <DateTime>[];
+    final selectableDays = <int>{};
+    final startDates = <DateTime>[];
     // Day and week:
     for (final element in operatingHours.startDates) {
       final date = DateFormat('yyyy-MM-dd').parse(element);
       int weekday = date.weekday;
       if (weekday == 7) weekday = 0;
-      _selectableDays.add(weekday);
-      _startDates.add(date);
+      selectableDays.add(weekday);
+      startDates.add(date);
     }
-    final _startDate = DateFormat('yyyy-MM-dd').parse(
+    final startDate = DateFormat('yyyy-MM-dd').parse(
       operatingHours.startDates.first,
     );
 
     // Month:
-    int _startDayOfMonth = 0;
+    int startDayOfMonth = 0;
 
     final repeatType = operatingHours.repeatType;
-    var _repeatChoice = RepeatChoices.day;
+    var repeatChoice = RepeatChoices.day;
     if (repeatType.split('-').length > 1) {
-      _repeatChoice = RepeatChoices.month;
+      repeatChoice = RepeatChoices.month;
     } else {
       for (final element in RepeatChoices.values) {
         if (element.value.toLowerCase() == operatingHours.repeatType) {
-          _repeatChoice = element;
+          repeatChoice = element;
         }
       }
-      _startDayOfMonth = _startDate.day;
+      startDayOfMonth = startDate.day;
     }
 
     return Schedule(
-      repeatType: _repeatChoice,
-      repeatUnit: _repeatUnit,
-      selectableDays: _selectableDays.toList(),
-      startDate: _startDate,
-      startDates: _startDates,
-      startDayOfMonth: _startDayOfMonth,
+      repeatType: repeatChoice,
+      repeatUnit: repeatUnit,
+      selectableDays: selectableDays.toList(),
+      startDate: startDate,
+      startDates: startDates,
+      startDayOfMonth: startDayOfMonth,
       selectableDates: getSelectableDates(operatingHours),
     );
   }

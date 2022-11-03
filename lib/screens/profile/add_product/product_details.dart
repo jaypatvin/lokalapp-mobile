@@ -42,20 +42,20 @@ class _ProductDetailsState extends State<ProductDetails> {
 
     final details = context.read<ProductBody>();
     _stockController.text = details.quantity.toString();
-    final _categories = context.read<Categories>();
+    final categories = context.read<Categories>();
 
-    if (_categories.categories.isEmpty) {
-      _categories.fetch().then((_) {
-        if (_categories.categories.isEmpty ||
+    if (categories.categories.isEmpty) {
+      categories.fetch().then((_) {
+        if (categories.categories.isEmpty ||
             (details.productCategory?.isNotEmpty ?? false)) return;
         details.update(
-          productCategory: _categories.categories.first.name,
+          productCategory: categories.categories.first.name,
         );
       });
     } else {
       if (details.productCategory?.isNotEmpty ?? false) return;
       details.update(
-        productCategory: _categories.categories.first.name,
+        productCategory: categories.categories.first.name,
         notify: false,
       );
     }
@@ -82,7 +82,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                   .subtitle2
                   ?.copyWith(color: Colors.black),
             ),
-            Container(
+            DecoratedBox(
               decoration: BoxDecoration(
                 color: const Color(0xFFF2F2F2),
                 borderRadius: BorderRadius.circular(30.0),

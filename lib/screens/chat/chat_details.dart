@@ -115,23 +115,23 @@ class ChatDetailsView extends HookView<ChatDetailsViewModel> {
 
   @override
   Widget render(BuildContext context, ChatDetailsViewModel viewModel) {
-    final _indicatorColor = useMemoized<Color>(() {
-      final _userId = context.read<Auth>().user?.id;
-      return viewModel.members.contains(_userId) ? kTealColor : kPurpleColor;
+    final indicatorColor = useMemoized<Color>(() {
+      final userId = context.read<Auth>().user?.id;
+      return viewModel.members.contains(userId) ? kTealColor : kPurpleColor;
     });
 
-    final _chatInputNode = useFocusNode();
-    final _chatInputController = useTextEditingController();
+    final chatInputNode = useFocusNode();
+    final chatInputController = useTextEditingController();
 
     useEffect(() {
       void listener() {
-        viewModel.message = _chatInputController.text;
+        viewModel.message = chatInputController.text;
       }
 
-      _chatInputController.addListener(listener);
+      chatInputController.addListener(listener);
       return;
     }, [
-      _chatInputController,
+      chatInputController,
       viewModel,
     ]);
 
@@ -139,7 +139,7 @@ class ChatDetailsView extends HookView<ChatDetailsViewModel> {
       onWillPop: viewModel.onWillPop,
       child: Scaffold(
         appBar: CustomAppBar(
-          backgroundColor: _indicatorColor,
+          backgroundColor: indicatorColor,
           titleText: viewModel.chat?.title ?? '',
           titleStyle: Theme.of(context)
               .textTheme
@@ -173,7 +173,7 @@ class ChatDetailsView extends HookView<ChatDetailsViewModel> {
             keyboardBarColor: Colors.transparent,
             actions: [
               KeyboardActionsItem(
-                focusNode: _chatInputNode,
+                focusNode: chatInputNode,
                 displayActionBar: false,
                 toolbarButtons: [
                   (node) {
@@ -204,7 +204,7 @@ class ChatDetailsView extends HookView<ChatDetailsViewModel> {
               return Column(
                 children: [
                   Expanded(
-                    child: Container(
+                    child: DecoratedBox(
                       decoration: const BoxDecoration(
                         color: Colors.white,
                       ),
@@ -220,16 +220,16 @@ class ChatDetailsView extends HookView<ChatDetailsViewModel> {
                     child: ChatInput(
                       onMessageSend: () {
                         viewModel.onSendMessage();
-                        _chatInputController.clear();
+                        chatInputController.clear();
                       },
                       onShowImagePicker: viewModel.onShowImagePicker,
                       onCancelReply: () => viewModel.replyTo = null,
                       onImageRemove: viewModel.onImageRemove,
-                      chatInputController: _chatInputController,
+                      chatInputController: chatInputController,
                       replyMessage: viewModel.replyTo,
                       images: viewModel.imageProvider.picked,
                       onTextFieldTap: () => viewModel.showImagePicker = false,
-                      chatFocusNode: _chatInputNode,
+                      chatFocusNode: chatInputNode,
                     ),
                   ),
                   // AnimatedContainer(

@@ -132,7 +132,6 @@ class PostCardViewModel extends ViewModel {
     final response = await showModalBottomSheet<bool>(
       context: context,
       useRootNavigator: true,
-      isDismissible: true,
       builder: (_) => reportPostModalSheet,
     );
 

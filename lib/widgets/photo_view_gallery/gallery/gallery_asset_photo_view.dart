@@ -79,7 +79,7 @@ class _GalleryFilePhotoView extends State<GalleryAssetPhotoView> {
             Positioned(
               top: 25,
               left: 15,
-              child: Container(
+              child: DecoratedBox(
                 decoration: BoxDecoration(
                   color: Colors.white.withOpacity(0.5),
                   shape: BoxShape.circle,

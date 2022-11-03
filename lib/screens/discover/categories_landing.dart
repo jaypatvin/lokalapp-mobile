@@ -32,7 +32,7 @@ class CategoriesLanding extends StatelessWidget {
         alwaysDisplayButton: true,
         child: Consumer<Products>(
           builder: (ctx, products, _) {
-            final _items = products.items
+            final items = products.items
                 .where((product) => product.productCategory == category.id)
                 .toList();
             if (products.isLoading) {
@@ -43,7 +43,7 @@ class CategoriesLanding extends StatelessWidget {
                   repeat: true,
                 ),
               );
-            } else if (products.items.isEmpty || _items.isEmpty) {
+            } else if (products.items.isEmpty || items.isEmpty) {
               return SizedBox.expand(
                 child: Center(
                   child: Padding(
@@ -73,13 +73,13 @@ class CategoriesLanding extends StatelessWidget {
                   const SizedBox(height: 12),
                   Expanded(
                     child: ProductsList(
-                      items: _items,
+                      items: items,
                       onProductTap: (String id) {
-                        final _product =
+                        final product =
                             products.items.firstWhere((p) => p.id == id);
                         AppRouter.discoverNavigatorKey.currentState?.pushNamed(
                           ProductDetail.routeName,
-                          arguments: ProductDetailProps(_product),
+                          arguments: ProductDetailProps(product),
                         );
                       },
                     ),

@@ -77,7 +77,7 @@ class _WalletDetailsView extends HookView<BankDetailsViewModel>
                 ),
               ),
             ),
-            ...vm.paymentAccounts.map<Widget>((_account) {
+            ...vm.paymentAccounts.map<Widget>((account) {
               return Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 46),
                 child: Column(
@@ -85,7 +85,7 @@ class _WalletDetailsView extends HookView<BankDetailsViewModel>
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      context.read<BankCodes>().getById(_account.bankCode).name,
+                      context.read<BankCodes>().getById(account.bankCode).name,
                       style: Theme.of(context).textTheme.subtitle2,
                     ),
                     Row(
@@ -101,7 +101,7 @@ class _WalletDetailsView extends HookView<BankDetailsViewModel>
                         Flexible(
                           flex: 4,
                           child: Text(
-                            _account.accountNumber,
+                            account.accountNumber,
                             style: Theme.of(context).textTheme.subtitle2,
                           ),
                         ),
@@ -120,13 +120,13 @@ class _WalletDetailsView extends HookView<BankDetailsViewModel>
                         Flexible(
                           flex: 4,
                           child: Text(
-                            _account.accountName,
+                            account.accountName,
                             style: Theme.of(context).textTheme.subtitle2,
                           ),
                         ),
                       ],
                     ),
-                    if (vm.paymentAccounts.indexOf(_account) !=
+                    if (vm.paymentAccounts.indexOf(account) !=
                         vm.paymentAccounts.length - 1)
                       const SizedBox(height: 32)
                   ],

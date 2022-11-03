@@ -28,36 +28,36 @@ class _ChangePasswordView extends HookView<ChangePasswordViewModel>
     with HookScreenLoader {
   @override
   Widget screen(BuildContext context, ChangePasswordViewModel vm) {
-    final _formKey = useMemoized<GlobalKey<FormState>>(
+    final formKey = useMemoized<GlobalKey<FormState>>(
       () => GlobalKey<FormState>(),
     );
 
-    final _oldPasswordFocusNode = useFocusNode();
-    final _newPasswordFocusNode = useFocusNode();
-    final _confirmPasswordFocusNode = useFocusNode();
+    final oldPasswordFocusNode = useFocusNode();
+    final newPasswordFocusNode = useFocusNode();
+    final confirmPasswordFocusNode = useFocusNode();
 
-    final _isMounted = useIsMounted();
+    final isMounted = useIsMounted();
 
-    final _addPadding = useState(false);
+    final addPadding = useState(false);
 
-    final _kbConfig = useMemoized<KeyboardActionsConfig>(
+    final kbConfig = useMemoized<KeyboardActionsConfig>(
       () => KeyboardActionsConfig(
         keyboardBarColor: Colors.grey.shade200,
         actions: [
           KeyboardActionsItem(
-            focusNode: _oldPasswordFocusNode,
+            focusNode: oldPasswordFocusNode,
           ),
           KeyboardActionsItem(
-            focusNode: _newPasswordFocusNode,
+            focusNode: newPasswordFocusNode,
           ),
           KeyboardActionsItem(
-            focusNode: _confirmPasswordFocusNode,
+            focusNode: confirmPasswordFocusNode,
           ),
         ],
       ),
     );
 
-    final _formField = useCallback(
+    final formField = useCallback(
       ({
         required FocusNode focusNode,
         required void Function(String) onChanged,
@@ -92,26 +92,26 @@ class _ChangePasswordView extends HookView<ChangePasswordViewModel>
 
     useEffect(() {
       void listener() {
-        _addPadding.value = _oldPasswordFocusNode.hasFocus ||
-            _newPasswordFocusNode.hasFocus ||
-            _confirmPasswordFocusNode.hasFocus;
+        addPadding.value = oldPasswordFocusNode.hasFocus ||
+            newPasswordFocusNode.hasFocus ||
+            confirmPasswordFocusNode.hasFocus;
       }
 
-      _oldPasswordFocusNode.addListener(listener);
-      _newPasswordFocusNode.addListener(listener);
-      _confirmPasswordFocusNode.addListener(listener);
+      oldPasswordFocusNode.addListener(listener);
+      newPasswordFocusNode.addListener(listener);
+      confirmPasswordFocusNode.addListener(listener);
 
       return () {
-        if (_isMounted()) {
-          _oldPasswordFocusNode.removeListener(listener);
-          _newPasswordFocusNode.removeListener(listener);
-          _confirmPasswordFocusNode.removeListener(listener);
+        if (isMounted()) {
+          oldPasswordFocusNode.removeListener(listener);
+          newPasswordFocusNode.removeListener(listener);
+          confirmPasswordFocusNode.removeListener(listener);
         }
       };
     }, [
-      _oldPasswordFocusNode,
-      _newPasswordFocusNode,
-      _confirmPasswordFocusNode,
+      oldPasswordFocusNode,
+      newPasswordFocusNode,
+      confirmPasswordFocusNode,
     ]);
 
     return Scaffold(
@@ -127,10 +127,10 @@ class _ChangePasswordView extends HookView<ChangePasswordViewModel>
             child: Padding(
               padding: const EdgeInsets.fromLTRB(16, 24, 16, 0),
               child: KeyboardActions(
-                config: _kbConfig,
+                config: kbConfig,
                 bottomAvoiderScrollPhysics: const BouncingScrollPhysics(),
                 child: Form(
-                  key: _formKey,
+                  key: formKey,
                   onChanged: vm.onFormChanged,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -146,8 +146,8 @@ class _ChangePasswordView extends HookView<ChangePasswordViewModel>
                         ),
                       ),
                       const SizedBox(height: 4),
-                      _formField(
-                        focusNode: _oldPasswordFocusNode,
+                      formField(
+                        focusNode: oldPasswordFocusNode,
                         onChanged: vm.onOldPasswordChanged,
                         validator: vm.passwordValidator,
                         errorText: vm.signInError,
@@ -164,8 +164,8 @@ class _ChangePasswordView extends HookView<ChangePasswordViewModel>
                         ),
                       ),
                       const SizedBox(height: 4),
-                      _formField(
-                        focusNode: _newPasswordFocusNode,
+                      formField(
+                        focusNode: newPasswordFocusNode,
                         onChanged: vm.onNewPasswordChanged,
                         validator: vm.passwordValidator,
                       ),
@@ -181,8 +181,8 @@ class _ChangePasswordView extends HookView<ChangePasswordViewModel>
                         ),
                       ),
                       const SizedBox(height: 4),
-                      _formField(
-                        focusNode: _confirmPasswordFocusNode,
+                      formField(
+                        focusNode: confirmPasswordFocusNode,
                         onChanged: vm.onConfirmPasswordChanged,
                         errorText: vm.passwordMismatchError,
                       ),
@@ -198,11 +198,11 @@ class _ChangePasswordView extends HookView<ChangePasswordViewModel>
             child: AppButton.filled(
               text: 'Confirm',
               onPressed: () async {
-                _confirmPasswordFocusNode.unfocus();
-                _newPasswordFocusNode.unfocus();
-                _oldPasswordFocusNode.unfocus();
+                confirmPasswordFocusNode.unfocus();
+                newPasswordFocusNode.unfocus();
+                oldPasswordFocusNode.unfocus();
 
-                if (!(_formKey.currentState?.validate() ?? false)) return;
+                if (!(formKey.currentState?.validate() ?? false)) return;
 
                 final success = await performFuture<bool>(vm.onFormSubmit);
                 if (success!) {
@@ -220,7 +220,7 @@ class _ChangePasswordView extends HookView<ChangePasswordViewModel>
           ),
           AnimatedContainer(
             duration: const Duration(milliseconds: 200),
-            height: _addPadding.value ? kKeyboardActionHeight : 0,
+            height: addPadding.value ? kKeyboardActionHeight : 0,
           ),
           // const SizedBox(height: kKeyboardActionHeight),
         ],

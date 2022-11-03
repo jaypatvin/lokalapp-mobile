@@ -23,11 +23,11 @@ class Transactions extends StatelessWidget {
   }
 
   factory Transactions.isSeller(
-    Map<int, String?> _statuses, {
+    Map<int, String?> statuses, {
     Color backgroundColor = kPurpleColor,
   }) {
     return Transactions._(
-      _statuses,
+      statuses,
       false,
       backgroundColor,
     );
@@ -145,13 +145,13 @@ class _TransactionsView extends HookView<TransactionsViewModel>
                         padding: const EdgeInsets.symmetric(horizontal: 16),
                         itemBuilder: (context, index) {
                           final key = vm.statuses.keys.elementAt(index);
-                          final _keyString =
+                          final keyString =
                               '${vm.isBuyer ? "buyer" : "seller"}_status_$key';
                           return GestureDetector(
                             onTap: () => vm.changeIndex(key),
-                            key: Key(_keyString),
+                            key: Key(keyString),
                             child: Container(
-                              key: Key(_keyString),
+                              key: Key(keyString),
                               margin: const EdgeInsets.symmetric(horizontal: 4),
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 12,
@@ -166,7 +166,7 @@ class _TransactionsView extends HookView<TransactionsViewModel>
                               child: Center(
                                 child: Text(
                                   vm.statuses[key]!,
-                                  key: Key(_keyString),
+                                  key: Key(keyString),
                                   style: Theme.of(context).textTheme.subtitle2,
                                 ),
                               ),

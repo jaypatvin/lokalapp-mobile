@@ -62,28 +62,28 @@ class _ViewReviewsView extends StatelessView<ViewReviewsViewModel> {
               return ListView.builder(
                 itemCount: reviews.length,
                 itemBuilder: (ctx, index) {
-                  final _orderProduct = snapshot.data![index];
-                  final _product = context.read<Products>().findById(
-                        _orderProduct.id,
+                  final orderProduct = snapshot.data![index];
+                  final product = context.read<Products>().findById(
+                        orderProduct.id,
                       );
 
-                  final Shop? _shop;
-                  if (_product != null) {
-                    _shop = context.read<Shops>().findById(_product.shopId);
+                  final Shop? shop;
+                  if (product != null) {
+                    shop = context.read<Shops>().findById(product.shopId);
                   } else {
-                    _shop = null;
+                    shop = null;
                   }
-                  final _user = context
+                  final user = context
                       .read<Users>()
-                      .findById(_orderProduct.review?.userId);
-                  final _name = _user != null
-                      ? '${_user.firstName} ${_user.lastName.substring(0, 1)}'
+                      .findById(orderProduct.review?.userId);
+                  final name = user != null
+                      ? '${user.firstName} ${user.lastName.substring(0, 1)}'
                       : null;
 
                   return ProductReviewCard.fromOrderReview(
-                    _orderProduct,
-                    shopName: _shop?.name,
-                    userName: _name,
+                    orderProduct,
+                    shopName: shop?.name,
+                    userName: name,
                   );
                 },
               );

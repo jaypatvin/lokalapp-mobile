@@ -19,8 +19,8 @@ class QuantityController extends StatelessWidget {
           onPressed: onSubtract,
           style: ElevatedButton.styleFrom(
             minimumSize: const Size(dimension, dimension),
+            backgroundColor: Colors.white,
             shape: const CircleBorder(),
-            primary: Colors.white,
             elevation: 0.0,
             side: const BorderSide(),
           ),
@@ -41,8 +41,8 @@ class QuantityController extends StatelessWidget {
           onPressed: onAdd,
           style: ElevatedButton.styleFrom(
             minimumSize: const Size(dimension, dimension),
+            backgroundColor: Colors.white,
             shape: const CircleBorder(),
-            primary: Colors.white,
             elevation: 0.0,
             side: const BorderSide(),
           ),

@@ -27,7 +27,7 @@ class _ForgotPasswordScreenView extends HookView<ForgotPasswordScreenViewModel>
     with HookScreenLoader {
   @override
   Widget screen(BuildContext context, ForgotPasswordScreenViewModel viewModel) {
-    final _emailFocusNode = useFocusNode();
+    final emailFocusNode = useFocusNode();
 
     return Scaffold(
       backgroundColor: kInviteScreenColor,
@@ -39,7 +39,7 @@ class _ForgotPasswordScreenView extends HookView<ForgotPasswordScreenViewModel>
               nextFocus: false,
               actions: [
                 KeyboardActionsItem(
-                  focusNode: _emailFocusNode,
+                  focusNode: emailFocusNode,
                 ),
               ],
             ),
@@ -67,7 +67,7 @@ class _ForgotPasswordScreenView extends HookView<ForgotPasswordScreenViewModel>
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 45),
                   child: InputEmailField(
-                    focusNode: _emailFocusNode,
+                    focusNode: emailFocusNode,
                     onChanged: viewModel.onEmailAddressChanged,
                   ),
                 ),

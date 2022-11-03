@@ -44,7 +44,7 @@ class CalendarDefaultDay extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.all(3),
-      child: Container(
+      child: ColoredBox(
         color:
             (isLastMonthDay || isNextMonthDay) ? Colors.black12 : Colors.green,
         child: Center(

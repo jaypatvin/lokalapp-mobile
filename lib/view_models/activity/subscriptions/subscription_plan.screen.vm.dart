@@ -41,7 +41,7 @@ class SubscriptionPlanScreenViewModel extends ViewModel {
   bool checkForConflicts() {
     if (subscriptionPlan.plan.autoReschedule) return false;
 
-    final _generator = ScheduleGenerator();
+    final generator = ScheduleGenerator();
     final product = context.read<Products>().findById(
           subscriptionPlan.productId,
         );
@@ -61,7 +61,7 @@ class SubscriptionPlanScreenViewModel extends ViewModel {
     );
 
     // product schedule initialization
-    final productSelectableDates = _generator
+    final productSelectableDates = generator
         .getSelectableDates(product!.availability)
         .where(
           (date) =>
@@ -71,7 +71,7 @@ class SubscriptionPlanScreenViewModel extends ViewModel {
         .toList()
       ..sort();
 
-    final markedDates = _generator
+    final markedDates = generator
         .getSelectableDates(operatingHours)
         .where(
           (date) =>
@@ -97,20 +97,20 @@ class SubscriptionPlanScreenViewModel extends ViewModel {
   }
 
   void onSeeSchedule() {
-    final SubscriptionSchedule _screen;
+    final SubscriptionSchedule screen;
     if (isBuyer) {
-      _screen = SubscriptionSchedule.view(
+      screen = SubscriptionSchedule.view(
         subscriptionPlan: subscriptionPlan,
       );
     } else {
-      _screen = SubscriptionSchedule.seller(
+      screen = SubscriptionSchedule.seller(
         subscriptionPlan: subscriptionPlan,
       );
     }
 
     AppRouter.activityNavigatorKey.currentState?.push(
       AppNavigator.appPageRoute(
-        builder: (_) => _screen,
+        builder: (_) => screen,
       ),
     );
   }
@@ -131,15 +131,15 @@ class SubscriptionPlanScreenViewModel extends ViewModel {
   }
 
   void onSubscribeAgain() {
-    final _product = context.read<Products>().findById(
+    final product = context.read<Products>().findById(
           subscriptionPlan.productId,
         );
-    if (_product != null) {
+    if (product != null) {
       context.read<AppRouter>().navigateTo(
             AppRoute.discover,
             ProductDetail.routeName,
             arguments: ProductDetailProps(
-              _product,
+              product,
             ),
           );
     } else {
@@ -150,11 +150,11 @@ class SubscriptionPlanScreenViewModel extends ViewModel {
   Future<void> onUnsubscribe() async {
     try {
       // this will throw an error if unsuccessful
-      final _success = await _apiService.unsubscribeFromSubscriptionPlan(
+      final success = await _apiService.unsubscribeFromSubscriptionPlan(
         planId: subscriptionPlan.id,
       );
 
-      if (!_success) {
+      if (!success) {
         throw FailureException('Failed to unsubscribe. Try again.');
       }
 
@@ -167,10 +167,10 @@ class SubscriptionPlanScreenViewModel extends ViewModel {
 
   Future<void> onConfirmSubscription() async {
     try {
-      final _success = await _apiService.confirmSubscriptionPlan(
+      final success = await _apiService.confirmSubscriptionPlan(
         planId: subscriptionPlan.id,
       );
-      if (!_success) {
+      if (!success) {
         throw FailureException('Failed to confirm subscription. Try again.');
       }
 
@@ -183,10 +183,10 @@ class SubscriptionPlanScreenViewModel extends ViewModel {
 
   Future<void> onDeclineSubscription() async {
     try {
-      final _success = await _apiService.cancelSubscriptionPlan(
+      final success = await _apiService.cancelSubscriptionPlan(
         planId: subscriptionPlan.id,
       );
-      if (!_success) {
+      if (!success) {
         throw FailureException(
           'Failed to decline the subscription. Try again.',
         );

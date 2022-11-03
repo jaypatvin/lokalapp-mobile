@@ -80,21 +80,21 @@ class UserShopViewModel extends ViewModel {
   }
 
   void _shopSetup() {
-    Shop? _shop;
+    Shop? shop;
 
     if (shopId != null) {
-      _shop = context.read<Shops>().findById(shopId);
+      shop = context.read<Shops>().findById(shopId);
     }
 
-    if (shopId == null && _shop == null) {
-      final _shops = context.read<Shops>().findByUser(userId);
-      if (_shops.isEmpty) throw 'Error: no shop found.';
+    if (shopId == null && shop == null) {
+      final shops = context.read<Shops>().findByUser(userId);
+      if (shops.isEmpty) throw 'Error: no shop found.';
 
-      _shop = _shops.first;
+      shop = shops.first;
     }
 
-    if (_shop == null) throw FailureException('Error: no shop found.');
-    shop = _shop;
+    if (shop == null) throw FailureException('Error: no shop found.');
+    shop = shop;
   }
 
   void refresh() {
@@ -127,7 +127,6 @@ class UserShopViewModel extends ViewModel {
       final response = await showModalBottomSheet<bool>(
         context: context,
         useRootNavigator: true,
-        isDismissible: true,
         builder: (_) => message,
       );
       if (response == null || !response) {
@@ -135,10 +134,10 @@ class UserShopViewModel extends ViewModel {
         return;
       } else {
         AppRouter.rootNavigatorKey.currentState?.pop();
-        final _appRouter = context.read<AppRouter>();
-        final _route = _appRouter.currentTabRoute;
-        _appRouter.pushDynamicScreen(
-          _route,
+        final appRouter = context.read<AppRouter>();
+        final route = appRouter.currentTabRoute;
+        appRouter.pushDynamicScreen(
+          route,
           AppNavigator.appPageRoute(
             builder: (_) => ReportShop(
               shopId: shop.id,
@@ -193,8 +192,8 @@ class UserShopViewModel extends ViewModel {
   }
 
   void updateProducts() {
-    final _items = context.read<Products>().findByShop(shop.id);
-    _products = [..._items];
+    final items = context.read<Products>().findByShop(shop.id);
+    _products = [...items];
     notifyListeners();
   }
 

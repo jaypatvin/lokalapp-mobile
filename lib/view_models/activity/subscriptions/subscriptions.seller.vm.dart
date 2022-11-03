@@ -25,14 +25,14 @@ class SubscriptionsSellerViewModel extends ViewModel {
   @override
   void init() {
     super.init();
-    final _api = context.read<API>();
+    final api = context.read<API>();
     _db = context.read<Database>().productSubscriptionPlans;
-    _subscriptionPlanApiService = SubscriptionPlanAPIService(_api);
+    _subscriptionPlanApiService = SubscriptionPlanAPIService(api);
 
-    final _user = context.read<Auth>().user!;
-    final _shops = context.read<Shops>().findByUser(_user.id);
+    final user = context.read<Auth>().user!;
+    final shops = context.read<Shops>().findByUser(user.id);
 
-    if (_shops.isNotEmpty) {
+    if (shops.isNotEmpty) {
       _setUpStreams();
     } else {
       context.read<Shops>().addListener(_shopChangeListener);
@@ -50,10 +50,10 @@ class SubscriptionsSellerViewModel extends ViewModel {
   }
 
   void _setUpStreams() {
-    final _user = context.read<Auth>().user!;
+    final user = context.read<Auth>().user!;
     // we're sure that there is a shop
-    final _shop = context.read<Shops>().findByUser(_user.id).first;
-    _subscriptionPlanStream = _db.getShopSubscriptionPlans(_shop.id);
+    final shop = context.read<Shops>().findByUser(user.id).first;
+    _subscriptionPlanStream = _db.getShopSubscriptionPlans(shop.id);
   }
 
   void createShopHandler() {

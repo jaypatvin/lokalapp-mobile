@@ -48,41 +48,41 @@ class _EditShopView extends HookView<EditShopViewModel>
     final themeData = Theme.of(context);
     const padding = 45.0;
 
-    final _isAnimating = useState<bool>(false);
+    final isAnimating = useState<bool>(false);
 
-    final _shopNameController = useTextEditingController();
-    final _shopDescController = useTextEditingController();
+    final shopNameController = useTextEditingController();
+    final shopDescController = useTextEditingController();
 
     useEffect(
       () {
-        _shopNameController.text = vm.shopName;
-        _shopDescController.text = vm.shopDescription;
+        shopNameController.text = vm.shopName;
+        shopDescController.text = vm.shopDescription;
 
-        void _nameListener() => vm.onShopNameChanged(_shopNameController.text);
+        void nameListener() => vm.onShopNameChanged(shopNameController.text);
 
-        void _descriptionListener() =>
-            vm.onShopDescriptionChange(_shopDescController.text);
+        void descriptionListener() =>
+            vm.onShopDescriptionChange(shopDescController.text);
 
-        _shopNameController.addListener(_nameListener);
-        _shopDescController.addListener(_descriptionListener);
+        shopNameController.addListener(nameListener);
+        shopDescController.addListener(descriptionListener);
 
         return () {
-          _shopNameController.removeListener(_nameListener);
-          _shopDescController.removeListener(_descriptionListener);
+          shopNameController.removeListener(nameListener);
+          shopDescController.removeListener(descriptionListener);
         };
       },
       [],
     );
 
-    final _nameNode = useFocusNode();
-    final _descriptionNode = useFocusNode();
+    final nameNode = useFocusNode();
+    final descriptionNode = useFocusNode();
 
-    final _kbActionsRef = useRef(
+    final kbActionsRef = useRef(
       KeyboardActionsConfig(
         keyboardBarColor: Colors.grey.shade200,
         actions: [
           KeyboardActionsItem(
-            focusNode: _nameNode,
+            focusNode: nameNode,
             toolbarButtons: [
               (node) {
                 return TextButton(
@@ -99,7 +99,7 @@ class _EditShopView extends HookView<EditShopViewModel>
             ],
           ),
           KeyboardActionsItem(
-            focusNode: _descriptionNode,
+            focusNode: descriptionNode,
             toolbarButtons: [
               (node) {
                 return TextButton(
@@ -137,7 +137,7 @@ class _EditShopView extends HookView<EditShopViewModel>
                 ),
                 InkWell(
                   onTap: () {
-                    _isAnimating.value = true;
+                    isAnimating.value = true;
                     vm.toggleButton();
                   },
                   child: AnimatedContainer(
@@ -171,7 +171,7 @@ class _EditShopView extends HookView<EditShopViewModel>
                           ),
                         ),
                         AnimatedPositioned(
-                          onEnd: () => _isAnimating.value = false,
+                          onEnd: () => isAnimating.value = false,
                           duration: const Duration(milliseconds: 300),
                           height: 30,
                           left: vm.isShopOpen ? 88 * 0.6 : 0.0,
@@ -192,7 +192,7 @@ class _EditShopView extends HookView<EditShopViewModel>
           ),
           Expanded(
             child: KeyboardActions(
-              config: _kbActionsRef.value,
+              config: kbActionsRef.value,
               tapOutsideBehavior: TapOutsideBehavior.translucentDismiss,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -246,20 +246,20 @@ class _EditShopView extends HookView<EditShopViewModel>
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: padding),
                     child: InputNameField(
-                      controller: _shopNameController,
+                      controller: shopNameController,
                       hintText: 'Shop Name',
                       errorText: vm.nameErrorText,
-                      focusNode: _nameNode,
+                      focusNode: nameNode,
                     ),
                   ),
                   const SizedBox(height: 22),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: padding),
                     child: InputDescriptionField(
-                      controller: _shopDescController,
+                      controller: shopDescController,
                       hintText: 'Shop Description',
                       errorText: vm.descriptionErrorText,
-                      focusNode: _descriptionNode,
+                      focusNode: descriptionNode,
                     ),
                   ),
                   const SizedBox(height: 32),

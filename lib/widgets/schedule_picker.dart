@@ -174,9 +174,9 @@ class _SchedulePickerState extends State<SchedulePicker> {
   // Called when operating hours is non-null and is valid.
   // Used on subscription schedule and edit-shop schedule.
   void _onOperatingHoursInit() {
-    final _operatingHours = widget.operatingHours!;
-    _closing = stringToTimeOfDay(_operatingHours.endTime);
-    final _schedule = _scheduleGenerator.generateSchedule(_operatingHours);
+    final operatingHours = widget.operatingHours!;
+    _closing = stringToTimeOfDay(operatingHours.endTime);
+    final schedule = _scheduleGenerator.generateSchedule(operatingHours);
 
     if (widget.limitSelectableDates) {
       final now = DateTime.now();
@@ -186,12 +186,12 @@ class _SchedulePickerState extends State<SchedulePicker> {
         const Duration(days: 1),
       ),) {
         _startDate = indexDay;
-        if (_schedule.repeatType == RepeatChoices.week) {
-          if (_schedule.selectableDays.contains(_startDate!.day)) {
+        if (schedule.repeatType == RepeatChoices.week) {
+          if (schedule.selectableDays.contains(_startDate!.day)) {
             break;
           }
         } else {
-          if (_schedule.selectableDates.any(
+          if (schedule.selectableDates.any(
             (date) =>
                 date.year == _startDate!.year &&
                 date.month == _startDate!.month &&
@@ -204,37 +204,37 @@ class _SchedulePickerState extends State<SchedulePicker> {
       _startDates = [_startDate!];
     }
 
-    _repeatUnit = _schedule.repeatUnit.toString();
+    _repeatUnit = schedule.repeatUnit.toString();
     _repeatUnitController.text = _repeatUnit;
-    _repeatChoice = _schedule.repeatType;
-    _markedStartDates = _schedule.startDates;
-    _selectableDays = _schedule.selectableDays;
-    _startDate ??= _schedule.startDate;
-    _startDayOfMonth = _schedule.startDayOfMonth;
-    _selectableDates = _schedule.selectableDates;
+    _repeatChoice = schedule.repeatType;
+    _markedStartDates = schedule.startDates;
+    _selectableDays = schedule.selectableDays;
+    _startDate ??= schedule.startDate;
+    _startDayOfMonth = schedule.startDayOfMonth;
+    _selectableDates = schedule.selectableDates;
 
     // Month:
-    var _ordinal = 0;
+    var ordinal = 0;
     _markedStartDayOfMonth = _startDayOfMonth;
     for (DateTime indexDay = DateTime(_startDate!.year, _startDate!.month);
         indexDay.isBefore(_startDate!.add(const Duration(days: 1)));
         indexDay = indexDay.add(const Duration(days: 1))) {
       if (indexDay.weekday == _startDate!.weekday) {
-        _ordinal++;
+        ordinal++;
       }
     }
-    _ordinalChoice = Schedule.ordinalNumbers[_ordinal - 1];
+    _ordinalChoice = Schedule.ordinalNumbers[ordinal - 1];
     _monthChoice = en_USSymbols.MONTHS[_startDate!.month - 1];
-    var _weekday = _startDate!.weekday;
-    if (_weekday == 7) _weekday = 0;
-    _monthDayChoice = en_USSymbols.WEEKDAYS[_weekday];
+    var weekday = _startDate!.weekday;
+    if (weekday == 7) weekday = 0;
+    _monthDayChoice = en_USSymbols.WEEKDAYS[weekday];
 
     _usedDatePicker = _startDayOfMonth != 0;
 
     // repeatType has changed!
     _onRepeatChoiceChanged(_repeatChoice);
     // repeatUnit has changed!
-    widget.onRepeatUnitChanged(_schedule.repeatUnit);
+    widget.onRepeatUnitChanged(schedule.repeatUnit);
     // startDate has changed!
     _onStartDateChanged();
     //widget.onStartDateChanged(_startDate);
@@ -443,11 +443,11 @@ class _SchedulePickerState extends State<SchedulePicker> {
       final weekdayIndex = en_USSymbols.WEEKDAYS.indexOf(_monthDayChoice!);
       final weekday = en_USSymbols.SHORTWEEKDAYS[weekdayIndex].toLowerCase();
       final ordinalNumber = Schedule.ordinalNumbers.indexOf(_ordinalChoice) + 1;
-      final _repeatType = '$ordinalNumber-$weekday';
-      return _repeatType;
+      final repeatType = '$ordinalNumber-$weekday';
+      return repeatType;
     } else {
-      final _repeatType = _repeatChoice.value.toLowerCase();
-      return _repeatType;
+      final repeatType = _repeatChoice.value.toLowerCase();
+      return repeatType;
     }
   }
 
@@ -472,15 +472,15 @@ class _SchedulePickerState extends State<SchedulePicker> {
     }
 
     debugPrint(_startDates.toString());
-    final _repeatType = _getRepeatType();
-    widget.onStartDatesChanged(_startDates, _repeatType);
+    final repeatType = _getRepeatType();
+    widget.onStartDatesChanged(_startDates, repeatType);
   }
 
-  void _onRepeatUnitChanged(String _repeatUnit) {
+  void _onRepeatUnitChanged(String repeatUnit) {
     setState(() {
-      this._repeatUnit = _repeatUnit;
+      _repeatUnit = repeatUnit;
     });
-    widget.onRepeatUnitChanged(int.tryParse(_repeatUnit));
+    widget.onRepeatUnitChanged(int.tryParse(repeatUnit));
     if (_repeatChoice == RepeatChoices.week) {
       _onStartDateChanged();
     }

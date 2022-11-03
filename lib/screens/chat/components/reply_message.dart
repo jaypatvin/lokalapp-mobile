@@ -45,9 +45,9 @@ class ReplyMessageWidget extends StatelessWidget {
               scrollDirection: Axis.horizontal,
               itemCount: message.media!.length,
               itemBuilder: (ctx, index) {
-                final _uri = Uri.parse(message.media![index].url);
+                final uri = Uri.parse(message.media![index].url);
                 return NetworkPhotoThumbnail(
-                  heroTag: '${_uri.pathSegments.last}_${uuid.v4()}',
+                  heroTag: '${uri.pathSegments.last}_${uuid.v4()}',
                   galleryItem: message.media![index],
                   onTap: () => openGallery(context, index, message.media),
                 );

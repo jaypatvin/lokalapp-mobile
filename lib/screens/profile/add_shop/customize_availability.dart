@@ -59,11 +59,11 @@ class _CustomizeAvailabilityState extends State<CustomizeAvailability>
   @override
   void initState() {
     super.initState();
-    final _generator = ScheduleGenerator();
+    final generator = ScheduleGenerator();
 
     final operatingHours = context.read<OperatingHoursBody>().request;
 
-    initialDates = _generator.generateInitialDates(
+    initialDates = generator.generateInitialDates(
       repeatChoice: widget.repeatChoice,
       startDate: widget.startDate,
       repeatEveryNUnit: widget.repeatEvery,
@@ -76,9 +76,10 @@ class _CustomizeAvailabilityState extends State<CustomizeAvailability>
       markedDates.add(DateTime.parse(customDate.date));
     }
     for (final dateString in operatingHours.unavailableDates) {
-      final _date = DateTime.parse(dateString);
-      final index = markedDates
-          .indexWhere((date) => date?.isAtSameMomentAs(_date) ?? false);
+      final unavailableDate = DateTime.parse(dateString);
+      final index = markedDates.indexWhere(
+        (date) => date?.isAtSameMomentAs(unavailableDate) ?? false,
+      );
       if (index > -1) {
         markedDates.removeAt(index);
       }

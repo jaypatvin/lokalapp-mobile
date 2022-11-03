@@ -14,29 +14,29 @@ class Activity extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final _tabColor = useState<Color?>(kTealColor);
-    final _buyerStatuses = useRef(<int, String?>{});
-    final _sellerStatuses = useRef(<int, String?>{});
+    final tabColor = useState<Color?>(kTealColor);
+    final buyerStatuses = useRef(<int, String?>{});
+    final sellerStatuses = useRef(<int, String?>{});
 
-    final _animationController = useAnimationController(
+    final animationController = useAnimationController(
       duration: const Duration(milliseconds: 250),
     );
-    final _colorAnimation = ColorTween(
+    final colorAnimation = ColorTween(
       begin: kTealColor,
       end: kPurpleColor,
-    ).animate(_animationController);
+    ).animate(animationController);
 
-    _colorAnimation.addListener(() => _tabColor.value = _colorAnimation.value);
-    final _tabController = useTabController(initialLength: 2);
-    final _tabSelectionHandler = useCallback(
+    colorAnimation.addListener(() => tabColor.value = colorAnimation.value);
+    final tabController = useTabController(initialLength: 2);
+    final tabSelectionHandler = useCallback(
       () {
-        if (_animationController.isAnimating) return;
-        _animationController.animateTo(_tabController.animation!.value);
+        if (animationController.isAnimating) return;
+        animationController.animateTo(tabController.animation!.value);
       },
-      [_tabController, _animationController],
+      [tabController, animationController],
     );
 
-    _tabController.animation?.addListener(_tabSelectionHandler);
+    tabController.animation?.addListener(tabSelectionHandler);
 
     final future = useMemoized(
       () async => context.read<Database>().orderStatus.getOrderStatuses(),
@@ -44,9 +44,7 @@ class Activity extends HookWidget {
     final snapshot = useFuture(future);
 
     if (snapshot.connectionState != ConnectionState.done || snapshot.hasError) {
-      return SizedBox(
-        width: double.infinity,
-        height: double.infinity,
+      return SizedBox.expand(
         child: DecoratedBox(
           decoration: const BoxDecoration(
             color: Colors.white,
@@ -59,22 +57,22 @@ class Activity extends HookWidget {
     for (final doc in snapshot.data!.docs) {
       final statusCode = int.parse(doc.id);
       final dataMap = doc.data();
-      _buyerStatuses.value[statusCode] = dataMap['buyer_status'];
-      _sellerStatuses.value[statusCode] = dataMap['seller_status'];
+      buyerStatuses.value[statusCode] = dataMap['buyer_status'];
+      sellerStatuses.value[statusCode] = dataMap['seller_status'];
     }
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xFFF1FAFF),
         elevation: 0,
         bottom: TabBar(
-          controller: _tabController,
+          controller: tabController,
           unselectedLabelColor: Colors.black,
           padding: const EdgeInsets.symmetric(horizontal: 12.0),
           indicator: BoxDecoration(
             borderRadius: const BorderRadius.vertical(
               top: Radius.circular(20.0),
             ),
-            color: _tabColor.value,
+            color: tabColor.value,
           ),
           labelStyle: Theme.of(context).textTheme.headline6,
           tabs: const [
@@ -93,13 +91,13 @@ class Activity extends HookWidget {
         ),
       ),
       body: TabBarView(
-        controller: _tabController,
+        controller: tabController,
         children: [
           Transactions.isBuyer(
-            _buyerStatuses.value,
+            buyerStatuses.value,
           ),
           Transactions.isSeller(
-            _sellerStatuses.value,
+            sellerStatuses.value,
           ),
         ],
       ),

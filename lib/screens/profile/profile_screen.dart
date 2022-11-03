@@ -25,7 +25,7 @@ class ProfileScreen extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final _slivers = useRef<List<Widget>>(
+    final slivers = useRef<List<Widget>>(
       [
         SliverToBoxAdapter(
           child: _ProfileHeader(
@@ -41,7 +41,7 @@ class ProfileScreen extends HookWidget {
       ],
     );
 
-    final _isCurrentUser =
+    final isCurrentUser =
         useRef<bool>(context.read<Auth>().user?.id == userId || userId == null);
 
     if (userId != null) {
@@ -61,10 +61,10 @@ class ProfileScreen extends HookWidget {
         child: SafeArea(
           child: Builder(
             builder: (context) {
-              if (_isCurrentUser.value) {
+              if (isCurrentUser.value) {
                 return CustomScrollView(
                   slivers: [
-                    ..._slivers.value,
+                    ...slivers.value,
                     // const SliverFillRemaining(
                     //   child: CurrentUserProfile(),
                     // ),
@@ -93,7 +93,7 @@ class ProfileScreen extends HookWidget {
                     final feed = activities.findByUser(userId);
                     return CustomScrollView(
                       slivers: [
-                        ..._slivers.value,
+                        ...slivers.value,
                         if (feed.isEmpty)
                           const SliverToBoxAdapter(
                             child: Center(

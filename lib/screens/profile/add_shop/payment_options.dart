@@ -76,12 +76,12 @@ class _SetupPaymentOptionsView extends HookView<SetupPaymentOptionsViewModel>
             const SizedBox(height: 12.0),
             Consumer<ShopBody>(
               builder: (ctx, shopBody, _) {
-                final _isBankAccountsEmpty = shopBody.paymentOptions
+                final isBankAccountsEmpty = shopBody.paymentOptions
                     .where((bank) => bank.type == BankType.bank)
                     .isEmpty;
 
                 return ListTile(
-                  tileColor: _isBankAccountsEmpty
+                  tileColor: isBankAccountsEmpty
                       ? Colors.grey[300]
                       : kInviteScreenColor,
                   shape: RoundedRectangleBorder(
@@ -102,7 +102,7 @@ class _SetupPaymentOptionsView extends HookView<SetupPaymentOptionsViewModel>
                         ?.copyWith(color: Colors.black),
                   ),
                   trailing: Icon(
-                    _isBankAccountsEmpty ? Icons.add : Icons.arrow_forward_ios,
+                    isBankAccountsEmpty ? Icons.add : Icons.arrow_forward_ios,
                     color: kTealColor,
                   ),
                   onTap: vm.onAddBank,
@@ -112,11 +112,11 @@ class _SetupPaymentOptionsView extends HookView<SetupPaymentOptionsViewModel>
             const SizedBox(height: 12),
             Consumer<ShopBody>(
               builder: (_, shopBody, __) {
-                final _isWalletAccountsEmpty = shopBody.paymentOptions
+                final isWalletAccountsEmpty = shopBody.paymentOptions
                     .where((bank) => bank.type == BankType.wallet)
                     .isEmpty;
                 return ListTile(
-                  tileColor: _isWalletAccountsEmpty
+                  tileColor: isWalletAccountsEmpty
                       ? Colors.grey[300]
                       : kInviteScreenColor,
                   shape: RoundedRectangleBorder(
@@ -139,9 +139,7 @@ class _SetupPaymentOptionsView extends HookView<SetupPaymentOptionsViewModel>
                         ?.copyWith(color: Colors.black),
                   ),
                   trailing: Icon(
-                    _isWalletAccountsEmpty
-                        ? Icons.add
-                        : Icons.arrow_forward_ios,
+                    isWalletAccountsEmpty ? Icons.add : Icons.arrow_forward_ios,
                     color: kTealColor,
                   ),
                   onTap: vm.onAddWallet,

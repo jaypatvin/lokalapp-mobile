@@ -39,33 +39,33 @@ class UserShop extends StatelessWidget {
 class _UserShopView extends HookView<UserShopViewModel> {
   @override
   Widget render(BuildContext context, UserShopViewModel vm) {
-    final _searchController = useTextEditingController();
-    final _shops = useMemoized(() => context.read<Shops>());
-    final _products = useMemoized(() => context.read<Products>());
+    final searchController = useTextEditingController();
+    final shops = useMemoized(() => context.read<Shops>());
+    final products = useMemoized(() => context.read<Products>());
 
     useEffect(
       () {
-        void _listener() {
-          vm.onSearchTermChanged(_searchController.text);
+        void listener() {
+          vm.onSearchTermChanged(searchController.text);
         }
 
-        _searchController.addListener(_listener);
-        _products.addListener(vm.updateProducts);
+        searchController.addListener(listener);
+        products.addListener(vm.updateProducts);
 
-        return () => _products.removeListener(vm.updateProducts);
+        return () => products.removeListener(vm.updateProducts);
       },
-      [_searchController, vm],
+      [searchController, vm],
     );
 
     useEffect(
       () {
-        _shops.addListener(vm.refresh);
-        return () => _shops.removeListener(vm.refresh);
+        shops.addListener(vm.refresh);
+        return () => shops.removeListener(vm.refresh);
       },
       [vm],
     );
 
-    final _slivers = useMemoized<List<Widget>>(
+    final slivers = useMemoized<List<Widget>>(
       () {
         if (vm.products.isEmpty && (vm.searchTerm?.isNotEmpty ?? false)) {
           return [
@@ -136,7 +136,7 @@ class _UserShopView extends HookView<UserShopViewModel> {
             floating: true,
             flexibleSpace: LayoutBuilder(
               builder: (context, constraints) {
-                final _collapsed = constraints.biggest.height ==
+                final collapsed = constraints.biggest.height ==
                     MediaQuery.of(context).padding.top + kToolbarHeight;
                 return FlexibleSpaceBar(
                   centerTitle: true,
@@ -144,7 +144,7 @@ class _UserShopView extends HookView<UserShopViewModel> {
                     vm.shop.name,
                     textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.subtitle1?.copyWith(
-                          color: _collapsed ? kNavyColor : Colors.white,
+                          color: collapsed ? kNavyColor : Colors.white,
                         ),
                   ),
                   background: SafeArea(
@@ -210,13 +210,13 @@ class _UserShopView extends HookView<UserShopViewModel> {
                 color: Colors.white,
                 child: SearchTextField(
                   enabled: true,
-                  controller: _searchController,
+                  controller: searchController,
                 ),
               ),
             ),
           ),
           // const SliverToBoxAdapter(child: SizedBox(height: 12)),
-          ..._slivers,
+          ...slivers,
         ],
       ),
     );

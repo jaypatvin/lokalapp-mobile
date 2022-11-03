@@ -21,9 +21,9 @@ class SubscriptionsBuyerViewModel extends ViewModel {
     super.init();
     _db = context.read<Database>().productSubscriptionPlans;
 
-    final _user = context.read<Auth>().user!;
+    final user = context.read<Auth>().user!;
 
-    _subscriptionPlanStream = _db.getUserSubscriptionPlans(_user.id);
+    _subscriptionPlanStream = _db.getUserSubscriptionPlans(user.id);
   }
 
   void onDetailsPressed(ProductSubscriptionPlan subscriptionPlan) {

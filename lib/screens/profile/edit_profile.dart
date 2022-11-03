@@ -34,22 +34,22 @@ class _EditProfileView extends HookView<EditProfileViewModel>
 
   @override
   Widget screen(BuildContext context, EditProfileViewModel vm) {
-    final _auth = context.watch<Auth>();
+    final auth = context.watch<Auth>();
 
-    final _fNameController = useTextEditingController(text: vm.firstName);
-    final _lNameController = useTextEditingController(text: vm.lastName);
-    final _streetController = useTextEditingController(text: vm.street);
+    final fNameController = useTextEditingController(text: vm.firstName);
+    final lNameController = useTextEditingController(text: vm.lastName);
+    final streetController = useTextEditingController(text: vm.street);
 
-    final _fNameFocusNode = useFocusNode();
-    final _lNameFocusNode = useFocusNode();
-    final _streetFocusNode = useFocusNode();
+    final fNameFocusNode = useFocusNode();
+    final lNameFocusNode = useFocusNode();
+    final streetFocusNode = useFocusNode();
 
-    final _kbConfig = useMemoized<KeyboardActionsConfig>(() {
+    final kbConfig = useMemoized<KeyboardActionsConfig>(() {
       return KeyboardActionsConfig(
         keyboardBarColor: Colors.grey.shade200,
         actions: [
           KeyboardActionsItem(
-            focusNode: _fNameFocusNode,
+            focusNode: fNameFocusNode,
             toolbarButtons: [
               (node) {
                 return TextButton(
@@ -66,7 +66,7 @@ class _EditProfileView extends HookView<EditProfileViewModel>
             ],
           ),
           KeyboardActionsItem(
-            focusNode: _lNameFocusNode,
+            focusNode: lNameFocusNode,
             toolbarButtons: [
               (node) {
                 return TextButton(
@@ -83,7 +83,7 @@ class _EditProfileView extends HookView<EditProfileViewModel>
             ],
           ),
           KeyboardActionsItem(
-            focusNode: _streetFocusNode,
+            focusNode: streetFocusNode,
             toolbarButtons: [
               (node) {
                 return TextButton(
@@ -113,7 +113,7 @@ class _EditProfileView extends HookView<EditProfileViewModel>
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 45, vertical: 40.0),
         child: KeyboardActions(
-          config: _kbConfig,
+          config: kbConfig,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -133,7 +133,7 @@ class _EditProfileView extends HookView<EditProfileViewModel>
                           child: PhotoBox(
                             imageSource: PhotoBoxImageSource(
                               file: vm.profilePhoto,
-                              url: _auth.user?.profilePhoto,
+                              url: auth.user?.profilePhoto,
                             ),
                             shape: BoxShape.circle,
                             displayBorder: false,
@@ -144,7 +144,7 @@ class _EditProfileView extends HookView<EditProfileViewModel>
                       Builder(
                         builder: (ctx) {
                           if (vm.profilePhoto != null ||
-                              (_auth.user?.profilePhoto?.isNotEmpty ?? false)) {
+                              (auth.user?.profilePhoto?.isNotEmpty ?? false)) {
                             return Center(
                               child: Text(
                                 'Edit Photo',
@@ -183,21 +183,21 @@ class _EditProfileView extends HookView<EditProfileViewModel>
               const SizedBox(height: 47),
               InputNameField(
                 onChanged: vm.onFirstNameChanged,
-                controller: _fNameController,
+                controller: fNameController,
                 hintText: 'First Name',
                 fillColor: Colors.white,
               ),
               const SizedBox(height: 20),
               InputNameField(
                 onChanged: vm.onLastNameChanged,
-                controller: _lNameController,
+                controller: lNameController,
                 hintText: 'Last Name',
                 fillColor: Colors.white,
               ),
               const SizedBox(height: 40),
               InputNameField(
                 onChanged: vm.onStreetChanged,
-                controller: _streetController,
+                controller: streetController,
                 hintText: 'Street',
                 fillColor: Colors.white,
               ),

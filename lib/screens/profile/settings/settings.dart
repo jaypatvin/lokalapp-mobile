@@ -266,7 +266,7 @@ class Settings extends StatelessWidget {
                     text: 'Log Out',
                     color: kPinkColor,
                     onPressed: () async {
-                      final _auth = context.read<Auth>();
+                      final auth = context.read<Auth>();
                       context
                           .read<ApplicationLogger>()
                           .log(actionType: ActionTypes.userLogout);
@@ -281,7 +281,7 @@ class Settings extends StatelessWidget {
                             );
 
                       Future.delayed(const Duration(milliseconds: 500), () {
-                        _auth.logOut();
+                        auth.logOut();
                       });
                     },
                   ),

@@ -43,12 +43,12 @@ class OverrideDatesRequest {
 }
 
 List<OverrideDate> _overrideDatesFromJson(Map<String, dynamic> overrideDates) {
-  final _format = DateFormat('yyyy-MM-dd');
+  final format = DateFormat('yyyy-MM-dd');
   return overrideDates.entries
       .map<OverrideDate>(
         (entry) => OverrideDate(
-          originalDate: _format.parse(entry.key),
-          newDate: _format.parse(entry.value),
+          originalDate: format.parse(entry.key),
+          newDate: format.parse(entry.value),
         ),
       )
       .toList();

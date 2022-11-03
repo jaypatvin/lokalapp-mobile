@@ -17,7 +17,7 @@ import '../widgets/photo_view_gallery/gallery/gallery_network_photo_view.dart';
 
 void openInputGallery(
   BuildContext context,
-  final int index,
+  int index,
   List<AssetEntity> galleryItems,
 ) {
   AppRouter.rootNavigatorKey.currentState?.push(
@@ -35,8 +35,8 @@ void openInputGallery(
 
 void openGallery(
   BuildContext context,
-  final int index,
-  final List<LokalImages>? galleryItems,
+   int index,
+   List<LokalImages>? galleryItems,
 ) {
   AppRouter.rootNavigatorKey.currentState?.push(
     AppNavigator.appPageRoute(

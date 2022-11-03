@@ -36,29 +36,29 @@ class _ProductCardView extends HookView<ProductCardViewModel> {
   Widget render(BuildContext context, ProductCardViewModel vm) {
     useEffect(
       () {
-        final _products = context.read<Products>();
-        final _shops = context.read<Shops>();
-        final _cart = context.read<ShoppingCart>();
-        void _borderListener() {
+        final products = context.read<Products>();
+        final shops = context.read<Shops>();
+        final cart = context.read<ShoppingCart>();
+        void borderListener() {
           vm.updateDisplayBorder(
             displayBorder: context.read<ShoppingCart>().contains(vm.productId),
           );
         }
 
-        _products.addListener(vm.onProductsUpdate);
-        _shops.addListener(vm.onProductsUpdate);
-        _cart.addListener(_borderListener);
+        products.addListener(vm.onProductsUpdate);
+        shops.addListener(vm.onProductsUpdate);
+        cart.addListener(borderListener);
 
         return () {
-          _products.removeListener(vm.onProductsUpdate);
-          _shops.removeListener(vm.onProductsUpdate);
-          _cart.removeListener(_borderListener);
+          products.removeListener(vm.onProductsUpdate);
+          shops.removeListener(vm.onProductsUpdate);
+          cart.removeListener(borderListener);
         };
       },
       [vm],
     );
 
-    return Container(
+    return DecoratedBox(
       decoration: BoxDecoration(
         border: vm.displayBorder
             ? Border.all(color: Colors.orange, width: 3)
@@ -87,7 +87,7 @@ class _ProductCardView extends HookView<ProductCardViewModel> {
           ),
           Align(
             alignment: Alignment.bottomCenter,
-            child: Container(
+            child: ColoredBox(
               color: Colors.white,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

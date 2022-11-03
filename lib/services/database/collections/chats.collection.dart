@@ -48,13 +48,13 @@ class ChatsCollection extends CollectionImpl {
     String conversationId,
   ) async {
     try {
-      final _doc = await reference
+      final doc = await reference
           .doc(chatId)
           .collection('conversation')
           .doc(conversationId)
           .get();
 
-      return Conversation.fromDocument(_doc);
+      return Conversation.fromDocument(doc);
     } catch (e, stack) {
       FirebaseCrashlytics.instance.recordError(e, stack);
       return null;
@@ -65,8 +65,8 @@ class ChatsCollection extends CollectionImpl {
     DocumentReference<Map<String, dynamic>> reference,
   ) async {
     try {
-      final _doc = await reference.get();
-      return Conversation.fromDocument(_doc);
+      final doc = await reference.get();
+      return Conversation.fromDocument(doc);
     } catch (e, stack) {
       FirebaseCrashlytics.instance.recordError(e, stack);
       return null;
@@ -75,8 +75,8 @@ class ChatsCollection extends CollectionImpl {
 
   Future<ChatModel?> getChat(String chatId) async {
     try {
-      final _doc = await reference.doc(chatId).get();
-      return ChatModel.fromDocument(_doc);
+      final doc = await reference.doc(chatId).get();
+      return ChatModel.fromDocument(doc);
     } catch (e, stack) {
       FirebaseCrashlytics.instance.recordError(e, stack);
       return null;

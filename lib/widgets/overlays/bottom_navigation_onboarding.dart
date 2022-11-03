@@ -80,8 +80,8 @@ class _BottomNavigationOnboardingState extends State<BottomNavigationOnboarding>
 
   @override
   Future<void> afterFirstLayout(BuildContext context) async {
-    final _prefs = context.read<UserSharedPreferences>();
-    if (!_prefs.getOnboardingStatus(_screen)) {
+    final prefs = context.read<UserSharedPreferences>();
+    if (!prefs.getOnboardingStatus(_screen)) {
       if (mounted) setState(() => _displayOnboarding = true);
     }
   }
@@ -105,8 +105,8 @@ class _BottomNavigationOnboardingState extends State<BottomNavigationOnboarding>
         break;
     }
 
-    final _prefs = context.read<UserSharedPreferences>();
-    if (!_prefs.getOnboardingStatus(_screen)) {
+    final prefs = context.read<UserSharedPreferences>();
+    if (!prefs.getOnboardingStatus(_screen)) {
       if (mounted) setState(() => _displayOnboarding = true);
     }
   }
@@ -170,17 +170,17 @@ class _BottomNavigationOnboardingState extends State<BottomNavigationOnboarding>
 
   @override
   Widget build(BuildContext context) {
-    final _mediaQueryData = MediaQuery.of(context);
-    final _mediaSize = _mediaQueryData.size;
+    final mediaQueryData = MediaQuery.of(context);
+    final mediaSize = mediaQueryData.size;
     return Stack(
       children: [
         widget.child,
         if (_displayOnboarding)
           SizedBox(
-            width: _mediaSize.width,
-            height: _mediaSize.height -
+            width: mediaSize.width,
+            height: mediaSize.height -
                 kBottomNavigationBarHeight -
-                _mediaQueryData.padding.bottom,
+                mediaQueryData.padding.bottom,
             child: DecoratedBox(
               decoration: BoxDecoration(
                 color: Colors.black.withOpacity(0.5),

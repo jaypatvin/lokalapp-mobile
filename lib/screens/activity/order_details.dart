@@ -38,25 +38,25 @@ class _OrderDetailsView extends HookView<OrderDetailsViewModel>
   final String subheader;
   @override
   Widget screen(BuildContext context, OrderDetailsViewModel vm) {
-    final _address = useMemoized<String>(() {
-      final _address = vm.order.deliveryAddress;
-      final _addressList = [
-        _address.street,
-        _address.barangay,
-        _address.subdivision,
-        _address.city,
+    final address = useMemoized<String>(() {
+      final address = vm.order.deliveryAddress;
+      final addressList = [
+        address.street,
+        address.barangay,
+        address.subdivision,
+        address.city,
       ];
 
-      return _addressList.where((text) => text.isNotEmpty).join(', ');
+      return addressList.where((text) => text.isNotEmpty).join(', ');
     });
 
-    final _instructions = useMemoized<String>(
+    final instructions = useMemoized<String>(
       () => vm.order.instruction.isNotEmpty
           ? vm.order.instruction
           : 'No instructions.',
     );
 
-    final _modeOfPayment = useMemoized<String>(() {
+    final modeOfPayment = useMemoized<String>(() {
       if (vm.order.paymentMethod == PaymentMethod.bank) {
         return 'Bank Transfer/Deposit';
       } else if (vm.order.paymentMethod == PaymentMethod.eWallet) {
@@ -66,7 +66,7 @@ class _OrderDetailsView extends HookView<OrderDetailsViewModel>
       }
     });
 
-    final _textInfo = useMemoized<SizedBox>(
+    final textInfo = useMemoized<SizedBox>(
       () {
         return SizedBox(
           width: double.infinity,
@@ -81,7 +81,7 @@ class _OrderDetailsView extends HookView<OrderDetailsViewModel>
                     ?.copyWith(color: Colors.black),
               ),
               Text(
-                _instructions,
+                instructions,
                 style: Theme.of(context).textTheme.bodyText2?.copyWith(
                       fontWeight: FontWeight.w400,
                       color: Colors.black,
@@ -96,7 +96,7 @@ class _OrderDetailsView extends HookView<OrderDetailsViewModel>
                     ?.copyWith(color: Colors.black),
               ),
               Text(
-                _address,
+                address,
                 style: Theme.of(context).textTheme.bodyText2?.copyWith(
                       fontWeight: FontWeight.w400,
                       color: Colors.black,
@@ -116,7 +116,7 @@ class _OrderDetailsView extends HookView<OrderDetailsViewModel>
                     ),
                     Expanded(
                       child: Text(
-                        _modeOfPayment,
+                        modeOfPayment,
                         style: Theme.of(context).textTheme.bodyText2?.copyWith(
                               fontWeight: FontWeight.w400,
                               color: Colors.black,
@@ -131,7 +131,7 @@ class _OrderDetailsView extends HookView<OrderDetailsViewModel>
           ),
         );
       },
-      [_address],
+      [address],
     );
 
     return Scaffold(
@@ -172,7 +172,7 @@ class _OrderDetailsView extends HookView<OrderDetailsViewModel>
                 isBuyer: vm.isBuyer,
               ),
               const SizedBox(height: 10),
-              _textInfo,
+              textInfo,
               const Spacer(),
               const SizedBox(height: 20),
               OrderDetailsButtons(

@@ -149,7 +149,7 @@ class _ExpansionTileState extends State<ExpansionTile>
     final Color borderSideColor = _borderColor.value ?? Colors.transparent;
     final Color? titleColor = _headerColor.value;
 
-    return Container(
+    return DecoratedBox(
       decoration: BoxDecoration(
         color: _backgroundColor.value ?? Colors.transparent,
         border: Border(
@@ -162,7 +162,7 @@ class _ExpansionTileState extends State<ExpansionTile>
         children: <Widget>[
           IconTheme.merge(
             data: IconThemeData(color: _iconColor.value),
-            child: Container(
+            child: ColoredBox(
               color: widget.headerBackgroundColor ?? Colors.black,
               child: ListTile(
                 onTap: _handleTap,

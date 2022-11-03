@@ -82,43 +82,42 @@ class ProductDetailViewModel extends ViewModel {
   }
 
   void _checkDateAvailability() {
-    final _selectableDates = ScheduleGenerator()
+    final selectableDates = ScheduleGenerator()
         .generateSchedule(product.availability)
         .selectableDates;
 
-    final _now = DateTime.now();
+    final now = DateTime.now();
 
-    open = _selectableDates.any((date) =>
-            date.year == _now.year &&
-            date.month == _now.month &&
+    open = selectableDates.any((date) =>
+            date.year == now.year &&
+            date.month == now.month &&
             // ignore: require_trailing_commas
-            _now.day == date.day) &&
+            now.day == date.day) &&
         _isInOperatingHours();
 
     if (open) return;
 
-    final _nearestAvailableDate = _selectableDates.reduce((a, b) {
-      if (a.difference(_now).isNegative) {
+    final nearestAvailableDate = selectableDates.reduce((a, b) {
+      if (a.difference(now).isNegative) {
         return b;
       }
       return a;
     });
     nearestDate = 'Nearest date: '
-        '${DateFormat('MMMM dd').format(_nearestAvailableDate)}';
+        '${DateFormat('MMMM dd').format(nearestAvailableDate)}';
   }
 
   bool _isInOperatingHours() {
-    final _now = DateTime.now();
-    final _opening = stringToTimeOfDay(shop.operatingHours.startTime);
-    final _closing = stringToTimeOfDay(shop.operatingHours.endTime);
-    final _timeNow = TimeOfDay.fromDateTime(_now);
+    final now = DateTime.now();
+    final opening = stringToTimeOfDay(shop.operatingHours.startTime);
+    final closing = stringToTimeOfDay(shop.operatingHours.endTime);
+    final timeNow = TimeOfDay.fromDateTime(now);
 
-    final _openingInMinutes = (_opening.hour * 60) + _opening.minute;
-    final _closingInMinutes = (_closing.hour * 60) + _closing.minute;
-    final _nowInMinutes = (_timeNow.hour * 60) + _timeNow.minute;
+    final openingInMinutes = (opening.hour * 60) + opening.minute;
+    final closingInMinutes = (closing.hour * 60) + closing.minute;
+    final nowInMinutes = (timeNow.hour * 60) + timeNow.minute;
 
-    return _openingInMinutes <= _nowInMinutes &&
-        _nowInMinutes <= _closingInMinutes;
+    return openingInMinutes <= nowInMinutes && nowInMinutes <= closingInMinutes;
   }
 
   void onInstructionsChanged(String value) {
@@ -182,8 +181,8 @@ class ProductDetailViewModel extends ViewModel {
 
   Future<void> onWishlistPressed() async {
     try {
-      final _wishlist = context.read<UserWishlist>();
-      if (_wishlist.items.contains(product.id)) {
+      final wishlist = context.read<UserWishlist>();
+      if (wishlist.items.contains(product.id)) {
         final success = await _removeFromWishlist();
         showToast('Successfully removed from wishlist!');
 
@@ -277,10 +276,10 @@ class ProductDetailViewModel extends ViewModel {
   }
 
   void onReport() {
-    final _appRouter = context.read<AppRouter>();
-    final _route = _appRouter.currentTabRoute;
-    _appRouter.pushDynamicScreen(
-      _route,
+    final appRouter = context.read<AppRouter>();
+    final route = appRouter.currentTabRoute;
+    appRouter.pushDynamicScreen(
+      route,
       AppNavigator.appPageRoute(
         builder: (_) => ReportProduct(productId: product.id),
       ),
@@ -288,10 +287,10 @@ class ProductDetailViewModel extends ViewModel {
   }
 
   void viewReviews() {
-    final _appRouter = context.read<AppRouter>();
-    final _route = _appRouter.currentTabRoute;
-    _appRouter.pushDynamicScreen(
-      _route,
+    final appRouter = context.read<AppRouter>();
+    final route = appRouter.currentTabRoute;
+    appRouter.pushDynamicScreen(
+      route,
       AppNavigator.appPageRoute(
         builder: (_) => ProductReviews(productId: product.id),
       ),

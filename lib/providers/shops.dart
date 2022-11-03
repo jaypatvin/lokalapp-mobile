@@ -77,8 +77,8 @@ class Shops extends ChangeNotifier {
 
   Future<void> create(ShopCreateRequest request) async {
     try {
-      final _shop = await _apiService.create(request: request);
-      _shops.add(_shop);
+      final shop = await _apiService.create(request: request);
+      _shops.add(shop);
       notifyListeners();
     } catch (e) {
       rethrow;

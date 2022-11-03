@@ -16,75 +16,75 @@ class ShopHours extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final _isInOpeningHours = useMemoized<bool>(
+    final isInOpeningHours = useMemoized<bool>(
       () {
-        final _now = DateTime.now();
-        final _opening = stringToTimeOfDay(shopOperatingHours.startTime);
-        final _closing = stringToTimeOfDay(shopOperatingHours.endTime);
-        final _timeNow = TimeOfDay.fromDateTime(_now);
+        final now = DateTime.now();
+        final opening = stringToTimeOfDay(shopOperatingHours.startTime);
+        final closing = stringToTimeOfDay(shopOperatingHours.endTime);
+        final timeNow = TimeOfDay.fromDateTime(now);
 
-        final _openingInMinutes = (_opening.hour * 60) + _opening.minute;
-        final _closingInMinutes = (_closing.hour * 60) + _closing.minute;
-        final _nowInMinutes = (_timeNow.hour * 60) + _timeNow.minute;
+        final openingInMinutes = (opening.hour * 60) + opening.minute;
+        final closingInMinutes = (closing.hour * 60) + closing.minute;
+        final nowInMinutes = (timeNow.hour * 60) + timeNow.minute;
 
-        return _openingInMinutes <= _nowInMinutes &&
-            _nowInMinutes <= _closingInMinutes;
+        return openingInMinutes <= nowInMinutes &&
+            nowInMinutes <= closingInMinutes;
       },
       [shopOperatingHours],
     );
 
-    final _selectableDates = useMemoized<List<DateTime>>(() {
+    final selectableDates = useMemoized<List<DateTime>>(() {
       return ScheduleGenerator()
           .generateSchedule(shopOperatingHours)
           .selectableDates;
     }, [
       shopOperatingHours,
-      _isInOpeningHours,
+      isInOpeningHours,
     ]);
 
-    final _isOpen = useMemoized<bool>(
+    final isOpen = useMemoized<bool>(
       () {
-        if (!_isInOpeningHours) return false;
-        final _now = DateTime.now();
+        if (!isInOpeningHours) return false;
+        final now = DateTime.now();
 
-        return _selectableDates.any((date) =>
-            date.year == _now.year &&
-            date.month == _now.month &&
+        return selectableDates.any((date) =>
+            date.year == now.year &&
+            date.month == now.month &&
             // ignore: require_trailing_commas
-            _now.day == date.day);
+            now.day == date.day);
       },
-      [_selectableDates, _isInOpeningHours],
+      [selectableDates, isInOpeningHours],
     );
 
-    final _openingAt = useMemoized<String>(
+    final openingAt = useMemoized<String>(
       () {
-        if (_isOpen) return '';
+        if (isOpen) return '';
 
-        final _tomorrow = DateTime.now().add(const Duration(days: 1));
+        final tomorrow = DateTime.now().add(const Duration(days: 1));
 
-        if (_selectableDates.any((date) =>
-            date.year == _tomorrow.year &&
-            date.month == _tomorrow.month &&
+        if (selectableDates.any((date) =>
+            date.year == tomorrow.year &&
+            date.month == tomorrow.month &&
             // ignore: require_trailing_commas
-            date.day == _tomorrow.day)) {
+            date.day == tomorrow.day)) {
           return 'tomorrow';
         }
 
-        final _now = DateTime.now();
-        _selectableDates.sort();
+        final now = DateTime.now();
+        selectableDates.sort();
 
-        final _nearestAvailableDate = _selectableDates.reduce((a, b) {
-          if (a.difference(_now).isNegative) {
+        final nearestAvailableDate = selectableDates.reduce((a, b) {
+          if (a.difference(now).isNegative) {
             return b;
           }
           return a;
         });
-        return DateFormat('MMMM dd').format(_nearestAvailableDate);
+        return DateFormat('MMMM dd').format(nearestAvailableDate);
       },
-      [shopOperatingHours, _isOpen, _selectableDates],
+      [shopOperatingHours, isOpen, selectableDates],
     );
 
-    if (_isOpen) {
+    if (isOpen) {
       return SizedBox(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -118,7 +118,7 @@ class ShopHours extends HookWidget {
                 ?.copyWith(color: kPinkColor),
           ),
           Text(
-            'Opens $_openingAt at ${shopOperatingHours.startTime} ',
+            'Opens $openingAt at ${shopOperatingHours.startTime} ',
             style: Theme.of(context).textTheme.subtitle2,
             softWrap: true,
           ),

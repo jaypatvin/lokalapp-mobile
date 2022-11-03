@@ -34,19 +34,19 @@ class CalendarPicker extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final _calendarController = useMemoized(
+    final calendarController = useMemoized(
       () => CalendarController(),
     );
 
     return CalendarCarousel(
-      controller: _calendarController,
+      controller: calendarController,
       dateFormat: DateFormat.yMMM(
         Intl.defaultLocale,
       ),
       day: DateTime.now().day,
       headerWidgetBuilder: (controller, dateFormat, dateTime) {
         return CalendarDefaultHeader(
-          calendarController: _calendarController,
+          calendarController: calendarController,
           dateTime: dateTime,
           dateFormat: dateFormat,
         );
@@ -63,21 +63,21 @@ class CalendarPicker extends HookWidget {
             );
           },
       dayWidgetBuilder: (date, isLastMonthDay, isNextMonthDay) {
-        final _now = DateTime.now();
-        final _startDate = startDate ??
+        final now = DateTime.now();
+        final checkedStartDate = startDate ??
             DateTime(
-              _now.year,
-              _now.month,
-              _now.day,
+              now.year,
+              now.month,
+              now.day,
             );
-        final isToday = _now.year == date.year &&
-            _now.month == date.month &&
-            _now.day == date.day;
+        final isToday = now.year == date.year &&
+            now.month == date.month &&
+            now.day == date.day;
 
         bool isBeforeClosing = true;
         if (closing != null && isToday) {
-          final _timeOfDayNow = TimeOfDay.fromDateTime(_now);
-          isBeforeClosing = (_timeOfDayNow.hour * 60 + _timeOfDayNow.minute) <
+          final timeOfDayNow = TimeOfDay.fromDateTime(now);
+          isBeforeClosing = (timeOfDayNow.hour * 60 + timeOfDayNow.minute) <
               (closing!.hour * 60 + closing!.minute);
         }
 
@@ -95,14 +95,14 @@ class CalendarPicker extends HookWidget {
         });
 
         final bool isAfterStartDate =
-            _startDate.difference(date).inSeconds <= 0;
+            checkedStartDate.difference(date).inSeconds <= 0;
 
-        final bool _isSelectable = limitSelectableDates
+        final bool isInSelectable = limitSelectableDates
             ? (isInSelectableDates && isInSelectableDays)
             : (isInSelectableDates || isInSelectableDays);
 
         final bool isSelectable =
-            _isSelectable && isAfterStartDate && isBeforeClosing;
+            isInSelectable && isAfterStartDate && isBeforeClosing;
 
         return LokalCalendarDay(
           dateTime: date,

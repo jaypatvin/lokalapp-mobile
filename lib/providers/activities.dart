@@ -14,10 +14,10 @@ import '../services/database/database.dart';
 
 class Activities extends ChangeNotifier {
   factory Activities(API api, Database database) {
-    final _activityService = ActivityAPIService(api);
-    final _commentService = CommentsAPIService(api);
+    final activityService = ActivityAPIService(api);
+    final commentService = CommentsAPIService(api);
 
-    return Activities._(_activityService, _commentService, database.activities);
+    return Activities._(activityService, commentService, database.activities);
   }
 
   Activities._(this._activityService, this._commentService, this._db);
@@ -72,25 +72,25 @@ class Activities extends ChangeNotifier {
     }
   }
 
-  Future<void> _subscriptionListener(List<ActivityFeed> feed) async {
-    final _feed = <ActivityFeed>[];
-    for (final _activity in feed) {
-      final _index = this._feed.indexWhere((a) => a.id == _activity.id);
-      if (_index >= 0 && this._feed[_index] == _activity) {
-        _feed.add(_activity);
+  Future<void> _subscriptionListener(List<ActivityFeed> dbFeed) async {
+    final feed = <ActivityFeed>[];
+    for (final activity in dbFeed) {
+      final index = _feed.indexWhere((a) => a.id == activity.id);
+      if (index >= 0 && _feed[index] == activity) {
+        feed.add(activity);
         continue;
       }
 
-      final _isLiked = await _db.isActivityLiked(_activity.id, _userId!);
-      final a = _activity.copyWith(liked: _isLiked);
-      _feed.add(a);
+      final isLiked = await _db.isActivityLiked(activity.id, _userId!);
+      final a = activity.copyWith(liked: isLiked);
+      feed.add(a);
     }
 
-    if (_feed.equals(this._feed) && _isLoading == false) {
+    if (feed.equals(_feed) && _isLoading == false) {
       return;
     }
 
-    this._feed = _feed;
+    _feed = feed;
     _isLoading = false;
 
     if (hasListeners) notifyListeners();

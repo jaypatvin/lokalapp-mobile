@@ -32,14 +32,14 @@ class _InvitePageView extends HookView<InviteScreenViewModel>
     BuildContext context,
     InviteScreenViewModel vm,
   ) {
-    final _inviteFocusNode = useFocusNode();
-    final _keyboardConfig = useMemoized<KeyboardActionsConfig>(
+    final inviteFocusNode = useFocusNode();
+    final keyboardConfig = useMemoized<KeyboardActionsConfig>(
       () => KeyboardActionsConfig(
         keyboardBarColor: Colors.grey.shade200,
         nextFocus: false,
         actions: [
           KeyboardActionsItem(
-            focusNode: _inviteFocusNode,
+            focusNode: inviteFocusNode,
           ),
         ],
       ),
@@ -72,9 +72,9 @@ class _InvitePageView extends HookView<InviteScreenViewModel>
               const SizedBox(height: 28),
               KeyboardActions(
                 disableScroll: true,
-                config: _keyboardConfig,
+                config: keyboardConfig,
                 child: TextField(
-                  focusNode: _inviteFocusNode,
+                  focusNode: inviteFocusNode,
                   onChanged: vm.onInviteCodeChanged,
                   style: const TextStyle(fontWeight: FontWeight.w500),
                   decoration: kInputDecoration.copyWith(
@@ -89,7 +89,7 @@ class _InvitePageView extends HookView<InviteScreenViewModel>
                 text: 'JOIN',
                 onPressed: () async => performFuture<void>(
                   () async {
-                    _inviteFocusNode.unfocus();
+                    inviteFocusNode.unfocus();
                     await vm.validateInviteCode();
                   },
                 ),

@@ -142,27 +142,27 @@ List<String>? _unavailableDatesReadValue(
   Map<dynamic, dynamic> map,
   String key,
 ) {
-  final _unavailableDates = <String>[];
+  final unavailableDates = <String>[];
   if (map['schedule'] != null && map['schedule']['custom'] != null) {
     final Map<String, dynamic> schedule = map['schedule']['custom'];
     schedule.forEach((key, value) {
       if (value['unavailable'] != null && value['unavailable']) {
-        _unavailableDates.add(key);
+        unavailableDates.add(key);
       }
     });
   }
-  return _unavailableDates;
+  return unavailableDates;
 }
 
 List<String> _unavailableDatesFromJson(List<String> value) => value;
 
 List<CustomDates> _customDatesReadValue(Map<dynamic, dynamic> map, String key) {
-  final _customDates = <CustomDates>[];
+  final customDates = <CustomDates>[];
   if (map['schedule'] != null && map['schedule']['custom'] != null) {
     final Map<String, dynamic> schedule = map['schedule']['custom'];
     schedule.forEach((key, value) {
       if (!(value['unavailable'] ?? false)) {
-        _customDates.add(
+        customDates.add(
           CustomDates(
             date: key,
             endTime: value['end_time'],
@@ -172,7 +172,7 @@ List<CustomDates> _customDatesReadValue(Map<dynamic, dynamic> map, String key) {
       }
     });
   }
-  return _customDates;
+  return customDates;
 }
 
 List<CustomDates> _customDatesFromJson(List<CustomDates> value) => value;

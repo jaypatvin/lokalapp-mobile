@@ -32,15 +32,15 @@ class _DraftPostView extends HookView<DraftPostViewModel>
     with HookScreenLoader {
   @override
   Widget screen(BuildContext context, DraftPostViewModel vm) {
-    final _nodePostText = useFocusNode();
+    final nodePostText = useFocusNode();
 
-    final _kbConfig = useMemoized<KeyboardActionsConfig>(() {
+    final kbConfig = useMemoized<KeyboardActionsConfig>(() {
       return KeyboardActionsConfig(
         keyboardBarColor: Colors.grey.shade200,
         nextFocus: false,
         actions: [
           KeyboardActionsItem(
-            focusNode: _nodePostText,
+            focusNode: nodePostText,
             toolbarButtons: [
               (node) {
                 return TextButton(
@@ -91,7 +91,7 @@ class _DraftPostView extends HookView<DraftPostViewModel>
           ),
         ),
         body: KeyboardActions(
-          config: _kbConfig,
+          config: kbConfig,
           disableScroll: true,
           child: Column(
             children: [
@@ -125,7 +125,7 @@ class _DraftPostView extends HookView<DraftPostViewModel>
               ),
               Expanded(
                 child: TextField(
-                  focusNode: _nodePostText,
+                  focusNode: nodePostText,
                   onChanged: vm.onPostMessageChanged,
                   cursorColor: Colors.black,
                   keyboardType: TextInputType.multiline,

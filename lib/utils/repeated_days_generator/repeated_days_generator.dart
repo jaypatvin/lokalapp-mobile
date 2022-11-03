@@ -37,8 +37,8 @@ class RepeatedDaysGenerator {
       repeatedDays.add(indexDay);
 
       // for exactly 1 year from today
-      final _now = DateTime.now();
-      if (_now.month == indexDay.month && _now.year + 1 == indexDay.year) break;
+      final now = DateTime.now();
+      if (now.month == indexDay.month && now.year + 1 == indexDay.year) break;
     }
 
     return [
@@ -48,16 +48,16 @@ class RepeatedDaysGenerator {
 
   /// Generates a List of [DateTime] exactly 1 year from now.
   List<DateTime> getRepeatedWeekDays({
-    required DateTime? startDate,
+    DateTime? startDate,
     int everyNWeeks = 1,
     List<int> selectedDays = const [0, 1, 2, 3, 4, 5, 6],
     bool validate = true,
     int? maxLength,
   }) {
     assert(everyNWeeks > 0);
-    DateTime _startDate = startDate ?? DateTime.now();
+    DateTime checkedStartDate = startDate ?? DateTime.now();
     // we need to make sure that the selectedDays are sorted from 0-6 (Sunday to Saturday)
-    final _selectedDays = [
+    final filteredSelectedDays = [
       ...{...selectedDays}
     ]..sort();
 
@@ -69,17 +69,20 @@ class RepeatedDaysGenerator {
     // if the user chooses MWF and its start-date starts at tuesday,
     // we need to make sure to start at monday for the iteration or
     // else we'll be skipping Monday since we iterate every week (7 days)
-    final DateTime initialDate = _startDate;
-    var weekDay = _startDate.weekday;
+    final DateTime initialDate = checkedStartDate;
+    var weekDay = checkedStartDate.weekday;
     if (weekDay == 7) weekDay = 0;
-    _startDate = _startDate.subtract(
-      Duration(days: (_selectedDays.first - weekDay).abs()),
+    checkedStartDate = checkedStartDate.subtract(
+      Duration(days: (filteredSelectedDays.first - weekDay).abs()),
     );
 
     // we'll need to iterate through everyweek from the startDate (by adding 7 days every iteration)
     // we'll do this for every week until next year for the same startDate
-    for (var indexWeekDay =
-            DateTime(_startDate.year, _startDate.month, _startDate.day);
+    for (var indexWeekDay = DateTime(
+      checkedStartDate.year,
+      checkedStartDate.month,
+      checkedStartDate.day,
+    );
         true; // this will be handled by the break check for exactly 1 year
         indexWeekDay = indexWeekDay.add(Duration(days: 7 * everyNWeeks))) {
       // we'll loop through every days of the week PER WEEK
@@ -95,19 +98,19 @@ class RepeatedDaysGenerator {
         // since DateTime starts at Monday (1) and ends in Sunday (7),
         // we need to convert the Sunday to 0 as our starting weekday
         if (day == 7) day = 0;
-        if (_selectedDays.contains(day)) repeatedDays.add(indexDay);
+        if (filteredSelectedDays.contains(day)) repeatedDays.add(indexDay);
 
         // check if the final selected day (i.e, saturday) is already reached
-        if (_selectedDays.last == day ||
+        if (filteredSelectedDays.last == day ||
             (maxLength != null && repeatedDays.length == maxLength)) {
           break;
         }
       }
 
-      final _now = DateTime.now();
+      final now = DateTime.now();
       // for exactly 1 year from today
-      if ((_now.month == indexWeekDay.month &&
-              _now.year + 1 == indexWeekDay.year) ||
+      if ((now.month == indexWeekDay.month &&
+              now.year + 1 == indexWeekDay.year) ||
           (maxLength != null && repeatedDays.length == maxLength)) break;
     }
 
@@ -149,8 +152,8 @@ class RepeatedDaysGenerator {
       repeatedDays.add(indexDay);
 
       // for exactly 1 year from today
-      final _now = DateTime.now();
-      if (_now.month == indexDay.month && _now.year + 1 == indexDay.year) {
+      final now = DateTime.now();
+      if (now.month == indexDay.month && now.year + 1 == indexDay.year) {
         break;
       }
     }
@@ -171,7 +174,7 @@ class RepeatedDaysGenerator {
     final repeatedDays = <DateTime>[];
 
     // if (weekday == 0) weekday = 7;
-    final _weekday = weekday == 0 ? 7 : weekday;
+    final checkedWeekday = weekday == 0 ? 7 : weekday;
     final startDate = DateTime(DateTime.now().year, month);
 
     // we need to start at the first day of the month to be able to determine
@@ -196,7 +199,7 @@ class RepeatedDaysGenerator {
             nextMonth = true;
             break start;
           }
-          if (now.weekday == _weekday) {
+          if (now.weekday == checkedWeekday) {
             count++;
             if (count < ordinal) now = now.add(const Duration(days: 1));
             break;
@@ -210,8 +213,9 @@ class RepeatedDaysGenerator {
       }
 
       // for exactly 1 year from today
-      final _now = DateTime.now();
-      if (_now.month == indexDay.month && _now.year + 1 == indexDay.year) {
+      final dateTimeNow = DateTime.now();
+      if (dateTimeNow.month == indexDay.month &&
+          dateTimeNow.year + 1 == indexDay.year) {
         break;
       }
     }

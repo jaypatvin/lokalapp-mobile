@@ -30,12 +30,12 @@ class _CashOnDeliveryView extends HookView<CashOnDeliveryViewModel>
     with HookScreenLoader {
   @override
   Widget screen(BuildContext context, CashOnDeliveryViewModel vm) {
-    final _numberFormat = useMemoized<NumberFormat>(
+    final numberFormat = useMemoized<NumberFormat>(
       () => NumberFormat('#,###.0#', 'en_US'),
     );
 
-    final _price = useMemoized<String>(
-      () => _numberFormat.format(
+    final price = useMemoized<String>(
+      () => numberFormat.format(
         vm.order.products.fold<double>(
           0.0,
           (double prev, product) => prev + product.price,
@@ -43,7 +43,7 @@ class _CashOnDeliveryView extends HookView<CashOnDeliveryViewModel>
       ),
     );
 
-    final _termsConditionHandler = useMemoized<TapGestureRecognizer>(
+    final termsConditionHandler = useMemoized<TapGestureRecognizer>(
       () => TapGestureRecognizer()
         ..onTap = () {
           debugPrint('Terms & Conditions tapped');
@@ -68,7 +68,7 @@ class _CashOnDeliveryView extends HookView<CashOnDeliveryViewModel>
                   children: [
                     const TextSpan(text: 'Please prepare '),
                     TextSpan(
-                      text: 'P $_price',
+                      text: 'P $price',
                       style: Theme.of(context).textTheme.subtitle2?.copyWith(
                             color: kOrangeColor,
                             fontWeight: FontWeight.bold,
@@ -80,7 +80,7 @@ class _CashOnDeliveryView extends HookView<CashOnDeliveryViewModel>
                     ),
                     TextSpan(
                       text: 'Terms & Conditions',
-                      recognizer: _termsConditionHandler,
+                      recognizer: termsConditionHandler,
                       style: Theme.of(context)
                           .textTheme
                           .subtitle2

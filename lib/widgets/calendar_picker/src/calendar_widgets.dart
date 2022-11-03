@@ -50,7 +50,7 @@ class LokalCalendarDay extends StatelessWidget {
         isSelected ? const EdgeInsets.all(0.5) : const EdgeInsets.all(1.0);
     final EdgeInsets padding =
         isSelected ? const EdgeInsets.all(2) : const EdgeInsets.all(3.0);
-    final TextStyle _style = isSelected
+    final TextStyle style = isSelected
         ? getDefaultDayStyle().copyWith(fontSize: 14.0)
         : getDefaultDayStyle();
 
@@ -78,14 +78,12 @@ class LokalCalendarDay extends StatelessWidget {
             ),
           ),
         ),
-        child: SizedBox(
-          width: double.infinity,
-          height: double.infinity,
+        child: SizedBox.expand(
           child: Center(
             child: Text(
               '${dateTime.day}',
               semanticsLabel: dateTime.day.toString(),
-              style: _style,
+              style: style,
               maxLines: 1,
             ),
           ),
@@ -158,7 +156,7 @@ class TappableCalendarWeekday extends StatelessWidget {
 
     const EdgeInsets margin = EdgeInsets.all(1.0);
     const EdgeInsets padding = EdgeInsets.all(2.0);
-    final TextStyle _style =
+    final TextStyle style =
         isSelectable ? defaultDaysTextStyle : defaultInactiveDaysTextStyle;
     return Expanded(
       child: Container(
@@ -179,15 +177,13 @@ class TappableCalendarWeekday extends StatelessWidget {
             backgroundColor: buttonColor,
             shape: const CircleBorder(),
           ),
-          child: SizedBox(
-            width: double.infinity,
-            height: double.infinity,
+          child: SizedBox.expand(
             child: Center(
               child: Text(
                 msg,
                 semanticsLabel:
                     dateFormat.dateSymbols.STANDALONEWEEKDAYS[werapWeekday],
-                style: _style,
+                style: style,
                 maxLines: 1,
               ),
             ),

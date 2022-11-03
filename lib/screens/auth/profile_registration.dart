@@ -31,52 +31,52 @@ class _ProfileRegistrationView extends HookView<ProfileRegistrationViewModel>
     with HookScreenLoader {
   @override
   Widget screen(BuildContext context, ProfileRegistrationViewModel vm) {
-    final _firstNameFocusNode = useFocusNode();
-    final _lastNameFocusNode = useFocusNode();
-    final _streetNameFocusNode = useFocusNode();
+    final firstNameFocusNode = useFocusNode();
+    final lastNameFocusNode = useFocusNode();
+    final streetNameFocusNode = useFocusNode();
 
-    final _firstNameController = useTextEditingController();
-    final _lastNameController = useTextEditingController();
-    final _streetNameController = useTextEditingController();
+    final firstNameController = useTextEditingController();
+    final lastNameController = useTextEditingController();
+    final streetNameController = useTextEditingController();
 
     useEffect(
       () {
-        void _firstNameListener() {
-          vm.onFirstNameChanged(_firstNameController.text);
+        void firstNameListener() {
+          vm.onFirstNameChanged(firstNameController.text);
         }
 
-        void _lastNameListener() {
-          vm.onLastNameChanged(_lastNameController.text);
+        void lastNameListener() {
+          vm.onLastNameChanged(lastNameController.text);
         }
 
-        void _streetNameListener() {
-          vm.onStreetNameChanged(_streetNameController.text);
+        void streetNameListener() {
+          vm.onStreetNameChanged(streetNameController.text);
         }
 
-        _firstNameController.addListener(_firstNameListener);
-        _lastNameController.addListener(_lastNameListener);
-        _streetNameController.addListener(_streetNameListener);
+        firstNameController.addListener(firstNameListener);
+        lastNameController.addListener(lastNameListener);
+        streetNameController.addListener(streetNameListener);
 
         return () {
-          _firstNameController.removeListener(_firstNameListener);
-          _lastNameController.removeListener(_lastNameListener);
-          _streetNameController.removeListener(_streetNameListener);
+          firstNameController.removeListener(firstNameListener);
+          lastNameController.removeListener(lastNameListener);
+          streetNameController.removeListener(streetNameListener);
         };
       },
     );
 
-    final _kbConfig = useMemoized<KeyboardActionsConfig>(() {
+    final kbConfig = useMemoized<KeyboardActionsConfig>(() {
       return KeyboardActionsConfig(
         keyboardBarColor: Colors.grey.shade200,
         actions: [
           KeyboardActionsItem(
-            focusNode: _firstNameFocusNode,
+            focusNode: firstNameFocusNode,
           ),
           KeyboardActionsItem(
-            focusNode: _lastNameFocusNode,
+            focusNode: lastNameFocusNode,
           ),
           KeyboardActionsItem(
-            focusNode: _streetNameFocusNode,
+            focusNode: streetNameFocusNode,
           ),
         ],
       );
@@ -94,7 +94,7 @@ class _ProfileRegistrationView extends HookView<ProfileRegistrationViewModel>
         body: ConstrainedScrollView(
           child: KeyboardActions(
             disableScroll: true,
-            config: _kbConfig,
+            config: kbConfig,
             child: Column(
               children: [
                 Text(
@@ -130,12 +130,12 @@ class _ProfileRegistrationView extends HookView<ProfileRegistrationViewModel>
                   padding: const EdgeInsets.symmetric(horizontal: 45),
                   child: _RegistrationForm(
                     formKey: vm.formKey,
-                    firstNameController: _firstNameController,
-                    firstNameNode: _firstNameFocusNode,
-                    lastNameController: _lastNameController,
-                    lastNameNode: _lastNameFocusNode,
-                    streetAddressController: _streetNameController,
-                    streetAdddressNode: _streetNameFocusNode,
+                    firstNameController: firstNameController,
+                    firstNameNode: firstNameFocusNode,
+                    lastNameController: lastNameController,
+                    lastNameNode: lastNameFocusNode,
+                    streetAddressController: streetNameController,
+                    streetAdddressNode: streetNameFocusNode,
                     onFormSubmit: () async => performFuture<void>(
                       () async => vm.registerHandler(),
                     ),
@@ -169,9 +169,9 @@ class _ProfileRegistrationView extends HookView<ProfileRegistrationViewModel>
                   child: AppButton.filled(
                     text: 'CREATE PROFILE',
                     onPressed: () async {
-                      _firstNameFocusNode.unfocus();
-                      _lastNameFocusNode.unfocus();
-                      _streetNameFocusNode.unfocus();
+                      firstNameFocusNode.unfocus();
+                      lastNameFocusNode.unfocus();
+                      streetNameFocusNode.unfocus();
 
                       await performFuture<void>(
                         () async => vm.registerHandler(),

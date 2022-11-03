@@ -267,9 +267,7 @@ class _ScrollingWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const SizedBox(
-      width: double.infinity,
-      height: double.infinity,
+    return const SizedBox.expand(
       child: DecoratedBox(
         decoration: BoxDecoration(
           color: Color(0xFF4A4748),

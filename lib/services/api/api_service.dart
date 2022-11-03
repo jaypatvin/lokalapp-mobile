@@ -67,8 +67,8 @@ abstract class APIService<T> {
         final List<T> objects = [];
 
         for (final data in map['data']) {
-          final _activity = fromMap(data);
-          objects.add(_activity);
+          final activity = fromMap(data);
+          objects.add(activity);
         }
         return objects;
       } else {
@@ -132,40 +132,40 @@ abstract class APIService<T> {
   /// This function also trims maps recursively: empty/null keys and values from
   /// submaps are also removed (and checked again if is empty)
   @protected
-  Map<String, dynamic>? trimBodyFields(Map<String, dynamic>? body) {
-    final Map<String, dynamic>? _body;
-    if (body != null) {
-      _body = {...body};
+  Map<String, dynamic>? trimBodyFields(Map<String, dynamic>? untrimmedBody) {
+    final Map<String, dynamic>? body;
+    if (untrimmedBody != null) {
+      body = {...untrimmedBody};
     } else {
-      _body = null;
+      body = null;
     }
 
-    for (final entry in body?.entries ?? {}.entries) {
+    for (final entry in untrimmedBody?.entries ?? {}.entries) {
       final key = entry.key;
       final value = entry.value;
 
       if (key.isEmpty || value == null) {
-        _body?.remove(key);
+        body?.remove(key);
         continue;
       }
 
       if (value is String) {
-        if (value.isEmpty) _body?.remove(key);
+        if (value.isEmpty) body?.remove(key);
         continue;
       } else if (value is List) {
-        if (value.isEmpty) _body?.remove(key);
+        if (value.isEmpty) body?.remove(key);
         continue;
       } else if (value is Map) {
-        final _value = trimBodyFields({...value});
-        if (_value?.isEmpty ?? true) {
-          _body?.remove(key);
+        final map = trimBodyFields({...value});
+        if (map?.isEmpty ?? true) {
+          body?.remove(key);
         } else {
-          _body?[key] = _value;
+          body?[key] = map;
         }
         continue;
       }
     }
 
-    return _body;
+    return body;
   }
 }

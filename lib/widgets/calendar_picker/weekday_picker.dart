@@ -98,9 +98,7 @@ class _WeekdayPickerState extends State<WeekdayPicker> {
                       borderRadius: BorderRadius.circular(13.0),
                     ),
             ),
-            child: SizedBox(
-              width: double.infinity,
-              height: double.infinity,
+            child: SizedBox.expand(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [

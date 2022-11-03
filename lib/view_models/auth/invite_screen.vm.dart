@@ -37,8 +37,8 @@ class InviteScreenViewModel extends ViewModel {
     final auth = context.read<Auth>();
 
     try {
-      final _lokalInvite = await _apiService.check(_inviteCode);
-      final communityId = _lokalInvite.communityId;
+      final lokalInvite = await _apiService.check(_inviteCode);
+      final communityId = lokalInvite.communityId;
       if (communityId.isEmpty) throw 'No Community ID returned.';
 
       context.read<AuthBody>()
@@ -46,7 +46,7 @@ class InviteScreenViewModel extends ViewModel {
         ..setInviteCode(_inviteCode);
       context
           .read<CommunityProvider>()
-          .setCommunityId(_lokalInvite.communityId);
+          .setCommunityId(lokalInvite.communityId);
 
       if (_displayError) {
         _displayError = false;

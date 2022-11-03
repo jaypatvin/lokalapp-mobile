@@ -38,10 +38,10 @@ class ReportShopViewModel extends ViewModel {
       );
 
       if (success) {
-        final _appRouter = context.read<AppRouter>();
-        final _route = _appRouter.currentTabRoute;
-        _appRouter.pushDynamicScreen(
-          _route,
+        final appRouter = context.read<AppRouter>();
+        final route = appRouter.currentTabRoute;
+        appRouter.pushDynamicScreen(
+          route,
           AppNavigator.appPageRoute(
             builder: (_) => const ReportSent(),
           ),

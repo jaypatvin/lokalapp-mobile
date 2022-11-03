@@ -35,14 +35,14 @@ class PhotoBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Widget _child;
+    final Widget child;
 
     if (imageSource.isEmpty) {
-      _child = displayIcon
+      child = displayIcon
           ? const Icon(Icons.add, color: kTealColor)
           : const SizedBox();
     } else {
-      _child = Image(
+      child = Image(
         fit: BoxFit.cover,
         image: imageSource.isFile
             ? FileImage(imageSource.file!) as ImageProvider<FileImage>
@@ -63,7 +63,7 @@ class PhotoBox extends StatelessWidget {
         border: displayBorder ? Border.all(color: kTealColor) : null,
         color: Colors.transparent,
       ),
-      child: _child,
+      child: child,
     );
   }
 }

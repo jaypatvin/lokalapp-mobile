@@ -302,13 +302,13 @@ class ProductApiService extends APIService<Product> {
       );
       if (response.statusCode == 200) {
         final map = json.decode(response.body);
-        final List<ProductReview> _reviews = [];
+        final List<ProductReview> reviews = [];
 
         for (final data in map['data']) {
-          final _review = ProductReview.fromJson(data);
-          _reviews.add(_review);
+          final review = ProductReview.fromJson(data);
+          reviews.add(review);
         }
-        return _reviews;
+        return reviews;
       } else {
         final map = json.decode(response.body);
         if (map['data'] != null) {

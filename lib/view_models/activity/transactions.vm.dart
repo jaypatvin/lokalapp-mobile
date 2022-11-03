@@ -75,7 +75,7 @@ class TransactionsViewModel extends ViewModel {
   }
 
   void _initializeStatuses() {
-    final _statusCodes = initialStatuses.keys.toList().map((key) {
+    final statusCodes = initialStatuses.keys.toList().map((key) {
       if (key == 10 || key == 20) {
         // We're multiplying statuses 10 and 20 (cancelled & declined orders)
         // by 100 to put them in the bottom of the list (after sorting).
@@ -88,11 +88,11 @@ class TransactionsViewModel extends ViewModel {
       ..sort();
 
     _statuses[0] = 'All';
-    for (final code in _statusCodes) {
+    for (final code in statusCodes) {
       // Reverse the multiplication from above to get the correct string value
       // from the firestore collection of statuses
-      final _key = (code == 1000 || code == 2000) ? code ~/ 100 : code;
-      _statuses[code] = initialStatuses[_key];
+      final key = (code == 1000 || code == 2000) ? code ~/ 100 : code;
+      _statuses[code] = initialStatuses[key];
     }
   }
 

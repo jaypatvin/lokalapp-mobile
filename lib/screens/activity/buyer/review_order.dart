@@ -30,7 +30,7 @@ class _ReviewOrderView extends HookView<ReviewOrderViewModel>
     with HookScreenLoader {
   @override
   Widget screen(BuildContext context, ReviewOrderViewModel viewModel) {
-    final _focusNodes = useRef(
+    final focusNodes = useRef(
       List<FocusNode>.generate(
         viewModel.order.products.length,
         (index) => useFocusNode(),
@@ -161,7 +161,7 @@ class _ReviewOrderView extends HookView<ReviewOrderViewModel>
                       const SizedBox(height: 15),
                       InputDescriptionField(
                         hintText: 'Enter review here',
-                        focusNode: _focusNodes.value[index],
+                        focusNode: focusNodes.value[index],
                         onChanged: (message) => viewModel.onUpdateReview(
                           product: product,
                           review: message,
@@ -186,7 +186,7 @@ class _ReviewOrderView extends HookView<ReviewOrderViewModel>
                     child: AppButton.filled(
                       text: 'Submit Review',
                       onPressed: () async {
-                        for (final node in _focusNodes.value) {
+                        for (final node in focusNodes.value) {
                           node.unfocus();
                         }
                         await performFuture(viewModel.onSubmitReview);

@@ -88,11 +88,11 @@ class _ConnectivityStatusState extends State<ConnectivityStatus>
         _hasConnection = false;
       });
     } else {
-      final _status = await checkConnection();
-      if (!_status) {
-        if (_status != _hasConnection) {
+      final status = await checkConnection();
+      if (!status) {
+        if (status != _hasConnection) {
           setState(() {
-            _hasConnection = _status;
+            _hasConnection = status;
           });
         }
       }
@@ -101,11 +101,11 @@ class _ConnectivityStatusState extends State<ConnectivityStatus>
 
   Future<bool> checkConnection() async {
     final previousConnection = _hasConnection;
-    bool _status = _hasConnection;
+    bool status = _hasConnection;
     try {
       final result = await InternetAddress.lookup('lokalapp.ph');
       if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
-        _status = true;
+        status = true;
         await FirebaseFirestore.instance.enableNetwork();
 
         // TODO: change these to use Firestore
@@ -118,21 +118,21 @@ class _ConnectivityStatusState extends State<ConnectivityStatus>
           }
         }
       } else {
-        _status = false;
+        status = false;
       }
     } on SocketException catch (_) {
-      _status = false;
+      status = false;
     } catch (e, stack) {
       FirebaseCrashlytics.instance.recordError(e, stack);
     }
 
-    if (previousConnection != _status) {
+    if (previousConnection != status) {
       setState(() {
-        _hasConnection = _status;
+        _hasConnection = status;
       });
     }
 
-    return _status;
+    return status;
   }
 
   @override

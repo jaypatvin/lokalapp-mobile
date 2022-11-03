@@ -230,13 +230,9 @@ class _MyAppState extends State<MyApp> {
           child: ConnectivityStatus(
             child: ScreenLoaderApp(
               globalLoadingBgBlur: 0,
-              globalLoader: SizedBox(
-                width: double.infinity,
-                height: double.infinity,
+              globalLoader: SizedBox.expand(
                 child: DecoratedBox(
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                  ),
+                  decoration: const BoxDecoration(color: Colors.white),
                   child: Lottie.asset(kAnimationLoading),
                 ),
               ),

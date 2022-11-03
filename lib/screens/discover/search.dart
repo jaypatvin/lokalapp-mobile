@@ -28,7 +28,7 @@ class Search extends StatelessWidget {
 class _SearchView extends HookView<SearchViewModel> {
   @override
   Widget render(BuildContext context, SearchViewModel vm) {
-    final _recentSearchesLabel = useMemoized(() {
+    final recentSearchesLabel = useMemoized(() {
       return const SliverToBoxAdapter(
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 16),
@@ -45,7 +45,7 @@ class _SearchView extends HookView<SearchViewModel> {
       );
     });
 
-    final _recentSearchesList = useMemoized(() {
+    final recentSearchesList = useMemoized(() {
       return SliverList(
         delegate: SliverChildBuilderDelegate(
           (ctx2, index) {
@@ -131,8 +131,8 @@ class _SearchView extends HookView<SearchViewModel> {
                 const SliverToBoxAdapter(
                   child: SizedBox(height: 32),
                 ),
-                _recentSearchesLabel,
-                _recentSearchesList
+                recentSearchesLabel,
+                recentSearchesList
               ],
             );
           }
@@ -184,8 +184,8 @@ class _SearchView extends HookView<SearchViewModel> {
                 const SliverToBoxAdapter(
                   child: SizedBox(height: 32),
                 ),
-                _recentSearchesLabel,
-                _recentSearchesList,
+                recentSearchesLabel,
+                recentSearchesList,
               ],
               // if (vm.searchResults.isEmpty) _recentSearchesLabel,
               // if (vm.searchResults.isEmpty) _recentSearchesList,

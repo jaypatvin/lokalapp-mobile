@@ -36,18 +36,18 @@ class _InviteAFriendView extends HookView<InviteAFriendViewModel>
     BuildContext context,
     InviteAFriendViewModel vm,
   ) {
-    final _emailNode = useFocusNode();
-    final _phoneNode = useFocusNode();
+    final emailNode = useFocusNode();
+    final phoneNode = useFocusNode();
 
-    final _emailController = useTextEditingController();
-    final _phoneController = useTextEditingController();
+    final emailController = useTextEditingController();
+    final phoneController = useTextEditingController();
 
-    final _kbActionsRef = useRef(
+    final kbActionsRef = useRef(
       KeyboardActionsConfig(
         keyboardBarColor: Colors.grey.shade200,
         actions: [
           KeyboardActionsItem(
-            focusNode: _emailNode,
+            focusNode: emailNode,
             toolbarButtons: [
               (node) {
                 return TextButton(
@@ -64,7 +64,7 @@ class _InviteAFriendView extends HookView<InviteAFriendViewModel>
             ],
           ),
           KeyboardActionsItem(
-            focusNode: _phoneNode,
+            focusNode: phoneNode,
             toolbarButtons: [
               (node) {
                 return TextButton(
@@ -86,16 +86,16 @@ class _InviteAFriendView extends HookView<InviteAFriendViewModel>
 
     useEffect(
       () {
-        void _emailListener() => vm.onEmailChanged(_emailController.text);
+        void emailListener() => vm.onEmailChanged(emailController.text);
 
-        void _phoneListener() => vm.onPhoneNumberChange(_phoneController.text);
+        void phoneListener() => vm.onPhoneNumberChange(phoneController.text);
 
-        _emailController.addListener(_emailListener);
-        _phoneController.addListener(_phoneListener);
+        emailController.addListener(emailListener);
+        phoneController.addListener(phoneListener);
 
         return () {
-          _emailController.removeListener(_emailListener);
-          _phoneController.removeListener(_phoneListener);
+          emailController.removeListener(emailListener);
+          phoneController.removeListener(phoneListener);
         };
       },
       [],
@@ -110,7 +110,7 @@ class _InviteAFriendView extends HookView<InviteAFriendViewModel>
         titleStyle: TextStyle(color: Colors.white),
       ),
       body: KeyboardActions(
-        config: _kbActionsRef.value,
+        config: kbActionsRef.value,
         tapOutsideBehavior: TapOutsideBehavior.translucentDismiss,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -145,8 +145,8 @@ class _InviteAFriendView extends HookView<InviteAFriendViewModel>
               padding: const EdgeInsets.symmetric(horizontal: 45),
               child: InputField(
                 fillColor: Colors.white,
-                controller: _emailController,
-                focusNode: _emailNode,
+                controller: emailController,
+                focusNode: emailNode,
                 errorText: vm.emailErrorText,
                 hintText: 'Email Address',
               ),
