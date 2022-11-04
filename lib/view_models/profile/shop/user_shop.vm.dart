@@ -94,7 +94,7 @@ class UserShopViewModel extends ViewModel {
     }
 
     if (shop == null) throw FailureException('Error: no shop found.');
-    shop = shop;
+    this.shop = shop;
   }
 
   void refresh() {
