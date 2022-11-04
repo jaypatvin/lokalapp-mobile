@@ -21,8 +21,8 @@ class AssetPhotoThumbnail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: decoration,
+    return DecoratedBox(
+      decoration: decoration ?? const BoxDecoration(),
       child: Stack(
         children: [
           Positioned.fill(

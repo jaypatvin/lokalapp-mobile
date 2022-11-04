@@ -52,24 +52,30 @@ class _AssetGalleryWidgetState extends State<AssetGalleryWidget> {
 
   @override
   Widget build(BuildContext context) {
-    int itemCount = widget.path?.assetCount ?? 0;
-    if (widget.specialItemBuilder != null) {
-      itemCount += 1;
-    }
+    return FutureBuilder<int>(
+      initialData: 0,
+      future: widget.path?.assetCountAsync,
+      builder: (context, snapshot) {
+        int itemCount = snapshot.data ?? 0;
+        if (widget.specialItemBuilder != null) {
+          itemCount += 1;
+        }
 
-    return NotificationListener<ScrollNotification>(
-      onNotification: _onScroll,
-      child: ListView.separated(
-        key: ValueKey(widget.path),
-        separatorBuilder: (ctx, index) => const SizedBox(width: 8),
-        scrollDirection: Axis.horizontal,
-        itemCount: itemCount,
-        itemBuilder: (context, index) => SizedBox(
-          height: widget.assetHeight,
-          width: widget.assetWidth,
-          child: _buildItem(context, index),
-        ),
-      ),
+        return NotificationListener<ScrollNotification>(
+          onNotification: _onScroll,
+          child: ListView.separated(
+            key: ValueKey(widget.path),
+            separatorBuilder: (ctx, index) => const SizedBox(width: 8),
+            scrollDirection: Axis.horizontal,
+            itemCount: itemCount,
+            itemBuilder: (context, index) => SizedBox(
+              height: widget.assetHeight,
+              width: widget.assetWidth,
+              child: _buildItem(context, index),
+            ),
+          ),
+        );
+      },
     );
   }
 

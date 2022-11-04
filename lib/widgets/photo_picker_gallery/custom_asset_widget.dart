@@ -1,5 +1,3 @@
-// ignore_for_file: unnecessary_const
-
 import 'dart:ui' as ui;
 
 import 'package:flutter/foundation.dart';
@@ -55,7 +53,7 @@ class CustomAssetWidget extends StatelessWidget {
             ColoredBox(
               color: Colors.black.withOpacity(0.3),
               child: const Center(
-                child: const Icon(
+                child: Icon(
                   Icons.video_library,
                   color: Colors.white,
                 ),
@@ -118,8 +116,18 @@ class AssetEntityFileImage extends ImageProvider<AssetEntityFileImage> {
     this.scale = 1.0,
   });
 
+  // @override
+  // ImageStreamCompleter load(AssetEntityFileImage key, DecoderCallback decode) {
+  //   return MultiFrameImageStreamCompleter(
+  //     codec: _loadAsync(key, decode),
+  //     scale: key.scale,
+  //   );
+  // }
   @override
-  ImageStreamCompleter load(AssetEntityFileImage key, DecoderCallback decode) {
+  ImageStreamCompleter loadBuffer(
+    AssetEntityFileImage key,
+    DecoderBufferCallback decode,
+  ) {
     return MultiFrameImageStreamCompleter(
       codec: _loadAsync(key, decode),
       scale: key.scale,
@@ -128,11 +136,13 @@ class AssetEntityFileImage extends ImageProvider<AssetEntityFileImage> {
 
   Future<ui.Codec> _loadAsync(
     AssetEntityFileImage key,
-    DecoderCallback decode,
+    DecoderBufferCallback decode,
   ) async {
     assert(key == this);
     final bytes = (await entity.file)!.readAsBytesSync();
-    return decode(bytes);
+
+    final buffer = await ui.ImmutableBuffer.fromUint8List(bytes);
+    return decode(buffer);
   }
 
   @override
@@ -153,7 +163,7 @@ class AssetEntityFileImage extends ImageProvider<AssetEntityFileImage> {
   }
 
   @override
-  int get hashCode => hashValues(entity, scale);
+  int get hashCode => Object.hash(entity, scale);
 }
 
 class AssetEntityThumbImage extends ImageProvider<AssetEntityThumbImage> {
@@ -170,8 +180,18 @@ class AssetEntityThumbImage extends ImageProvider<AssetEntityThumbImage> {
   })  : width = width ?? entity.width,
         height = height ?? entity.height;
 
+  // @override
+  // ImageStreamCompleter load(AssetEntityThumbImage key, DecoderCallback decode) {
+  //   return MultiFrameImageStreamCompleter(
+  //     codec: _loadAsync(key, decode),
+  //     scale: key.scale,
+  //   );
+  // }
   @override
-  ImageStreamCompleter load(AssetEntityThumbImage key, DecoderCallback decode) {
+  ImageStreamCompleter loadBuffer(
+    AssetEntityThumbImage key,
+    DecoderBufferCallback decode,
+  ) {
     return MultiFrameImageStreamCompleter(
       codec: _loadAsync(key, decode),
       scale: key.scale,
@@ -180,13 +200,15 @@ class AssetEntityThumbImage extends ImageProvider<AssetEntityThumbImage> {
 
   Future<ui.Codec> _loadAsync(
     AssetEntityThumbImage key,
-    DecoderCallback decode,
+    DecoderBufferCallback decode,
   ) async {
     assert(key == this);
     final bytes = await entity.thumbnailDataWithSize(
       ThumbnailSize(width, height),
     );
-    return decode(bytes!);
+
+    final buffer = await ui.ImmutableBuffer.fromUint8List(bytes!);
+    return decode(buffer);
   }
 
   @override
@@ -212,5 +234,5 @@ class AssetEntityThumbImage extends ImageProvider<AssetEntityThumbImage> {
   }
 
   @override
-  int get hashCode => hashValues(entity, scale, width, height);
+  int get hashCode => Object.hash(entity, scale, width, height);
 }

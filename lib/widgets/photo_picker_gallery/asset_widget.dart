@@ -82,7 +82,10 @@ class AssetEntityFileImage extends ImageProvider<AssetEntityFileImage> {
   });
 
   @override
-  ImageStreamCompleter load(AssetEntityFileImage key, DecoderCallback decode) {
+  ImageStreamCompleter loadBuffer(
+    AssetEntityFileImage key,
+    DecoderBufferCallback decode,
+  ) {
     return MultiFrameImageStreamCompleter(
       codec: _loadAsync(key, decode),
       scale: key.scale,
@@ -91,17 +94,21 @@ class AssetEntityFileImage extends ImageProvider<AssetEntityFileImage> {
 
   Future<ui.Codec> _loadAsync(
     AssetEntityFileImage key,
-    DecoderCallback decode,
+    DecoderBufferCallback decode,
   ) async {
     assert(key == this);
     if (Platform.isIOS) {
       final asset = await entity.thumbnailDataWithSize(
         ThumbnailSize(entity.width, entity.height),
       );
-      return decode(asset!);
+      final ui.ImmutableBuffer buffer =
+          await ui.ImmutableBuffer.fromUint8List(asset!);
+      return decode(buffer);
     } else {
       final bytes = (await entity.file)!.readAsBytesSync();
-      return decode(bytes);
+      final ui.ImmutableBuffer buffer =
+          await ui.ImmutableBuffer.fromUint8List(bytes);
+      return decode(buffer);
     }
   }
 
@@ -125,7 +132,7 @@ class AssetEntityFileImage extends ImageProvider<AssetEntityFileImage> {
   }
 
   @override
-  int get hashCode => hashValues(entity, scale);
+  int get hashCode => Object.hash(entity, scale);
 }
 
 class AssetEntityThumbImage extends ImageProvider<AssetEntityThumbImage> {
@@ -143,7 +150,10 @@ class AssetEntityThumbImage extends ImageProvider<AssetEntityThumbImage> {
         height = height ?? entity.height;
 
   @override
-  ImageStreamCompleter load(AssetEntityThumbImage key, DecoderCallback decode) {
+  ImageStreamCompleter loadBuffer(
+    AssetEntityThumbImage key,
+    DecoderBufferCallback decode,
+  ) {
     return MultiFrameImageStreamCompleter(
       codec: _loadAsync(key, decode),
       scale: key.scale,
@@ -152,12 +162,14 @@ class AssetEntityThumbImage extends ImageProvider<AssetEntityThumbImage> {
 
   Future<ui.Codec> _loadAsync(
     AssetEntityThumbImage key,
-    DecoderCallback decode,
+    DecoderBufferCallback decode,
   ) async {
     assert(key == this);
     final bytes =
         await entity.thumbnailDataWithSize(ThumbnailSize(width, height));
-    return decode(bytes!);
+    final buffer = await ui.ImmutableBuffer.fromUint8List(bytes!);
+
+    return decode(buffer);
   }
 
   @override
@@ -183,7 +195,7 @@ class AssetEntityThumbImage extends ImageProvider<AssetEntityThumbImage> {
   }
 
   @override
-  int get hashCode => hashValues(entity, scale, width, height);
+  int get hashCode => Object.hash(entity, scale, width, height);
 }
 
 class PathItemImageProvider extends ImageProvider<PathItemImageProvider> {
@@ -202,14 +214,20 @@ class PathItemImageProvider extends ImageProvider<PathItemImageProvider> {
   });
 
   @override
-  ImageStreamCompleter load(PathItemImageProvider key, DecoderCallback decode) {
+  ImageStreamCompleter loadBuffer(
+    PathItemImageProvider key,
+    DecoderBufferCallback decode,
+  ) {
     return MultiFrameImageStreamCompleter(
       codec: _loadAsync(key, decode).then((value) => value!),
       scale: scale,
     );
   }
 
-  Future<ui.Codec?> _loadAsync(PathItemImageProvider key, decode) async {
+  Future<ui.Codec?> _loadAsync(
+    PathItemImageProvider key,
+    DecoderBufferCallback decode,
+  ) async {
     assert(key == this);
     final assets = await path.getAssetListRange(start: index, end: index + 1);
     final asset = assets[0];
@@ -233,7 +251,9 @@ class PathItemImageProvider extends ImageProvider<PathItemImageProvider> {
         ThumbnailSize(w.toInt(), w.toInt()),
       );
     }
-    return decode(bytes);
+
+    final buffer = await ui.ImmutableBuffer.fromUint8List(bytes!);
+    return decode(buffer);
   }
 
   @override
@@ -244,7 +264,7 @@ class PathItemImageProvider extends ImageProvider<PathItemImageProvider> {
   }
 
   @override
-  int get hashCode => hashValues(path, index, width, height, scale);
+  int get hashCode => Object.hash(path, index, width, height, scale);
 
   @override
   bool operator ==(Object other) {
