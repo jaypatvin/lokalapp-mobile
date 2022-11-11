@@ -17,7 +17,7 @@ class SharedMedia extends StatefulWidget {
 }
 
 class _SharedMediaState extends State<SharedMedia> {
-  List<LokalImages>? _sharedMedia;
+  List<ILokalImage>? _sharedMedia;
 
   @override
   void initState() {
@@ -26,8 +26,8 @@ class _SharedMediaState extends State<SharedMedia> {
     _sharedMedia = _getAllChatMedia();
   }
 
-  List<LokalImages> _getAllChatMedia() {
-    final images = <LokalImages>[];
+  List<ILokalImage> _getAllChatMedia() {
+    final images = <ILokalImage>[];
     for (final c in widget.conversations) {
       if (c.media?.isNotEmpty ?? false) {
         images.addAll(c.media!);

@@ -1,43 +1,23 @@
-import 'package:json_annotation/json_annotation.dart';
+import 'package:flutter/foundation.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
+part 'lokal_images.freezed.dart';
 part 'lokal_images.g.dart';
 
-@JsonSerializable()
-class LokalImages {
-  const LokalImages({
-    required this.url,
-    required this.order,
-  });
+abstract class ILokalImage {
+  const ILokalImage({required this.url, required this.order});
 
-  @JsonKey(required: true)
   final String url;
-  @JsonKey(defaultValue: 0)
   final int order;
+}
 
-  LokalImages copyWith({
-    String? url,
-    int? order,
-  }) {
-    return LokalImages(
-      url: url ?? this.url,
-      order: order ?? this.order,
-    );
-  }
+@freezed
+class LokalImages with _$LokalImages implements ILokalImage {
+  const factory LokalImages({
+    required String url,
+    @Default(0) int order,
+  }) = _LokalImages;
 
-  Map<String, dynamic> toJson() => _$LokalImagesToJson(this);
   factory LokalImages.fromJson(Map<String, dynamic> json) =>
       _$LokalImagesFromJson(json);
-
-  @override
-  String toString() => 'LokalImages(url: $url, order: $order)';
-
-  @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-
-    return other is LokalImages && other.url == url && other.order == order;
-  }
-
-  @override
-  int get hashCode => url.hashCode ^ order.hashCode;
 }

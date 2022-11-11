@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 
 import '../../models/chat_model.dart';
 import '../../models/conversation.dart';
+import '../../models/conversation_media.dart';
 import '../../models/failure_exception.dart';
 import '../../models/lokal_user.dart';
 import '../../models/post_requests/chat/chat_create.request.dart';

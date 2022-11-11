@@ -13,7 +13,7 @@ class NetworkPhotoThumbnail extends StatelessWidget {
     this.heroTag,
   }) : super(key: key);
 
-  final LokalImages galleryItem;
+  final ILokalImage galleryItem;
   final GestureTapCallback onTap;
   final BoxFit fit;
   final String? heroTag;

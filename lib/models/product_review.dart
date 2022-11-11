@@ -1,95 +1,23 @@
-import 'package:json_annotation/json_annotation.dart';
+import 'package:flutter/foundation.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-import '../utils/functions.utils.dart';
+import '../services/json_converters/date_time_converter.dart';
 
+part 'product_review.freezed.dart';
 part 'product_review.g.dart';
 
-@JsonSerializable()
-class ProductReview {
-  const ProductReview({
-    required this.productId,
-    required this.orderId,
-    required this.userId,
-    required this.rating,
-    required this.createdAt,
-    this.updatedAt,
-    this.message,
-  });
-
-  @JsonKey(required: true)
-  final String productId;
-  @JsonKey(required: true)
-  final String orderId;
-  @JsonKey(required: true)
-  final String userId;
-  @JsonKey(required: true)
-  final int rating;
-  @JsonKey(
-    required: true,
-    fromJson: dateTimeFromJson,
-    toJson: nullableDateTimeToString,
-  )
-  final DateTime createdAt;
-  @JsonKey(
-    fromJson: nullableDateTimeFromJson,
-    toJson: nullableDateTimeToString,
-  )
-  final DateTime? updatedAt;
-  final String? message;
-
-  ProductReview copyWith({
-    String? productId,
-    String? orderId,
-    String? userId,
-    int? rating,
-    DateTime? createdAt,
-    DateTime? updatedAt,
+@freezed
+class ProductReview with _$ProductReview {
+  const factory ProductReview({
+    required String productId,
+    required String orderId,
+    required String userId,
+    required int rating,
+    @DateTimeConverter() required DateTime createdAt,
+    @DateTimeOrNullConverter() DateTime? updatedAt,
     String? message,
-  }) {
-    return ProductReview(
-      productId: productId ?? this.productId,
-      orderId: orderId ?? this.orderId,
-      userId: userId ?? this.userId,
-      rating: rating ?? this.rating,
-      createdAt: createdAt ?? this.createdAt,
-      updatedAt: updatedAt ?? this.updatedAt,
-      message: message ?? this.message,
-    );
-  }
+  }) = _ProductReview;
 
-  Map<String, dynamic> toJson() => _$ProductReviewToJson(this);
   factory ProductReview.fromJson(Map<String, dynamic> json) =>
       _$ProductReviewFromJson(json);
-
-  @override
-  String toString() {
-    return 'ProductReview(productId: $productId, orderId: $orderId, '
-        'userId: $userId, rating: $rating, createdAt: $createdAt, '
-        'updatedAt: $updatedAt, message: $message)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-
-    return other is ProductReview &&
-        other.productId == productId &&
-        other.orderId == orderId &&
-        other.userId == userId &&
-        other.rating == rating &&
-        other.createdAt == createdAt &&
-        other.updatedAt == updatedAt &&
-        other.message == message;
-  }
-
-  @override
-  int get hashCode {
-    return productId.hashCode ^
-        orderId.hashCode ^
-        userId.hashCode ^
-        rating.hashCode ^
-        createdAt.hashCode ^
-        updatedAt.hashCode ^
-        message.hashCode;
-  }
 }

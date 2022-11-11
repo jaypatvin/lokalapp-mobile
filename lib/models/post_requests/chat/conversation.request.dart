@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-import '../../conversation.dart';
+import '../../conversation_media.dart';
 
 part 'conversation.request.g.dart';
 

@@ -110,9 +110,10 @@ class Activities extends ChangeNotifier {
     required String userId,
   }) async {
     final index = _feed.indexWhere((a) => a.id == activityId);
+    final post = _feed[index];
     try {
-      _feed[index].liked = true;
-      _feed[index].likedCount++;
+      _feed[index] =
+          post.copyWith(liked: true, likedCount: post.likedCount + 1);
       notifyListeners();
 
       await _activityService.like(
@@ -120,8 +121,8 @@ class Activities extends ChangeNotifier {
         userId: userId,
       );
     } catch (e) {
-      _feed[index].liked = false;
-      _feed[index].likedCount--;
+      _feed[index] =
+          post.copyWith(liked: false, likedCount: post.likedCount - 1);
       notifyListeners();
       rethrow;
     }
@@ -132,17 +133,18 @@ class Activities extends ChangeNotifier {
     required String userId,
   }) async {
     final index = _feed.indexWhere((a) => a.id == activityId);
+    final post = _feed[index];
     try {
-      _feed[index].liked = false;
-      _feed[index].likedCount--;
+      _feed[index] =
+          post.copyWith(liked: false, likedCount: post.likedCount - 1);
       notifyListeners();
       await _activityService.unlike(
         activityId: activityId,
         userId: userId,
       );
     } catch (e) {
-      _feed[index].liked = true;
-      _feed[index].likedCount++;
+      _feed[index] =
+          post.copyWith(liked: true, likedCount: post.likedCount + 1);
       notifyListeners();
       rethrow;
     }
@@ -204,12 +206,12 @@ class Activities extends ChangeNotifier {
 
   Future<void> deleteActivity(String activityId) async {
     final index = _feed.indexWhere((a) => a.id == activityId);
-    _feed[index].archived = true;
+    _feed[index] = _feed[index].copyWith(archived: true);
     notifyListeners();
     try {
       await _activityService.delete(activityId: activityId);
     } catch (e) {
-      _feed[index].archived = false;
+      _feed[index] = _feed[index].copyWith(archived: false);
       notifyListeners();
       rethrow;
     }

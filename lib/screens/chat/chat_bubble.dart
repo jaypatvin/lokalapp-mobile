@@ -151,7 +151,7 @@ class _MessageImages extends StatelessWidget {
     this.forFocus = false,
   }) : super(key: key);
 
-  final List<LokalImages> images;
+  final List<ILokalImage> images;
   final bool forFocus;
 
   @override

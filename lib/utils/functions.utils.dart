@@ -5,7 +5,7 @@ import 'package:intl/intl.dart' show DateFormat;
 import 'package:photo_manager/photo_manager.dart';
 
 import '../models/app_navigator.dart';
-import '../models/conversation.dart';
+import '../models/conversation_media.dart';
 import '../models/lokal_images.dart';
 import '../models/operating_hours.dart';
 import '../models/order.dart';
@@ -35,8 +35,8 @@ void openInputGallery(
 
 void openGallery(
   BuildContext context,
-   int index,
-   List<LokalImages>? galleryItems,
+  int index,
+  List<ILokalImage>? galleryItems,
 ) {
   AppRouter.rootNavigatorKey.currentState?.push(
     AppNavigator.appPageRoute(

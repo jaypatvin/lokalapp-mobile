@@ -1,9 +1,12 @@
 import 'package:flutter/foundation.dart';
-import 'package:json_annotation/json_annotation.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-import '../utils/functions.utils.dart';
+import '../services/json_converters/date_time_converter.dart';
+import '../services/json_converters/delivery_option_converter.dart';
+import '../services/json_converters/payment_method_converter.dart';
 import 'product_review.dart';
 
+part 'order.freezed.dart';
 part 'order.g.dart';
 
 enum DeliveryOption { delivery, pickup }
@@ -34,464 +37,79 @@ extension PaymentMethodExtension on PaymentMethod {
   }
 }
 
-@JsonSerializable()
-class DeliveryAddress {
-  const DeliveryAddress({
-    required this.barangay,
-    required this.city,
-    required this.country,
-    required this.state,
-    required this.street,
-    required this.subdivision,
-    required this.zipCode,
-  });
-
-  @JsonKey(required: true)
-  final String barangay;
-  @JsonKey(required: true)
-  final String city;
-  @JsonKey(required: true)
-  final String country;
-  @JsonKey(required: true)
-  final String state;
-  @JsonKey(required: true)
-  final String street;
-  @JsonKey(required: true)
-  final String subdivision;
-  @JsonKey(required: true)
-  final String zipCode;
-
-  DeliveryAddress copyWith({
-    String? barangay,
-    String? city,
-    String? country,
-    String? state,
-    String? street,
-    String? subdivision,
-    String? zipCode,
-  }) {
-    return DeliveryAddress(
-      barangay: barangay ?? this.barangay,
-      city: city ?? this.city,
-      country: country ?? this.country,
-      state: state ?? this.state,
-      street: street ?? this.street,
-      subdivision: subdivision ?? this.subdivision,
-      zipCode: zipCode ?? this.zipCode,
-    );
-  }
-
-  Map<String, dynamic> toJson() => _$DeliveryAddressToJson(this);
+@freezed
+class DeliveryAddress with _$DeliveryAddress {
+  const factory DeliveryAddress({
+    required String barangay,
+    required String city,
+    required String country,
+    required String state,
+    required String street,
+    required String subdivision,
+    required String zipCode,
+  }) = _DeliveryAddress;
 
   factory DeliveryAddress.fromJson(Map<String, dynamic> json) =>
       _$DeliveryAddressFromJson(json);
-
-  @override
-  String toString() {
-    return 'DeliveryAddress(barangay: $barangay, city: $city, '
-        'country: $country, state: $state, street: $street, '
-        'subdivision: $subdivision, zipCode: $zipCode)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-
-    return other is DeliveryAddress &&
-        other.barangay == barangay &&
-        other.city == city &&
-        other.country == country &&
-        other.state == state &&
-        other.street == street &&
-        other.subdivision == subdivision &&
-        other.zipCode == zipCode;
-  }
-
-  @override
-  int get hashCode {
-    return barangay.hashCode ^
-        city.hashCode ^
-        country.hashCode ^
-        state.hashCode ^
-        street.hashCode ^
-        subdivision.hashCode ^
-        zipCode.hashCode;
-  }
 }
 
-@JsonSerializable()
-class OrderProduct {
-  OrderProduct({
-    required this.instruction,
-    required this.description,
-    required this.id,
-    required this.name,
-    required this.image,
-    required this.price,
-    required this.quantity,
-    this.category,
-    this.review,
-    this.reviewId,
-  });
-
-  @JsonKey(required: true)
-  final String instruction;
-  @JsonKey(required: true)
-  final String description;
-  @JsonKey(required: true)
-  final String id;
-  @JsonKey(required: true)
-  final String name;
-  @JsonKey(required: true)
-  final String image;
-  @JsonKey(required: true)
-  final double price;
-  @JsonKey(required: true)
-  final int quantity;
-  final String? category;
-  final ProductReview? review;
-  final String? reviewId;
-
-  OrderProduct copyWith({
-    String? instruction,
-    String? description,
-    String? id,
-    String? name,
-    String? image,
-    double? price,
-    int? quantity,
+@freezed
+class OrderProduct with _$OrderProduct {
+  const factory OrderProduct({
+    required String instruction,
+    required String description,
+    required String id,
+    required String name,
+    required String image,
+    required double price,
+    required int quantity,
     String? category,
     ProductReview? review,
     String? reviewId,
-  }) {
-    return OrderProduct(
-      instruction: instruction ?? this.instruction,
-      description: description ?? this.description,
-      id: id ?? this.id,
-      name: name ?? this.name,
-      image: image ?? this.image,
-      price: price ?? this.price,
-      quantity: quantity ?? this.quantity,
-      category: category ?? this.category,
-      review: review ?? this.review,
-      reviewId: reviewId ?? this.reviewId,
-    );
-  }
-
-  Map<String, dynamic> toJson() => _$OrderProductToJson(this);
+  }) = _OrderProduct;
 
   factory OrderProduct.fromJson(Map<String, dynamic> json) =>
       _$OrderProductFromJson(json);
-
-  @override
-  String toString() {
-    return 'ProductOrder(instruction: $instruction, '
-        'productDescription: $description, productId: $id, productName: $name, '
-        'image: $image, productPrice: $price, quantity: $quantity, '
-        'category?: $category, reviewId?: $reviewId, review?: $review)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-
-    return other is OrderProduct &&
-        other.instruction == instruction &&
-        other.description == description &&
-        other.id == id &&
-        other.name == name &&
-        other.image == image &&
-        other.price == price &&
-        other.quantity == quantity &&
-        other.category == category &&
-        other.reviewId == reviewId &&
-        other.review == review;
-  }
-
-  @override
-  int get hashCode {
-    return instruction.hashCode ^
-        description.hashCode ^
-        id.hashCode ^
-        name.hashCode ^
-        image.hashCode ^
-        price.hashCode ^
-        quantity.hashCode ^
-        category.hashCode ^
-        reviewId.hashCode ^
-        review.hashCode;
-  }
 }
 
-@JsonSerializable()
-class OrderShop {
-  @JsonKey(required: true)
-  final String name;
-  @JsonKey(required: true)
-  final String description;
-  final String? image;
-
-  const OrderShop({
-    required this.name,
-    required this.description,
-    this.image,
-  });
-
-  OrderShop copyWith({
-    String? name,
-    String? description,
+@freezed
+class OrderShop with _$OrderShop {
+  const factory OrderShop({
+    required String name,
+    required String description,
     String? image,
-  }) {
-    return OrderShop(
-      name: name ?? this.name,
-      description: description ?? this.description,
-      image: image ?? this.image,
-    );
-  }
-
-  Map<String, dynamic> toJson() => _$OrderShopToJson(this);
+  }) = _OrderShop;
 
   factory OrderShop.fromJson(Map<String, dynamic> json) =>
       _$OrderShopFromJson(json);
-
-  @override
-  String toString() =>
-      'OrderShop(name: $name, description: $description, image: $image)';
-
-  @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-
-    return other is OrderShop &&
-        other.name == name &&
-        other.description == description &&
-        other.image == image;
-  }
-
-  @override
-  int get hashCode => name.hashCode ^ description.hashCode ^ image.hashCode;
 }
 
-@JsonSerializable()
-class Order {
-  const Order({
-    required this.id,
-    required this.buyerId,
-    required this.communityId,
-    required this.createdAt,
-    required this.deliveryAddress,
-    required this.deliveryDate,
-    required this.deliveryOption,
-    required this.instruction,
-    required this.isPaid,
-    required this.productIds,
-    required this.products,
-    required this.sellerId,
-    required this.shopId,
-    required this.shop,
-    required this.statusCode,
-    this.deliveredDate,
-    this.cancellationReason,
-    this.declineReason,
-    this.productSubscriptionId,
-    this.productSubscriptionDate,
-    this.proofOfPayment,
-    this.paymentMethod,
-  });
-
-  @JsonKey(required: true)
-  final String id;
-  @JsonKey(required: true)
-  final String buyerId;
-  @JsonKey(required: true)
-  final String communityId;
-  @JsonKey(
-    required: true,
-    fromJson: dateTimeFromJson,
-    toJson: nullableDateTimeToString,
-  )
-  final DateTime createdAt;
-  @JsonKey(required: true)
-  final DeliveryAddress deliveryAddress;
-  @JsonKey(
-    required: true,
-    fromJson: dateTimeFromJson,
-    toJson: nullableDateTimeToString,
-  )
-  final DateTime deliveryDate;
-  @JsonKey(
-    required: true,
-    fromJson: _deliveryOptionFromJson,
-    toJson: _deliveryOptionToJson,
-  )
-  final DeliveryOption deliveryOption;
-  @JsonKey(required: true)
-  final String instruction;
-  @JsonKey(required: true)
-  final bool isPaid;
-  @JsonKey(required: true, defaultValue: [])
-  final List<String> productIds;
-  @JsonKey(required: true, defaultValue: [])
-  final List<OrderProduct> products;
-  @JsonKey(required: true)
-  final String sellerId;
-  @JsonKey(required: true)
-  final String shopId;
-  @JsonKey(required: true)
-  final OrderShop shop;
-  @JsonKey(required: true)
-  final int statusCode;
-
-  @JsonKey(
-    fromJson: nullableDateTimeFromJson,
-    toJson: nullableDateTimeToString,
-  )
-  final DateTime? deliveredDate;
-  final String? cancellationReason;
-  final String? declineReason;
-  final String? productSubscriptionId;
-  final String? productSubscriptionDate;
-  final String? proofOfPayment;
-
-  @JsonKey(
-    fromJson: nullablePaymentMethodFromJson,
-    toJson: nullablePaymentMethodToJson,
-  )
-  final PaymentMethod? paymentMethod;
-
-  Order copyWith({
-    String? id,
-    String? buyerId,
-    String? communityId,
-    DateTime? createdAt,
-    DeliveryAddress? deliveryAddress,
-    DateTime? deliveryDate,
-    DateTime? deliveredDate,
-    DeliveryOption? deliveryOption,
-    String? instruction,
-    bool? isPaid,
-    PaymentMethod? paymentMethod,
-    List<String>? productIds,
-    List<OrderProduct>? products,
-    String? proofOfPayment,
-    String? sellerId,
-    String? shopId,
-    OrderShop? shop,
-    int? statusCode,
+@freezed
+class Order with _$Order {
+  const factory Order({
+    required String id,
+    required String buyerId,
+    required String communityId,
+    @DateTimeConverter() required DateTime createdAt,
+    required DeliveryAddress deliveryAddress,
+    @DateTimeConverter() required DateTime deliveryDate,
+    @DeliveryOptionConverter() required DeliveryOption deliveryOption,
+    required String instruction,
+    required bool isPaid,
+    required List<String> productIds,
+    required List<OrderProduct> products,
+    required String sellerId,
+    required String shopId,
+    required OrderShop shop,
+    required int statusCode,
+    @DateTimeOrNullConverter() DateTime? deliveredDate,
     String? cancellationReason,
     String? declineReason,
     String? productSubscriptionId,
     String? productSubscriptionDate,
-  }) {
-    return Order(
-      id: id ?? this.id,
-      buyerId: buyerId ?? this.buyerId,
-      communityId: communityId ?? this.communityId,
-      createdAt: createdAt ?? this.createdAt,
-      deliveryAddress: deliveryAddress ?? this.deliveryAddress,
-      deliveryDate: deliveryDate ?? this.deliveryDate,
-      deliveredDate: deliveredDate ?? this.deliveredDate,
-      deliveryOption: deliveryOption ?? this.deliveryOption,
-      instruction: instruction ?? this.instruction,
-      isPaid: isPaid ?? this.isPaid,
-      paymentMethod: paymentMethod ?? this.paymentMethod,
-      productIds: productIds ?? this.productIds,
-      products: products ?? this.products,
-      proofOfPayment: proofOfPayment ?? this.proofOfPayment,
-      sellerId: sellerId ?? this.sellerId,
-      shopId: shopId ?? this.shopId,
-      shop: shop ?? this.shop,
-      statusCode: statusCode ?? this.statusCode,
-      cancellationReason: cancellationReason ?? this.cancellationReason,
-      declineReason: declineReason ?? this.declineReason,
-      productSubscriptionId:
-          productSubscriptionId ?? this.productSubscriptionId,
-      productSubscriptionDate:
-          productSubscriptionDate ?? this.productSubscriptionDate,
-    );
-  }
-
-  Map<String, dynamic> toJson() => _$OrderToJson(this);
+    String? proofOfPayment,
+    @PaymentMethodOrNullConverter() PaymentMethod? paymentMethod,
+  }) = _Order;
 
   factory Order.fromJson(Map<String, dynamic> json) => _$OrderFromJson(json);
-
-  @override
-  String toString() {
-    return 'Order(id: $id, buyerId: $buyerId, communityId: $communityId, '
-        'createdAt: $createdAt, deliveryAddress: $deliveryAddress, '
-        'deliveryDate: $deliveryDate, deliveredDate: $deliveredDate, '
-        'deliveryOption: $deliveryOption, instruction: $instruction, '
-        'isPaid: $isPaid, paymentMethod: $paymentMethod, '
-        'productIds: $productIds, products: $products, '
-        'proofOfPayment: $proofOfPayment, sellerId: $sellerId, '
-        'shopId: $shopId, shop: $shop, statusCode: $statusCode, '
-        'cancellationReason: $cancellationReason, '
-        'declineReason: $declineReason, '
-        'productSubscriptionId: $productSubscriptionId, '
-        'productSubscriptionDate: $productSubscriptionDate)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-
-    return other is Order &&
-        other.id == id &&
-        other.buyerId == buyerId &&
-        other.communityId == communityId &&
-        other.createdAt == createdAt &&
-        other.deliveryAddress == deliveryAddress &&
-        other.deliveryDate == deliveryDate &&
-        other.deliveredDate == deliveredDate &&
-        other.deliveryOption == deliveryOption &&
-        other.instruction == instruction &&
-        other.isPaid == isPaid &&
-        other.paymentMethod == paymentMethod &&
-        listEquals(other.productIds, productIds) &&
-        listEquals(other.products, products) &&
-        other.proofOfPayment == proofOfPayment &&
-        other.sellerId == sellerId &&
-        other.shopId == shopId &&
-        other.shop == shop &&
-        other.statusCode == statusCode &&
-        other.cancellationReason == cancellationReason &&
-        other.declineReason == declineReason &&
-        other.productSubscriptionId == productSubscriptionId &&
-        other.productSubscriptionDate == productSubscriptionDate;
-  }
-
-  @override
-  int get hashCode {
-    return id.hashCode ^
-        buyerId.hashCode ^
-        communityId.hashCode ^
-        createdAt.hashCode ^
-        deliveryAddress.hashCode ^
-        deliveryDate.hashCode ^
-        deliveredDate.hashCode ^
-        deliveryOption.hashCode ^
-        instruction.hashCode ^
-        isPaid.hashCode ^
-        paymentMethod.hashCode ^
-        productIds.hashCode ^
-        products.hashCode ^
-        proofOfPayment.hashCode ^
-        sellerId.hashCode ^
-        shopId.hashCode ^
-        shop.hashCode ^
-        statusCode.hashCode ^
-        cancellationReason.hashCode ^
-        declineReason.hashCode ^
-        productSubscriptionId.hashCode ^
-        productSubscriptionDate.hashCode;
-  }
 }
-
-DeliveryOption _deliveryOptionFromJson(String value) {
-  return DeliveryOption.values.firstWhere(
-    (e) => e.value == value,
-    orElse: () => DeliveryOption.pickup,
-  );
-}
-
-String? _deliveryOptionToJson(DeliveryOption? option) => option?.value;

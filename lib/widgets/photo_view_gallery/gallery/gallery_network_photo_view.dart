@@ -23,7 +23,7 @@ class GalleryNetworkPhotoView extends StatefulWidget {
   final dynamic maxScale;
   final int initialIndex;
   final PageController pageController;
-  final List<LokalImages>? galleryItems;
+  final List<ILokalImage>? galleryItems;
   final Axis scrollDirection;
 
   @override
@@ -104,7 +104,7 @@ class _GalleryNetworkPhotoViewState extends State<GalleryNetworkPhotoView> {
   }
 
   PhotoViewGalleryPageOptions _buildItem(BuildContext context, int index) {
-    final LokalImages item = widget.galleryItems![index];
+    final ILokalImage item = widget.galleryItems![index];
     return PhotoViewGalleryPageOptions(
       imageProvider: CachedNetworkImageProvider(item.url),
       initialScale: PhotoViewComputedScale.contained,

@@ -375,12 +375,14 @@ class Auth extends ChangeNotifier {
   }
 
   void updateReadReceipts({bool? showReadReceipts}) {
+    if (showReadReceipts == null) return;
     _user = _user?.copyWith(showReadReceipts: showReadReceipts);
   }
 
   void updateNotificationSettings({
     NotificationSettings? notificationSettings,
   }) {
+    if (notificationSettings == null) return;
     _user = _user?.copyWith(notificationSettings: notificationSettings);
   }
 }
