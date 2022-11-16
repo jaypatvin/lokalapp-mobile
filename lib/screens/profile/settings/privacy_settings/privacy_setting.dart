@@ -4,7 +4,7 @@ import '../../../../utils/constants/themes.dart';
 import '../../../../widgets/custom_app_bar.dart';
 
 class PrivacySettings extends StatelessWidget {
-  const PrivacySettings({Key? key}) : super(key: key);
+  const PrivacySettings({super.key});
   @override
   Widget build(BuildContext context) {
     return Scaffold(

@@ -10,7 +10,7 @@ import '../../../../widgets/overlays/constrained_scrollview.dart';
 import '../settings.dart';
 
 class DeleteAccount extends StatefulWidget {
-  const DeleteAccount({Key? key}) : super(key: key);
+  const DeleteAccount({super.key});
   @override
   _DeleteAccountState createState() => _DeleteAccountState();
 }

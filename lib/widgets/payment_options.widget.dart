@@ -6,13 +6,13 @@ import '../utils/constants/themes.dart';
 
 class PaymentOptionsWidget extends StatelessWidget {
   const PaymentOptionsWidget({
-    Key? key,
+    super.key,
     required this.onPaymentPressed,
     this.cashEnabled = true,
     this.bankEnabled = true,
     this.walletEnabled = true,
     this.tileColor = kInviteScreenColor,
-  }) : super(key: key);
+  });
 
   final void Function(PaymentMethod paymentMethod) onPaymentPressed;
   final bool cashEnabled;

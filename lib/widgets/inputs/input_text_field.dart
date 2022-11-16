@@ -10,13 +10,13 @@ class InputTextField extends StatelessWidget {
   final void Function()? onTap;
   final String? hintText;
   const InputTextField({
-    Key? key,
+    super.key,
     required this.inputController,
     required this.onSend,
     required this.inputFocusNode,
     this.hintText,
     this.onTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

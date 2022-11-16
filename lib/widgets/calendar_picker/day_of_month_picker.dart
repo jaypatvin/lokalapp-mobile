@@ -14,7 +14,7 @@ class DayOfMonthPicker extends StatefulWidget {
   final List<int>? selectableMonthDays;
 
   const DayOfMonthPicker({
-    Key? key,
+    super.key,
     this.height,
     this.width,
     required this.onDayPressed,
@@ -22,7 +22,7 @@ class DayOfMonthPicker extends StatefulWidget {
     this.padding = EdgeInsets.zero,
     required this.monthChoice,
     this.selectableMonthDays,
-  }) : super(key: key);
+  });
 
   @override
   _DayOfMonthPickerState createState() => _DayOfMonthPickerState();

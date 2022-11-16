@@ -22,7 +22,7 @@ import '../../../widgets/photo_box.dart';
 
 class EditShop extends StatelessWidget {
   static const routeName = '/profile/shop/edit';
-  const EditShop({Key? key}) : super(key: key);
+  const EditShop({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -40,8 +40,8 @@ class EditShop extends StatelessWidget {
 
 class _EditShopView extends HookView<EditShopViewModel>
     with HookScreenLoader<EditShopViewModel> {
-  _EditShopView({Key? key, bool reactive = true})
-      : super(key: key, reactive: reactive);
+  // ignore: unused_element
+  _EditShopView({super.key, super.reactive});
 
   @override
   Widget screen(BuildContext context, EditShopViewModel vm) {
@@ -363,13 +363,14 @@ class _ShopPhotoSection extends StatelessWidget {
   final String? shopPhotoUrl;
   final void Function()? onShopPhotoPick;
   const _ShopPhotoSection({
-    Key? key,
+    // ignore: unused_element
+    super.key,
     this.shopCoverPhoto,
     this.shopPhoto,
     this.shopCoverPhotoUrl,
     this.shopPhotoUrl,
     this.onShopPhotoPick,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -16,10 +16,10 @@ import '../../../widgets/custom_app_bar.dart';
 
 class AddBank extends StatelessWidget {
   const AddBank({
-    Key? key,
+    super.key,
     this.type = BankType.bank,
     this.edit = false,
-  }) : super(key: key);
+  });
   final BankType type;
   final bool edit;
 

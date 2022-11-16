@@ -6,13 +6,13 @@ import 'view_model.dart';
 /// The MVVM builder widget.
 class MVVM<T extends ViewModel> extends StatefulWidget {
   const MVVM({
-    Key? key,
+    super.key,
     required this.view,
     required this.viewModel,
     this.disposeVM = true,
     this.implicitView = true,
     this.initOnce = false,
-  }) : super(key: key);
+  });
 
   /// This is the builder function for the View widget which also has access
   /// to the [viewModel]

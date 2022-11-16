@@ -12,9 +12,9 @@ import 'product_variant_2.dart';
 
 class AddAVariant extends StatefulWidget {
   const AddAVariant({
-    Key? key,
+    super.key,
     required this.images,
-  }) : super(key: key);
+  });
   final List<PhotoBoxImageSource> images;
 
   @override

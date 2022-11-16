@@ -4,10 +4,9 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import '../../../models/activity_feed.dart';
 import '../../../models/activity_feed_comment.dart';
 import '../collection_impl.dart';
-import '../database.dart';
 
 class ActivitiesCollection extends CollectionImpl {
-  ActivitiesCollection(Collection collection) : super(collection);
+ ActivitiesCollection(super.collection);
 
   Future<List<String>> getActivityLikes(String activityId) async {
     final snapshot = await reference.doc(activityId).collection('likes').get();

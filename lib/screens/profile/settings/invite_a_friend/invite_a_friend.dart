@@ -15,7 +15,7 @@ import '../../../../widgets/overlays/screen_loader.dart';
 
 class InviteAFriend extends StatelessWidget {
   static const routeName = '/profile/inviteAFriend';
-  const InviteAFriend({Key? key}) : super(key: key);
+  const InviteAFriend({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -28,8 +28,8 @@ class InviteAFriend extends StatelessWidget {
 
 class _InviteAFriendView extends HookView<InviteAFriendViewModel>
     with HookScreenLoader<InviteAFriendViewModel> {
-  _InviteAFriendView({Key? key, bool reactive = true})
-      : super(key: key, reactive: reactive);
+  // ignore: unused_element
+  _InviteAFriendView({super.key, super.reactive});
 
   @override
   Widget screen(

@@ -24,9 +24,9 @@ import 'chat_avatar.dart';
 
 class ChatStream extends StatelessWidget {
   const ChatStream({
-    Key? key,
+    super.key,
     required this.chatStream,
-  }) : super(key: key);
+  });
   final Stream<List<ChatModel>>? chatStream;
 
   @override
@@ -133,7 +133,10 @@ class _ChatStreamView extends HookView<ChatStreamViewModel> {
                 ),
               )
             else
-              _ChatList(chats: vm.getChats(snapshot)),
+              _ChatList(
+                key: UniqueKey(),
+                chats: vm.getChats(snapshot),
+              ),
           ],
         );
       },
@@ -142,7 +145,7 @@ class _ChatStreamView extends HookView<ChatStreamViewModel> {
 }
 
 class _ChatList extends StatelessWidget {
-  const _ChatList({Key? key, required this.chats}) : super(key: key);
+  const _ChatList({super.key, required this.chats});
   final List<ChatModel> chats;
 
   Container _buildCircleAvatar(List<ChatMember> members) {

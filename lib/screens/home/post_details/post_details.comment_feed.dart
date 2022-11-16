@@ -6,8 +6,7 @@ import '../../../utils/constants/assets.dart';
 import '../components/comment_card.dart';
 
 class CommentFeed extends StatelessWidget {
-  const CommentFeed(this._stream, this._activityId, {Key? key})
-      : super(key: key);
+  const CommentFeed(this._stream, this._activityId, {super.key});
 
   final String _activityId;
   final Stream<List<ActivityFeedComment>> _stream;

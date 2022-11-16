@@ -15,7 +15,7 @@ import '../../../widgets/inputs/input_description_field.dart';
 import '../../../widgets/overlays/screen_loader.dart';
 
 class ReviewOrder extends StatelessWidget {
-  const ReviewOrder({Key? key, required this.order}) : super(key: key);
+  const ReviewOrder({super.key, required this.order});
   final Order order;
   @override
   Widget build(BuildContext context) {

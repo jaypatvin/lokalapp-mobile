@@ -19,10 +19,10 @@ import 'product_schedule.dart';
 
 class ProductDetails extends StatefulWidget {
   const ProductDetails({
-    Key? key,
+    super.key,
     required this.images,
     this.productId,
-  }) : super(key: key);
+  });
   final String? productId;
   final List<PhotoBoxImageSource> images;
 

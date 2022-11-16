@@ -18,10 +18,10 @@ import 'components/subscription_plan.details.dart';
 /// code repetition.
 class SubscriptionPlanScreen extends StatelessWidget {
   const SubscriptionPlanScreen({
-    Key? key,
+    super.key,
     required this.subscriptionPlan,
     this.isBuyer = true,
-  }) : super(key: key);
+  });
   final bool isBuyer;
   final ProductSubscriptionPlan subscriptionPlan;
 
@@ -176,6 +176,7 @@ class _SubscriptionDetailsView extends HookView<SubscriptionPlanScreenViewModel>
               const SizedBox(height: 24),
               const Spacer(),
               _SubscriptionDetailsButtons(
+                key: UniqueKey(),
                 isBuyer: vm.isBuyer,
                 // let's check first if we're displaying the buyer screen
                 // to avoid calling [vm.checkForConflicts] every rebuild.
@@ -210,7 +211,7 @@ class _SubscriptionDetailsButtons extends StatelessWidget {
   final void Function()? onConfirmSubscription;
   final void Function()? onDeclineSubscription;
   const _SubscriptionDetailsButtons({
-    Key? key,
+    super.key,
     this.isBuyer = true,
     this.displayWarning = false,
     this.status = SubscriptionStatus.disabled,
@@ -220,7 +221,7 @@ class _SubscriptionDetailsButtons extends StatelessWidget {
     this.onSubscribeAgain,
     this.onConfirmSubscription,
     this.onDeclineSubscription,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

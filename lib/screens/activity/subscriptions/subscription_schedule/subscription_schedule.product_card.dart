@@ -10,11 +10,11 @@ class SubscriptionScheduleProductCard extends StatelessWidget {
   ///
   /// We can't use the transaction card since we are not using transactions.
   const SubscriptionScheduleProductCard({
-    Key? key,
+    super.key,
     required this.product,
     required this.quantity,
     this.onEditTap,
-  }) : super(key: key);
+  });
 
   final Product product;
   final int quantity;

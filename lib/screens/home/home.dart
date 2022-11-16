@@ -19,7 +19,7 @@ import 'notifications.dart';
 
 class Home extends HookWidget {
   static const routeName = '/home';
-  const Home({Key? key}) : super(key: key);
+  const Home({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -172,9 +172,10 @@ class Home extends HookWidget {
 
 class _PostField extends StatelessWidget {
   const _PostField({
-    Key? key,
+    // ignore: unused_element
+    super.key,
     this.onDraftPostTap,
-  }) : super(key: key);
+  });
   final void Function()? onDraftPostTap;
 
   @override

@@ -8,7 +8,7 @@ import '../providers/shops.dart';
 import '../providers/users.dart';
 
 class StateHandler extends StatefulWidget {
-  const StateHandler({Key? key, required this.child}) : super(key: key);
+  const StateHandler({super.key, required this.child});
   final Widget child;
   @override
   _StateHandlerState createState() => _StateHandlerState();

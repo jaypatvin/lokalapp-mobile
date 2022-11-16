@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../utils/constants/themes.dart';
 
 class ResetPasswordReceived extends StatelessWidget {
-  const ResetPasswordReceived({Key? key}) : super(key: key);
+  const ResetPasswordReceived({super.key});
 
   @override
   Widget build(BuildContext context) {

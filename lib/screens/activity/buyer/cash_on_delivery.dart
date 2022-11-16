@@ -14,7 +14,7 @@ import '../../../widgets/overlays/constrained_scrollview.dart';
 import '../../../widgets/overlays/screen_loader.dart';
 
 class CashOnDelivery extends StatelessWidget {
-  const CashOnDelivery({Key? key, required this.order}) : super(key: key);
+  const CashOnDelivery({super.key, required this.order});
   final Order order;
 
   @override

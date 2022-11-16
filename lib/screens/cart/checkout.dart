@@ -21,9 +21,9 @@ class Checkout extends HookWidget {
   static const routeName = '/cart/checkout/shop/checkout';
   final String productId;
   const Checkout({
-    Key? key,
+    super.key,
     required this.productId,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

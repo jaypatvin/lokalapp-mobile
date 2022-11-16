@@ -13,7 +13,7 @@ import '../../../widgets/overlays/constrained_scrollview.dart';
 import '../../../widgets/overlays/screen_loader.dart';
 
 class ReportShop extends StatelessWidget {
-  const ReportShop({Key? key, required this.shopId}) : super(key: key);
+  const ReportShop({super.key, required this.shopId});
   final String shopId;
 
   @override

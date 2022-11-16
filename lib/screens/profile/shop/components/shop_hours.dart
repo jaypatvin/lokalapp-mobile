@@ -9,9 +9,9 @@ import '../../../../utils/repeated_days_generator/schedule_generator.dart';
 
 class ShopHours extends HookWidget {
   const ShopHours({
-    Key? key,
+    super.key,
     required this.shopOperatingHours,
-  }) : super(key: key);
+  });
   final OperatingHours shopOperatingHours;
 
   @override

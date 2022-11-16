@@ -6,12 +6,12 @@ class AppCheckBox extends StatelessWidget {
   final Widget? title;
   final BoxShape shape;
   const AppCheckBox({
-    Key? key,
+    super.key,
     required this.value,
     required this.onTap,
     this.shape = BoxShape.rectangle,
     this.title,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

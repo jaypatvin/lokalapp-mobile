@@ -20,10 +20,10 @@ import 'components/user_banner.dart';
 class UserShop extends StatelessWidget {
   static const String routeName = '/profile/shop';
   const UserShop({
-    Key? key,
+    super.key,
     required this.userId,
     this.shopId,
-  }) : super(key: key);
+  });
   final String userId;
   final String? shopId;
 
@@ -224,7 +224,8 @@ class _UserShopView extends HookView<UserShopViewModel> {
 }
 
 class _ReportShopModalSheet extends StatelessWidget {
-  const _ReportShopModalSheet({Key? key}) : super(key: key);
+  // ignore: unused_element
+  const _ReportShopModalSheet({super.key});
 
   @override
   Widget build(BuildContext context) {

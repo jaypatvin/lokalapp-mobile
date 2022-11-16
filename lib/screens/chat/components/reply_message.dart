@@ -7,13 +7,13 @@ import '../../../widgets/photo_view_gallery/thumbnails/network_photo_thumbnail.d
 
 class ReplyMessageWidget extends StatelessWidget {
   const ReplyMessageWidget({
-    Key? key,
+    super.key,
     required this.message,
     this.isRepliedByUser = true,
     this.onCancelReply,
     this.color = const Color(0xFFF1FAFF),
     this.uuid = const Uuid(),
-  }) : super(key: key);
+  });
 
   final bool isRepliedByUser;
   final Color color;

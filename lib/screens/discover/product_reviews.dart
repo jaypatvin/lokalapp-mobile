@@ -15,7 +15,7 @@ import '../../widgets/custom_app_bar.dart';
 import '../../widgets/product_review_card.dart';
 
 class ProductReviews extends StatelessWidget {
-  const ProductReviews({Key? key, required this.productId}) : super(key: key);
+  const ProductReviews({super.key, required this.productId});
   final String productId;
 
   @override

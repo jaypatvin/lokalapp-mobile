@@ -26,7 +26,10 @@ class OrderDetails extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MVVM(
-      view: (_, __) => _OrderDetailsView(subheader: subheader),
+      view: (_, __) => _OrderDetailsView(
+        key: UniqueKey(),
+        subheader: subheader,
+      ),
       viewModel: OrderDetailsViewModel(order: order, isBuyer: isBuyer),
     );
   }
@@ -34,7 +37,7 @@ class OrderDetails extends StatelessWidget {
 
 class _OrderDetailsView extends HookView<OrderDetailsViewModel>
     with HookScreenLoader {
-  _OrderDetailsView({Key? key, this.subheader = ''}) : super(key: key);
+  _OrderDetailsView({super.key, this.subheader = ''});
   final String subheader;
   @override
   Widget screen(BuildContext context, OrderDetailsViewModel vm) {

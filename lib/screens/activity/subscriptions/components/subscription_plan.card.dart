@@ -11,12 +11,12 @@ class SubscriptionPlanCard extends StatelessWidget {
   final bool isBuyer;
   final ProductSubscriptionPlan subscriptionPlan;
   const SubscriptionPlanCard({
-    Key? key,
+    super.key,
     required this.subscriptionPlan,
     this.onDetailsPressed,
     this.onConfirmSubscription,
     this.isBuyer = true,
-  }) : super(key: key);
+  });
 
   Widget _buildButtons() {
     if (isBuyer) {

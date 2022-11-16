@@ -5,7 +5,7 @@ import 'app_button.dart';
 import 'overlays/constrained_scrollview.dart';
 
 class ReportSent extends StatelessWidget {
-  const ReportSent({Key? key}) : super(key: key);
+  const ReportSent({super.key});
 
   @override
   Widget build(BuildContext context) {

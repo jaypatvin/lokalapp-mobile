@@ -25,10 +25,10 @@ enum ProductScheduleState { shop, custom }
 
 class ProductSchedule extends StatefulWidget {
   const ProductSchedule({
-    Key? key,
+    super.key,
     required this.images,
     this.productId,
-  }) : super(key: key);
+  });
 
   // final AddProductGallery gallery;
   final List<PhotoBoxImageSource> images;
@@ -327,13 +327,14 @@ class _ProductScheduleState extends State<ProductSchedule> {
 
 class _WeekdayWidgetBuilder extends StatelessWidget {
   const _WeekdayWidgetBuilder({
-    Key? key,
+    // ignore: unused_element
+    super.key,
     required this.weekday,
     required this.dateFormat,
     this.isMarked = false,
     this.isSelectable = true,
     this.onPressed,
-  }) : super(key: key);
+  });
 
   final int weekday;
   final DateFormat dateFormat;

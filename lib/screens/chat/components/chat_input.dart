@@ -21,7 +21,7 @@ class ChatInput extends StatelessWidget {
   final List<AssetEntity> images;
 
   const ChatInput({
-    Key? key,
+    super.key,
     required this.onMessageSend,
     required this.onShowImagePicker,
     required this.onCancelReply,
@@ -31,7 +31,7 @@ class ChatInput extends StatelessWidget {
     required this.chatInputController,
     this.chatFocusNode,
     this.onTextFieldTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -39,6 +39,7 @@ class ChatInput extends StatelessWidget {
       children: [
         if (replyMessage != null)
           _ReplyToWidget(
+            key: ValueKey('reply-to-${replyMessage!.id}'),
             message: replyMessage!,
             onCancelReply: onCancelReply,
           ),
@@ -103,8 +104,7 @@ class ChatInput extends StatelessWidget {
 }
 
 class _ReplyToWidget extends StatelessWidget {
-  const _ReplyToWidget({Key? key, required this.message, this.onCancelReply})
-      : super(key: key);
+  const _ReplyToWidget({super.key, required this.message, this.onCancelReply});
 
   final Conversation message;
   final void Function()? onCancelReply;

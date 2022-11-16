@@ -38,7 +38,7 @@ class CalendarCarousel extends StatefulWidget {
   final WeekdayWidgetBuilder weekdayWidgetBuilder;
 
   CalendarCarousel({
-    Key? key,
+    super.key,
     int? year,
     int? month,
     int? firstDayOfWeek,
@@ -75,8 +75,7 @@ class CalendarCarousel extends StatefulWidget {
                 weekday: weekday,
                 dateFormat: dateFormat,
               );
-            }),
-        super(key: key);
+            });
 
   @override
   _CalendarCarouselState createState() => _CalendarCarouselState();

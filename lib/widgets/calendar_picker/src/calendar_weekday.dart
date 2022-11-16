@@ -5,10 +5,9 @@ typedef WeekdayWidgetBuilder = Widget Function(int weekday);
 class CalendarWeekday extends StatelessWidget {
   const CalendarWeekday(
     this.firstDayOfWeek, {
-    Key? key,
+    super.key,
     required this.builder,
-  })  : assert(firstDayOfWeek >= 0 && firstDayOfWeek <= 7),
-        super(key: key);
+  }) : assert(firstDayOfWeek >= 0 && firstDayOfWeek <= 7);
 
   final int firstDayOfWeek;
   final WeekdayWidgetBuilder builder;
@@ -25,7 +24,7 @@ class CalendarWeekday extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Row(
-    mainAxisAlignment: MainAxisAlignment.spaceAround,
-    children: _renderWeekDays(),
-  );
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: _renderWeekDays(),
+      );
 }

@@ -3,13 +3,12 @@ import 'package:flutter/material.dart';
 
 class AnimatedAspectRatio extends ImplicitlyAnimatedWidget {
   AnimatedAspectRatio({
-    Key? key,
-    Curve curve = Curves.linear,
-    required Duration duration,
+    super.key,
+    super.curve,
+    required super.duration,
     required this.aspectRatio,
     this.child,
-  })  : assert(aspectRatio.isFinite),
-        super(key: key, curve: curve, duration: duration);
+  }) : assert(aspectRatio.isFinite);
 
   final double aspectRatio;
   final Widget? child;

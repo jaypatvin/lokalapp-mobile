@@ -18,7 +18,7 @@ class AuthInputForm extends StatefulWidget {
   final String? emailInputError;
   final String? passwordInputError;
   const AuthInputForm({
-    Key? key,
+    super.key,
     this.formKey,
     required this.emailController,
     required this.passwordController,
@@ -30,7 +30,7 @@ class AuthInputForm extends StatefulWidget {
     this.passwordFocusNode,
     this.emailInputError,
     this.passwordInputError,
-  }) : super(key: key);
+  });
 
   @override
   _AuthInputFormState createState() => _AuthInputFormState();

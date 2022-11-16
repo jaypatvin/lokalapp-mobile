@@ -28,9 +28,9 @@ import 'verify_confirmation_screen.dart';
 class VerifyScreen extends StatefulWidget {
   final bool skippable;
   const VerifyScreen({
-    Key? key,
+    super.key,
     this.skippable = true,
-  }) : super(key: key);
+  });
   @override
   _VerifyScreenState createState() => _VerifyScreenState();
 }

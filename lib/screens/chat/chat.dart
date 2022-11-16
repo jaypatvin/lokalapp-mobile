@@ -16,7 +16,7 @@ import 'components/chat_stream.dart';
 
 class Chat extends StatefulWidget {
   static const routeName = '/chat';
-  const Chat({Key? key}) : super(key: key);
+  const Chat({super.key});
 
   @override
   _ChatState createState() => _ChatState();

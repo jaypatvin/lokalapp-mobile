@@ -11,9 +11,9 @@ import '../product_schedule.dart';
 
 class ProductAddOn2 extends StatefulWidget {
   const ProductAddOn2({
-    Key? key,
+    super.key,
     required this.images,
-  }) : super(key: key);
+  });
   final List<PhotoBoxImageSource> images;
   @override
   _ProductAddOn2State createState() => _ProductAddOn2State();

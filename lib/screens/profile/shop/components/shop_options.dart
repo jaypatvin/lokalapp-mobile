@@ -5,10 +5,10 @@ import '../../../../utils/constants/themes.dart';
 
 class ShopOptions extends StatelessWidget {
   const ShopOptions({
-    Key? key,
+    super.key,
     this.onReportShop,
     this.onCopyLink,
-  }) : super(key: key);
+  });
 
   final VoidCallback? onReportShop;
   final VoidCallback? onCopyLink;

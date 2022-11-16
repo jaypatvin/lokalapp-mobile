@@ -26,7 +26,7 @@ class AssetGalleryWidget extends StatefulWidget {
   final WidgetBuilder? specialItemBuilder;
 
   const AssetGalleryWidget({
-    Key? key,
+    super.key,
     required this.path,
     this.buildItem = AssetWidget.buildWidget,
     this.thumbSize = 100,
@@ -36,7 +36,7 @@ class AssetGalleryWidget extends StatefulWidget {
     this.assetHeight = 100,
     this.assetWidth = 100,
     this.specialItemBuilder,
-  }) : super(key: key);
+  });
 
   @override
   _AssetGalleryWidgetState createState() => _AssetGalleryWidgetState();
@@ -191,7 +191,8 @@ class _WrapItem extends StatefulWidget {
   final AssetEntity? entity;
   final Map<int, AssetEntity>? cacheMap;
   const _WrapItem({
-    Key? key,
+    // ignore: unused_element
+    super.key,
     required this.path,
     required this.index,
     required this.onLoaded,
@@ -202,7 +203,7 @@ class _WrapItem extends StatefulWidget {
     required this.scrollingPlaceHolder,
     required this.entity,
     this.cacheMap,
-  }) : super(key: key);
+  });
 
   @override
   __WrapItemState createState() => __WrapItemState();
@@ -269,7 +270,8 @@ class __WrapItemState extends State<_WrapItem> {
 }
 
 class _ScrollingWidget extends StatelessWidget {
-  const _ScrollingWidget({Key? key}) : super(key: key);
+  // ignore: unused_element
+  const _ScrollingWidget({super.key});
 
   @override
   Widget build(BuildContext context) {

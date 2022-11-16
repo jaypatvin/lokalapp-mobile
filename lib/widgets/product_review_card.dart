@@ -10,13 +10,13 @@ import '../models/product_review.dart';
 
 class ProductReviewCard extends StatelessWidget {
   const ProductReviewCard({
-    Key? key,
+    super.key,
     required this.review,
     required this.productName,
     this.imageUrl,
     this.shopName,
     this.userName,
-  }) : super(key: key);
+  });
   final ProductReview review;
   final String productName;
   final String? imageUrl;

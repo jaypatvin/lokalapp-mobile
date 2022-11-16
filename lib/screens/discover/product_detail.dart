@@ -25,7 +25,7 @@ import 'product_detail/product_detail.special_instructions.dart';
 
 class ProductDetail extends StatelessWidget {
   static const routeName = '/discover/productDetail';
-  const ProductDetail(this.product, {Key? key}) : super(key: key);
+  const ProductDetail(this.product, {super.key});
 
   final Product product;
 

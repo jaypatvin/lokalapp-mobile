@@ -3,10 +3,9 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import '../../../models/product.dart';
 import '../../../models/product_review.dart';
 import '../collection_impl.dart';
-import '../database.dart';
 
 class ProductsCollection extends CollectionImpl {
-  ProductsCollection(Collection collection) : super(collection);
+  ProductsCollection(super.collection);
 
   Future<bool> isProductLiked({
     required String productId,

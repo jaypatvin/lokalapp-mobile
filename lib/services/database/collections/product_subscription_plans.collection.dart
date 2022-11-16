@@ -3,10 +3,9 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 
 import '../../../models/product_subscription_plan.dart';
 import '../collection_impl.dart';
-import '../database.dart';
 
 class ProductSubscriptionPlansCollection extends CollectionImpl {
-  ProductSubscriptionPlansCollection(Collection collection) : super(collection);
+  ProductSubscriptionPlansCollection(super.collection);
 
   Stream<List<ProductSubscriptionPlan>> getUserSubscriptionPlans(
     String? userId,

@@ -9,10 +9,10 @@ import '../../view_models/cart/cart_container.vm.dart';
 class CartContainer extends StatelessWidget {
   /// The `Container` that will display the FAB Cart.
   const CartContainer({
-    Key? key,
+    super.key,
     required this.child,
     this.alwaysDisplayButton = false,
-  }) : super(key: key);
+  });
 
   /// The underlying screen/widget behind the cart button
   final Widget child;

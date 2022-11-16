@@ -11,7 +11,7 @@ import '../../../../view_models/profile/settings/notification_settings/notificat
 import '../../../../widgets/custom_app_bar.dart';
 
 class NotificationSettingsScreen extends StatelessWidget {
-  const NotificationSettingsScreen({Key? key}) : super(key: key);
+  const NotificationSettingsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

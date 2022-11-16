@@ -10,10 +10,10 @@ class ScheduleConflictsNotification extends StatelessWidget {
 
   /// The dialog to be displayed when conflicts are present.
   const ScheduleConflictsNotification({
-    Key? key,
+    super.key,
     this.onAutomatic,
     this.onManual,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

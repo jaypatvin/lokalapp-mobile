@@ -15,9 +15,9 @@ import 'product_detail.dart';
 
 class CategoriesLanding extends StatelessWidget {
   const CategoriesLanding({
-    Key? key,
+    super.key,
     required this.category,
-  }) : super(key: key);
+  });
 
   final LokalCategory category;
 

@@ -15,9 +15,9 @@ class CartConfirmation extends StatelessWidget {
   static const routeName = '/cart/confirmation';
   final bool isSubscription;
   const CartConfirmation({
-    Key? key,
+    super.key,
     this.isSubscription = false,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

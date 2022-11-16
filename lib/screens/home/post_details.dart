@@ -30,11 +30,11 @@ import 'post_details/post_details.images.dart';
 class PostDetails extends StatelessWidget {
   static const routeName = '/home/post_details';
   const PostDetails({
-    Key? key,
+    super.key,
     required this.activityId,
     required this.onUserPressed,
     required this.onLike,
-  }) : super(key: key);
+  });
 
   final String activityId;
   final void Function(String) onUserPressed;

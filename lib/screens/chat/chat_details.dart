@@ -23,12 +23,12 @@ import 'components/message_stream.dart';
 class ChatDetails extends StatelessWidget {
   static const routeName = '/chat/details';
   const ChatDetails({
-    Key? key,
+    super.key,
     required this.members,
     this.chat,
     this.shopId,
     this.productId,
-  }) : super(key: key);
+  });
 
   final List<String> members;
   final ChatModel? chat;

@@ -8,11 +8,11 @@ class CalendarDefaultWeekday extends StatelessWidget {
   final DateFormat dateFormat;
   final TextStyle? textStyle;
   const CalendarDefaultWeekday({
-    Key? key,
+    super.key,
     required this.weekday,
     required this.dateFormat,
     this.textStyle,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -34,11 +34,11 @@ class CalendarDefaultDay extends StatelessWidget {
   final bool isLastMonthDay;
   final bool isNextMonthDay;
   const CalendarDefaultDay({
-    Key? key,
+    super.key,
     required this.dateTime,
     required this.isLastMonthDay,
     required this.isNextMonthDay,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -67,11 +67,11 @@ class CalendarDefaultHeader extends StatelessWidget {
   final DateTime dateTime;
   final DateFormat dateFormat;
   const CalendarDefaultHeader({
-    Key? key,
+    super.key,
     required this.calendarController,
     required this.dateTime,
     required this.dateFormat,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

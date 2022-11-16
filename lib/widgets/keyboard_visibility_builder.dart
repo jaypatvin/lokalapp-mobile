@@ -11,10 +11,10 @@ class KeyboardVisibilityBuilder extends StatefulWidget {
   ) builder;
 
   const KeyboardVisibilityBuilder({
-    Key? key,
+    super.key,
     this.child,
     required this.builder,
-  }) : super(key: key);
+  });
 
   @override
   _KeyboardVisibilityBuilderState createState() =>

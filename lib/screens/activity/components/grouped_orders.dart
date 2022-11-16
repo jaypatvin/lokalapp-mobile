@@ -10,12 +10,12 @@ import 'transaction_card.dart';
 
 class GroupedOrders extends StatelessWidget {
   const GroupedOrders({
-    Key? key,
+    super.key,
     required this.stream,
     required this.statuses,
     required this.isBuyer,
     required this.onSecondButtonPressed,
-  }) : super(key: key);
+  });
 
   final Stream<QuerySnapshot<Map<String, dynamic>>>? stream;
   final Map<int, String?> statuses;

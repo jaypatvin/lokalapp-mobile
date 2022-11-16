@@ -13,7 +13,7 @@ class InputPasswordField extends StatelessWidget {
   final Color fillColor;
   final String hintText;
   const InputPasswordField({
-    Key? key,
+    super.key,
     this.focusNode,
     this.controller,
     this.onChanged,
@@ -23,7 +23,7 @@ class InputPasswordField extends StatelessWidget {
     this.onPasswordVisibilityChanged,
     this.fillColor = Colors.white,
     this.hintText = 'Password',
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

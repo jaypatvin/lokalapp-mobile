@@ -4,13 +4,13 @@ import '../../chat/components/chat_avatar.dart';
 
 class PostDetailsHeader extends StatelessWidget {
   const PostDetailsHeader({
-    Key? key,
+    super.key,
     required this.firstName,
     required this.lastName,
     this.photo,
     this.onTap,
     this.spacing = 15.0,
-  }) : super(key: key);
+  });
 
   final String firstName;
   final String lastName;

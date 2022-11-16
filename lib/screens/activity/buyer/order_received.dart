@@ -15,7 +15,7 @@ import '../components/transaction_details.dart';
 
 class OrderReceived extends StatelessWidget {
   final Order order;
-  const OrderReceived({Key? key, required this.order}) : super(key: key);
+  const OrderReceived({super.key, required this.order});
   @override
   Widget build(BuildContext context) {
     return MVVM(
@@ -99,6 +99,7 @@ class _OrderReceivedView extends StatelessView<OrderReceivedViewModel> {
                     horizontal: 37.0,
                   ),
                   child: _RatingMessage(
+                    key: UniqueKey(),
                     assetName: vm.assetName,
                     ratingTitle: vm.ratingTitle,
                     ratingMessage: vm.ratingMessage,
@@ -135,11 +136,11 @@ class _OrderReceivedView extends StatelessView<OrderReceivedViewModel> {
 
 class _RatingMessage extends StatelessWidget {
   const _RatingMessage({
-    Key? key,
+    super.key,
     required this.assetName,
     required this.ratingTitle,
     required this.ratingMessage,
-  }) : super(key: key);
+  });
   final String assetName;
   final String ratingTitle;
   final String ratingMessage;

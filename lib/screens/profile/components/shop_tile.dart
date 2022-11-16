@@ -9,10 +9,10 @@ class ShopTile extends StatelessWidget {
 
   final void Function() onGoToShop;
   const ShopTile({
-    Key? key,
+    super.key,
     required this.shop,
     required this.onGoToShop,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

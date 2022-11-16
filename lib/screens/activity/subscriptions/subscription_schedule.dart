@@ -20,14 +20,16 @@ import 'subscription_schedule/subscription_schedule.product_card.dart';
 
 class SubscriptionSchedule extends StatelessWidget {
   const SubscriptionSchedule._({
-    Key? key,
+    super.key,
     required this.child,
-  }) : super(key: key);
+  });
 
   factory SubscriptionSchedule.seller({
+    Key? key,
     required ProductSubscriptionPlan subscriptionPlan,
   }) {
     return SubscriptionSchedule._(
+      key: key,
       child: MVVM(
         view: (_, __) => SellerSubscriptionScheduleView(),
         viewModel: SellerSubscriptionScheduleViewModel(
@@ -38,9 +40,11 @@ class SubscriptionSchedule extends StatelessWidget {
   }
 
   factory SubscriptionSchedule.view({
+    Key? key,
     required ProductSubscriptionPlan subscriptionPlan,
   }) {
     return SubscriptionSchedule._(
+      key: key,
       child: MVVM(
         view: (_, __) => BuyerSubscriptionScheduleView(),
         viewModel: ViewSubscriptionScheduleViewModel(
@@ -51,9 +55,11 @@ class SubscriptionSchedule extends StatelessWidget {
   }
 
   factory SubscriptionSchedule.create({
+    Key? key,
     required String productId,
   }) {
     return SubscriptionSchedule._(
+      key: key,
       child: MVVM(
         view: (_, __) => _NewSubscriptionScheduleView(),
         viewModel: NewSubscriptionScheduleViewModel(

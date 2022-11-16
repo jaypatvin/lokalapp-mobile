@@ -17,7 +17,7 @@ import 'components/order_details.dart';
 
 class CheckoutCart extends StatelessWidget {
   static const routeName = '/cart/checkout';
-  const CheckoutCart({Key? key}) : super(key: key);
+  const CheckoutCart({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -119,9 +119,11 @@ class CheckoutCart extends StatelessWidget {
                                 // get the shopOrders
                                 final orders = cart.orders[key]!;
                                 // get productId from Map using orderIndex
-                                final productId = orders.keys.elementAt(orderIndex);
-                                final product =
-                                    context.read<Products>().findById(productId);
+                                final productId =
+                                    orders.keys.elementAt(orderIndex);
+                                final product = context
+                                    .read<Products>()
+                                    .findById(productId);
                                 return OrderDetails(
                                   product: product!,
                                   quantity: orders[productId]!.quantity,
@@ -166,7 +168,7 @@ class CheckoutCart extends StatelessWidget {
 
 class _CheckOutCartAppBar extends StatelessWidget
     implements PreferredSizeWidget {
-  const _CheckOutCartAppBar({Key? key}) : super(key: key);
+  const _CheckOutCartAppBar();
 
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);

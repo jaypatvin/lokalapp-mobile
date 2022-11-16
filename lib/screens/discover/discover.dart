@@ -21,7 +21,7 @@ import '../profile/components/product_card.dart';
 
 class Discover extends StatelessWidget {
   static const routeName = '/discover';
-  const Discover({Key? key}) : super(key: key);
+  const Discover({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -276,10 +276,10 @@ class _DiscoverView extends StatelessView<DiscoverViewModel> {
 
 class _RecommendedProducts extends StatelessWidget {
   const _RecommendedProducts({
-    Key? key,
+    super.key,
     required this.products,
     required this.onProductTap,
-  }) : super(key: key);
+  });
 
   final List<Product> products;
   final void Function(String) onProductTap;

@@ -9,7 +9,7 @@ import '../../widgets/custom_app_bar.dart';
 
 class Notifications extends HookWidget {
   static const routeName = '/home/notifications';
-  const Notifications({Key? key}) : super(key: key);
+  const Notifications({super.key});
 
   @override
   Widget build(BuildContext context) {

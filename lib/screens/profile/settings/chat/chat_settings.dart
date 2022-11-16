@@ -10,7 +10,7 @@ import '../../../../view_models/profile/settings/chat/chat_settings.vm.dart';
 import '../../../../widgets/custom_app_bar.dart';
 
 class ChatSettings extends StatelessWidget {
-  const ChatSettings({Key? key}) : super(key: key);
+  const ChatSettings({super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -11,8 +11,7 @@ import '../screens/welcome_screen.dart';
 ///
 /// This is used when we don't want to display the `BottomNavBar`.
 class RootNavigator extends AppNavigator {
-  const RootNavigator(GlobalKey<NavigatorState> navigatorKey)
-      : super(navigatorKey);
+  const RootNavigator(super.navigatorKey);
 
   @override
   Route onGenerateRoute(RouteSettings settings) {

@@ -15,9 +15,9 @@ class PaymentConfirmed extends StatelessWidget {
   final Order order;
 
   const PaymentConfirmed({
-    Key? key,
+    super.key,
     required this.order,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

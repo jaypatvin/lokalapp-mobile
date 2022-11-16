@@ -26,7 +26,7 @@ class ExpansionTile extends StatefulWidget {
   /// the tile to reveal or hide the [children]. The [initiallyExpanded] property must
   /// be non-null.
   const ExpansionTile({
-    Key? key,
+    super.key,
     this.headerBackgroundColor,
     this.leading,
     required this.title,
@@ -36,7 +36,7 @@ class ExpansionTile extends StatefulWidget {
     this.children = const <Widget>[],
     this.trailing,
     this.initiallyExpanded = false,
-  }) : super(key: key);
+  });
 
   /// A widget to display before the title.
   ///

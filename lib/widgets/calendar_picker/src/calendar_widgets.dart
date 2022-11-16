@@ -14,7 +14,7 @@ class LokalCalendarDay extends StatelessWidget {
   final void Function()? onPressed;
 
   const LokalCalendarDay({
-    Key? key,
+    super.key,
     required this.dateTime,
     required this.isLastMonthDay,
     required this.isNextMonthDay,
@@ -23,7 +23,7 @@ class LokalCalendarDay extends StatelessWidget {
     this.onPressed,
     this.isToday = false,
     this.isSelected = false,
-  }) : super(key: key);
+  });
 
   TextStyle getDefaultDayStyle() {
     if (!isSelectable || isNextMonthDay) return defaultInactiveDaysTextStyle;
@@ -98,11 +98,11 @@ class LokalCalendarWeekday extends StatelessWidget {
   final DateFormat dateFormat;
   final TextStyle? textStyle;
   const LokalCalendarWeekday({
-    Key? key,
+    super.key,
     required this.weekday,
     required this.dateFormat,
     this.textStyle,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -127,14 +127,14 @@ class TappableCalendarWeekday extends StatelessWidget {
   final bool isMarked;
   final bool isSelectable;
   const TappableCalendarWeekday({
-    Key? key,
+    super.key,
     required this.weekday,
     required this.dateFormat,
     this.isMarked = false,
     this.isSelectable = true,
     this.onPressed,
     this.textStyle,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

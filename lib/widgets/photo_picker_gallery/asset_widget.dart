@@ -15,10 +15,10 @@ class AssetWidget extends StatelessWidget {
   final int thumbSize;
 
   const AssetWidget({
-    Key? key,
+    super.key,
     required this.asset,
     this.thumbSize = 100,
-  }) : super(key: key);
+  });
 
   static AssetWidget buildWidget(
     BuildContext context,
@@ -48,9 +48,9 @@ class AssetBigPreviewWidget extends StatelessWidget {
   final AssetEntity asset;
 
   const AssetBigPreviewWidget({
-    Key? key,
+    super.key,
     required this.asset,
-  }) : super(key: key);
+  });
 
   static AssetWidget buildWidget(
     BuildContext context,

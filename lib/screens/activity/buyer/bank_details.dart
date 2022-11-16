@@ -17,10 +17,10 @@ import '../../../widgets/photo_box.dart';
 
 class BankDetails extends StatelessWidget {
   const BankDetails({
-    Key? key,
+    super.key,
     required this.order,
     this.paymentMethod = PaymentMethod.eWallet,
-  }) : super(key: key);
+  });
   final Order order;
   final PaymentMethod paymentMethod;
 

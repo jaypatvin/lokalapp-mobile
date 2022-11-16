@@ -12,9 +12,9 @@ import 'product_add_ons_2.dart';
 
 class NewAddOn extends StatefulWidget {
   const NewAddOn({
-    Key? key,
+    super.key,
     required this.images,
-  }) : super(key: key);
+  });
   final List<PhotoBoxImageSource> images;
 
   @override

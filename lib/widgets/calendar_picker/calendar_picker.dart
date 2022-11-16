@@ -8,7 +8,7 @@ import 'src/calendar_widgets.dart';
 
 class CalendarPicker extends HookWidget {
   const CalendarPicker({
-    Key? key,
+    super.key,
     required this.onDayPressed,
     this.selectedDate,
     this.selectableDates = const [],
@@ -19,7 +19,7 @@ class CalendarPicker extends HookWidget {
     this.weekdayWidgetBuilder,
     this.closing,
     this.limitSelectableDates = false,
-  }) : super(key: key);
+  });
 
   final List<DateTime> selectableDates;
   final List<DateTime> markedDates;

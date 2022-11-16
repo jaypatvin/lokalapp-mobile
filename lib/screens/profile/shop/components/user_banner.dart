@@ -4,11 +4,11 @@ import '../../../chat/components/chat_avatar.dart';
 
 class UserBanner extends StatelessWidget {
   const UserBanner({
-    Key? key,
+    super.key,
     required this.displayName,
     this.profilePhoto,
     this.onTap,
-  }) : super(key: key);
+  });
 
   final String displayName;
   final String? profilePhoto;

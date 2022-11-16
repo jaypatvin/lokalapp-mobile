@@ -17,7 +17,7 @@ import '../../../widgets/photo_box.dart';
 
 class AddShop extends StatelessWidget {
   static const routeName = '/profile/addShop';
-  const AddShop({Key? key}) : super(key: key);
+  const AddShop({super.key});
 
   @override
   Widget build(BuildContext context) {

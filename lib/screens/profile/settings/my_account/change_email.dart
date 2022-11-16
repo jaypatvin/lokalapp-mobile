@@ -13,7 +13,7 @@ import 'components/email_input_form.dart';
 import 'confirmation.dart';
 
 class ChangeEmail extends StatelessWidget {
-  const ChangeEmail({Key? key}) : super(key: key);
+  const ChangeEmail({super.key});
 
   @override
   Widget build(BuildContext context) {

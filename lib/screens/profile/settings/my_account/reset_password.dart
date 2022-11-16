@@ -12,7 +12,7 @@ import '../../../../widgets/inputs/input_email_field.dart';
 import '../../../../widgets/overlays/screen_loader.dart';
 
 class ResetPasswordScreen extends StatelessWidget {
-  const ResetPasswordScreen({Key? key}) : super(key: key);
+  const ResetPasswordScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

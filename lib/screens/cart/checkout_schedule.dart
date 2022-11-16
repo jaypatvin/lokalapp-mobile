@@ -29,7 +29,7 @@ import 'components/order_details.dart';
 class CheckoutSchedule extends StatefulWidget {
   static const routeName = '/cart/checkout/shop/checkout/schedule';
   final String productId;
-  const CheckoutSchedule({Key? key, required this.productId}) : super(key: key);
+  const CheckoutSchedule({super.key, required this.productId});
 
   @override
   _CheckoutScheduleState createState() => _CheckoutScheduleState();
@@ -155,6 +155,7 @@ class _CheckoutScheduleState extends State<CheckoutSchedule> with ScreenLoader {
               ),
             ),
             _DeliverySchedule(
+              key: UniqueKey(),
               shopId: shop.id,
               productId: widget.productId,
             ),
@@ -210,10 +211,10 @@ class _DeliverySchedule extends HookWidget {
   final String? shopId;
   final String? productId;
   const _DeliverySchedule({
-    Key? key,
+    super.key,
     required this.shopId,
     required this.productId,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

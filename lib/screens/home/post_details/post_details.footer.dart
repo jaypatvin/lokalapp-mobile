@@ -5,10 +5,10 @@ import '../../../models/activity_feed.dart';
 
 class CommentAndLikeRow extends StatelessWidget {
   const CommentAndLikeRow({
-    Key? key,
+    super.key,
     required this.activity,
     required this.onLike,
-  }) : super(key: key);
+  });
 
   final ActivityFeed activity;
   final VoidCallback onLike;

@@ -5,13 +5,13 @@ import '../../photo_picker_gallery/custom_asset_widget.dart';
 
 class AssetPhotoThumbnail extends StatelessWidget {
   const AssetPhotoThumbnail({
-    Key? key,
+    super.key,
     required this.galleryItem,
     required this.onTap,
     this.onRemove,
     this.fit = BoxFit.cover,
     this.decoration,
-  }) : super(key: key);
+  });
 
   final AssetEntity galleryItem;
   final GestureTapCallback onTap;

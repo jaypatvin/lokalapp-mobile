@@ -13,7 +13,7 @@ import '../../../../widgets/overlays/screen_loader.dart';
 import 'confirmation.dart';
 
 class ChangePassword extends StatelessWidget {
-  const ChangePassword({Key? key}) : super(key: key);
+  const ChangePassword({super.key});
 
   @override
   Widget build(BuildContext context) {

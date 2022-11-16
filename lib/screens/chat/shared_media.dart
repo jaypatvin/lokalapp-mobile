@@ -8,7 +8,7 @@ import '../../widgets/photo_view_gallery/thumbnails/network_photo_thumbnail.dart
 
 class SharedMedia extends StatefulWidget {
   static const routeName = '/chat/view/profile/shared_media';
-  const SharedMedia({Key? key, required this.conversations}) : super(key: key);
+  const SharedMedia({super.key, required this.conversations});
 
   final List<Conversation> conversations;
 

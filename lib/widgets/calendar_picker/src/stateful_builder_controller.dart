@@ -75,10 +75,10 @@ class SetterController {
 
 class _StatefulBuilderBase extends StatefulWidget {
   const _StatefulBuilderBase({
-    Key? key,
+    super.key,
     required this.builder,
     required this.controller,
-  }) : super(key: key);
+  });
 
   final SetterController controller;
   final StatefulWidgetBuilder builder;
@@ -102,90 +102,81 @@ class _StatefulBuilderState<T extends _StatefulBuilderBase> extends State<T> {
 /// StatefulBuilder with SetterController
 class StatefulBuilder0<T> extends _StatefulBuilderBase {
   const StatefulBuilder0({
-    Key? key,
-    required StatefulWidgetBuilder builder,
-    required SetterController controller,
-  }) : super(key: key, builder: builder, controller: controller);
+    super.key,
+    required super.builder,
+    required super.controller,
+  });
 }
 
 /// StatefulBuilder with single property value and SetterController
 class StatefulBuilder1<T> extends _StatefulBuilderBase {
   StatefulBuilder1({
-    Key? key,
+    super.key,
     required StatefulWidgetBuilder1<T?> builder,
-    required SetterController controller,
+    required super.controller,
     T? value,
   }) : super(
-          key: key,
           builder: (context, setter) => builder(context, setter, value),
-          controller: controller,
         );
 }
 
 /// StatefulBuilder with two property value and SetterController
 class StatefulBuilder2<T1, T2> extends _StatefulBuilderBase {
   StatefulBuilder2({
-    Key? key,
+    super.key,
     required StatefulWidgetBuilder2<T1?, T2?> builder,
-    required SetterController controller,
+    required super.controller,
     T1? value1,
     T2? value2,
   }) : super(
-          key: key,
           builder: (context, setter) =>
               builder(context, setter, value1, value2),
-          controller: controller,
         );
 }
 
 /// StatefulBuilder with three property value and SetterController
 class StatefulBuilder3<T1, T2, T3> extends _StatefulBuilderBase {
   StatefulBuilder3({
-    Key? key,
+    super.key,
     required StatefulWidgetBuilder3<T1?, T2?, T3?> builder,
-    required SetterController controller,
+    required super.controller,
     T1? value1,
     T2? value2,
     T3? value3,
   }) : super(
-          key: key,
           builder: (context, setter) =>
               builder(context, setter, value1, value2, value3),
-          controller: controller,
         );
 }
 
 /// StatefulBuilder with four property value and SetterController
 class StatefulBuilder4<T1, T2, T3, T4> extends _StatefulBuilderBase {
   StatefulBuilder4({
-    Key? key,
+    super.key,
     required StatefulWidgetBuilder4<T1?, T2?, T3?, T4?> builder,
-    required SetterController controller,
+    required super.controller,
     T1? value1,
     T2? value2,
     T3? value3,
     T4? value4,
   }) : super(
-          key: key,
           builder: (context, setter) =>
               builder(context, setter, value1, value2, value3, value4),
-          controller: controller,
         );
 }
 
 /// StatefulBuilder with four property value and SetterController
 class StatefulBuilder5<T1, T2, T3, T4, T5> extends _StatefulBuilderBase {
   StatefulBuilder5({
-    Key? key,
+    super.key,
     required StatefulWidgetBuilder5<T1?, T2?, T3?, T4?, T5?> builder,
-    required SetterController controller,
+    required super.controller,
     T1? value1,
     T2? value2,
     T3? value3,
     T4? value4,
     T5? value5,
   }) : super(
-          key: key,
           builder: (context, setter) => builder(
             context,
             setter,
@@ -195,6 +186,5 @@ class StatefulBuilder5<T1, T2, T3, T4, T5> extends _StatefulBuilderBase {
             value4,
             value5,
           ),
-          controller: controller,
         );
 }

@@ -20,9 +20,9 @@ class ShopCheckout extends StatelessWidget {
   static const routeName = '/cart/checkout/shop';
   final Shop shop;
   const ShopCheckout({
-    Key? key,
+    super.key,
     required this.shop,
-  }) : super(key: key);
+  });
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -43,7 +43,10 @@ class ShopCheckout extends StatelessWidget {
             itemBuilder: (ctx, index) {
               final key = orders.keys.elementAt(index);
               if (key == null) return const SizedBox();
-              return _OrdersCard(productId: key);
+              return _OrdersCard(
+                key: ValueKey<String>(key),
+                productId: key,
+              );
             },
           );
         },
@@ -55,9 +58,9 @@ class ShopCheckout extends StatelessWidget {
 class _OrdersCard extends StatelessWidget {
   final String productId;
   const _OrdersCard({
-    Key? key,
+    super.key,
     required this.productId,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

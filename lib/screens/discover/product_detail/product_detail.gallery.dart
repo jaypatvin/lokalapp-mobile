@@ -13,12 +13,12 @@ class ProductDetailGallery extends StatelessWidget {
   final PhotoViewController? controller;
   final void Function(int) onPageChanged;
   const ProductDetailGallery({
-    Key? key,
+    super.key,
     required this.product,
     required this.currentIndex,
     required this.controller,
     required this.onPageChanged,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

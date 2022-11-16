@@ -16,7 +16,7 @@ import '../../../widgets/custom_app_bar.dart';
 import '../../../widgets/product_review_card.dart';
 
 class ViewReviews extends StatelessWidget {
-  const ViewReviews({Key? key, required this.order}) : super(key: key);
+  const ViewReviews({super.key, required this.order});
 
   final Order order;
 

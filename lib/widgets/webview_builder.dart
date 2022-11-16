@@ -11,10 +11,10 @@ import 'custom_app_bar.dart';
 
 class WebViewPage extends StatefulWidget {
   const WebViewPage({
-    Key? key,
+    super.key,
     required this.url,
     required this.title,
-  }) : super(key: key);
+  });
 
   final String url;
   final String title;

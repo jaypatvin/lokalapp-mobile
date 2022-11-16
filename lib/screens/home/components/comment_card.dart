@@ -19,10 +19,10 @@ import '../../chat/components/chat_avatar.dart';
 
 class CommentCard extends StatelessWidget {
   const CommentCard({
-    Key? key,
+    super.key,
     required this.activityId,
     required this.comment,
-  }) : super(key: key);
+  });
 
   final String activityId;
   final ActivityFeedComment comment;
@@ -158,7 +158,8 @@ class _CommentCardView extends HookView<CommentCardViewModel> {
 class _CommentOptions extends StatelessWidget {
   // TODO: add comment options
   const _CommentOptions({
-    Key? key,
+    // ignore: unused_element
+    super.key,
     // ignore: unused_element
     this.onReply,
     // ignore: unused_element
@@ -166,7 +167,7 @@ class _CommentOptions extends StatelessWidget {
     // ignore: unused_element
     this.onReport,
     this.onDelete,
-  }) : super(key: key);
+  });
 
   final void Function()? onReply;
   final void Function()? onHide;

@@ -9,7 +9,7 @@ import '../../../widgets/custom_app_bar.dart';
 import '../profile_screen.dart';
 
 class AddProductConfirmation extends StatelessWidget {
-  const AddProductConfirmation({Key? key}) : super(key: key);
+  const AddProductConfirmation({super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -19,7 +19,7 @@ class PickedCheckbox extends StatelessWidget {
   final double size;
 
   const PickedCheckbox({
-    Key? key,
+    super.key,
     required this.checkIndex,
     required this.onClick,
     this.alignment = Alignment.topRight,
@@ -30,7 +30,7 @@ class PickedCheckbox extends StatelessWidget {
     this.fontSize = 12,
     this.padding = const EdgeInsets.all(8.0),
     this.size = 20,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

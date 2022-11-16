@@ -15,7 +15,7 @@ import 'profile/profile_screen.dart';
 
 class BottomNavigation extends StatefulWidget {
   static const routeName = '/bottomNav';
-  const BottomNavigation({Key? key}) : super(key: key);
+  const BottomNavigation({super.key});
   @override
   _BottomNavigationState createState() => _BottomNavigationState();
 }

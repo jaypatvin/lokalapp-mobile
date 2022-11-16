@@ -5,8 +5,7 @@ import '../../screens/activity/subscriptions/subscriptions.dart';
 import 'subscriptions.props.dart';
 
 class ActivityNavigator extends AppNavigator {
-  const ActivityNavigator(GlobalKey<NavigatorState> navigatorKey)
-      : super(navigatorKey);
+  const ActivityNavigator(super.navigatorKey);
   @override
   Route onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {

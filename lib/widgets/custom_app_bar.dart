@@ -73,8 +73,9 @@ class _Leading extends StatelessWidget {
     this.leadingPadding,
     this.leadingColor,
     this.onPressedLeading, {
-    Key? key,
-  }) : super(key: key);
+    // ignore: unused_element
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -97,8 +98,9 @@ class _Title extends StatelessWidget {
   const _Title(
     this.titleText,
     this.titleStyle, {
-    Key? key,
-  }) : super(key: key);
+    // ignore: unused_element
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {

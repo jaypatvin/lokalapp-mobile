@@ -1,10 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../collection_impl.dart';
-import '../database.dart';
 
 class OrdersCollection extends CollectionImpl {
-  OrdersCollection(Collection collection) : super(collection);
+  OrdersCollection(super.collection);
 
   Stream<QuerySnapshot<Map<String, dynamic>>> getUserOrders(
     String? userId, {

@@ -11,7 +11,7 @@ import '../../../widgets/custom_app_bar.dart';
 import '../../../widgets/payment_options.widget.dart';
 
 class PaymentOptionScreen extends StatelessWidget {
-  const PaymentOptionScreen({Key? key, required this.order}) : super(key: key);
+  const PaymentOptionScreen({super.key, required this.order});
   final Order order;
   @override
   Widget build(BuildContext context) {

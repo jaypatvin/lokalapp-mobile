@@ -9,8 +9,7 @@ import 'props/chat_details.props.dart';
 import 'props/chat_profile.props.dart';
 
 class ChatNavigator extends AppNavigator {
-  const ChatNavigator(GlobalKey<NavigatorState> navigatorKey)
-      : super(navigatorKey);
+  const ChatNavigator(super.navigatorKey);
 
   @override
   Route onGenerateRoute(RouteSettings settings) {

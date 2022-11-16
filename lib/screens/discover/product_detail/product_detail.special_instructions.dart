@@ -5,11 +5,11 @@ class SpecialInstructionsTextField extends StatelessWidget {
   final TextEditingController controller;
   final FocusNode? focusNode;
   const SpecialInstructionsTextField({
-    Key? key,
+    super.key,
     required this.controller,
     this.focusNode,
     this.maxLines = 10,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

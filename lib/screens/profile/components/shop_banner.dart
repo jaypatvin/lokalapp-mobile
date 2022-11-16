@@ -13,9 +13,9 @@ import 'shop_tile.dart';
 
 class ShopBanner extends StatelessWidget {
   const ShopBanner({
-    Key? key,
+    super.key,
     required this.userId,
-  }) : super(key: key);
+  });
 
   final String userId;
   @override
@@ -57,11 +57,12 @@ class _ShopBannerView extends HookView<ShopBannerViewModel> {
 
 class _CurrentUserShopBanner extends StatelessWidget {
   const _CurrentUserShopBanner({
-    Key? key,
+    // ignore: unused_element
+    super.key,
     required this.onVerifyPressed,
     required this.onAddShop,
     required this.onGoToShop,
-  }) : super(key: key);
+  });
   final void Function() onVerifyPressed;
   final void Function() onAddShop;
   final void Function(Shop shop) onGoToShop;

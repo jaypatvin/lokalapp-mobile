@@ -5,11 +5,11 @@ import '../../../utils/constants/themes.dart';
 
 class ProductDetailOptions extends StatelessWidget {
   const ProductDetailOptions({
-    Key? key,
+    super.key,
     this.onVisitShop,
     this.onReportProduct,
     this.onCopyLink,
-  }) : super(key: key);
+  });
 
   final VoidCallback? onVisitShop;
   final VoidCallback? onReportProduct;

@@ -5,7 +5,7 @@ import '../view_model.dart';
 
 /// A view widget implementing [Stateless] widget and [ViewModel].
 abstract class StatelessView<T extends ViewModel> extends StatelessWidget {
-  const StatelessView({Key? key, this.reactive = true}) : super(key: key);
+  const StatelessView({super.key, this.reactive = true});
 
   /// Whether this view will listen to changes in the [ViewModel].
   final bool reactive;

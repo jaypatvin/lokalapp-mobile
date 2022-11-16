@@ -36,11 +36,11 @@ import 'product_schedule.dart';
 
 class ProductPreview extends StatefulWidget {
   const ProductPreview({
-    Key? key,
+    super.key,
     required this.images,
     required this.scheduleState,
     this.productId,
-  }) : super(key: key);
+  });
   final List<PhotoBoxImageSource> images;
   final ProductScheduleState? scheduleState;
   final String? productId;

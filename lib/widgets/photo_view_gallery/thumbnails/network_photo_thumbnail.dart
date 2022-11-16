@@ -6,12 +6,12 @@ import '../../../models/lokal_images.dart';
 
 class NetworkPhotoThumbnail extends StatelessWidget {
   const NetworkPhotoThumbnail({
-    Key? key,
+    super.key,
     required this.galleryItem,
     required this.onTap,
     this.fit = BoxFit.cover,
     this.heroTag,
-  }) : super(key: key);
+  });
 
   final ILokalImage galleryItem;
   final GestureTapCallback onTap;

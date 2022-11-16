@@ -9,7 +9,7 @@ import '../../../../widgets/calendar_picker/calendar_picker.dart';
 class SubscriptionScheduleCalendar extends HookWidget {
   /// The calendar picker to be displayed to manually resolve the conflicts.
   const SubscriptionScheduleCalendar({
-    Key? key,
+    super.key,
     required this.onDayPressed,
     required this.onCancel,
     required this.onConfirm,
@@ -18,7 +18,7 @@ class SubscriptionScheduleCalendar extends HookWidget {
     required this.onNonSelectableDayPressed,
     required this.displayWarning,
     this.selectedDate,
-  }) : super(key: key);
+  });
 
   final void Function(DateTime) onDayPressed;
   final void Function(DateTime) onNonSelectableDayPressed;

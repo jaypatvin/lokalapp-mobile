@@ -14,9 +14,9 @@ import '../app_button.dart';
 /// `BottomNavigationBar`.
 class BottomNavigationOnboarding extends StatefulWidget {
   const BottomNavigationOnboarding({
-    Key? key,
+    super.key,
     required this.child,
-  }) : super(key: key);
+  });
 
   final Widget child;
 

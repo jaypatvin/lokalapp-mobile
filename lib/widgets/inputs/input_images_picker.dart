@@ -8,10 +8,10 @@ class InputImagesPicker extends StatelessWidget {
   final List<AssetEntity> pickedImages;
   final void Function(int) onImageRemove;
   const InputImagesPicker({
-    Key? key,
+    super.key,
     required this.pickedImages,
     required this.onImageRemove,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

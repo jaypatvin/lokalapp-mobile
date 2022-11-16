@@ -2,10 +2,9 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 
 import '../../../models/shop.dart';
 import '../collection_impl.dart';
-import '../database.dart';
 
 class ShopsCollection extends CollectionImpl {
-  ShopsCollection(Collection collection) : super(collection);
+  ShopsCollection(super.collection);
 
   Stream<List<Shop>> getCommunityShops(
     String communityId,

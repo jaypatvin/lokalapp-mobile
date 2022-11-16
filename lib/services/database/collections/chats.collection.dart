@@ -4,10 +4,9 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import '../../../models/chat_model.dart';
 import '../../../models/conversation.dart';
 import '../collection_impl.dart';
-import '../database.dart';
 
 class ChatsCollection extends CollectionImpl {
-  ChatsCollection(Collection collection) : super(collection);
+  ChatsCollection(super.collection);
 
   Stream<List<ChatModel>> getUserChats(String userId) {
     return reference

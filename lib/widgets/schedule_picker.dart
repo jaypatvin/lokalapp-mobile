@@ -1,3 +1,5 @@
+// ignore_for_file: unused_element
+
 import 'dart:io' show Platform;
 
 import 'package:collection/collection.dart';
@@ -93,7 +95,7 @@ class SchedulePicker extends StatefulWidget {
 
   /// A reusable widget used for picking schedules for shops and subscriptions.
   const SchedulePicker({
-    Key? key,
+    super.key,
     required this.header,
     required this.description,
     required this.onStartDatesChanged,
@@ -109,7 +111,7 @@ class SchedulePicker extends StatefulWidget {
     this.editable = true,
     this.limitSelectableDates = false,
     required this.repeatUnitFocusNode,
-  }) : super(key: key);
+  });
 
   @override
   _SchedulePickerState createState() => _SchedulePickerState();
@@ -610,14 +612,14 @@ class _DayOfMonthPickerBody extends StatelessWidget {
   final void Function() onConfirm;
   final List<int>? selectableMonthDays;
   const _DayOfMonthPickerBody({
-    Key? key,
+    super.key,
     required this.markedStartDayOfMonth,
     required this.onDayPressed,
     required this.onCancel,
     required this.onConfirm,
     required this.monthChoice,
     this.selectableMonthDays,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -687,7 +689,7 @@ class _CalendarPickerBody extends StatelessWidget {
   final TimeOfDay? closing;
   final bool limitToSelectableDates;
   const _CalendarPickerBody({
-    Key? key,
+    super.key,
     required this.repeatChoice,
     required this.startDates,
     required this.selectableDays,
@@ -697,7 +699,7 @@ class _CalendarPickerBody extends StatelessWidget {
     required this.onConfirm,
     required this.limitToSelectableDates,
     this.closing,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -773,7 +775,7 @@ class _DayOfMonth extends StatelessWidget {
   final void Function(String) onMonthChoiceChanged;
   final bool editable;
   const _DayOfMonth({
-    Key? key,
+    super.key,
     required this.startDayOfMonth,
     required this.ordinalChoice,
     required this.monthDayChoice,
@@ -784,7 +786,7 @@ class _DayOfMonth extends StatelessWidget {
     required this.onMonthDayChoiceChanged,
     required this.onMonthChoiceChanged,
     required this.editable,
-  }) : super(key: key);
+  });
 
   // change state functions
   String getOrdinal(int input) {
@@ -918,11 +920,11 @@ class _StartDatePicker extends StatelessWidget {
   final void Function()? onSelectStartDate;
   final bool editable;
   const _StartDatePicker({
-    Key? key,
+    super.key,
     required this.startDate,
     required this.onSelectStartDate,
     required this.editable,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -959,7 +961,7 @@ class _RepeatabilityPicker extends StatelessWidget {
   final FocusNode repeatUnitFocusNode;
   final bool editable;
   const _RepeatabilityPicker({
-    Key? key,
+    super.key,
     required this.onRepeatUnitChanged,
     required this.onRepeatChoiceChanged,
     required this.repeatChoice,
@@ -968,7 +970,7 @@ class _RepeatabilityPicker extends StatelessWidget {
     required this.repeatUnitController,
     required this.editable,
     required this.repeatUnitFocusNode,
-  }) : super(key: key);
+  });
 
   Widget _iOSPickerBuilder(BuildContext context) {
     return CupertinoButton(
@@ -1137,11 +1139,11 @@ class _RepeatabilityPicker extends StatelessWidget {
 
 class _StartMonthPicker extends StatelessWidget {
   const _StartMonthPicker({
-    Key? key,
+    super.key,
     required this.monthChoice,
     required this.editable,
     required this.onMonthChoiceChanged,
-  }) : super(key: key);
+  });
   final String monthChoice;
   final bool editable;
   final void Function(String?) onMonthChoiceChanged;
@@ -1234,11 +1236,11 @@ class _StartMonthPicker extends StatelessWidget {
 
 class _MonthWeekDayPicker extends StatelessWidget {
   const _MonthWeekDayPicker({
-    Key? key,
+    super.key,
     required this.monthDayChoice,
     required this.editable,
     required this.onMonthDayChoiceChanged,
-  }) : super(key: key);
+  });
   final String? monthDayChoice;
   final bool editable;
   final void Function(String?) onMonthDayChoiceChanged;
@@ -1333,12 +1335,12 @@ class _MonthWeekDayPicker extends StatelessWidget {
 
 class _MonthOrdinalPicker extends StatelessWidget {
   const _MonthOrdinalPicker({
-    Key? key,
+    super.key,
     required this.ordinalChoice,
     required this.editable,
     required this.onOrdinalChoiceChanged,
     required this.ordinalNumbers,
-  }) : super(key: key);
+  });
   final String? ordinalChoice;
   final bool editable;
   final void Function(String?) onOrdinalChoiceChanged;

@@ -40,8 +40,7 @@ class SetUpPaymentOptions extends StatelessWidget {
     );
   }
 
-  const SetUpPaymentOptions._(this.onSubmit, this.edit, {Key? key})
-      : super(key: key);
+  const SetUpPaymentOptions._(this.onSubmit, this.edit, {super.key});
 
   @override
   Widget build(BuildContext context) {

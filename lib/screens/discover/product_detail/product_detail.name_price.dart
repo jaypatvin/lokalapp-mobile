@@ -6,10 +6,10 @@ class ProductItemAndPrice extends StatelessWidget {
   final String? productName;
   final double? productPrice;
   const ProductItemAndPrice({
-    Key? key,
+    super.key,
     required this.productName,
     required this.productPrice,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

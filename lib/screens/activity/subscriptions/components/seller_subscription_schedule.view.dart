@@ -46,6 +46,7 @@ class SellerSubscriptionScheduleView
             return StatefulBuilder(
               builder: (ctx, setState) {
                 return _SubscriptionScheduleCalendar(
+                  key: UniqueKey(),
                   selectableDates: vm.productSelectableDates,
                   markedDates: vm.markedDates,
                   displayWarning: vm.displayWarning,
@@ -177,12 +178,12 @@ class SellerSubscriptionScheduleView
 
 class _SubscriptionScheduleCalendar extends StatelessWidget {
   const _SubscriptionScheduleCalendar({
-    Key? key,
+    super.key,
     required this.onConfirm,
     required this.markedDates,
     required this.selectableDates,
     required this.displayWarning,
-  }) : super(key: key);
+  });
 
   final void Function() onConfirm;
   final List<DateTime?> markedDates;

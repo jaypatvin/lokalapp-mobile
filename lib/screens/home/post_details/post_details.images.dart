@@ -8,8 +8,8 @@ import '../../../widgets/photo_view_gallery/thumbnails/network_photo_thumbnail.d
 class PostDetailsImages extends StatelessWidget {
   const PostDetailsImages(
     this.activity, {
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   final ActivityFeed activity;
 

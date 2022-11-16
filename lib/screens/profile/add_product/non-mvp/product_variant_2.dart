@@ -12,9 +12,9 @@ import 'product_add_on.dart';
 
 class ProductVariant2 extends StatefulWidget {
   const ProductVariant2({
-    Key? key,
+    super.key,
     required this.images,
-  }) : super(key: key);
+  });
   final List<PhotoBoxImageSource> images;
   @override
   _ProductVariant2State createState() => _ProductVariant2State();

@@ -48,6 +48,7 @@ class Transactions extends StatelessWidget {
     return MVVM(
       view: (_, __) => _TransactionsView(
         _backgroundColor,
+        key: UniqueKey(),
       ),
       viewModel: TransactionsViewModel(
         _statuses,
@@ -61,8 +62,8 @@ class _TransactionsView extends HookView<TransactionsViewModel>
     with HookScreenLoader {
   _TransactionsView(
     this._backgroundColor, {
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   final Color _backgroundColor;
   @override

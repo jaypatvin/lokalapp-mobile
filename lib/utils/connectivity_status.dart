@@ -17,7 +17,7 @@ import '../providers/categories.dart';
 class ConnectivityStatus extends StatefulWidget {
   /// A widget that display a `Text` on the bottom of the screen
   /// when there is no internet connection.
-  const ConnectivityStatus({Key? key, required this.child}) : super(key: key);
+  const ConnectivityStatus({super.key, required this.child});
 
   final Widget child;
 

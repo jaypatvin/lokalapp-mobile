@@ -16,7 +16,7 @@ import '../../widgets/photo_box.dart';
 
 class EditProfile extends StatelessWidget {
   static const routeName = '/profile/edit';
-  const EditProfile({Key? key}) : super(key: key);
+  const EditProfile({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -29,8 +29,8 @@ class EditProfile extends StatelessWidget {
 
 class _EditProfileView extends HookView<EditProfileViewModel>
     with HookScreenLoader<EditProfileViewModel> {
-  _EditProfileView({Key? key, bool reactive = true})
-      : super(key: key, reactive: reactive);
+  // ignore: unused_element
+  _EditProfileView({super.key, super.reactive});
 
   @override
   Widget screen(BuildContext context, EditProfileViewModel vm) {

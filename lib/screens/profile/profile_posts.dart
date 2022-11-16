@@ -7,7 +7,7 @@ import '../../widgets/custom_app_bar.dart';
 import 'components/timeline.dart';
 
 class ProfilePosts extends StatelessWidget {
-  const ProfilePosts({Key? key}) : super(key: key);
+  const ProfilePosts({super.key});
 
   @override
   Widget build(BuildContext context) {

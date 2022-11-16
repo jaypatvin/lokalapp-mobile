@@ -10,7 +10,7 @@ import '../settings/invite_a_friend/invite_a_friend.dart';
 import '../wishlist_screen.dart';
 
 class MyProfileList extends HookWidget {
-  const MyProfileList({Key? key}) : super(key: key);
+  const MyProfileList({super.key});
 
   @override
   Widget build(BuildContext context) {

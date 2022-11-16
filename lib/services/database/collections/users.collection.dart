@@ -4,10 +4,9 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import '../../../models/failure_exception.dart';
 import '../../../models/lokal_user.dart';
 import '../collection_impl.dart';
-import '../database.dart';
 
 class UsersCollection extends CollectionImpl {
-  UsersCollection(Collection collection) : super(collection);
+  UsersCollection(super.collection);
 
   Future<String> getUserDocId(String userUid) async {
     String retVal = '';

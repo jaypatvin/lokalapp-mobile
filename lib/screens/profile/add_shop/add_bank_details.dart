@@ -21,11 +21,11 @@ import '../../../widgets/inputs/input_field.dart';
 
 class AddBankDetails extends StatelessWidget {
   const AddBankDetails({
-    Key? key,
+    super.key,
     required this.bankType,
     this.bankAccount,
     this.edit = false,
-  }) : super(key: key);
+  });
   final PaymentOption? bankAccount;
   final BankType bankType;
   final bool edit;

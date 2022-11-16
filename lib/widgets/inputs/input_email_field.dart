@@ -13,7 +13,7 @@ class InputEmailField extends StatelessWidget {
   final Color fillColor;
   final String hintText;
   const InputEmailField({
-    Key? key,
+    super.key,
     this.focusNode,
     this.controller,
     this.onChanged,
@@ -22,7 +22,7 @@ class InputEmailField extends StatelessWidget {
     this.validate = false,
     this.fillColor = Colors.white,
     this.hintText = 'Email Address',
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

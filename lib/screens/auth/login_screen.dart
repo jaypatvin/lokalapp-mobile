@@ -16,7 +16,7 @@ import 'forgot_password_screen.dart';
 
 class LoginScreen extends StatelessWidget {
   static const routeName = '/login';
-  const LoginScreen({Key? key}) : super(key: key);
+  const LoginScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

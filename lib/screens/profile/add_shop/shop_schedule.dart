@@ -21,11 +21,11 @@ import '../../../widgets/schedule_picker.dart';
 class ShopSchedule extends StatelessWidget {
   static const routeName = '/profile/addShop/schedule';
   const ShopSchedule({
-    Key? key,
+    super.key,
     this.shopPhoto,
     this.forEditing = false,
     this.onShopEdit,
-  }) : super(key: key);
+  });
 
   final File? shopPhoto;
   final bool forEditing;
@@ -159,12 +159,13 @@ class _HoursPicker extends StatelessWidget {
   final void Function() onSelectClosing;
 
   const _HoursPicker({
-    Key? key,
+    // ignore: unused_element
+    super.key,
     required this.opening,
     required this.closing,
     required this.onSelectOpening,
     required this.onSelectClosing,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

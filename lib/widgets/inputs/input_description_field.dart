@@ -15,7 +15,7 @@ class InputDescriptionField extends StatelessWidget {
   final InputBorder enabledBorder;
 
   const InputDescriptionField({
-    Key? key,
+    super.key,
     this.maxLines = 10,
     this.minLines = 7,
     this.onChanged,
@@ -38,7 +38,7 @@ class InputDescriptionField extends StatelessWidget {
       borderRadius: BorderRadius.all(Radius.circular(10)),
       borderSide: BorderSide(color: Color(0xFFE0E0E0)),
     ),
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

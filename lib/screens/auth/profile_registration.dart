@@ -16,7 +16,7 @@ import 'components/checkbox_form_field.dart';
 
 class ProfileRegistration extends StatelessWidget {
   static const routeName = '/register/profile';
-  const ProfileRegistration({Key? key}) : super(key: key);
+  const ProfileRegistration({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -129,6 +129,7 @@ class _ProfileRegistrationView extends HookView<ProfileRegistrationViewModel>
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 45),
                   child: _RegistrationForm(
+                    key: UniqueKey(),
                     formKey: vm.formKey,
                     firstNameController: firstNameController,
                     firstNameNode: firstNameFocusNode,
@@ -202,7 +203,7 @@ class _RegistrationForm extends StatelessWidget {
   final VoidCallback onFormSubmit;
 
   const _RegistrationForm({
-    Key? key,
+    super.key,
     required this.formKey,
     required this.firstNameController,
     required this.lastNameController,
@@ -212,7 +213,7 @@ class _RegistrationForm extends StatelessWidget {
     required this.firstNameNode,
     required this.lastNameNode,
     required this.streetAdddressNode,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

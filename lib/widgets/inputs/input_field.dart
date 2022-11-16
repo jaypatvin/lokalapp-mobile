@@ -4,7 +4,7 @@ import '../../utils/constants/themes.dart';
 
 class InputField extends StatelessWidget {
   const InputField({
-    Key? key,
+    super.key,
     this.focusNode,
     this.controller,
     this.onChanged,
@@ -18,7 +18,7 @@ class InputField extends StatelessWidget {
     this.style,
     this.hintStyle,
     this.initialValue,
-  }) : super(key: key);
+  });
 
   final FocusNode? focusNode;
   final TextEditingController? controller;

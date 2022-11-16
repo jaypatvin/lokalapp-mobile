@@ -10,7 +10,7 @@ import 'transactions.dart';
 
 class Activity extends HookWidget {
   static const routeName = '/activity';
-  const Activity({Key? key}) : super(key: key);
+  const Activity({super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -10,11 +10,11 @@ class OrderDetails extends StatelessWidget {
   final int quantity;
   final void Function() onEditTap;
   const OrderDetails({
-    Key? key,
+    super.key,
     required this.product,
     required this.quantity,
     required this.onEditTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

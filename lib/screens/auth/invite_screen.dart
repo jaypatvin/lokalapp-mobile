@@ -14,7 +14,7 @@ import '../../widgets/overlays/screen_loader.dart';
 
 class InvitePage extends StatelessWidget {
   static const routeName = '/invite';
-  const InvitePage({Key? key}) : super(key: key);
+  const InvitePage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -117,7 +117,7 @@ class _InvitePageView extends HookView<InviteScreenViewModel>
 }
 
 class _InviteCodeDescription extends StatelessWidget {
-  const _InviteCodeDescription({Key? key}) : super(key: key);
+  const _InviteCodeDescription();
 
   @override
   Widget build(BuildContext context) {

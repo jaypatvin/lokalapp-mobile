@@ -4,10 +4,10 @@ import '../../../../widgets/photo_box.dart';
 
 class AddProductGallery extends StatelessWidget {
   const AddProductGallery({
-    Key? key,
+    super.key,
     this.images = const [],
     required this.onSelectImage,
-  }) : super(key: key);
+  });
 
   final List<PhotoBoxImageSource> images;
   final void Function(int index) onSelectImage;

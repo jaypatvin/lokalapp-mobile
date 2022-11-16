@@ -12,7 +12,7 @@ import '../services/device_info_provider.dart';
 /// This widget needs a [Provider] of [DeviceInfoProvider] up in the widget
 /// tree.
 class DeviceInfo extends HookWidget {
-  const DeviceInfo({Key? key, required this.child}) : super(key: key);
+  const DeviceInfo({super.key, required this.child});
   final Widget child;
 
   @override

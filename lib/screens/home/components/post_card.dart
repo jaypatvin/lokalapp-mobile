@@ -15,7 +15,7 @@ import '../../chat/components/chat_avatar.dart';
 import 'post_options.dart';
 
 class PostCard extends StatelessWidget {
-  const PostCard({Key? key, required this.activity}) : super(key: key);
+  const PostCard({super.key, required this.activity});
   final ActivityFeed activity;
 
   @override
@@ -32,9 +32,11 @@ class PostCard extends StatelessWidget {
 class _PostCardView extends StatelessView<PostCardViewModel> {
   const _PostCardView(
     this.activity, {
-    Key? key,
-    bool reactive = true,
-  }) : super(key: key, reactive: reactive);
+    // ignore: unused_element
+    super.key,
+    // ignore: unused_element
+    super.reactive,
+  });
   final ActivityFeed activity;
 
   Widget _buildHeader(PostCardViewModel vm) {
@@ -216,7 +218,8 @@ class _PostCardView extends StatelessView<PostCardViewModel> {
 }
 
 class _ReportPostModalSheet extends StatelessWidget {
-  const _ReportPostModalSheet({Key? key}) : super(key: key);
+  // ignore: unused_element
+  const _ReportPostModalSheet({super.key});
 
   @override
   Widget build(BuildContext context) {

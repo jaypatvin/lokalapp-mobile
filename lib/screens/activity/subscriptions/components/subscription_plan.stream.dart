@@ -6,12 +6,12 @@ import 'subscription_plan.card.dart';
 
 class SubscriptionPlanStream extends StatelessWidget {
   const SubscriptionPlanStream({
-    Key? key,
+    super.key,
     required this.stream,
     required this.onDetailsPressed,
     this.onConfirmSubscription,
     this.isBuyer = true,
-  }) : super(key: key);
+  });
   final Stream<List<ProductSubscriptionPlan>> stream;
   final void Function(ProductSubscriptionPlan) onDetailsPressed;
   final void Function(ProductSubscriptionPlan)? onConfirmSubscription;

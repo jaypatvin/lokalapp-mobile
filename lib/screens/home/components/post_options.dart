@@ -5,13 +5,13 @@ import '../../../utils/constants/themes.dart';
 
 class PostOptions extends StatelessWidget {
   const PostOptions({
-    Key? key,
+    super.key,
     this.onEditPost,
     this.onDeletePost,
     this.onCopyLink,
     this.onReportPost,
     this.onHidePost,
-  }) : super(key: key);
+  });
 
   final void Function()? onEditPost;
   final void Function()? onDeletePost;

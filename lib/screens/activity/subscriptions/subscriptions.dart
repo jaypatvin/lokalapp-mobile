@@ -12,7 +12,7 @@ import 'components/subscription_plan.stream.dart';
 
 class Subscriptions extends StatelessWidget {
   static const routeName = '/activity/subscriptions';
-  const Subscriptions({Key? key, required this.isBuyer}) : super(key: key);
+  const Subscriptions({super.key, required this.isBuyer});
   final bool isBuyer;
 
   @override

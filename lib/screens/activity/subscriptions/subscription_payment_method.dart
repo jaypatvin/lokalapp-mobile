@@ -13,10 +13,10 @@ import '../../../widgets/payment_options.widget.dart';
 
 class SubscriptionPaymentMethod extends StatelessWidget {
   const SubscriptionPaymentMethod({
-    Key? key,
+    super.key,
     required this.request,
     required this.reschedule,
-  }) : super(key: key);
+  });
 
   final ProductSubscriptionPlanRequest request;
   final bool reschedule;

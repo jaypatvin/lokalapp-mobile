@@ -4,10 +4,10 @@ class QuantityController extends StatelessWidget {
   final void Function()? onAdd;
   final void Function()? onSubtract;
   const QuantityController({
-    Key? key,
+    super.key,
     this.onAdd,
     this.onSubtract,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -7,7 +7,7 @@ import '../../../chat/components/chat_avatar.dart';
 
 class ShopHeader extends StatelessWidget {
   const ShopHeader({
-    Key? key,
+    super.key,
     required this.shopName,
     this.linearGradientColors = const [Color(0xffFFC700), Colors.black45],
     this.shopProfilePhoto,
@@ -18,7 +18,7 @@ class ShopHeader extends StatelessWidget {
     this.onEditTap,
     // this.displaySettingsButton = true,
     // this.displayEditButton = true,
-  }) : super(key: key);
+  });
 
   final String shopName;
   final List<Color> linearGradientColors;

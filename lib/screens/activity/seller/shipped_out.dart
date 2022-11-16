@@ -14,7 +14,7 @@ import '../components/transaction_details.dart';
 class ShippedOut extends StatelessWidget {
   final Order order;
 
-  const ShippedOut({Key? key, required this.order}) : super(key: key);
+  const ShippedOut({super.key, required this.order});
 
   @override
   Widget build(BuildContext context) {

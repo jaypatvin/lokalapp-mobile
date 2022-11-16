@@ -4,7 +4,7 @@ import '../../../../utils/constants/assets.dart';
 import '../../../../widgets/webview_builder.dart';
 
 class HelpCenter extends StatelessWidget {
-  const HelpCenter({Key? key}) : super(key: key);
+  const HelpCenter({super.key});
   @override
   Widget build(BuildContext context) {
     return const WebViewPage(

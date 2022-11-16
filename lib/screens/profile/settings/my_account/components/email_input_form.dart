@@ -22,7 +22,7 @@ class EmailInputForm extends StatefulWidget {
   final FocusNode? passwordFocusNode;
 
   const EmailInputForm({
-    Key? key,
+    super.key,
     this.formKey,
     this.newEmailController,
     this.confirmEmailController,
@@ -37,7 +37,7 @@ class EmailInputForm extends StatefulWidget {
     this.newEmailFocusNode,
     this.confirmEmailFocusNode,
     this.passwordFocusNode,
-  }) : super(key: key);
+  });
 
   @override
   State<EmailInputForm> createState() => _EmailInputFormState();

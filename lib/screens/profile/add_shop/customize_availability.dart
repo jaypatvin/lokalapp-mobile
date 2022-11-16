@@ -282,14 +282,15 @@ class _CalendarPicker extends StatelessWidget {
   final DateTime startDate;
   final List<int> selectableDays;
   const _CalendarPicker({
-    Key? key,
+    // ignore: unused_element
+    super.key,
     required this.onDayPressed,
     required this.onCancel,
     required this.onConfirm,
     required this.markedDates,
     required this.startDate,
     required this.selectableDays,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -15,14 +15,14 @@ class CustomPickAssetWidget extends StatelessWidget {
   final PickedCheckboxBuilder? pickedCheckboxBuilder;
 
   const CustomPickAssetWidget({
-    Key? key,
+    super.key,
     required this.asset,
     required this.provider,
     this.thumbSize = 100,
     this.onTap,
     this.pickColorMaskBuilder = PickColorMask.buildWidget,
     this.pickedCheckboxBuilder,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

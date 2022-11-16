@@ -19,11 +19,11 @@ import 'components/reply_message.dart';
 class ChatBubble extends HookWidget {
   const ChatBubble({
     required this.conversation,
-    Key? key,
+    super.key,
     this.replyMessage,
     this.forFocus = false,
     this.images = const [],
-  }) : super(key: key);
+  });
 
   final Conversation? conversation;
   final Conversation? replyMessage;
@@ -46,6 +46,7 @@ class ChatBubble extends HookWidget {
     if (conversation!.media != null && conversation!.media!.isNotEmpty) {
       messageWidgets.add(
         _MessageImages(
+          key: UniqueKey(),
           images: conversation!.media!,
           forFocus: forFocus,
         ),
@@ -55,6 +56,7 @@ class ChatBubble extends HookWidget {
     if (images.isNotEmpty) {
       messageWidgets.add(
         _FileImages(
+          key: UniqueKey(),
           images: images,
           forFocus: forFocus,
         ),
@@ -146,10 +148,10 @@ class ChatBubble extends HookWidget {
 
 class _MessageImages extends StatelessWidget {
   const _MessageImages({
-    Key? key,
+    super.key,
     required this.images,
     this.forFocus = false,
-  }) : super(key: key);
+  });
 
   final List<ILokalImage> images;
   final bool forFocus;
@@ -180,10 +182,10 @@ class _MessageImages extends StatelessWidget {
 
 class _FileImages extends StatelessWidget {
   const _FileImages({
-    Key? key,
+    super.key,
     required this.images,
     this.forFocus = false,
-  }) : super(key: key);
+  });
 
   final List<AssetEntity> images;
   final bool forFocus;

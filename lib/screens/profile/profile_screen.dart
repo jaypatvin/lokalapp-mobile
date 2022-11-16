@@ -20,7 +20,7 @@ import 'components/shop_banner.dart';
 
 class ProfileScreen extends HookWidget {
   static const routeName = '/profile';
-  const ProfileScreen({Key? key, this.userId}) : super(key: key);
+  const ProfileScreen({super.key, this.userId});
   final String? userId;
 
   @override
@@ -143,7 +143,8 @@ class ProfileScreen extends HookWidget {
 }
 
 class _ProfileHeader extends StatelessWidget {
-  const _ProfileHeader({Key? key, required this.userId}) : super(key: key);
+  // ignore: unused_element
+  const _ProfileHeader({super.key, required this.userId});
   final String userId;
 
   @override

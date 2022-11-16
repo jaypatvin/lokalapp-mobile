@@ -8,14 +8,14 @@ class SearchTextField extends StatelessWidget {
   final void Function()? onTap;
   final void Function(String)? onSubmitted;
   const SearchTextField({
-    Key? key,
+    super.key,
     this.controller,
     this.hintText = 'Search',
     this.enabled = false,
     this.onChanged,
     this.onTap,
     this.onSubmitted,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

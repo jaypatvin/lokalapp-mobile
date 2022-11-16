@@ -30,7 +30,8 @@ class ProductCard extends StatelessWidget {
 }
 
 class _ProductCardView extends HookView<ProductCardViewModel> {
-  const _ProductCardView({Key? key}) : super(key: key);
+  // ignore: unused_element
+  const _ProductCardView({super.key});
 
   @override
   Widget render(BuildContext context, ProductCardViewModel vm) {

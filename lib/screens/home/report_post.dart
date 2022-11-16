@@ -13,7 +13,7 @@ import '../../widgets/overlays/constrained_scrollview.dart';
 import '../../widgets/overlays/screen_loader.dart';
 
 class ReportPost extends StatelessWidget {
-  const ReportPost({Key? key, required this.activityId}) : super(key: key);
+  const ReportPost({super.key, required this.activityId});
   final String activityId;
 
   @override

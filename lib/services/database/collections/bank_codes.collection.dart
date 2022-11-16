@@ -3,10 +3,9 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 
 import '../../../models/bank_code.dart';
 import '../collection_impl.dart';
-import '../database.dart';
 
 class BankCodesCollection extends CollectionImpl {
-  BankCodesCollection(Collection collection) : super(collection);
+  BankCodesCollection(super.collection);
 
   Future<List<BankCode>> getBankCodes() async {
     final snapshot = await reference.get();

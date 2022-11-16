@@ -6,7 +6,7 @@ import '../../../widgets/app_button.dart';
 import '../activity.dart';
 
 class ReviewSubmitted extends StatelessWidget {
-  const ReviewSubmitted({Key? key}) : super(key: key);
+  const ReviewSubmitted({super.key});
 
   void _onBackToActivity() {
     AppRouter.activityNavigatorKey.currentState?.popUntil(

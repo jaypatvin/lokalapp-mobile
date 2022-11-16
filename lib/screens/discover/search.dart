@@ -14,7 +14,7 @@ import '../profile/components/product_card.dart';
 
 class Search extends StatelessWidget {
   static const routeName = '/discover/search';
-  const Search({Key? key}) : super(key: key);
+  const Search({super.key});
 
   @override
   Widget build(BuildContext context) {

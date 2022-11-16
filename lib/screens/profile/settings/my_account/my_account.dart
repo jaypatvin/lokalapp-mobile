@@ -13,7 +13,7 @@ import 'delete_account.dart';
 import 'reset_password.dart';
 
 class MyAccount extends StatelessWidget {
-  const MyAccount({Key? key}) : super(key: key);
+  const MyAccount({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +25,8 @@ class MyAccount extends StatelessWidget {
 }
 
 class _MyAccountView extends StatelessView<MyAccountViewModel> {
-  const _MyAccountView({Key? key}) : super(key: key);
+  // ignore: unused_element
+  const _MyAccountView({super.key});
 
   @override
   Widget render(BuildContext context, MyAccountViewModel viewModel) {

@@ -3,10 +3,9 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 
 import '../../../models/lokal_category.dart';
 import '../collection_impl.dart';
-import '../database.dart';
 
 class CategoriesCollection extends CollectionImpl {
-  CategoriesCollection(Collection collection) : super(collection);
+  CategoriesCollection(super.collection);
 
   Future<List<LokalCategory>> getCategories() async {
     final snapshot = await reference.get();

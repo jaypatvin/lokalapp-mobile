@@ -6,7 +6,7 @@ import '../view_model.dart';
 
 /// A view widget implementing [Hooks] and [ViewModel].
 abstract class HookView<T extends ViewModel> extends HookWidget {
-  const HookView({Key? key, this.reactive = true}) : super(key: key);
+  const HookView({super.key, this.reactive = true});
 
   /// Whether this view will listen to changes in the [ViewModel].
   final bool reactive;

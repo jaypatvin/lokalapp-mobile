@@ -16,10 +16,10 @@ class ProcessingPayment extends StatelessWidget {
   final PaymentMethod paymentMode;
 
   const ProcessingPayment({
-    Key? key,
+    super.key,
     required this.order,
     required this.paymentMode,
-  }) : super(key: key);
+  });
 
   String _getTitleText() {
     switch (paymentMode) {

@@ -9,11 +9,11 @@ import '../../../chat/components/chat_avatar.dart';
 
 class SubscriptionPlanDetails extends StatelessWidget {
   const SubscriptionPlanDetails({
-    Key? key,
+    super.key,
     this.isBuyer = true,
     this.displayHeader = true,
     required this.subscriptionPlan,
-  }) : super(key: key);
+  });
 
   final bool isBuyer;
   final bool displayHeader;

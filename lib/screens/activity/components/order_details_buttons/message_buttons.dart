@@ -10,7 +10,7 @@ import '../../../chat/chat_details.dart';
 
 class MessageBuyerButton extends StatelessWidget {
   final Order order;
-  const MessageBuyerButton({Key? key, required this.order}) : super(key: key);
+  const MessageBuyerButton({super.key, required this.order});
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +34,7 @@ class MessageBuyerButton extends StatelessWidget {
 class MessageSellerButton extends StatelessWidget {
   final Order order;
 
-  const MessageSellerButton({Key? key, required this.order}) : super(key: key);
+  const MessageSellerButton({super.key, required this.order});
   @override
   Widget build(BuildContext context) {
     return AppButton.transparent(

@@ -17,7 +17,7 @@ import '../../widgets/photo_view_gallery/thumbnails/asset_photo_thumbnail.dart';
 
 class DraftPost extends StatelessWidget {
   static const routeName = '/home/draft_post';
-  const DraftPost({Key? key}) : super(key: key);
+  const DraftPost({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -216,7 +216,8 @@ class _DraftPostView extends HookView<DraftPostViewModel>
 }
 
 class _ExitNotification extends StatelessWidget {
-  const _ExitNotification({Key? key}) : super(key: key);
+  // ignore: unused_element
+  const _ExitNotification({super.key});
 
   @override
   Widget build(BuildContext context) {

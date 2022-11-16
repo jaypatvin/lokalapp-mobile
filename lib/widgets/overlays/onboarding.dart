@@ -14,10 +14,10 @@ class Onboarding extends StatefulWidget {
   final Widget child;
   final MainScreen screen;
   const Onboarding({
-    Key? key,
+    super.key,
     required this.screen,
     required this.child,
-  }) : super(key: key);
+  });
 
   @override
   _OnboardingState createState() => _OnboardingState();
